@@ -2,15 +2,20 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { parseICS, CalendarEvent } from './icsParser';
 
+const CALENDAR_FILES: Record<string, string> = {
+  en: new URL('./assets/calendar-en.ics', import.meta.url).toString(),
+  ru: new URL('./assets/calendar-ru.ics', import.meta.url).toString(),
+};
+
 interface CalendarDay {
   date: Date;
   events: CalendarEvent[];
 }
 
 async function fetchCalendar(locale: string): Promise<CalendarEvent[]> {
-  const normalized = locale.split('-')[0];
-  const primary = `/calendar/calendar-${normalized}.ics`;
-  const fallback = normalized === 'en' ? null : '/calendar/calendar-en.ics';
+  const normalized = locale.split('-')[0].toLowerCase();
+  const primary = CALENDAR_FILES[normalized] ?? CALENDAR_FILES.en;
+  const fallback = normalized === 'en' ? null : CALENDAR_FILES.en;
 
   const tryFetch = async (url: string) => {
     const response = await fetch(url);
