@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { translations } from '../../i18n/translations';
-import { User, Power } from 'lucide-react';
+import { Power } from 'lucide-react';
 import userAvatar from '../winxp/assets/user.gif';
+import '../winxp/xp.css';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -67,7 +68,6 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     );
   }
 
-  // XP Login Screen based on winOS-master WelcomeScreen.tsx and Content.tsx
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleUserClick = () => {
@@ -75,35 +75,17 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     setTimeout(onLogin, 2000);
   };
 
+  const handleShutdown = () => {
+    setMode('grub');
+  };
+
   if (isLoggingIn) {
     return (
       <div className="min-h-screen w-full bg-[#5a7edc] flex items-center justify-center overflow-hidden relative">
-        {/* Top and Bottom Borders */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#00309c]" />
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#00309c]" />
-
-        {/* Main Content */}
-        <div className="w-full flex items-center justify-center relative">
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#7a9ce8] to-transparent opacity-30" />
-
-          <div className="flex items-center gap-8 z-10">
-            <div className="w-16 h-16 bg-white rounded border-2 border-[#fff] shadow-lg overflow-hidden flex items-center justify-center">
-              <img
-                src={userAvatar}
-                alt="User"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-            <div>
-              <h1 className="text-white text-4xl italic font-semibold tracking-wide" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-                {t.welcome || 'welcome'}
-              </h1>
-              <div className="text-white/80 text-sm mt-1">Loading your personal settings...</div>
-            </div>
+        <div className="text-center text-white flex flex-col items-center gap-6">
+          <div className="text-2xl font-medium">{t.loggingIn || 'Загрузка персональных настроек...'}</div>
+          <div className="w-64 h-2 bg-white/30 rounded-full overflow-hidden">
+            <div className="h-full bg-white rounded-full animate-pulse" style={{ width: '60%' }} />
           </div>
         </div>
       </div>
@@ -111,91 +93,33 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   }
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
-      style={{
-        background: '#1231a1',
-        paddingTop: '78px',
-        paddingBottom: '94px'
-      }}
-    >
-      {/* Decorative top line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-[80px]"
-        style={{
-          background: '#00309c',
-          borderBottom: '2px solid #fff'
-        }}
-      />
-
-      {/* Main content area with radial gradient */}
-      <div
-        className="w-full h-full flex items-center justify-center relative"
-        style={{
-          background: 'radial-gradient(circle at 50% 50%, #91b0ee 0%, #5a7edc 100%)'
-        }}
-      >
-        {/* Decorative bottom line */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[80px]"
-          style={{
-            background: '#00309c',
-            borderTop: '2px solid #fff'
-          }}
-        />
-
-        <div className="w-full max-w-4xl flex items-center z-10">
-          <div className="w-1/2 text-right pr-12 border-r border-white/30 py-12">
-            <div className="mb-8">
-              <h1
-                className="text-white text-4xl font-light mb-2"
-                style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontStyle: 'italic' }}
-              >
-                Microsoft
-              </h1>
-              <h2 className="text-white text-5xl font-bold">Windows<span className="text-orange-400 text-2xl align-top">xp</span></h2>
-            </div>
-            <p className="text-white text-xl opacity-80">{t.loginTitle}</p>
-          </div>
-
-          <div className="w-1/2 pl-12 py-12">
-            <button
-              onClick={handleUserClick}
-              className="group flex items-center gap-4 p-2 rounded hover:bg-blue-700/30 transition-colors w-full text-left"
-            >
-              <div className="w-16 h-16 bg-yellow-400 rounded border-2 border-white shadow-lg overflow-hidden relative flex-shrink-0 flex items-center justify-center">
-                <img
-                  src={userAvatar}
-                  alt="User"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-transparent" style={{ zIndex: -1 }}>
-                  <User size={32} className="text-white" />
-                </div>
-              </div>
-              <div>
-                <span className="text-white text-2xl block group-hover:underline">{t.user}</span>
-                <span className="text-blue-200 text-sm">Computer Administrator</span>
-              </div>
-            </button>
-          </div>
+    <div className="min-h-screen w-full login-screen-xp">
+      <div className="login-screen__container">
+        <div className="login-screen__header">
+          <h2 className="login-screen__title">{t.welcomeMessage || 'Для начала работы нажмите на имя пользователя'}</h2>
         </div>
-      </div>
 
-      {/* Bottom controls */}
-      <div className="absolute bottom-8 left-8 flex gap-4 z-20">
-        <button
-          className="flex items-center gap-2 text-white hover:underline"
-          onClick={() => setMode('grub')}
-        >
-          <div className="w-8 h-8 bg-blue-900 rounded border border-white flex items-center justify-center">
-            <Power size={16} className="text-white" />
-          </div>
-          <span>Turn off computer</span>
-        </button>
+        <div className="login-screen__users">
+          <button onClick={handleUserClick} className="login-screen__user-card">
+            <div className="login-screen__user-avatar">
+              <img
+                src={userAvatar}
+                alt="C4m1r"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+            <div className="login-screen__user-name">C4m1r</div>
+          </button>
+        </div>
+
+        <div className="login-screen__footer">
+          <button onClick={handleShutdown} className="login-screen__shutdown-btn">
+            <Power size={20} />
+            <span>{t.turnOffComputer || 'Выключение компьютера'}</span>
+          </button>
+        </div>
       </div>
     </div>
   );

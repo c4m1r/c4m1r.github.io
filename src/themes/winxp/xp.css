@@ -1444,6 +1444,427 @@
   border-color: rgba(255, 255, 255, 0.4);
 }
 
+/* Modernized Windows XP login for XP theme */
+.xp-login-modern {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'Segoe UI', 'Tahoma', sans-serif;
+}
+
+.xp-login-modern__background {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.4), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(41, 134, 255, 0.35), transparent 55%),
+    linear-gradient(180deg, #1d4fd8 0%, #0f2d84 45%, #03113c 100%);
+  filter: saturate(1.1);
+  transform: scale(1.05);
+}
+
+.xp-login-modern__panel {
+  position: relative;
+  z-index: 1;
+  width: min(460px, 90%);
+  padding: 2.5rem 2rem 2rem;
+  background: rgba(7, 19, 75, 0.85);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 20px 40px rgba(4, 6, 22, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.xp-login-modern__instruction {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+.xp-login-modern__user-card {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  padding: 1.5rem 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(14, 54, 116, 0.6));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.4),
+    0 10px 20px rgba(1, 11, 38, 0.6);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.xp-login-modern__user-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.5),
+    0 20px 30px rgba(1, 11, 38, 0.75);
+}
+
+.xp-login-modern__avatar-frame {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  padding: 6px;
+  background: linear-gradient(180deg, #0c3d93 0%, #1c62da 60%, #6fb1f1 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.6),
+    inset 0 8px 16px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xp-login-modern__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.xp-login-modern__username {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #f0f4ff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
+}
+
+.xp-login-modern__footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.xp-login-modern__power-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.6rem;
+  background: linear-gradient(180deg, #4a83ff 0%, #284fc3 60%, #0f275f 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 5px 12px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  font-family: 'Segoe UI', 'Tahoma', sans-serif;
+}
+
+.xp-login-modern__power-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 10px 20px rgba(0, 0, 0, 0.7);
+}
+
+.xp-login-modern__power-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+.xp-login-modern__power-btn--inline {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.xp-login-modern--loading {
+  min-height: 100vh;
+  background: radial-gradient(circle at 30% -10%, rgba(255, 255, 255, 0.2), transparent 30%),
+    radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.15), transparent 35%),
+    linear-gradient(180deg, #12286a 0%, #050a2b 60%, #010511 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xp-login-modern__panel--loading {
+  padding: 3rem;
+  background: rgba(6, 12, 54, 0.9);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.xp-login-modern__loading-ring {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  border-top-color: rgba(255, 255, 255, 0.85);
+  animation: xpSpin 0.9s ease-in-out infinite;
+}
+
+.xp-login-modern__loading-text {
+  color: #e2e7ff;
+  letter-spacing: 0.04em;
+}
+
+
+.xp-login-modern--main {
+  min-height: 100vh;
+}
+
+.xp-login-modern__content {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 96%);
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.xp-login-modern__hero {
+  flex: 1;
+  padding: 4rem 3.2rem;
+  background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.35), transparent 40%),
+    linear-gradient(180deg, rgba(6, 41, 141, 0.6), rgba(3, 18, 81, 0.95));
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #f7f9ff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+}
+
+.xp-login-modern__hero-logo {
+  width: 160px;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 14px 25px rgba(0, 0, 0, 0.45));
+}
+
+.xp-login-modern__hero-title {
+  margin: 0.5rem 0 0.2rem;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.xp-login-modern__hero-title span {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #d8e6ff;
+  margin-left: 0.3rem;
+}
+
+.xp-login-modern__hero-desc {
+  font-size: 1.15rem;
+  margin-bottom: 0.8rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.xp-login-modern__hero-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.95rem;
+}
+
+.xp-login-modern__hero-sub small {
+  opacity: 0.85;
+}
+
+.xp-login-modern__separator {
+  width: 1px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+  border-radius: 999px;
+  margin-top: 1rem;
+}
+
+.xp-login-modern__panel {
+  width: 360px;
+  background: linear-gradient(180deg, rgba(4, 34, 110, 0.95), rgba(2, 12, 57, 0.99));
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  padding: 1.8rem 1.6rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 25px 45px rgba(1, 6, 23, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 1100px) {
+  .xp-login-modern__content {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .xp-login-modern__hero,
+  .xp-login-modern__panel {
+    width: 100%;
+  }
+
+  .xp-login-modern__hero {
+    padding: 3rem 2.5rem;
+  }
+
+  .xp-login-modern__panel {
+    padding: 1.5rem;
+  }
+
+  .xp-login-modern__separator {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .xp-login-modern__hero {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .xp-login-modern__hero-title {
+    font-size: clamp(2.2rem, 10vw, 3rem);
+  }
+
+  .xp-login-modern__panel {
+    padding: 1.25rem;
+  }
+
+  .xp-login-modern__avatar-frame {
+    width: 60px;
+    height: 60px;
+  }
+
+  .xp-login-modern__user-card {
+    gap: 0.7rem;
+  }
+
+  .xp-login-modern__power-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.xp-login-modern__panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.6rem;
+}
+
+.xp-login-modern__panel-title {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+}
+
+.xp-login-modern__users {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.xp-login-modern__user-card {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  padding: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: left;
+  color: #f6f7ff;
+  transition: border 150ms ease, background 150ms ease, transform 150ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.xp-login-modern__user-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+
+.xp-login-modern__user-card:hover {
+  transform: translateX(-2px);
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.xp-login-modern__user-card--active {
+  border-color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, rgba(0, 126, 204, 0.35), rgba(7, 33, 88, 0.75));
+}
+
+.xp-login-modern__panel-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 0.9rem;
+}
+
+.xp-login-modern__panel-note {
+  font-size: 0.78rem;
+  color: rgba(242, 246, 255, 0.75);
+  line-height: 1.4;
+}
+
+.xp-login-modern__avatar-frame {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  padding: 5px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(0, 0, 0, 0.35));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    inset 0 8px 16px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xp-login-modern__user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.xp-login-modern__user-status {
+  font-size: 0.85rem;
+  color: rgba(234, 238, 255, 0.75);
+}
+@keyframes xpSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Welcome Screen */
 .welcome-screen-xp {
   min-height: 100vh;

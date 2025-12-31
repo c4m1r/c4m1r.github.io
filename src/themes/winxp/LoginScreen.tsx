@@ -3,11 +3,24 @@ import { useApp } from '../../contexts/AppContext';
 import { translations } from '../../i18n/translations';
 import { Power } from 'lucide-react';
 import userAvatar from './assets/avatars/profile.gif';
+import avatar1 from './assets/avatars/user1.png';
+import avatar2 from './assets/avatars/user2.png';
+import avatar3 from './assets/avatars/user3.png';
+import avatar4 from './assets/avatars/user4.png';
+import xpLogo from './assets/boot/boot-windows-logo.png';
 import './xp.css';
 
 interface LoginScreenProps {
   onLogin: () => void;
 }
+
+const USERS = [
+  { name: 'Jennifer', status: 'Click on your user name to begin', avatar: avatar1 },
+  { name: 'Billy Bob', status: '4 programs running', avatar: avatar2 },
+  { name: 'Jason', status: 'Standard user', avatar: avatar3 },
+  { name: 'Connor', status: 'Type your password', avatar: avatar4 },
+  { name: 'Albert', status: 'Administrator', avatar: userAvatar },
+];
 
 export function LoginScreen({ onLogin }: LoginScreenProps) {
   const { language, setMode } = useApp();
@@ -25,11 +38,11 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
   if (isLoggingIn) {
     return (
-      <div className="min-h-screen w-full bg-[#5a7edc] flex items-center justify-center overflow-hidden relative">
-        <div className="text-center text-white flex flex-col items-center gap-6">
-          <div className="text-2xl font-medium">{t.loggingIn || 'Загрузка персональных настроек...'}</div>
-          <div className="w-64 h-2 bg-white/30 rounded-full overflow-hidden">
-            <div className="h-full bg-white rounded-full animate-pulse" style={{ width: '60%' }} />
+      <div className="xp-login-modern xp-login-modern--loading">
+        <div className="xp-login-modern__panel xp-login-modern__panel--loading">
+          <div className="xp-login-modern__loading-ring" />
+          <div className="xp-login-modern__loading-text">
+            {t.loggingIn || 'Loading your personal settings…'}
           </div>
         </div>
       </div>
@@ -37,38 +50,67 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   }
 
   return (
-    <div className="min-h-screen w-full login-screen-xp">
-      <div className="login-screen__container">
-        <div className="login-screen__header">
-          <h2 className="login-screen__title">{t.welcomeMessage || 'Для начала работы нажмите на имя пользователя'}</h2>
+    <div className="xp-login-modern xp-login-modern--main">
+      <div className="xp-login-modern__background" />
+      <div className="xp-login-modern__content">
+        <div className="xp-login-modern__hero">
+          <img src={xpLogo} alt="Windows XP" className="xp-login-modern__hero-logo" />
+          <h1 className="xp-login-modern__hero-title">Windows <span>XP</span></h1>
+          <p className="xp-login-modern__hero-desc">
+            {t.welcomeMessage || 'To begin, click your user name'}
+          </p>
+          <div className="xp-login-modern__hero-sub">
+            <span>Welcome</span>
+            <small>{t.loginHint || 'Click on your user name to begin'}</small>
+          </div>
         </div>
 
-        <div className="login-screen__users">
-          <button
-            onClick={handleUserClick}
-            className="login-screen__user-card"
-          >
-            <div className="login-screen__user-avatar">
-              <img
-                src={userAvatar}
-                alt="C4m1r"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-            <div className="login-screen__user-name">C4m1r</div>
-          </button>
-        </div>
+        <div className="xp-login-modern__separator" aria-hidden="true" />
 
-        <div className="login-screen__footer">
-          <button
-            onClick={handleShutdown}
-            className="login-screen__shutdown-btn"
-          >
-            <Power size={20} />
-            <span>{t.turnOffComputer || 'Выключение компьютера'}</span>
-          </button>
+        <div className="xp-login-modern__panel">
+          <div className="xp-login-modern__panel-header">
+            <span className="xp-login-modern__panel-title">Select a user</span>
+            <button
+              onClick={handleShutdown}
+              className="xp-login-modern__power-btn xp-login-modern__power-btn--inline"
+            >
+              <Power size={14} className="xp-login-modern__power-icon" />
+              <span>{t.turnOffComputer || 'Turn off computer'}</span>
+            </button>
+          </div>
+
+          <div className="xp-login-modern__users">
+            {USERS.map((user) => (
+              <button
+                key={user.name}
+                onClick={handleUserClick}
+                className={`xp-login-modern__user-card ${
+                  user.name === 'Connor' ? 'xp-login-modern__user-card--active' : ''
+                }`}
+              >
+                <div className="xp-login-modern__avatar-frame">
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="xp-login-modern__avatar"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+                <div className="xp-login-modern__user-info">
+                  <span className="xp-login-modern__username">{user.name}</span>
+                  <span className="xp-login-modern__user-status">{user.status}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="xp-login-modern__panel-footer">
+            <p className="xp-login-modern__panel-note">
+              After you log on, you can add or change accounts via Control Panel.
+            </p>
+          </div>
         </div>
       </div>
     </div>
