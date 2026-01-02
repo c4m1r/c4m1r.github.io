@@ -4,7 +4,7 @@ export const translations = {
   en: {
     grub: {
       title: 'GNU GRUB  version 2.06',
-      blogSite: 'Blog Site',
+      blogSite: 'My Site',
       webos: 'WebOS by C4m1r',
       advanced: 'Advanced options for WebOS',
       terminal: 'Terminal',
@@ -42,7 +42,7 @@ export const translations = {
   ru: {
     grub: {
       title: 'GNU GRUB  версия 2.06',
-      blogSite: 'Сайт-блог',
+      blogSite: 'Мой сайт',
       webos: 'WebOS by C4m1r',
       advanced: 'Дополнительные параметры для WebOS',
       terminal: 'Терминал',
@@ -80,7 +80,7 @@ export const translations = {
   fr: {
     grub: {
       title: 'GNU GRUB  version 2.06',
-      blogSite: 'Site Web',
+      blogSite: 'Mon site',
       webos: 'WebOS by C4m1r',
       advanced: 'Options avancées pour WebOS',
       terminal: 'Terminal',
@@ -118,7 +118,7 @@ export const translations = {
   es: {
     grub: {
       title: 'GNU GRUB  versión 2.06',
-      blogSite: 'Sitio de Blog',
+      blogSite: 'Mi sitio',
       webos: 'WebOS by C4m1r',
       advanced: 'Opciones avanzadas para WebOS',
       terminal: 'Terminal',
@@ -156,7 +156,7 @@ export const translations = {
   zh: {
     grub: {
       title: 'GNU GRUB  版本 2.06',
-      blogSite: '博客网站',
+      blogSite: '我的网站',
       webos: 'WebOS by C4m1r',
       advanced: 'WebOS 的高级选项',
       terminal: '终端',
@@ -194,7 +194,7 @@ export const translations = {
   ja: {
     grub: {
       title: 'GNU GRUB  バージョン 2.06',
-      blogSite: 'ブログサイト',
+      blogSite: '私のサイト',
       webos: 'WebOS by C4m1r',
       advanced: 'WebOSの詳細オプション',
       terminal: 'ターミナル',
@@ -232,7 +232,7 @@ export const translations = {
   ko: {
     grub: {
       title: 'GNU GRUB  버전 2.06',
-      blogSite: '블로그 사이트',
+      blogSite: '내 사이트',
       webos: 'WebOS by C4m1r',
       advanced: 'WebOS 고급 옵션',
       terminal: '터미널',

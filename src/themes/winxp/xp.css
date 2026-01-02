@@ -577,8 +577,10 @@
 }
 
 :is(.theme-webos, .theme-win-xp, .theme-98) .volume-slider {
-  -webkit-appearance: slider-vertical;
-  writing-mode: bt-lr;
+  appearance: none;
+  -webkit-appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
   width: 20px;
   height: 110px;
   accent-color: #1e5ad8;

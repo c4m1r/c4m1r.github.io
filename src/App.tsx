@@ -4,6 +4,8 @@ import { BlogSite } from './apps/BlogSite';
 import { Terminal } from './apps/Terminal';
 import { WindowsXP } from './themes/winxp';
 import { WebOS } from './themes/webos';
+import { WeatherProvider } from './contexts/WeatherContext';
+import { WeatherEffects } from './components/WeatherEffects';
 
 function App() {
   const { mode, theme } = useApp();
@@ -15,7 +17,12 @@ function App() {
 
   // Режим блога
   if (mode === 'blog') {
-    return <BlogSite />;
+    return (
+      <WeatherProvider>
+        <WeatherEffects />
+        <BlogSite />
+      </WeatherProvider>
+    );
   }
 
   // Режим терминала

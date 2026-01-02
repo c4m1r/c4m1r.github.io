@@ -7,12 +7,12 @@ type GrubOption = 'blog' | 'webos' | 'win-xp' | 'win-98' | 'win7' | 'terminal';
 export function GrubMenu() {
   const { setMode, setTheme, language } = useApp();
   const t = translations[language].grub;
-  const [selectedIndex, setSelectedIndex] = useState(1); // Windows XP по умолчанию
+  const [selectedIndex, setSelectedIndex] = useState(0); // Мой сайт по умолчанию
   const [countdown, setCountdown] = useState(3);
   const [autobootActive, setAutobootActive] = useState(true);
 
   const options: { key: GrubOption; label: string }[] = [
-    { key: 'blog', label: t.blogSite || 'Сайт' },
+    { key: 'blog', label: t.blogSite || 'Мой сайт' },
     { key: 'win-xp', label: 'Windows XP' },
     { key: 'win-98', label: 'Windows 98' },
     { key: 'win7', label: 'Windows 7' },

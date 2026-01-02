@@ -1,3 +1,439 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    --background: 200 30% 96%;
+    --foreground: 220 25% 20%;
+
+    --card: 200 25% 98%;
+    --card-foreground: 220 25% 20%;
+
+    --popover: 200 25% 98%;
+    --popover-foreground: 220 25% 20%;
+
+    --primary: 200 80% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 160 60% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 200 20% 90%;
+    --muted-foreground: 220 15% 45%;
+
+    --accent: 280 60% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 200 20% 88%;
+    --input: 200 20% 92%;
+    --ring: 200 80% 50%;
+
+    --radius: 1rem;
+
+    --aero-sky: 200 85% 65%;
+    --aero-grass: 140 70% 50%;
+    --aero-sun: 45 95% 60%;
+    --aero-cloud: 200 30% 98%;
+    --aero-water: 195 90% 45%;
+
+    --shadow-light: 200 30% 100%;
+    --shadow-dark: 200 25% 80%;
+    --neu-shadow: 8px 8px 16px hsl(var(--shadow-dark)), -8px -8px 16px hsl(var(--shadow-light));
+    --neu-shadow-inset: inset 4px 4px 8px hsl(var(--shadow-dark)), inset -4px -4px 8px hsl(var(--shadow-light));
+    --neu-shadow-sm: 4px 4px 8px hsl(var(--shadow-dark)), -4px -4px 8px hsl(var(--shadow-light));
+
+    --glass-bg: 200 30% 98% / 0.7;
+    --glass-border: 200 30% 100% / 0.5;
+    --glass-blur: 20px;
+
+    --gradient-hero: linear-gradient(135deg, hsl(200 85% 75%) 0%, hsl(160 70% 65%) 50%, hsl(45 90% 70%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(200 30% 100%) 0%, hsl(200 25% 94%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+    --gradient-text: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --bg-art: radial-gradient(circle at 20% 20%, rgba(115,195,255,0.25), transparent 30%),
+      radial-gradient(circle at 80% 10%, rgba(130,255,200,0.25), transparent 32%),
+      radial-gradient(circle at 50% 80%, rgba(255,220,130,0.2), transparent 35%),
+      linear-gradient(135deg, hsl(200 85% 96%) 0%, hsl(180 75% 94%) 50%, hsl(45 90% 95%) 100%);
+  }
+
+  [data-theme="vaporwave"] {
+    --background: 280 50% 8%;
+    --foreground: 300 100% 90%;
+    --card: 280 40% 12%;
+    --card-foreground: 300 100% 90%;
+    --popover: 280 40% 12%;
+    --popover-foreground: 300 100% 90%;
+    --primary: 300 100% 70%;
+    --primary-foreground: 280 50% 10%;
+    --secondary: 180 100% 50%;
+    --secondary-foreground: 280 50% 10%;
+    --muted: 280 30% 20%;
+    --muted-foreground: 300 50% 70%;
+    --accent: 45 100% 60%;
+    --accent-foreground: 280 50% 10%;
+    --border: 280 40% 25%;
+    --input: 280 30% 18%;
+    --ring: 300 100% 70%;
+    --aero-sky: 300 100% 70%;
+    --aero-grass: 180 100% 50%;
+    --aero-sun: 45 100% 60%;
+    --aero-cloud: 280 30% 20%;
+    --aero-water: 200 100% 60%;
+    --shadow-light: 300 100% 70% / 0.1;
+    --shadow-dark: 280 50% 5% / 0.5;
+    --neu-shadow: 8px 8px 20px hsl(280 50% 5% / 0.5), -8px -8px 20px hsl(300 100% 70% / 0.1);
+    --neu-shadow-inset: inset 4px 4px 10px hsl(280 50% 5% / 0.5), inset -4px -4px 10px hsl(300 100% 70% / 0.1);
+    --neu-shadow-sm: 4px 4px 10px hsl(280 50% 5% / 0.5), -4px -4px 10px hsl(300 100% 70% / 0.1);
+    --glass-bg: 280 40% 15% / 0.8;
+    --glass-border: 300 100% 70% / 0.3;
+    --gradient-hero: linear-gradient(135deg, hsl(300 100% 40%) 0%, hsl(200 100% 50%) 50%, hsl(180 100% 40%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(280 40% 15%) 0%, hsl(280 50% 8%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(300 100% 70%) 0%, hsl(180 100% 50%) 100%);
+    --gradient-text: linear-gradient(135deg, hsl(300 100% 70%) 0%, hsl(180 100% 50%) 100%);
+    --bg-art:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px),
+      radial-gradient(circle at 20% 20%, rgba(255,0,255,0.15), transparent 35%),
+      radial-gradient(circle at 80% 30%, rgba(0,255,255,0.15), transparent 35%),
+      linear-gradient(135deg, hsl(300 60% 12%) 0%, hsl(240 60% 10%) 50%, hsl(200 60% 12%) 100%);
+  }
+
+  [data-theme="cyberpunk"] {
+    --background: 240 20% 5%;
+    --foreground: 60 100% 50%;
+    --card: 240 25% 8%;
+    --card-foreground: 60 100% 50%;
+    --popover: 240 25% 8%;
+    --popover-foreground: 60 100% 50%;
+    --primary: 60 100% 50%;
+    --primary-foreground: 240 20% 5%;
+    --secondary: 330 100% 50%;
+    --secondary-foreground: 240 20% 5%;
+    --muted: 240 20% 15%;
+    --muted-foreground: 60 50% 60%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 240 20% 5%;
+    --border: 60 100% 50% / 0.3;
+    --input: 240 20% 12%;
+    --ring: 60 100% 50%;
+    --aero-sky: 180 100% 50%;
+    --aero-grass: 60 100% 50%;
+    --aero-sun: 330 100% 50%;
+    --aero-cloud: 240 20% 15%;
+    --aero-water: 200 100% 50%;
+    --shadow-light: 60 100% 50% / 0.1;
+    --shadow-dark: 240 30% 2% / 0.8;
+    --neu-shadow: 8px 8px 20px hsl(240 30% 2% / 0.8), 0 0 30px hsl(60 100% 50% / 0.1);
+    --neu-shadow-inset: inset 4px 4px 10px hsl(240 30% 2% / 0.8), inset -4px -4px 10px hsl(60 100% 50% / 0.05);
+    --neu-shadow-sm: 4px 4px 10px hsl(240 30% 2% / 0.8), 0 0 15px hsl(60 100% 50% / 0.1);
+    --glass-bg: 240 25% 10% / 0.9;
+    --glass-border: 60 100% 50% / 0.3;
+    --gradient-hero: linear-gradient(135deg, hsl(240 30% 10%) 0%, hsl(330 80% 20%) 50%, hsl(240 20% 5%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(240 25% 12%) 0%, hsl(240 20% 5%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(60 100% 50%) 0%, hsl(330 100% 50%) 100%);
+    --gradient-text: linear-gradient(135deg, hsl(60 100% 50%) 0%, hsl(180 100% 50%) 100%);
+    --bg-art:
+      radial-gradient(circle at 20% 20%, rgba(255,255,0,0.12), transparent 35%),
+      radial-gradient(circle at 70% 10%, rgba(0,255,255,0.12), transparent 32%),
+      radial-gradient(circle at 80% 80%, rgba(255,0,120,0.18), transparent 38%),
+      linear-gradient(135deg, hsl(240 20% 8%) 0%, hsl(270 25% 5%) 40%, hsl(240 20% 4%) 100%);
+  }
+
+  [data-theme="skeuomorphism"] {
+    --background: 35 30% 92%;
+    --foreground: 30 20% 20%;
+    --card: 35 25% 95%;
+    --card-foreground: 30 20% 20%;
+    --popover: 35 25% 95%;
+    --popover-foreground: 30 20% 20%;
+    --primary: 210 60% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 30 50% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 35 20% 85%;
+    --muted-foreground: 30 15% 40%;
+    --accent: 15 70% 50%;
+    --accent-foreground: 0 0% 100%;
+    --border: 35 25% 75%;
+    --input: 35 20% 88%;
+    --ring: 210 60% 45%;
+    --aero-sky: 210 60% 55%;
+    --aero-grass: 120 40% 40%;
+    --aero-sun: 45 80% 55%;
+    --aero-cloud: 35 20% 95%;
+    --aero-water: 200 50% 50%;
+    --shadow-light: 35 30% 100%;
+    --shadow-dark: 35 25% 70%;
+    --neu-shadow: 4px 4px 8px hsl(35 25% 70%), -2px -2px 6px hsl(35 30% 100%), inset 0 1px 0 hsl(35 30% 100%);
+    --neu-shadow-inset: inset 3px 3px 6px hsl(35 25% 70%), inset -2px -2px 4px hsl(35 30% 100%);
+    --neu-shadow-sm: 2px 2px 4px hsl(35 25% 70%), -1px -1px 3px hsl(35 30% 100%);
+    --glass-bg: 35 25% 95% / 0.95;
+    --glass-border: 35 30% 80%;
+    --gradient-hero: linear-gradient(180deg, hsl(210 50% 70%) 0%, hsl(35 30% 92%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(35 25% 98%) 0%, hsl(35 25% 90%) 100%);
+    --gradient-accent: linear-gradient(180deg, hsl(210 60% 55%) 0%, hsl(210 60% 35%) 100%);
+    --gradient-text: linear-gradient(180deg, hsl(30 20% 20%) 0%, hsl(30 20% 35%) 100%);
+    --bg-art:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 45%),
+      linear-gradient(180deg, hsl(35 25% 96%) 0%, hsl(30 20% 88%) 100%);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-art);
+    color: hsl(var(--foreground));
+  }
+
+  code,
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid hsl(var(--glass-border));
+  }
+
+  .neu {
+    box-shadow: var(--neu-shadow);
+  }
+
+  .neu-inset {
+    box-shadow: var(--neu-shadow-inset);
+  }
+
+  .neu-sm {
+    box-shadow: var(--neu-shadow-sm);
+  }
+
+  .card-hover {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 0.7s ease-out forwards;
+  }
+
+  .scale-in {
+    animation: scale-in 0.4s ease-out forwards;
+  }
+
+  .slide-in-right {
+    animation: slide-in-right 0.5s ease-out forwards;
+  }
+
+  .gradient-text {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .parallax-container {
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .parallax-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+
+  .parallax-bg {
+    transform: translateZ(-200px) scale(1.2);
+  }
+
+  .parallax-mid {
+    transform: translateZ(-100px) scale(1.1);
+  }
+
+  .parallax-fg {
+    transform: translateZ(0);
+  }
+
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .wiki-link {
+    @apply relative inline-block text-primary font-medium;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .wiki-link:hover {
+    text-decoration-style: solid;
+    @apply text-secondary;
+  }
+
+  /* Markdown body (из Aura) */
+  .markdown-body {
+    color: hsl(var(--foreground));
+    line-height: 1.7;
+  }
+
+  .markdown-body h1,
+  .markdown-body h2,
+  .markdown-body h3,
+  .markdown-body h4 {
+    font-weight: 700;
+    margin-top: 1.4em;
+    margin-bottom: 0.6em;
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-body h1 { font-size: 2.1rem; }
+  .markdown-body h2 { font-size: 1.7rem; }
+  .markdown-body h3 { font-size: 1.3rem; }
+
+  .markdown-body p {
+    margin: 0 0 1rem 0;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .markdown-body code {
+    background: hsl(var(--muted));
+    padding: 0.2em 0.4em;
+    border-radius: 0.35rem;
+    font-size: 0.95em;
+  }
+
+  .markdown-body pre {
+    background: hsl(var(--muted));
+    padding: 1rem;
+    border-radius: 1rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .markdown-body ul,
+  .markdown-body ol {
+    padding-left: 1.3rem;
+    margin: 0 0 1rem 0;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .markdown-body blockquote {
+    border-left: 4px solid hsl(var(--primary));
+    padding-left: 1rem;
+    color: hsl(var(--muted-foreground));
+    margin: 1rem 0;
+    font-style: italic;
+  }
+
+  .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .markdown-body th,
+  .markdown-body td {
+    border: 1px solid hsl(var(--border));
+    padding: 0.5rem 0.75rem;
+  }
+
+  .markdown-body img {
+    max-width: 100%;
+    border-radius: 1rem;
+    margin: 1rem 0;
+  }
+}
+
+@layer utilities {
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .weather-layer {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    overflow: hidden;
+  }
+
+  .weather-snow::before {
+    content: '';
+    position: absolute;
+    inset: -10vh 0 0 0;
+    background-image: radial-gradient(2px 2px at 20% 20%, rgba(255,255,255,0.9), transparent),
+      radial-gradient(2px 2px at 80% 10%, rgba(255,255,255,0.9), transparent),
+      radial-gradient(2px 2px at 50% 0%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(3px 3px at 30% 40%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(3px 3px at 70% 60%, rgba(255,255,255,0.8), transparent);
+    background-size: 200px 300px;
+    animation: snow-fall 12s linear infinite;
+  }
+
+  .weather-rain::before {
+    content: '';
+    position: absolute;
+    inset: -10vh 0 0 0;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+    background-size: 2px 120px;
+    animation: rain-fall 1.2s linear infinite;
+    opacity: 0.6;
+  }
+
+  @keyframes snow-fall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(110vh); }
+  }
+
+  @keyframes rain-fall {
+    0% { transform: translateY(0) translateX(0); }
+    100% { transform: translateY(110vh) translateX(-10px); }
+  }
+}
