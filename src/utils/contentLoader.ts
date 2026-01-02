@@ -28,7 +28,7 @@ export interface ImageItem {
 /**
  * Загружает markdown файлы из content/blog
  */
-export async function loadBlogPosts(): Promise<ContentItem[]> {
+export async function loadBlogPosts(language: string = 'en'): Promise<ContentItem[]> {
   const posts: ContentItem[] = [];
   
   try {
@@ -101,9 +101,55 @@ export async function loadProjects(): Promise<ContentItem[]> {
 }
 
 /**
+ * Загружает проекты из content/about/projects с категориями IT/GameDev/Design
+ */
+export async function loadAboutProjects(): Promise<ContentItem[]> {
+  const projects: ContentItem[] = [];
+  
+  try {
+    const modules = import.meta.glob('../content/about/projects/**/*.md', { as: 'raw' });
+    
+    for (const path in modules) {
+      const content = await modules[path]() as string;
+      const filename = path.split('/').pop()?.replace('.md', '') || '';
+      const relativePath = path.split('../content/about/projects/')[1] || filename;
+      const segments = relativePath.split('/').filter(Boolean);
+      const category = segments[0] || 'Other'; // IT, Gamedev, Design
+      
+      const { metadata, body } = parseFrontmatter(content);
+      const updatedAt = metadata.updatedAt || metadata.updated || metadata.date || '';
+      
+      projects.push({
+        id: filename,
+        title: metadata.title || filename,
+        content: body,
+        date: metadata.date,
+        category: category,
+        tags: metadata.tags,
+        author: metadata.author,
+        updatedAt,
+        relativePath,
+        pathSegments: segments,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load about projects:', error);
+  }
+  
+  return projects.sort((a, b) => {
+    const dateA = Date.parse(a.updatedAt || a.date || '');
+    const dateB = Date.parse(b.updatedAt || b.date || '');
+    if (!isNaN(dateA) && !isNaN(dateB)) return dateB - dateA;
+    if (!isNaN(dateA)) return -1;
+    if (!isNaN(dateB)) return 1;
+    return b.id.localeCompare(a.id);
+  });
+}
+
+/**
  * Загружает wiki статьи
  */
-export async function loadWikiArticles(category?: string): Promise<ContentItem[]> {
+export async function loadWikiArticles(category?: string, language: string = 'en'): Promise<ContentItem[]> {
   const articles: ContentItem[] = [];
   
   try {
@@ -280,5 +326,74 @@ export async function loadMarkdownContent(path: string): Promise<string> {
     console.error('Error loading markdown:', error);
     throw error;
   }
+}
+
+/**
+ * Загружает About me контент
+ */
+export async function loadAboutMe(language: string = 'en'): Promise<ContentItem | null> {
+  try {
+    const modules = import.meta.glob('../content/about/c4m1r*.md', { as: 'raw' });
+    
+    // Ищем файл для текущего языка (например, c4m1r-ru.md)
+    const langFile = `../content/about/c4m1r-${language}.md`;
+    const defaultFile = '../content/about/c4m1r.md';
+    
+    let targetPath = defaultFile;
+    if (modules[langFile]) {
+      targetPath = langFile;
+    }
+    
+    if (modules[targetPath]) {
+      const content = await modules[targetPath]() as string;
+      const { metadata, body } = parseFrontmatter(content);
+      
+      return {
+        id: 'c4m1r',
+        title: metadata.title || 'C4m1r',
+        content: body,
+        tags: metadata.tags,
+      };
+    }
+  } catch (error) {
+    console.error('Failed to load about me:', error);
+  }
+  
+  return null;
+}
+
+/**
+ * Загружает Legal Notice
+ */
+export async function loadLegalNotice(language: string = 'en'): Promise<ContentItem | null> {
+  try {
+    const modules = import.meta.glob('../content/about/legal-notice*.md', { as: 'raw' });
+    
+    // Ищем файл для текущего языка
+    const langFile = `../content/about/legal-notice-${language}.md`;
+    const defaultFile = '../content/about/legal-notice.md';
+    
+    let targetPath = defaultFile;
+    if (modules[langFile]) {
+      targetPath = langFile;
+    }
+    
+    if (modules[targetPath]) {
+      const content = await modules[targetPath]() as string;
+      const { metadata, body } = parseFrontmatter(content);
+      
+      return {
+        id: 'legal-notice',
+        title: metadata.title || 'Legal Notice',
+        content: body,
+        date: metadata.date,
+        updatedAt: metadata.updatedAt || metadata.updated || metadata.date || '',
+      };
+    }
+  } catch (error) {
+    console.error('Failed to load legal notice:', error);
+  }
+  
+  return null;
 }
 

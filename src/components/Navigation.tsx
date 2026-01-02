@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, FileText, Image as ImageIcon, Menu, Palette, User, X } from 'lucide-react';
+import { BookOpen, FileText, Image as ImageIcon, Menu, Palette, User, X, Search } from 'lucide-react';
 import { WeatherSwitcher } from './WeatherSwitcher';
 import { Globe } from 'lucide-react';
 import type { Language } from '../i18n/translations';
 
-export type SectionNav = 'home' | 'blog' | 'about' | 'wiki' | 'gallery';
+export type SectionNav = 'home' | 'blog' | 'about' | 'wiki' | 'gallery' | 'search';
 
 interface NavigationProps {
   activeSection: SectionNav;
@@ -14,6 +14,7 @@ interface NavigationProps {
   language: Language;
   setLanguage: (lang: Language) => void;
   themeOptions: { id: string; name: string; icon: string }[];
+  navLabels: Record<SectionNav, string>;
 }
 
 export function Navigation({
@@ -24,6 +25,7 @@ export function Navigation({
   language,
   setLanguage,
   themeOptions,
+  navLabels,
 }: NavigationProps) {
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
@@ -49,12 +51,24 @@ export function Navigation({
   ];
 
   const navItems: { key: SectionNav; label: string; icon: JSX.Element }[] = [
-    { key: 'home', label: 'Home', icon: <BookOpen className="w-4 h-4" /> },
-    { key: 'blog', label: 'Blog', icon: <BookOpen className="w-4 h-4" /> },
-    { key: 'about', label: 'About', icon: <User className="w-4 h-4" /> },
-    { key: 'wiki', label: 'Wiki', icon: <FileText className="w-4 h-4" /> },
-    { key: 'gallery', label: 'Gallery', icon: <ImageIcon className="w-4 h-4" /> },
+    { key: 'home', label: navLabels.home, icon: <BookOpen className="w-4 h-4" /> },
+    { key: 'blog', label: navLabels.blog, icon: <BookOpen className="w-4 h-4" /> },
+    { key: 'about', label: navLabels.about, icon: <User className="w-4 h-4" /> },
+    { key: 'wiki', label: navLabels.wiki, icon: <FileText className="w-4 h-4" /> },
+    { key: 'gallery', label: navLabels.gallery, icon: <ImageIcon className="w-4 h-4" /> },
   ];
+
+  const searchButton = (
+    <button
+      onClick={() => onNavigate('search')}
+      className={`neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200 ${
+        activeSection === 'search' ? 'ring-2 ring-primary' : ''
+      }`}
+      aria-label="Search"
+    >
+      <Search className="w-5 h-5 text-foreground" />
+    </button>
+  );
 
   const currentLang = languageOptions.find((l) => l.code === language) || languageOptions[0];
 
@@ -87,7 +101,7 @@ export function Navigation({
           onClick={() => onNavigate('home')}
           className="text-xl font-bold gradient-text hover:scale-105 transition-transform"
         >
-          Portfolio
+          C4m1r.github.io
         </button>
 
         <nav className="hidden md:flex items-center gap-2">
@@ -95,6 +109,7 @@ export function Navigation({
         </nav>
 
         <div className="flex items-center gap-3">
+          {searchButton}
           <WeatherSwitcher />
 
           <div className="relative">

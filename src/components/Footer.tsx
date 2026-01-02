@@ -1,7 +1,7 @@
 import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
 
 const socialLinks = [
-  { icon: Github, href: 'https://github.com', label: 'GitHub' },
+  { icon: Github, href: 'https://github.com/c4m1r', label: 'GitHub' },
   { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
   { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
   { icon: Mail, href: 'mailto:hello@example.com', label: 'Email' },
@@ -11,7 +11,6 @@ const footerLinks = [
   { href: '/site/about', label: 'About' },
   { href: '/site/blog', label: 'Blog' },
   { href: '/site/wiki', label: 'Wiki' },
-  { href: '/site/cv', label: 'CV' },
   { href: '/site/gallery', label: 'Gallery' },
 ];
 
@@ -24,9 +23,9 @@ export function Footer() {
         <div className="glass rounded-3xl p-12">
           <div className="grid md:grid-cols-3 gap-12">
             <div>
-              <h3 className="text-2xl font-bold gradient-text mb-4">Portfolio</h3>
+              <h3 className="text-2xl font-bold gradient-text mb-4">C4m1r.github.io</h3>
               <p className="text-muted-foreground leading-relaxed">
-                A creative developer passionate about building beautiful, performant digital experiences.
+                IT Engineer passionate about building beautiful, performant digital experiences.
               </p>
             </div>
 
@@ -66,7 +65,7 @@ export function Footer() {
           </div>
 
           <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
-            <p>© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} C4m1r. All rights reserved.</p>
           </div>
         </div>
       </div>
