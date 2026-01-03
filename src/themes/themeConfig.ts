@@ -5,6 +5,9 @@
 
 import type { ThemeId } from '../contexts/AppContext';
 
+// Импортируем обои напрямую через Vite
+import winxpBliss from '../content/pictures/wallpapers/winxp-bliss.jpg';
+
 export interface ThemeConfig {
   id: ThemeId;
   name: string;
@@ -30,7 +33,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasWelcomeScreen: true,
     cssFile: './themes/winxp/xp.css',
     assetsPath: './themes/winxp/assets',
-    defaultWallpaper: '/src/content/pictures/wallpapers/winxp-bliss.jpg',
+    defaultWallpaper: winxpBliss,
     soundsEnabled: true,
   },
   'webos': {
@@ -42,7 +45,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasWelcomeScreen: true,
     cssFile: './themes/winxp/xp.css', // Использует те же стили что и XP
     assetsPath: './themes/winxp/assets',
-    defaultWallpaper: '/src/content/pictures/wallpapers/winxp-bliss.jpg',
+    defaultWallpaper: winxpBliss,
     soundsEnabled: true,
   },
   'win-98': {
