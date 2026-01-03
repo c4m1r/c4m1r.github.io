@@ -26,35 +26,40 @@ export interface ImageItem {
   date?: string;
 }
 
+// Загружаем все изображения EAGER (при сборке)
+const imageModules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,png,gif,webp}', { 
+  as: 'url',
+  eager: true 
+});
+
 /**
  * Резолвит путь к изображению из markdown в правильный URL для Vite
  */
-async function resolveImagePath(imagePath: string): Promise<string> {
+function resolveImagePath(imagePath: string): string {
   if (!imagePath) return '';
   
-  // Если путь уже обработан (начинается с blob: или http), возвращаем как есть
-  if (imagePath.startsWith('blob:') || imagePath.startsWith('http')) {
+  // Если путь уже обработан (начинается с blob: или http или /assets/), возвращаем как есть
+  if (imagePath.startsWith('blob:') || imagePath.startsWith('http') || imagePath.startsWith('/assets/')) {
     return imagePath;
   }
   
-  // Убираем начальный слэш и /src/ если есть
-  const cleanPath = imagePath.replace(/^\/+/, '').replace(/^src\//, '');
-  
   try {
-    // Загружаем все изображения
-    const imageModules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,png,gif,webp}', { 
-      as: 'url',
-      eager: false 
-    });
+    // Извлекаем имя файла из пути
+    const filename = imagePath.split('/').pop();
+    if (!filename) return imagePath;
     
-    // Ищем соответствующий модуль
+    // Ищем файл по имени в загруженных модулях
     for (const modulePath in imageModules) {
-      if (modulePath.includes(cleanPath) || modulePath.endsWith(imagePath.split('/').pop() || '')) {
-        return await imageModules[modulePath]() as string;
+      if (modulePath.endsWith(filename)) {
+        const resolvedUrl = imageModules[modulePath] as string;
+        console.log(`✅ Resolved image: ${imagePath} -> ${resolvedUrl}`);
+        return resolvedUrl;
       }
     }
+    
+    console.warn(`⚠️ Image not found in modules: ${imagePath} (looking for: ${filename})`);
   } catch (error) {
-    console.warn('Failed to resolve image path:', imagePath, error);
+    console.error('❌ Failed to resolve image path:', imagePath, error);
   }
   
   // Если не нашли, возвращаем исходный путь
@@ -98,7 +103,7 @@ export async function loadBlogPosts(language: string = 'en'): Promise<ContentIte
       // Если файл содержит языковые блоки, используем его
       if (hasLanguageBlocks) {
         processedIds.add(baseId);
-        const resolvedPreview = metadata.preview ? await resolveImagePath(metadata.preview) : defaultPreview;
+        const resolvedPreview = metadata.preview ? resolveImagePath(metadata.preview) : defaultPreview;
         posts.push({
           id: baseId,
           title: metadata.title || filename,
@@ -124,7 +129,7 @@ export async function loadBlogPosts(language: string = 'en'): Promise<ContentIte
         // Если это файл нужного языка или английский
         if (fileLang === language || fileLang === 'en') {
           processedIds.add(baseId);
-          const resolvedPreview = metadata.preview ? await resolveImagePath(metadata.preview) : defaultPreview;
+          const resolvedPreview = metadata.preview ? resolveImagePath(metadata.preview) : defaultPreview;
           posts.push({
             id: baseId,
             title: metadata.title || filename,
@@ -142,7 +147,7 @@ export async function loadBlogPosts(language: string = 'en'): Promise<ContentIte
       // Файл без суффикса и без языковых блоков
       else {
         processedIds.add(baseId);
-        const resolvedPreview = metadata.preview ? await resolveImagePath(metadata.preview) : defaultPreview;
+        const resolvedPreview = metadata.preview ? resolveImagePath(metadata.preview) : defaultPreview;
         posts.push({
           id: baseId,
           title: metadata.title || filename,
@@ -221,7 +226,7 @@ export async function loadAboutProjects(language: string = 'en'): Promise<Conten
       const { metadata, body } = parseFrontmatter(content, language);
       const updatedAt = metadata.updatedAt || metadata.updated || metadata.date || '';
       const defaultPreview = new URL('../content/blog/preview.webm', import.meta.url).href;
-      const resolvedPreview = metadata.preview ? await resolveImagePath(metadata.preview) : defaultPreview;
+      const resolvedPreview = metadata.preview ? resolveImagePath(metadata.preview) : defaultPreview;
       
       projects.push({
         id: filename,
