@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { ChevronDown, ChevronRight, FileText, Folder } from 'lucide-react';
+import { ChevronDown, ChevronRight, FileText, Folder, ArrowLeft } from 'lucide-react';
 import { loadWikiArticles, type ContentItem } from '../../utils/contentLoader';
 import { Notepad } from '../notepad';
+import { useApp } from '../../contexts/AppContext';
 
 interface WikiFile {
   id: string;
@@ -91,20 +92,27 @@ const findFirstFile = (categories: WikiCategory[]): WikiFile | null => {
 };
 
 export function WikiApp() {
+  const { language } = useApp();
   const [categories, setCategories] = useState<WikiCategory[]>([]);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [selectedFile, setSelectedFile] = useState<WikiFile | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<WikiCategory | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadWikiArticles().then((articles) => {
+    setLoading(true);
+    loadWikiArticles(undefined, language).then((articles) => {
       const tree = buildWikiTree(articles);
       setCategories(tree);
       setExpanded(new Set(tree.map((cat) => cat.id)));
-      setSelectedFile(findFirstFile(tree));
+      // Выбираем первую категорию по умолчанию
+      if (tree.length > 0) {
+        const firstCategory = tree[0].children.length > 0 ? tree[0].children[0] : tree[0];
+        setSelectedCategory(firstCategory);
+      }
       setLoading(false);
     });
-  }, []);
+  }, [language]);
 
   const toggleCategory = (categoryId: string) => {
     setExpanded((prev) => {
@@ -118,18 +126,51 @@ export function WikiApp() {
     });
   };
 
+  const handleCategoryClick = (category: WikiCategory, e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Закрываем просмотр файла и открываем категорию
+    setSelectedFile(null);
+    setSelectedCategory(category);
+    // Раскрываем категорию если она была свёрнута
+    if (!expanded.has(category.id)) {
+      toggleCategory(category.id);
+    }
+  };
+
+  // Подсчёт всех заметок в категории и подкатегориях
+  const countFiles = (category: WikiCategory): number => {
+    let count = category.files.length;
+    category.children.forEach(child => {
+      count += countFiles(child);
+    });
+    return count;
+  };
+
+  // Получить все файлы из категории и подкатегорий
+  const getAllFiles = (category: WikiCategory): WikiFile[] => {
+    let allFiles = [...category.files];
+    category.children.forEach(child => {
+      allFiles = allFiles.concat(getAllFiles(child));
+    });
+    return allFiles;
+  };
+
   const renderCategory = (category: WikiCategory, level = 0) => {
     const hasChildren = category.children.length > 0;
     const categoryId = category.id;
     const isExpanded = expanded.has(categoryId);
+    const isSelected = selectedCategory?.id === categoryId;
+    const filesCount = countFiles(category);
 
     return (
       <div key={categoryId}>
         <div
-          className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 rounded"
+          className={`flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 rounded ${
+            isSelected ? 'bg-blue-100' : ''
+          }`}
           style={{ paddingLeft: `${level * 16 + 8}px` }}
-          onClick={() => {
-            if (hasChildren) toggleCategory(categoryId);
+          onClick={(e) => {
+            handleCategoryClick(category, e);
           }}
         >
           {hasChildren ? (
@@ -138,26 +179,17 @@ export function WikiApp() {
             <div className="w-4" />
           )}
           <Folder size={14} className="text-blue-600" />
-          <span className="font-semibold">{category.name}</span>
+          <span className="font-semibold flex-1">{category.name}</span>
+          {filesCount > 0 && (
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              {filesCount}
+            </span>
+          )}
         </div>
 
-        {(isExpanded || !hasChildren) && (
+        {isExpanded && hasChildren && (
           <div className="ml-2">
             {category.children.map((child) => renderCategory(child, level + 1))}
-            {category.files.map((file) => (
-              <div
-                key={file.id}
-                className={`flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 rounded ${
-                  selectedFile?.id === file.id ? 'bg-blue-100' : ''
-                }`}
-                style={{ paddingLeft: `${(level + 1) * 16 + 8}px` }}
-                onClick={() => setSelectedFile(file)}
-              >
-                <FileText size={14} className="text-gray-600" />
-                <span>{file.title}</span>
-                {file.date && <span className="text-xs text-gray-500 ml-auto">{file.date}</span>}
-              </div>
-            ))}
           </div>
         )}
       </div>
@@ -188,14 +220,68 @@ export function WikiApp() {
         </div>
       </aside>
 
-      <section className="flex-1 min-h-0 bg-white">
+      <section className="flex-1 min-h-0 bg-white overflow-y-auto">
         {selectedFile ? (
-          <Notepad initialContent={selectedFile.content} />
+          <div className="h-full flex flex-col">
+            <div className="p-4 border-b border-gray-200 bg-gray-50">
+              <button
+                onClick={() => setSelectedFile(null)}
+                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+              >
+                <ArrowLeft size={16} />
+                Назад к категории
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <Notepad initialContent={selectedFile.content} />
+            </div>
+          </div>
+        ) : selectedCategory ? (
+          <div className="p-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">{selectedCategory.name}</h2>
+              <p className="text-sm text-gray-500">
+                {countFiles(selectedCategory)} {countFiles(selectedCategory) === 1 ? 'статья' : 'статей'}
+              </p>
+            </div>
+            
+            {(() => {
+              const allFiles = getAllFiles(selectedCategory);
+              return allFiles.length > 0 ? (
+                <div className="grid gap-4">
+                  {allFiles.map((file) => (
+                    <div
+                      key={file.id}
+                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                      onClick={() => setSelectedFile(file)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <FileText size={20} className="text-blue-600 mt-1 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-800 mb-1">{file.title}</h3>
+                          {file.date && (
+                            <p className="text-xs text-gray-500">
+                              Обновлено: {file.date}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center text-gray-400 py-12">
+                  <FileText size={48} className="mx-auto mb-4 opacity-40" />
+                  <p>В этой категории пока нет статей</p>
+                </div>
+              );
+            })()}
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400">
             <div className="text-center">
-              <FileText size={48} className="mx-auto mb-4 opacity-40" />
-              <p>Выберите файл слева</p>
+              <Folder size={48} className="mx-auto mb-4 opacity-40" />
+              <p>Выберите категорию слева</p>
             </div>
           </div>
         )}

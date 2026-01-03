@@ -1,4 +1,6 @@
 import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
+import { useApp } from '../contexts/AppContext';
+import { translations } from '../i18n/translations';
 
 const socialLinks = [
   { icon: Github, href: 'https://github.com/c4m1r', label: 'GitHub' },
@@ -7,14 +9,17 @@ const socialLinks = [
   { icon: Mail, href: 'mailto:hello@example.com', label: 'Email' },
 ];
 
-const footerLinks = [
-  { href: '/site/about', label: 'About' },
-  { href: '/site/blog', label: 'Blog' },
-  { href: '/site/wiki', label: 'Wiki' },
-  { href: '/site/gallery', label: 'Gallery' },
-];
-
 export function Footer() {
+  const { language } = useApp();
+  const t = translations[language].site;
+  
+  const footerLinks = [
+    { href: '/site/about', label: t.nav.about },
+    { href: '/site/blog', label: t.nav.blog },
+    { href: '/site/wiki', label: t.nav.wiki },
+    { href: '/site/gallery', label: t.nav.gallery },
+  ];
+
   return (
     <footer className="relative mt-32">
       <div className="absolute inset-0 bg-gradient-to-t from-muted/50 to-transparent pointer-events-none" />
@@ -25,12 +30,12 @@ export function Footer() {
             <div>
               <h3 className="text-2xl font-bold gradient-text mb-4">C4m1r.github.io</h3>
               <p className="text-muted-foreground leading-relaxed">
-                IT Engineer passionate about building beautiful, performant digital experiences.
+                {t.footer.description}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-foreground">Quick Links</h4>
+              <h4 className="font-semibold mb-4 text-foreground">{t.footer.quickLinks}</h4>
               <ul className="space-y-2">
                 {footerLinks.map((link) => (
                   <li key={link.href}>
@@ -43,7 +48,7 @@ export function Footer() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-foreground">Connect</h4>
+              <h4 className="font-semibold mb-4 text-foreground">{t.footer.connect}</h4>
               <div className="flex gap-3">
                 {socialLinks.map((social) => {
                   const Icon = social.icon;
@@ -65,7 +70,17 @@ export function Footer() {
           </div>
 
           <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
-            <p>© {new Date().getFullYear()} C4m1r. All rights reserved.</p>
+            <p>
+              © 2025-{new Date().getFullYear()} C4m1r. {t.footer.madeWith}{' '}
+              <a 
+                href="https://github.com/7PixelRains/NervaWeb" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                NervaWeb
+              </a>
+            </p>
           </div>
         </div>
       </div>

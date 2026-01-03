@@ -2,19 +2,22 @@ import { useEffect, useMemo, useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { loadBlogPosts, type ContentItem } from '../utils/contentLoader';
 import { Notepad } from './notepad';
+import { useApp } from '../contexts/AppContext';
 
 export function BlogApp() {
+  const { language } = useApp();
   const [posts, setPosts] = useState<ContentItem[]>([]);
   const [selectedPost, setSelectedPost] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadBlogPosts().then((items) => {
+    setLoading(true);
+    loadBlogPosts(language).then((items) => {
       setPosts(items);
       setSelectedPost(items[0] ?? null);
       setLoading(false);
     });
-  }, []);
+  }, [language]);
 
   const groupedPosts = useMemo(() => {
     const groups = new Map<string, ContentItem[]>();

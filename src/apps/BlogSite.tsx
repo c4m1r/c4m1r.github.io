@@ -31,14 +31,13 @@ import {
 import { type Language } from '../i18n/translations';
 import { useApp } from '../contexts/AppContext';
 import cvRaw from '../content/cv/cv-data.json';
-import { aboutContent } from '../content/projects/projects';
 import { Navigation } from '../components/Navigation';
 import { SectionCard } from '../components/SectionCard';
 import { Footer } from '../components/Footer';
 import { Hero } from '../components/Hero';
 
-type Section = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search';
-type NavSection = Section;
+type Section = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'project';
+type NavSection = 'home' | 'about' | 'wiki' | 'gallery' | 'blog' | 'search';
 
 interface BlogPostView extends ContentItem {
   excerpt: string;
@@ -52,8 +51,10 @@ interface WikiView extends ContentItem {
   categoryPath: string;
 }
 
+type SectionNav = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search';
+
 type UiText = {
-  nav: Record<NavSection, string> & { legal: string };
+  nav: Record<SectionNav, string> & { legal: string };
   heroTitle: string;
   heroSubtitle: string;
   searchPlaceholder: string;
@@ -471,7 +472,7 @@ function buildView(post: ContentItem): BlogPostView {
   };
 }
 
-function sectionToPath(section: NavSection): string {
+function sectionToPath(section: Section): string {
   switch (section) {
     case 'home':
       return `${basePath}`;
@@ -487,6 +488,8 @@ function sectionToPath(section: NavSection): string {
       return `${basePath}gallery`;
     case 'search':
       return `${basePath}search`;
+    case 'project':
+      return `${basePath}about/projects`;
     default:
       return basePath;
   }
@@ -508,8 +511,9 @@ export function BlogSite() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [activePost, setActivePost] = useState<BlogPostView | null>(null);
-  const [activeSection, setActiveSection] = useState<NavSection>('home');
+  const [activeSection, setActiveSection] = useState<Section>('home');
   const [activeWiki, setActiveWiki] = useState<WikiView | null>(null);
+  const [activeProject, setActiveProject] = useState<ContentItem | null>(null);
   const [wikiCategory, setWikiCategory] = useState<string>('All');
   const [wikiSearch, setWikiSearch] = useState('');
   const [heroKey, setHeroKey] = useState(0);
@@ -536,7 +540,7 @@ export function BlogSite() {
       loadBlogPosts(language),
       loadWikiArticles(undefined, language),
       loadPictures(),
-      loadAboutProjects(),
+      loadAboutProjects(language),
       loadAboutMe(language),
       loadLegalNotice(language),
     ]).then(([loadedPosts, loadedWiki, loadedPics, loadedProjects, loadedAboutMe, loadedLegalNotice]) => {
@@ -548,14 +552,39 @@ export function BlogSite() {
         html: markdownToHtml(item.content),
         categoryPath: item.category || item.pathSegments?.join('/') || 'wiki',
       }));
+      
       setPosts(mapped);
-      setActivePost(null);
       setWiki(mappedWiki);
       setPictures(loadedPics.slice(0, 12));
       setProjects(loadedProjects);
       setAboutMe(loadedAboutMe);
       setLegalNotice(loadedLegalNotice);
       setLoading(false);
+      
+      // Обновляем активный пост, если он открыт
+      setActivePost(prev => {
+        if (!prev) return null;
+        const updated = mapped.find(p => p.id === prev.id);
+        // Создаём новый объект, чтобы React гарантированно увидел изменения
+        return updated ? { ...updated } : null;
+      });
+      
+      // Обновляем активную wiki страницу, если она открыта
+      setActiveWiki(prev => {
+        if (!prev) return null;
+        const updated = mappedWiki.find(w => w.id === prev.id);
+        // Создаём новый объект, чтобы React гарантированно увидел изменения
+        return updated ? { ...updated } : null;
+      });
+      
+      // Обновляем активный проект, если он открыт
+      setActiveProject(prev => {
+        if (!prev) return null;
+        const updated = loadedProjects.find(p => p.id === prev.id);
+        // Создаём новый объект, чтобы React гарантированно увидел изменения
+        return updated ? { ...updated } : null;
+      });
+      
       syncFromLocation(window.location.pathname, mapped, mappedWiki);
     });
     return () => {
@@ -581,25 +610,56 @@ export function BlogSite() {
     return Array.from(unique).sort();
   }, [posts, wiki]);
 
-  const wikiCategories = useMemo(() => {
-    const unique = new Set<string>();
+  // Построение дерева категорий Wiki
+  const wikiCategoryTree = useMemo(() => {
+    interface CategoryNode {
+      name: string;
+      fullPath: string;
+      children: Map<string, CategoryNode>;
+      count: number;
+    }
+
+    const root = new Map<string, CategoryNode>();
+
     wiki.forEach((w) => {
-      if (w.categoryPath) {
-        const parts = w.categoryPath.split('/');
-        if (parts[0]) unique.add(parts[0]);
-      }
+      const segments = w.pathSegments || (w.categoryPath ? w.categoryPath.split('/') : []);
+      if (segments.length === 0) return;
+
+      let currentMap = root;
+      let currentPath = '';
+
+      segments.forEach((segment, index) => {
+        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+        
+        if (!currentMap.has(segment)) {
+          currentMap.set(segment, {
+            name: segment,
+            fullPath: currentPath,
+            children: new Map(),
+            count: 0,
+          });
+        }
+
+        const node = currentMap.get(segment)!;
+        node.count++;
+        currentMap = node.children;
+      });
     });
-    return ['All', ...Array.from(unique)];
+
+    return root;
   }, [wiki]);
+
+  const wikiCategories = useMemo(() => {
+    return ['All', ...Array.from(wikiCategoryTree.keys())];
+  }, [wikiCategoryTree]);
 
   const wikiCategoryStats = useMemo(() => {
     const counts: Record<string, number> = {};
-    wiki.forEach((w) => {
-      const cat = w.categoryPath?.split('/')[0] || 'wiki';
-      counts[cat] = (counts[cat] || 0) + 1;
+    wikiCategoryTree.forEach((node, key) => {
+      counts[key] = node.count;
     });
     return counts;
-  }, [wiki]);
+  }, [wikiCategoryTree]);
 
   const filtered = useMemo(() => {
     return posts.filter((post) => {
@@ -617,13 +677,14 @@ export function BlogSite() {
 
   const filteredWiki = useMemo(() => {
     return wiki.filter((item) => {
-      const matchesCategory = wikiCategory === 'All' || item.categoryPath.startsWith(wikiCategory);
+      const itemPath = item.pathSegments ? item.pathSegments.join('/') : item.categoryPath;
+      const matchesCategory = wikiCategory === 'All' || itemPath.startsWith(wikiCategory);
       const q = wikiSearch.toLowerCase();
       const matchesSearch =
         !q ||
         item.title.toLowerCase().includes(q) ||
         stripMarkdown(item.content).toLowerCase().includes(q) ||
-        item.categoryPath.toLowerCase().includes(q);
+        itemPath.toLowerCase().includes(q);
       return matchesCategory && matchesSearch;
     });
   }, [wiki, wikiCategory, wikiSearch]);
@@ -826,20 +887,11 @@ export function BlogSite() {
   };
 
   const cv = (cvRaw as any)[language] || (cvRaw as any).en;
-  const about = aboutContent[language] || aboutContent.en;
-  
-  // Парсим aboutMe контент
-  const aboutMeData = aboutMe ? {
-    name: aboutMe.title || 'C4m1r',
-    title: 'IT Engineer',
-    bio: aboutMe.content.split('\n\n')[0] || about.bio,
-    description: aboutMe.content.split('\n\n').slice(1).join('\n\n') || about.description,
-  } : about;
 
   return (
     <div className="min-h-screen text-foreground">
       <Navigation
-        activeSection={activeSection === 'cv' ? 'about' : activeSection}
+        activeSection={activeSection === 'cv' || activeSection === 'project' ? 'about' : activeSection as NavSection}
         onNavigate={navigateSection}
         theme={theme}
         setTheme={setTheme}
@@ -913,7 +965,27 @@ export function BlogSite() {
                     style={{ animationDelay: `${index * 100}ms` }}
                     onClick={() => handleOpenPost(post)}
                   >
-                    <div className="aspect-video bg-gradient-hero relative">
+                    <div className="aspect-video bg-gradient-hero relative overflow-hidden">
+                      {post.preview ? (
+                        post.preview.endsWith('.webm') || post.preview.endsWith('.mp4') ? (
+                          <video 
+                            src={post.preview} 
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                          />
+                        ) : (
+                          <img 
+                            src={post.preview} 
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                          />
+                        )
+                      ) : (
+                        <div className="w-full h-full bg-gradient-hero" />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
                       <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 text-sm text-foreground">
                         <span className="inline-block px-3 py-1 text-xs font-medium rounded-full glass">
@@ -1044,6 +1116,26 @@ export function BlogSite() {
                     >
                       {/* Thumbnail */}
                       <div className="aspect-video bg-gradient-hero relative overflow-hidden group">
+                        {post.preview ? (
+                          post.preview.endsWith('.webm') || post.preview.endsWith('.mp4') ? (
+                            <video 
+                              src={post.preview} 
+                              className="w-full h-full object-cover"
+                              autoPlay
+                              loop
+                              muted
+                              playsInline
+                            />
+                          ) : (
+                            <img 
+                              src={post.preview} 
+                              alt={post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          )
+                        ) : (
+                          <div className="w-full h-full bg-gradient-hero" />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
                         <div className="absolute bottom-4 left-4 right-4">
                           <span className="inline-block px-3 py-1 text-xs font-medium rounded-full glass text-foreground">
@@ -1098,7 +1190,7 @@ export function BlogSite() {
 
       {/* Blog Post Detail View */}
       {(activeSection === 'home' || activeSection === 'blog') && activePost && (
-        <main className="pt-32 pb-24">
+        <main className="pt-32 pb-24" key={`post-${activePost.id}-${language}`}>
           <div className="container mx-auto px-6">
             <section className="max-w-4xl mx-auto">
               <div className="glass rounded-3xl p-6 md:p-10 neu-sm animate-fade-in">
@@ -1137,6 +1229,28 @@ export function BlogSite() {
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">{activePost.title}</h2>
                 <p className="text-lg text-muted-foreground mb-8">{activePost.excerpt}</p>
 
+                {/* Preview Image */}
+                {activePost.preview && (
+                  <div className="mb-8 rounded-2xl overflow-hidden neu-sm">
+                    {activePost.preview.endsWith('.webm') || activePost.preview.endsWith('.mp4') ? (
+                      <video 
+                        src={activePost.preview} 
+                        className="w-full h-auto"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <img 
+                        src={activePost.preview} 
+                        alt={activePost.title}
+                        className="w-full h-auto object-cover"
+                      />
+                    )}
+                  </div>
+                )}
+
                 <div
                   className="prose prose-lg max-w-none text-foreground markdown-body"
                   dangerouslySetInnerHTML={{ __html: activePost.html }}
@@ -1145,15 +1259,129 @@ export function BlogSite() {
                 {activePost.tags && activePost.tags.length > 0 && (
                   <div className="mt-8 flex flex-wrap items-center gap-3">
                     <span className="text-muted-foreground font-medium">{ui.tags}:</span>
-                    {activePost.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-muted text-muted-foreground"
-                      >
-                        <Tag className="w-3 h-3" />
-                        {tag}
-                      </span>
-                    ))}
+                    {activePost.tags.map((tag) => {
+                      const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
+                                       wiki.filter((w) => w.tags?.includes(tag)).length +
+                                       projects.filter((pr) => pr.tags?.includes(tag)).length;
+                      return (
+                        <button
+                          key={tag}
+                          onClick={() => {
+                            setActivePost(null);
+                            setActiveSection('search');
+                            setGlobalSearchQuery(tag);
+                            window.history.pushState({}, '', `${basePath}search`);
+                          }}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
+                        >
+                          <Tag className="w-3 h-3" />
+                          {tag}
+                          <span className="text-xs opacity-70">
+                            ({tagCount})
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        </main>
+      )}
+
+      {/* Project Detail View */}
+      {activeSection === 'project' && activeProject && (
+        <main className="pt-32 pb-24" key={`project-${activeProject.id}-${language}`}>
+          <div className="container mx-auto px-6">
+            <section className="max-w-4xl mx-auto">
+              <div className="glass rounded-3xl p-6 md:p-10 neu-sm animate-fade-in">
+                <button
+                  onClick={() => {
+                    setActiveProject(null);
+                    setActiveSection('about');
+                    setMainAboutTab('projects');
+                    window.history.pushState({}, '', `${basePath}about`);
+                  }}
+                  className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  {ui.back}
+                </button>
+
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                  <Briefcase className="w-4 h-4" />
+                  <span className="font-medium text-foreground">{ui.projectsTitle}</span>
+                  <ArrowRight className="w-4 h-4 opacity-60" />
+                  <span className="text-foreground">{activeProject.title}</span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
+                  {activeProject.date && (
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4" />
+                      {activeProject.date}
+                    </span>
+                  )}
+                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                    {activeProject.category || 'Other'}
+                  </span>
+                </div>
+
+                <h2 className="text-3xl md:text-4xl font-bold mb-8">{activeProject.title}</h2>
+
+                {activeProject.preview && (
+                  <div className="mb-8 rounded-2xl overflow-hidden neu-sm">
+                    {activeProject.preview.endsWith('.webm') || activeProject.preview.endsWith('.mp4') ? (
+                      <video 
+                        src={activeProject.preview} 
+                        className="w-full h-auto"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <img 
+                        src={activeProject.preview} 
+                        alt={activeProject.title}
+                        className="w-full h-auto"
+                      />
+                    )}
+                  </div>
+                )}
+
+                <div
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: markdownToHtml(activeProject.content) }}
+                />
+
+                {activeProject.tags && activeProject.tags.length > 0 && (
+                  <div className="mt-8 flex flex-wrap items-center gap-3">
+                    <span className="text-muted-foreground font-medium">{ui.tags}:</span>
+                    {activeProject.tags.map((tag) => {
+                      const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
+                                       wiki.filter((w) => w.tags?.includes(tag)).length +
+                                       projects.filter((pr) => pr.tags?.includes(tag)).length;
+                      return (
+                        <button
+                          key={tag}
+                          onClick={() => {
+                            setActiveProject(null);
+                            setActiveSection('search');
+                            setGlobalSearchQuery(tag);
+                            window.history.pushState({}, '', `${basePath}search`);
+                          }}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
+                        >
+                          <Tag className="w-3 h-3" />
+                          {tag}
+                          <span className="text-xs opacity-70">
+                            ({tagCount})
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -1197,6 +1425,15 @@ export function BlogSite() {
                 >
                   About me
                 </button>
+                <button
+                  onClick={() => setMainAboutTab('projects')}
+                  className={`inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm ${
+                    mainAboutTab === 'projects' ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
+                  }`}
+                >
+                  <Folder className="w-4 h-4" />
+                  {ui.projectsTitle.replace(':', '')}
+                </button>
                 <span className="text-muted-foreground text-sm">CV (Резюме):</span>
                 {(['it', 'education', 'gamedev', 'rewards'] as const).map((tab) => (
                   <button
@@ -1213,15 +1450,6 @@ export function BlogSite() {
                   </button>
                 ))}
                 <button
-                  onClick={() => setMainAboutTab('projects')}
-                  className={`inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm ${
-                    mainAboutTab === 'projects' ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
-                  }`}
-                >
-                  <Folder className="w-4 h-4" />
-                  {ui.projectsTitle.replace(':', '')}
-                </button>
-                <button
                   onClick={() => setMainAboutTab('legal')}
                   className={`inline-flex items-center gap-2 glass px-3 py-2 rounded-full text-sm ${
                     mainAboutTab === 'legal' ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
@@ -1232,13 +1460,11 @@ export function BlogSite() {
                 </button>
               </div>
 
-              {mainAboutTab === 'about' && (
-                <>
-                  <h2 className="text-4xl font-bold mb-3 gradient-text">{aboutMeData.name}</h2>
-                  <p className="text-lg text-primary font-semibold mb-4">{aboutMeData.title}</p>
-                  <p className="text-muted-foreground leading-relaxed mb-3">{aboutMeData.bio}</p>
-                  <p className="text-muted-foreground leading-relaxed">{aboutMeData.description}</p>
-                </>
+              {mainAboutTab === 'about' && aboutMe && (
+                <div 
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: markdownToHtml(aboutMe.content) }}
+                />
               )}
 
               {mainAboutTab === 'cv' && (
@@ -1292,9 +1518,16 @@ export function BlogSite() {
                 </>
               )}
 
-              {mainAboutTab === 'projects' && projects.length > 0 && (
+              {mainAboutTab === 'projects' && (
                 <div className="mt-4">
                   <h3 className="text-3xl font-bold mb-6 gradient-text">{ui.projectsTitle}</h3>
+                  
+                  {projects.length === 0 ? (
+                    <div className="text-center py-16">
+                      <p className="text-muted-foreground text-lg">{ui.loading}</p>
+                    </div>
+                  ) : (
+                    <>
                   
                   {/* Category Tabs */}
                   <div className="flex flex-wrap gap-2 mb-6">
@@ -1321,11 +1554,37 @@ export function BlogSite() {
                       .map((project, index) => (
                         <article
                           key={project.id}
-                          className="neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up"
+                          className="neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up cursor-pointer"
                           style={{ animationDelay: `${index * 80}ms` }}
+                          onClick={() => {
+                            setActiveProject(project);
+                            setActiveSection('project');
+                            window.history.pushState({}, '', `/site/about/projects/${project.id}`);
+                          }}
                         >
-                          <div className="aspect-video bg-gradient-hero relative flex items-center justify-center">
-                            <Briefcase className="w-10 h-10 text-primary-foreground/50" />
+                          <div className="aspect-video bg-gradient-hero relative overflow-hidden">
+                            {project.preview ? (
+                              project.preview.endsWith('.webm') || project.preview.endsWith('.mp4') ? (
+                                <video 
+                                  src={project.preview} 
+                                  className="w-full h-full object-cover"
+                                  autoPlay
+                                  loop
+                                  muted
+                                  playsInline
+                                />
+                              ) : (
+                                <img 
+                                  src={project.preview} 
+                                  alt={project.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              )
+                            ) : (
+                              <div className="w-full h-full bg-gradient-hero flex items-center justify-center">
+                                <Briefcase className="w-10 h-10 text-primary-foreground/50" />
+                              </div>
+                            )}
                           </div>
                           <div className="p-6">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
@@ -1340,20 +1599,35 @@ export function BlogSite() {
                             </p>
                             {project.tags && project.tags.length > 0 && (
                               <div className="mt-4 flex flex-wrap gap-2">
-                                {project.tags.slice(0, 3).map((tag) => (
-                                  <span
-                                    key={tag}
-                                    className="px-2 py-1 text-xs font-medium rounded-lg bg-muted text-muted-foreground"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
+                                {project.tags.slice(0, 3).map((tag) => {
+                                  const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
+                                                   wiki.filter((w) => w.tags?.includes(tag)).length +
+                                                   projects.filter((pr) => pr.tags?.includes(tag)).length;
+                                  return (
+                                    <button
+                                      key={tag}
+                                      onClick={() => {
+                                        setActiveSection('search');
+                                        setGlobalSearchQuery(tag);
+                                      }}
+                                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-xs font-medium"
+                                    >
+                                      <Tag className="w-3 h-3" />
+                                      {tag}
+                                      <span className="text-xs opacity-70">
+                                        ({tagCount})
+                                      </span>
+                                    </button>
+                                  );
+                                })}
                               </div>
                             )}
                           </div>
                         </article>
                       ))}
                   </div>
+                  </>
+                  )}
                 </div>
               )}
 
@@ -1412,7 +1686,10 @@ export function BlogSite() {
               {wikiCategories.map((cat) => (
                 <button
                   key={cat}
-                  onClick={() => setWikiCategory(cat)}
+                  onClick={() => {
+                    setActiveWiki(null);
+                    setWikiCategory(cat);
+                  }}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     wikiCategory === cat ? 'neu-sm bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'
                   }`}
@@ -1440,11 +1717,16 @@ export function BlogSite() {
               </div>
               <div className="space-y-2">
                 {wikiCategories.map((cat) => {
-                  const subItems = wiki.filter((w) => w.categoryPath?.startsWith(cat) && cat !== 'All');
+                  const categoryNode = wikiCategoryTree.get(cat);
+                  const subcategories = categoryNode ? Array.from(categoryNode.children.entries()) : [];
+                  
                   return (
                     <div key={cat} className="space-y-1">
                       <button
-                        onClick={() => setWikiCategory(cat)}
+                        onClick={() => {
+                          setActiveWiki(null);
+                          setWikiCategory(cat);
+                        }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
                           wikiCategory === cat ? 'neu-sm bg-primary/10 text-primary' : 'hover:bg-muted text-foreground'
                         }`}
@@ -1454,15 +1736,19 @@ export function BlogSite() {
                           <span className="text-xs text-muted-foreground">{wikiCategoryStats[cat]}</span>
                         ) : null}
                       </button>
-                      {cat !== 'All' && subItems.length > 0 && (
+                      {cat !== 'All' && subcategories.length > 0 && (
                         <div className="ml-4 space-y-1">
-                          {subItems.slice(0, 4).map((item) => (
+                          {subcategories.map(([subName, subNode]) => (
                             <button
-                              key={item.relativePath}
-                              onClick={() => handleOpenWiki(item as WikiView)}
-                              className="w-full text-left px-2 py-1 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-muted"
+                              key={subNode.fullPath}
+                              onClick={() => {
+                                setActiveWiki(null);
+                                setWikiCategory(subNode.fullPath);
+                              }}
+                              className="w-full flex items-center justify-between px-2 py-1 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-muted"
                             >
-                              {item.title}
+                              <span>{subName}</span>
+                              <span className="text-xs opacity-60">{subNode.count}</span>
                             </button>
                           ))}
                         </div>
@@ -1475,7 +1761,7 @@ export function BlogSite() {
 
             <div className="space-y-6">
               {activeWiki && (
-                <div className="glass rounded-3xl p-6 md:p-10 neu-sm fade-in-up">
+                <div className="glass rounded-3xl p-6 md:p-10 neu-sm fade-in-up" key={`wiki-${activeWiki.id}-${language}`}>
                   <button
                     onClick={() => {
                       setActiveWiki(null);
@@ -1489,18 +1775,47 @@ export function BlogSite() {
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
                     <span className="inline-flex items-center gap-1">
                       <Layers className="w-4 h-4" />
-                      {activeWiki.categoryPath || 'wiki'}
+                      {activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}
                     </span>
                     <ArrowRight className="w-4 h-4 opacity-60" />
                     <span className="font-medium text-foreground">{activeWiki.title}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-3">
                     <FileText className="w-4 h-4" />
-                    <span>{activeWiki.categoryPath || 'wiki'}</span>
+                    <span>{activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}</span>
                     {activeWiki.updatedAt && <span>· {activeWiki.updatedAt}</span>}
                   </div>
                   <h3 className="text-3xl font-bold mb-4">{activeWiki.title}</h3>
                   <div className="prose prose-lg max-w-none text-foreground markdown-body" dangerouslySetInnerHTML={{ __html: activeWiki.html }} />
+                  
+                  {activeWiki.tags && activeWiki.tags.length > 0 && (
+                    <div className="mt-8 flex flex-wrap items-center gap-3">
+                      <span className="text-muted-foreground font-medium">{ui.tags}:</span>
+                      {activeWiki.tags.map((tag) => {
+                        const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
+                                         wiki.filter((w) => w.tags?.includes(tag)).length +
+                                         projects.filter((pr) => pr.tags?.includes(tag)).length;
+                        return (
+                          <button
+                            key={tag}
+                            onClick={() => {
+                              setActiveWiki(null);
+                              setActiveSection('search');
+                              setGlobalSearchQuery(tag);
+                              window.history.pushState({}, '', `${basePath}search`);
+                            }}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
+                          >
+                            <Tag className="w-3 h-3" />
+                            {tag}
+                            <span className="text-xs opacity-70">
+                              ({tagCount})
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1794,8 +2109,14 @@ export function BlogSite() {
                 const galleryResults = pictures.filter(
                   (pic) => pic.name.toLowerCase().includes(query)
                 );
+                const projectResults = projects.filter(
+                  (pr) =>
+                    pr.title.toLowerCase().includes(query) ||
+                    pr.content.toLowerCase().includes(query) ||
+                    pr.tags?.some((t) => t.toLowerCase().includes(query))
+                );
 
-                const totalResults = blogResults.length + wikiResults.length + galleryResults.length;
+                const totalResults = blogResults.length + wikiResults.length + galleryResults.length + projectResults.length;
 
                 if (totalResults === 0) {
                   return (
@@ -1893,6 +2214,66 @@ export function BlogSite() {
                             >
                               <img src={pic.path} alt={pic.name} className="w-full h-full object-cover" />
                             </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Project Results */}
+                    {projectResults.length > 0 && (
+                      <div>
+                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                          <Briefcase className="w-6 h-6" />
+                          {ui.projectsTitle} ({projectResults.length})
+                        </h2>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {projectResults.map((project) => (
+                            <article
+                              key={project.id}
+                              className="neu rounded-2xl overflow-hidden bg-card card-hover cursor-pointer"
+                              onClick={() => {
+                                setActiveProject(project);
+                                setActiveSection('project');
+                                window.history.pushState({}, '', `/site/about/projects/${project.id}`);
+                              }}
+                            >
+                              <div className="aspect-video bg-gradient-hero relative overflow-hidden">
+                                {project.preview ? (
+                                  project.preview.endsWith('.webm') || project.preview.endsWith('.mp4') ? (
+                                    <video 
+                                      src={project.preview} 
+                                      className="w-full h-full object-cover"
+                                      autoPlay
+                                      loop
+                                      muted
+                                      playsInline
+                                    />
+                                  ) : (
+                                    <img 
+                                      src={project.preview} 
+                                      alt={project.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  )
+                                ) : (
+                                  <div className="w-full h-full bg-gradient-hero flex items-center justify-center">
+                                    <Briefcase className="w-10 h-10 text-primary-foreground/50" />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="p-6">
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                                  <span className="px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                                    {project.category}
+                                  </span>
+                                  {project.date && <span>· {project.date}</span>}
+                                </div>
+                                <h3 className="text-xl font-bold mb-2 text-foreground">{project.title}</h3>
+                                <p className="text-muted-foreground text-sm line-clamp-3">
+                                  {stripMarkdown(project.content).slice(0, 150)}...
+                                </p>
+                              </div>
+                            </article>
                           ))}
                         </div>
                       </div>

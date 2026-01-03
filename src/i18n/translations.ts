@@ -45,6 +45,12 @@ export const translations = {
       stats: { blogPosts: 'Blog Posts', wikiArticles: 'Wiki Articles', galleryImages: 'Gallery Images', projects: 'Projects' },
       projects: { it: 'IT', gamedev: 'GameDev', design: 'Design' },
       buttons: { all: 'All', development: 'Development', tutorial: 'Tutorial', thoughts: 'Thoughts', design: 'Design' },
+      footer: { 
+        description: 'IT Engineer passionate about building beautiful, performant digital experiences.',
+        quickLinks: 'Quick Links',
+        connect: 'Connect',
+        madeWith: 'Made with'
+      },
     },
     xp: {
       welcome: 'Welcome',
@@ -113,6 +119,12 @@ export const translations = {
       stats: { blogPosts: 'Посты блога', wikiArticles: 'Статьи вики', galleryImages: 'Изображения', projects: 'Проекты' },
       projects: { it: 'IT', gamedev: 'GameDev', design: 'Дизайн' },
       buttons: { all: 'Все', development: 'Разработка', tutorial: 'Туториал', thoughts: 'Мысли', design: 'Дизайн' },
+      footer: { 
+        description: 'IT инженер, увлечённый созданием красивых и производительных цифровых решений.',
+        quickLinks: 'Быстрые ссылки',
+        connect: 'Связаться',
+        madeWith: 'Создано с помощью'
+      },
     },
     xp: {
       welcome: 'Добро пожаловать',
@@ -181,6 +193,12 @@ export const translations = {
       stats: { blogPosts: 'Articles de blog', wikiArticles: 'Articles wiki', galleryImages: 'Images', projects: 'Projets' },
       projects: { it: 'IT', gamedev: 'GameDev', design: 'Design' },
       buttons: { all: 'Tous', development: 'Développement', tutorial: 'Tutoriel', thoughts: 'Réflexions', design: 'Design' },
+      footer: { 
+        description: 'Ingénieur IT passionné par la création d\'expériences numériques belles et performantes.',
+        quickLinks: 'Liens rapides',
+        connect: 'Connecter',
+        madeWith: 'Créé avec'
+      },
     },
     xp: {
       welcome: 'Bienvenue',
@@ -249,6 +267,12 @@ export const translations = {
       stats: { blogPosts: 'Publicaciones', wikiArticles: 'Artículos wiki', galleryImages: 'Imágenes', projects: 'Proyectos' },
       projects: { it: 'IT', gamedev: 'GameDev', design: 'Diseño' },
       buttons: { all: 'Todos', development: 'Desarrollo', tutorial: 'Tutorial', thoughts: 'Pensamientos', design: 'Diseño' },
+      footer: { 
+        description: 'Ingeniero IT apasionado por crear experiencias digitales hermosas y eficientes.',
+        quickLinks: 'Enlaces rápidos',
+        connect: 'Conectar',
+        madeWith: 'Hecho con'
+      },
     },
     xp: {
       welcome: 'Bienvenido',
@@ -317,6 +341,12 @@ export const translations = {
       stats: { blogPosts: '博客文章', wikiArticles: '维基文章', galleryImages: '图片', projects: '项目' },
       projects: { it: 'IT', gamedev: '游戏开发', design: '设计' },
       buttons: { all: '全部', development: '开发', tutorial: '教程', thoughts: '想法', design: '设计' },
+      footer: { 
+        description: 'IT工程师，热衷于构建美丽、高性能的数字体验。',
+        quickLinks: '快速链接',
+        connect: '联系',
+        madeWith: '制作工具'
+      },
     },
     xp: {
       welcome: '欢迎',
@@ -385,6 +415,12 @@ export const translations = {
       stats: { blogPosts: 'ブログ投稿', wikiArticles: 'ウィキ記事', galleryImages: '画像', projects: 'プロジェクト' },
       projects: { it: 'IT', gamedev: 'ゲーム開発', design: 'デザイン' },
       buttons: { all: 'すべて', development: '開発', tutorial: 'チュートリアル', thoughts: '考え', design: 'デザイン' },
+      footer: { 
+        description: '美しく高性能なデジタル体験の構築に情熱を注ぐITエンジニア。',
+        quickLinks: 'クイックリンク',
+        connect: '接続',
+        madeWith: '制作ツール'
+      },
     },
     xp: {
       welcome: 'ようこそ',
@@ -453,6 +489,12 @@ export const translations = {
       stats: { blogPosts: '블로그 게시물', wikiArticles: '위키 문서', galleryImages: '이미지', projects: '프로젝트' },
       projects: { it: 'IT', gamedev: '게임 개발', design: '디자인' },
       buttons: { all: '모두', development: '개발', tutorial: '튜토리얼', thoughts: '생각', design: '디자인' },
+      footer: { 
+        description: '아름답고 성능이 뛰어난 디지털 경험을 만드는 데 열정적인 IT 엔지니어.',
+        quickLinks: '빠른 링크',
+        connect: '연결',
+        madeWith: '제작 도구'
+      },
     },
     xp: {
       welcome: '환영합니다',

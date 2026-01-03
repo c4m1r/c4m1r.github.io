@@ -14,14 +14,15 @@ interface BlogViewerProps {
 }
 
 export function BlogViewer({ initialPost }: BlogViewerProps) {
-  const { theme } = useApp();
+  const { theme, language } = useApp();
   const [posts, setPosts] = useState<ContentItem[]>([]);
   const [selectedPost, setSelectedPost] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(true);
   const isXpFamily = theme !== 'win-98';
 
   useEffect(() => {
-    loadBlogPosts().then(blogPosts => {
+    setLoading(true);
+    loadBlogPosts(language).then(blogPosts => {
       setPosts(blogPosts);
       setLoading(false);
       
@@ -31,7 +32,7 @@ export function BlogViewer({ initialPost }: BlogViewerProps) {
         if (post) setSelectedPost(post);
       }
     });
-  }, [initialPost]);
+  }, [initialPost, language]);
 
   if (loading) {
     return (

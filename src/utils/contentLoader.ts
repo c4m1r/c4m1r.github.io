@@ -14,6 +14,7 @@ export interface ContentItem {
   updatedAt?: string;
   relativePath?: string;
   pathSegments?: string[];
+  preview?: string;
 }
 
 export interface ImageItem {
@@ -30,6 +31,8 @@ export interface ImageItem {
  */
 export async function loadBlogPosts(language: string = 'en'): Promise<ContentItem[]> {
   const posts: ContentItem[] = [];
+  const defaultPreview = new URL('../content/blog/preview.webm', import.meta.url).href;
+  const processedIds = new Set<string>();
   
   try {
     // Динамический импорт всех markdown файлов из blog
@@ -40,21 +43,81 @@ export async function loadBlogPosts(language: string = 'en'): Promise<ContentIte
       const filename = path.split('/').pop()?.replace('.md', '') || '';
       const relativePath = path.split('../content/blog/')[1] || filename;
       
-      // Парсим frontmatter если есть
-      const { metadata, body } = parseFrontmatter(content);
+      // Проверяем язык файла (например, welcome-en.md) - старый формат
+      const langMatch = filename.match(/-([a-z]{2})$/);
+      const fileLang = langMatch ? langMatch[1] : null;
+      const baseId = langMatch ? filename.replace(/-[a-z]{2}$/, '') : filename;
+      
+      // Пропускаем, если уже обработали этот ID
+      if (processedIds.has(baseId)) {
+        continue;
+      }
+      
+      // Парсим frontmatter с учётом языка
+      const { metadata, body } = parseFrontmatter(content, language);
       const updatedAt = metadata.updatedAt || metadata.updated || metadata.date || '';
       
-      posts.push({
-        id: filename,
-        title: metadata.title || filename,
-        content: body,
-        date: metadata.date,
-        category: metadata.category,
-        tags: metadata.tags,
-        author: metadata.author,
-        updatedAt,
-        relativePath,
-      });
+      // Проверяем, есть ли языковые блоки в контенте
+      const hasLanguageBlocks = content.includes('<!-- lang:');
+      
+      // Если файл содержит языковые блоки, используем его
+      if (hasLanguageBlocks) {
+        processedIds.add(baseId);
+        posts.push({
+          id: baseId,
+          title: metadata.title || filename,
+          content: body,
+          date: metadata.date,
+          category: metadata.category,
+          tags: metadata.tags,
+          author: metadata.author,
+          updatedAt,
+          relativePath,
+          preview: metadata.preview || defaultPreview,
+        });
+      } 
+      // Старый формат с отдельными файлами (обратная совместимость)
+      else if (fileLang) {
+        // Ищем базовый файл без суффикса
+        const baseFilePath = path.replace(`-${fileLang}.md`, '.md');
+        if (modules[baseFilePath]) {
+          // Если есть базовый файл, пропускаем файл с суффиксом
+          continue;
+        }
+        
+        // Если это файл нужного языка или английский
+        if (fileLang === language || fileLang === 'en') {
+          processedIds.add(baseId);
+          posts.push({
+            id: baseId,
+            title: metadata.title || filename,
+            content: body,
+            date: metadata.date,
+            category: metadata.category,
+            tags: metadata.tags,
+            author: metadata.author,
+            updatedAt,
+            relativePath,
+            preview: metadata.preview || defaultPreview,
+          });
+        }
+      } 
+      // Файл без суффикса и без языковых блоков
+      else {
+        processedIds.add(baseId);
+        posts.push({
+          id: baseId,
+          title: metadata.title || filename,
+          content: body,
+          date: metadata.date,
+          category: metadata.category,
+          tags: metadata.tags,
+          author: metadata.author,
+          updatedAt,
+          relativePath,
+          preview: metadata.preview || defaultPreview,
+        });
+      }
     }
   } catch (error) {
     console.error('Failed to load blog posts:', error);
@@ -103,7 +166,7 @@ export async function loadProjects(): Promise<ContentItem[]> {
 /**
  * Загружает проекты из content/about/projects с категориями IT/GameDev/Design
  */
-export async function loadAboutProjects(): Promise<ContentItem[]> {
+export async function loadAboutProjects(language: string = 'en'): Promise<ContentItem[]> {
   const projects: ContentItem[] = [];
   
   try {
@@ -116,7 +179,8 @@ export async function loadAboutProjects(): Promise<ContentItem[]> {
       const segments = relativePath.split('/').filter(Boolean);
       const category = segments[0] || 'Other'; // IT, Gamedev, Design
       
-      const { metadata, body } = parseFrontmatter(content);
+      // Парсим с учётом языка
+      const { metadata, body } = parseFrontmatter(content, language);
       const updatedAt = metadata.updatedAt || metadata.updated || metadata.date || '';
       
       projects.push({
@@ -130,6 +194,7 @@ export async function loadAboutProjects(): Promise<ContentItem[]> {
         updatedAt,
         relativePath,
         pathSegments: segments,
+        preview: metadata.preview || new URL('../content/blog/preview.webm', import.meta.url).href,
       });
     }
   } catch (error) {
@@ -165,7 +230,8 @@ export async function loadWikiArticles(category?: string, language: string = 'en
       const directories = segments.slice(0, -1);
       const pathCategory = directories[0] || '';
       
-      const { metadata, body } = parseFrontmatter(content);
+      // Парсим с учётом языка
+      const { metadata, body } = parseFrontmatter(content, language);
       const updatedAt = metadata.updatedAt || metadata.updated || metadata.date || '';
       
       articles.push({
@@ -251,17 +317,46 @@ export async function loadWallpapers(): Promise<ImageItem[]> {
 }
 
 /**
- * Парсит frontmatter из markdown
+ * Извлекает контент для конкретного языка из языковых блоков
  */
-function parseFrontmatter(content: string): { metadata: Record<string, any>; body: string } {
+function parseLanguageBlocks(content: string, language: string): string {
+  // Паттерн для поиска языкового блока: <!-- lang:CODE -->content<!-- /lang:CODE -->
+  const langPattern = new RegExp(
+    `<!--\\s*lang:${language}\\s*-->([\\s\\S]*?)<!--\\s*/lang:${language}\\s*-->`,
+    'i'
+  );
+  const match = content.match(langPattern);
+  
+  if (match && match[1]) {
+    return match[1].trim();
+  }
+  
+  // Fallback на английский, если запрошенный язык не найден
+  if (language !== 'en') {
+    const enPattern = /<!--\s*lang:en\s*-->([\s\S]*?)<!--\s*\/lang:en\s*-->/i;
+    const enMatch = content.match(enPattern);
+    if (enMatch && enMatch[1]) {
+      return enMatch[1].trim();
+    }
+  }
+  
+  // Если языковых блоков нет, возвращаем весь контент
+  return content;
+}
+
+/**
+ * Парсит frontmatter из markdown и извлекает контент для языка
+ */
+function parseFrontmatter(content: string, language?: string): { metadata: Record<string, any>; body: string } {
   const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
   const match = content.match(frontmatterRegex);
   
   if (!match) {
-    return { metadata: {}, body: content };
+    const body = language ? parseLanguageBlocks(content, language) : content;
+    return { metadata: {}, body };
   }
   
-  const [, frontmatter, body] = match;
+  const [, frontmatter, rawBody] = match;
   const metadata: Record<string, any> = {};
   
   // Простой парсинг YAML-like frontmatter
@@ -277,7 +372,7 @@ function parseFrontmatter(content: string): { metadata: Record<string, any>; bod
       value = value
         .slice(1, -1)
         .split(',')
-        .map(v => v.trim().replace(/^["']|["']$/g, ''));
+        .map((v: string) => v.trim().replace(/^["']|["']$/g, ''));
     }
     
     // Удаляем кавычки
@@ -287,6 +382,17 @@ function parseFrontmatter(content: string): { metadata: Record<string, any>; bod
     
     metadata[key] = value;
   });
+  
+  // Обрабатываем переводы заголовков (title_en, title_ru и т.д.)
+  if (language && metadata[`title_${language}`]) {
+    metadata.title = metadata[`title_${language}`];
+  } else if (language && language !== 'en' && metadata.title_en) {
+    // Fallback на английский заголовок
+    metadata.title = metadata.title_en;
+  }
+  
+  // Извлекаем контент для конкретного языка, если указан
+  const body = language ? parseLanguageBlocks(rawBody, language) : rawBody;
   
   return { metadata, body };
 }
@@ -335,14 +441,28 @@ export async function loadAboutMe(language: string = 'en'): Promise<ContentItem 
   try {
     const modules = import.meta.glob('../content/about/c4m1r*.md', { as: 'raw' });
     
-    // Ищем файл для текущего языка (например, c4m1r-ru.md)
-    const langFile = `../content/about/c4m1r-${language}.md`;
+    // Сначала проверяем базовый файл с языковыми блоками
     const defaultFile = '../content/about/c4m1r.md';
     
-    let targetPath = defaultFile;
-    if (modules[langFile]) {
-      targetPath = langFile;
+    if (modules[defaultFile]) {
+      const content = await modules[defaultFile]() as string;
+      
+      // Проверяем наличие языковых блоков
+      if (content.includes('<!-- lang:')) {
+        const { metadata, body } = parseFrontmatter(content, language);
+        
+        return {
+          id: 'c4m1r',
+          title: metadata.title || 'C4m1r',
+          content: body,
+          tags: metadata.tags,
+        };
+      }
     }
+    
+    // Fallback на старый формат с отдельными файлами
+    const langFile = `../content/about/c4m1r-${language}.md`;
+    const targetPath = modules[langFile] ? langFile : defaultFile;
     
     if (modules[targetPath]) {
       const content = await modules[targetPath]() as string;
@@ -369,14 +489,29 @@ export async function loadLegalNotice(language: string = 'en'): Promise<ContentI
   try {
     const modules = import.meta.glob('../content/about/legal-notice*.md', { as: 'raw' });
     
-    // Ищем файл для текущего языка
-    const langFile = `../content/about/legal-notice-${language}.md`;
+    // Сначала проверяем базовый файл с языковыми блоками
     const defaultFile = '../content/about/legal-notice.md';
     
-    let targetPath = defaultFile;
-    if (modules[langFile]) {
-      targetPath = langFile;
+    if (modules[defaultFile]) {
+      const content = await modules[defaultFile]() as string;
+      
+      // Проверяем наличие языковых блоков
+      if (content.includes('<!-- lang:')) {
+        const { metadata, body } = parseFrontmatter(content, language);
+        
+        return {
+          id: 'legal-notice',
+          title: metadata.title || 'Legal Notice',
+          content: body,
+          date: metadata.date,
+          updatedAt: metadata.updatedAt || metadata.updated || metadata.date || '',
+        };
+      }
     }
+    
+    // Fallback на старый формат с отдельными файлами
+    const langFile = `../content/about/legal-notice-${language}.md`;
+    const targetPath = modules[langFile] ? langFile : defaultFile;
     
     if (modules[targetPath]) {
       const content = await modules[targetPath]() as string;
