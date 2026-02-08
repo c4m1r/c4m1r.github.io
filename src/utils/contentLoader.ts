@@ -26,9 +26,22 @@ export interface ImageItem {
   date?: string;
 }
 
+export type AppCategoryId = 'ready' | 'prototype' | 'webos-emulation';
+
+export interface AppEntry extends ContentItem {
+  url?: string;
+  iframeTitle?: string;
+  badges?: string[];
+  platforms?: string[];
+  technologies?: string[];
+  category?: AppCategoryId;
+  description?: string;
+}
+
 // Загружаем все изображения EAGER (при сборке)
 const imageModules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,png,gif,webp}', { 
-  as: 'url',
+  query: '?url',
+  import: 'default',
   eager: true 
 });
 
@@ -76,7 +89,7 @@ export async function loadBlogPosts(language: string = 'en'): Promise<ContentIte
   
   try {
     // Динамический импорт всех markdown файлов из blog
-    const modules = import.meta.glob('../content/blog/*.md', { as: 'raw' });
+    const modules = import.meta.glob('../content/blog/*.md', { query: '?raw', import: 'default' });
     
     for (const path in modules) {
       const content = await modules[path]() as string;
@@ -183,7 +196,7 @@ export async function loadProjects(): Promise<ContentItem[]> {
   const projects: ContentItem[] = [];
   
   try {
-    const modules = import.meta.glob('/src/content/projects/*.{md,txt}', { as: 'raw' });
+    const modules = import.meta.glob('/src/content/projects/*.{md,txt}', { query: '?raw', import: 'default' });
     
     for (const path in modules) {
       const content = await modules[path]() as string;
@@ -213,7 +226,7 @@ export async function loadAboutProjects(language: string = 'en'): Promise<Conten
   const projects: ContentItem[] = [];
   
   try {
-    const modules = import.meta.glob('../content/about/projects/**/*.md', { as: 'raw' });
+    const modules = import.meta.glob('../content/about/projects/**/*.md', { query: '?raw', import: 'default' });
     
     for (const path in modules) {
       const content = await modules[path]() as string;
@@ -256,6 +269,63 @@ export async function loadAboutProjects(language: string = 'en'): Promise<Conten
   });
 }
 
+export async function loadAppEntries(language: string = 'en'): Promise<AppEntry[]> {
+  const apps: AppEntry[] = [];
+
+  try {
+    const modules = import.meta.glob('../content/apps/*.{md,txt}', { query: '?raw', import: 'default' });
+
+    for (const path in modules) {
+      const content = await modules[path]() as string;
+      const filename = path.split('/').pop()?.replace(/\.(md|txt)$/, '') || '';
+      const { metadata, body } = parseFrontmatter(content, language);
+      const rawBadges = Array.isArray(metadata.badges)
+        ? metadata.badges
+        : metadata.badges
+        ? [metadata.badges]
+        : [];
+      const badges = Array.from(new Set([...rawBadges, 'WEB']));
+      const platforms = Array.isArray(metadata.platforms)
+        ? metadata.platforms
+        : metadata.platforms
+        ? [metadata.platforms]
+        : [];
+
+      const technologies = Array.isArray(metadata.technologies)
+        ? metadata.technologies
+        : metadata.technologies
+        ? [metadata.technologies]
+        : [];
+
+      apps.push({
+        id: filename,
+        title: metadata.title || filename,
+        content: body.trim(),
+        description: metadata.description || body.trim(),
+        date: metadata.date,
+        category: metadata.category,
+        tags: metadata.tags,
+        url: metadata.url,
+        iframeTitle: metadata.iframeTitle,
+        badges,
+        platforms,
+        technologies,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load app entries:', error);
+  }
+
+  return apps.sort((a, b) => {
+    const dateA = Date.parse(a.date || '');
+    const dateB = Date.parse(b.date || '');
+    if (!isNaN(dateA) && !isNaN(dateB)) return dateB - dateA;
+    if (!isNaN(dateA)) return -1;
+    if (!isNaN(dateB)) return 1;
+    return b.id.localeCompare(a.id);
+  });
+}
+
 /**
  * Загружает wiki статьи
  */
@@ -263,7 +333,7 @@ export async function loadWikiArticles(category?: string, language: string = 'en
   const articles: ContentItem[] = [];
   
   try {
-    const modules = import.meta.glob('../content/wiki/**/*.md', { as: 'raw' });
+    const modules = import.meta.glob('../content/wiki/**/*.md', { query: '?raw', import: 'default' });
     
     for (const path in modules) {
       if (category && !path.includes(`../content/wiki/${category}/`)) continue;
@@ -307,7 +377,8 @@ export async function loadPictures(): Promise<ImageItem[]> {
   try {
     // Загружаем все изображения из content/pictures
     const modules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,png,gif,webp}', { 
-      as: 'url',
+      query: '?url',
+      import: 'default',
       eager: false 
     });
     
@@ -338,7 +409,8 @@ export async function loadWallpapers(): Promise<ImageItem[]> {
   
   try {
     const modules = import.meta.glob('/src/content/pictures/wallpapers/*.{jpg,jpeg,png,webp}', { 
-      as: 'url',
+      query: '?url',
+      import: 'default',
       eager: false 
     });
     
@@ -404,20 +476,52 @@ function parseFrontmatter(content: string, language?: string): { metadata: Recor
   const [, frontmatter, rawBody] = match;
   const metadata: Record<string, any> = {};
   
-  // Простой парсинг YAML-like frontmatter
-  frontmatter.split('\n').forEach(line => {
+  // Улучшенный парсинг YAML frontmatter
+  const lines = frontmatter.split('\n');
+  let currentKey: string | null = null;
+  let currentArray: string[] = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+    
+    // Если строка начинается с дефиса, это элемент массива
+    if (trimmedLine.startsWith('- ')) {
+      if (currentKey) {
+        const value = trimmedLine.substring(2).trim();
+        currentArray.push(value);
+      }
+      continue;
+    }
+    
+    // Если есть накопленный массив, сохраняем его
+    if (currentKey && currentArray.length > 0) {
+      metadata[currentKey] = currentArray;
+      currentArray = [];
+      currentKey = null;
+    }
+    
+    // Обрабатываем обычную пару ключ-значение
     const colonIndex = line.indexOf(':');
-    if (colonIndex === -1) return;
+    if (colonIndex === -1) continue;
     
     const key = line.slice(0, colonIndex).trim();
     let value: any = line.slice(colonIndex + 1).trim();
     
-    // Парсим массивы
+    // Если значение пустое, это может быть начало массива
+    if (!value) {
+      currentKey = key;
+      continue;
+    }
+    
+    // Парсим inline массивы [value1, value2]
     if (value.startsWith('[') && value.endsWith(']')) {
       value = value
         .slice(1, -1)
         .split(',')
         .map((v: string) => v.trim().replace(/^["']|["']$/g, ''));
+      metadata[key] = value;
+      continue;
     }
     
     // Удаляем кавычки
@@ -426,7 +530,12 @@ function parseFrontmatter(content: string, language?: string): { metadata: Recor
     }
     
     metadata[key] = value;
-  });
+  }
+  
+  // Сохраняем последний массив, если есть
+  if (currentKey && currentArray.length > 0) {
+    metadata[currentKey] = currentArray;
+  }
   
   // Обрабатываем переводы заголовков (title_en, title_ru и т.д.)
   if (language && metadata[`title_${language}`]) {
@@ -447,7 +556,7 @@ function parseFrontmatter(content: string, language?: string): { metadata: Recor
  */
 export async function loadContentFile(path: string): Promise<string | null> {
   try {
-    const modules = import.meta.glob('/src/content/**/*', { as: 'raw' });
+    const modules = import.meta.glob('/src/content/**/*', { query: '?raw', import: 'default' });
     const fullPath = `/src/content/${path}`;
     
     if (modules[fullPath]) {
@@ -484,7 +593,7 @@ export async function loadMarkdownContent(path: string): Promise<string> {
  */
 export async function loadAboutMe(language: string = 'en'): Promise<ContentItem | null> {
   try {
-    const modules = import.meta.glob('../content/about/c4m1r*.md', { as: 'raw' });
+    const modules = import.meta.glob('../content/about/c4m1r*.md', { query: '?raw', import: 'default' });
     
     // Сначала проверяем базовый файл с языковыми блоками
     const defaultFile = '../content/about/c4m1r.md';
@@ -532,7 +641,7 @@ export async function loadAboutMe(language: string = 'en'): Promise<ContentItem 
  */
 export async function loadLegalNotice(language: string = 'en'): Promise<ContentItem | null> {
   try {
-    const modules = import.meta.glob('../content/about/legal-notice*.md', { as: 'raw' });
+    const modules = import.meta.glob('../content/about/legal-notice*.md', { query: '?raw', import: 'default' });
     
     // Сначала проверяем базовый файл с языковыми блоками
     const defaultFile = '../content/about/legal-notice.md';

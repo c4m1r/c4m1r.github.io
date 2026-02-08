@@ -20,12 +20,14 @@ const defaultTextIcon = WINXP_ASSETS.richTextIcon ?? WINXP_ASSETS.notepadIcon ??
 type FileSystemChildren = Record<string, FileSystemItem>;
 
 const blogModules = import.meta.glob('../content/blog/*.md', {
-    as: 'raw',
+    query: '?raw',
+    import: 'default',
     eager: true,
 }) as Record<string, string>;
 
 const projectModules = import.meta.glob('../content/projects/**/*.{md,txt}', {
-    as: 'raw',
+    query: '?raw',
+    import: 'default',
     eager: true,
 }) as Record<string, string>;
 

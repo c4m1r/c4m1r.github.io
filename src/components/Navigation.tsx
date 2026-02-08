@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, FileText, Image as ImageIcon, Menu, Palette, User, X, Search } from 'lucide-react';
+import { Grid3x3, BookOpen, FileText, Image as ImageIcon, Menu, Palette, User, X, Search } from 'lucide-react';
 import { WeatherSwitcher } from './WeatherSwitcher';
 import { Globe } from 'lucide-react';
 import type { Language } from '../i18n/translations';
 
-export type SectionNav = 'home' | 'blog' | 'about' | 'wiki' | 'gallery' | 'search';
+export type SectionNav = 'home' | 'blog' | 'about' | 'wiki' | 'gallery' | 'apps' | 'search';
 
 interface NavigationProps {
   activeSection: SectionNav;
@@ -56,6 +56,7 @@ export function Navigation({
     { key: 'about', label: navLabels.about, icon: <User className="w-4 h-4" /> },
     { key: 'wiki', label: navLabels.wiki, icon: <FileText className="w-4 h-4" /> },
     { key: 'gallery', label: navLabels.gallery, icon: <ImageIcon className="w-4 h-4" /> },
+    { key: 'apps', label: navLabels.apps, icon: <Grid3x3 className="w-4 h-4" /> },
   ];
 
   const searchButton = (
@@ -81,7 +82,7 @@ export function Navigation({
             onNavigate(item.key);
             if (mobile) setIsMobileOpen(false);
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 whitespace-nowrap ${
             activeSection === item.key
               ? 'neu-sm bg-card text-primary font-medium'
               : 'hover:bg-card/60 text-foreground/80'

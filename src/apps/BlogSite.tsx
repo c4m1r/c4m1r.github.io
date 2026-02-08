@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  Grid3x3,
   ArrowLeft,
   ArrowRight,
   BookOpen,
@@ -19,12 +20,15 @@ import {
   Folder,
 } from 'lucide-react';
 import {
+  loadAppEntries,
   loadBlogPosts,
   loadWikiArticles,
   loadPictures,
   loadAboutProjects,
   loadAboutMe,
   loadLegalNotice,
+  type AppCategoryId,
+  type AppEntry,
   type ContentItem,
   type ImageItem,
 } from '../utils/contentLoader';
@@ -36,8 +40,8 @@ import { SectionCard } from '../components/SectionCard';
 import { Footer } from '../components/Footer';
 import { Hero } from '../components/Hero';
 
-type Section = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'project';
-type NavSection = 'home' | 'about' | 'wiki' | 'gallery' | 'blog' | 'search';
+type Section = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'project' | 'apps';
+type NavSection = 'home' | 'about' | 'wiki' | 'gallery' | 'blog' | 'search' | 'apps';
 
 interface BlogPostView extends ContentItem {
   excerpt: string;
@@ -51,7 +55,7 @@ interface WikiView extends ContentItem {
   categoryPath: string;
 }
 
-type SectionNav = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search';
+type SectionNav = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'apps';
 
 type UiText = {
   nav: Record<SectionNav, string> & { legal: string };
@@ -72,6 +76,16 @@ type UiText = {
   sections: {
     explore: string;
     exploreSubtitle: string;
+  };
+  apps: {
+    title: string;
+    subtitle: string;
+    selectPrompt: string;
+    descriptionLabel: string;
+    platformsLabel: string;
+    badgesLabel: string;
+    dateLabel: string;
+    categories: Record<'ready' | 'prototype' | 'systems', string>;
   };
   latestPosts: {
     title: string;
@@ -124,10 +138,11 @@ type UiText = {
 };
 
 const basePath = '/site/';
+const APP_CATEGORIES: AppCategoryId[] = ['ready', 'prototype', 'webos-emulation'];
 
 const uiTexts: Record<Language, UiText> = {
   en: {
-    nav: { home: 'Home', about: 'About', wiki: 'Wiki', cv: 'CV', gallery: 'Gallery', blog: 'Blog', search: 'Search', legal: 'Legal Notice' },
+    nav: { home: 'Home', about: 'About', wiki: 'Wiki', cv: 'CV', gallery: 'Gallery', blog: 'Blog', apps: 'Apps', search: 'Search', legal: 'Legal Notice' },
     heroTitle: 'IT Engineer',
     heroSubtitle: 'Building beautiful digital experiences with code, creativity, and passion. Explore my work, thoughts, and knowledge base.',
     searchPlaceholder: 'Search articles...',
@@ -145,6 +160,22 @@ const uiTexts: Record<Language, UiText> = {
     sections: {
       explore: 'Explore My World',
       exploreSubtitle: 'Dive into different aspects of my work and interests',
+    },
+    apps: {
+      title: 'Apps',
+      subtitle: 'Demonstration of my projects',
+      selectPrompt: 'Select an app to load it in the center window.',
+      descriptionLabel: 'Description',
+      platformsLabel: 'Platforms',
+      technologiesLabel: 'Technologies',
+      badgesLabel: 'Tags',
+      dateLabel: 'Date',
+      openFullLabel: 'Open Full',
+      categories: {
+        ready: 'Ready applications',
+        prototype: 'Prototype experiments',
+        'webos-emulation': 'WebOS Emulation',
+      },
     },
     latestPosts: {
       title: 'Latest Posts',
@@ -196,7 +227,7 @@ const uiTexts: Record<Language, UiText> = {
     },
   },
   ru: {
-    nav: { home: 'Главная', about: 'Обо мне', wiki: 'Вики', cv: 'Резюме', gallery: 'Галерея', blog: 'Блог', search: 'Поиск', legal: 'Правовая информация' },
+    nav: { home: 'Главная', about: 'Обо мне', wiki: 'Вики', cv: 'Резюме', gallery: 'Галерея', blog: 'Блог', apps: 'Приложения', search: 'Поиск', legal: 'Правовая информация' },
     heroTitle: 'IT инженер',
     heroSubtitle: 'Создаю красивые цифровые решения с помощью кода, креативности и страсти. Изучайте мои работы, мысли и базу знаний.',
     searchPlaceholder: 'Поиск по статьям...',
@@ -214,6 +245,22 @@ const uiTexts: Record<Language, UiText> = {
     sections: {
       explore: 'Исследуйте мой мир',
       exploreSubtitle: 'Погрузитесь в различные аспекты моей работы и интересов',
+    },
+    apps: {
+      title: 'Приложения',
+      subtitle: 'Демонстрация моих проектов',
+      selectPrompt: 'Выберите приложение, чтобы загрузить его в центре.',
+      descriptionLabel: 'Описание',
+      platformsLabel: 'Платформы',
+      technologiesLabel: 'Технологии',
+      badgesLabel: 'Метки',
+      dateLabel: 'Дата',
+      openFullLabel: 'Открыть полностью',
+      categories: {
+        ready: 'Готовые приложения',
+        prototype: 'Прототипы',
+        'webos-emulation': 'WebOS Эмуляция',
+      },
     },
     latestPosts: {
       title: 'Последние посты',
@@ -265,7 +312,7 @@ const uiTexts: Record<Language, UiText> = {
     },
   },
   fr: {
-    nav: { home: 'Accueil', about: 'À propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', search: 'Recherche', legal: 'Mentions légales' },
+    nav: { home: 'Accueil', about: 'À propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', apps: 'Applications', search: 'Recherche', legal: 'Mentions légales' },
     heroTitle: 'Développeur créatif',
     heroSubtitle: 'Créer de belles expériences numériques avec code, créativité et passion. Explorez mon travail, mes pensées et ma base de connaissances.',
     searchPlaceholder: 'Rechercher...',
@@ -281,6 +328,22 @@ const uiTexts: Record<Language, UiText> = {
     aboutTitle: 'À propos',
     projectsTitle: 'Projets:',
     sections: { explore: 'Explorez mon monde', exploreSubtitle: 'Plongez dans différents aspects de mon travail et de mes intérêts' },
+    apps: {
+      title: 'Applications',
+      subtitle: 'Démonstration de mes projets',
+      selectPrompt: 'Choisissez une application pour l\'ouvrir au centre.',
+      descriptionLabel: 'Description',
+      platformsLabel: 'Plateformes',
+      technologiesLabel: 'Technologies',
+      badgesLabel: 'Étiquettes',
+      dateLabel: 'Date',
+      openFullLabel: 'Ouvrir complet',
+      categories: {
+        ready: 'Applications prêtes',
+        prototype: 'Prototypes',
+        'webos-emulation': 'Émulation WebOS',
+      },
+    },
     latestPosts: { title: 'Derniers articles', subtitle: 'Nouvelles pensées et idées', viewAll: 'Voir tout' },
     cta: { letsCreate: 'Créons', together: 'Ensemble', description: 'Que vous ayez un projet en tête ou que vous souhaitiez simplement vous connecter, j\'aimerais vous entendre.', getInTouch: 'Contactez-moi' },
     blog: { title: 'Blog', subtitle: 'Pensées, tutoriels et idées sur le développement, le design et la technologie.', description: 'Pensées, tutoriels et idées sur le développement, le design et la technologie.' },
@@ -292,7 +355,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: 'Articles de blog', wikiArticles: 'Articles wiki', galleryImages: 'Images', projects: 'Projets' },
   },
   es: {
-    nav: { home: 'Inicio', about: 'Sobre mí', wiki: 'Wiki', cv: 'CV', gallery: 'Galería', blog: 'Blog', search: 'Buscar', legal: 'Aviso legal' },
+    nav: { home: 'Inicio', about: 'Sobre mí', wiki: 'Wiki', cv: 'CV', gallery: 'Galería', blog: 'Blog', apps: 'Aplicaciones', search: 'Buscar', legal: 'Aviso legal' },
     heroTitle: 'Desarrollador creativo',
     heroSubtitle: 'Construyendo hermosas experiencias digitales con código, creatividad y pasión. Explora mi trabajo, pensamientos y base de conocimientos.',
     searchPlaceholder: 'Buscar...',
@@ -308,6 +371,22 @@ const uiTexts: Record<Language, UiText> = {
     aboutTitle: 'Sobre mí',
     projectsTitle: 'Proyectos:',
     sections: { explore: 'Explora mi mundo', exploreSubtitle: 'Sumérgete en diferentes aspectos de mi trabajo e intereses' },
+    apps: {
+      title: 'Aplicaciones',
+      subtitle: 'Demostración de mis proyectos',
+      selectPrompt: 'Selecciona una aplicación para verla en el centro.',
+      descriptionLabel: 'Descripción',
+      platformsLabel: 'Plataformas',
+      technologiesLabel: 'Tecnologías',
+      badgesLabel: 'Etiquetas',
+      dateLabel: 'Fecha',
+      openFullLabel: 'Abrir completo',
+      categories: {
+        ready: 'Aplicaciones listas',
+        prototype: 'Prototipos',
+        'webos-emulation': 'Emulación WebOS',
+      },
+    },
     latestPosts: { title: 'Últimas publicaciones', subtitle: 'Pensamientos e ideas frescas', viewAll: 'Ver todo' },
     cta: { letsCreate: 'Vamos a', together: 'Crear juntos', description: 'Ya sea que tengas un proyecto en mente o simplemente quieras conectarte, me encantaría saber de ti.', getInTouch: 'Ponte en contacto' },
     blog: { title: 'Blog', subtitle: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseño y tecnología.', description: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseño y tecnología.' },
@@ -319,7 +398,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: 'Publicaciones', wikiArticles: 'Artículos wiki', galleryImages: 'Imágenes', projects: 'Proyectos' },
   },
   zh: {
-    nav: { home: '首页', about: '关于', wiki: '维基', cv: '简历', gallery: '画廊', blog: '博客', search: '搜索', legal: '法律声明' },
+    nav: { home: '首页', about: '关于', wiki: '维基', cv: '简历', gallery: '画廊', blog: '博客', apps: '应用', search: '搜索', legal: '法律声明' },
     heroTitle: '创意开发者',
     heroSubtitle: '用代码、创意和热情构建美丽的数字体验。探索我的作品、思想和知识库。',
     searchPlaceholder: '搜索...',
@@ -335,6 +414,22 @@ const uiTexts: Record<Language, UiText> = {
     aboutTitle: '关于',
     projectsTitle: '项目：',
     sections: { explore: '探索我的世界', exploreSubtitle: '深入了解我的工作和兴趣的不同方面' },
+    apps: {
+      title: '应用',
+      subtitle: '我的项目演示',
+      selectPrompt: '选择一个应用，在中央窗口打开。',
+      descriptionLabel: '说明',
+      platformsLabel: '平台',
+      technologiesLabel: '技术',
+      badgesLabel: '标签',
+      dateLabel: '日期',
+      openFullLabel: '完整打开',
+      categories: {
+        ready: '现成应用',
+        prototype: '原型',
+        'webos-emulation': 'WebOS模拟',
+      },
+    },
     latestPosts: { title: '最新文章', subtitle: '新鲜的想法和见解', viewAll: '查看全部' },
     cta: { letsCreate: '让我们', together: '一起创造', description: '无论您有项目想法还是只是想联系，我都很乐意听到您的声音。', getInTouch: '联系我' },
     blog: { title: '博客', subtitle: '关于开发、设计和技术的想法、教程和见解。', description: '关于开发、设计和技术的想法、教程和见解。' },
@@ -346,7 +441,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: '博客文章', wikiArticles: '维基文章', galleryImages: '图片', projects: '项目' },
   },
   ja: {
-    nav: { home: 'ホーム', about: '概要', wiki: 'ウィキ', cv: '履歴書', gallery: 'ギャラリー', blog: 'ブログ', search: '検索', legal: '法的通知' },
+    nav: { home: 'ホーム', about: '概要', wiki: 'ウィキ', cv: '履歴書', gallery: 'ギャラリー', blog: 'ブログ', apps: 'アプリ', search: '検索', legal: '法的通知' },
     heroTitle: 'クリエイティブ開発者',
     heroSubtitle: 'コード、創造性、情熱で美しいデジタル体験を構築。私の作品、思考、知識ベースを探索してください。',
     searchPlaceholder: '検索...',
@@ -361,6 +456,22 @@ const uiTexts: Record<Language, UiText> = {
     cvTitle: 'CV (履歴書:)',
     aboutTitle: '概要',
     projectsTitle: 'プロジェクト：',
+    apps: {
+      title: 'アプリ',
+      subtitle: '私のプロジェクトのデモンストレーション',
+      selectPrompt: 'アプリを選ぶと中央に表示されます。',
+      descriptionLabel: '説明',
+      platformsLabel: 'プラットフォーム',
+      technologiesLabel: '技術',
+      badgesLabel: 'タグ',
+      dateLabel: '日付',
+      openFullLabel: 'フル表示',
+      categories: {
+        ready: '完成アプリ',
+        prototype: 'プロトタイプ',
+        'webos-emulation': 'WebOSエミュレーション',
+      },
+    },
     sections: { explore: '私の世界を探索', exploreSubtitle: '私の仕事と興味のさまざまな側面に飛び込む' },
     latestPosts: { title: '最新の投稿', subtitle: '新鮮な考えと洞察', viewAll: 'すべて表示' },
     cta: { letsCreate: '一緒に', together: '作成しましょう', description: 'プロジェクトのアイデアがある場合でも、単につながりたい場合でも、ぜひお聞かせください。', getInTouch: 'お問い合わせ' },
@@ -373,7 +484,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: 'ブログ投稿', wikiArticles: 'ウィキ記事', galleryImages: '画像', projects: 'プロジェクト' },
   },
   ko: {
-    nav: { home: '홈', about: '소개', wiki: '위키', cv: '이력서', gallery: '갤러리', blog: '블로그', search: '검색', legal: '법적 고지' },
+    nav: { home: '홈', about: '소개', wiki: '위키', cv: '이력서', gallery: '갤러리', blog: '블로그', apps: '앱', search: '검색', legal: '법적 고지' },
     heroTitle: '크리에이티브 개발자',
     heroSubtitle: '코드, 창의성, 열정으로 아름다운 디지털 경험을 구축합니다. 제 작업, 생각, 지식 기반을 탐색하세요.',
     searchPlaceholder: '검색...',
@@ -389,6 +500,22 @@ const uiTexts: Record<Language, UiText> = {
     aboutTitle: '소개',
     projectsTitle: '프로젝트:',
     sections: { explore: '내 세계 탐험', exploreSubtitle: '내 작업과 관심사의 다양한 측면에 빠져보세요' },
+    apps: {
+      title: '앱',
+      subtitle: '내 프로젝트 시연',
+      selectPrompt: '앱을 선택하면 중앙에서 열립니다.',
+      descriptionLabel: '설명',
+      platformsLabel: '플랫폼',
+      technologiesLabel: '기술',
+      badgesLabel: '태그',
+      dateLabel: '날짜',
+      openFullLabel: '전체 열기',
+      categories: {
+        ready: '완성된 앱',
+        prototype: '프로토타입',
+        'webos-emulation': 'WebOS 에뮬레이션',
+      },
+    },
     latestPosts: { title: '최신 게시물', subtitle: '신선한 생각과 통찰', viewAll: '모두 보기' },
     cta: { letsCreate: '함께', together: '만들어요', description: '프로젝트 아이디어가 있거나 단순히 연결하고 싶다면 연락 주세요.', getInTouch: '연락하기' },
     blog: { title: '블로그', subtitle: '개발, 디자인, 기술에 대한 생각, 튜토리얼, 통찰.', description: '개발, 디자인, 기술에 대한 생각, 튜토리얼, 통찰.' },
@@ -488,6 +615,8 @@ function sectionToPath(section: Section): string {
       return `${basePath}gallery`;
     case 'search':
       return `${basePath}search`;
+    case 'apps':
+      return `${basePath}apps`;
     case 'project':
       return `${basePath}about/projects`;
     default:
@@ -525,6 +654,10 @@ export function BlogSite() {
   const [wikiPage, setWikiPage] = useState(1);
   const [galleryPage, setGalleryPage] = useState(1);
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const [apps, setApps] = useState<AppEntry[]>([]);
+  const [selectedApp, setSelectedApp] = useState<AppEntry | null>(null);
+  const [iframeHeight, setIframeHeight] = useState(500);
+  const [isResizing, setIsResizing] = useState(false);
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -532,6 +665,37 @@ export function BlogSite() {
     localStorage.setItem('site-theme', theme);
     setHeroKey((k) => k + 1); // перезапуск анимаций при смене темы
   }, [theme]);
+
+  // Обработка изменения размера iframe
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // Вычисляем высоту относительно позиции мыши
+      const iframe = document.querySelector('[data-iframe-container]');
+      if (!iframe) return;
+      
+      const rect = iframe.getBoundingClientRect();
+      const newHeight = Math.max(400, e.clientY - rect.top);
+      setIframeHeight(newHeight);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.body.style.cursor = 'ns-resize';
+    document.body.style.userSelect = 'none';
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
 
   useEffect(() => {
@@ -596,6 +760,24 @@ export function BlogSite() {
     syncFromLocation(window.location.pathname, posts, wiki);
   }, [posts, wiki]);
 
+  useEffect(() => {
+    let mounted = true;
+    loadAppEntries(language).then((loaded) => {
+      if (!mounted) return;
+      setApps(loaded);
+      setSelectedApp((prev) => {
+        if (prev) {
+          const match = loaded.find((app) => app.id === prev.id);
+          return match ?? loaded[0] ?? null;
+        }
+        return loaded[0] ?? null;
+      });
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [language]);
+
   const categories = useMemo(() => {
     const unique = new Set<string>();
     posts.forEach((p) => p.category && unique.add(p.category));
@@ -609,6 +791,22 @@ export function BlogSite() {
     wiki.forEach((w) => w.tags?.forEach((tag) => unique.add(tag)));
     return Array.from(unique).sort();
   }, [posts, wiki]);
+
+  const appsByCategory = useMemo(() => {
+    const mapping: Record<AppCategoryId, AppEntry[]> = {
+      ready: [],
+      prototype: [],
+      systems: [],
+    };
+    apps.forEach((app) => {
+      const category = (app.category || 'ready') as AppCategoryId;
+      if (!mapping[category]) {
+        mapping[category] = [];
+      }
+      mapping[category].push(app);
+    });
+    return mapping;
+  }, [apps]);
 
   // Построение дерева категорий Wiki
   const wikiCategoryTree = useMemo(() => {
@@ -771,6 +969,12 @@ export function BlogSite() {
       setActiveWiki(null);
       return;
     }
+    if (rest === 'apps') {
+      setActiveSection('apps');
+      setActivePost(null);
+      setActiveWiki(null);
+      return;
+    }
     if (rest === 'search') {
       setActiveSection('search');
       setActivePost(null);
@@ -924,6 +1128,7 @@ export function BlogSite() {
                 { key: 'blog', title: ui.nav.blog, description: ui.blog.description, icon: BookOpen, gradient: 'bg-aero-grass' },
                 { key: 'wiki', title: ui.nav.wiki, description: ui.wiki.description, icon: FileText, gradient: 'bg-aero-sun' },
                 { key: 'gallery', title: ui.nav.gallery, description: ui.gallery.description, icon: ImageIcon, gradient: 'bg-aero-water' },
+                { key: 'apps', title: ui.nav.apps, description: ui.apps?.subtitle || '', icon: Grid3x3, gradient: 'bg-aero-cloud' },
               ].map((section, index) => (
                 <div
                   key={section.key}
@@ -1664,6 +1869,208 @@ export function BlogSite() {
                     #{tag}
                   </span>
                 ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeSection === 'apps' && ui.apps && (
+        <section className="w-full px-6 py-12 space-y-8">
+          <div className="max-w-6xl mx-auto space-y-2">
+            <div className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+              {ui.apps.subtitle}
+            </div>
+            <h2 className="text-4xl font-bold">{ui.apps.title}</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl">{ui.apps.selectPrompt}</p>
+          </div>
+
+          <div className="space-y-6">
+            {/* Iframe на всю ширину экрана */}
+            <div className="w-full">
+              <div className="glass rounded-3xl border border-border neu-sm overflow-hidden" data-iframe-container>
+                {selectedApp ? (
+                  <>
+                    <div className="relative w-full overflow-hidden bg-background" style={{ height: `${iframeHeight}px` }}>
+                      {selectedApp.url ? (
+                        <iframe
+                          title={selectedApp.iframeTitle ?? selectedApp.title}
+                          src={selectedApp.url}
+                          className="absolute inset-0 h-full w-full border-0"
+                          loading="lazy"
+                          sandbox="allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+                          No preview available
+                        </div>
+                      )}
+                      <div className="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-10">
+                        {(selectedApp.badges || []).map((badge) => (
+                          <span
+                            key={badge}
+                            className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] rounded-full bg-primary text-primary-foreground shadow-lg"
+                          >
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Resize handle */}
+                    <div 
+                      className="relative h-10 bg-gradient-to-b from-border/20 via-border/40 to-border/60 cursor-ns-resize hover:bg-primary/20 transition-all group select-none"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setIsResizing(true);
+                      }}
+                      title="Потяните для изменения высоты"
+                    >
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                          <div className="text-[10px] uppercase tracking-[0.3em] text-foreground font-bold">
+                            Изменить размер
+                          </div>
+                          <div className="flex gap-1.5">
+                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
+                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
+                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-96 text-muted-foreground">Loading apps...</div>
+                )}
+              </div>
+            </div>
+
+            {/* Описание и списки ниже - ограничены по ширине */}
+            <div className="max-w-6xl mx-auto">
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,300px)_1fr]">
+                {/* Списки категорий слева */}
+                <div className="space-y-4">
+                {APP_CATEGORIES.map((category) => {
+                  const items = appsByCategory[category] || [];
+                  const label = ui.apps?.categories?.[category] || category;
+                  return (
+                    <div key={category} className="glass rounded-2xl border border-border p-4 neu-sm space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-base font-bold">{label}</h3>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-[0.3em]">{items.length}</span>
+                      </div>
+                      {items.length === 0 ? (
+                        <p className="text-xs text-muted-foreground italic">Soon.</p>
+                      ) : (
+                        <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin' }}>
+                          {items.map((app) => {
+                            const isActive = selectedApp?.id === app.id;
+                            return (
+                              <button
+                                key={app.id}
+                                type="button"
+                                className={`w-full text-left rounded-xl border transition-all duration-200 px-3 py-2 ${
+                                  isActive
+                                    ? 'border-primary bg-primary/10 text-primary shadow-sm'
+                                    : 'border-border/60 bg-card/50 hover:border-primary/60 hover:bg-card'
+                                }`}
+                                onClick={() => setSelectedApp(app)}
+                              >
+                                <div className="font-semibold text-sm">{app.title}</div>
+                                <div className="text-[10px] text-muted-foreground mt-0.5">{app.date || '—'}</div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Описание справа */}
+              {selectedApp && (
+                <div className="glass rounded-3xl border border-border p-6 neu-sm space-y-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-2">
+                      <h3 className="text-2xl font-bold text-foreground">{selectedApp.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {selectedApp.description || selectedApp.content || 'Description is missing.'}
+                      </p>
+                    </div>
+                    {selectedApp.url && (
+                      <button
+                        type="button"
+                        onClick={() => window.open(selectedApp.url, '_blank', 'noreferrer')}
+                        className="neu px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:scale-105 transition-transform whitespace-nowrap"
+                      >
+                        {ui.apps?.openFullLabel || 'Open Full'}
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-3 border-t border-border/50">
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {ui.apps?.dateLabel || 'Date'}
+                      </div>
+                      <div className="text-sm font-semibold text-foreground">{selectedApp.date || '—'}</div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {ui.apps?.platformsLabel || 'Platforms'}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(!selectedApp.platforms || selectedApp.platforms.length === 0) ? (
+                          <span className="text-sm text-muted-foreground">—</span>
+                        ) : (
+                          selectedApp.platforms.map((platform) => (
+                            <span key={platform} className="px-2.5 py-1 rounded-lg bg-muted text-xs font-semibold">
+                              {platform}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {ui.apps?.technologiesLabel || 'Technologies'}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(!selectedApp.technologies || selectedApp.technologies.length === 0) ? (
+                          <span className="text-sm text-muted-foreground">—</span>
+                        ) : (
+                          selectedApp.technologies.map((tech) => (
+                            <span key={tech} className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold">
+                              {tech}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {ui.apps?.badgesLabel || 'Tags'}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(!selectedApp.badges || selectedApp.badges.length === 0) ? (
+                          <span className="text-sm text-muted-foreground">—</span>
+                        ) : (
+                          selectedApp.badges.map((badge) => (
+                            <span key={badge} className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+                              {badge}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               </div>
             </div>
           </div>
