@@ -327,7 +327,36 @@ export async function loadAppEntries(language: string = 'en'): Promise<AppEntry[
 }
 
 /**
- * Загружает wiki статьи
+ * Загружает index.md файл для категории wiki
+ */
+export async function loadWikiCategoryIndex(categoryPath: string, language: string = 'en'): Promise<ContentItem | null> {
+  try {
+    const modules = import.meta.glob('../content/wiki/**/*.md', { query: '?raw', import: 'default' });
+    
+    // Ищем index.md в указанной категории
+    const indexPath = `../content/wiki/${categoryPath}/index.md`;
+    
+    if (indexPath in modules) {
+      const content = await modules[indexPath]() as string;
+      const { metadata, body } = parseFrontmatter(content, language);
+      
+      return {
+        id: 'index',
+        title: metadata.title || 'Index',
+        content: body,
+        category: categoryPath,
+        pathSegments: categoryPath.split('/').filter(Boolean),
+      };
+    }
+  } catch (error) {
+    console.error('Failed to load category index:', error);
+  }
+  
+  return null;
+}
+
+/**
+ * Загружает wiki статьи (исключая index.md файлы)
  */
 export async function loadWikiArticles(category?: string, language: string = 'en'): Promise<ContentItem[]> {
   const articles: ContentItem[] = [];
@@ -336,6 +365,9 @@ export async function loadWikiArticles(category?: string, language: string = 'en
     const modules = import.meta.glob('../content/wiki/**/*.md', { query: '?raw', import: 'default' });
     
     for (const path in modules) {
+      // Пропускаем index.md файлы
+      if (path.endsWith('/index.md')) continue;
+      
       if (category && !path.includes(`../content/wiki/${category}/`)) continue;
       
       const content = await modules[path]() as string;

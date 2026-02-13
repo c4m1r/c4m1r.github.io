@@ -79,6 +79,19 @@ export function Navigation({
         <>
           {/* Кнопки управления в мобильном меню */}
           <div className="flex flex-col gap-2 pb-3 mb-3 border-b border-border">
+            {/* Кнопка поиска */}
+            <button
+              onClick={() => {
+                onNavigate('search');
+                setIsMobileOpen(false);
+              }}
+              className="w-full neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200 flex items-center gap-3"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5 text-foreground" />
+              <span className="text-sm font-medium">Search</span>
+            </button>
+
             {/* Кнопка темы */}
             <div className="relative">
               <button
@@ -193,74 +206,78 @@ export function Navigation({
         </nav>
 
         <div className="flex items-center gap-3">
-          {searchButton}
-          <WeatherSwitcher />
+          {/* Кнопки скрыты на мобильных, показываются только на десктопе */}
+          <div className="hidden md:flex items-center gap-3">
+            {searchButton}
+            <WeatherSwitcher />
 
-          <div className="relative">
-            <button
-              onClick={() => setIsThemeOpen(!isThemeOpen)}
-              className="neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200"
-              aria-label="Change theme"
-            >
-              <Palette className="w-5 h-5 text-foreground" />
-            </button>
-            {isThemeOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setIsThemeOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px]">
-                  {themeOptions.map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => {
-                        setTheme(t.id);
-                        setIsThemeOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                        theme === t.id ? 'bg-primary/20 text-primary' : 'hover:bg-muted text-foreground'
-                      }`}
-                    >
-                      <span className="text-lg">{t.icon}</span>
-                      <span className="font-medium">{t.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
+            <div className="relative">
+              <button
+                onClick={() => setIsThemeOpen(!isThemeOpen)}
+                className="neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200"
+                aria-label="Change theme"
+              >
+                <Palette className="w-5 h-5 text-foreground" />
+              </button>
+              {isThemeOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsThemeOpen(false)} />
+                  <div className="absolute right-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px]">
+                    {themeOptions.map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => {
+                          setTheme(t.id);
+                          setIsThemeOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                          theme === t.id ? 'bg-primary/20 text-primary' : 'hover:bg-muted text-foreground'
+                        }`}
+                      >
+                        <span className="text-lg">{t.icon}</span>
+                        <span className="font-medium">{t.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="relative">
+              <button
+                onClick={() => setIsLangOpen(!isLangOpen)}
+                className="neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200 flex items-center gap-2"
+                aria-label="Change language"
+              >
+                <span className="text-lg">{currentLang.flag}</span>
+                <Globe className="w-4 h-4 hidden sm:block" />
+              </button>
+              {isLangOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsLangOpen(false)} />
+                  <div className="absolute right-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px]">
+                    {languageOptions.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setIsLangOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${
+                          language === lang.code ? 'bg-primary/20 text-primary' : 'hover:bg-muted text-foreground'
+                        }`}
+                      >
+                        <span>{lang.flag}</span>
+                        <span className="font-medium">{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setIsLangOpen(!isLangOpen)}
-              className="neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200 flex items-center gap-2"
-              aria-label="Change language"
-            >
-              <span className="text-lg">{currentLang.flag}</span>
-              <Globe className="w-4 h-4 hidden sm:block" />
-            </button>
-            {isLangOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setIsLangOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px]">
-                  {languageOptions.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        setLanguage(lang.code);
-                        setIsLangOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${
-                        language === lang.code ? 'bg-primary/20 text-primary' : 'hover:bg-muted text-foreground'
-                      }`}
-                    >
-                      <span>{lang.flag}</span>
-                      <span className="font-medium">{lang.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-
+          {/* Кнопка меню для мобильных */}
           <button
             onClick={() => setIsMobileOpen(!isMobileOpen)}
             className="md:hidden neu p-3 rounded-xl bg-card"
