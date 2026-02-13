@@ -18,6 +18,8 @@ import {
   X,
   Scale,
   Folder,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
 import {
   loadAppEntries,
@@ -658,6 +660,7 @@ export function BlogSite() {
   const [selectedApp, setSelectedApp] = useState<AppEntry | null>(null);
   const [iframeHeight, setIframeHeight] = useState(500);
   const [isResizing, setIsResizing] = useState(false);
+  const [expandedWikiCategories, setExpandedWikiCategories] = useState<Set<string>>(new Set());
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -671,6 +674,7 @@ export function BlogSite() {
     if (!isResizing) return;
 
     const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
       // Вычисляем высоту относительно позиции мыши
       const iframe = document.querySelector('[data-iframe-container]');
       if (!iframe) return;
@@ -680,18 +684,26 @@ export function BlogSite() {
       setIframeHeight(newHeight);
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: MouseEvent) => {
+      e.preventDefault();
       setIsResizing(false);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    const handleMouseLeave = () => {
+      setIsResizing(false);
+    };
+
+    // Используем capture фазу для надежного перехвата событий
+    window.addEventListener('mousemove', handleMouseMove, true);
+    window.addEventListener('mouseup', handleMouseUp, true);
+    window.addEventListener('mouseleave', handleMouseLeave, true);
     document.body.style.cursor = 'ns-resize';
     document.body.style.userSelect = 'none';
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handleMouseMove, true);
+      window.removeEventListener('mouseup', handleMouseUp, true);
+      window.removeEventListener('mouseleave', handleMouseLeave, true);
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
     };
@@ -2126,25 +2138,51 @@ export function BlogSite() {
                 {wikiCategories.map((cat) => {
                   const categoryNode = wikiCategoryTree.get(cat);
                   const subcategories = categoryNode ? Array.from(categoryNode.children.entries()) : [];
+                  const hasSubcategories = cat !== 'All' && subcategories.length > 0;
+                  const isExpanded = expandedWikiCategories.has(cat);
                   
                   return (
                     <div key={cat} className="space-y-1">
-                      <button
-                        onClick={() => {
-                          setActiveWiki(null);
-                          setWikiCategory(cat);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
-                          wikiCategory === cat ? 'neu-sm bg-primary/10 text-primary' : 'hover:bg-muted text-foreground'
-                        }`}
-                      >
-                        <span>{cat}</span>
-                        {cat !== 'All' && wikiCategoryStats[cat] ? (
-                          <span className="text-xs text-muted-foreground">{wikiCategoryStats[cat]}</span>
-                        ) : null}
-                      </button>
-                      {cat !== 'All' && subcategories.length > 0 && (
-                        <div className="ml-4 space-y-1">
+                      <div className="flex items-center gap-1">
+                        {hasSubcategories && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newExpanded = new Set(expandedWikiCategories);
+                              if (isExpanded) {
+                                newExpanded.delete(cat);
+                              } else {
+                                newExpanded.add(cat);
+                              }
+                              setExpandedWikiCategories(newExpanded);
+                            }}
+                            className="p-1 hover:bg-muted rounded transition-colors"
+                            aria-label={isExpanded ? 'Свернуть' : 'Развернуть'}
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                            )}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            setActiveWiki(null);
+                            setWikiCategory(cat);
+                          }}
+                          className={`flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                            wikiCategory === cat ? 'neu-sm bg-primary/10 text-primary' : 'hover:bg-muted text-foreground'
+                          } ${!hasSubcategories ? 'ml-5' : ''}`}
+                        >
+                          <span>{cat}</span>
+                          {cat !== 'All' && wikiCategoryStats[cat] ? (
+                            <span className="text-xs text-muted-foreground">{wikiCategoryStats[cat]}</span>
+                          ) : null}
+                        </button>
+                      </div>
+                      {hasSubcategories && isExpanded && (
+                        <div className="ml-9 space-y-1">
                           {subcategories.map(([subName, subNode]) => (
                             <button
                               key={subNode.fullPath}
@@ -2152,7 +2190,9 @@ export function BlogSite() {
                                 setActiveWiki(null);
                                 setWikiCategory(subNode.fullPath);
                               }}
-                              className="w-full flex items-center justify-between px-2 py-1 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-muted"
+                              className={`w-full flex items-center justify-between px-2 py-1 rounded-lg text-xs transition-all ${
+                                wikiCategory === subNode.fullPath ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                              }`}
                             >
                               <span>{subName}</span>
                               <span className="text-xs opacity-60">{subNode.count}</span>
@@ -2356,58 +2396,72 @@ export function BlogSite() {
           {pictures.length === 0 ? (
             <div className="text-muted-foreground">{ui.loading}</div>
           ) : (
-            <>
-              {/* Album/Category Filter */}
-              <div className="flex items-center gap-4 mb-8 flex-wrap">
-                <button
-                  onClick={() => {
-                    setSelectedAlbum(null);
-                    setGalleryPage(1);
-                  }}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${
-                    !selectedAlbum
-                      ? 'neu-sm bg-primary text-primary-foreground'
-                      : 'glass hover:bg-muted'
-                  }`}
-                >
-                  {ui.gallery.allAlbums}
-                </button>
-                {galleryAlbums.map((album) => (
+            <div className="grid lg:grid-cols-[1fr_3fr] gap-6">
+              {/* Боковая панель навигации */}
+              <aside className="glass rounded-2xl p-4 neu-sm self-start">
+                <div className="flex items-center gap-2 text-sm font-semibold mb-3">
+                  <Folder className="w-4 h-4 text-primary" />
+                  <span>{ui.gallery.albums || 'Albums'}</span>
+                </div>
+                <div className="space-y-2">
+                  {/* Кнопка "Все альбомы" */}
                   <button
-                    key={album.id}
                     onClick={() => {
-                      setSelectedAlbum(album.id);
+                      setSelectedAlbum(null);
                       setGalleryPage(1);
                     }}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${
-                      selectedAlbum === album.id
-                        ? 'neu-sm bg-primary text-primary-foreground'
-                        : 'glass hover:bg-muted'
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                      !selectedAlbum
+                        ? 'neu-sm bg-primary/10 text-primary'
+                        : 'hover:bg-muted text-foreground'
                     }`}
                   >
-                    {album.name}
-                    <span className="text-xs opacity-70">({album.count})</span>
+                    <span>{ui.gallery.allAlbums}</span>
+                    <span className="text-xs text-muted-foreground">{pictures.length}</span>
                   </button>
-                ))}
-              </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {paginatedGallery.map((pic) => (
-                  <button
-                    key={pic.id}
-                    className="relative overflow-hidden rounded-2xl neu card-hover aspect-square"
-                    onClick={() => handleOpenPicture(filteredGalleryImages.indexOf(pic), pic.id)}
-                  >
-                    <img src={pic.path} alt={pic.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity p-3 text-white text-xs flex items-end">
-                      <div className="font-medium">{pic.name}</div>
+                  {/* Список альбомов */}
+                  {galleryAlbums.map((album) => (
+                    <div key={album.id} className="space-y-1">
+                      <button
+                        onClick={() => {
+                          setSelectedAlbum(album.id);
+                          setGalleryPage(1);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                          selectedAlbum === album.id
+                            ? 'neu-sm bg-primary/10 text-primary'
+                            : 'hover:bg-muted text-foreground'
+                        }`}
+                      >
+                        <span>{album.name}</span>
+                        <span className="text-xs text-muted-foreground">{album.count}</span>
+                      </button>
                     </div>
-                  </button>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </aside>
 
-              <Pagination currentPage={galleryPage} totalPages={totalGalleryPages} onPageChange={setGalleryPage} />
-            </>
+              {/* Основной контент */}
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {paginatedGallery.map((pic) => (
+                    <button
+                      key={pic.id}
+                      className="relative overflow-hidden rounded-2xl neu card-hover aspect-square"
+                      onClick={() => handleOpenPicture(filteredGalleryImages.indexOf(pic), pic.id)}
+                    >
+                      <img src={pic.path} alt={pic.name} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity p-3 text-white text-xs flex items-end">
+                        <div className="font-medium">{pic.name}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <Pagination currentPage={galleryPage} totalPages={totalGalleryPages} onPageChange={setGalleryPage} />
+              </div>
+            </div>
           )}
         </section>
       )}
