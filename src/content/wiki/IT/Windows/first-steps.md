@@ -1,18 +1,18 @@
 ---
-title: Начало работы с Windows
-title_en: Getting Started with Windows
-title_ru: Начало работы с Windows
-title_fr: Commencer avec Windows
-title_es: Comenzando con Windows
-title_zh: Windows入门
-title_ja: Windowsを始める
-title_ko: Windows 시작하기
+title: Первые шаги с Windows
+title_en: First Steps with Windows
+title_ru: Первые шаги с Windows
+title_fr: Premiers pas avec Windows
+title_es: Primeros pasos con Windows
+title_zh: Windows 第一步
+title_ja: Windows の最初のステップ
+title_ko: Windows 첫 걸음
 category: it/windows
 updatedAt: 2026-02-13
 ---
 
 <!-- lang:en -->
-# Getting Started with Windows
+# First Steps with Windows
 
 Windows is the most widely used desktop operating system in the world. This guide covers essential concepts, tools, and best practices for Windows administration and daily use.
 
@@ -35,27 +35,38 @@ Windows is the most widely used desktop operating system in the world. This guid
 
 ### Windows Versions
 
+#### Consumer Versions (9x kernel - MS-DOS based)
+- **Windows 1.0** (1985): First graphical interface for MS-DOS
+- **Windows 2.0** (1987): Improved interface, overlapping windows
+- **Windows 3.0** (1990): Program Manager, File Manager introduced
+- **Windows 3.1** (1992): TrueType fonts, multimedia support
+- **Windows 95** (1995): Start menu, taskbar, 32-bit support
+- **Windows 98** (1998): USB support, Internet Explorer 4
+- **Windows ME** (2000): Last 9x version, multimedia features
 
-- **Windows 1.0**: Based on MS-DOS.
-- **Windows 2.0**: Based on MS-DOS.
-- **Windows 3.0**: Based on MS-DOS.
-- **Windows 3.1**: Based on MS-DOS.
-- **Windows 95**: Widely deployed, stable platform.
-- **Windows 98**: Widely deployed, stable platform.
-- **Windows 2000**: Widely deployed, stable platform.
-- **Windows XP**: (NT 5.1) Legendary OS, what combined NT and 9x verions.
-- **Windows Vista**: (NT 6.0) The only thing is good is Aero design.
-- **Windows 7**: (NT 6.1) The Stable King
-- **Windows 7**: (NT 6.2) Goodbye start menu, hello minecraft cubes
-- **Windows 8.1**: (NT 6.3) Start menu is kinda back
-- **Windows 10**: (NT 10.0) Widely deployed, stable platform
-- **Windows 11**: (NT 10.0) Latest version with modern UI and security features
-- **Windows Server**: Server editions (Evalutiation, Core, Standart) (2003, 2008, 2012, 2016, 2019, 2022, 2025)
-- **LTSC**: Long-Term Servicing Channel for enterprise stability
-- **Pro**: Bussines
-- **Enterprise**: Bussines
-- **IoT**: Inside on a board release
-- **ARM**: Verison with ARM support
+#### Business/Professional Versions (NT kernel)
+- **Windows NT 3.1** (1993): First NT version, robust architecture
+- **Windows NT 4.0** (1996): Windows 95-like interface with NT stability
+- **Windows 2000** (2000): Active Directory, improved networking
+- **Windows XP** (2001): NT 5.1 - Legendary OS combining NT and 9x consumer features
+- **Windows Vista** (2007): NT 6.0 - Introduced Aero design, UAC, heavy system requirements
+- **Windows 7** (2009): NT 6.1 - The Stable King, refined Vista
+- **Windows 8** (2012): NT 6.2 - Metro UI, removed Start menu
+- **Windows 8.1** (2013): NT 6.3 - Start button returns
+- **Windows 10** (2015): NT 10.0 - Widely deployed, universal apps, continual updates
+- **Windows 11** (2021): NT 10.0.22000+ - Modern UI, centered Start, Android apps support
+
+#### Server Editions
+- **Windows Server 2003, 2008, 2012, 2016, 2019, 2022, 2025**
+- **Editions**: Evaluation, Core (CLI only), Standard, Datacenter
+
+#### Special Editions
+- **LTSC** (Long-Term Servicing Channel): Enterprise stability, minimal updates
+- **Pro**: Business features, domain join, BitLocker
+- **Enterprise**: Volume licensing, advanced management
+- **Education**: For academic institutions
+- **IoT**: Embedded devices and boards
+- **ARM**: Version with ARM processor support (Surface, tablets)
 
 ### System Requirements
 
@@ -923,7 +934,7 @@ Happy Windows administration!
 <!-- /lang:en -->
 
 <!-- lang:ru -->
-# Начало работы с Windows
+# Первые шаги с Windows
 
 Windows — самая широко используемая настольная операционная система в мире. Это руководство охватывает основные концепции, инструменты и лучшие практики для администрирования Windows и повседневного использования.
 
@@ -946,10 +957,38 @@ Windows — самая широко используемая настольна�
 
 ### Версии Windows
 
-- **Windows 10**: Широко распространенная, стабильная платформа
-- **Windows 11**: Последняя версия с современным UI и функциями безопасности
-- **Windows Server**: Серверные редакции (2019, 2022)
-- **LTSC**: Канал долгосрочного обслуживания для стабильности предприятия
+#### Потребительские версии (ядро 9x - на базе MS-DOS)
+- **Windows 1.0** (1985): Первый графический интерфейс для MS-DOS
+- **Windows 2.0** (1987): Улучшенный интерфейс, перекрывающиеся окна
+- **Windows 3.0** (1990): Появление Program Manager, File Manager
+- **Windows 3.1** (1992): Шрифты TrueType, поддержка мультимедиа
+- **Windows 95** (1995): Меню Пуск, панель задач, 32-битная поддержка
+- **Windows 98** (1998): Поддержка USB, Internet Explorer 4
+- **Windows ME** (2000): Последняя версия 9x, мультимедийные функции
+
+#### Бизнес/Профессиональные версии (ядро NT)
+- **Windows NT 3.1** (1993): Первая версия NT, надежная архитектура
+- **Windows NT 4.0** (1996): Интерфейс как у Windows 95 со стабильностью NT
+- **Windows 2000** (2000): Active Directory, улучшенная работа в сети
+- **Windows XP** (2001): NT 5.1 - Легендарная ОС, объединившая NT и 9x
+- **Windows Vista** (2007): NT 6.0 - Дизайн Aero, UAC, высокие системные требования
+- **Windows 7** (2009): NT 6.1 - Король Стабильности, улучшенная Vista
+- **Windows 8** (2012): NT 6.2 - Metro UI, убрано меню Пуск
+- **Windows 8.1** (2013): NT 6.3 - Кнопка Пуск возвращается
+- **Windows 10** (2015): NT 10.0 - Широко распространенная, универсальные приложения, постоянные обновления
+- **Windows 11** (2021): NT 10.0.22000+ - Современный UI, центрированный Пуск, поддержка Android-приложений
+
+#### Серверные редакции
+- **Windows Server 2003, 2008, 2012, 2016, 2019, 2022, 2025**
+- **Редакции**: Evaluation, Core (только CLI), Standard, Datacenter
+
+#### Специальные редакции
+- **LTSC** (Long-Term Servicing Channel): Стабильность предприятия, минимум обновлений
+- **Pro**: Бизнес-функции, присоединение к домену, BitLocker
+- **Enterprise**: Корпоративное лицензирование, расширенное управление
+- **Education**: Для образовательных учреждений
+- **IoT**: Встраиваемые устройства и платы
+- **ARM**: Версия с поддержкой процессоров ARM (Surface, планшеты)
 
 ### Системные требования
 

@@ -5,7 +5,7 @@ date: 2025-01-15
 category: General
 tags: [welcome, about, windows, linux, nostalgia]
 author: C4m1r
-preview: /src/content/pictures/wallpapers/winxp-bliss.jpg
+preview: /src/content/pictures/wallpapers/ios/winxp-bliss.jpg
 ---
 
 <!-- lang:en -->

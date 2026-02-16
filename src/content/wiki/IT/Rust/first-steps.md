@@ -1,18 +1,18 @@
 ---
-title: Начало работы с Rust
-title_en: Getting Started with Rust
-title_ru: Начало работы с Rust
-title_fr: Commencer avec Rust
-title_es: Comenzando con Rust
-title_zh: Rust入门
-title_ja: Rustを始める
-title_ko: Rust 시작하기
+title: Первые шаги с Rust
+title_en: First Steps with Rust
+title_ru: Первые шаги с Rust
+title_fr: Premiers pas avec Rust
+title_es: Primeros pasos con Rust
+title_zh: Rust 第一步
+title_ja: Rust の最初のステップ
+title_ko: Rust 첫 걸음
 category: it/rust
-updatedAt: 2025-11-29
+updatedAt: 2026-02-13
 ---
 
 <!-- lang:en -->
-# Getting Started with Rust
+# First Steps with Rust
 
 Rust is a systems programming language focused on safety, speed, and concurrency. It provides memory safety without garbage collection and enables developers to write fast and reliable software.
 

@@ -3,7 +3,7 @@ import folderIcon from '../themes/winxp/assets/icons/folder_plain.png';
 import textIcon from '../themes/winxp/assets/icons/doc.png';
 import { WINXP_ASSETS } from '../themes/winxp/themeAssets';
 import userIcon from '../themes/winxp/assets/user.gif';
-import blissIcon from '../content/pictures/wallpapers/winxp-bliss.jpg';
+import blissIcon from '../content/pictures/wallpapers/windows/winxp-bliss.jpg';
 
 export interface FileSystemItem {
     id: string;

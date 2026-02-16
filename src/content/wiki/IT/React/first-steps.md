@@ -1,18 +1,18 @@
 ---
-title: Начало работы с React
-title_en: Getting Started with React
-title_ru: Начало работы с React
-title_fr: Commencer avec React
-title_es: Comenzando con React
-title_zh: React入门
-title_ja: Reactを始める
-title_ko: React 시작하기
+title: Первые шаги с React
+title_en: First Steps with React
+title_ru: Первые шаги с React
+title_fr: Premiers pas avec React
+title_es: Primeros pasos con React
+title_zh: React 第一步
+title_ja: React の最初のステップ
+title_ko: React 첫 걸음
 category: it/react
 updatedAt: 2026-02-13
 ---
 
 <!-- lang:en -->
-# Getting Started with React
+# First Steps with React
 
 React is a JavaScript library for building user interfaces, particularly single-page applications. It was developed by Facebook and allows developers to create reusable UI components.
 

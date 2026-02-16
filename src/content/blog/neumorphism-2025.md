@@ -12,7 +12,7 @@ category: "Design"
 tags: ["design", "ui", "trends"]
 excerpt: "How neumorphism evolved and why it is making a comeback in modern web design."
 author: "Alex"
-preview: /src/content/pictures/wallpapers/ios6-background-1.png
+preview: /src/content/pictures/wallpapers/ios/ios6-background-1.png
 ---
 
 <!-- lang:en -->

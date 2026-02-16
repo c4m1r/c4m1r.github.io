@@ -12,7 +12,7 @@ category: "Development"
 tags: ["webdev", "design", "portfolio"]
 excerpt: "Learn how to create a stunning portfolio with modern web technologies and beautiful aesthetics."
 author: "C4m1r"
-preview: /src/content/pictures/wallpapers/ios6-background-2.png
+preview: /src/content/pictures/wallpapers/ios/ios6-background-2.png
 ---
 
 <!-- lang:en -->

@@ -40,7 +40,7 @@ import bootLogoXp from './assets/boot/boot-windows-logo.png';
 import bootProgressXp from './assets/boot/boot-progress.png';
 
 // Wallpaper
-import bootWallpaperXp from '../../content/pictures/wallpapers/winxp-bliss.jpg';
+import bootWallpaperXp from '../../content/pictures/wallpapers/windows/winxp-bliss.jpg';
 
 // Minesweeper
 import minesweeperIconXp from '../../apps/minesweeper/assets/icon.png';

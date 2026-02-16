@@ -4,5 +4,5 @@ Microsoft Windows — семейство операционных систем �
 
 ## Материалы в этой категории
 
-* [Первые шаги с Windows](getting-started.md) - Администрирование, PowerShell, настройка
+* [Первые шаги с Windows](first-steps.md) - Администрирование, PowerShell, настройка
 * [Remote Desktop Protocol (RDP)](RDP.md) - Настройка удаленного рабочего стола

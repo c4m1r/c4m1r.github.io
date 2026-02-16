@@ -1,18 +1,18 @@
 ---
-title: Начало работы с Proxmox
-title_en: Getting Started with Proxmox
-title_ru: Начало работы с Proxmox
-title_fr: Commencer avec Proxmox
-title_es: Comenzando con Proxmox
-title_zh: Proxmox入门
-title_ja: Proxmoxを始める
-title_ko: Proxmox 시작하기
+title: Первые шаги с Proxmox
+title_en: First Steps with Proxmox
+title_ru: Первые шаги с Proxmox
+title_fr: Premiers pas avec Proxmox
+title_es: Primeros pasos con Proxmox
+title_zh: Proxmox 第一步
+title_ja: Proxmox の最初のステップ
+title_ko: Proxmox 첫 걸음
 category: it/proxmox
-updatedAt: 2025-11-29
+updatedAt: 2026-02-13
 ---
 
 <!-- lang:en -->
-# Getting Started with Proxmox
+# First Steps with Proxmox
 
 Proxmox Virtual Environment (Proxmox VE) is an open-source server virtualization management platform. It allows you to manage virtual machines, containers, storage, and networking through a web-based interface.
 

@@ -15,7 +15,7 @@ import gamesIconWebos from '../winxp/assets/icons/pinball.png';
 import projectsIconWebos from '../winxp/assets/icons/folder_program.png';
 import userAvatarWebos from '../winxp/assets/user.gif';
 import windowsLogoWebos from '../winxp/assets/windows.png';
-import bootWallpaperWebos from '../../content/pictures/wallpapers/winxp-bliss.jpg';
+import bootWallpaperWebos from '../../content/pictures/wallpapers/windows/winxp-bliss.jpg';
 import minesweeperIconWebos from '../../apps/minesweeper/assets/icon.png';
 import calculatorIconWebos from '../winxp/assets/icons/calc.png';
 import paintIconWebos from '../winxp/assets/icons/paint.png';

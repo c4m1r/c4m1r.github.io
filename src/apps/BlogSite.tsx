@@ -622,8 +622,15 @@ function markdownToHtml(md: string): string {
     .replace(/`([^`\n]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-muted text-sm font-mono">$1</code>')
     // Images
     .replace(/!\[([^\]]*)]\(([^)]+)\)/g, '<img alt="$1" src="$2" class="my-4 rounded-xl max-w-full" loading="lazy" />')
-    // Links
-    .replace(/\[([^\]]+)]\(([^)]+)\)/g, '<a class="text-primary hover:underline" href="$2" target="_blank" rel="noreferrer">$1</a>');
+    // Links - обрабатываем внутренние и внешние по-разному
+    .replace(/\[([^\]]+)]\(([^)]+)\)/g, (match, text, url) => {
+      // Внешние ссылки
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) {
+        return `<a class="text-primary hover:underline" href="${url}" target="_blank" rel="noreferrer">${text}</a>`;
+      }
+      // Внутренние ссылки - добавляем data-атрибут для обработки кликов
+      return `<a class="text-primary hover:underline cursor-pointer" data-wiki-link="${url}">${text}</a>`;
+    });
 
   // Группируем списки
   processed = processed.replace(/(<li[\s\S]*?<\/li>)/g, '<ul class="list-disc list-inside mb-4 ml-4">$1</ul>');
@@ -711,6 +718,7 @@ export function BlogSite() {
   const [iframeHeight, setIframeHeight] = useState(500);
   const [isResizing, setIsResizing] = useState(false);
   const [expandedWikiCategories, setExpandedWikiCategories] = useState<Set<string>>(new Set());
+  const [expandedGalleryAlbums, setExpandedGalleryAlbums] = useState<Set<string>>(new Set());
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -731,6 +739,39 @@ export function BlogSite() {
       .then(index => setWikiCategoryIndex(index))
       .catch(err => console.error('Failed to load category index:', err));
   }, [wikiCategory, language]);
+
+  // Обработка кликов по внутренним ссылкам в markdown
+  useEffect(() => {
+    const handleWikiLinkClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('[data-wiki-link]') as HTMLElement;
+      
+      if (link) {
+        e.preventDefault();
+        const wikiLink = link.getAttribute('data-wiki-link');
+        
+        if (wikiLink) {
+          // Находим статью по относительному пути
+          const targetArticle = wiki.find(article => {
+            // Проверяем различные варианты совпадения
+            const fileName = wikiLink.replace('.md', '');
+            return article.id === fileName || 
+                   article.relativePath?.endsWith(wikiLink) ||
+                   article.relativePath?.endsWith(fileName + '.md');
+          });
+
+          if (targetArticle) {
+            handleOpenWiki(targetArticle);
+          } else {
+            console.warn('Wiki article not found:', wikiLink);
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', handleWikiLinkClick);
+    return () => document.removeEventListener('click', handleWikiLinkClick);
+  }, [wiki]);
 
   useEffect(() => {
     if (!isResizing) {
@@ -958,20 +999,95 @@ export function BlogSite() {
     });
   }, [wiki, wikiCategory, wikiSearch]);
 
-  const galleryAlbums = useMemo(() => {
-    const albumMap = new Map<string, number>();
+  // Построение дерева альбомов Gallery (аналогично Wiki)
+  const galleryAlbumTree = useMemo(() => {
+    interface AlbumNode {
+      name: string;
+      fullPath: string;
+      children: Map<string, AlbumNode>;
+      count: number;
+    }
+
+    const root = new Map<string, AlbumNode>();
+
     pictures.forEach((pic) => {
-      const album = (pic.path.split('/content/pictures/')[1] || pic.id).split('/')[0] || 'General';
-      albumMap.set(album, (albumMap.get(album) || 0) + 1);
+      // Извлекаем путь к папке из URL изображения
+      // Формат: /assets/picture-hash.jpg или подобный, нужно использовать pic.id или другое поле
+      const pathParts = pic.path.split('/');
+      const picturesIndex = pathParts.findIndex(part => part === 'pictures');
+      
+      if (picturesIndex === -1 || picturesIndex === pathParts.length - 1) {
+        // Нет структуры папок, помещаем в General
+        if (!root.has('General')) {
+          root.set('General', {
+            name: 'General',
+            fullPath: 'General',
+            children: new Map(),
+            count: 0,
+          });
+        }
+        root.get('General')!.count++;
+        return;
+      }
+
+      // Получаем сегменты пути после pictures/
+      const segments = pathParts.slice(picturesIndex + 1, -1); // Убираем имя файла
+      
+      if (segments.length === 0) {
+        if (!root.has('General')) {
+          root.set('General', {
+            name: 'General',
+            fullPath: 'General',
+            children: new Map(),
+            count: 0,
+          });
+        }
+        root.get('General')!.count++;
+        return;
+      }
+
+      let currentMap = root;
+      let currentPath = '';
+
+      segments.forEach((segment) => {
+        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+        
+        if (!currentMap.has(segment)) {
+          currentMap.set(segment, {
+            name: segment,
+            fullPath: currentPath,
+            children: new Map(),
+            count: 0,
+          });
+        }
+
+        const node = currentMap.get(segment)!;
+        node.count++;
+        currentMap = node.children;
+      });
     });
-    return Array.from(albumMap.entries()).map(([name, count]) => ({ id: name, name, count }));
+
+    return root;
   }, [pictures]);
+
+  const galleryAlbums = useMemo(() => {
+    return Array.from(galleryAlbumTree.keys());
+  }, [galleryAlbumTree]);
 
   const filteredGalleryImages = useMemo(() => {
     if (!selectedAlbum) return pictures;
+    
     return pictures.filter((pic) => {
-      const album = (pic.path.split('/content/pictures/')[1] || pic.id).split('/')[0] || 'General';
-      return album === selectedAlbum;
+      const pathParts = pic.path.split('/');
+      const picturesIndex = pathParts.findIndex(part => part === 'pictures');
+      
+      if (picturesIndex === -1) return false;
+      
+      const segments = pathParts.slice(picturesIndex + 1, -1);
+      const picPath = segments.join('/');
+      
+      // Проверяем точное совпадение или начало пути
+      return picPath === selectedAlbum || picPath.startsWith(selectedAlbum + '/');
     });
   }, [pictures, selectedAlbum]);
 
@@ -1754,9 +1870,50 @@ export function BlogSite() {
                           {item.subtitle && <span>· {item.subtitle}</span>}
                         </div>
                         <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                          {item.details?.map((d: string, di: number) => (
-                            <li key={di}>{d}</li>
-                          ))}
+                          {item.details?.map((d: string, di: number) => {
+                            // Парсим технологии в формате ^category^tech^
+                            const parts: (string | JSX.Element)[] = [];
+                            let lastIndex = 0;
+                            const regex = /\^([^\^]+)\^([^\^]+)\^/g;
+                            let match;
+                            
+                            while ((match = regex.exec(d)) !== null) {
+                              // Добавляем текст перед совпадением
+                              if (match.index > lastIndex) {
+                                parts.push(d.substring(lastIndex, match.index));
+                              }
+                              
+                              const category = match[1];
+                              const tech = match[2];
+                              
+                              // Добавляем кликабельный бадж с подсказкой категории
+                              parts.push(
+                                <span
+                                  key={`${di}-${match.index}`}
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors mx-0.5"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveSection('search');
+                                    setGlobalSearchQuery(tech);
+                                    window.history.pushState({}, '', `${basePath}search`);
+                                  }}
+                                  title={`Category: ${category}`}
+                                >
+                                  <span className="text-[10px] opacity-70">{category}</span>
+                                  <span className="font-medium">{tech}</span>
+                                </span>
+                              );
+                              
+                              lastIndex = match.index + match[0].length;
+                            }
+                            
+                            // Добавляем оставшийся текст
+                            if (lastIndex < d.length) {
+                              parts.push(d.substring(lastIndex));
+                            }
+                            
+                            return <li key={di}>{parts.length > 0 ? parts : d}</li>;
+                          })}
                         </ul>
                       </div>
                     ))}
@@ -1924,23 +2081,434 @@ export function BlogSite() {
             </div>
           </div>
 
-          {/* Tags Cloud */}
+          {/* Skills & Technologies Radar Chart */}
+          {mainAboutTab === 'cv' && cv && (() => {
+            // Собираем статистику по категориям из ВСЕГО резюме
+            const categoryCounts: Record<string, Record<string, number>> = {};
+            
+            Object.keys(cv).forEach(section => {
+              const sectionData = cv[section];
+              if (Array.isArray(sectionData)) {
+                sectionData.forEach((item: any) => {
+                  if (!item.details) return;
+                  
+                  item.details.forEach((detail: string) => {
+                    const matches = detail.match(/\^([^\^]+)\^([^\^]+)\^/g);
+                    if (matches) {
+                      matches.forEach(match => {
+                        const parts = match.split('^').filter(Boolean);
+                        if (parts.length >= 2) {
+                          const [category, tech] = parts;
+                          if (!categoryCounts[category]) {
+                            categoryCounts[category] = {};
+                          }
+                          categoryCounts[category][tech] = (categoryCounts[category][tech] || 0) + 1;
+                        }
+                      });
+                    }
+                  });
+                });
+              }
+            });
+            
+            // Обработка категории Business - добавляем управленческие термины
+            Object.keys(categoryCounts).forEach(cat => {
+              if (cat.toLowerCase().includes('management') || cat.toLowerCase().includes('leadership')) {
+                // Если есть отдельная категория Management/Leadership - переносим в Business
+                if (cat !== 'Business') {
+                  if (!categoryCounts['Business']) {
+                    categoryCounts['Business'] = {};
+                  }
+                  Object.entries(categoryCounts[cat]).forEach(([tech, count]) => {
+                    categoryCounts['Business'][tech] = (categoryCounts['Business'][tech] || 0) + count;
+                  });
+                  delete categoryCounts[cat];
+                }
+              }
+            });
+            
+            // Подсчитываем общее количество для каждой категории
+            const categoryTotals = Object.entries(categoryCounts).map(([category, techs]) => ({
+              category,
+              total: Object.values(techs).reduce((sum, count) => sum + count, 0),
+              techs
+            })).sort((a, b) => a.category.localeCompare(b.category)); // Сортировка по алфавиту
+            
+            if (categoryTotals.length === 0) return null;
+            
+            const maxValue = Math.max(...categoryTotals.map(c => c.total));
+            const numCategories = categoryTotals.length;
+            
+            // Параметры radar chart
+            const centerX = 250;
+            const centerY = 250;
+            const maxRadius = 180;
+            const levels = 5;
+            
+            // Функция для расчета точек многоугольника
+            const getPoint = (index: number, value: number) => {
+              const angle = (Math.PI * 2 * index) / numCategories - Math.PI / 2;
+              const radius = (value / maxValue) * maxRadius;
+              return {
+                x: centerX + radius * Math.cos(angle),
+                y: centerY + radius * Math.sin(angle)
+              };
+            };
+            
+            // Функция для расчета точек осей (labels)
+            const getLabelPoint = (index: number, distance: number) => {
+              const angle = (Math.PI * 2 * index) / numCategories - Math.PI / 2;
+              return {
+                x: centerX + distance * Math.cos(angle),
+                y: centerY + distance * Math.sin(angle)
+              };
+            };
+            
+            return (
+              <div className="relative overflow-hidden glass rounded-3xl p-8 neu-sm fade-in-up mb-6">
+                <div className="absolute inset-0 noise-overlay pointer-events-none" />
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold mb-6 text-center">
+                    {language === 'en' && 'Skills & Technologies Overview'}
+                    {language === 'ru' && 'Обзор навыков и технологий'}
+                    {language === 'fr' && 'Aperçu des compétences et technologies'}
+                  </h3>
+                  
+                  <div className="flex justify-center items-center">
+                    <div className="relative group">
+                      <svg width="550" height="550" viewBox="0 0 500 500" className="max-w-full">
+                        {/* Концентрические многоугольники (уровни) */}
+                        {Array.from({ length: levels }, (_, i) => {
+                          const radius = ((i + 1) / levels) * maxRadius;
+                          const value = Math.round((maxValue / levels) * (i + 1));
+                          const levelNumber = i + 1;
+                          
+                          // Определяем, является ли этот уровень "жирным" (только уровни 4, 7, 11, 14, 18)
+                          const thickLevels = [4, 7, 11, 14, 18];
+                          const isThickLevel = thickLevels.includes(levelNumber);
+                          
+                          // Строим точки многоугольника для этого уровня
+                          const polygonPoints = categoryTotals
+                            .map((cat, index) => {
+                              const angle = (Math.PI * 2 * index) / numCategories - Math.PI / 2;
+                              const x = centerX + radius * Math.cos(angle);
+                              const y = centerY + radius * Math.sin(angle);
+                              return `${x},${y}`;
+                            })
+                            .join(' ');
+                          
+                          return (
+                            <g key={i}>
+                              {/* Многоугольник уровня */}
+                              <polygon
+                                points={polygonPoints}
+                                fill="none"
+                                stroke="hsl(var(--foreground))"
+                                strokeWidth={isThickLevel ? "2.5" : "1"}
+                                opacity={isThickLevel ? "0.7" : "0.25"}
+                              />
+                              {/* Подписи уровней для всех линий */}
+                              <text
+                                x={centerX + 5}
+                                y={centerY - radius}
+                                className={isThickLevel ? "text-xs fill-foreground font-semibold" : "text-xs fill-muted-foreground"}
+                                opacity={isThickLevel ? "0.8" : "0.5"}
+                              >
+                                {value}
+                              </text>
+                            </g>
+                          );
+                        })}
+                        
+                        {/* Оси от центра к каждой категории */}
+                        {categoryTotals.map((cat, index) => {
+                          const point = getLabelPoint(index, maxRadius);
+                          return (
+                            <line
+                              key={`axis-${cat.category}`}
+                              x1={centerX}
+                              y1={centerY}
+                              x2={point.x}
+                              y2={point.y}
+                              stroke="hsl(var(--foreground))"
+                              strokeWidth="1.5"
+                              opacity="0.4"
+                            />
+                          );
+                        })}
+                        
+                        {/* Заливка области данных */}
+                        <polygon
+                          points={categoryTotals
+                            .map((cat, index) => {
+                              const point = getPoint(index, cat.total);
+                              return `${point.x},${point.y}`;
+                            })
+                            .join(' ')}
+                          fill="hsl(var(--primary))"
+                          opacity="0.2"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth="2"
+                        />
+                        
+                        {/* Точки данных с интерактивностью */}
+                        {categoryTotals.map((cat, index) => {
+                          const point = getPoint(index, cat.total);
+                          const techList = Object.entries(cat.techs)
+                            .sort((a, b) => b[1] - a[1])
+                            .slice(0, 10)
+                            .map(([tech, count]) => `${tech}: ${count}`)
+                            .join('\n');
+                          
+                          return (
+                            <g key={`point-${cat.category}`}>
+                              <circle
+                                cx={point.x}
+                                cy={point.y}
+                                r="8"
+                                fill="hsl(var(--primary))"
+                                className="cursor-pointer transition-all hover:scale-125"
+                                style={{ transformOrigin: `${point.x}px ${point.y}px` }}
+                              >
+                                <title>{`${cat.category} (Total: ${cat.total})\n\n${techList}${Object.keys(cat.techs).length > 10 ? `\n\n+${Object.keys(cat.techs).length - 10} more technologies` : ''}`}</title>
+                              </circle>
+                            </g>
+                          );
+                        })}
+                        
+                        {/* Подписи категорий */}
+                        {categoryTotals.map((cat, index) => {
+                          const labelPoint = getLabelPoint(index, maxRadius + 45);
+                          return (
+                            <text
+                              key={`label-${cat.category}`}
+                              x={labelPoint.x}
+                              y={labelPoint.y}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="text-xs font-bold fill-current cursor-pointer hover:fill-primary transition-colors"
+                              onClick={() => {
+                                // При клике на категорию - показываем первую технологию из неё
+                                const topTech = Object.entries(cat.techs).sort((a, b) => b[1] - a[1])[0][0];
+                                setActiveSection('search');
+                                setGlobalSearchQuery(topTech);
+                                window.history.pushState({}, '', `${basePath}search`);
+                              }}
+                            >
+                              {cat.category}
+                            </text>
+                          );
+                        })}
+                        
+                        {/* Центральная точка */}
+                        <circle
+                          cx={centerX}
+                          cy={centerY}
+                          r="5"
+                          fill="hsl(var(--muted-foreground))"
+                          opacity="0.5"
+                        />
+                      </svg>
+                      
+                    </div>
+                  </div>
+                  
+                  {/* Легенда */}
+                  <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {categoryTotals.slice(0, 8).map((cat, index) => (
+                      <div key={cat.category} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
+                        <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium truncate">{cat.category}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {cat.total} {language === 'ru' ? 'упоминаний' : language === 'fr' ? 'mentions' : 'mentions'}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Tags Pie Chart */}
           <div className="relative overflow-hidden glass rounded-3xl p-8 neu-sm fade-in-up">
             <div className="absolute inset-0 noise-overlay pointer-events-none" />
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4">{ui.tags}</h3>
-              <div className="flex flex-wrap gap-2">
-                {Array.from(
-                  new Set<string>([
-                    ...posts.flatMap((p) => p.tags || []),
-                    ...wiki.flatMap((w) => w.tags || []),
-                  ]),
-                ).map((tag) => (
-                  <span key={tag} className="px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-sm">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+              <h3 className="text-2xl font-bold mb-6 text-center">{ui.tags}</h3>
+              
+              {(() => {
+                // Собираем статистику по тегам
+                const tagCounts: Record<string, number> = {};
+                posts.forEach(p => p.tags?.forEach(tag => {
+                  tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                }));
+                wiki.forEach(w => w.tags?.forEach(tag => {
+                  tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                }));
+                projects.forEach(pr => pr.tags?.forEach(tag => {
+                  tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                }));
+                
+                const sortedTags = Object.entries(tagCounts)
+                  .sort((a, b) => b[1] - a[1]);
+                
+                const topTags = sortedTags.slice(0, 27);
+                const hasMore = sortedTags.length > 27;
+                // Считаем totalCount ТОЛЬКО для отображаемых тегов (топ-27)
+                const totalCount = topTags.reduce((sum, [, count]) => sum + count, 0);
+                
+                // Генерируем цвета для каждого тега
+                const colors = [
+                  'hsl(200, 90%, 55%)', 'hsl(160, 80%, 52%)', 'hsl(45, 98%, 62%)',
+                  'hsl(280, 70%, 62%)', 'hsl(340, 75%, 58%)', 'hsl(120, 65%, 50%)',
+                  'hsl(60, 90%, 55%)', 'hsl(180, 75%, 45%)', 'hsl(300, 80%, 60%)',
+                  'hsl(30, 85%, 55%)', 'hsl(210, 85%, 60%)', 'hsl(150, 70%, 50%)',
+                  'hsl(270, 75%, 65%)', 'hsl(0, 80%, 60%)', 'hsl(90, 70%, 50%)',
+                  'hsl(240, 70%, 60%)', 'hsl(330, 75%, 60%)', 'hsl(75, 80%, 55%)',
+                  'hsl(195, 85%, 50%)', 'hsl(315, 70%, 60%)', 'hsl(45, 90%, 60%)',
+                  'hsl(165, 75%, 48%)', 'hsl(255, 75%, 62%)', 'hsl(15, 80%, 58%)',
+                  'hsl(135, 70%, 52%)', 'hsl(285, 75%, 60%)', 'hsl(225, 80%, 58%)',
+                ];
+                
+                // Генерируем SVG круговую диаграмму
+                const radius = 120;
+                const centerX = 150;
+                const centerY = 150;
+                
+                // Предварительно рассчитываем углы для каждого сегмента
+                const segments = topTags.map(([tag, count]) => {
+                  const percentage = count / totalCount;
+                  return {
+                    tag,
+                    count,
+                    percentage,
+                    angle: percentage * 360
+                  };
+                });
+                
+                // Накапливаем углы
+                let accumulatedAngle = 0;
+                const segmentsWithAngles = segments.map(seg => {
+                  const startAngle = accumulatedAngle;
+                  const endAngle = accumulatedAngle + seg.angle;
+                  accumulatedAngle = endAngle;
+                  return { ...seg, startAngle, endAngle };
+                });
+                
+                return (
+                  <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
+                    {/* Круговая диаграмма */}
+                    <div className="relative">
+                      <svg width="300" height="300" viewBox="0 0 300 300" className="transform -rotate-90">
+                        {segmentsWithAngles.map((seg, index) => {
+                          const x1 = centerX + radius * Math.cos((seg.startAngle * Math.PI) / 180);
+                          const y1 = centerY + radius * Math.sin((seg.startAngle * Math.PI) / 180);
+                          const x2 = centerX + radius * Math.cos((seg.endAngle * Math.PI) / 180);
+                          const y2 = centerY + radius * Math.sin((seg.endAngle * Math.PI) / 180);
+                          
+                          const largeArc = seg.angle > 180 ? 1 : 0;
+                          
+                          const pathData = [
+                            `M ${centerX} ${centerY}`,
+                            `L ${x1} ${y1}`,
+                            `A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`,
+                            'Z'
+                          ].join(' ');
+                          
+                          return (
+                            <g key={seg.tag}>
+                              <path
+                                d={pathData}
+                                fill={colors[index % colors.length]}
+                                opacity="0.9"
+                                className="hover:opacity-100 transition-opacity cursor-pointer"
+                                onClick={() => {
+                                  setActiveSection('search');
+                                  setGlobalSearchQuery(seg.tag);
+                                  window.history.pushState({}, '', `${basePath}search`);
+                                }}
+                              >
+                                <title>{seg.tag}: {seg.count} ({(seg.percentage * 100).toFixed(1)}%)</title>
+                              </path>
+                              {/* Показываем процент если сегмент достаточно большой */}
+                              {seg.percentage > 0.05 && (() => {
+                                const midAngle = (seg.startAngle + seg.endAngle) / 2;
+                                const labelRadius = radius * 0.7;
+                                const labelX = centerX + labelRadius * Math.cos((midAngle * Math.PI) / 180);
+                                const labelY = centerY + labelRadius * Math.sin((midAngle * Math.PI) / 180);
+                                
+                                return (
+                                  <text
+                                    x={labelX}
+                                    y={labelY}
+                                    className="text-xs font-bold pointer-events-none transform rotate-90"
+                                    fill="white"
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                    style={{ 
+                                      paintOrder: 'stroke',
+                                      stroke: 'rgba(0,0,0,0.5)',
+                                      strokeWidth: '2px'
+                                    }}
+                                  >
+                                    {(seg.percentage * 100).toFixed(0)}%
+                                  </text>
+                                );
+                              })()}
+                            </g>
+                          );
+                        })}
+                        {/* Центральный круг для красоты */}
+                        <circle
+                          cx={centerX}
+                          cy={centerY}
+                          r="40"
+                          fill="hsl(var(--background))"
+                          className="opacity-95"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold">{sortedTags.length}</div>
+                          <div className="text-xs text-muted-foreground uppercase tracking-wider">Tags</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Легенда */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-2xl">
+                      {topTags.map(([tag, count], index) => (
+                        <button
+                          key={tag}
+                          onClick={() => {
+                            setActiveSection('search');
+                            setGlobalSearchQuery(tag);
+                            window.history.pushState({}, '', `${basePath}search`);
+                          }}
+                          className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors text-left"
+                        >
+                          <div 
+                            className="w-4 h-4 rounded flex-shrink-0"
+                            style={{ backgroundColor: colors[index % colors.length] }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">{tag}</div>
+                            <div className="text-xs text-muted-foreground">{count} {count === 1 ? 'item' : 'items'}</div>
+                          </div>
+                        </button>
+                      ))}
+                      {hasMore && (
+                        <div className="flex items-center gap-2 p-2 text-muted-foreground">
+                          <div className="w-4 h-4 rounded bg-muted flex-shrink-0" />
+                          <div className="text-sm">... and {sortedTags.length - 27} more</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </section>
@@ -2200,6 +2768,64 @@ export function BlogSite() {
                   const hasSubcategories = cat !== 'All' && subcategories.length > 0;
                   const isExpanded = expandedWikiCategories.has(cat);
                   
+                  // Рекурсивный рендер подкатегорий
+                  const renderSubcategories = (subcats: [string, any][], level: number = 1): JSX.Element => {
+                    return (
+                      <>
+                        {subcats.map(([subName, subNode]) => {
+                          const subPath = subNode.fullPath;
+                          const hasChildren = subNode.children && subNode.children.size > 0;
+                          const isSubExpanded = expandedWikiCategories.has(subPath);
+                          
+                          return (
+                            <div key={subPath} className="space-y-1">
+                              <div className="flex items-center gap-1" style={{ paddingLeft: `${level * 8}px` }}>
+                                {hasChildren && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const newExpanded = new Set(expandedWikiCategories);
+                                      if (isSubExpanded) {
+                                        newExpanded.delete(subPath);
+                                      } else {
+                                        newExpanded.add(subPath);
+                                      }
+                                      setExpandedWikiCategories(newExpanded);
+                                    }}
+                                    className="p-1 hover:bg-muted rounded transition-colors flex-shrink-0"
+                                  >
+                                    {isSubExpanded ? (
+                                      <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                                    ) : (
+                                      <ChevronRight className="w-3 h-3 text-muted-foreground" />
+                                    )}
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => {
+                                    setActiveWiki(null);
+                                    setWikiCategory(subPath);
+                                  }}
+                                  className={`flex-1 flex items-center justify-between px-2 py-1 rounded-lg text-xs transition-all ${
+                                    wikiCategory === subPath ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                  } ${!hasChildren ? 'ml-4' : ''}`}
+                                >
+                                  <span>{subName}</span>
+                                  <span className="text-xs opacity-60">{subNode.count}</span>
+                                </button>
+                              </div>
+                              {hasChildren && isSubExpanded && (
+                                <div className="space-y-1">
+                                  {renderSubcategories(Array.from(subNode.children.entries()), level + 1)}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </>
+                    );
+                  };
+                  
                   return (
                     <div key={cat} className="space-y-1">
                       <div className="flex items-center gap-1">
@@ -2241,22 +2867,8 @@ export function BlogSite() {
                         </button>
                       </div>
                       {hasSubcategories && isExpanded && (
-                        <div className="ml-9 space-y-1">
-                          {subcategories.map(([subName, subNode]) => (
-                            <button
-                              key={subNode.fullPath}
-                              onClick={() => {
-                                setActiveWiki(null);
-                                setWikiCategory(subNode.fullPath);
-                              }}
-                              className={`w-full flex items-center justify-between px-2 py-1 rounded-lg text-xs transition-all ${
-                                wikiCategory === subNode.fullPath ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                              }`}
-                            >
-                              <span>{subName}</span>
-                              <span className="text-xs opacity-60">{subNode.count}</span>
-                            </button>
-                          ))}
+                        <div className="ml-4 space-y-1">
+                          {renderSubcategories(subcategories)}
                         </div>
                       )}
                     </div>
@@ -2416,9 +3028,49 @@ export function BlogSite() {
                     {item.subtitle && <span>· {item.subtitle}</span>}
                   </div>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    {item.details?.map((d: string, di: number) => (
-                      <li key={di}>{d}</li>
-                    ))}
+                    {item.details?.map((d: string, di: number) => {
+                      // Парсим технологии в формате ^category^tech^
+                      const parts: (string | JSX.Element)[] = [];
+                      let lastIndex = 0;
+                      const regex = /\^([^\^]+)\^([^\^]+)\^/g;
+                      let match;
+                      
+                      while ((match = regex.exec(d)) !== null) {
+                        // Добавляем текст перед совпадением
+                        if (match.index > lastIndex) {
+                          parts.push(d.substring(lastIndex, match.index));
+                        }
+                        
+                        const category = match[1];
+                        const tech = match[2];
+                        
+                        // Добавляем кликабельный бадж
+                        parts.push(
+                          <span
+                            key={`${di}-${match.index}`}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors mx-0.5"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveSection('search');
+                              setGlobalSearchQuery(tech);
+                              window.history.pushState({}, '', `${basePath}search`);
+                            }}
+                          >
+                            <span className="text-[10px] opacity-70">{category}</span>
+                            <span className="font-medium">{tech}</span>
+                          </span>
+                        );
+                        
+                        lastIndex = match.index + match[0].length;
+                      }
+                      
+                      // Добавляем оставшийся текст
+                      if (lastIndex < d.length) {
+                        parts.push(d.substring(lastIndex));
+                      }
+                      
+                      return <li key={di}>{parts.length > 0 ? parts : d}</li>;
+                    })}
                   </ul>
                 </div>
               ))}
@@ -2487,25 +3139,120 @@ export function BlogSite() {
                     <span className="text-xs text-muted-foreground">{pictures.length}</span>
                   </button>
 
-                  {/* Список альбомов */}
-                  {galleryAlbums.map((album) => (
-                    <div key={album.id} className="space-y-1">
-                      <button
-                        onClick={() => {
-                          setSelectedAlbum(album.id);
-                          setGalleryPage(1);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
-                          selectedAlbum === album.id
-                            ? 'neu-sm bg-primary/10 text-primary'
-                            : 'hover:bg-muted text-foreground'
-                        }`}
-                      >
-                        <span>{album.name}</span>
-                        <span className="text-xs text-muted-foreground">{album.count}</span>
-                      </button>
-                    </div>
-                  ))}
+                  {/* Список альбомов с рекурсией */}
+                  {galleryAlbums.map((albumName) => {
+                    const albumNode = galleryAlbumTree.get(albumName);
+                    if (!albumNode) return null;
+                    
+                    const subalbums = Array.from(albumNode.children.entries());
+                    const hasSubalbums = subalbums.length > 0;
+                    const isExpanded = expandedGalleryAlbums.has(albumName);
+                    
+                    // Рекурсивный рендер подальбомов
+                    const renderSubalbums = (subalbs: [string, any][], level: number = 1): JSX.Element => {
+                      return (
+                        <>
+                          {subalbs.map(([subName, subNode]) => {
+                            const subPath = subNode.fullPath;
+                            const hasChildren = subNode.children && subNode.children.size > 0;
+                            const isSubExpanded = expandedGalleryAlbums.has(subPath);
+                            
+                            return (
+                              <div key={subPath} className="space-y-1">
+                                <div className="flex items-center gap-1" style={{ paddingLeft: `${level * 8}px` }}>
+                                  {hasChildren && (
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const newExpanded = new Set(expandedGalleryAlbums);
+                                        if (isSubExpanded) {
+                                          newExpanded.delete(subPath);
+                                        } else {
+                                          newExpanded.add(subPath);
+                                        }
+                                        setExpandedGalleryAlbums(newExpanded);
+                                      }}
+                                      className="p-1 hover:bg-muted rounded transition-colors flex-shrink-0"
+                                    >
+                                      {isSubExpanded ? (
+                                        <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                                      ) : (
+                                        <ChevronRight className="w-3 h-3 text-muted-foreground" />
+                                      )}
+                                    </button>
+                                  )}
+                                  <button
+                                    onClick={() => {
+                                      setSelectedAlbum(subPath);
+                                      setGalleryPage(1);
+                                    }}
+                                    className={`flex-1 flex items-center justify-between px-2 py-1 rounded-lg text-xs transition-all ${
+                                      selectedAlbum === subPath ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                    } ${!hasChildren ? 'ml-4' : ''}`}
+                                  >
+                                    <span>{subName}</span>
+                                    <span className="text-xs opacity-60">{subNode.count}</span>
+                                  </button>
+                                </div>
+                                {hasChildren && isSubExpanded && (
+                                  <div className="space-y-1">
+                                    {renderSubalbums(Array.from(subNode.children.entries()), level + 1)}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </>
+                      );
+                    };
+                    
+                    return (
+                      <div key={albumName} className="space-y-1">
+                        <div className="flex items-center gap-1">
+                          {hasSubalbums && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const newExpanded = new Set(expandedGalleryAlbums);
+                                if (isExpanded) {
+                                  newExpanded.delete(albumName);
+                                } else {
+                                  newExpanded.add(albumName);
+                                }
+                                setExpandedGalleryAlbums(newExpanded);
+                              }}
+                              className="p-1 hover:bg-muted rounded transition-colors"
+                            >
+                              {isExpanded ? (
+                                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                              ) : (
+                                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                              )}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              setSelectedAlbum(albumNode.fullPath);
+                              setGalleryPage(1);
+                            }}
+                            className={`flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                              selectedAlbum === albumNode.fullPath
+                                ? 'neu-sm bg-primary/10 text-primary'
+                                : 'hover:bg-muted text-foreground'
+                            } ${!hasSubalbums ? 'ml-5' : ''}`}
+                          >
+                            <span>{albumName}</span>
+                            <span className="text-xs text-muted-foreground">{albumNode.count}</span>
+                          </button>
+                        </div>
+                        {hasSubalbums && isExpanded && (
+                          <div className="ml-4 space-y-1">
+                            {renderSubalbums(subalbums)}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </aside>
 

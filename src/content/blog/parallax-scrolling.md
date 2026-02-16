@@ -12,7 +12,7 @@ category: "Design"
 tags: ["css", "animation", "ux"]
 excerpt: "Discover techniques for creating smooth, performant parallax effects that enhance user experience."
 author: "Alex"
-preview: /src/content/pictures/wallpapers/ios6-background-3.png
+preview: /src/content/pictures/wallpapers/ios/ios6-background-3.png
 ---
 
 <!-- lang:en -->
