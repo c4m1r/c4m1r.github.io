@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { loadBlogPosts, type ContentItem } from '../utils/contentLoader';
+import { loadArticles } from '../domain/articles/articles.loader';
+import { type ContentItem } from '../utils/contentLoader';
 import { Notepad } from './notepad';
 import { useApp } from '../contexts/AppContext';
 
@@ -12,7 +13,7 @@ export function BlogApp() {
 
   useEffect(() => {
     setLoading(true);
-    loadBlogPosts(language).then((items) => {
+    loadArticles(language).then((items) => {
       setPosts(items);
       setSelectedPost(items[0] ?? null);
       setLoading(false);

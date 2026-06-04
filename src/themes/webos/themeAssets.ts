@@ -6,7 +6,6 @@ import folderDocumentsWebos from '../winxp/assets/icons/folder-documents.png';
 import folderPicturesWebos from '../winxp/assets/icons/folder-pictures.png';
 import folderMusicWebos from '../winxp/assets/icons/folder-music.png';
 import folderRecentWebos from '../winxp/assets/icons/folder-recent.png';
-import startIconWebos from '../winxp/assets/widgets/windows.png';
 import trayExpandWebos from '../winxp/assets/widgets/tray-expand.png';
 import ieIconWebos from '../winxp/assets/icons/ie.png';
 import mailIconWebos from '../winxp/assets/icons/outlook.png';

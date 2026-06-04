@@ -1,195 +1,85 @@
-import { useEffect, useState } from 'react';
-import { ChevronDown, ChevronRight, FileText, Folder, ArrowLeft } from 'lucide-react';
-import { loadWikiArticles, type ContentItem } from '../../utils/contentLoader';
-import { Notepad } from '../notepad';
+import { useState } from 'react';
+import { ChevronDown, ChevronRight, FileText, Folder, Home } from 'lucide-react';
+import { useWiki } from '../../domain/wiki/useWiki';
+import { markdownToHtml } from '../../domain/content/markdown';
+import { type WikiArticle, type WikiCategory } from '../../domain/wiki/wiki.types';
 import { useApp } from '../../contexts/AppContext';
 
-interface WikiFile {
-  id: string;
-  title: string;
-  content: string;
-  date?: string;
-}
-
-interface WikiCategory {
-  id: string;
-  name: string;
-  files: WikiFile[];
-  children: WikiCategory[];
-}
-
-interface WikiCategoryNode extends WikiCategory {
-  childrenMap: Map<string, WikiCategoryNode>;
-}
-
-const createCategoryNode = (id: string, name: string): WikiCategoryNode => ({
-  id,
-  name,
-  files: [],
-  children: [],
-  childrenMap: new Map(),
-});
-
-const buildWikiTree = (items: ContentItem[]): WikiCategory[] => {
-  const rootMap = new Map<string, WikiCategoryNode>();
-  const ensureNode = (map: Map<string, WikiCategoryNode>, id: string, name: string) => {
-    if (!map.has(id)) {
-      map.set(id, createCategoryNode(id, name));
-    }
-    return map.get(id)!;
-  };
-
-  items.forEach((item) => {
-    const segments = item.pathSegments && item.pathSegments.length > 0 ? item.pathSegments : ['Wiki'];
-    let currentMap = rootMap;
-    let currentNode: WikiCategoryNode | null = null;
-
-    segments.forEach((segment, index) => {
-      const pathId = currentNode ? `${currentNode.id}/${segment}` : segment;
-      const node = ensureNode(currentMap, pathId, segment);
-      currentNode = node;
-      currentMap = node.childrenMap;
-    });
-
-    const targetNode = currentNode ?? ensureNode(rootMap, 'Wiki', 'Wiki');
-    targetNode.files.push({
-      id: item.id,
-      title: item.title,
-      content: item.content,
-      date: item.date,
-    });
-  });
-
-  const sortCategories = (node: WikiCategoryNode): WikiCategory => {
-    const sortedChildren = Array.from(node.childrenMap.values())
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map(sortCategories);
-
-    return {
-      id: node.id,
-      name: node.name,
-      files: node.files.sort((a, b) => a.title.localeCompare(b.title)),
-      children: sortedChildren,
-    };
-  };
-
-  return Array.from(rootMap.values())
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map(sortCategories);
-};
-
-const findFirstFile = (categories: WikiCategory[]): WikiFile | null => {
-  for (const category of categories) {
-    if (category.files.length > 0) {
-      return category.files[0];
-    }
-    const childFile = findFirstFile(category.children);
-    if (childFile) {
-      return childFile;
-    }
-  }
-  return null;
-};
-
 export function WikiApp() {
+  const { categories, loading } = useWiki();
   const { language } = useApp();
-  const [categories, setCategories] = useState<WikiCategory[]>([]);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [selectedFile, setSelectedFile] = useState<WikiFile | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<WikiArticle | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<WikiCategory | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [initialised, setInitialised] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    loadWikiArticles(undefined, language).then((articles) => {
-      const tree = buildWikiTree(articles);
-      setCategories(tree);
-      setExpanded(new Set(tree.map((cat) => cat.id)));
-      // Выбираем первую категорию по умолчанию
-      if (tree.length > 0) {
-        const firstCategory = tree[0].children.length > 0 ? tree[0].children[0] : tree[0];
-        setSelectedCategory(firstCategory);
-      }
-      setLoading(false);
-    });
-  }, [language]);
+  // Auto-select first category on load
+  if (!loading && !initialised && categories.length > 0) {
+    const firstCat = categories[0].children.length > 0 ? categories[0].children[0] : categories[0];
+    setExpanded(new Set(categories.map((c) => c.id)));
+    setSelectedCategory(firstCat);
+    setInitialised(true);
+  }
 
-  const toggleCategory = (categoryId: string) => {
+  const toggleCategory = (id: string) =>
     setExpanded((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(categoryId)) {
-        updated.delete(categoryId);
-      } else {
-        updated.add(categoryId);
-      }
-      return updated;
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
     });
-  };
 
-  const handleCategoryClick = (category: WikiCategory, e: React.MouseEvent) => {
+  const handleCategoryClick = (cat: WikiCategory, e: React.MouseEvent) => {
     e.stopPropagation();
-    // Закрываем просмотр файла и открываем категорию
-    setSelectedFile(null);
-    setSelectedCategory(category);
-    // Раскрываем категорию если она была свёрнута
-    if (!expanded.has(category.id)) {
-      toggleCategory(category.id);
-    }
+    setSelectedArticle(null);
+    setSelectedCategory(cat);
+    if (!expanded.has(cat.id)) toggleCategory(cat.id);
   };
 
-  // Подсчёт всех заметок в категории и подкатегориях
-  const countFiles = (category: WikiCategory): number => {
-    let count = category.files.length;
-    category.children.forEach(child => {
-      count += countFiles(child);
-    });
-    return count;
-  };
+  const countArticles = (cat: WikiCategory): number =>
+    cat.articles.length + cat.children.reduce((n, c) => n + countArticles(c), 0);
 
-  // Получить все файлы из категории и подкатегорий
-  const getAllFiles = (category: WikiCategory): WikiFile[] => {
-    let allFiles = [...category.files];
-    category.children.forEach(child => {
-      allFiles = allFiles.concat(getAllFiles(child));
-    });
-    return allFiles;
-  };
+  const getAllArticles = (cat: WikiCategory): WikiArticle[] =>
+    [...cat.articles, ...cat.children.flatMap(getAllArticles)];
 
-  const renderCategory = (category: WikiCategory, level = 0) => {
-    const hasChildren = category.children.length > 0;
-    const categoryId = category.id;
-    const isExpanded = expanded.has(categoryId);
-    const isSelected = selectedCategory?.id === categoryId;
-    const filesCount = countFiles(category);
+  // Breadcrumb segments from pathSegments
+  const breadcrumbs = selectedArticle
+    ? [...(selectedArticle.pathSegments ?? []), selectedArticle.title]
+    : selectedCategory
+    ? selectedCategory.pathSegments
+    : [];
+
+  const renderCategory = (cat: WikiCategory, level = 0) => {
+    const isExpanded = expanded.has(cat.id);
+    const isSelected = selectedCategory?.id === cat.id;
+    const count = countArticles(cat);
+    const hasChildren = cat.children.length > 0;
 
     return (
-      <div key={categoryId}>
-        <div
-          className={`flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 rounded ${
-            isSelected ? 'bg-blue-100' : ''
-          }`}
-          style={{ paddingLeft: `${level * 16 + 8}px` }}
-          onClick={(e) => {
-            handleCategoryClick(category, e);
-          }}
+      <div key={cat.id} className="wiki-app__category">
+        <button
+          className={`os-list-item wiki-app__category-btn ${isSelected ? 'selected os-list-item--selected' : ''}`}
+          style={{ paddingLeft: `${level * 14 + 8}px` }}
+          onClick={(e) => handleCategoryClick(cat, e)}
         >
           {hasChildren ? (
-            isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />
-          ) : (
-            <div className="w-4" />
-          )}
-          <Folder size={14} className="text-blue-600" />
-          <span className="font-semibold flex-1">{category.name}</span>
-          {filesCount > 0 && (
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-              {filesCount}
+            <span
+              className="wiki-app__chevron"
+              onClick={(e) => { e.stopPropagation(); toggleCategory(cat.id); }}
+            >
+              {isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
             </span>
+          ) : (
+            <span className="wiki-app__chevron-placeholder" />
           )}
-        </div>
-
+          <Folder size={13} className="wiki-app__folder-icon" />
+          <span className="wiki-app__category-name">{cat.name}</span>
+          {count > 0 && (
+            <span className="wiki-app__badge">{count}</span>
+          )}
+        </button>
         {isExpanded && hasChildren && (
-          <div className="ml-2">
-            {category.children.map((child) => renderCategory(child, level + 1))}
+          <div className="wiki-app__children">
+            {cat.children.map((child) => renderCategory(child, level + 1))}
           </div>
         )}
       </div>
@@ -198,91 +88,146 @@ export function WikiApp() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full bg-white">
-        <div className="text-center text-sm text-gray-500">Загрузка Wiki...</div>
+      <div className="wiki-app wiki-app--loading os-window-body">
+        <span>{language === 'ru' ? 'Загрузка Wiki...' : 'Loading Wiki...'}</span>
       </div>
     );
   }
 
   return (
-    <div className="flex h-full bg-white">
-      <aside className="w-64 border-r border-gray-200 overflow-y-auto">
-        <div className="p-4 border-b bg-blue-600 text-white">
-          <h2 className="font-bold text-lg">Wiki</h2>
-          <p className="text-xs text-blue-100">Категории и заметки</p>
+    <div className="wiki-app os-window-body">
+      {/* Sidebar */}
+      <aside className="wiki-app__sidebar os-sidebar">
+        <div className="wiki-app__sidebar-header os-toolbar">
+          <h2 className="wiki-app__sidebar-title">Wiki</h2>
+          <span className="wiki-app__sidebar-sub">
+            {language === 'ru' ? 'База знаний' : 'Knowledge Base'}
+          </span>
         </div>
-        <div className="p-2">
+        <div className="wiki-app__list os-list">
           {categories.length === 0 ? (
-            <div className="text-center text-gray-500 text-sm py-6">Wiki пуст</div>
+            <div className="wiki-app__empty">
+              {language === 'ru' ? 'Wiki пуст' : 'No wiki articles'}
+            </div>
           ) : (
-            categories.map((category) => renderCategory(category))
+            categories.map((cat) => renderCategory(cat))
           )}
         </div>
       </aside>
 
-      <section className="flex-1 min-h-0 bg-white overflow-y-auto">
-        {selectedFile ? (
-          <div className="h-full flex flex-col">
-            <div className="p-4 border-b border-gray-200 bg-gray-50">
-              <button
-                onClick={() => setSelectedFile(null)}
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
-              >
-                <ArrowLeft size={16} />
-                Назад к категории
-              </button>
-            </div>
-            <div className="flex-1 overflow-hidden">
-              <Notepad initialContent={selectedFile.content} />
-            </div>
+      {/* Main panel */}
+      <section className="wiki-app__reader os-panel">
+        {/* Breadcrumb toolbar */}
+        {breadcrumbs.length > 0 && (
+          <div className="wiki-app__breadcrumbs os-toolbar">
+            <Home size={12} className="wiki-app__breadcrumb-home" />
+            {breadcrumbs.map((seg, i) => (
+              <span key={i} className="wiki-app__breadcrumb-segment">
+                <span className="wiki-app__breadcrumb-sep">/</span>
+                <span className={i === breadcrumbs.length - 1 ? 'wiki-app__breadcrumb-current' : ''}>
+                  {seg}
+                </span>
+              </span>
+            ))}
           </div>
-        ) : selectedCategory ? (
-          <div className="p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">{selectedCategory.name}</h2>
-              <p className="text-sm text-gray-500">
-                {countFiles(selectedCategory)} {countFiles(selectedCategory) === 1 ? 'статья' : 'статей'}
-              </p>
-            </div>
-            
-            {(() => {
-              const allFiles = getAllFiles(selectedCategory);
-              return allFiles.length > 0 ? (
-                <div className="grid gap-4">
-                  {allFiles.map((file) => (
-                    <div
-                      key={file.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                      onClick={() => setSelectedFile(file)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <FileText size={20} className="text-blue-600 mt-1 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-800 mb-1">{file.title}</h3>
-                          {file.date && (
-                            <p className="text-xs text-gray-500">
-                              Обновлено: {file.date}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+        )}
+
+        {selectedArticle ? (
+          <div className="wiki-app__article-view">
+            {/* Article meta */}
+            <div className="wiki-app__meta">
+              <h2 className="wiki-app__article-title">{selectedArticle.title}</h2>
+              <div className="wiki-app__meta-row">
+                {selectedArticle.updatedAt && (
+                  <span className="wiki-app__meta-date">
+                    {language === 'ru' ? 'Обновлено: ' : 'Updated: '}
+                    {selectedArticle.updatedAt}
+                  </span>
+                )}
+                {selectedArticle.author && (
+                  <span className="wiki-app__meta-author">{selectedArticle.author}</span>
+                )}
+              </div>
+              {/* Tags */}
+              {selectedArticle.tags && selectedArticle.tags.length > 0 && (
+                <div className="wiki-app__related">
+                  {selectedArticle.tags.map((tag) => (
+                    <span key={tag} className="wiki-app__tag">{tag}</span>
                   ))}
                 </div>
+              )}
+            </div>
+
+            {/* Markdown content */}
+            <article
+              className="wiki-app__content prose"
+              dangerouslySetInnerHTML={{ __html: markdownToHtml(selectedArticle.content) }}
+            />
+          </div>
+        ) : selectedCategory ? (
+          <div className="wiki-app__category-view">
+            {/* Category index (if index.md exists) */}
+            {selectedCategory.index && (
+              <div className="wiki-app__index-view">
+                <div className="wiki-app__meta">
+                  <h2 className="wiki-app__article-title">{selectedCategory.index.title}</h2>
+                </div>
+                <article
+                  className="wiki-app__content wiki-app__index-content prose"
+                  dangerouslySetInnerHTML={{ __html: markdownToHtml(selectedCategory.index.content) }}
+                />
+                <div className="wiki-app__divider" />
+              </div>
+            )}
+
+            {/* Article list */}
+            <div className="wiki-app__category-header wiki-app__meta">
+              <h2 className="wiki-app__article-title">{selectedCategory.name}</h2>
+              <p className="wiki-app__meta-count">
+                {countArticles(selectedCategory)}{' '}
+                {language === 'ru' ? 'статей' : 'articles'}
+              </p>
+            </div>
+
+            {(() => {
+              const articles = getAllArticles(selectedCategory);
+              return articles.length > 0 ? (
+                <ul className="wiki-app__article-list os-list">
+                  {articles.map((art) => (
+                    <li
+                      key={art.id}
+                      className="wiki-app__article-item os-list-item"
+                      onClick={() => setSelectedArticle(art)}
+                    >
+                      <FileText size={14} className="wiki-app__file-icon" />
+                      <div className="wiki-app__article-info">
+                        <span className="wiki-app__article-name">{art.title}</span>
+                        {art.updatedAt && (
+                          <span className="wiki-app__article-date">{art.updatedAt}</span>
+                        )}
+                        {art.tags && art.tags.length > 0 && (
+                          <span className="wiki-app__tag-list">
+                            {art.tags.map((t) => (
+                              <span key={t} className="wiki-app__tag">{t}</span>
+                            ))}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               ) : (
-                <div className="text-center text-gray-400 py-12">
-                  <FileText size={48} className="mx-auto mb-4 opacity-40" />
-                  <p>В этой категории пока нет статей</p>
+                <div className="wiki-app__empty-cat">
+                  <FileText size={40} className="wiki-app__empty-icon" />
+                  <p>{language === 'ru' ? 'Нет статей в этой категории' : 'No articles in this category'}</p>
                 </div>
               );
             })()}
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            <div className="text-center">
-              <Folder size={48} className="mx-auto mb-4 opacity-40" />
-              <p>Выберите категорию слева</p>
-            </div>
+          <div className="wiki-app__welcome">
+            <Folder size={40} className="wiki-app__welcome-icon" />
+            <p>{language === 'ru' ? 'Выберите категорию слева' : 'Select a category from the sidebar'}</p>
           </div>
         )}
       </section>

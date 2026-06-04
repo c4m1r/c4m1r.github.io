@@ -6,6 +6,9 @@
 /* Windows XP / WebOS стили */
 @import './winxp/xp.css';
 
+/* Универсальный OS CSS Wrapper */
+@import '../styles/os/index.css';
+
 /* TODO: Добавить стили для других тем */
 /* @import './win98/win98.css'; */
 /* @import './win7/win7.css'; */

@@ -3,15 +3,13 @@
  * Используется всеми темами
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApp } from '../../contexts/AppContext';
-import type { ThemeId } from '../../contexts/AppContext';
 
 interface DesktopProps {
   onSystemCommand?: (command: 'logoff' | 'shutdown') => void;
 }
 
-export function Desktop({ onSystemCommand }: DesktopProps) {
+export function Desktop({}: DesktopProps) {
   const { theme } = useApp();
 
   return (

@@ -41,35 +41,36 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
           isXpFamily
             ? 'bg-[#ece9d8] border-t-2 border-l-2 border-[#ffffff] border-r-2 border-b-2 border-r-[#5a5a5a] border-b-[#5a5a5a] shadow-2xl'
             : 'bg-[#c0c0c0] border-2 border-white border-b-black border-r-black shadow-lg'
-        } w-[420px]`}
+        } w-[420px] os-window`}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
-        {/* Title Bar */}
         <div
           className={`${
             isXpFamily
               ? 'bg-gradient-to-r from-[#0054e3] to-[#0a5fef] text-white'
               : 'bg-gradient-to-r from-[#000080] to-[#1084d0] text-white'
-          } px-2 py-1 flex items-center justify-between cursor-move`}
+          } px-2 py-1 flex items-center justify-between cursor-move os-titlebar`}
         >
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold">Run</span>
+            <span className="text-sm font-bold os-titlebar-title">Run</span>
           </div>
-          <button
-            onClick={onClose}
-            className={`${
-              isXpFamily
-                ? 'w-4 h-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold'
-                : 'w-4 h-4 bg-[#c0c0c0] border border-white border-b-black border-r-black text-black text-xs font-bold'
-            } flex items-center justify-center`}
-          >
-            ×
-          </button>
+          <div className="os-titlebar-controls">
+            <button
+              onClick={onClose}
+              className={`${
+                isXpFamily
+                  ? 'w-4 h-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold'
+                  : 'w-4 h-4 bg-[#c0c0c0] border border-white border-b-black border-r-black text-black text-xs font-bold'
+              } flex items-center justify-center os-button`}
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="p-4">
+        <form onSubmit={handleSubmit} className="p-4 os-window-body">
           <div className="flex items-start gap-3 mb-4">
             <div className="text-4xl">🏃</div>
             <div className="flex-1">
@@ -87,7 +88,7 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
                     isXpFamily
                       ? 'border border-[#7f9db9] px-2 py-1'
                       : 'border-2 border-[#808080] border-t-black border-l-black px-1 py-0.5'
-                  } outline-none text-sm`}
+                  } outline-none text-sm os-input`}
                   placeholder="notepad"
                 />
               </div>
@@ -98,7 +99,7 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
           <div className="flex justify-end gap-2">
             <button
               type="submit"
-              className={`px-6 py-1.5 text-sm ${
+              className={`px-6 py-1.5 text-sm os-button ${
                 isXpFamily
                   ? 'bg-[#ece9d8] border border-[#003c74] hover:bg-[#d8d5c8] active:border-black'
                   : 'bg-[#c0c0c0] border-2 border-white border-b-[#808080] border-r-[#808080] active:border-black active:border-b-white active:border-r-white'
@@ -109,7 +110,7 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
             <button
               type="button"
               onClick={onClose}
-              className={`px-6 py-1.5 text-sm ${
+              className={`px-6 py-1.5 text-sm os-button ${
                 isXpFamily
                   ? 'bg-[#ece9d8] border border-[#aca899] hover:bg-[#d8d5c8]'
                   : 'bg-[#c0c0c0] border-2 border-white border-b-[#808080] border-r-[#808080] active:border-black active:border-b-white active:border-r-white'
@@ -119,7 +120,7 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
             </button>
             <button
               type="button"
-              className={`px-6 py-1.5 text-sm ${
+              className={`px-6 py-1.5 text-sm os-button ${
                 isXpFamily
                   ? 'bg-[#ece9d8] border border-[#aca899] opacity-50 cursor-not-allowed'
                   : 'bg-[#c0c0c0] border-2 border-white border-b-[#808080] border-r-[#808080] opacity-50 cursor-not-allowed'

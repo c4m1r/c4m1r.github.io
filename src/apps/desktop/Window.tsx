@@ -30,7 +30,6 @@ interface WindowProps {
 }
 
 export function Window({
-  id,
   title,
   icon,
   children,
@@ -182,9 +181,9 @@ export function Window({
   // XP/Vista/7/WebOS family styles
   if (isXpFamily) {
     const xpClasses = [
-      'absolute flex flex-col xp-window',
+      'absolute flex flex-col xp-window os-window',
       maximized ? 'xp-window--maximized' : '',
-      focused ? 'xp-window--active' : 'xp-window--inactive',
+      focused ? 'xp-window--active' : 'xp-window--inactive os-window--inactive',
     ]
       .filter(Boolean)
       .join(' ');
@@ -206,34 +205,34 @@ export function Window({
       >
         <div className="xp-window__frame">
           <div 
-            className="xp-titlebar cursor-move select-none" 
+            className="xp-titlebar cursor-move select-none os-titlebar" 
             onMouseDown={handleMouseDown}
             onDoubleClick={handleMaximize}
           >
-            <div className="xp-titlebar__title">
+            <div className="xp-titlebar__title os-titlebar-title">
               {icon && <img src={icon} alt="" className="xp-titlebar__icon" />}
               <span>{title}</span>
             </div>
-            <div className="xp-titlebar__controls">
+            <div className="xp-titlebar__controls os-titlebar-controls">
               <button
                 onClick={handleMinimize}
-                className="xp-titlebar__button xp-titlebar__button--minimize"
+                className="xp-titlebar__button xp-titlebar__button--minimize os-button"
                 aria-label="Minimize"
               />
               <button
                 onClick={handleMaximize}
-                className={`xp-titlebar__button ${maximized ? 'xp-titlebar__button--restore' : 'xp-titlebar__button--maximize'}`}
+                className={`xp-titlebar__button os-button ${maximized ? 'xp-titlebar__button--restore' : 'xp-titlebar__button--maximize'}`}
                 aria-label={maximized ? 'Restore' : 'Maximize'}
               />
               <button
                 onClick={onClose}
-                className="xp-titlebar__button xp-titlebar__button--close"
+                className="xp-titlebar__button xp-titlebar__button--close os-button"
                 aria-label="Close"
               />
             </div>
           </div>
 
-          <div className="xp-window__content xp-window__content--plain">
+          <div className="xp-window__content xp-window__content--plain os-window-body">
             <div className="xp-window__surface">{children}</div>
           </div>
         </div>
@@ -260,8 +259,8 @@ export function Window({
 
   // Windows 98 styles
   const win98Classes = [
-    'absolute win98-window',
-    focused ? 'win98-window--active' : 'win98-window--inactive',
+    'absolute win98-window os-window',
+    focused ? 'win98-window--active' : 'win98-window--inactive os-window--inactive',
   ]
     .filter(Boolean)
     .join(' ');
@@ -281,29 +280,29 @@ export function Window({
         if (onFocus) onFocus();
       }}
     >
-      <div className="win98-titlebar cursor-move select-none" onMouseDown={handleMouseDown}>
+      <div className="win98-titlebar cursor-move select-none os-titlebar" onMouseDown={handleMouseDown}>
         {icon && <img src={icon} alt="" className="win98-titlebar__icon" />}
-        <span className="win98-titlebar__title">{title}</span>
-        <div className="win98-titlebar__controls">
+        <span className="win98-titlebar__title os-titlebar-title">{title}</span>
+        <div className="win98-titlebar__controls os-titlebar-controls">
           <button
             onClick={handleMinimize}
-            className="win98-control-button win98-control-button--minimize"
+            className="win98-control-button win98-control-button--minimize os-button"
             aria-label="Minimize"
           />
           <button
             onClick={handleMaximize}
-            className={`win98-control-button ${maximized ? 'win98-control-button--restore' : 'win98-control-button--maximize'}`}
+            className={`win98-control-button os-button ${maximized ? 'win98-control-button--restore' : 'win98-control-button--maximize'}`}
             aria-label={maximized ? 'Restore' : 'Maximize'}
           />
           <button
             onClick={onClose}
-            className="win98-control-button win98-control-button--close"
+            className="win98-control-button win98-control-button--close os-button"
             aria-label="Close"
           />
         </div>
       </div>
 
-      <div className="win98-window__content win98-window__content--plain">{children}</div>
+      <div className="win98-window__content win98-window__content--plain os-window-body">{children}</div>
 
       {!maximized && resizable && (
         <div

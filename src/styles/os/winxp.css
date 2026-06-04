@@ -1,0 +1,598 @@
+/* Windows XP (Luna) visual overrides */
+
+/* Base container overrides */
+.os-winxp {
+  --os-font: "Tahoma", "Trebuchet MS", sans-serif;
+  color: #000000;
+}
+
+/* 1. Window Chrome */
+.os-winxp .os-window {
+  border: none !important;
+  border-radius: 8px 8px 0 0 !important;
+  box-shadow: 
+    inset -1px -1px #00138c, 
+    inset 1px 1px #0831d9, 
+    inset -2px -2px #001ea0, 
+    inset 2px 2px #166aee, 
+    inset -3px -3px #003bda, 
+    inset 3px 3px #0855dd, 
+    2px 2px 10px rgba(0, 0, 0, 0.45) !important;
+  padding: 0 0 3px 0 !important;
+  background-color: #0855dd !important; /* Frame blue */
+  overflow: hidden;
+}
+
+/* Inactive window chrome */
+.os-winxp .os-window--inactive {
+  background-color: #7b99e1 !important;
+  box-shadow: 
+    inset -1px -1px #7b96e1, 
+    inset 1px 1px #94afe8, 
+    inset -2px -2px #7b96e1, 
+    inset 2px 2px #82a9e9, 
+    inset -3px -3px #7b96e1, 
+    inset 3px 3px #82a9e9, 
+    2px 2px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Inner frame surface */
+.os-winxp .os-window-body {
+  background-color: #ece9d8 !important;
+  border-radius: 0 0 5px 5px !important;
+  padding: 4px !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* 2. Titlebar */
+.os-winxp .os-titlebar {
+  font-family: "Trebuchet MS", "Tahoma", sans-serif !important;
+  font-weight: bold !important;
+  font-size: 13px !important;
+  color: #ffffff !important;
+  text-shadow: 1px 1px 1px rgba(15, 16, 137, 0.8) !important;
+  background: linear-gradient(
+    180deg,
+    #0997ff 0%,
+    #0053ee 8%,
+    #0050ee 40%,
+    #0066ff 88%,
+    #0066ff 93%,
+    #005bff 95%,
+    #003dd7 96%,
+    #003dd7 100%
+  ) !important;
+  border-top: 1px solid #0831d9 !important;
+  border-left: 1px solid #0831d9 !important;
+  border-right: 1px solid #001ea0 !important;
+  border-bottom: none !important;
+  border-top-left-radius: 7px !important;
+  border-top-right-radius: 7px !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.os-winxp .os-window--inactive .os-titlebar {
+  background: linear-gradient(
+    180deg,
+    #7697e7 0%,
+    #7e9ee3 3%,
+    #94afe8 6%,
+    #97b4e9 8%,
+    #82a5e4 14%,
+    #7c9fe2 17%,
+    #79969e 25%,
+    #7b99e1 56%,
+    #82a9e9 81%,
+    #80a5e7 89%,
+    #7b96e1 94%,
+    #7a93df 97%,
+    #abbee3 100%
+  ) !important;
+  text-shadow: none !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-top-color: #94afe8 !important;
+  border-left-color: #94afe8 !important;
+  border-right-color: #7b96e1 !important;
+}
+
+/* Window Titlebar Controls (Minimize, Maximize, Restore, Close) */
+.os-winxp .xp-titlebar__button {
+  width: 21px !important;
+  height: 21px !important;
+  border: none !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Deactivate CSS-drawn pseudo-elements since we are using authentic PNGs */
+.os-winxp .xp-titlebar__button::before,
+.os-winxp .xp-titlebar__button::after {
+  display: none !important;
+}
+
+/* Minimize button */
+.os-winxp .xp-titlebar__button--minimize {
+  background-image: url(../../themes/winxp/assets/icons/minimise.png) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+.os-winxp .xp-titlebar__button--minimize:hover {
+  background-image: url(../../themes/winxp/assets/icons/minimise_hover.png) !important;
+}
+
+/* Maximize button */
+.os-winxp .xp-titlebar__button--maximize {
+  background-image: url(../../themes/winxp/assets/icons/maximise.png) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+.os-winxp .xp-titlebar__button--maximize:hover {
+  background-image: url(../../themes/winxp/assets/icons/maximise_hover.png) !important;
+}
+
+/* Restore button */
+.os-winxp .xp-titlebar__button--restore {
+  background-image: url(../../themes/winxp/assets/icons/restore.png) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+.os-winxp .xp-titlebar__button--restore:hover {
+  background-image: url(../../themes/winxp/assets/icons/restore_hover.png) !important;
+}
+
+/* Close button (Red) */
+.os-winxp .xp-titlebar__button--close {
+  background-image: url(../../themes/winxp/assets/icons/close.png) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+.os-winxp .xp-titlebar__button--close:hover {
+  background-image: url(../../themes/winxp/assets/icons/close_hover.png) !important;
+}
+
+/* 3. Standard Buttons */
+.os-winxp .os-button {
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 11px !important;
+  border: 1px solid #003c74 !important;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(236, 235, 229, 1) 86%,
+    rgba(216, 208, 196, 1) 100%
+  ) !important;
+  box-shadow: none !important;
+  border-radius: 3px !important;
+  color: #000000 !important;
+  padding: 4px 14px !important;
+  outline: none !important;
+  cursor: pointer !important;
+}
+
+.os-winxp .os-button:hover:not(:disabled) {
+  border-color: #003c74 !important;
+  box-shadow: 
+    inset -1px 1px #fff0cf, 
+    inset 1px 2px #fdd889, 
+    inset -2px 2px #fbc761, 
+    inset 2px -2px #e5a01a !important;
+}
+
+.os-winxp .os-button:active:not(:disabled) {
+  background: linear-gradient(
+    180deg,
+    rgba(205, 202, 195, 1) 0%,
+    rgba(227, 227, 219, 1) 8%,
+    rgba(229, 229, 222, 1) 94%,
+    rgba(242, 242, 241, 1) 100%
+  ) !important;
+  box-shadow: none !important;
+}
+
+.os-winxp .os-button:focus {
+  box-shadow: 
+    inset -1px 1px #cee7ff, 
+    inset 1px 2px #98b8ea, 
+    inset -2px 2px #bcd4f6, 
+    inset 1px -1px #89ade4,
+    inset 2px -2px #89ade4 !important;
+}
+
+.os-winxp .os-button:disabled {
+  border-color: #cac8bb !important;
+  color: #aca899 !important;
+  background: #f4f3ee !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+
+/* 4. Panels & Windows */
+.os-winxp .os-panel {
+  border: 2px inset #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* 5. Inputs & Textareas */
+.os-winxp .os-input,
+.os-winxp .os-textarea {
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 12px !important;
+  border: 1px solid #7f9db9 !important;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1) !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  padding: 3px 5px !important;
+  border-radius: 0px !important;
+}
+
+.os-winxp .os-input:focus,
+.os-winxp .os-textarea:focus {
+  border-color: #1d5281 !important;
+  outline: none !important;
+}
+
+/* 6. List and List Items */
+.os-winxp .os-list {
+  background-color: #ffffff !important;
+  border: 2px inset #ffffff !important;
+}
+
+.os-winxp .os-list-item {
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 11px !important;
+  color: #000000 !important;
+  padding: 4px 8px !important;
+  border-radius: 0px !important;
+  border: 1px solid transparent !important;
+}
+
+.os-winxp .os-list-item:hover {
+  background-color: #316ac5 !important;
+  color: #ffffff !important;
+}
+
+.os-winxp .os-list-item.selected,
+.os-winxp .os-list-item--selected {
+  background-color: #316ac5 !important;
+  color: #ffffff !important;
+}
+
+/* 7. Toolbars and Statusbars */
+.os-winxp .os-toolbar {
+  background-color: #ece9d8 !important;
+  border-bottom: 1px solid #d1cfc6 !important;
+  padding: 4px 6px !important;
+  display: flex !important;
+  gap: 6px !important;
+}
+
+.os-winxp .os-statusbar {
+  background-color: #ece9d8 !important;
+  border-top: 1px solid #d1cfc6 !important;
+  height: 22px !important;
+  font-size: 11px !important;
+  color: #000000 !important;
+  padding: 2px 8px !important;
+}
+
+/* 8. Sidebar (News & Explorer Sidebar style) */
+.os-winxp .os-sidebar {
+  background-color: #ece9d8 !important;
+  border-right: 2px solid #d1cfc6 !important;
+}
+
+/* 9. Scrollbars (Webkit-based) */
+.os-winxp *::-webkit-scrollbar {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.os-winxp *::-webkit-scrollbar-track {
+  background: #f1efe2 !important;
+  background-image: linear-gradient(90deg, #eae8d9 0%, #f9f8f2 100%) !important;
+}
+
+.os-winxp *::-webkit-scrollbar-thumb {
+  background-color: #c8d6fb !important;
+  border: 1px solid #ffffff !important;
+  border-radius: 2px !important;
+  box-shadow: inset -3px 0 #bad1fc, inset 1px 1px #b7caf5 !important;
+}
+
+.os-winxp *::-webkit-scrollbar-thumb:hover {
+  background-color: #bad1fc !important;
+  box-shadow: inset -3px 0 #a2c1fa, inset 1px 1px #b7caf5 !important;
+}
+
+/* 10. News App specific skin integration */
+.os-winxp .news-app {
+  background-color: #ece9d8 !important;
+}
+
+.os-winxp .news-app__sidebar {
+  border-right: 2px solid #d1cfc6 !important;
+}
+
+.os-winxp .news-app__list {
+  background-color: #ffffff !important;
+  border: 2px inset #ffffff !important;
+  margin: 4px !important;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+.os-winxp .news-app__reader {
+  background-color: #ffffff !important;
+  border: 2px inset #ffffff !important;
+  margin: 4px !important;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+/* prose / news text rendering */
+.os-winxp .prose h1,
+.os-winxp .prose h2,
+.os-winxp .prose h3,
+.os-winxp .prose h4 {
+  font-family: "Trebuchet MS", "Tahoma", sans-serif !important;
+  color: #003c74 !important; /* deep Windows XP blue */
+  font-weight: bold !important;
+}
+
+.os-winxp .prose p,
+.os-winxp .prose li {
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  color: #000000 !important;
+}
+
+.os-winxp .prose a {
+  color: #2267cb !important;
+  text-decoration: underline !important;
+}
+
+.os-winxp .prose a:hover {
+  color: #0050ee !important;
+}
+
+.os-winxp .prose code {
+  font-family: "Courier New", Courier, monospace !important;
+  font-size: 11px !important;
+  background-color: #f5f5f5 !important;
+  padding: 1px 3px !important;
+  border: 1px solid #cccccc !important;
+  border-radius: 2px !important;
+}
+
+/* 11. Context Menu Luna Style Overrides */
+.os-winxp.os-panel.os-list,
+.os-winxp .os-panel.os-list {
+  background-color: #ffffff !important;
+  border: 1px solid #aca899 !important;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15), 5px 5px 2px -3px rgba(0, 0, 0, 0.44) !important;
+  padding: 2px !important;
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 11px !important;
+}
+
+.os-winxp.os-panel.os-list .os-list-item,
+.os-winxp .os-panel.os-list .os-list-item {
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 11px !important;
+  padding: 3px 18px 3px 16px !important;
+  border-radius: 0px !important;
+  background: transparent !important;
+  color: #000000 !important;
+  border: none !important;
+  text-shadow: none !important;
+}
+
+.os-winxp.os-panel.os-list .os-list-item:hover:not(:disabled),
+.os-winxp .os-panel.os-list .os-list-item:hover:not(:disabled) {
+  background: #316ac5 !important;
+  background-color: #316ac5 !important;
+  color: #ffffff !important;
+}
+
+.os-winxp.os-panel.os-list .os-list-item:disabled,
+.os-winxp .os-panel.os-list .os-list-item:disabled {
+  color: #aca899 !important;
+  background: transparent !important;
+}
+
+/* Menu divider / separator line */
+.os-winxp.os-panel.os-list div,
+.os-winxp .os-panel.os-list div {
+  height: 1px !important;
+  background-color: #aca899 !important;
+  margin: 3px 0 !important;
+  padding: 0 !important;
+}
+
+/* 12. Range Inputs (Sliders) */
+.os-winxp input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Track Horizontal */
+.os-winxp input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: #ecebe4;
+  border: 1px solid #9d9c99;
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.15);
+}
+
+/* Thumb Horizontal */
+.os-winxp input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 19px;
+  width: 11px;
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #eaeaea 20%,
+    #cccccc 100%
+  ) !important;
+  border: 1px solid #707070 !important;
+  border-radius: 2px !important;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.25) !important;
+  margin-top: -8px; /* vertical centering */
+}
+
+/* Vertical slider track & thumb */
+.os-winxp input[type="range"].volume-slider::-webkit-slider-runnable-track {
+  width: 4px !important;
+  height: 100% !important;
+  background: #ecebe4 !important;
+  border: 1px solid #9d9c99 !important;
+  border-radius: 2px !important;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.15) !important;
+}
+
+.os-winxp input[type="range"].volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 11px !important;
+  width: 19px !important;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #eaeaea 20%,
+    #cccccc 100%
+  ) !important;
+  border: 1px solid #707070 !important;
+  border-radius: 2px !important;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.25) !important;
+  margin-top: 0 !important;
+}
+
+/* ── 15. CV/Resume App Luna overrides ─────────────────────────── */
+.os-winxp .cv-app {
+  background-color: #ece9d8 !important;
+  font-family: "Tahoma", "Trebuchet MS", sans-serif !important;
+}
+
+.os-winxp .cv-app__header {
+  border-bottom: 1px solid #b4b1a6 !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.os-winxp .cv-app__avatar-wrapper {
+  border: 2px solid #5e5e5e !important;
+}
+
+.os-winxp .cv-app__role {
+  color: #2b4ca3 !important;
+}
+
+.os-winxp .cv-app__tab-button {
+  background-color: #f7f4ef !important;
+  color: #1f1f1f !important;
+  border: 1px solid #c7c4bd !important;
+}
+
+.os-winxp .cv-app__tab-button:hover {
+  background-color: #ffffff !important;
+}
+
+.os-winxp .cv-app__tab-button.selected {
+  background-color: #1f62d0 !important;
+  color: #ffffff !important;
+  border: 1px solid #124291 !important;
+}
+
+.os-winxp .cv-app__entry {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid #cbc7bd !important;
+}
+
+.os-winxp .cv-app__entry-title {
+  color: #0a3c97 !important;
+}
+
+/* ── Wiki App — Windows XP skin ──────────────────────────────── */
+.os-winxp .wiki-app {
+  background-color: #ece9d8 !important;
+}
+
+.os-winxp .wiki-app__sidebar {
+  background-color: #d4d0c8 !important;
+  border-right: 2px solid #b4b0a8 !important;
+}
+
+.os-winxp .wiki-app__sidebar-header {
+  background: linear-gradient(180deg, #245dce 0%, #1440a8 100%) !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid #1440a8 !important;
+}
+
+.os-winxp .wiki-app__sidebar-title {
+  color: #ffffff !important;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4) !important;
+}
+
+.os-winxp .wiki-app__sidebar-sub {
+  color: #bcd4ff !important;
+  opacity: 1 !important;
+}
+
+.os-winxp .wiki-app__list {
+  background-color: #d4d0c8 !important;
+}
+
+.os-winxp .wiki-app__reader {
+  background-color: #ffffff !important;
+  border-left: none !important;
+}
+
+.os-winxp .wiki-app__breadcrumbs {
+  background-color: #ece9d8 !important;
+  border-bottom: 1px solid #b4b0a8 !important;
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 11px !important;
+}
+
+.os-winxp .wiki-app__meta {
+  border-bottom: 1px solid #d1cfc6 !important;
+}
+
+.os-winxp .wiki-app__article-title {
+  color: #003c74 !important;
+  font-family: "Trebuchet MS", sans-serif !important;
+}
+
+.os-winxp .wiki-app__tag {
+  background-color: #dce8ff !important;
+  color: #003c74 !important;
+  border: 1px solid #a8c0ec !important;
+}
+
+.os-winxp .wiki-app__article-item:hover {
+  background-color: #c3d5f5 !important;
+}
+
+.os-winxp .wiki-app__category-btn.selected,
+.os-winxp .wiki-app__category-btn.os-list-item--selected {
+  background-color: #245dce !important;
+  color: #ffffff !important;
+}

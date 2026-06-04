@@ -2,6 +2,7 @@ import { useApp } from '../../contexts/AppContext';
 import { translations } from '../../i18n/translations';
 import { Power, Settings, HelpCircle, Search, FileText, ChevronsRight } from 'lucide-react';
 import { THEME_ASSETS, ThemeAssetId } from './themeAssets';
+import { appRegistry } from '../../shells/desktop/appRegistry';
 
 export interface StartMenuXPProps {
   onClose: () => void;
@@ -47,14 +48,14 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const primaryShortcuts: PrimaryShortcut[] = [
     {
       id: 'primary-internet',
-      title: 'Internet Explorer',
+      title: appRegistry['internet-explorer']?.title[language] || 'Internet Explorer',
       icon: startMenuIcons.internetExplorer ?? themeAssets.internetExplorerIcon,
       appId: 'internet-explorer',
       tag: t.internet ?? 'Internet',
     },
     {
       id: 'primary-email',
-      title: 'Outlook Express',
+      title: appRegistry['outlook']?.title[language] || 'Outlook Express',
       icon: startMenuIcons.outlook ?? themeAssets.mailIcon,
       appId: 'outlook',
       tag: t.email ?? 'E-mail',
@@ -66,7 +67,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const pinnedPrograms: MenuItem[] = [
     {
       id: 'windows-media-player',
-      title: 'Windows Media Player',
+      title: appRegistry['windows-media-player']?.title[language] || 'Windows Media Player',
       icon: startMenuIcons.windowsMediaPlayer ?? themeAssets.mediaPlayerIcon,
       appId: 'windows-media-player',
     },
@@ -78,7 +79,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     },
     {
       id: 'paint',
-      title: 'Paint',
+      title: appRegistry['paint']?.title[language] || 'Paint',
       icon: startMenuIcons.paint ?? themeAssets.paintIcon ?? themeAssets.folderIcon,
       appId: 'paint',
     },
@@ -93,13 +94,13 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     },
     {
       id: 'calculator',
-      title: 'Calculator',
+      title: appRegistry['calculator']?.title[language] || 'Calculator',
       icon: startMenuIcons.calculator ?? themeAssets.calculatorIcon ?? themeAssets.folderIcon,
       appId: 'calculator',
     },
     {
       id: 'minesweeper',
-      title: 'Minesweeper',
+      title: appRegistry['minesweeper']?.title[language] || 'Minesweeper',
       icon: startMenuIcons.minesweeper ?? themeAssets.minesweeperIcon,
       appId: 'minesweeper',
     },
@@ -144,7 +145,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     },
     {
       id: 'control-panel',
-      title: 'Control Panel',
+      title: appRegistry['control-panel']?.title[language] || 'Control Panel',
       icon: placeIcons.controlPanel ?? fallbackIcon,
       appId: 'control-panel',
     },
@@ -225,7 +226,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
   return (
     <section
-      className={`fixed z-[99999] left-0 min-w-[380px] min-h-[494px] flex flex-col start-menu-modern start-menu-${appearance}`}
+      className={`fixed z-[99999] left-0 min-w-[380px] min-h-[494px] flex flex-col start-menu-modern start-menu-${appearance} os-panel`}
       style={{
         bottom: '30px',
         filter: 'drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.4))',
@@ -302,14 +303,14 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         />
 
         {/* Left Menu - Programs */}
-        <div className="start-menu-section start-menu-section--left">
+        <div className="start-menu-section start-menu-section--left os-list">
           <div className="start-menu-primary">
             {primaryShortcuts.map((shortcut) => {
               const iconSrc = shortcut.icon ?? fallbackIcon;
               return (
                 <button
                   key={shortcut.id}
-                  className="start-menu-item start-menu-item--primary"
+                  className="start-menu-item start-menu-item--primary os-list-item os-button"
                   onClick={() => handleMenuAction(shortcut)}
                   onMouseEnter={handleHover}
                 >
@@ -340,7 +341,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
                 return (
                   <button
                     key={program.id}
-                    className={`start-menu-item ${program.disabled ? 'disabled' : ''}`}
+                    className={`start-menu-item os-list-item os-button ${program.disabled ? 'disabled' : ''}`}
                     onClick={() => handleMenuAction(program)}
                   onMouseEnter={handleHover}
                   >
@@ -375,7 +376,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             return (
               <button
                 key={program.id}
-                className={`start-menu-item ${program.disabled ? 'disabled' : ''}`}
+                className={`start-menu-item os-list-item os-button ${program.disabled ? 'disabled' : ''}`}
                 onClick={() => handleMenuAction(program)}
                 onMouseEnter={handleHover}
               >
@@ -398,7 +399,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
           {/* All Programs */}
           <button
-            className="start-menu-item start-menu-item--footer"
+            className="start-menu-item start-menu-item--footer os-button"
             onClick={() => {
               onLaunchApp?.('all-programs');
               onClose();
@@ -412,7 +413,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
         {/* Right Menu - Places */}
         <div
-          className="start-menu-section start-menu-section--right"
+          className="start-menu-section start-menu-section--right os-list"
         >
           {placesLinks.map((place, index) => {
             if (place.isSeparator) {
@@ -428,7 +429,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             return (
               <button
                 key={place.id}
-                className={`start-menu-item ${place.disabled ? 'disabled' : ''}`}
+                className={`start-menu-item os-list-item os-button ${place.disabled ? 'disabled' : ''}`}
                 onClick={() => handleMenuAction(place)}
                 onMouseEnter={handleHover}
               >
@@ -463,7 +464,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         }}
       >
         <div
-          className="p-0.5 flex mr-[10px] items-center hover:bg-[rgba(60,80,210,0.5)] cursor-pointer rounded"
+          className="p-0.5 flex mr-[10px] items-center hover:bg-[rgba(60,80,210,0.5)] cursor-pointer rounded os-button"
           onClick={() => {
             onSystemCommand?.('logoff');
             onClose();
@@ -474,7 +475,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           <span className="text-[11px]">{logOffLabel}</span>
         </div>
         <div
-          className="p-0.5 flex mr-[10px] items-center hover:bg-[rgba(60,80,210,0.5)] cursor-pointer rounded"
+          className="p-0.5 flex mr-[10px] items-center hover:bg-[rgba(60,80,210,0.5)] cursor-pointer rounded os-button"
           onClick={() => {
             onSystemCommand?.('shutdown');
             onClose();

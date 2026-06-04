@@ -22,7 +22,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
 
   return (
     <div
-      className="boot-screen boot-screen--xp"
+      className="boot-screen boot-screen--xp os-shell os-winxp"
       style={{ opacity: fadeIn ? 1 : 0 }}
     >
       <div className="boot-screen__center">

@@ -1,11 +1,24 @@
 import { useEffect, useState } from 'react';
+import { useApp } from '../../contexts/AppContext';
 
 interface WelcomeScreenProps {
   onComplete: () => void;
 }
 
 export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
+  const { theme } = useApp();
   const [fadeIn, setFadeIn] = useState(false);
+  const OS_CLASS_MAP: Record<string, string> = {
+    'win-xp': 'winxp',
+    'webos':  'winxp',
+    'win-98': 'classic',
+    'win7':   'win7',
+    'win10':  'win7',
+    'win11':  'win7',
+    'ubuntu': 'ubuntu',
+    'arch':   'ubuntu',
+  };
+  const osClassName = OS_CLASS_MAP[theme] ?? 'classic';
 
   useEffect(() => {
     setFadeIn(true);
@@ -19,7 +32,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-start relative overflow-hidden"
+      className={`min-h-screen flex items-center justify-start relative overflow-hidden os-shell os-${osClassName}`}
       style={{
         background: '#1231a1',
         paddingTop: '78px',

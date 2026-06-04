@@ -141,7 +141,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         continue;
       }
 
-      const match = Object.values(current.children).find(child => child.name === part);
+      const match: FileSystemItem | undefined = Object.values(current.children).find(child => child.name === part);
       if (!match) {
         return null;
       }
@@ -217,13 +217,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   }, [items, selectedItem]);
 
   return (
-    <div className="flex flex-col h-full bg-white font-tahoma text-xs select-none">
+    <div className="flex flex-col h-full bg-white font-tahoma text-xs select-none os-panel">
       {/* Toolbar */}
       <div className="flex flex-col border-b border-[#aca899]">
         {/* Menu Bar */}
         <div className="flex items-center px-1 bg-[#ece9d8] border-b border-[#aca899]">
           {['File', 'Edit', 'View', 'Favorites', 'Tools', 'Help'].map((item) => (
-            <button key={item} className="px-2 py-1 hover:bg-[#316ac5] hover:text-white transition-colors cursor-default">
+            <button key={item} className="px-2 py-1 hover:bg-[#316ac5] hover:text-white transition-colors cursor-default os-button">
               {item}
             </button>
           ))}
@@ -231,25 +231,25 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
 
         {/* Standard Buttons */}
         <div className="flex items-center p-1 bg-[#ece9d8] gap-1 border-b border-[#aca899]">
-          <button onClick={handleBack} disabled={historyIndex === 0} className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50 disabled:opacity-50 disabled:grayscale">
+          <button onClick={handleBack} disabled={historyIndex === 0} className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50 disabled:opacity-50 disabled:grayscale os-button">
             <img src={backIcon} alt="" className="w-5 h-5" />
             <span className="text-black">Back</span>
           </button>
-          <button onClick={handleForward} disabled={historyIndex >= history.length - 1} className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50 disabled:opacity-50 disabled:grayscale">
+          <button onClick={handleForward} disabled={historyIndex >= history.length - 1} className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50 disabled:opacity-50 disabled:grayscale os-button">
             <img src={forwardIcon} alt="" className="w-5 h-5" />
             <span className="text-black">Forward</span>
           </button>
-          <button onClick={handleUp} className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50">
+          <button onClick={handleUp} className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50 os-button">
             <img src={upIcon} alt="" className="w-5 h-5" />
             <span className="text-black">Up</span>
           </button>
           <div className="w-px h-8 bg-gray-300 mx-1" />
-          <button className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50">
+          <button className="flex items-center gap-1 px-2 py-1 rounded hover:border border-transparent hover:border-gray-400 hover:bg-white/50 os-button">
             <img src={searchIconXp} alt="" className="w-4 h-4" />
             <span className="text-black">Search</span>
           </button>
           <button
-            className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:border-gray-400 hover:bg-white/50 ${showSidebar ? 'bg-white/60 border-gray-400' : ''}`}
+            className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:border-gray-400 hover:bg-white/50 os-button ${showSidebar ? 'bg-white/60 border-gray-400' : ''}`}
             onClick={() => setShowSidebar(!showSidebar)}
           >
             <img src={foldersToggleIcon} alt="" className="w-4 h-4" />
@@ -257,14 +257,14 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           </button>
           <div className="w-px h-8 bg-gray-300 mx-1" />
           <button
-            className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:border-gray-400 hover:bg-white/50 ${viewMode === 'icons' ? 'bg-white/60 border-gray-400' : ''}`}
+            className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:border-gray-400 hover:bg-white/50 os-button ${viewMode === 'icons' ? 'bg-white/60 border-gray-400' : ''}`}
             onClick={() => setViewMode('icons')}
           >
             <img src={viewIconsIcon} alt="" className="w-4 h-4" />
             <span className="text-black">Icons</span>
           </button>
           <button
-            className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:border-gray-400 hover:bg-white/50 ${viewMode === 'details' ? 'bg-white/60 border-gray-400' : ''}`}
+            className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:border-gray-400 hover:bg-white/50 os-button ${viewMode === 'details' ? 'bg-white/60 border-gray-400' : ''}`}
             onClick={() => setViewMode('details')}
           >
             <img src={viewDetailsIcon} alt="" className="w-4 h-4" />
@@ -273,7 +273,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         </div>
 
         {/* Address Bar */}
-        <div className="flex items-center p-1 bg-[#ece9d8] gap-2">
+        <div className="flex items-center p-1 bg-[#ece9d8] gap-2 os-toolbar">
           <span className="text-gray-500">Address</span>
           <div className="flex-1 bg-white border border-[#7f9db9] flex items-center px-1 h-5 shadow-inner">
             <img src={path === 'My Computer' ? computerIcon : folderIcon} className="w-4 h-4 mr-2" alt="" />
@@ -282,11 +282,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               value={addressInput}
               onChange={(event) => setAddressInput(event.target.value)}
               onKeyDown={handleAddressSubmit}
-              className="w-full outline-none text-xs text-black"
+              className="w-full outline-none text-xs text-black os-input"
             />
           </div>
           <button
-            className="flex items-center gap-1 px-2 py-0.5 bg-[#ece9d8] border border-gray-400 rounded hover:bg-white text-black"
+            className="flex items-center gap-1 px-2 py-0.5 bg-[#ece9d8] border border-gray-400 rounded hover:bg-white text-black os-button"
             onClick={() => {
               const fakeEvent = { key: 'Enter' } as React.KeyboardEvent<HTMLInputElement>;
               handleAddressSubmit(fakeEvent);
@@ -301,13 +301,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
       <div className="flex-1 flex overflow-hidden h-0">
         {/* Sidebar */}
     {isXpFamily && showSidebar && (
-          <div className="w-48 bg-[#7ba2e7] overflow-y-auto p-3 flex flex-col gap-3" style={{
+          <div className="w-48 bg-[#7ba2e7] overflow-y-auto p-3 flex flex-col gap-3 os-sidebar" style={{
             background: 'linear-gradient(to bottom, #7ba2e7 0%, #6375d6 100%)'
           }}>
             {/* File and Folder Tasks */}
             <div className="rounded overflow-hidden">
               <div
-                className="bg-gradient-to-r from-white to-[#c6d3f7] px-3 py-1 flex justify-between items-center cursor-pointer"
+                className="bg-gradient-to-r from-white to-[#c6d3f7] px-3 py-1 flex justify-between items-center cursor-pointer os-panel"
                 onClick={() => toggleGroup('tasks')}
               >
                 <span className="font-bold text-[#215dc6]">File and Folder Tasks</span>
@@ -315,10 +315,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               </div>
               {expandedGroups.tasks && (
                 <div className="bg-[#d6dff7] p-2 flex flex-col gap-1 border-x border-b border-white/50">
-                  <button className="text-left hover:underline text-[#215dc6] flex items-center gap-2">
+                  <button className="text-left hover:underline text-[#215dc6] flex items-center gap-2 os-button">
                     <span className="w-1 h-1 bg-[#215dc6] rounded-full" /> Make a new folder
                   </button>
-                  <button className="text-left hover:underline text-[#215dc6] flex items-center gap-2">
+                  <button className="text-left hover:underline text-[#215dc6] flex items-center gap-2 os-button">
                     <span className="w-1 h-1 bg-[#215dc6] rounded-full" /> Share this folder
                   </button>
                 </div>
@@ -328,7 +328,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
             {/* Other Places */}
             <div className="rounded overflow-hidden">
               <div
-                className="bg-gradient-to-r from-white to-[#c6d3f7] px-3 py-1 flex justify-between items-center cursor-pointer"
+                className="bg-gradient-to-r from-white to-[#c6d3f7] px-3 py-1 flex justify-between items-center cursor-pointer os-panel"
                 onClick={() => toggleGroup('places')}
               >
                 <span className="font-bold text-[#215dc6]">Other Places</span>
@@ -336,13 +336,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               </div>
               {expandedGroups.places && (
                 <div className="bg-[#d6dff7] p-2 flex flex-col gap-1 border-x border-b border-white/50">
-                  <button onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop')} className="text-left hover:underline text-[#215dc6] flex items-center gap-2">
+                  <button onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop')} className="text-left hover:underline text-[#215dc6] flex items-center gap-2 os-button">
                     <img src={folderIcon} className="w-4 h-4" alt="" /> Desktop
                   </button>
-                  <button onClick={() => navigateToPath('My Computer')} className="text-left hover:underline text-[#215dc6] flex items-center gap-2">
+                  <button onClick={() => navigateToPath('My Computer')} className="text-left hover:underline text-[#215dc6] flex items-center gap-2 os-button">
                     <img src={computerIcon} className="w-4 h-4" alt="" /> My Computer
                   </button>
-                  <button onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents')} className="text-left hover:underline text-[#215dc6] flex items-center gap-2">
+                  <button onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents')} className="text-left hover:underline text-[#215dc6] flex items-center gap-2 os-button">
                     <img src={folderIcon} className="w-4 h-4" alt="" /> My Documents
                   </button>
                 </div>
@@ -352,7 +352,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
             {/* Details */}
             <div className="rounded overflow-hidden">
               <div
-                className="bg-gradient-to-r from-white to-[#c6d3f7] px-3 py-1 flex justify-between items-center cursor-pointer"
+                className="bg-gradient-to-r from-white to-[#c6d3f7] px-3 py-1 flex justify-between items-center cursor-pointer os-panel"
                 onClick={() => toggleGroup('details')}
               >
                 <span className="font-bold text-[#215dc6]">Details</span>
@@ -369,13 +369,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         )}
 
         {/* Content */}
-        <div className="flex-1 bg-white p-4 overflow-y-auto" onClick={() => setSelectedItem(null)}>
+        <div className="flex-1 bg-white p-4 overflow-y-auto os-list" onClick={() => setSelectedItem(null)}>
           {viewMode === 'icons' ? (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4">
               {items.map((item, i) => (
                 <div
                   key={i}
-                  className={`flex flex-col items-center group cursor-pointer border border-transparent p-1 ${selectedItem === item.name ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
+                  className={`flex flex-col items-center group cursor-pointer border border-transparent p-1 os-list-item ${selectedItem === item.name ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedItem(item.name);
@@ -412,7 +412,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                 {items.map((item, i) => (
                   <tr
                     key={i}
-                    className={`cursor-pointer text-sm ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'hover:bg-[#e2ecff]'}`}
+                    className={`cursor-pointer text-sm os-list-item ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'hover:bg-[#e2ecff]'}`}
                     onClick={(event) => {
                       event.stopPropagation();
                       setSelectedItem(item.name);
@@ -450,7 +450,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
       </div>
 
       {/* Status Bar */}
-      <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
+      <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner os-statusbar">
         <div className="flex gap-4">
           <span>{items.length} objects</span>
           {selectedItem && <span>Selected: {selectedItem}</span>}

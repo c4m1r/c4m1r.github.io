@@ -1,0 +1,539 @@
+/* Neutral OS Layout Classes (os-base.css) */
+
+.os-shell {
+  font-family: var(--os-font);
+  font-size: 13px;
+  line-height: 1.4;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.os-shell * {
+  box-sizing: inherit;
+}
+
+.os-desktop {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.os-window {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--os-window-bg);
+  border: var(--os-window-border-width) solid var(--os-window-border-color);
+  border-radius: var(--os-window-radius);
+  box-shadow: var(--os-window-shadow);
+  overflow: hidden;
+}
+
+.os-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--os-titlebar-height);
+  background: var(--os-titlebar-bg);
+  color: var(--os-titlebar-color);
+  font-weight: var(--os-titlebar-font-weight);
+  padding: 0 8px;
+  cursor: move;
+  user-select: none;
+}
+
+.os-window--inactive .os-titlebar {
+  background: var(--os-titlebar-bg-inactive);
+  color: var(--os-titlebar-color-inactive);
+}
+
+.os-titlebar-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-titlebar-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.os-window-body {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.os-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  background: var(--os-button-bg);
+  color: var(--os-button-color);
+  border: var(--os-button-border);
+  border-radius: var(--os-button-radius);
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.os-button:hover {
+  filter: brightness(1.05);
+}
+
+.os-button:active {
+  filter: brightness(0.95);
+}
+
+.os-input,
+.os-textarea {
+  background: var(--os-input-bg);
+  color: var(--os-input-color);
+  border: var(--os-input-border);
+  border-radius: var(--os-input-radius);
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+.os-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 2px;
+  background: var(--os-window-bg);
+  border-bottom: 1px solid var(--os-window-border-color);
+}
+
+.os-menu-item {
+  padding: 2px 8px;
+  cursor: pointer;
+  position: relative;
+}
+
+.os-menu-item:hover {
+  background: var(--os-list-item-hover-bg);
+  color: var(--os-list-item-hover-color);
+}
+
+.os-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: var(--os-window-bg);
+  border-bottom: 1px solid var(--os-window-border-color);
+}
+
+.os-statusbar {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  background: var(--os-window-bg);
+  border-top: 1px solid var(--os-window-border-color);
+  font-size: 11px;
+}
+
+.os-panel {
+  background: var(--os-panel-bg);
+  border: var(--os-panel-border);
+}
+
+.os-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--os-panel-bg);
+  overflow-y: auto;
+}
+
+.os-list-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.os-list-item:hover {
+  background: var(--os-list-item-hover-bg);
+  color: var(--os-list-item-hover-color);
+}
+
+.os-list-item.selected,
+.os-list-item--selected {
+  background: var(--os-list-item-selected-bg) !important;
+  color: var(--os-list-item-selected-color) !important;
+}
+
+.os-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  background: var(--os-window-bg);
+  border-right: var(--os-panel-border);
+}
+
+.os-dialog {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+}
+
+.os-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/* Resume / CV App Layout & Styling Defaults */
+/* ────────────────────────────────────────────────────────────── */
+.cv-app {
+  background-color: var(--os-window-bg);
+  color: var(--os-input-color, #1b1b1b);
+  font-family: var(--os-font);
+}
+
+.cv-app__header {
+  border-bottom: var(--os-panel-border, 1px solid #bcbcbc);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.cv-app__avatar-wrapper {
+  background-color: #000;
+  border: 2px solid var(--os-window-border-color, #bcbcbc);
+}
+
+.cv-app__role {
+  color: var(--os-list-item-selected-bg, #2b4ca3);
+}
+
+.cv-app__tagline {
+  opacity: 0.7;
+}
+
+.cv-app__tab-button {
+  background: var(--os-button-bg);
+  color: var(--os-button-color);
+  border: var(--os-button-border);
+  border-radius: var(--os-button-radius);
+  cursor: pointer;
+}
+
+.cv-app__tab-button.selected {
+  background: var(--os-list-item-selected-bg);
+  color: var(--os-list-item-selected-color);
+  border-color: var(--os-list-item-selected-bg);
+}
+
+.cv-app__entry {
+  background: var(--os-panel-bg);
+  border: var(--os-panel-border);
+}
+
+.cv-app__entry-title {
+  color: var(--os-list-item-selected-bg, #0a3c97);
+}
+
+.cv-app__entry-subtitle {
+  opacity: 0.7;
+}
+
+.cv-app__entry-year {
+  opacity: 0.9;
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/* Wiki App Layout & Styling Defaults                             */
+/* ────────────────────────────────────────────────────────────── */
+.wiki-app {
+  display: flex;
+  height: 100%;
+  background-color: var(--os-window-bg);
+  color: var(--os-input-color, #1b1b1b);
+  font-family: var(--os-font);
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.wiki-app--loading {
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.wiki-app__sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  min-width: 160px;
+  max-width: 280px;
+  border-right: 1px solid var(--os-window-border-color, #ccc);
+  background: var(--os-window-bg);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.wiki-app__sidebar-header {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--os-window-border-color, #ccc);
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.wiki-app__sidebar-title {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.wiki-app__sidebar-sub {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.wiki-app__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.wiki-app__category {
+  display: flex;
+  flex-direction: column;
+}
+
+.wiki-app__category-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 4px 6px;
+  border-radius: 3px;
+}
+
+.wiki-app__chevron {
+  display: flex;
+  align-items: center;
+  width: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.wiki-app__chevron-placeholder {
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.wiki-app__folder-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.wiki-app__category-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wiki-app__badge {
+  font-size: 10px;
+  background: var(--os-list-item-hover-bg, #e0e0e0);
+  padding: 1px 5px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.wiki-app__children {
+  margin-left: 4px;
+}
+
+.wiki-app__reader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--os-panel-bg, #fff);
+}
+
+.wiki-app__breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--os-window-border-color, #ccc);
+  flex-wrap: nowrap;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.wiki-app__breadcrumb-home {
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.wiki-app__breadcrumb-sep {
+  opacity: 0.4;
+  margin: 0 2px;
+}
+
+.wiki-app__breadcrumb-current {
+  font-weight: 600;
+}
+
+/* Article & category view scrollable area */
+.wiki-app__article-view,
+.wiki-app__category-view {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.wiki-app__meta {
+  padding: 16px 20px 8px;
+  border-bottom: 1px solid var(--os-window-border-color, #e0e0e0);
+}
+
+.wiki-app__article-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 4px;
+}
+
+.wiki-app__meta-row {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.wiki-app__meta-count {
+  font-size: 11px;
+  opacity: 0.6;
+  margin: 2px 0 0;
+}
+
+.wiki-app__related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.wiki-app__tag {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: var(--os-list-item-hover-bg, #e8eaf0);
+  color: var(--os-list-item-hover-color, #333);
+}
+
+.wiki-app__content {
+  padding: 16px 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 760px;
+}
+
+.wiki-app__divider {
+  border-top: 1px solid var(--os-window-border-color, #e0e0e0);
+  margin: 4px 20px;
+}
+
+.wiki-app__article-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wiki-app__article-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.wiki-app__file-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.wiki-app__article-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.wiki-app__article-name {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.wiki-app__article-date {
+  font-size: 10px;
+  opacity: 0.55;
+}
+
+.wiki-app__tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.wiki-app__empty,
+.wiki-app__empty-cat,
+.wiki-app__welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+  opacity: 0.45;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.wiki-app__index-view {
+  padding-bottom: 4px;
+}
+
+.wiki-app__index-content {
+  border-bottom: none !important;
+}
+
+

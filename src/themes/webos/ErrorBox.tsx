@@ -28,7 +28,7 @@ export function ErrorBox({ onClose, message = "Something's wrong!" }: ErrorBoxPr
   }, []);
 
   return (
-    <div className="bg-[#f5f5f5] w-full h-full text-[11px] p-3 flex flex-col">
+    <div className="bg-[#f5f5f5] w-full h-full text-[11px] p-3 flex flex-col os-panel">
       <div className="flex flex-1">
         <img src={errorIcon} alt="error" className="w-[30px] h-[30px] flex-shrink-0" />
         <div className="px-5 pb-3 pt-0.5">
@@ -38,7 +38,7 @@ export function ErrorBox({ onClose, message = "Something's wrong!" }: ErrorBoxPr
       <div className="flex w-full justify-center">
         <div 
           onClick={onClose} 
-          className="w-20 h-[22px] flex border border-black justify-center items-center cursor-pointer"
+          className="w-20 h-[22px] flex border border-black justify-center items-center cursor-pointer os-button"
           style={{
             boxShadow: 'inset -1px -1px 1px black'
           }}

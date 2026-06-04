@@ -23,7 +23,7 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
 
   return (
     <div 
-      className="absolute bottom-[32px] left-1 w-48 flex z-50"
+      className="absolute bottom-[32px] left-1 w-48 flex z-50 os-panel"
       style={{
         background: '#c0c0c0',
         border: '2px solid',
@@ -33,7 +33,7 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
     >
       {/* Windows 98 Sidebar */}
       <div 
-        className="w-8 flex items-end justify-center pb-2"
+        className="w-8 flex items-end justify-center pb-2 os-sidebar"
         style={{
           background: '#000080',
         }}
@@ -49,11 +49,11 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
       </div>
 
       {/* Menu Items */}
-      <div className="flex-1 py-1">
+      <div className="flex-1 py-1 os-list">
         {menuItems.map((item, i) => (
           <button
             key={i}
-            className="w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white flex items-center gap-2 text-sm transition-colors"
+            className="w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white flex items-center gap-2 text-sm transition-colors os-list-item os-button"
             style={{
               fontFamily: 'MS Sans Serif, sans-serif',
             }}

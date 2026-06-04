@@ -18,7 +18,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   }, [onComplete]);
 
   return (
-    <div className="welcome-screen-xp">
+    <div className="welcome-screen-xp os-shell os-winxp">
       <div className="welcome-screen__gradient">
         <div className="welcome-screen__line-top" />
         <div className="welcome-screen__line-bottom" />

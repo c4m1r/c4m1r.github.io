@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './Calculator.css';
 
 export function Calculator() {
   const [display, setDisplay] = useState('0');
@@ -80,16 +81,16 @@ export function Calculator() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#ece9d8] p-1">
+    <div className="calc-app">
       {/* Display */}
-      <div className="bg-white border-2 border-[#5c5c5c] border-r-white border-b-white px-3 py-2 mb-2 text-right">
-        <div className="text-2xl font-mono h-8 flex items-center justify-end">
+      <div className="calc-app__display">
+        <div className="calc-app__display-val">
           {display}
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="grid grid-cols-4 gap-1 flex-1">
+      <div className="calc-app__grid">
         {/* Memory buttons row */}
         <CalcButton onClick={handleClear} text="MC" disabled />
         <CalcButton onClick={handleClear} text="MR" disabled />
@@ -99,28 +100,28 @@ export function Calculator() {
         {/* Backspace, CE, C row */}
         <CalcButton onClick={handleBackspace} text="←" colSpan={2} />
         <CalcButton onClick={handleClear} text="CE" />
-        <CalcButton onClick={handleClear} text="C" className="text-red-700" />
+        <CalcButton onClick={handleClear} text="C" className="calc-app__btn--action" />
 
         {/* Number pad */}
         <CalcButton onClick={() => handleNumber('7')} text="7" />
         <CalcButton onClick={() => handleNumber('8')} text="8" />
         <CalcButton onClick={() => handleNumber('9')} text="9" />
-        <CalcButton onClick={() => handleOperation('/')} text="/" className="text-red-700" />
+        <CalcButton onClick={() => handleOperation('/')} text="/" className="calc-app__btn--action" />
 
         <CalcButton onClick={() => handleNumber('4')} text="4" />
         <CalcButton onClick={() => handleNumber('5')} text="5" />
         <CalcButton onClick={() => handleNumber('6')} text="6" />
-        <CalcButton onClick={() => handleOperation('*')} text="*" className="text-red-700" />
+        <CalcButton onClick={() => handleOperation('*')} text="*" className="calc-app__btn--action" />
 
         <CalcButton onClick={() => handleNumber('1')} text="1" />
         <CalcButton onClick={() => handleNumber('2')} text="2" />
         <CalcButton onClick={() => handleNumber('3')} text="3" />
-        <CalcButton onClick={() => handleOperation('-')} text="-" className="text-red-700" />
+        <CalcButton onClick={() => handleOperation('-')} text="-" className="calc-app__btn--action" />
 
         <CalcButton onClick={() => handleNumber('0')} text="0" />
         <CalcButton onClick={handleDecimal} text="." />
-        <CalcButton onClick={handleEquals} text="=" className="text-red-700" />
-        <CalcButton onClick={() => handleOperation('+')} text="+" className="text-red-700" />
+        <CalcButton onClick={handleEquals} text="=" className="calc-app__btn--action" />
+        <CalcButton onClick={() => handleOperation('+')} text="+" className="calc-app__btn--action" />
       </div>
     </div>
   );
@@ -140,17 +141,11 @@ function CalcButton({ onClick, text, colSpan = 1, disabled = false, className = 
       onClick={onClick}
       disabled={disabled}
       className={`
-        ${colSpan === 2 ? 'col-span-2' : ''}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'active:border-black active:border-b-white active:border-r-white'}
-        border-2 border-white border-b-[#808080] border-r-[#808080]
-        bg-[#ece9d8] hover:bg-[#d4d0c8]
-        font-bold text-base
-        transition-colors
+        calc-app__btn
+        ${colSpan === 2 ? 'calc-app__btn--col2' : ''}
+        ${disabled ? 'calc-app__btn--disabled' : ''}
         ${className}
       `}
-      style={{
-        fontFamily: 'Tahoma, Arial, sans-serif',
-      }}
     >
       {text}
     </button>

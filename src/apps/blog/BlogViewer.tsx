@@ -5,9 +5,10 @@
 
 import { useState, useEffect } from 'react';
 import { useApp } from '../../contexts/AppContext';
-import { loadBlogPosts, type ContentItem } from '../../utils/contentLoader';
+import { loadArticles } from '../../domain/articles/articles.loader';
+import { type ContentItem } from '../../utils/contentLoader';
 import { Notepad } from '../notepad';
-import { Calendar, Tag, User, ArrowLeft } from 'lucide-react';
+import { Calendar, Tag, ArrowLeft } from 'lucide-react';
 
 interface BlogViewerProps {
   initialPost?: string;
@@ -22,7 +23,7 @@ export function BlogViewer({ initialPost }: BlogViewerProps) {
 
   useEffect(() => {
     setLoading(true);
-    loadBlogPosts(language).then(blogPosts => {
+    loadArticles(language).then(blogPosts => {
       setPosts(blogPosts);
       setLoading(false);
       

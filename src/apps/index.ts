@@ -13,7 +13,7 @@ export { TaskManager } from './TaskManager';
 export { Notepad } from './notepad';
 export { PictureViewer } from './pictureview';
 export { MyComputer } from './explorer';
-export { PicturesGallery } from './pictures';
+export { PicturesGallery } from './pictureview/PicturesGallery';
 export { BlogViewer } from './blog';
 
 // Интернет

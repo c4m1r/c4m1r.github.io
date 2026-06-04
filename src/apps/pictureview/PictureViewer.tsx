@@ -4,7 +4,6 @@
  */
 
 import { useState } from 'react';
-import { useApp } from '../../contexts/AppContext';
 import { ZoomIn, ZoomOut, RotateCw, RotateCcw, Save, Printer, Trash2 } from 'lucide-react';
 
 interface PictureViewerProps {
@@ -12,8 +11,7 @@ interface PictureViewerProps {
   onClose?: () => void;
 }
 
-export function PictureViewer({ initialImage, onClose }: PictureViewerProps) {
-  const { theme } = useApp();
+export function PictureViewer({ initialImage }: PictureViewerProps) {
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
 

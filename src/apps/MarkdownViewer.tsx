@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { Folder, FileText, ChevronRight, ChevronDown } from 'lucide-react';
 
@@ -23,7 +23,7 @@ interface MarkdownViewerProps {
   onClose?: () => void;
 }
 
-export function MarkdownViewer({ title, categories, onClose }: MarkdownViewerProps) {
+export function MarkdownViewer({ title, categories }: MarkdownViewerProps) {
   const { theme } = useApp();
   const [selectedFile, setSelectedFile] = useState<MarkdownFile | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());

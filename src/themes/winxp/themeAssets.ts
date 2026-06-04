@@ -7,10 +7,6 @@
 import folderPlainXp from './assets/icons/folder_plain.png';
 import myComputerXp from './assets/icons/mycomputer.png';
 import recycleBinXp from './assets/icons/recycling_bin.png';
-import folderDocumentsXp from './assets/icons/folder-documents.png';
-import folderPicturesXp from './assets/icons/folder-pictures.png';
-import folderMusicXp from './assets/icons/folder-music.png';
-import folderRecentXp from './assets/icons/folder-recent.png';
 import ieIconXp from './assets/icons/ie.png';
 import mailIconXp from './assets/icons/outlook.png';
 import mediaPlayerIconXp from './assets/icons/mediaplayer.png';
@@ -28,7 +24,6 @@ import fullscreenIconXp from './assets/icons/full-screen-icon-sm.webp';
 import notificationIconXp from './assets/icons/Information.png';
 
 // Widgets
-import startIconXp from './assets/widgets/windows.png';
 import trayExpandXp from './assets/widgets/tray-expand.png';
 
 // User

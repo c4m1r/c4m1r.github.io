@@ -25,35 +25,36 @@ export function ErrorDialog({ title = 'Error', message, onClose }: ErrorDialogPr
           isXpFamily
             ? 'border-t-white border-l-white border-r-[#5a5a5a] border-b-[#5a5a5a]'
             : 'border-white border-b-black border-r-black'
-        }`}
+        } os-window`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Title Bar */}
         <div
           className={`${
             isXpFamily
               ? 'bg-gradient-to-r from-[#0054e3] via-[#0a5fef] to-[#0866f5] text-white'
               : 'bg-gradient-to-r from-[#000080] to-[#1084d0] text-white'
-          } px-2 py-1 flex items-center justify-between select-none`}
+          } px-2 py-1 flex items-center justify-between select-none os-titlebar`}
         >
           <div className="flex items-center gap-2">
             <span className="text-xs">⚠️</span>
-            <span className="text-sm font-bold">{title}</span>
+            <span className="text-sm font-bold os-titlebar-title">{title}</span>
           </div>
-          <button
-            onClick={onClose}
-            className={`${
-              isXpFamily
-                ? 'w-5 h-5 bg-[#d6544d] hover:bg-[#e06055] text-white text-xs font-bold rounded-sm'
-                : 'w-4 h-4 bg-[#c0c0c0] border border-white border-b-black border-r-black text-black text-xs font-bold'
-            } flex items-center justify-center transition-colors`}
-          >
-            ×
-          </button>
+          <div className="os-titlebar-controls">
+            <button
+              onClick={onClose}
+              className={`${
+                isXpFamily
+                  ? 'w-5 h-5 bg-[#d6544d] hover:bg-[#e06055] text-white text-xs font-bold rounded-sm'
+                  : 'w-4 h-4 bg-[#c0c0c0] border border-white border-b-black border-r-black text-black text-xs font-bold'
+              } flex items-center justify-center transition-colors os-button`}
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-4 os-window-body">
           <div className="flex gap-3 mb-6">
             {/* Error Icon */}
             <div className="flex-shrink-0">
@@ -78,7 +79,7 @@ export function ErrorDialog({ title = 'Error', message, onClose }: ErrorDialogPr
           <div className="flex justify-center">
             <button
               onClick={onClose}
-              className={`px-12 py-1.5 text-sm font-semibold min-w-[90px] ${
+              className={`px-12 py-1.5 text-sm font-semibold min-w-[90px] os-button ${
                 isXpFamily
                   ? 'bg-[#ece9d8] border border-[#003c74] hover:bg-[#dfdbc3] active:border-2'
                   : 'bg-[#c0c0c0] border-2 border-white border-b-[#808080] border-r-[#808080] active:border-black active:border-b-white active:border-r-white'

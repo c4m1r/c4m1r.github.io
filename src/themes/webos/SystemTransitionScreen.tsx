@@ -33,6 +33,17 @@ const WIN98_MESSAGES: Record<TransitionMode, { title: string; subtitle: string }
 
 export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTransitionScreenProps) {
   const { theme } = useApp();
+  const OS_CLASS_MAP: Record<string, string> = {
+    'win-xp': 'winxp',
+    'webos':  'winxp',
+    'win-98': 'classic',
+    'win7':   'win7',
+    'win10':  'win7',
+    'win11':  'win7',
+    'ubuntu': 'ubuntu',
+    'arch':   'ubuntu',
+  };
+  const osClassName = OS_CLASS_MAP[theme] ?? 'classic';
   const timeout = duration ?? (mode === 'shutdown' ? 3500 : 2200);
 
   useEffect(() => {
@@ -49,10 +60,10 @@ export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTra
 
   if (theme === 'win-98') {
     return (
-      <div className="min-h-screen bg-[#008080] flex items-center justify-center">
-        <div className="w-[420px] bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.4)]">
-          <div className="bg-gradient-to-r from-[#000080] to-[#1084d0] text-white px-3 py-2 mb-6 flex items-center justify-between">
-            <span className="text-sm font-bold">Windows 98</span>
+      <div className="min-h-screen bg-[#008080] flex items-center justify-center os-shell os-classic">
+        <div className="w-[420px] bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.4)] os-window">
+          <div className="bg-gradient-to-r from-[#000080] to-[#1084d0] text-white px-3 py-2 mb-6 flex items-center justify-between os-titlebar">
+            <span className="text-sm font-bold os-titlebar-title">Windows 98</span>
             <span className="text-xs">Microsoft Corporation</span>
           </div>
           <div className="bg-white border border-gray-400 px-4 py-8 text-center text-sm text-gray-800 shadow-inner">
@@ -66,7 +77,7 @@ export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTra
 
   return (
     <div
-      className={`min-h-screen flex flex-col items-center justify-center relative overflow-hidden theme-${theme} transition-opacity duration-500`}
+      className={`min-h-screen flex flex-col items-center justify-center relative overflow-hidden theme-${theme} transition-opacity duration-500 os-shell os-${osClassName}`}
       style={{
         background: 'radial-gradient(circle at 50% 40%, #5a7edc 0%, #0f3ea6 35%, #041a5c 100%)',
         animation: 'fadeIn 500ms ease-in-out',

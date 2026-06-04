@@ -49,7 +49,7 @@ export function GrubMenu() {
       }
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
+    const handleTouchStart = () => {
       setAutobootActive(false);
     };
 

@@ -220,7 +220,7 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
       .padStart(3, '0')
       .split('');
     return (
-      <div className="minesweeper-counter">
+      <div className="minesweeper-counter minesweeper-app__counter">
         {digits.map((digit, i) => (
           <div key={i} className={`minesweeper-digit minesweeper-digit-${digit}`} />
         ))}
@@ -236,9 +236,9 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
   };
 
   return (
-    <div className="minesweeper-container">
+    <div className="minesweeper-container minesweeper-app">
       {/* Scoreboard */}
-      <div className="minesweeper-scoreboard">
+      <div className="minesweeper-scoreboard minesweeper-app__toolbar">
         {renderCounter(flagCount)}
         <button className="minesweeper-reset-button" onClick={initBoard}>
           <div className={`minesweeper-smiley ${getSmileyClass()}`} />
@@ -247,7 +247,7 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
       </div>
 
       {/* Minefield */}
-      <div className="minesweeper-minefield">
+      <div className="minesweeper-minefield minesweeper-app__board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="minesweeper-row">
             {row.map((cell, colIndex) => {
@@ -256,7 +256,7 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
               const isMine = cell.isMine;
               const neighborMines = cell.neighborMines;
 
-              let cellClass = 'minesweeper-cell ';
+              let cellClass = 'minesweeper-cell minesweeper-app__cell ';
               if (isRevealed) {
                 cellClass += 'minesweeper-cell-revealed';
               } else if (isFlagged) {
@@ -301,10 +301,10 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
 
       {/* Статус игры */}
       {gameState === 'won' && (
-        <div className="mt-4 text-green-600 font-bold">🎉 Победа!</div>
+        <div className="minesweeper-app__status minesweeper-app__status--won">🎉 Победа!</div>
       )}
       {gameState === 'lost' && (
-        <div className="mt-4 text-red-600 font-bold">💥 Проигрыш!</div>
+        <div className="minesweeper-app__status minesweeper-app__status--lost">💥 Проигрыш!</div>
       )}
     </div>
   );

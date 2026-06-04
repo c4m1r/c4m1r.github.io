@@ -7,34 +7,21 @@ import { StartMenu } from './StartMenu';
 import { Window } from '../../apps/desktop/Window';
 import { ErrorBox } from './ErrorBox';
 import { Notepad } from '../../apps/notepad';
-import { BlogApp } from '../../apps/BlogApp';
-import { WikiApp } from '../../apps/wiki/WikiApp';
-import { PicturesGallery } from '../../apps/pictureview/PicturesGallery';
 import { PictureViewer } from '../../apps/pictureview';
 import { ContextMenu, ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
-import { Minesweeper } from '../../apps/minesweeper';
 import { RunDialog } from './RunDialog';
 import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
-import minesweeperIcon from '../../apps/minesweeper/assets/icon.png';
 import { useWindowManagerState } from '../../apps/desktop/windowManager';
-import { InternetExplorer } from '../../apps/internetexplorer/InternetExplorer';
-import { WindowsMediaPlayer } from '../../apps/mediaplayer/WindowsMediaPlayer';
 import { DoomPlayer } from '../../apps/doom/DoomPlayer';
 import { GamesFolder } from '../../apps/games/GamesFolder';
 import { doomVariantMap, DoomVariantId } from '../../apps/doom/config';
-import { OutlookExpress } from '../../apps/outlook/OutlookExpress';
-import { Calculator } from '../../apps/calc/Calculator';
-import { Paint } from '../../apps/paint/Paint';
-import { ControlPanel } from '../../apps/ControlPanel';
 import { TaskManager } from '../../apps/TaskManager';
-import { Terminal } from '../../apps/Terminal';
-import { AboutApp } from '../../apps/AboutApp';
-import { CalendarApp } from '../../apps/calendar';
 import { LangSwitcher } from '../../apps/langs/LangSwitcher';
 import { MyCV } from '../../apps/mycv/MyCV';
-import { ProjectsGrid } from '../../apps/ProjectsGrid';
+import { appRegistry } from '../../shells/desktop/appRegistry';
+import { desktopShortcuts } from '../../shells/desktop/shortcutsRegistry';
 import { THEME_ASSETS } from './themeAssets';
 import { THEME_STYLES } from './themeStyles';
 
@@ -116,7 +103,7 @@ export function Desktop(props?: DesktopProps) {
   } = useWindowManagerState();
 
   const themeKey: ThemeId = theme;
-  const themeAssets = THEME_ASSETS[themeKey] ?? THEME_ASSETS.webos;
+  const themeAssets = THEME_ASSETS[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_ASSETS.webos;
   const fallbackAssets = THEME_ASSETS.webos;
   const resolveAssetPath = (primary?: string, secondary?: string) => primary ?? secondary ?? '';
   const volumeIconSrc = resolveAssetPath(themeAssets.volumeIcon, fallbackAssets.volumeIcon);
@@ -127,15 +114,21 @@ export function Desktop(props?: DesktopProps) {
     themeAssets.richTextIcon ?? themeAssets.notepadIcon,
     fallbackAssets.richTextIcon ?? fallbackAssets.notepadIcon ?? fallbackAssets.folderIcon
   );
-  const themeStyles = THEME_STYLES[themeKey] ?? THEME_STYLES.webos;
-  const blogLabel = translations[language]?.blog?.blog ?? 'Blog';
-  const wikiLabel = language === 'ru' ? 'Вики' : 'Wiki';
-  const picturesLabel = language === 'ru' ? 'Мои изображения' : 'My Pictures';
-  const calendarLabel = language === 'ru' ? 'Календарь' : 'Calendar';
-  const terminalLabel = language === 'ru' ? 'Терминал' : 'Terminal';
-  const taskManagerLabel = language === 'ru' ? 'Диспетчер задач' : 'Task Manager';
-  const aboutLabel = language === 'ru' ? 'Обо мне' : 'About';
+  const themeStyles = THEME_STYLES[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_STYLES.webos;
   const isXpFamily = XP_FAMILY_THEMES.includes(themeKey);
+
+  // Map ThemeId values to os-* CSS class suffixes defined in src/styles/os/
+  const OS_CLASS_MAP: Record<string, string> = {
+    'win-xp': 'winxp',
+    'webos':  'winxp',
+    'win-98': 'classic',
+    'win7':   'win7',
+    'win10':  'win7',
+    'win11':  'win7',
+    'ubuntu': 'ubuntu',
+    'arch':   'ubuntu',
+  };
+  const osClassName = OS_CLASS_MAP[themeKey] ?? 'classic';
   const startupSound = resolveAssetPath(themeAssets.startupSound, fallbackAssets.startupSound);
   const shutdownSound = resolveAssetPath(themeAssets.shutdownSound, fallbackAssets.shutdownSound);
   const logoffSound = resolveAssetPath(themeAssets.logoffSound, fallbackAssets.logoffSound);
@@ -397,14 +390,6 @@ export function Desktop(props?: DesktopProps) {
   };
 
   const desktopItems = getItemsFromPath(DESKTOP_PATH);
-  const controlPanelLabel = language === 'ru' ? 'Панель управления' : 'Control Panel';
-  const calculatorLabel = language === 'ru' ? 'Калькулятор' : 'Calculator';
-  const paintLabel = 'Paint';
-  const mediaPlayerLabel = 'Windows Media Player';
-  const outlookLabel = 'Outlook Express';
-  const internetLabel = 'Internet Explorer';
-  const notepadLabel = language === 'ru' ? 'Блокнот' : 'Notepad';
-  const projectsLabel = t.myProjects ?? 'My Projects';
   const gamesLabel = t.games ?? (language === 'ru' ? 'Игры' : 'Games');
 
   const renderShortcutIcon = (asset?: string, fallback?: string, altText = '') => (
@@ -418,23 +403,31 @@ export function Desktop(props?: DesktopProps) {
     />
   );
 
-  const applicationShortcuts: DesktopIcon[] = [
-    { id: 'shortcut-internet-explorer', label: internetLabel, type: 'system', icon: renderShortcutIcon(themeAssets.internetExplorerIcon) },
-    { id: 'shortcut-outlook', label: outlookLabel, type: 'system', icon: renderShortcutIcon(themeAssets.mailIcon) },
-    { id: 'shortcut-media-player', label: mediaPlayerLabel, type: 'system', icon: renderShortcutIcon(themeAssets.mediaPlayerIcon) },
-    { id: 'shortcut-projects-grid', label: projectsLabel, type: 'system', icon: renderShortcutIcon(themeAssets.projectsIcon) },
-    { id: 'shortcut-calculator', label: calculatorLabel, type: 'system', icon: renderShortcutIcon(themeAssets.calculatorIcon) },
-    { id: 'shortcut-paint', label: paintLabel, type: 'system', icon: renderShortcutIcon(themeAssets.paintIcon) },
-    { id: 'shortcut-control-panel', label: controlPanelLabel, type: 'system', icon: renderShortcutIcon(themeAssets.controlPanelIcon) },
-    { id: 'shortcut-pictures', label: picturesLabel, type: 'system', icon: renderShortcutIcon(themeAssets.folderIcon) },
-    { id: 'shortcut-blog', label: blogLabel, type: 'system', icon: renderShortcutIcon(textDocumentIcon) },
-    { id: 'shortcut-wiki', label: wikiLabel, type: 'system', icon: renderShortcutIcon(themeAssets.folderIcon) },
-    { id: 'shortcut-notepad', label: notepadLabel, type: 'system', icon: renderShortcutIcon(themeAssets.notepadIcon ?? textDocumentIcon) },
-    { id: 'shortcut-calendar', label: calendarLabel, type: 'system', icon: renderShortcutIcon(themeAssets.projectsIcon) },
-    { id: 'shortcut-terminal', label: terminalLabel, type: 'system', icon: renderShortcutIcon(themeAssets.gamesIcon) },
-    { id: 'shortcut-task-manager', label: taskManagerLabel, type: 'system', icon: renderShortcutIcon(themeAssets.controlPanelIcon) },
-    { id: 'shortcut-about', label: aboutLabel, type: 'system', icon: renderShortcutIcon(themeAssets.folderIcon) },
-  ];
+  const applicationShortcuts: DesktopIcon[] = desktopShortcuts.map((appId) => {
+    const app = appRegistry[appId];
+    if (!app) return null;
+
+    let iconSrc = '';
+    if (app.iconKey) {
+      iconSrc = themeAssets[app.iconKey as keyof typeof themeAssets] as string;
+    }
+    if (!iconSrc && app.iconKey === 'richTextIcon') {
+      iconSrc = textDocumentIcon;
+    }
+    if (!iconSrc && app.iconKey === 'notepadIcon') {
+      iconSrc = themeAssets.notepadIcon ?? textDocumentIcon;
+    }
+
+    const label = app.title[language] || app.title['en'];
+    const icon = renderShortcutIcon(iconSrc, themeAssets.folderIcon);
+
+    return {
+      id: `shortcut-${appId}`,
+      label,
+      type: 'system',
+      icon,
+    };
+  }).filter(Boolean) as DesktopIcon[];
 
   const initialDesktopIcons: DesktopIcon[] = [
     {
@@ -447,21 +440,6 @@ export function Desktop(props?: DesktopProps) {
       id: 'recycle-bin',
       icon: getIconElement('recycle'),
       label: t.recycleBin,
-      type: 'system'
-    },
-    {
-      id: 'minesweeper',
-      icon: (
-        <img
-          src={resolveAssetPath(themeAssets.minesweeperIcon, fallbackAssets.minesweeperIcon)}
-          alt="Minesweeper"
-          className="w-12 h-12"
-          onError={(e) => {
-            e.currentTarget.src = resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon);
-          }}
-        />
-      ),
-      label: 'Minesweeper',
       type: 'system'
     },
     {
@@ -716,56 +694,6 @@ export function Desktop(props?: DesktopProps) {
     playLaunchSound();
   }, [handleOpenFile, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon]);
 
-  const launchMinesweeper = useCallback(() => {
-    openWindow({
-      id: MINESWEEPER_WINDOW_ID,
-      title: 'Minesweeper',
-      icon: themeAssets.minesweeperIcon ?? minesweeperIcon,
-      width: 360,
-      height: 480,
-      resizable: false,
-      content: <Minesweeper onClose={() => closeWindow(MINESWEEPER_WINDOW_ID)} />,
-    });
-    playLaunchSound();
-  }, [closeWindow, openWindow, playLaunchSound, themeAssets.minesweeperIcon]);
-
-  const openInternetExplorerApp = useCallback(() => {
-    openWindow({
-      id: 'app:internet-explorer',
-      title: 'Internet Explorer',
-      icon: resolveAssetPath(themeAssets.internetExplorerIcon, fallbackAssets.internetExplorerIcon),
-      width: 960,
-      height: 640,
-      content: <InternetExplorer />,
-    });
-    playLaunchSound();
-  }, [openWindow, playLaunchSound, themeAssets.internetExplorerIcon, fallbackAssets.internetExplorerIcon]);
-
-  const openOutlookExpressApp = useCallback(() => {
-    openWindow({
-      id: 'app:outlook',
-      title: 'Outlook Express',
-      icon: resolveAssetPath(themeAssets.mailIcon, fallbackAssets.mailIcon),
-      width: 860,
-      height: 560,
-      content: <OutlookExpress />,
-    });
-    playLaunchSound();
-  }, [openWindow, playLaunchSound, themeAssets.mailIcon, fallbackAssets.mailIcon]);
-
-  const openWindowsMediaPlayerApp = useCallback(() => {
-    openWindow({
-      id: 'app:windows-media-player',
-      title: 'Windows Media Player',
-      icon: resolveAssetPath(themeAssets.mediaPlayerIcon, fallbackAssets.mediaPlayerIcon),
-      width: 400,
-      height: 580,
-      resizable: false,
-      content: <WindowsMediaPlayer />,
-    });
-    playLaunchSound();
-  }, [openWindow, playLaunchSound, themeAssets.mediaPlayerIcon, fallbackAssets.mediaPlayerIcon]);
-
   const openDoomVariant = useCallback((variantId: DoomVariantId) => {
     const variant = doomVariantMap[variantId];
     if (!variant) {
@@ -808,55 +736,6 @@ export function Desktop(props?: DesktopProps) {
     themeAssets.gamesIcon,
   ]);
 
-  const openCalculatorApp = useCallback(() => {
-    openWindow({
-      id: 'app:calculator',
-      title: 'Calculator',
-      icon: resolveAssetPath(themeAssets.calculatorIcon, fallbackAssets.calculatorIcon),
-      width: 320,
-      height: 400,
-      resizable: false,
-      content: <Calculator />,
-    });
-    playLaunchSound();
-  }, [openWindow, playLaunchSound, themeAssets.calculatorIcon, fallbackAssets.calculatorIcon]);
-
-  const openPaintApp = useCallback(() => {
-    openWindow({
-      id: 'app:paint',
-      title: 'Paint',
-      icon: resolveAssetPath(themeAssets.paintIcon, fallbackAssets.paintIcon),
-      width: 900,
-      height: 700,
-      content: <Paint />,
-    });
-    playLaunchSound();
-  }, [openWindow, playLaunchSound, themeAssets.paintIcon, fallbackAssets.paintIcon]);
-
-  const openControlPanelApp = useCallback(() => {
-    openWindow({
-      id: 'app:control-panel',
-      title: 'Control Panel',
-      icon: resolveAssetPath(themeAssets.controlPanelIcon, fallbackAssets.controlPanelIcon),
-      width: 760,
-      height: 600,
-      content: <ControlPanel />,
-    });
-    playLaunchSound();
-  }, [openWindow, playLaunchSound, themeAssets.controlPanelIcon, fallbackAssets.controlPanelIcon]);
-
-  const openNotepadApp = useCallback(() => {
-    openWindow({
-      id: `app:notepad-${Date.now()}`,
-      title: `${notepadLabel}`,
-      icon: textDocumentIcon,
-      width: 640,
-      height: 480,
-      content: <Notepad initialContent="" />,
-    });
-    playLaunchSound();
-  }, [notepadLabel, openWindow, playLaunchSound, textDocumentIcon]);
-
   const handleOpenPictureFromGallery = useCallback((imagePath: string) => {
     openWindow({
       id: `picture:${imagePath}`,
@@ -868,127 +747,129 @@ export function Desktop(props?: DesktopProps) {
     });
   }, [openWindow, themeAssets.folderIcon, fallbackAssets.folderIcon]);
 
-  const openPicturesApp = useCallback(() => {
+  const launchApp = useCallback((appId: string) => {
+    const app = appRegistry[appId];
+
+    if (!app) {
+      switch (appId) {
+        case 'my-computer':
+          openExplorerWindow('My Computer');
+          break;
+        case 'games-folder':
+          openGamesFolder();
+          break;
+        case 'all-programs':
+          openExplorerWindow('C:\\Program Files');
+          break;
+        case 'doom1':
+        case 'doom2':
+        case 'doom3':
+          openDoomVariant(appId as DoomVariantId);
+          break;
+        default:
+          playErrorSound();
+          setErrorWindow({
+            id: `error-${Date.now()}`,
+            message: `Windows cannot find '${appId.replace('unavailable:', '')}'. Make sure you typed the name correctly, and then try again.`,
+          });
+          console.warn(`[StartMenu] Unknown app requested: ${appId}`);
+      }
+      return;
+    }
+
+    const Component = app.component;
+    let content: React.ReactNode = null;
+
+    if (appId === 'minesweeper') {
+      content = <Component onClose={() => closeWindow(MINESWEEPER_WINDOW_ID)} />;
+    } else if (appId === 'pictures') {
+      content = <Component onOpenImage={handleOpenPictureFromGallery} />;
+    } else if (appId === 'notepad') {
+      openWindow({
+        id: `app:notepad-${Date.now()}`,
+        title: app.title[language] || app.title['en'],
+        icon: textDocumentIcon,
+        width: app.defaultWindow.width,
+        height: app.defaultWindow.height,
+        content: <Component initialContent="" />,
+      });
+      playLaunchSound();
+      return;
+    } else if (appId === 'task-manager') {
+      setShowTaskManager(true);
+      playLaunchSound();
+      return;
+    } else {
+      content = <Component />;
+    }
+
+    let iconSrc = '';
+    if (app.iconKey) {
+      iconSrc = themeAssets[app.iconKey as keyof typeof themeAssets] as string;
+    }
+    if (!iconSrc && app.iconKey === 'richTextIcon') {
+      iconSrc = textDocumentIcon;
+    }
+    if (!iconSrc && app.iconKey === 'notepadIcon') {
+      iconSrc = themeAssets.notepadIcon ?? textDocumentIcon;
+    }
+
     openWindow({
-      id: 'app:pictures',
-      title: picturesLabel,
-      icon: resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon),
-      width: 960,
-      height: 620,
-      content: <PicturesGallery onOpenImage={handleOpenPictureFromGallery} />,
+      id: `app:${appId}`,
+      title: app.title[language] || app.title['en'],
+      icon: iconSrc || undefined,
+      width: app.defaultWindow.width,
+      height: app.defaultWindow.height,
+      resizable: app.defaultWindow.resizable ?? true,
+      content,
     });
     playLaunchSound();
-  }, [handleOpenPictureFromGallery, openWindow, playLaunchSound, picturesLabel, themeAssets.folderIcon, fallbackAssets.folderIcon]);
-
-  const openBlogApp = useCallback(() => {
-    openWindow({
-      id: 'app:blog',
-      title: blogLabel,
-      icon: textDocumentIcon,
-      width: 960,
-      height: 640,
-      content: <BlogApp />,
-    });
-    playLaunchSound();
-  }, [blogLabel, openWindow, playLaunchSound, textDocumentIcon]);
-
-  const openWikiApp = useCallback(() => {
-    openWindow({
-      id: 'app:wiki',
-      title: wikiLabel,
-      icon: resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon),
-      width: 960,
-      height: 640,
-      content: <WikiApp />,
-    });
-    playLaunchSound();
-  }, [wikiLabel, openWindow, playLaunchSound, themeAssets.folderIcon, fallbackAssets.folderIcon]);
-
-  const openCalendarApp = useCallback(() => {
-    openWindow({
-      id: 'app:calendar',
-      title: calendarLabel,
-      icon: resolveAssetPath(themeAssets.projectsIcon, fallbackAssets.projectsIcon),
-      width: 840,
-      height: 600,
-      content: <CalendarApp />,
-    });
-    playLaunchSound();
-  }, [calendarLabel, openWindow, playLaunchSound, themeAssets.projectsIcon, fallbackAssets.projectsIcon]);
-
-  const openProjectsGrid = useCallback(() => {
-    openWindow({
-      id: 'app:projects-grid',
-      title: projectsLabel,
-      icon: resolveAssetPath(themeAssets.projectsIcon, fallbackAssets.projectsIcon),
-      width: 820,
-      height: 560,
-      content: <ProjectsGrid />,
-    });
-    playLaunchSound();
-  }, [projectsLabel, openWindow, playLaunchSound, themeAssets.projectsIcon, fallbackAssets.projectsIcon]);
-
-  const openTerminalApp = useCallback(() => {
-    openWindow({
-      id: 'app:terminal',
-      title: terminalLabel,
-      icon: resolveAssetPath(themeAssets.gamesIcon, fallbackAssets.gamesIcon),
-      width: 760,
-      height: 480,
-      content: <Terminal />,
-    });
-    playLaunchSound();
-  }, [terminalLabel, openWindow, playLaunchSound, themeAssets.gamesIcon, fallbackAssets.gamesIcon]);
-
-  const openAboutApp = useCallback(() => {
-    openWindow({
-      id: 'app:about',
-      title: aboutLabel,
-      icon: resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon),
-      width: 720,
-      height: 520,
-      content: <AboutApp />,
-    });
-    playLaunchSound();
-  }, [aboutLabel, openWindow, playLaunchSound, themeAssets.folderIcon, fallbackAssets.folderIcon]);
-
-  const openTaskManagerApp = useCallback(() => {
-    setShowTaskManager(true);
-    playLaunchSound();
-  }, [playLaunchSound]);
+  }, [
+    openWindow,
+    closeWindow,
+    playLaunchSound,
+    playErrorSound,
+    themeAssets,
+    language,
+    textDocumentIcon,
+    handleOpenPictureFromGallery,
+    openExplorerWindow,
+    openGamesFolder,
+    openDoomVariant,
+  ]);
 
   const handleRunCommand = useCallback((command: string) => {
     const lowerCommand = command.toLowerCase();
     
-    const commandMap: Record<string, () => void> = {
-      notepad: openNotepadApp,
-      calc: openCalculatorApp,
-      calculator: openCalculatorApp,
-      mspaint: openPaintApp,
-      paint: openPaintApp,
-      control: openControlPanelApp,
-      iexplore: openInternetExplorerApp,
-      winmine: launchMinesweeper,
-      minesweeper: launchMinesweeper,
-      pictures: openPicturesApp,
-      pics: openPicturesApp,
-      blog: openBlogApp,
-      wiki: openWikiApp,
-      calendar: openCalendarApp,
-      terminal: openTerminalApp,
-      taskmgr: openTaskManagerApp,
-      taskmanager: openTaskManagerApp,
-      projects: openProjectsGrid,
-      games: openGamesFolder,
-      doom1: () => openDoomVariant('doom1'),
-      doom2: () => openDoomVariant('doom2'),
-      doom3: () => openDoomVariant('doom3'),
+    const aliasMap: Record<string, string> = {
+      notepad: 'notepad',
+      calc: 'calculator',
+      calculator: 'calculator',
+      mspaint: 'paint',
+      paint: 'paint',
+      control: 'control-panel',
+      iexplore: 'internet-explorer',
+      winmine: 'minesweeper',
+      minesweeper: 'minesweeper',
+      pictures: 'pictures',
+      pics: 'pictures',
+      blog: 'blog',
+      news: 'news',
+      wiki: 'wiki',
+      calendar: 'calendar',
+      terminal: 'terminal',
+      taskmgr: 'task-manager',
+      taskmanager: 'task-manager',
+      projects: 'projects-grid',
+      games: 'games-folder',
+      doom1: 'doom1',
+      doom2: 'doom2',
+      doom3: 'doom3',
     };
-
-    const handler = commandMap[lowerCommand];
-    if (handler) {
-      handler();
-      playLaunchSound();
+    
+    const appId = aliasMap[lowerCommand];
+    if (appId) {
+      launchApp(appId);
     } else {
       playErrorSound();
       setErrorWindow({
@@ -996,122 +877,7 @@ export function Desktop(props?: DesktopProps) {
         message: `Windows cannot find '${command}'. Make sure you typed the name correctly, and then try again.`
       });
     }
-  }, [
-    openNotepadApp,
-    openWindow,
-    openCalculatorApp,
-    openPaintApp,
-    openControlPanelApp,
-    openInternetExplorerApp,
-    openPicturesApp,
-    openBlogApp,
-    openWikiApp,
-    openCalendarApp,
-    openTerminalApp,
-    openTaskManagerApp,
-    launchMinesweeper,
-    playLaunchSound,
-    playErrorSound,
-    themeAssets.folderIcon,
-    openGamesFolder,
-    openDoomVariant,
-    openProjectsGrid,
-  ]);
-
-  const launchApp = useCallback((appId: string) => {
-    switch (appId) {
-      case 'minesweeper':
-        launchMinesweeper();
-        break;
-      case 'my-computer':
-        openExplorerWindow('My Computer');
-        break;
-      case 'internet-explorer':
-        openInternetExplorerApp();
-        break;
-      case 'outlook':
-        openOutlookExpressApp();
-        break;
-      case 'windows-media-player':
-        openWindowsMediaPlayerApp();
-        break;
-      case 'games-folder':
-        openGamesFolder();
-        break;
-      case 'doom1':
-      case 'doom2':
-      case 'doom3':
-        openDoomVariant(appId as DoomVariantId);
-        break;
-      case 'calculator':
-        openCalculatorApp();
-        break;
-      case 'paint':
-        openPaintApp();
-        break;
-      case 'control-panel':
-        openControlPanelApp();
-        break;
-      case 'pictures':
-        openPicturesApp();
-        break;
-      case 'projects-grid':
-        openProjectsGrid();
-        break;
-      case 'blog':
-        openBlogApp();
-        break;
-      case 'wiki':
-        openWikiApp();
-        break;
-      case 'calendar':
-        openCalendarApp();
-        break;
-      case 'terminal':
-        openTerminalApp();
-        break;
-      case 'task-manager':
-        openTaskManagerApp();
-        break;
-      case 'notepad':
-        openNotepadApp();
-        break;
-      case 'about':
-        openAboutApp();
-        break;
-      case 'all-programs':
-        openExplorerWindow('C:\\Program Files');
-        break;
-      default:
-        playErrorSound();
-        setErrorWindow({
-          id: `error-${Date.now()}`,
-          message: `Windows cannot find '${appId.replace('unavailable:', '')}'. Make sure you typed the name correctly, and then try again.`,
-        });
-        console.warn(`[StartMenu] Unknown app requested: ${appId}`);
-    }
-  }, [
-    launchMinesweeper,
-    openExplorerWindow,
-    openInternetExplorerApp,
-    openOutlookExpressApp,
-    openWindowsMediaPlayerApp,
-    openGamesFolder,
-    openDoomVariant,
-    openCalculatorApp,
-    openPaintApp,
-    openControlPanelApp,
-    openPicturesApp,
-    openProjectsGrid,
-    openBlogApp,
-    openWikiApp,
-    openCalendarApp,
-    openTerminalApp,
-    openTaskManagerApp,
-    openNotepadApp,
-    openAboutApp,
-    playErrorSound,
-  ]);
+  }, [launchApp, playErrorSound]);
 
   const openPathFromMenu = useCallback((path: string) => {
     openExplorerWindow(path);
@@ -1129,58 +895,17 @@ export function Desktop(props?: DesktopProps) {
           message: `C:\\\nApplication not found`
         });
         return;
-      case 'minesweeper':
-        launchMinesweeper();
-        return;
-      case 'shortcut-internet-explorer':
-        openInternetExplorerApp();
-        return;
-      case 'shortcut-outlook':
-        openOutlookExpressApp();
-        return;
-      case 'shortcut-media-player':
-        openWindowsMediaPlayerApp();
-        return;
-      case 'games-folder':
-        openGamesFolder();
-        return;
-      case 'shortcut-calculator':
-        openCalculatorApp();
-        return;
-      case 'shortcut-paint':
-        openPaintApp();
-        return;
-      case 'shortcut-control-panel':
-        openControlPanelApp();
-        return;
-      case 'shortcut-pictures':
-        openPicturesApp();
-        return;
-      case 'shortcut-projects-grid':
-        openProjectsGrid();
-        return;
-      case 'shortcut-blog':
-        openBlogApp();
-        return;
-      case 'shortcut-wiki':
-        openWikiApp();
-        return;
-      case 'shortcut-notepad':
-        openNotepadApp();
-        return;
-      case 'shortcut-calendar':
-        openCalendarApp();
-        return;
-      case 'shortcut-terminal':
-        openTerminalApp();
-        return;
-      case 'shortcut-task-manager':
-        openTaskManagerApp();
-        return;
-      case 'shortcut-about':
-        openAboutApp();
-        return;
       default:
+        if (icon.id.startsWith('shortcut-')) {
+          const appId = icon.id.replace('shortcut-', '');
+          launchApp(appId);
+          return;
+        }
+        if (appRegistry[icon.id] || icon.id === 'games-folder') {
+          launchApp(icon.id);
+          return;
+        }
+        
         {
           const item = desktopItems.find(i => i.id === icon.id);
           if (!item) return;
@@ -1283,7 +1008,7 @@ export function Desktop(props?: DesktopProps) {
   return (
     <div
       ref={desktopRef}
-      className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden`}
+      className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
       style={{
         backgroundImage: isXpFamily && themeAssets.wallpaper
           ? `url(${themeAssets.wallpaper})`
@@ -1388,11 +1113,11 @@ export function Desktop(props?: DesktopProps) {
                   : 'group-hover:bg-blue-800/50 border border-transparent group-hover:border-gray-300'
             } transition-colors ${draggingIcon === icon.id ? 'opacity-80' : ''}`}
           >
-            <div className={`flex items-center justify-center ${!isXpFamily && 'opacity-90'}`} style={{ textShadow: isXpFamily ? '0 1px 1px rgba(0,0,0,0.5)' : 'none' }}>
+            <div className={`flex items-center justify-center ${!isXpFamily && 'opacity-90'}`} style={{ textShadow: '0 1px 2px rgba(0,0,0,0.7)' }}>
               {icon.icon}
             </div>
             <div className={`text-white text-[11px] text-center mt-1 w-full break-words ${isXpFamily ? 'drop-shadow-lg font-semibold' : ''}`} style={{
-              textShadow: isXpFamily ? '0 1px 1px rgba(0,0,0,0.8)' : 'none',
+              textShadow: '0 1px 3px rgba(0,0,0,0.85), 0 0 6px rgba(0,0,0,0.6)',
               lineHeight: '1.2'
             }}>
               {icon.label}
@@ -1466,7 +1191,7 @@ export function Desktop(props?: DesktopProps) {
 
       {/* Taskbar */}
       <div
-        className={`taskbar fixed bottom-0 left-0 right-0 flex items-center justify-start shadow-lg z-50 ${themeStyles.taskbar.join(' ')}`}
+        className={`taskbar fixed bottom-0 left-0 right-0 flex items-center justify-start shadow-lg z-50 os-statusbar ${themeStyles.taskbar.join(' ')}`}
       >
         <div className="taskbar__inner">
           {/* Start Button */}
@@ -1479,7 +1204,7 @@ export function Desktop(props?: DesktopProps) {
                 openStartMenu();
               }
             }}
-            className={`start-button flex items-center gap-1 h-full relative ${(showStartMenu ? themeStyles.startButtonOpen : themeStyles.startButton).join(' ')}`}
+            className={`start-button flex items-center gap-1 h-full relative os-button ${(showStartMenu ? themeStyles.startButtonOpen : themeStyles.startButton).join(' ')}`}
           >
             {isXpFamily ? (
               <>
@@ -1521,7 +1246,7 @@ export function Desktop(props?: DesktopProps) {
                     handleFocusWindow(window.id);
                   }
                 }}
-                className={`taskbar-button flex-shrink-0 truncate max-w-[170px] select-none ${window.focused ? 'is-active' : ''} ${window.minimized ? 'is-minimized' : ''}`}
+                className={`taskbar-button flex-shrink-0 truncate max-w-[170px] select-none os-button ${window.focused ? 'is-active' : ''} ${window.minimized ? 'is-minimized' : ''}`}
                 title={window.title}
               >
                 {window.icon && (
@@ -1581,7 +1306,7 @@ export function Desktop(props?: DesktopProps) {
                     min={0}
                     max={100}
                     value={volumeLevel}
-                    orient="vertical"
+                    {...{ orient: 'vertical' }}
                     onChange={(e) => setVolumeLevel(Number(e.currentTarget.value))}
                     className="volume-slider"
                   />

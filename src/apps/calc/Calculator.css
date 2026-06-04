@@ -1,0 +1,102 @@
+/* Calculator CSS - Neutral layouts & OS visual skin separation */
+
+/* --- 1. NEUTRAL LAYOUTS --- */
+
+.calc-app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+.calc-app__display {
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.calc-app__display-val {
+  font-family: Consolas, Monaco, monospace;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.calc-app__grid {
+  display: grid;
+  grid-template-cols: repeat(4, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 4px;
+  flex: 1;
+}
+
+.calc-app__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.calc-app__btn--col2 {
+  grid-column: span 2;
+}
+
+.calc-app__btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- 2. CLASSIC / WINDOWS XP STYLE DEFAULT SKIN --- */
+
+/* Fallback styling for when no OS wrapper class is active, or under .os-winxp */
+.calc-app,
+.os-winxp .calc-app {
+  background-color: #ece9d8;
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+.calc-app__display,
+.os-winxp .calc-app__display {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #5c5c5c #ffffff #ffffff #5c5c5c;
+  color: #000000;
+}
+
+.calc-app__btn,
+.os-winxp .calc-app__btn {
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  background-color: #ece9d8;
+  color: #0000ff; /* Numbers are blue by default in XP calc */
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+.calc-app__btn:hover:not(.calc-app__btn--disabled),
+.os-winxp .calc-app__btn:hover:not(.calc-app__btn--disabled) {
+  background-color: #d4d0c8;
+}
+
+.calc-app__btn:active:not(.calc-app__btn--disabled),
+.os-winxp .calc-app__btn:active:not(.calc-app__btn--disabled) {
+  border-color: #808080 #ffffff #ffffff #808080;
+}
+
+.calc-app__btn--action,
+.os-winxp .calc-app__btn--action {
+  color: #ff0000; /* Action buttons are red in XP calc */
+}
+
+.calc-app__btn--disabled,
+.os-winxp .calc-app__btn--disabled {
+  color: #808080;
+  border-color: #ffffff #808080 #808080 #ffffff;
+}

@@ -1,21 +1,17 @@
+/**
+ * apps/mycv/MyCV.tsx
+ *
+ * Desktop CV application — uses the shared domain/resume layer.
+ * No direct cv-data.json import. Visual differences come from OS CSS wrappers.
+ */
 import { useState } from 'react';
 import profileGif from '../../themes/winxp/assets/avatars/profile.gif';
-import cvData from '../../content/cv/cv-data.json';
+import { useResume } from '../../domain/resume/useResume';
 import { useApp } from '../../contexts/AppContext';
+import type { CvTabId } from '../../domain/resume/resume.types';
 import type { Language } from '../../i18n/translations';
 
-type TabId = 'education' | 'it' | 'gamedev';
-
-interface CvSectionEntry {
-  title: string;
-  subtitle?: string;
-  year?: string;
-  details?: string[];
-}
-
-type CvDataShape = Record<TabId, CvSectionEntry[]>;
-
-const TAB_LABELS: Record<TabId, Record<Language, string>> = {
+const TAB_LABELS: Record<CvTabId, Record<Language, string>> = {
   education: {
     en: 'Education',
     ru: 'Образование',
@@ -54,39 +50,35 @@ const TAB_LABELS: Record<TabId, Record<Language, string>> = {
   },
 };
 
-const tabs: TabId[] = ['education', 'it', 'gamedev', 'rewards'];
-
 export function MyCV() {
   const { language } = useApp();
-  const [activeTab, setActiveTab] = useState<TabId>('education');
-  const localizedData =
-    (cvData as Record<string, CvDataShape>)[language] ??
-    (cvData as Record<string, CvDataShape>).en;
-  const entries = localizedData[activeTab] ?? [];
+  const { locale, profile, tabs } = useResume();
+  const [activeTab, setActiveTab] = useState<CvTabId>('education');
+  const entries = locale[activeTab] ?? [];
 
   return (
-    <div className="w-full h-full bg-[#ece9d8] text-[#1b1b1b] font-tahoma text-[13px] overflow-auto">
-      <div className="flex items-center gap-4 border-b border-[#b4b1a6] bg-white/70 px-5 py-4 shadow-inner">
-        <div className="w-24 h-24 rounded-full bg-black flex items-center justify-center border-2 border-[#5e5e5e] shadow-inner">
-          <img src={profileGif} alt="Profile" className="w-20 h-20 rounded-full" />
+    <div className="cv-app w-full h-full flex flex-col overflow-auto select-text">
+      {/* Profile header */}
+      <div className="cv-app__header flex items-center gap-4 px-5 py-4 border-b select-none">
+        <div className="cv-app__avatar-wrapper w-24 h-24 rounded-full flex items-center justify-center border shadow-inner">
+          <img src={profileGif} alt="Profile" className="cv-app__avatar w-20 h-20 rounded-full" />
         </div>
         <div>
-          <h1 className="text-2xl font-semibold leading-tight">C4m1r</h1>
-          <p className="text-sm text-[#2b4ca3] font-semibold">IT Engineer / Indie Game Architect</p>
-          <p className="text-xs text-[#555]">WebOS by C4m1r · XP Experience Pack</p>
+          <h1 className="cv-app__name text-2xl font-semibold leading-tight">{profile.name}</h1>
+          <p className="cv-app__role text-sm font-semibold">{profile.role}</p>
+          <p className="cv-app__tagline text-xs">{profile.tagline}</p>
         </div>
       </div>
 
-      <div className="px-5 pt-4">
-        <div className="flex gap-2 mb-4">
+      {/* Tabs + entries */}
+      <div className="flex-1 px-5 pt-4">
+        <div className="cv-app__tabs flex gap-2 mb-4 select-none">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide border ${
-                activeTab === tab
-                  ? 'bg-[#1f62d0] text-white border-[#124291]'
-                  : 'bg-[#f7f4ef] text-[#1f1f1f] border-[#c7c4bd] hover:bg-white'
+              className={`cv-app__tab-button px-3 py-1 rounded-full text-xs font-semibold tracking-wide border ${
+                activeTab === tab ? 'selected' : ''
               }`}
             >
               {TAB_LABELS[tab][language] ?? TAB_LABELS[tab].en}
@@ -94,21 +86,21 @@ export function MyCV() {
           ))}
         </div>
 
-        <div className="space-y-3 pb-6">
+        <div className="cv-app__entries space-y-3 pb-6">
           {entries.map((entry, index) => (
             <div
               key={`${entry.title}-${index}`}
-              className="bg-white/90 border border-[#cbc7bd] rounded-lg px-4 py-3 shadow-sm"
+              className="cv-app__entry rounded-lg px-4 py-3 shadow-sm border"
             >
               <div className="flex justify-between items-baseline gap-3">
                 <div>
-                  <h2 className="text-sm font-bold text-[#0a3c97]">{entry.title}</h2>
-                  {entry.subtitle && <p className="text-xs text-[#565656]">{entry.subtitle}</p>}
+                  <h2 className="cv-app__entry-title text-sm font-bold">{entry.title}</h2>
+                  {entry.subtitle && <p className="cv-app__entry-subtitle text-xs">{entry.subtitle}</p>}
                 </div>
-                {entry.year && <span className="text-[11px] text-[#1d1d1d] font-semibold">{entry.year}</span>}
+                {entry.year && <span className="cv-app__entry-year text-[11px] font-semibold">{entry.year}</span>}
               </div>
               {entry.details && (
-                <ul className="mt-2 text-xs text-[#2b2b2b] space-y-1 list-disc list-inside">
+                <ul className="cv-app__entry-details mt-2 text-xs space-y-1 list-disc list-inside">
                   {entry.details.map((detail, detailIndex) => (
                     <li key={detailIndex}>{detail}</li>
                   ))}
@@ -121,4 +113,3 @@ export function MyCV() {
     </div>
   );
 }
-

@@ -49,7 +49,7 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="fixed bg-white border border-gray-400 shadow-lg z-[10000] min-w-[160px]"
+      className="fixed bg-white border border-gray-400 shadow-lg z-[10000] min-w-[160px] os-panel os-list"
       style={{
         left: `${x}px`,
         top: `${y}px`,
@@ -78,7 +78,7 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
               }
             }}
             disabled={item.disabled}
-            className={`w-full text-left px-3 py-1 flex items-center gap-2 hover:bg-[#000080] hover:text-white disabled:text-gray-400 disabled:cursor-not-allowed ${
+            className={`w-full text-left px-3 py-1 flex items-center gap-2 hover:bg-[#000080] hover:text-white disabled:text-gray-400 disabled:cursor-not-allowed os-list-item os-button ${
               item.disabled ? '' : 'cursor-pointer'
             }`}
             style={{

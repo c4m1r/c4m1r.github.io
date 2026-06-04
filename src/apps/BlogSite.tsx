@@ -5,7 +5,6 @@ import {
   ArrowRight,
   BookOpen,
   Calendar,
-  Clock,
   Filter,
   Search,
   Image as ImageIcon,
@@ -23,11 +22,7 @@ import {
 } from 'lucide-react';
 import {
   loadAppEntries,
-  loadBlogPosts,
-  loadWikiArticles,
-  loadWikiCategoryIndex,
   loadPictures,
-  loadAboutProjects,
   loadAboutMe,
   loadLegalNotice,
   type AppCategoryId,
@@ -35,13 +30,20 @@ import {
   type ContentItem,
   type ImageItem,
 } from '../utils/contentLoader';
+import { loadArticles } from '../domain/articles/articles.loader';
+import { loadWikiArticles, loadWikiCategoryIndex } from '../domain/wiki/wiki.loader';
+import { loadAllProjects } from '../domain/projects/projects.loader';
 import { type Language } from '../i18n/translations';
 import { useApp } from '../contexts/AppContext';
-import cvRaw from '../content/cv/cv-data.json';
+import { stripMarkdown, markdownToHtml } from '../domain/content/markdown';
+import { loadCvLocale } from '../domain/resume/resume.loader';
 import { Navigation } from '../components/Navigation';
 import { SectionCard } from '../components/SectionCard';
+import { ContentCard } from '../components/ContentCard';
+import { ContentReader } from '../components/ContentReader';
 import { Footer } from '../components/Footer';
 import { Hero } from '../components/Hero';
+import { NewsSection } from '../shells/site/sections/NewsSection';
 
 type Section = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'project' | 'apps';
 type NavSection = 'home' | 'about' | 'wiki' | 'gallery' | 'blog' | 'search' | 'apps';
@@ -86,9 +88,11 @@ type UiText = {
     selectPrompt: string;
     descriptionLabel: string;
     platformsLabel: string;
+    technologiesLabel: string;
     badgesLabel: string;
     dateLabel: string;
-    categories: Record<'ready' | 'prototype' | 'systems', string>;
+    openFullLabel: string;
+    categories: Record<AppCategoryId, string>;
   };
   latestPosts: {
     title: string;
@@ -539,109 +543,6 @@ const themeOptions = [
   { id: 'pcb', name: 'PCB Circuit', icon: '🔌' },
 ] as const;
 
-function stripMarkdown(raw: string): string {
-  return raw
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[[^\]]*]\([^)]+\)/g, '')
-    .replace(/\[[^\]]+]\(([^)]+)\)/g, '$1')
-    .replace(/[#>*_`~\-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function markdownToHtml(md: string): string {
-  const escapeHtml = (text: string) =>
-    text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-  // Сначала обрабатываем fenced code blocks (```), чтобы защитить их от дальнейшей обработки
-  const codeBlockPlaceholders: string[] = [];
-  let withCodeBlocks = md.replace(/```([a-z]*)\n?([\s\S]*?)```/g, (match, lang, code) => {
-    const safe = escapeHtml(code.trim());
-    const placeholder = `__CODE_BLOCK_${codeBlockPlaceholders.length}__`;
-    const languageClass = lang ? ` language-${lang}` : '';
-    codeBlockPlaceholders.push(
-      `<pre class="bg-muted rounded-xl p-4 overflow-auto text-sm my-4"><code class="${languageClass}">${safe}</code></pre>`
-    );
-    return placeholder;
-  });
-
-  // Обрабатываем строки
-  const lines = withCodeBlocks
-    .split('\n')
-    .map((line) => {
-      // Проверяем заголовки (от большего к меньшему количеству #)
-      // Все заголовки с 5+ # обрабатываем как h5
-      if (/^#{6,}\s+/.test(line)) {
-        return `<h5 class="text-base font-semibold mb-2 mt-4">${line.replace(/^#{6,}\s+/, '').trim()}</h5>`;
-      }
-      if (/^#{5}\s+/.test(line)) {
-        return `<h5 class="text-base font-semibold mb-2 mt-4">${line.replace(/^#{5}\s+/, '').trim()}</h5>`;
-      }
-      if (/^#{4}\s+/.test(line)) {
-        return `<h4 class="text-lg font-semibold mb-2 mt-5">${line.replace(/^#{4}\s+/, '').trim()}</h4>`;
-      }
-      if (/^#{3}\s+/.test(line)) {
-        return `<h3 class="text-xl font-semibold mb-3 mt-6">${line.replace(/^#{3}\s+/, '').trim()}</h3>`;
-      }
-      if (/^#{2}\s+/.test(line)) {
-        return `<h2 class="text-2xl font-bold mb-4 mt-8">${line.replace(/^#{2}\s+/, '').trim()}</h2>`;
-      }
-      if (/^#\s+/.test(line)) {
-        return `<h1 class="text-3xl font-bold mb-4 mt-10">${line.replace(/^#\s+/, '').trim()}</h1>`;
-      }
-      
-      // Списки
-      if (/^\s*[-*+]\s+/.test(line)) {
-        return `<li class="mb-2">${line.replace(/^\s*[-*+]\s+/, '').trim()}</li>`;
-      }
-      
-      // Пустые строки
-      if (line.trim() === '') {
-        return '<br/>';
-      }
-      
-      // Placeholders для code blocks
-      if (line.includes('__CODE_BLOCK_')) {
-        return line;
-      }
-      
-      return `<p class="mb-4 leading-relaxed">${line}</p>`;
-    })
-    .join('\n');
-
-  // Обрабатываем inline элементы
-  let processed = lines
-    // Bold **text** или __text__
-    .replace(/\*\*([^\*]+)\*\*/g, '<strong class="font-semibold">$1</strong>')
-    .replace(/__([^_]+)__/g, '<strong class="font-semibold">$1</strong>')
-    // Italic *text* или _text_ (но не внутри слов)
-    .replace(/\*([^\*\n]+)\*/g, '<em class="italic">$1</em>')
-    .replace(/\b_([^_\n]+)_\b/g, '<em class="italic">$1</em>')
-    // Inline code `code`
-    .replace(/`([^`\n]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-muted text-sm font-mono">$1</code>')
-    // Images
-    .replace(/!\[([^\]]*)]\(([^)]+)\)/g, '<img alt="$1" src="$2" class="my-4 rounded-xl max-w-full" loading="lazy" />')
-    // Links - обрабатываем внутренние и внешние по-разному
-    .replace(/\[([^\]]+)]\(([^)]+)\)/g, (match, text, url) => {
-      // Внешние ссылки
-      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) {
-        return `<a class="text-primary hover:underline" href="${url}" target="_blank" rel="noreferrer">${text}</a>`;
-      }
-      // Внутренние ссылки - добавляем data-атрибут для обработки кликов
-      return `<a class="text-primary hover:underline cursor-pointer" data-wiki-link="${url}">${text}</a>`;
-    });
-
-  // Группируем списки
-  processed = processed.replace(/(<li[\s\S]*?<\/li>)/g, '<ul class="list-disc list-inside mb-4 ml-4">$1</ul>');
-  
-  // Восстанавливаем code blocks
-  codeBlockPlaceholders.forEach((block, index) => {
-    processed = processed.replace(`__CODE_BLOCK_${index}__`, block);
-  });
-
-  return processed;
-}
 
 function buildView(post: ContentItem): BlogPostView {
   const plain = stripMarkdown(post.content);
@@ -696,7 +597,7 @@ export function BlogSite() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTag] = useState<string | null>(null);
   const [activePost, setActivePost] = useState<BlogPostView | null>(null);
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [activeWiki, setActiveWiki] = useState<WikiView | null>(null);
@@ -813,10 +714,10 @@ export function BlogSite() {
   useEffect(() => {
     let mounted = true;
     Promise.all([
-      loadBlogPosts(language),
+      loadArticles(language),
       loadWikiArticles(undefined, language),
       loadPictures(),
-      loadAboutProjects(language),
+      loadAllProjects(language),
       loadAboutMe(language),
       loadLegalNotice(language),
     ]).then(([loadedPosts, loadedWiki, loadedPics, loadedProjects, loadedAboutMe, loadedLegalNotice]) => {
@@ -908,7 +809,7 @@ export function BlogSite() {
     const mapping: Record<AppCategoryId, AppEntry[]> = {
       ready: [],
       prototype: [],
-      systems: [],
+      'webos-emulation': [],
     };
     apps.forEach((app) => {
       const category = (app.category || 'ready') as AppCategoryId;
@@ -938,7 +839,7 @@ export function BlogSite() {
       let currentMap = root;
       let currentPath = '';
 
-      segments.forEach((segment, index) => {
+      segments.forEach((segment) => {
         currentPath = currentPath ? `${currentPath}/${segment}` : segment;
         
         if (!currentMap.has(segment)) {
@@ -1206,7 +1107,7 @@ export function BlogSite() {
   const handleOpenWiki = (item: WikiView) => {
     setActiveSection('wiki');
     setActiveWiki(item);
-    window.history.pushState({}, '', `${basePath}wiki/${item.relativePath}`);
+    window.history.pushState({}, '', `${basePath}wiki/${item.relativePath?.replace(/\.md$/, '')}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1277,7 +1178,7 @@ export function BlogSite() {
     setLightbox({ idx: nextIdx, id: pictures[nextIdx].id });
   };
 
-  const cv = (cvRaw as any)[language] || (cvRaw as any).en;
+  const cv = loadCvLocale(language);
 
   return (
     <div className="min-h-screen text-foreground">
@@ -1351,67 +1252,20 @@ export function BlogSite() {
               </div>
               <div className="grid md:grid-cols-3 gap-8">
                 {latestPosts.map((post, index) => (
-                  <article
+                  <ContentCard
                     key={post.id}
-                    className="neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up"
-                    style={{ animationDelay: `${index * 100}ms` }}
+                    item={post}
                     onClick={() => handleOpenPost(post)}
-                  >
-                    <div className="aspect-video bg-gradient-hero relative overflow-hidden">
-                      {post.preview ? (
-                        post.preview.endsWith('.webm') || post.preview.endsWith('.mp4') ? (
-                          <video 
-                            src={post.preview} 
-                            className="w-full h-full object-cover"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                          />
-                        ) : (
-                          <img 
-                            src={post.preview} 
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                          />
-                        )
-                      ) : (
-                        <div className="w-full h-full bg-gradient-hero" />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
-                      <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 text-sm text-foreground">
-                        <span className="inline-block px-3 py-1 text-xs font-medium rounded-full glass">
-                          {post.category || 'General'}
-                        </span>
-                        <span className="flex items-center gap-1 text-xs">
-                          <Calendar className="w-4 h-4" />
-                          {post.date || '—'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold mb-2 text-foreground hover:text-primary transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-muted-foreground line-clamp-2">{post.excerpt}</p>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground mt-3">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {post.readingTime}
-                        </span>
-                        {post.tags?.slice(0, 2).map((tag) => (
-                          <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-muted">
-                            <Tag className="w-3 h-3" />
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </article>
+                    index={index}
+                    animationClass="fade-in-up"
+                  />
                 ))}
               </div>
             </section>
           )}
+
+          {/* Latest News — vertical slice from src/content/news */}
+          <NewsSection limit={3} />
 
           {/* CTA Section */}
           <section className="container mx-auto px-6 py-24">
@@ -1500,80 +1354,17 @@ export function BlogSite() {
                 <>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {paginatedBlog.map((post, index) => (
-                    <article
-                      key={post.id}
-                      className="neu rounded-3xl overflow-hidden bg-card card-hover animate-fade-in"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                      onClick={() => handleOpenPost(post)}
-                    >
-                      {/* Thumbnail */}
-                      <div className="aspect-video bg-gradient-hero relative overflow-hidden group">
-                        {post.preview ? (
-                          post.preview.endsWith('.webm') || post.preview.endsWith('.mp4') ? (
-                            <video 
-                              src={post.preview} 
-                              className="w-full h-full object-cover"
-                              autoPlay
-                              loop
-                              muted
-                              playsInline
-                            />
-                          ) : (
-                            <img 
-                              src={post.preview} 
-                              alt={post.title}
-                              className="w-full h-full object-cover"
-                            />
-                          )
-                        ) : (
-                          <div className="w-full h-full bg-gradient-hero" />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <span className="inline-block px-3 py-1 text-xs font-medium rounded-full glass text-foreground">
-                            {post.category || 'General'}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-6">
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {post.date || '—'}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {post.readingTime}
-                          </span>
-                        </div>
-
-                        <h2 className="text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">
-                          {post.title}
-                        </h2>
-
-                        <p className="text-muted-foreground line-clamp-2 mb-4">
-                          {post.excerpt}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2">
-                          {post.tags?.slice(0, 3).map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-lg bg-muted text-muted-foreground"
-                            >
-                              <Tag className="w-3 h-3" />
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-                <Pagination currentPage={blogPage} totalPages={totalBlogPages} onPageChange={setBlogPage} />
-              </>
+                      <ContentCard
+                        key={post.id}
+                        item={post}
+                        onClick={() => handleOpenPost(post)}
+                        index={index}
+                        animationClass="animate-fade-in"
+                      />
+                    ))}
+                  </div>
+                  <Pagination currentPage={blogPage} totalPages={totalBlogPages} onPageChange={setBlogPage} />
+                </>
               )}
             </section>
           </div>
@@ -1585,99 +1376,57 @@ export function BlogSite() {
         <main className="pt-32 pb-24" key={`post-${activePost.id}-${language}`}>
           <div className="container mx-auto px-6">
             <section className="max-w-4xl mx-auto">
-              <div className="glass rounded-3xl p-6 md:p-10 neu-sm animate-fade-in">
-                <button
-                  onClick={() => {
+              <ContentReader
+                  title={activePost.title}
+                  html={activePost.html}
+                  excerpt={activePost.excerpt}
+                  preview={activePost.preview}
+                  category={activePost.category}
+                  date={activePost.date}
+                  readingTime={activePost.readingTime}
+                  tags={activePost.tags}
+                  tagsLabel={ui.tags}
+                  onTagClick={(tag) => {
                     setActivePost(null);
-                    window.history.pushState({}, '', activeSection === 'blog' ? `${basePath}blog` : basePath);
+                    setActiveSection('search');
+                    setGlobalSearchQuery(tag);
+                    window.history.pushState({}, '', `${basePath}search`);
                   }}
-                  className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  {ui.back}
-                </button>
+                  tagCounts={
+                    activePost.tags
+                      ? Object.fromEntries(
+                          activePost.tags.map((tag) => [
+                            tag,
+                            posts.filter((p) => p.tags?.includes(tag)).length +
+                              wiki.filter((w) => w.tags?.includes(tag)).length +
+                              projects.filter((pr) => pr.tags?.includes(tag)).length,
+                          ])
+                        )
+                      : {}
+                  }
+                  headerMeta={
+                    <>
+                      <button
+                        onClick={() => {
+                          setActivePost(null);
+                          window.history.pushState({}, '', activeSection === 'blog' ? `${basePath}blog` : basePath);
+                        }}
+                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                        {ui.back}
+                      </button>
 
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                  <BookOpen className="w-4 h-4" />
-                  <span className="font-medium text-foreground">{ui.nav.blog}</span>
-                  <ArrowRight className="w-4 h-4 opacity-60" />
-                  <span className="text-foreground">{activePost.title}</span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    {activePost.date || '—'}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {activePost.readingTime}
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                    {activePost.category || 'General'}
-                  </span>
-                </div>
-
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">{activePost.title}</h2>
-                <p className="text-lg text-muted-foreground mb-8">{activePost.excerpt}</p>
-
-                {/* Preview Image */}
-                {activePost.preview && (
-                  <div className="mb-8 rounded-2xl overflow-hidden neu-sm">
-                    {activePost.preview.endsWith('.webm') || activePost.preview.endsWith('.mp4') ? (
-                      <video 
-                        src={activePost.preview} 
-                        className="w-full h-auto"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                      />
-                    ) : (
-                      <img 
-                        src={activePost.preview} 
-                        alt={activePost.title}
-                        className="w-full h-auto object-cover"
-                      />
-                    )}
-                  </div>
-                )}
-
-                <div
-                  className="prose prose-lg max-w-none text-foreground markdown-body"
-                  dangerouslySetInnerHTML={{ __html: activePost.html }}
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                        <BookOpen className="w-4 h-4" />
+                        <span className="font-medium text-foreground">{ui.nav.blog}</span>
+                        <ArrowRight className="w-4 h-4 opacity-60" />
+                        <span className="text-foreground">{activePost.title}</span>
+                      </div>
+                    </>
+                  }
                 />
-
-                {activePost.tags && activePost.tags.length > 0 && (
-                  <div className="mt-8 flex flex-wrap items-center gap-3">
-                    <span className="text-muted-foreground font-medium">{ui.tags}:</span>
-                    {activePost.tags.map((tag) => {
-                      const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
-                                       wiki.filter((w) => w.tags?.includes(tag)).length +
-                                       projects.filter((pr) => pr.tags?.includes(tag)).length;
-                      return (
-                        <button
-                          key={tag}
-                          onClick={() => {
-                            setActivePost(null);
-                            setActiveSection('search');
-                            setGlobalSearchQuery(tag);
-                            window.history.pushState({}, '', `${basePath}search`);
-                          }}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
-                        >
-                          <Tag className="w-3 h-3" />
-                          {tag}
-                          <span className="text-xs opacity-70">
-                            ({tagCount})
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </section>
+              </section>
           </div>
         </main>
       )}
@@ -2087,7 +1836,7 @@ export function BlogSite() {
             const categoryCounts: Record<string, Record<string, number>> = {};
             
             Object.keys(cv).forEach(section => {
-              const sectionData = cv[section];
+              const sectionData = (cv as Record<string, unknown>)[section];
               if (Array.isArray(sectionData)) {
                 sectionData.forEach((item: any) => {
                   if (!item.details) return;
@@ -2189,7 +1938,7 @@ export function BlogSite() {
                           
                           // Строим точки многоугольника для этого уровня
                           const polygonPoints = categoryTotals
-                            .map((cat, index) => {
+                            .map((_cat, index) => {
                               const angle = (Math.PI * 2 * index) / numCategories - Math.PI / 2;
                               const x = centerX + radius * Math.cos(angle);
                               const y = centerY + radius * Math.sin(angle);
@@ -2315,7 +2064,7 @@ export function BlogSite() {
                   
                   {/* Легенда */}
                   <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {categoryTotals.slice(0, 8).map((cat, index) => (
+                    {categoryTotals.slice(0, 8).map((cat) => (
                       <div key={cat.category} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
                         <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
                         <div className="flex-1 min-w-0">
@@ -2592,7 +2341,7 @@ export function BlogSite() {
                 <div className="space-y-4">
                 {APP_CATEGORIES.map((category) => {
                   const items = appsByCategory[category] || [];
-                  const label = ui.apps?.categories?.[category] || category;
+                  const label = (ui.apps?.categories as any)?.[category] || category;
                   return (
                     <div key={category} className="glass rounded-2xl border border-border p-4 neu-sm space-y-3">
                       <div className="flex items-center justify-between">
@@ -2644,7 +2393,7 @@ export function BlogSite() {
                         onClick={() => window.open(selectedApp.url, '_blank', 'noreferrer')}
                         className="neu px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:scale-105 transition-transform whitespace-nowrap"
                       >
-                        {ui.apps?.openFullLabel || 'Open Full'}
+                        {language === 'ru' ? 'Открыть' : 'Open Full'}
                       </button>
                     )}
                   </div>
@@ -2676,7 +2425,7 @@ export function BlogSite() {
 
                     <div className="space-y-1.5">
                       <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
-                        {ui.apps?.technologiesLabel || 'Technologies'}
+                        {language === 'ru' ? 'Технологии' : 'Technologies'}
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {(!selectedApp.technologies || selectedApp.technologies.length === 0) ? (
@@ -2879,64 +2628,55 @@ export function BlogSite() {
 
             <div className="space-y-6">
               {activeWiki && (
-                <div className="glass rounded-3xl p-6 md:p-10 neu-sm fade-in-up" key={`wiki-${activeWiki.id}-${language}`}>
-                  <button
-                    onClick={() => {
-                      setActiveWiki(null);
-                      window.history.pushState({}, '', `${basePath}wiki`);
-                    }}
-                    className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-4"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    {ui.back}
-                  </button>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
-                    <span className="inline-flex items-center gap-1">
-                      <Layers className="w-4 h-4" />
-                      {activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}
-                    </span>
-                    <ArrowRight className="w-4 h-4 opacity-60" />
-                    <span className="font-medium text-foreground">{activeWiki.title}</span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-3">
-                    <FileText className="w-4 h-4" />
-                    <span>{activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}</span>
-                    {activeWiki.updatedAt && <span>· {activeWiki.updatedAt}</span>}
-                  </div>
-                  <h3 className="text-3xl font-bold mb-4">{activeWiki.title}</h3>
-                  <div className="prose prose-lg max-w-none text-foreground markdown-body" dangerouslySetInnerHTML={{ __html: activeWiki.html }} />
-                  
-                  {activeWiki.tags && activeWiki.tags.length > 0 && (
-                    <div className="mt-8 flex flex-wrap items-center gap-3">
-                      <span className="text-muted-foreground font-medium">{ui.tags}:</span>
-                      {activeWiki.tags.map((tag) => {
-                        const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
-                                         wiki.filter((w) => w.tags?.includes(tag)).length +
-                                         projects.filter((pr) => pr.tags?.includes(tag)).length;
-                        return (
-                          <button
-                            key={tag}
-                            onClick={() => {
-                              setActiveWiki(null);
-                              setActiveSection('search');
-                              setGlobalSearchQuery(tag);
-                              window.history.pushState({}, '', `${basePath}search`);
-                            }}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
-                          >
-                            <Tag className="w-3 h-3" />
-                            {tag}
-                            <span className="text-xs opacity-70">
-                              ({tagCount})
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
+                <ContentReader
+                  title={activeWiki.title}
+                  html={activeWiki.html}
+                  date={activeWiki.updatedAt}
+                  category={activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}
+                  tags={activeWiki.tags}
+                  tagsLabel={ui.tags}
+                  onTagClick={(tag) => {
+                    setActiveWiki(null);
+                    setActiveSection('search');
+                    setGlobalSearchQuery(tag);
+                    window.history.pushState({}, '', `${basePath}search`);
+                  }}
+                  tagCounts={
+                    activeWiki.tags
+                      ? Object.fromEntries(
+                          activeWiki.tags.map((tag) => [
+                            tag,
+                            posts.filter((p) => p.tags?.includes(tag)).length +
+                              wiki.filter((w) => w.tags?.includes(tag)).length +
+                              projects.filter((pr) => pr.tags?.includes(tag)).length,
+                          ])
+                        )
+                      : {}
+                  }
+                  headerMeta={
+                    <>
+                      <button
+                        onClick={() => {
+                          setActiveWiki(null);
+                          window.history.pushState({}, '', `${basePath}wiki`);
+                        }}
+                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-4"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                        {ui.back}
+                      </button>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
+                        <span className="inline-flex items-center gap-1">
+                          <Layers className="w-4 h-4" />
+                          {activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}
+                        </span>
+                        <ArrowRight className="w-4 h-4 opacity-60" />
+                        <span className="font-medium text-foreground">{activeWiki.title}</span>
+                      </div>
+                    </>
+                  }
+                />
               )}
-
               {!activeWiki && (
                 <>
                   {/* Отображение index категории если есть */}
@@ -3120,7 +2860,7 @@ export function BlogSite() {
               <aside className="glass rounded-2xl p-4 neu-sm self-start">
                 <div className="flex items-center gap-2 text-sm font-semibold mb-3">
                   <Folder className="w-4 h-4 text-primary" />
-                  <span>{ui.gallery.albums || 'Albums'}</span>
+                  <span>{language === 'ru' ? 'Альбомы' : 'Albums'}</span>
                 </div>
                 <div className="space-y-2">
                   {/* Кнопка "Все альбомы" */}
@@ -3457,8 +3197,7 @@ export function BlogSite() {
                               onClick={() => {
                                 setActiveWiki(item);
                                 setActiveSection('wiki');
-                                const slug = encodeURIComponent(item.relativePath!.replace(/\.md$/, ''));
-                                window.history.pushState({}, '', `${basePath}wiki/${slug}`);
+                                window.history.pushState({}, '', `${basePath}wiki/${item.relativePath!.replace(/\.md$/, '')}`);
                               }}
                             >
                               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">

@@ -38,7 +38,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
   if (isLoggingIn) {
     return (
-      <div className="xp-login-modern xp-login-modern--loading">
+      <div className="xp-login-modern xp-login-modern--loading os-shell os-winxp">
         <div className="xp-login-modern__panel xp-login-modern__panel--loading">
           <div className="xp-login-modern__loading-ring" />
           <div className="xp-login-modern__loading-text">
@@ -50,7 +50,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   }
 
   return (
-    <div className="xp-login-modern xp-login-modern--main">
+    <div className="xp-login-modern xp-login-modern--main os-shell os-winxp">
       <div className="xp-login-modern__background" />
       <div className="xp-login-modern__content">
         <div className="xp-login-modern__hero">
@@ -72,7 +72,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             <span className="xp-login-modern__panel-title">Select a user</span>
             <button
               onClick={handleShutdown}
-              className="xp-login-modern__power-btn xp-login-modern__power-btn--inline"
+              className="xp-login-modern__power-btn xp-login-modern__power-btn--inline os-button"
             >
               <Power size={14} className="xp-login-modern__power-icon" />
               <span>{t.turnOffComputer || 'Turn off computer'}</span>
@@ -84,7 +84,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               <button
                 key={user.name}
                 onClick={handleUserClick}
-                className={`xp-login-modern__user-card ${
+                className={`xp-login-modern__user-card os-button ${
                   user.name === 'Connor' ? 'xp-login-modern__user-card--active' : ''
                 }`}
               >

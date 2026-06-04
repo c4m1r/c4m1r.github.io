@@ -1,0 +1,59 @@
+/* Classic / Windows 98 visual overrides */
+
+.os-classic .os-window,
+.os-win-98 .os-window {
+  box-shadow: 1px 1px 0px #000000;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  background-color: #c0c0c0;
+}
+
+.os-classic .os-titlebar,
+.os-win-98 .os-titlebar {
+  padding: 2px 4px;
+}
+
+.os-classic .os-button,
+.os-win-98 .os-button {
+  box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080, 1px 1px 0px #000000;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  background: #c0c0c0;
+  font-family: inherit;
+}
+
+.os-classic .os-button:active,
+.os-win-98 .os-button:active {
+  box-shadow: inset 1px 1px 0px #808080, 1px 1px 0px #ffffff;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 5px 11px 3px 13px;
+}
+
+.os-classic .os-input,
+.os-classic .os-textarea,
+.os-win-98 .os-input,
+.os-win-98 .os-textarea {
+  box-shadow: inset 1px 1px 0px #808080, inset -1px -1px 0px #ffffff;
+  border-top: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #c0c0c0;
+  border-bottom: 1px solid #c0c0c0;
+  background: #ffffff;
+}
+
+.os-classic .os-panel,
+.os-win-98 .os-panel {
+  border: 2px solid;
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+  background-color: #ffffff;
+}

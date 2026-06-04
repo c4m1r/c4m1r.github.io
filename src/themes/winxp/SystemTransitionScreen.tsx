@@ -31,7 +31,7 @@ export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTra
   const messages = XP_MESSAGES[mode];
 
   return (
-    <div className="system-transition-xp">
+    <div className="system-transition-xp os-shell os-winxp">
       <div className="system-transition__line-top" />
       <div className="system-transition__line-bottom" />
 

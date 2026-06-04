@@ -1,0 +1,1225 @@
+/* ============================================================
+   Ubuntu Yaru visual skin — ubuntu.css
+   Scope: .os-ubuntu (applied by Desktop.tsx via OS_CLASS_MAP)
+   Plain CSS only — no donor copy, no imports from Temp.
+   ============================================================ */
+
+/* ── 0. Design tokens ───────────────────────────────────────── */
+.os-ubuntu {
+  --ub-purple:        #772953;   /* Ubuntu aubergine */
+  --ub-purple-dark:   #4b1636;   /* darker aubergine */
+  --ub-purple-light:  #a0325f;
+  --ub-orange:        #e95420;   /* Ubuntu orange */
+  --ub-orange-dark:   #c7410f;
+  --ub-orange-light:  #f4784a;
+  --ub-panel-dark:    #2c2c2c;   /* Yaru dark panel */
+  --ub-panel-mid:     #3a3a3a;
+  --ub-panel-light:   #484848;
+  --ub-titlebar-bg:   #3d3d3d;   /* Yaru default window header */
+  --ub-window-bg:     #f7f7f7;   /* client area */
+  --ub-window-dark:   #2b2b2b;   /* dark-mode client fallback */
+  --ub-text:          #f0f0f0;
+  --ub-text-muted:    #b0aaaa;
+  --ub-accent:        #e95420;
+  --ub-border:        #5a5a5a;
+  --ub-radius-win:    12px;
+  --ub-radius-btn:    8px;
+  --ub-radius-item:   6px;
+  --ub-font:          "Ubuntu", "Cantarell", system-ui, sans-serif;
+  --ub-mono:          "Ubuntu Mono", "Consolas", monospace;
+
+  font-family: var(--ub-font);
+  color: #1a1a1a;
+}
+
+/* ── 1. Window Chrome ───────────────────────────────────────── */
+.os-ubuntu .os-window {
+  border-radius: var(--ub-radius-win) !important;
+  border: 1px solid rgba(0, 0, 0, 0.55) !important;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    0 8px 28px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  background: var(--ub-window-bg) !important;
+  overflow: hidden !important;
+}
+
+.os-ubuntu .os-window--inactive {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 6px 18px rgba(0, 0, 0, 0.35) !important;
+  opacity: 0.95;
+}
+
+.os-ubuntu .xp-window--maximized.os-window {
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Inner frame — pass-through */
+.os-ubuntu .xp-window__frame {
+  background: transparent !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* ── 2. Titlebar (Yaru style) ───────────────────────────────── */
+.os-ubuntu .os-titlebar {
+  font-family: var(--ub-font) !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  color: #e8e8e8 !important;
+  background: linear-gradient(
+    180deg,
+    #4a4a4a 0%,
+    #3d3d3d 60%,
+    #363636 100%
+  ) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5) !important;
+  border-radius: var(--ub-radius-win) var(--ub-radius-win) 0 0 !important;
+  height: 30px !important;
+  padding: 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+  cursor: move !important;
+}
+
+.os-ubuntu .os-window--inactive .os-titlebar {
+  background: linear-gradient(
+    180deg,
+    #5a5a5a 0%,
+    #4e4e4e 100%
+  ) !important;
+  color: #9a9a9a !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  text-shadow: none !important;
+}
+
+.os-ubuntu .xp-window--maximized .os-titlebar {
+  border-radius: 0 !important;
+}
+
+/* Titlebar title area */
+.os-ubuntu .os-titlebar-title,
+.os-ubuntu .xp-titlebar__title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 13px !important;
+  letter-spacing: 0.01em !important;
+}
+
+.os-ubuntu .xp-titlebar__icon {
+  width: 14px !important;
+  height: 14px !important;
+  opacity: 0.9 !important;
+}
+
+/* ── 3. Titlebar Traffic Light Controls ─────────────────────── */
+/* The controls tray */
+.os-ubuntu .os-titlebar-controls,
+.os-ubuntu .xp-titlebar__controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  order: -1 !important;          /* Ubuntu: controls on LEFT */
+  padding: 0 4px 0 0 !important;
+}
+
+/* Base button style — all three inherit from this */
+.os-ubuntu .xp-titlebar__button {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(0, 0, 0, 0.35) !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: filter 0.12s ease, transform 0.08s ease !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  background: none !important;  /* reset — individual colours below */
+}
+
+.os-ubuntu .xp-titlebar__button::before,
+.os-ubuntu .xp-titlebar__button::after {
+  display: none !important;
+}
+
+.os-ubuntu .xp-titlebar__button:hover {
+  filter: brightness(1.15) !important;
+  transform: scale(1.12) !important;
+}
+
+.os-ubuntu .xp-titlebar__button:active {
+  filter: brightness(0.85) !important;
+  transform: scale(0.94) !important;
+}
+
+/* Close — red */
+.os-ubuntu .xp-titlebar__button--close {
+  background: radial-gradient(circle at 40% 35%, #ff8080, #e84040 60%, #c02020) !important;
+  border-color: rgba(140, 0, 0, 0.5) !important;
+  order: 0 !important;
+  width: 14px !important;  /* same as base */
+}
+
+/* Minimise — yellow */
+.os-ubuntu .xp-titlebar__button--minimize {
+  background: radial-gradient(circle at 40% 35%, #ffe066, #e5b800 60%, #b88c00) !important;
+  border-color: rgba(120, 80, 0, 0.45) !important;
+  order: 1 !important;
+}
+
+/* Maximise / Restore — green */
+.os-ubuntu .xp-titlebar__button--maximize,
+.os-ubuntu .xp-titlebar__button--restore {
+  background: radial-gradient(circle at 40% 35%, #6adf6a, #34c934 60%, #1f8a1f) !important;
+  border-color: rgba(0, 100, 0, 0.45) !important;
+  order: 2 !important;
+}
+
+/* Dim inactive-window traffic lights */
+.os-ubuntu .os-window--inactive .xp-titlebar__button {
+  background: #666 !important;
+  border-color: rgba(0, 0, 0, 0.3) !important;
+  box-shadow: none !important;
+}
+
+/* ── 4. Window Body ─────────────────────────────────────────── */
+.os-ubuntu .os-window-body {
+  background-color: var(--ub-window-bg) !important;
+  flex: 1 !important;
+  overflow: auto !important;
+  border-radius: 0 0 calc(var(--ub-radius-win) - 1px) calc(var(--ub-radius-win) - 1px) !important;
+}
+
+/* ── 5. General Buttons ─────────────────────────────────────── */
+.os-ubuntu .os-button {
+  font-family: var(--ub-font) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #2c2c2c !important;
+  background: linear-gradient(
+    180deg,
+    #f5f4f3 0%,
+    #eae8e6 50%,
+    #dedbd8 100%
+  ) !important;
+  border: 1px solid #b2b0ae !important;
+  border-radius: var(--ub-radius-btn) !important;
+  padding: 5px 16px !important;
+  cursor: pointer !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.12) !important;
+  transition: background 0.14s, border-color 0.14s, box-shadow 0.14s !important;
+  outline: none !important;
+}
+
+.os-ubuntu .os-button:hover:not(:disabled) {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f0eeec 50%,
+    #e6e3e0 100%
+  ) !important;
+  border-color: #999896 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.14) !important;
+}
+
+.os-ubuntu .os-button:active:not(:disabled) {
+  background: #d9d6d2 !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.18) !important;
+  transform: translateY(1px) !important;
+}
+
+/* Orange accent / primary button variant */
+.os-ubuntu .os-button--primary,
+.os-ubuntu button[type="submit"].os-button {
+  background: linear-gradient(
+    180deg,
+    var(--ub-orange-light) 0%,
+    var(--ub-orange) 50%,
+    var(--ub-orange-dark) 100%
+  ) !important;
+  color: #ffffff !important;
+  border-color: #aa2d08 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 2px 4px rgba(200, 65, 15, 0.35) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;
+}
+
+.os-ubuntu .os-button--primary:hover,
+.os-ubuntu button[type="submit"].os-button:hover {
+  background: linear-gradient(
+    180deg,
+    #f08050 0%,
+    var(--ub-orange-light) 50%,
+    var(--ub-orange) 100%
+  ) !important;
+}
+
+.os-ubuntu .os-button:disabled {
+  opacity: 0.45 !important;
+  cursor: default !important;
+}
+
+/* ── 6. Inputs ──────────────────────────────────────────────── */
+.os-ubuntu .os-input,
+.os-ubuntu .os-textarea {
+  font-family: var(--ub-font) !important;
+  font-size: 12px !important;
+  color: #2c2c2c !important;
+  background: #ffffff !important;
+  border: 1px solid #b2b0ae !important;
+  border-radius: 6px !important;
+  padding: 5px 8px !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+  outline: none !important;
+}
+
+.os-ubuntu .os-input:focus,
+.os-ubuntu .os-textarea:focus {
+  border-color: var(--ub-orange) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.06),
+    0 0 0 2px rgba(233, 84, 32, 0.28) !important;
+}
+
+/* ── 7. Panel ───────────────────────────────────────────────── */
+.os-ubuntu .os-panel {
+  background: #ffffff !important;
+  border: 1px solid #d8d5d2 !important;
+  border-radius: 8px !important;
+}
+
+/* ── 8. List & List Items ───────────────────────────────────── */
+.os-ubuntu .os-list {
+  background: #ffffff !important;
+  border: 1px solid #d8d5d2 !important;
+  border-radius: 6px !important;
+}
+
+.os-ubuntu .os-list-item {
+  font-family: var(--ub-font) !important;
+  font-size: 12px !important;
+  color: #2c2c2c !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  margin: 1px 3px !important;
+  border: 1px solid transparent !important;
+  transition: background 0.1s, color 0.1s !important;
+}
+
+.os-ubuntu .os-list-item:hover {
+  background: rgba(233, 84, 32, 0.1) !important;
+  color: #1a1a1a !important;
+  border-color: rgba(233, 84, 32, 0.25) !important;
+}
+
+.os-ubuntu .os-list-item.selected,
+.os-ubuntu .os-list-item--selected {
+  background: var(--ub-orange) !important;
+  color: #ffffff !important;
+  border-color: var(--ub-orange-dark) !important;
+}
+
+/* ── 9. Toolbar ─────────────────────────────────────────────── */
+.os-ubuntu .os-toolbar {
+  background: linear-gradient(
+    180deg,
+    #f0eeec 0%,
+    #e8e6e4 100%
+  ) !important;
+  border-bottom: 1px solid #c5c2bf !important;
+  padding: 4px 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* ── 10. Statusbar ──────────────────────────────────────────── */
+.os-ubuntu .os-statusbar {
+  background: linear-gradient(
+    180deg,
+    #e8e6e4 0%,
+    #dedad7 100%
+  ) !important;
+  border-top: 1px solid #c5c2bf !important;
+  height: 24px !important;
+  font-size: 11px !important;
+  color: #5a5754 !important;
+  padding: 0 10px !important;
+  font-family: var(--ub-font) !important;
+}
+
+/* ── 11. Sidebar ────────────────────────────────────────────── */
+.os-ubuntu .os-sidebar {
+  background: linear-gradient(
+    180deg,
+    #f2f0ee 0%,
+    #eae8e6 100%
+  ) !important;
+  border-right: 1px solid #ccc9c6 !important;
+}
+
+/* ── 12. Scrollbars ─────────────────────────────────────────── */
+.os-ubuntu *::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.os-ubuntu *::-webkit-scrollbar-track {
+  background: #e8e6e4 !important;
+  border-radius: 5px !important;
+}
+
+.os-ubuntu *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #b8b5b2, #a8a5a2) !important;
+  border-radius: 5px !important;
+  border: 2px solid #e8e6e4 !important;
+}
+
+.os-ubuntu *::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #9a9794, #8a8784) !important;
+}
+
+.os-ubuntu *::-webkit-scrollbar-thumb:active {
+  background: var(--ub-orange) !important;
+}
+
+/* ── 13. Context Menu ───────────────────────────────────────── */
+.os-ubuntu .os-panel.os-list,
+.os-ubuntu.os-panel.os-list {
+  background: #f5f4f2 !important;
+  border: 1px solid #b0aead !important;
+  border-radius: 8px !important;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.22),
+    0 1px 4px rgba(0, 0, 0, 0.14) !important;
+  padding: 4px 0 !important;
+  font-family: var(--ub-font) !important;
+  font-size: 12px !important;
+}
+
+.os-ubuntu .os-panel.os-list .os-list-item,
+.os-ubuntu.os-panel.os-list .os-list-item {
+  padding: 6px 16px !important;
+  border-radius: 4px !important;
+  margin: 1px 4px !important;
+  color: #2c2c2c !important;
+  border: 1px solid transparent !important;
+}
+
+.os-ubuntu .os-panel.os-list .os-list-item:hover:not(:disabled),
+.os-ubuntu.os-panel.os-list .os-list-item:hover:not(:disabled) {
+  background: var(--ub-orange) !important;
+  color: #ffffff !important;
+  border-color: var(--ub-orange-dark) !important;
+}
+
+.os-ubuntu .os-panel.os-list .os-list-item:disabled,
+.os-ubuntu.os-panel.os-list .os-list-item:disabled {
+  color: #9a9794 !important;
+  cursor: default !important;
+}
+
+.os-ubuntu .os-panel.os-list div,
+.os-ubuntu.os-panel.os-list div {
+  height: 1px !important;
+  background: #d8d5d2 !important;
+  margin: 3px 8px !important;
+  padding: 0 !important;
+}
+
+/* ── 14. Range Sliders ──────────────────────────────────────── */
+.os-ubuntu input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.os-ubuntu input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px !important;
+  background: linear-gradient(to right, #b8b5b2, #d0cdca) !important;
+  border-radius: 2px !important;
+  border: 1px solid #aaa7a4 !important;
+}
+
+.os-ubuntu input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px !important;
+  width: 18px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 40% 35%, #f8f6f4, #dedad7 60%, #c8c4c0) !important;
+  border: 1px solid #a8a5a2 !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+  margin-top: -7px !important;
+  transition: background 0.12s !important;
+}
+
+.os-ubuntu input[type="range"]::-webkit-slider-thumb:hover {
+  background: radial-gradient(circle at 40% 35%, #fdf0eb, #f5c5b0 60%, var(--ub-orange)) !important;
+  border-color: var(--ub-orange-dark) !important;
+}
+
+.os-ubuntu input[type="range"]:focus {
+  outline: none;
+}
+
+/* ── 15. Taskbar — Ubuntu Yaru dark panel ───────────────────── */
+.os-ubuntu .taskbar {
+  height: 38px !important;
+  background: linear-gradient(
+    180deg,
+    #2e2e2e 0%,
+    #262626 60%,
+    #1e1e1e 100%
+  ) !important;
+  border-top: 1px solid #4a4a4a !important;
+  box-shadow:
+    0 -2px 8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+  font-family: var(--ub-font) !important;
+  font-size: 12px !important;
+}
+
+.os-ubuntu .taskbar__inner {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 8px 0 4px !important;
+  gap: 4px !important;
+}
+
+/* Ubuntu Start / Menu button — aubergine */
+.os-ubuntu .start-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  height: 30px !important;
+  padding: 0 12px !important;
+  background: linear-gradient(
+    180deg,
+    var(--ub-purple-light) 0%,
+    var(--ub-purple) 50%,
+    var(--ub-purple-dark) 100%
+  ) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.55) !important;
+  border-radius: 6px !important;
+  font-family: var(--ub-font) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 3px rgba(0, 0, 0, 0.45) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) !important;
+  transition: background 0.15s, box-shadow 0.15s !important;
+  min-width: unset !important;
+}
+
+.os-ubuntu .start-button::before {
+  display: none !important;
+}
+
+.os-ubuntu .start-button:hover {
+  background: linear-gradient(
+    180deg,
+    #bc4278 0%,
+    var(--ub-purple-light) 50%,
+    var(--ub-purple) 100%
+  ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 10px rgba(119, 41, 83, 0.6) !important;
+}
+
+.os-ubuntu .start-button:active,
+.os-ubuntu .start-button.start-button--open {
+  background: linear-gradient(
+    180deg,
+    var(--ub-purple-dark) 0%,
+    #381128 100%
+  ) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Task-switching buttons */
+.os-ubuntu .taskbar-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 28px !important;
+  padding: 0 10px !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #d8d8d8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 5px !important;
+  font-family: var(--ub-font) !important;
+  font-size: 11px !important;
+  cursor: pointer !important;
+  transition: background 0.1s, border-color 0.1s !important;
+  max-width: 160px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.os-ubuntu .taskbar-button:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.os-ubuntu .taskbar-button.is-active {
+  background: var(--ub-orange) !important;
+  border-color: var(--ub-orange-dark) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 6px rgba(233, 84, 32, 0.45) !important;
+}
+
+.os-ubuntu .taskbar-button.is-minimized {
+  opacity: 0.6 !important;
+}
+
+.os-ubuntu .taskbar-button__icon {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Tray area */
+.os-ubuntu .taskbar-tray {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  padding: 0 6px !important;
+  margin-left: auto !important;
+}
+
+.os-ubuntu .taskbar-tray-icon {
+  width: 26px !important;
+  height: 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: #d8d8d8 !important;
+  transition: background 0.1s !important;
+}
+
+.os-ubuntu .taskbar-tray-icon:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.os-ubuntu .taskbar-tray-icon img {
+  width: 16px !important;
+  height: 16px !important;
+  filter: brightness(0.9) !important;
+}
+
+.os-ubuntu .taskbar-tray-time {
+  font-family: var(--ub-font) !important;
+  font-size: 11px !important;
+  color: #d8d8d8 !important;
+  padding: 0 8px !important;
+  cursor: default !important;
+}
+
+.os-ubuntu .taskbar-divider {
+  width: 1px !important;
+  height: 18px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  margin: 0 4px !important;
+}
+
+/* ── 16. Start Menu ─────────────────────────────────────────── */
+.os-ubuntu .start-menu-modern {
+  bottom: 38px !important;
+  min-width: 360px !important;
+  min-height: 460px !important;
+  background: linear-gradient(
+    135deg,
+    rgba(38, 38, 38, 0.97) 0%,
+    rgba(30, 30, 30, 0.98) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px 12px 0 0 !important;
+  box-shadow:
+    0 -4px 20px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  padding: 0 !important;
+  filter: none !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu__header {
+  background: linear-gradient(
+    180deg,
+    var(--ub-purple) 0%,
+    var(--ub-purple-dark) 100%
+  ) !important;
+  height: 56px !important;
+  padding: 10px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  border-radius: 11px 11px 0 0 !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu__header img {
+  border-radius: 50% !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu__header span {
+  font-family: var(--ub-font) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+  margin-left: 10px !important;
+}
+
+.os-ubuntu .start-menu-modern section {
+  background: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+.os-ubuntu .start-menu-modern section hr {
+  display: none !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu-section--left {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 8px 6px !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu-section--right {
+  background: transparent !important;
+  padding: 8px 6px !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu-item {
+  font-family: var(--ub-font) !important;
+  font-size: 12px !important;
+  color: #e0e0e0 !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  transition: background 0.1s, color 0.1s !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu-item:hover:not(.disabled) {
+  background: var(--ub-orange) !important;
+  color: #ffffff !important;
+  border-color: var(--ub-orange-dark) !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu-item.disabled {
+  opacity: 0.35 !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu-section__title {
+  font-family: var(--ub-font) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: #888 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  margin: 8px 8px 4px !important;
+}
+
+.os-ubuntu .start-menu-modern .start-menu-separator {
+  height: 1px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  margin: 4px 8px !important;
+}
+
+.os-ubuntu .start-menu-modern footer {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  height: 40px !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+}
+
+.os-ubuntu .start-menu-modern footer .os-button {
+  font-size: 11px !important;
+  height: 24px !important;
+  padding: 0 12px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #e0e0e0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 5px !important;
+  box-shadow: none !important;
+}
+
+.os-ubuntu .start-menu-modern footer .os-button:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+/* ── 17. Desktop ─────────────────────────────────────────────── */
+/* Override the hardcoded '#008080' backgroundColor set as inline style in Desktop.tsx.
+   CSS !important wins over inline styles that don't use !important. */
+.os-ubuntu.os-desktop {
+  --ub-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  background-color: #2c001e !important;   /* Ubuntu aubergine base */
+  background-image:
+    radial-gradient(ellipse 80% 60% at 30% 20%, rgba(119, 41, 83, 0.75) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(75, 22, 54, 0.6) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 60% 10%, rgba(233, 84, 32, 0.12) 0%, transparent 55%),
+    linear-gradient(160deg, #3d1530 0%, #2c001e 40%, #1a0012 100%) !important;
+}
+
+/* Also target the class used as sibling (Desktop.tsx uses .os-desktop alongside .os-ubuntu) */
+.os-ubuntu .os-desktop {
+  --ub-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+/* Desktop icon labels — readable on dark aubergine */
+.os-ubuntu .desktop-icon__label,
+.os-ubuntu .desktop-icon span,
+.os-ubuntu [class*="desktop-icon"] span {
+  color: #ffffff !important;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.9),
+    0 0 8px rgba(0, 0, 0, 0.7) !important;
+  font-family: var(--ub-font) !important;
+  font-size: 11px !important;
+}
+
+/* ── 18. NewsApp skin ────────────────────────────────────────── */
+.os-ubuntu .news-app {
+  background: #f5f4f2 !important;
+}
+
+.os-ubuntu .news-app__sidebar {
+  background: linear-gradient(
+    180deg,
+    #f0eeec 0%,
+    #eae8e6 100%
+  ) !important;
+  border-right: 1px solid #d0cdca !important;
+}
+
+.os-ubuntu .news-app__list {
+  background: #ffffff !important;
+  border: 1px solid #d0cdca !important;
+  margin: 6px !important;
+  border-radius: 6px !important;
+}
+
+.os-ubuntu .news-app__reader {
+  background: #ffffff !important;
+  border: 1px solid #d8d5d2 !important;
+  margin: 6px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── 19. Prose / content reader typography ───────────────────── */
+.os-ubuntu .prose h1,
+.os-ubuntu .prose h2,
+.os-ubuntu .prose h3,
+.os-ubuntu .prose h4 {
+  font-family: var(--ub-font) !important;
+  font-weight: 600 !important;
+  color: #1a1a1a !important;
+  line-height: 1.3 !important;
+}
+
+.os-ubuntu .prose h1 {
+  font-size: 20px !important;
+  border-bottom: 2px solid var(--ub-orange) !important;
+  padding-bottom: 6px !important;
+  margin-bottom: 14px !important;
+}
+
+.os-ubuntu .prose h2 {
+  font-size: 16px !important;
+  color: var(--ub-purple) !important;
+}
+
+.os-ubuntu .prose h3 {
+  font-size: 14px !important;
+  color: #3d3d3d !important;
+}
+
+.os-ubuntu .prose p,
+.os-ubuntu .prose li {
+  font-family: var(--ub-font) !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  color: #2c2c2c !important;
+}
+
+.os-ubuntu .prose a {
+  color: var(--ub-orange) !important;
+  text-decoration: none !important;
+  border-bottom: 1px dotted var(--ub-orange) !important;
+}
+
+.os-ubuntu .prose a:hover {
+  color: var(--ub-orange-dark) !important;
+  border-bottom-style: solid !important;
+}
+
+.os-ubuntu .prose code {
+  font-family: var(--ub-mono) !important;
+  font-size: 12px !important;
+  background: #f0eeec !important;
+  color: var(--ub-purple) !important;
+  padding: 2px 5px !important;
+  border-radius: 4px !important;
+  border: 1px solid #d8d5d2 !important;
+}
+
+.os-ubuntu .prose pre {
+  background: #2b2b2b !important;
+  color: #f0f0f0 !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  overflow: auto !important;
+  border: 1px solid #444 !important;
+}
+
+.os-ubuntu .prose pre code {
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  padding: 0 !important;
+}
+
+.os-ubuntu .prose blockquote {
+  border-left: 3px solid var(--ub-orange) !important;
+  margin-left: 0 !important;
+  padding-left: 14px !important;
+  color: #5a5754 !important;
+  font-style: italic !important;
+}
+
+/* ── 20. Selection ───────────────────────────────────────────── */
+.os-ubuntu ::selection {
+  background: var(--ub-orange) !important;
+  color: #ffffff !important;
+}
+
+/* ── 21. CV/Resume App Ubuntu Overrides ───────────────────────── */
+.os-ubuntu .cv-app {
+  background-color: #f5f4f2 !important;
+  font-family: "Ubuntu", "DejaVu Sans", sans-serif !important;
+  color: #333333 !important;
+}
+
+.os-ubuntu .cv-app__header {
+  border-bottom: 1px solid #d0cdca !important;
+  background-color: #eae8e6 !important;
+}
+
+.os-ubuntu .cv-app__avatar-wrapper {
+  border: 2px solid #dfdbd2 !important;
+}
+
+.os-ubuntu .cv-app__role {
+  color: #e95420 !important;
+}
+
+.os-ubuntu .cv-app__tab-button {
+  background-color: #f6f5f4 !important;
+  color: #333333 !important;
+  border: 1px solid #d0cdca !important;
+  border-radius: 6px !important;
+}
+
+.os-ubuntu .cv-app__tab-button:hover {
+  background-color: #ffffff !important;
+  border-color: #b0adab !important;
+}
+
+.os-ubuntu .cv-app__tab-button.selected {
+  background-color: #e95420 !important;
+  color: #ffffff !important;
+  border-color: #e95420 !important;
+}
+
+.os-ubuntu .cv-app__entry {
+  background-color: #ffffff !important;
+  border: 1px solid #d0cdca !important;
+  border-radius: 6px !important;
+}
+
+.os-ubuntu .cv-app__entry-title {
+  color: #e95420 !important;
+}
+
+/* ── Wiki App — Ubuntu / Yaru skin ───────────────────────────── */
+.os-ubuntu .wiki-app {
+  background: #f5f4f2 !important;
+}
+
+.os-ubuntu .wiki-app__sidebar {
+  background: linear-gradient(180deg, #f0eeec 0%, #eae8e6 100%) !important;
+  border-right: 1px solid #d0cdca !important;
+}
+
+.os-ubuntu .wiki-app__sidebar-header {
+  background: linear-gradient(180deg, #772953 0%, #5e2344 100%) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid #4a1a36 !important;
+}
+
+.os-ubuntu .wiki-app__sidebar-title {
+  color: #ffffff !important;
+  font-family: var(--ub-font, "Ubuntu", sans-serif) !important;
+  font-weight: 600 !important;
+}
+
+.os-ubuntu .wiki-app__sidebar-sub {
+  color: #f4b8d4 !important;
+  opacity: 1 !important;
+}
+
+.os-ubuntu .wiki-app__list {
+  background: transparent !important;
+}
+
+.os-ubuntu .wiki-app__reader {
+  background: #ffffff !important;
+}
+
+.os-ubuntu .wiki-app__breadcrumbs {
+  background: #edebe9 !important;
+  border-bottom: 1px solid #d0cdca !important;
+  font-family: var(--ub-font, "Ubuntu", sans-serif) !important;
+  font-size: 11px !important;
+  color: #5c5955 !important;
+}
+
+.os-ubuntu .wiki-app__meta {
+  border-bottom: 1px solid #ddd9d6 !important;
+}
+
+.os-ubuntu .wiki-app__article-title {
+  color: #2c001e !important;
+  font-family: var(--ub-font, "Ubuntu", sans-serif) !important;
+  font-weight: 600 !important;
+}
+
+.os-ubuntu .wiki-app__tag {
+  background-color: #fde8da !important;
+  color: #c34113 !important;
+  border: 1px solid #f0b49a !important;
+}
+
+.os-ubuntu .wiki-app__article-item:hover {
+  background-color: #ede9e7 !important;
+  border-radius: 6px !important;
+}
+
+.os-ubuntu .wiki-app__category-btn.selected,
+.os-ubuntu .wiki-app__category-btn.os-list-item--selected {
+  background-color: #e95420 !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+}
+
+/* --- Minesweeper Ubuntu Yaru Style --- */
+.os-ubuntu .minesweeper-app {
+  background: #2c001e !important; /* Aubergine dark bg */
+  border: 1px solid #5e2750 !important;
+  border-radius: 8px !important;
+  font-family: var(--ub-font, "Ubuntu", sans-serif) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45) !important;
+  color: #dfdbd2 !important;
+}
+
+.os-ubuntu .minesweeper-app__toolbar {
+  background: #3d1a31 !important; /* Lighter aubergine */
+  border: 1px solid #4a1435 !important;
+  border-radius: 6px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.os-ubuntu .minesweeper-app__counter {
+  background: #111111 !important;
+  border: 1px solid #4f4c4b !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.9) !important;
+}
+
+.os-ubuntu .minesweeper-reset-button {
+  border: 1px solid #d44513 !important;
+  border-radius: 6px !important;
+  background: #e95420 !important; /* Ubuntu orange */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.os-ubuntu .minesweeper-reset-button:hover {
+  background: #ff6e3c !important;
+  border-color: #e95420 !important;
+  box-shadow: 0 0 6px rgba(233, 84, 32, 0.5) !important;
+}
+
+.os-ubuntu .minesweeper-reset-button:active {
+  background: #c34113 !important;
+  border-color: #9c300c !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+.os-ubuntu .minesweeper-app__board {
+  border: 1px solid #4a1435 !important;
+  border-radius: 6px !important;
+  background: #1e1e1e !important;
+  padding: 4px !important;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4) !important;
+}
+
+.os-ubuntu .minesweeper-cell-covered {
+  background: #4f4c4b !important; /* Warm gray */
+  border: 1px solid #3d3a3a !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.os-ubuntu .minesweeper-cell-covered:hover {
+  background: #666260 !important;
+  border-color: #e95420 !important; /* Orange highlight on hover */
+}
+
+.os-ubuntu .minesweeper-cell-covered:active {
+  background: #333130 !important;
+  border-color: #c34113 !important;
+}
+
+.os-ubuntu .minesweeper-cell-revealed {
+  border: 1px solid #2d2a29 !important;
+  background: #dfdbd2 !important;
+  color: #2c001e !important;
+  border-radius: 2px !important;
+}
+
+.os-ubuntu .minesweeper-cell-flagged {
+  background: #e95420 !important; /* Orange flag tile */
+  border-color: #c34113 !important;
+  border-radius: 4px !important;
+}
+
+.os-ubuntu .minesweeper-app__status--won {
+  color: #e95420 !important; /* Orange */
+}
+
+.os-ubuntu .minesweeper-app__status--lost {
+  color: #df382c !important; /* Red */
+}
+
+/* --- Calculator Ubuntu / Yaru Style --- */
+.os-ubuntu .calc-app {
+  background: linear-gradient(160deg, #f5f4f2 0%, #eae8e6 100%) !important;
+  font-family: var(--ub-font, "Ubuntu", sans-serif) !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+.os-ubuntu .calc-app__display {
+  background: #1e1e1e !important;
+  border: 1px solid #111 !important;
+  border-radius: 6px !important;
+  color: #f0f0f0 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+  margin-bottom: 6px !important;
+}
+
+.os-ubuntu .calc-app__display-val {
+  color: #f0f0f0 !important;
+  font-family: "Ubuntu Mono", Consolas, monospace !important;
+  text-shadow: 0 0 8px rgba(233, 84, 32, 0.4) !important;
+}
+
+.os-ubuntu .calc-app__btn {
+  background: linear-gradient(180deg, #f5f4f3 0%, #e8e5e2 100%) !important;
+  border: 1px solid #bab6b2 !important;
+  border-radius: 6px !important;
+  color: #2c2c2c !important;
+  font-family: var(--ub-font, "Ubuntu", sans-serif) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.12) !important;
+  transition: background 0.1s, box-shadow 0.1s !important;
+}
+
+.os-ubuntu .calc-app__btn:hover:not(.calc-app__btn--disabled) {
+  background: linear-gradient(180deg, #ffffff 0%, #f0eeec 100%) !important;
+  border-color: #999 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 4px rgba(0, 0, 0, 0.14) !important;
+}
+
+.os-ubuntu .calc-app__btn:active:not(.calc-app__btn--disabled) {
+  background: #d0cdc9 !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(1px) !important;
+}
+
+.os-ubuntu .calc-app__btn--action {
+  background: linear-gradient(180deg, var(--ub-orange-light, #f4784a) 0%, var(--ub-orange, #e95420) 50%, var(--ub-orange-dark, #c7410f) 100%) !important;
+  color: #ffffff !important;
+  border-color: #aa2d08 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 2px 4px rgba(200, 65, 15, 0.3) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;
+}
+
+.os-ubuntu .calc-app__btn--action:hover:not(.calc-app__btn--disabled) {
+  background: linear-gradient(180deg, #ff8c5a 0%, var(--ub-orange-light, #f4784a) 50%, var(--ub-orange, #e95420) 100%) !important;
+}
+
+.os-ubuntu .calc-app__btn--disabled {
+  opacity: 0.35 !important;
+  cursor: default !important;
+}
+

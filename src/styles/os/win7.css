@@ -1,0 +1,1370 @@
+/* Windows 7 (Aero Glass) visual overrides */
+
+/* Base container overrides */
+.os-win7 {
+  --os-font: "Segoe UI", "SegoeUI", -apple-system, sans-serif;
+  color: #000000;
+}
+
+/* 1. Aero Glass Window Chrome */
+.os-win7 .os-window {
+  border: 1px solid rgba(0, 0, 0, 0.45) !important;
+  border-radius: 8px !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.35), 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6) !important;
+  padding: 5px 5px 5px 5px !important; /* Glass border spacing */
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.08) 80px, transparent 120px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.08) 50%, rgba(255, 255, 255, 0.15)),
+    rgba(145, 180, 220, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  overflow: hidden;
+}
+
+/* Inactive window chrome */
+.os-win7 .os-window--inactive {
+  background: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.05) 50%, rgba(255, 255, 255, 0.08)),
+    rgba(195, 205, 220, 0.3) !important;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.25), 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Maximized state (hides Aero borders, turns dark/solid) */
+.os-win7 .xp-window--maximized.os-window {
+  border-radius: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  background: #000000 !important;
+  backdrop-filter: none !important;
+}
+
+/* Transparent outer container frame */
+.os-win7 .xp-window__frame {
+  background: transparent !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Inner frame surface (solid client area) */
+.os-win7 .os-window-body {
+  background-color: #f0f3f7 !important;
+  border: 1px solid #99a8b9 !important;
+  border-radius: 0 0 4px 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  padding: 6px !important;
+  margin: 0 !important;
+  flex: 1 !important;
+  overflow: auto !important;
+}
+
+.os-win7 .xp-window--maximized .os-window-body {
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* 2. Transparent Titlebar */
+.os-win7 .os-titlebar {
+  font-family: "Segoe UI", "SegoeUI", sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  color: #1e395b !important;
+  text-shadow: 
+    0 0 8px rgba(255, 255, 255, 0.9), 
+    0 0 8px rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(255, 255, 255, 0.9) !important;
+  background: transparent !important;
+  border: none !important;
+  height: 28px !important;
+  padding: 0 6px 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-shadow: none !important;
+}
+
+.os-win7 .os-window--inactive .os-titlebar {
+  color: #6b778c !important;
+}
+
+.os-win7 .xp-window--maximized .os-titlebar {
+  background: #141414 !important;
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+/* Window Titlebar Controls Group */
+.os-win7 .xp-titlebar__controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important; /* Stack buttons side by side */
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(0, 0, 0, 0.3) !important;
+  border-top: none !important;
+  border-radius: 0 0 5px 5px !important;
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.4), 
+    1px 0 0 rgba(255, 255, 255, 0.4), 
+    -1px 0 0 rgba(255, 255, 255, 0.4) !important;
+  padding: 0 !important;
+  height: 19px !important;
+}
+
+/* Window Titlebar Buttons */
+.os-win7 .xp-titlebar__button {
+  width: 30px !important;
+  height: 18px !important;
+  border: none !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.3) !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  position: relative !important;
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2) 45%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.08) 75%, rgba(255, 255, 255, 0.4)) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Hide CSS pseudo-drawn lines since we use inline SVGs */
+.os-win7 .xp-titlebar__button::before,
+.os-win7 .xp-titlebar__button::after {
+  display: none !important;
+}
+
+/* First control button border radius */
+.os-win7 .xp-titlebar__button:first-child {
+  border-bottom-left-radius: 4px !important;
+}
+
+/* Last control button border radius & border override */
+.os-win7 .xp-titlebar__button:last-child {
+  border-right: none !important;
+  border-bottom-right-radius: 4px !important;
+}
+
+/* Minimize button SVG */
+.os-win7 .xp-titlebar__button--minimize {
+  background-image: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><path d='M11 12h8v2h-8z' fill='%231e395b'/></svg>"),
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2) 45%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.08) 75%, rgba(255, 255, 255, 0.4)) !important;
+}
+.os-win7 .xp-titlebar__button--minimize:hover {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><path d='M11 12h8v2h-8z' fill='%231e395b'/></svg>"),
+    radial-gradient(circle at bottom, #2aceda 0%, transparent 65%),
+    linear-gradient(#b6d9ee 50%, #1a6ca1 50%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 6px #5dc4f0 !important;
+}
+.os-win7 .xp-titlebar__button--minimize:active {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><path d='M11 12h8v2h-8z' fill='%23ffffff'/></svg>"),
+    radial-gradient(circle at bottom, #0bfdfa 0%, transparent 65%),
+    linear-gradient(#86a7bc 50%, #092747 50%) !important;
+}
+
+/* Maximize button SVG */
+.os-win7 .xp-titlebar__button--maximize {
+  background-image: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><rect x='11' y='5' width='8' height='8' fill='none' stroke='%231e395b' stroke-width='1.5'/></svg>"),
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2) 45%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.08) 75%, rgba(255, 255, 255, 0.4)) !important;
+}
+.os-win7 .xp-titlebar__button--maximize:hover {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><rect x='11' y='5' width='8' height='8' fill='none' stroke='%231e395b' stroke-width='1.5'/></svg>"),
+    radial-gradient(circle at bottom, #2aceda 0%, transparent 65%),
+    linear-gradient(#b6d9ee 50%, #1a6ca1 50%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 6px #5dc4f0 !important;
+}
+.os-win7 .xp-titlebar__button--maximize:active {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><rect x='11' y='5' width='8' height='8' fill='none' stroke='%23ffffff' stroke-width='1.5'/></svg>"),
+    radial-gradient(circle at bottom, #0bfdfa 0%, transparent 65%),
+    linear-gradient(#86a7bc 50%, #092747 50%) !important;
+}
+
+/* Restore button SVG */
+.os-win7 .xp-titlebar__button--restore {
+  background-image: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><path d='M13 5h5v5h-5z' fill='none' stroke='%231e395b' stroke-width='1.2'/><path d='M11 7h5v5h-5z' fill='%237da1c4' stroke='%231e395b' stroke-width='1.2'/></svg>"),
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2) 45%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.08) 75%, rgba(255, 255, 255, 0.4)) !important;
+}
+.os-win7 .xp-titlebar__button--restore:hover {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><path d='M13 5h5v5h-5z' fill='none' stroke='%231e395b' stroke-width='1.2'/><path d='M11 7h5v5h-5z' fill='%237da1c4' stroke='%231e395b' stroke-width='1.2'/></svg>"),
+    radial-gradient(circle at bottom, #2aceda 0%, transparent 65%),
+    linear-gradient(#b6d9ee 50%, #1a6ca1 50%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 6px #5dc4f0 !important;
+}
+.os-win7 .xp-titlebar__button--restore:active {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='18'><path d='M13 5h5v5h-5z' fill='none' stroke='%23ffffff' stroke-width='1.2'/><path d='M11 7h5v5h-5z' fill='%237da1c4' stroke='%23ffffff' stroke-width='1.2'/></svg>"),
+    radial-gradient(circle at bottom, #0bfdfa 0%, transparent 65%),
+    linear-gradient(#86a7bc 50%, #092747 50%) !important;
+}
+
+/* Close button SVG (Wider, Red Hover) */
+.os-win7 .xp-titlebar__button--close {
+  width: 46px !important;
+  background-image: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='46' height='18'><path d='M19 5l8 8M27 5l-8 8' stroke='%231e395b' stroke-width='1.8'/></svg>"),
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2) 45%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.08) 75%, rgba(255, 255, 255, 0.4)) !important;
+}
+.os-win7 .xp-titlebar__button--close:hover {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='46' height='18'><path d='M19 5l8 8M27 5l-8 8' stroke='%23ffffff' stroke-width='1.8'/></svg>"),
+    radial-gradient(circle at 50% 170%, #f4e676 10%, transparent 60%),
+    radial-gradient(circle at -60% 50%, rgba(0,0,0,0.4) 5%, transparent 50%),
+    radial-gradient(circle at 160% 50%, rgba(0,0,0,0.4) 5%, transparent 50%),
+    linear-gradient(#fb9d8b, #ee6d56 25%, #d42809 50%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 0 0 6px #e68e75 !important;
+}
+.os-win7 .xp-titlebar__button--close:active {
+  background: 
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='46' height='18'><path d='M19 5l8 8M27 5l-8 8' stroke='%23ffffff' stroke-width='1.8'/></svg>"),
+    radial-gradient(circle at 50% 170%, #dcc03f 10%, transparent 60%),
+    radial-gradient(circle at -60% 50%, #000 5%, transparent 50%),
+    radial-gradient(circle at 160% 50%, #000 5%, transparent 50%),
+    linear-gradient(#d1a894, #b67562 25%, #7d0d01 50%) !important;
+}
+
+/* 3. Glossy Buttons */
+.os-win7 .os-button {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 12px !important;
+  border: 1px solid #8e8f8f !important;
+  background: linear-gradient(
+    180deg,
+    #f2f2f2 45%,
+    #ebebeb 45%,
+    #cfcfcf 100%
+  ) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8) !important;
+  border-radius: 3px !important;
+  color: #000000 !important;
+  padding: 4px 14px !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: border-color 0.25s, box-shadow 0.25s !important;
+}
+
+.os-win7 .os-button:hover:not(:disabled) {
+  border-color: #3c7fb1 !important;
+  background: linear-gradient(
+    180deg,
+    #eaf6fd 45%,
+    #bee6fd 45%,
+    #a7d9f5 100%
+  ) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 3px rgba(85, 170, 235, 0.5) !important;
+}
+
+.os-win7 .os-button:active:not(:disabled) {
+  border-color: #6d91ab !important;
+  background: linear-gradient(
+    180deg,
+    #e5f4fc 0%,
+    #c4e5f6 30%,
+    #98d1ef 50%,
+    #68b3db 100%
+  ) !important;
+  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.15), inset -1px 1px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.os-win7 .os-button:focus {
+  border-color: #5586a3 !important;
+  box-shadow: inset 0 0 0 2px #98d1ef !important;
+}
+
+.os-win7 .os-button:disabled {
+  border-color: #adb2b5 !important;
+  color: #838383 !important;
+  background: #f4f4f4 !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+
+/* 4. Panels & Windows */
+.os-win7 .os-panel {
+  border: 1px solid #c9d3e2 !important;
+  background-color: #ffffff !important;
+  border-radius: 4px !important;
+}
+
+/* 5. Inputs & Textareas */
+.os-win7 .os-input,
+.os-win7 .os-textarea {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 12px !important;
+  border: 1px solid #8e8f8f !important;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1) !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  padding: 3px 5px !important;
+  border-radius: 2px !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+
+.os-win7 .os-input:focus,
+.os-win7 .os-textarea:focus {
+  border-color: #3c7fb1 !important;
+  box-shadow: 0 0 4px rgba(60, 127, 177, 0.6), inset 1px 1px 1px rgba(0,0,0,0.05) !important;
+  outline: none !important;
+}
+
+/* 6. List and List Items */
+.os-win7 .os-list {
+  background-color: #ffffff !important;
+  border: 1px solid #8e8f8f !important;
+  border-radius: 2px !important;
+}
+
+.os-win7 .os-list-item {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 12px !important;
+  color: #000000 !important;
+  padding: 4px 8px !important;
+  border-radius: 3px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  transition: all 0.1s ease !important;
+}
+
+.os-win7 .os-list-item:hover {
+  background: linear-gradient(#f9fcff 0%, #e5f3fb 100%) !important;
+  border-color: #b8d6eb !important;
+  color: #000000 !important;
+}
+
+.os-win7 .os-list-item.selected,
+.os-win7 .os-list-item--selected {
+  background: linear-gradient(#e4f3fc 0%, #cce8f7 100%) !important;
+  border-color: #70c0e7 !important;
+  color: #000000 !important;
+}
+
+/* 7. Toolbars and Statusbars */
+.os-win7 .os-toolbar {
+  background: linear-gradient(to bottom, #fbfcfd, #f0f3f7) !important;
+  border-bottom: 1px solid #d4dbe5 !important;
+  padding: 4px 6px !important;
+  display: flex !important;
+  gap: 6px !important;
+}
+
+.os-win7 .os-statusbar {
+  background-color: #f0f3f7 !important;
+  border-top: 1px solid #c9d3e2 !important;
+  height: 24px !important;
+  font-size: 11px !important;
+  color: #1e395b !important;
+  padding: 2px 8px !important;
+}
+
+/* 8. Sidebar (News & Explorer Sidebar style) */
+.os-win7 .os-sidebar {
+  background-color: #f0f3f7 !important;
+  border-right: 1px solid #c9d3e2 !important;
+}
+
+/* 9. Scrollbars (Webkit-based) */
+.os-win7 *::-webkit-scrollbar {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.os-win7 *::-webkit-scrollbar-track {
+  background: #f0f0f0 !important;
+  background-image: linear-gradient(to right, #e5e5e5 0%, #f5f5f5 20%) !important;
+}
+
+.os-win7 *::-webkit-scrollbar-thumb {
+  background-color: #f2f2f2 !important;
+  border: 1px solid #8e8f8f !important;
+  border-radius: 3px !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8) !important;
+  background-image: linear-gradient(to right, #f2f2f2 45%, #ebebeb 45%, #cfcfcf) !important;
+}
+
+.os-win7 *::-webkit-scrollbar-thumb:hover {
+  border-color: #3c7fb1 !important;
+  background-image: linear-gradient(to right, #eaf6fd 45%, #bee6fd 45%, #a7d9f5) !important;
+}
+
+.os-win7 *::-webkit-scrollbar-thumb:active {
+  border-color: #6d91ab !important;
+  background-image: linear-gradient(to right, #e5f4fc 0%, #c4e5f6 30%, #98d1ef 50%, #68b3db) !important;
+}
+
+/* 10. News App specific skin integration */
+.os-win7 .news-app {
+  background-color: #f0f3f7 !important;
+}
+
+.os-win7 .news-app__sidebar {
+  border-right: 1px solid #c9d3e2 !important;
+}
+
+.os-win7 .news-app__list {
+  background-color: #ffffff !important;
+  border: 1px solid #8e8f8f !important;
+  margin: 6px !important;
+}
+
+.os-win7 .news-app__reader {
+  background-color: #ffffff !important;
+  border: 1px solid #c9d3e2 !important;
+  margin: 6px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+/* prose / news text rendering */
+.os-win7 .prose h1,
+.os-win7 .prose h2,
+.os-win7 .prose h3,
+.os-win7 .prose h4 {
+  font-family: "Segoe UI", sans-serif !important;
+  color: #1e395b !important; /* Aero dark blue */
+  font-weight: 600 !important;
+}
+
+.os-win7 .prose p,
+.os-win7 .prose li {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+  color: #222222 !important;
+}
+
+.os-win7 .prose a {
+  color: #1a6ca1 !important;
+  text-decoration: none !important;
+  border-bottom: 1px dotted #1a6ca1 !important;
+}
+
+.os-win7 .prose a:hover {
+  color: #2aceda !important;
+  border-bottom-style: solid !important;
+}
+
+.os-win7 .prose code {
+  font-family: Consolas, "Courier New", monospace !important;
+  font-size: 11px !important;
+  background-color: #f4f6f9 !important;
+  padding: 2px 4px !important;
+  border: 1px solid #d4dce5 !important;
+  border-radius: 3px !important;
+}
+
+/* 11. Context Menu Aero overrides */
+.os-win7.os-panel.os-list,
+.os-win7 .os-panel.os-list {
+  background-color: #ffffff !important;
+  border: 1px solid #97a4b2 !important;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15) !important;
+  padding: 2px !important;
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 12px !important;
+  border-radius: 4px !important;
+}
+
+.os-win7.os-panel.os-list .os-list-item,
+.os-win7 .os-panel.os-list .os-list-item {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 12px !important;
+  padding: 4px 18px 4px 16px !important;
+  border-radius: 3px !important;
+  background: transparent !important;
+  color: #000000 !important;
+  border: 1px solid transparent !important;
+  text-shadow: none !important;
+}
+
+.os-win7.os-panel.os-list .os-list-item:hover:not(:disabled),
+.os-win7 .os-panel.os-list .os-list-item:hover:not(:disabled) {
+  background: linear-gradient(#f9fcff 0%, #e5f3fb 100%) !important;
+  border-color: #b8d6eb !important;
+  color: #000000 !important;
+}
+
+.os-win7.os-panel.os-list .os-list-item:disabled,
+.os-win7 .os-panel.os-list .os-list-item:disabled {
+  color: #838383 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.os-win7.os-panel.os-list div,
+.os-win7 .os-panel.os-list div {
+  height: 1px !important;
+  background-color: #e0e0e0 !important;
+  margin: 4px 0 !important;
+  padding: 0 !important;
+}
+
+/* 12. Range Inputs (Sliders) */
+.os-win7 input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Track Horizontal */
+.os-win7 input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to bottom, #d8d8d8, #f2f2f2) !important;
+  border: 1px solid #8e8f8f !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.1) !important;
+}
+
+/* Thumb Horizontal */
+.os-win7 input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 19px !important;
+  width: 11px !important;
+  background: linear-gradient(
+    180deg,
+    #fafafa 0%,
+    #f2f2f2 49%,
+    #e5e5e5 50%,
+    #d8d8d8 100%
+  ) !important;
+  border: 1px solid #8e8f8f !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.15) !important;
+  margin-top: -8px !important;
+}
+
+.os-win7 input[type="range"]::-webkit-slider-thumb:hover {
+  border-color: #3c7fb1 !important;
+  background: linear-gradient(
+    180deg,
+    #eaf6fd 45%,
+    #bee6fd 45%,
+    #a7d9f5 100%
+  ) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 0 3px rgba(85, 170, 235, 0.5) !important;
+}
+
+/* Vertical volume slider track & thumb */
+.os-win7 input[type="range"].volume-slider::-webkit-slider-runnable-track {
+  width: 4px !important;
+  height: 100% !important;
+  background: linear-gradient(to right, #d8d8d8, #f2f2f2) !important;
+  border: 1px solid #8e8f8f !important;
+  border-radius: 2px !important;
+}
+
+.os-win7 input[type="range"].volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 11px !important;
+  width: 19px !important;
+  background: linear-gradient(
+    90deg,
+    #fafafa 0%,
+    #f2f2f2 49%,
+    #e5e5e5 50%,
+    #d8d8d8 100%
+  ) !important;
+  border: 1px solid #8e8f8f !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.15) !important;
+  margin-top: 0 !important;
+}
+
+.os-win7 input[type="range"].volume-slider::-webkit-slider-thumb:hover {
+  border-color: #3c7fb1 !important;
+  background: linear-gradient(
+    90deg,
+    #eaf6fd 45%,
+    #bee6fd 45%,
+    #a7d9f5 100%
+  ) !important;
+}
+
+/* 13. Windows 7 Start Menu (Aero modern style) */
+.os-win7 .start-menu-modern {
+  bottom: 40px !important;
+  min-width: 380px !important;
+  min-height: 480px !important;
+  border: 1px solid rgba(0, 0, 0, 0.45) !important;
+  border-radius: 6px 6px 0 0 !important;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.05) 90px, transparent 150px),
+    rgba(10, 25, 50, 0.5) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  padding: 0 !important;
+  filter: none !important;
+}
+
+.os-win7 .start-menu-modern .start-menu__header {
+  background: transparent !important;
+  border: none !important;
+  height: 52px !important;
+  padding: 8px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  box-shadow: none !important;
+}
+
+.os-win7 .start-menu-modern .start-menu__header::before {
+  display: none !important; /* Remove top highlight lines */
+}
+
+.os-win7 .start-menu-modern .start-menu__header div {
+  display: none !important; /* Hide inline top highlight divider div */
+}
+
+.os-win7 .start-menu-modern .start-menu__header img {
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.os-win7 .start-menu-modern .start-menu__header span {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+  margin-left: 8px !important;
+}
+
+.os-win7 .start-menu-modern section {
+  border-top: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  background: transparent !important;
+  flex: 1 !important;
+  display: flex !important;
+  padding: 0 !important;
+}
+
+.os-win7 .start-menu-modern section hr {
+  display: none !important; /* Hide orange/gray default horizontal lines */
+}
+
+.os-win7 .start-menu-modern .start-menu-section--left {
+  background: #ffffff !important;
+  border-right: 1px solid #d2dbe5 !important;
+  box-shadow: inset -1px 0 0 #ffffff !important;
+  padding: 6px !important;
+  border-radius: 4px 0 0 4px !important;
+  margin: 0 0 0 5px !important;
+  flex: 1.15 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-section--right {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+  border-left: none !important;
+  padding: 8px 6px !important;
+  border-radius: 0 4px 4px 0 !important;
+  margin: 0 5px 0 0 !important;
+  flex: 0.85 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-item {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 11px !important;
+  padding: 5px 8px !important;
+  border: 1px solid transparent !important;
+  border-radius: 3px !important;
+  background: transparent !important;
+  transition: all 0.1s ease !important;
+  box-shadow: none !important;
+  color: #333333 !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-section--left .start-menu-item {
+  color: #333333 !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-section--left .start-menu-item:hover:not(.disabled) {
+  background: linear-gradient(to bottom, #f3f9fd 0%, #e1f0fa 100%) !important;
+  border-color: #b8d6eb #a1cde8 #a1cde8 #b8d6eb !important;
+  color: #000000 !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-section--right .start-menu-item {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-section--right .start-menu-item:hover:not(.disabled) {
+  background: 
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.3) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-item--footer {
+  justify-content: space-between !important;
+  font-weight: 500 !important;
+  margin-top: auto !important;
+  border-top: 1px solid #e5e5e5 !important;
+  border-radius: 0 !important;
+  padding: 8px 8px 4px !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-item--footer:hover {
+  background: linear-gradient(to bottom, #f3f9fd 0%, #e1f0fa 100%) !important;
+  border-color: transparent !important;
+  color: #0066cc !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-section__title {
+  color: #556677 !important;
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  margin: 6px 6px 4px !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-separator {
+  background: #e5e5e5 !important;
+  height: 1px !important;
+  border: none !important;
+  margin: 4px 6px !important;
+}
+
+.os-win7 .start-menu-modern .start-menu-section--right .start-menu-separator {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.os-win7 .start-menu-modern footer {
+  background: transparent !important;
+  height: 44px !important;
+  padding: 0 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  box-shadow: none !important;
+}
+
+.os-win7 .start-menu-modern footer .os-button {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 11px !important;
+  color: #ffffff !important;
+  background: linear-gradient(
+    180deg,
+    #3573a6 0%,
+    #29618e 49%,
+    #1f4f78 50%,
+    #184165 100%
+  ) !important;
+  border: 1px solid #1a3c5a !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 3px !important;
+  padding: 4px 12px !important;
+  margin-left: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 24px !important;
+}
+
+.os-win7 .start-menu-modern footer .os-button:hover {
+  background: linear-gradient(
+    180deg,
+    #4489bf 0%,
+    #357ba2 49%,
+    #276b92 50%,
+    #205a7f 100%
+  ) !important;
+  border-color: #245275 !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 0 6px rgba(82, 195, 255, 0.6) !important;
+}
+
+.os-win7 .start-menu-modern footer .os-button:active {
+  background: linear-gradient(
+    180deg,
+    #1c4363 0%,
+    #163753 100%
+  ) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+.os-win7 .start-menu-modern footer svg {
+  width: 13px !important;
+  height: 13px !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+/* 14. Windows 7 Superbar (Taskbar) */
+.os-win7 .taskbar {
+  height: 40px !important;
+  background: 
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 20%, rgba(0, 0, 0, 0.05) 50%, rgba(0, 0, 0, 0.18) 100%),
+    rgba(15, 30, 55, 0.5) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.38) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 -1px 8px rgba(0,0,0,0.2) !important;
+  overflow: visible !important;
+}
+
+.os-win7 .taskbar__inner {
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 8px 0 0 !important;
+  overflow: visible !important;
+}
+
+/* Start Orb Button */
+.os-win7 .start-button {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(0, 0, 0, 0.48) !important;
+  position: relative !important;
+  margin: 0 8px 0 4px !important;
+  background-image: 
+    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='20' height='20'%3E%3Cg filter='drop-shadow(0px 1.5px 2px rgba(0,0,0,0.45))'%3E%3Cpath d='M12,11 C12,11 15.5,7.5 22,10 L22,19 C15.5,17 12,20 12,20 Z' fill='%23ee4c33'/%3E%3Cpath d='M24,10 C30.5,7.5 34,11 34,11 L34,20 C34,20 30.5,17 24,19 Z' fill='%237bb82b'/%3E%3Cpath d='M12,21 C12,21 15.5,18 22,20 L22,29 C15.5,27 12,30 12,30 Z' fill='%2300a2eb'/%3E%3Cpath d='M24,20 C30.5,18 34,21 34,21 L34,30 C34,30 30.5,27 24,29 Z' fill='%23f7b200'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at center, rgba(40, 120, 220, 0.8) 0%, rgba(15, 60, 130, 0.92) 65%, rgba(3, 16, 40, 1) 100%) !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 20px 20px, cover, cover !important;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.4), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 1px rgba(255, 255, 255, 0.2) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-out !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  outline: none !important;
+}
+
+.os-win7 .start-button::before {
+  display: none !important; /* Hide XP default pseudo-highlights */
+}
+
+.os-win7 .start-button span,
+.os-win7 .start-button div {
+  display: none !important; /* Hide original internal start labels and gradient boxes */
+}
+
+/* Hover Orb State */
+.os-win7 .start-button:hover {
+  background-image: 
+    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='20' height='20'%3E%3Cg filter='drop-shadow(0px 1.5px 2px rgba(0,0,0,0.45))'%3E%3Cpath d='M12,11 C12,11 15.5,7.5 22,10 L22,19 C15.5,17 12,20 12,20 Z' fill='%23ee4c33'/%3E%3Cpath d='M24,10 C30.5,7.5 34,11 34,11 L34,20 C34,20 30.5,17 24,19 Z' fill='%237bb82b'/%3E%3Cpath d='M12,21 C12,21 15.5,18 22,20 L22,29 C15.5,27 12,30 12,30 Z' fill='%2300a2eb'/%3E%3Cpath d='M24,20 C30.5,18 34,21 34,21 L34,30 C34,30 30.5,27 24,29 Z' fill='%23f7b200'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at center, rgba(80, 190, 255, 0.95) 0%, rgba(25, 125, 230, 0.95) 60%, rgba(8, 45, 110, 1) 100%) !important;
+  box-shadow: 
+    0 0 12px rgba(82, 195, 255, 0.85), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Open / Active Orb State */
+.os-win7 .start-button:active,
+.os-win7 .start-button.start-button--open {
+  background-image: 
+    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='20' height='20'%3E%3Cg filter='drop-shadow(0px 1.5px 2px rgba(0,0,0,0.45))'%3E%3Cpath d='M12,11 C12,11 15.5,7.5 22,10 L22,19 C15.5,17 12,20 12,20 Z' fill='%23ee4c33'/%3E%3Cpath d='M24,10 C30.5,7.5 34,11 34,11 L34,20 C34,20 30.5,17 24,19 Z' fill='%237bb82b'/%3E%3Cpath d='M12,21 C12,21 15.5,18 22,20 L22,29 C15.5,27 12,30 12,30 Z' fill='%2300a2eb'/%3E%3Cpath d='M24,20 C30.5,18 34,21 34,21 L34,30 C34,30 30.5,27 24,29 Z' fill='%23f7b200'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(circle at 50% 75%, rgba(255, 255, 255, 0.2) 0%, transparent 45%),
+    radial-gradient(circle at center, rgba(12, 60, 130, 0.98) 0%, rgba(4, 25, 65, 0.98) 75%, rgba(1, 10, 30, 1) 100%) !important;
+  box-shadow: 
+    inset 0 2px 6px rgba(0, 0, 0, 0.65), 
+    0 1px 1px rgba(255, 255, 255, 0.2),
+    0 0 4px rgba(82, 195, 255, 0.4) !important;
+}
+
+/* Window buttons area */
+.os-win7 .taskbar-windows {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 0 4px !important;
+}
+
+/* Superbar glossy Icon-only Buttons */
+.os-win7 .taskbar-button {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 4px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s !important;
+}
+
+.os-win7 .taskbar-button::before {
+  display: none !important; /* Hide default underlines/effects */
+}
+
+.os-win7 .taskbar-button__icon {
+  width: 24px !important;
+  height: 24px !important;
+  margin: 0 !important;
+}
+
+.os-win7 .taskbar-button__label {
+  display: none !important; /* Superbar is icon-only! */
+}
+
+.os-win7 .taskbar-button:hover {
+  background: 
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 51%, rgba(255, 255, 255, 0.2) 100%),
+    rgba(180, 220, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 6px rgba(255, 255, 255, 0.3) !important;
+}
+
+.os-win7 .taskbar-button.is-active {
+  background: 
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.15) 45%, rgba(0, 0, 0, 0.08) 50%, rgba(255, 255, 255, 0.25) 100%),
+    rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  border-top-color: rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 8px rgba(0, 180, 255, 0.45) !important;
+}
+
+.os-win7 .taskbar-button.is-minimized {
+  opacity: 0.65 !important;
+}
+
+/* System Tray & Language Bar adjustments */
+.os-win7 .taskbar-divider {
+  display: none !important; /* Hide visual dividers */
+}
+
+.os-win7 .taskbar-lang {
+  margin: 0 4px !important;
+}
+
+.os-win7 .taskbar-lang-button {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 11px !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.os-win7 .taskbar-tray {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 3px !important;
+  height: 28px !important;
+  padding: 0 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin: 0 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.os-win7 .taskbar-tray-icon {
+  background: transparent !important;
+  border: none !important;
+  width: 22px !important;
+  height: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border-radius: 2px !important;
+  cursor: pointer !important;
+  transition: background 0.1s !important;
+}
+
+.os-win7 .taskbar-tray-icon:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+.os-win7 .taskbar-tray-icon img {
+  width: 14px !important;
+  height: 14px !important;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2)) !important;
+}
+
+.os-win7 .taskbar-tray-time {
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 11px !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+  margin-left: 6px !important;
+  cursor: default !important;
+}
+
+/* 15. Windows 7 Explorer Icon Visual Overrides */
+.os-win7 img[src*="folder_plain.png"],
+.os-win7 img[src*="folder-documents.png"],
+.os-win7 img[src*="folder-pictures.png"],
+.os-win7 img[src*="folder-music.png"],
+.os-win7 img[src*="folder-recent.png"],
+.os-win7 img[src*="folder-favorites.png"],
+.os-win7 .start-menu-item__icon img[src*="folder_plain.png"] {
+  content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='48' height='48'%3E%3Cdefs%3E%3ClinearGradient id='folderBack' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fbe49e'/%3E%3Cstop offset='100%25' stop-color='%23e2b13c'/%3E%3C/linearGradient%3E%3ClinearGradient id='folderFront' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fff0c4' stop-opacity='0.85'/%3E%3Cstop offset='100%25' stop-color='%23f5cc68' stop-opacity='0.9'/%3E%3C/linearGradient%3E%3ClinearGradient id='docGrad' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='100%25' stop-color='%23e0e5eb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M4,10 C4,8.89 4.89,8 6,8 H18 L22,12 H42 C43.11,12 44,12.89 44,14 V38 C44,39.11 43.11,40 42,40 H6 C4.89,40 4,39.11 4,38 Z' fill='url(%23folderBack)' filter='drop-shadow(0px 2px 3px rgba(0,0,0,0.2))'/%3E%3Crect x='10' y='13' width='28' height='18' rx='1.5' fill='url(%23docGrad)' transform='rotate(-3 24 22)'/%3E%3Cline x1='14' y1='18' x2='28' y2='18' stroke='%23a0aab5' stroke-width='1.5' transform='rotate(-3 24 22)'/%3E%3Cline x1='14' y1='22' x2='32' y2='22' stroke='%23a0aab5' stroke-width='1.5' transform='rotate(-3 24 22)'/%3E%3Cline x1='14' y1='26' x2='24' y2='26' stroke='%23a0aab5' stroke-width='1.5' transform='rotate(-3 24 22)'/%3E%3Cpath d='M4,16 L42,16 L38,39 C38,39.8 37.2,40.5 36.4,40.5 H5.6 C4.8,40.5 4,39.8 4,39 Z' fill='url(%23folderFront)' stroke='%23dca626' stroke-width='0.75'/%3E%3Cpath d='M4,17 L42,17' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.6'/%3E%3C/svg%3E") !important;
+}
+
+.os-win7 img[src*="mycomputer.png"] {
+  content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='48' height='48'%3E%3Cdefs%3E%3ClinearGradient id='silverGrad' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f0f2f5'/%3E%3Cstop offset='50%25' stop-color='%23b8c0cc'/%3E%3Cstop offset='100%25' stop-color='%238a94a6'/%3E%3C/linearGradient%3E%3ClinearGradient id='screenGrad' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232a8ede'/%3E%3Cstop offset='60%25' stop-color='%230e4399'/%3E%3Cstop offset='100%25' stop-color='%23021438'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='8' y='10' width='8' height='26' rx='1' fill='url(%23silverGrad)' stroke='%23667285' stroke-width='0.75'/%3E%3Cline x1='8' y1='16' x2='16' y2='16' stroke='%234c5666'/%3E%3Cline x1='8' y1='20' x2='16' y2='20' stroke='%234c5666'/%3E%3Ccircle cx='12' cy='13' r='1' fill='%2371f280'/%3E%3Crect x='16' y='8' width='26' height='19' rx='1.5' fill='url(%23silverGrad)' stroke='%23556173' stroke-width='1'/%3E%3Crect x='18' y='10' width='22' height='15' rx='0.5' fill='url(%23screenGrad)'/%3E%3Cpath d='M18,10 L35,10 L18,22 Z' fill='%23ffffff' fill-opacity='0.15'/%3E%3Cpath d='M26,27 L32,27 L34,34 L24,34 Z' fill='url(%23silverGrad)' stroke='%23556173' stroke-width='0.75'/%3E%3Cellipse cx='29' cy='35' rx='8' ry='2.5' fill='url(%23silverGrad)' stroke='%23556173' stroke-width='0.75'/%3E%3C/svg%3E") !important;
+}
+
+.os-win7 img[src*="recycling_bin.png"] {
+  content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='48' height='48'%3E%3Cdefs%3E%3ClinearGradient id='glassGrad' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.6'/%3E%3Cstop offset='25%25' stop-color='%23cce6ff' stop-opacity='0.3'/%3E%3Cstop offset='75%25' stop-color='%23cce6ff' stop-opacity='0.2'/%3E%3Cstop offset='100%25' stop-color='%23ffffff' stop-opacity='0.7'/%3E%3C/linearGradient%3E%3ClinearGradient id='rimGrad' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='100%25' stop-color='%2399adc6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M12,24 C14,14 24,10 32,16 L35,12' stroke='%234c8edb' stroke-width='2' fill='none'/%3E%3Cpath d='M35,12 L35,18 L29,18' fill='%234c8edb'/%3E%3Cellipse cx='24' cy='38' rx='12' ry='4' fill='%238099b3' opacity='0.5'/%3E%3Cpath d='M20,33 L24,30 L28,34 L22,36 Z' fill='%23eeeeee' stroke='%23cccccc' stroke-width='0.5'/%3E%3Cpath d='M22,32 L26,28 L30,32 L24,34 Z' fill='%23ffffff' stroke='%23cccccc' stroke-width='0.5'/%3E%3Cpath d='M11,14 L14,37 C14,39.2 18.5,41 24,41 C29.5,41 34,39.2 34,37 L37,14 Z' fill='url(%23glassGrad)' stroke='%23a3c2e0' stroke-width='1.2'/%3E%3Cellipse cx='24' cy='14' rx='13' ry='4.5' fill='none' stroke='url(%23rimGrad)' stroke-width='1.5' filter='drop-shadow(0px 1px 1.5px rgba(0,0,0,0.15))'/%3E%3Cpath d='M36,24 C34,32 26,36 18,32 L15,35' stroke='%234c8edb' stroke-width='2' fill='none'/%3E%3Cpath d='M15,35 L15,29 L21,29' fill='%234c8edb'/%3E%3C/svg%3E") !important;
+}
+
+.os-win7 img[src*="ie.png"] {
+  content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='48' height='48'%3E%3Cdefs%3E%3ClinearGradient id='eGrad' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233faaf2'/%3E%3Cstop offset='40%25' stop-color='%230c6cc9'/%3E%3Cstop offset='100%25' stop-color='%23023b80'/%3E%3C/linearGradient%3E%3ClinearGradient id='haloGrad' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffe680' stop-opacity='0.9'/%3E%3Cstop offset='50%25' stop-color='%23ffb833' stop-opacity='0.75'/%3E%3Cstop offset='100%25' stop-color='%23e67300' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cellipse cx='24' cy='24' rx='20' ry='8' fill='none' stroke='url(%23haloGrad)' stroke-width='4.5' transform='rotate(-30 24 24)'/%3E%3Cpath d='M36,20 C36,12 28,10 21,13 C13,16.5 10,25 13,32.5 C16,40 25.5,41 33,37.5 L36,41 L37.5,33 C33,37 25.5,37 21,34 C16.5,31 16.5,25 21.5,23.5 L37,23.5 L37.2,20 Z M19,19 C23,17 31,18 31,21 C31,21.5 29,21.8 19.5,21.8 Z' fill='url(%23eGrad)' filter='drop-shadow(1px 2px 2px rgba(0,0,0,0.3))'/%3E%3C/svg%3E") !important;
+}
+
+.os-win7 img[src*="Notepad.png"] {
+  content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='48' height='48'%3E%3Cdefs%3E%3ClinearGradient id='spiral' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0%25' stop-color='%23999'/%3E%3Cstop offset='50%25' stop-color='%23fff'/%3E%3Cstop offset='100%25' stop-color='%23555'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='8' y='6' width='32' height='38' rx='2' fill='%23d2b274' filter='drop-shadow(0 2px 3px rgba(0,0,0,0.25))'/%3E%3Crect x='10' y='7' width='29' height='35' rx='1.5' fill='%23fafafa'/%3E%3Cline x1='14' y1='13' x2='35' y2='13' stroke='%23e0e0e0' stroke-width='0.75'/%3E%3Cline x1='14' y1='17' x2='35' y2='17' stroke='%2390c0ef' stroke-width='0.75'/%3E%3Cline x1='14' y1='21' x2='35' y2='21' stroke='%23e0e0e0' stroke-width='0.75'/%3E%3Cline x1='14' y1='25' x2='35' y2='25' stroke='%23e0e0e0' stroke-width='0.75'/%3E%3Cline x1='14' y1='29' x2='35' y2='29' stroke='%23e0e0e0' stroke-width='0.75'/%3E%3Cline x1='14' y1='33' x2='35' y2='33' stroke='%23e0e0e0' stroke-width='0.75'/%3E%3Cline x1='18' y1='7' x2='18' y2='42' stroke='%23ffb3b3' stroke-width='0.75'/%3E%3Crect x='12' y='4' width='2' height='5' rx='0.5' fill='url(%23spiral)'/%3E%3Crect x='17' y='4' width='2' height='5' rx='0.5' fill='url(%23spiral)'/%3E%3Crect x='22' y='4' width='2' height='5' rx='0.5' fill='url(%23spiral)'/%3E%3Crect x='27' y='4' width='2' height='5' rx='0.5' fill='url(%23spiral)'/%3E%3Crect x='32' y='4' width='2' height='5' rx='0.5' fill='url(%23spiral)'/%3E%3Crect x='37' y='4' width='2' height='5' rx='0.5' fill='url(%23spiral)'/%3E%3C/svg%3E") !important;
+}
+
+/* ── 16. CV/Resume App Aero Overrides ─────────────────────────── */
+.os-win7 .cv-app {
+  background-color: #f0f3f7 !important;
+  font-family: "Segoe UI", "Tahoma", sans-serif !important;
+}
+
+.os-win7 .cv-app__header {
+  border-bottom: 1px solid #c9d3e2 !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.os-win7 .cv-app__avatar-wrapper {
+  border: 1px solid #99a8b9 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
+}
+
+.os-win7 .cv-app__role {
+  color: #1e395b !important;
+}
+
+.os-win7 .cv-app__tab-button {
+  background: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%) !important;
+  color: #1e395b !important;
+  border: 1px solid #8e8f8f !important;
+  border-radius: 3px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+.os-win7 .cv-app__tab-button:hover {
+  background: linear-gradient(180deg, #fbfbfb 0%, #f2f2f2 50%, #e1e1e1 51%, #d5d5d5 100%) !important;
+  border-color: #707070 !important;
+}
+
+.os-win7 .cv-app__tab-button.selected {
+  background: linear-gradient(180deg, #eaf2fb 0%, #dbe7f6 50%, #bdd3ef 51%, #a7c1e6 100%) !important;
+  color: #1e395b !important;
+  border-color: #3c7fb1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 3px rgba(60,127,177,0.3) !important;
+}
+
+.os-win7 .cv-app__entry {
+  background-color: #ffffff !important;
+  border: 1px solid #c9d3e2 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+.os-win7 .cv-app__entry-title {
+  color: #1e395b !important;
+}
+
+/* ── Wiki App — Windows 7 Aero skin ──────────────────────────── */
+.os-win7 .wiki-app {
+  background-color: #f0f3f7 !important;
+}
+
+.os-win7 .wiki-app__sidebar {
+  background: linear-gradient(180deg, #e8edf5 0%, #dde4f0 100%) !important;
+  border-right: 1px solid #c9d3e2 !important;
+}
+
+.os-win7 .wiki-app__sidebar-header {
+  background: linear-gradient(180deg, #3d7fc9 0%, #295fa8 100%) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid #1e4a8a !important;
+}
+
+.os-win7 .wiki-app__sidebar-title {
+  color: #ffffff !important;
+  font-family: "Segoe UI", sans-serif !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+}
+
+.os-win7 .wiki-app__sidebar-sub {
+  color: #c8deff !important;
+  opacity: 1 !important;
+}
+
+.os-win7 .wiki-app__list {
+  background-color: transparent !important;
+}
+
+.os-win7 .wiki-app__reader {
+  background-color: #ffffff !important;
+  border-left: none !important;
+}
+
+.os-win7 .wiki-app__breadcrumbs {
+  background-color: #edf1f8 !important;
+  border-bottom: 1px solid #c9d3e2 !important;
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 11px !important;
+  color: #4a5a72 !important;
+}
+
+.os-win7 .wiki-app__meta {
+  border-bottom: 1px solid #d8dfe9 !important;
+}
+
+.os-win7 .wiki-app__article-title {
+  color: #1e395b !important;
+  font-family: "Segoe UI", sans-serif !important;
+  font-weight: 600 !important;
+}
+
+.os-win7 .wiki-app__tag {
+  background-color: #dce8f8 !important;
+  color: #1e395b !important;
+  border: 1px solid #b0c8e8 !important;
+}
+
+.os-win7 .wiki-app__article-item:hover {
+  background-color: #d8e8f8 !important;
+  border-radius: 3px !important;
+}
+
+.os-win7 .wiki-app__category-btn.selected,
+.os-win7 .wiki-app__category-btn.os-list-item--selected {
+  background: linear-gradient(180deg, #4a90d9 0%, #2d6cbf 100%) !important;
+  color: #ffffff !important;
+  border-radius: 3px !important;
+}
+
+/* --- Minesweeper Windows 7 Aero Style --- */
+.os-win7 .minesweeper-app {
+  background: linear-gradient(135deg, rgba(235, 244, 253, 0.95) 0%, rgba(200, 223, 248, 0.95) 100%) !important;
+  border: 1px solid rgba(135, 172, 218, 0.8) !important;
+  border-radius: 6px !important;
+  font-family: "Segoe UI", "SegoeUI", -apple-system, sans-serif !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.os-win7 .minesweeper-app__toolbar {
+  background: linear-gradient(to bottom, rgba(245, 249, 255, 0.9), rgba(220, 233, 248, 0.9)) !important;
+  border: 1px solid rgba(170, 195, 225, 0.7) !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.os-win7 .minesweeper-app__counter {
+  background: #000000 !important;
+  border: 1px solid #a3b8cc !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.8) !important;
+}
+
+.os-win7 .minesweeper-reset-button {
+  border: 1px solid #70c0e7 !important;
+  border-radius: 4px !important;
+  background: linear-gradient(to bottom, #f2f7fc, #dce6f2) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+}
+
+.os-win7 .minesweeper-reset-button:hover {
+  background: linear-gradient(to bottom, #eaf6fd, #bee6fd) !important;
+  border-color: #3c7fb1 !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 4px rgba(85, 170, 235, 0.5) !important;
+}
+
+.os-win7 .minesweeper-reset-button:active {
+  background: linear-gradient(to bottom, #e5f4fc, #c4e5f6) !important;
+  border-color: #6c91ab !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+.os-win7 .minesweeper-app__board {
+  border: 1px solid #a3b8cc !important;
+  border-radius: 3px !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  padding: 4px !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+.os-win7 .minesweeper-cell-covered {
+  background: linear-gradient(135deg, #eaf2fb, #b9d1eb) !important;
+  border: 1px solid #8cb1db !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+.os-win7 .minesweeper-cell-covered:hover {
+  background: linear-gradient(135deg, #f3f8fe, #cbe0f5) !important;
+  border-color: #70a0d4 !important;
+}
+
+.os-win7 .minesweeper-cell-covered:active {
+  background: linear-gradient(135deg, #b9d1eb, #9dbfe3) !important;
+  border-color: #5585b7 !important;
+}
+
+.os-win7 .minesweeper-cell-revealed {
+  border: 1px solid #d4dfea !important;
+  background: #f0f4f8 !important;
+}
+
+.os-win7 .minesweeper-cell-flagged {
+  background: linear-gradient(135deg, #fcebec, #f3c2c5) !important;
+  border-color: #d98c90 !important;
+}
+
+.os-win7 .minesweeper-app__status--won {
+  color: #1a5bb5 !important;
+}
+
+.os-win7 .minesweeper-app__status--lost {
+  color: #c8102e !important;
+}
+
+/* --- Calculator Win7 Aero Style --- */
+.os-win7 .calc-app {
+  background: linear-gradient(160deg, rgba(220, 232, 245, 0.85) 0%, rgba(195, 215, 238, 0.75) 100%) !important;
+  font-family: "Segoe UI", "SegoeUI", sans-serif !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+.os-win7 .calc-app__display {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(100, 140, 180, 0.55) !important;
+  border-radius: 4px !important;
+  color: #1a1a1a !important;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.os-win7 .calc-app__display-val {
+  color: #1a1a1a !important;
+  font-family: "Segoe UI", Consolas, monospace !important;
+}
+
+.os-win7 .calc-app__btn {
+  background: linear-gradient(
+    180deg,
+    rgba(240, 248, 255, 0.9) 0%,
+    rgba(205, 225, 245, 0.85) 50%,
+    rgba(185, 210, 238, 0.8) 100%
+  ) !important;
+  border: 1px solid rgba(100, 148, 198, 0.6) !important;
+  border-radius: 4px !important;
+  color: #1a2a3a !important;
+  font-family: "Segoe UI", "SegoeUI", sans-serif !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  transition: background 0.12s, box-shadow 0.12s !important;
+}
+
+.os-win7 .calc-app__btn:hover:not(.calc-app__btn--disabled) {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(220, 238, 255, 0.9) 50%,
+    rgba(195, 220, 248, 0.85) 100%
+  ) !important;
+  border-color: rgba(80, 130, 185, 0.75) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 2px 5px rgba(0, 80, 160, 0.15) !important;
+}
+
+.os-win7 .calc-app__btn:active:not(.calc-app__btn--disabled) {
+  background: linear-gradient(
+    180deg,
+    rgba(185, 210, 238, 0.9) 0%,
+    rgba(165, 195, 228, 0.85) 100%
+  ) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 60, 130, 0.18) !important;
+  transform: translateY(1px) !important;
+}
+
+.os-win7 .calc-app__btn--action {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 120, 120, 0.9) 0%,
+    rgba(220, 60, 60, 0.85) 50%,
+    rgba(190, 30, 30, 0.8) 100%
+  ) !important;
+  color: #ffffff !important;
+  border-color: rgba(150, 20, 20, 0.5) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 1px 4px rgba(180, 20, 20, 0.25) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;
+}
+
+.os-win7 .calc-app__btn--action:hover:not(.calc-app__btn--disabled) {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 150, 150, 0.95) 0%,
+    rgba(235, 80, 80, 0.9) 50%,
+    rgba(205, 45, 45, 0.85) 100%
+  ) !important;
+}
+
+.os-win7 .calc-app__btn--disabled {
+  opacity: 0.4 !important;
+  cursor: default !important;
+}
+

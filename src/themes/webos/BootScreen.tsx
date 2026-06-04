@@ -9,6 +9,17 @@ interface BootScreenProps {
 export function BootScreen({ onComplete }: BootScreenProps) {
   const { theme } = useApp();
   const themeAssets = THEME_ASSETS[(theme as ThemeAssetId) ?? 'webos'] ?? THEME_ASSETS.webos;
+  const OS_CLASS_MAP: Record<string, string> = {
+    'win-xp': 'winxp',
+    'webos':  'winxp',
+    'win-98': 'classic',
+    'win7':   'win7',
+    'win10':  'win7',
+    'win11':  'win7',
+    'ubuntu': 'ubuntu',
+    'arch':   'ubuntu',
+  };
+  const osClassName = OS_CLASS_MAP[theme] ?? 'classic';
   const bootLogo = themeAssets.bootLogo;
   const [progress, setProgress] = useState(0);
   const [fadeIn, setFadeIn] = useState(false);
@@ -35,7 +46,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
 
   if (theme === 'win-98') {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center font-mono">
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center font-mono os-shell os-classic">
         <div className="text-center">
           <h1 className="text-white text-6xl font-bold mb-4">Windows<span className="text-teal-500">98</span></h1>
           <div className="w-64 h-4 border-2 border-gray-500 p-0.5">
@@ -51,7 +62,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
 
   return (
     <div
-      className="boot-screen boot-screen--xp"
+      className={`boot-screen boot-screen--xp os-shell os-${osClassName}`}
       style={{ opacity: fadeIn ? 1 : 0 }}
     >
       <div className="boot-screen__center">
