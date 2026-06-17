@@ -38,6 +38,9 @@ import volumeIconWebos from '../winxp/assets/icons/Volume.png';
 import muteIconWebos from '../winxp/assets/icons/Mute.png';
 import fullscreenIconWebos from '../winxp/assets/icons/full-screen-icon-sm.webp';
 import notificationIconWebos from '../winxp/assets/icons/Information.png';
+import calendarIconWebos from '../winxp/assets/icons/Date and Time.png';
+import terminalIconWebos from '../winxp/assets/icons/cmd.png';
+import newsIconWebos from '../winxp/assets/icons/OE News Post.png';
 
 type StartMenuIconSet = {
   internetExplorer?: string;
@@ -97,6 +100,12 @@ export interface ThemeAssets {
   muteIcon?: string;
   fullscreenIcon?: string;
   notificationIcon?: string;
+  /** Calendar app icon (Date and Time.png) */
+  calendarIcon?: string;
+  /** Terminal app icon (cmd.png) */
+  terminalIcon?: string;
+  /** News app icon (OE News Post.png) */
+  newsIcon?: string;
   startMenuIcons: StartMenuIconSet;
   placesIcons: PlaceIconSet;
   uiSounds?: {
@@ -135,6 +144,9 @@ const sharedWebosAssets: ThemeAssets = {
   richTextIcon: richTextIconWebos,
   bootLogo: bootLogoWebos,
   bootProgress: bootProgressWebos,
+  calendarIcon: calendarIconWebos,
+  terminalIcon: terminalIconWebos,
+  newsIcon: newsIconWebos,
   volumeIcon: volumeIconWebos,
   muteIcon: muteIconWebos,
   fullscreenIcon: fullscreenIconWebos,

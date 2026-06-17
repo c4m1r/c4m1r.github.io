@@ -28,6 +28,7 @@ export async function loadAllProjects(language: string = 'en'): Promise<Project[
       projectPath: `/projects/${item.id}`,
       route: {
         path: `/projects/${item.id}`,
+        osUri: `projects://${item.id}`,
         appId: 'projects-grid',
       },
     }));

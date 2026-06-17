@@ -26,6 +26,27 @@ export function parseLanguageBlocks(content: string, language: string): string {
   return content;
 }
 
+function parseValue(val: string): any {
+  const v = val.trim();
+  if (v === 'true') return true;
+  if (v === 'false') return false;
+  // inline arrays [one, two]
+  if (v.startsWith('[') && v.endsWith(']')) {
+    return v
+      .slice(1, -1)
+      .split(',')
+      .map((item) => {
+        const trimmed = item.trim();
+        return trimmed.replace(/^["']|["']$/g, '');
+      });
+  }
+  // Remove surrounding quotes if any
+  if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+    return v.slice(1, -1);
+  }
+  return v;
+}
+
 /**
  * Парсит frontmatter из markdown и извлекает контент для языка
  */
@@ -41,65 +62,54 @@ export function parseFrontmatter(content: string, language?: string): { metadata
   const [, frontmatter, rawBody] = match;
   const metadata: Record<string, any> = {};
   
-  // Улучшенный парсинг YAML frontmatter
   const lines = frontmatter.split('\n');
-  let currentKey: string | null = null;
-  let currentArray: string[] = [];
+  let currentParentKey: string | null = null;
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    if (!line.trim()) continue;
+    
+    // Calculate indentation level
+    const leadingSpaces = line.length - line.trimStart().length;
     const trimmedLine = line.trim();
     
-    // Если строка начинается с дефиса, это элемент массива
+    // Check if it's a list item
     if (trimmedLine.startsWith('- ')) {
-      if (currentKey) {
-        const value = trimmedLine.substring(2).trim();
-        currentArray.push(value);
+      if (currentParentKey) {
+        const itemVal = parseValue(trimmedLine.substring(2));
+        if (!Array.isArray(metadata[currentParentKey])) {
+          metadata[currentParentKey] = [];
+        }
+        metadata[currentParentKey].push(itemVal);
       }
       continue;
     }
     
-    // Если есть накопленный массив, сохраняем его
-    if (currentKey && currentArray.length > 0) {
-      metadata[currentKey] = currentArray;
-      currentArray = [];
-      currentKey = null;
-    }
-    
-    // Обрабатываем обычную пару ключ-значение
+    // Regular key-value or parent key
     const colonIndex = line.indexOf(':');
     if (colonIndex === -1) continue;
     
     const key = line.slice(0, colonIndex).trim();
-    let value: any = line.slice(colonIndex + 1).trim();
+    const rawValue = line.slice(colonIndex + 1).trim();
     
-    // Если значение пустое, это может быть начало массива
-    if (!value) {
-      currentKey = key;
-      continue;
+    if (leadingSpaces === 0) {
+      currentParentKey = key;
+      if (!rawValue) {
+        // Parent key starting a nested block (or array)
+        metadata[key] = {};
+      } else {
+        metadata[key] = parseValue(rawValue);
+      }
+    } else {
+      // Indented block under current parent
+      if (currentParentKey) {
+        // Ensure parent is an object
+        if (typeof metadata[currentParentKey] !== 'object' || metadata[currentParentKey] === null || Array.isArray(metadata[currentParentKey])) {
+          metadata[currentParentKey] = {};
+        }
+        metadata[currentParentKey][key] = parseValue(rawValue);
+      }
     }
-    
-    // Парсим inline массивы [value1, value2]
-    if (value.startsWith('[') && value.endsWith(']')) {
-      value = value
-        .slice(1, -1)
-        .split(',')
-        .map((v: string) => v.trim().replace(/^["']|["']$/g, ''));
-      metadata[key] = value;
-      continue;
-    }
-    
-    // Удаляем кавычки
-    if (typeof value === 'string' && ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) {
-      value = value.slice(1, -1);
-    }
-    
-    metadata[key] = value;
-  }
-  
-  // Сохраняем последний массив, если есть
-  if (currentKey && currentArray.length > 0) {
-    metadata[currentKey] = currentArray;
   }
   
   // Обрабатываем переводы заголовков (title_en, title_ru и т.д.)

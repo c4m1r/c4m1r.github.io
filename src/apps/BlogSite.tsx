@@ -22,7 +22,6 @@ import {
 } from 'lucide-react';
 import {
   loadAppEntries,
-  loadPictures,
   loadAboutMe,
   loadLegalNotice,
   type AppCategoryId,
@@ -30,6 +29,7 @@ import {
   type ContentItem,
   type ImageItem,
 } from '../utils/contentLoader';
+import { loadPictureItems } from '../domain/gallery/gallery.loader';
 import { loadArticles } from '../domain/articles/articles.loader';
 import { loadWikiArticles, loadWikiCategoryIndex } from '../domain/wiki/wiki.loader';
 import { loadAllProjects } from '../domain/projects/projects.loader';
@@ -44,9 +44,16 @@ import { ContentReader } from '../components/ContentReader';
 import { Footer } from '../components/Footer';
 import { Hero } from '../components/Hero';
 import { NewsSection } from '../shells/site/sections/NewsSection';
+import { ProjectsSection } from '../shells/site/sections/ProjectsSection';
+import { GallerySection } from '../shells/site/sections/GallerySection';
+import { useProjects } from '../domain/projects/useProjects';
+import { useGallery } from '../domain/gallery/useGallery';
+import { useNews } from '../domain/news/useNews';
+import { type NewsItem } from '../domain/news/news.types';
+import { markdownToHtml as _markdownToHtml } from '../domain/content/markdown';
 
-type Section = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'project' | 'apps';
-type NavSection = 'home' | 'about' | 'wiki' | 'gallery' | 'blog' | 'search' | 'apps';
+type Section = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'project' | 'apps' | 'news';
+type NavSection = 'home' | 'about' | 'wiki' | 'gallery' | 'blog' | 'search' | 'apps' | 'news';
 
 interface BlogPostView extends ContentItem {
   excerpt: string;
@@ -60,7 +67,7 @@ interface WikiView extends ContentItem {
   categoryPath: string;
 }
 
-type SectionNav = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'apps';
+type SectionNav = 'home' | 'about' | 'wiki' | 'cv' | 'gallery' | 'blog' | 'search' | 'apps' | 'news';
 
 type UiText = {
   nav: Record<SectionNav, string> & { legal: string };
@@ -149,7 +156,7 @@ const APP_CATEGORIES: AppCategoryId[] = ['ready', 'prototype', 'webos-emulation'
 
 const uiTexts: Record<Language, UiText> = {
   en: {
-    nav: { home: 'Home', about: 'About', wiki: 'Wiki', cv: 'CV', gallery: 'Gallery', blog: 'Blog', apps: 'Apps', search: 'Search', legal: 'Legal Notice' },
+    nav: { home: 'Home', about: 'About', wiki: 'Wiki', cv: 'CV', gallery: 'Gallery', blog: 'Blog', apps: 'Apps', search: 'Search', news: 'News', legal: 'Legal Notice' },
     heroTitle: 'IT Engineer',
     heroSubtitle: 'Building beautiful digital experiences with code, creativity, and passion. Explore my work, thoughts, and knowledge base.',
     searchPlaceholder: 'Search articles...',
@@ -234,7 +241,7 @@ const uiTexts: Record<Language, UiText> = {
     },
   },
   ru: {
-    nav: { home: 'Главная', about: 'Обо мне', wiki: 'Вики', cv: 'Резюме', gallery: 'Галерея', blog: 'Блог', apps: 'Приложения', search: 'Поиск', legal: 'Правовая информация' },
+    nav: { home: 'Главная', about: 'Обо мне', wiki: 'Вики', cv: 'Резюме', gallery: 'Галерея', blog: 'Блог', apps: 'Приложения', search: 'Поиск', news: 'Новости', legal: 'Правовая информация' },
     heroTitle: 'IT инженер',
     heroSubtitle: 'Создаю красивые цифровые решения с помощью кода, креативности и страсти. Изучайте мои работы, мысли и базу знаний.',
     searchPlaceholder: 'Поиск по статьям...',
@@ -319,7 +326,7 @@ const uiTexts: Record<Language, UiText> = {
     },
   },
   fr: {
-    nav: { home: 'Accueil', about: 'À propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', apps: 'Applications', search: 'Recherche', legal: 'Mentions légales' },
+    nav: { home: 'Accueil', about: 'À propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', apps: 'Applications', search: 'Recherche', news: 'Actualités', legal: 'Mentions légales' },
     heroTitle: 'Développeur créatif',
     heroSubtitle: 'Créer de belles expériences numériques avec code, créativité et passion. Explorez mon travail, mes pensées et ma base de connaissances.',
     searchPlaceholder: 'Rechercher...',
@@ -362,7 +369,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: 'Articles de blog', wikiArticles: 'Articles wiki', galleryImages: 'Images', projects: 'Projets' },
   },
   es: {
-    nav: { home: 'Inicio', about: 'Sobre mí', wiki: 'Wiki', cv: 'CV', gallery: 'Galería', blog: 'Blog', apps: 'Aplicaciones', search: 'Buscar', legal: 'Aviso legal' },
+    nav: { home: 'Inicio', about: 'Sobre mí', wiki: 'Wiki', cv: 'CV', gallery: 'Galería', blog: 'Blog', apps: 'Aplicaciones', search: 'Buscar', news: 'Noticias', legal: 'Aviso legal' },
     heroTitle: 'Desarrollador creativo',
     heroSubtitle: 'Construyendo hermosas experiencias digitales con código, creatividad y pasión. Explora mi trabajo, pensamientos y base de conocimientos.',
     searchPlaceholder: 'Buscar...',
@@ -405,7 +412,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: 'Publicaciones', wikiArticles: 'Artículos wiki', galleryImages: 'Imágenes', projects: 'Proyectos' },
   },
   zh: {
-    nav: { home: '首页', about: '关于', wiki: '维基', cv: '简历', gallery: '画廊', blog: '博客', apps: '应用', search: '搜索', legal: '法律声明' },
+    nav: { home: '首页', about: '关于', wiki: '维基', cv: '简历', gallery: '画廊', blog: '博客', apps: '应用', search: '搜索', news: '新闻', legal: '法律声明' },
     heroTitle: '创意开发者',
     heroSubtitle: '用代码、创意和热情构建美丽的数字体验。探索我的作品、思想和知识库。',
     searchPlaceholder: '搜索...',
@@ -448,7 +455,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: '博客文章', wikiArticles: '维基文章', galleryImages: '图片', projects: '项目' },
   },
   ja: {
-    nav: { home: 'ホーム', about: '概要', wiki: 'ウィキ', cv: '履歴書', gallery: 'ギャラリー', blog: 'ブログ', apps: 'アプリ', search: '検索', legal: '法的通知' },
+    nav: { home: 'ホーム', about: '概要', wiki: 'ウィキ', cv: '履歴書', gallery: 'ギャラリー', blog: 'ブログ', apps: 'アプリ', search: '検索', news: 'ニュース', legal: '法的通知' },
     heroTitle: 'クリエイティブ開発者',
     heroSubtitle: 'コード、創造性、情熱で美しいデジタル体験を構築。私の作品、思考、知識ベースを探索してください。',
     searchPlaceholder: '検索...',
@@ -491,7 +498,7 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: 'ブログ投稿', wikiArticles: 'ウィキ記事', galleryImages: '画像', projects: 'プロジェクト' },
   },
   ko: {
-    nav: { home: '홈', about: '소개', wiki: '위키', cv: '이력서', gallery: '갤러리', blog: '블로그', apps: '앱', search: '검색', legal: '법적 고지' },
+    nav: { home: '홈', about: '소개', wiki: '위키', cv: '이력서', gallery: '갤러리', blog: '블로그', apps: '앱', search: '검색', news: '뉴스', legal: '법적 고지' },
     heroTitle: '크리에이티브 개발자',
     heroSubtitle: '코드, 창의성, 열정으로 아름다운 디지털 경험을 구축합니다. 제 작업, 생각, 지식 기반을 탐색하세요.',
     searchPlaceholder: '검색...',
@@ -576,6 +583,8 @@ function sectionToPath(section: Section): string {
       return `${basePath}search`;
     case 'apps':
       return `${basePath}apps`;
+    case 'news':
+      return `${basePath}news`;
     case 'project':
       return `${basePath}about/projects`;
     default:
@@ -586,6 +595,10 @@ function sectionToPath(section: Section): string {
 export function BlogSite() {
   const { language, setLanguage } = useApp();
   const ui = uiTexts[language] || uiTexts.en;
+
+  const { byTag: projectsByTag } = useProjects();
+  const { byTag: galleryByTag } = useGallery();
+  const { news: newsItems } = useNews();
 
   const [theme, setTheme] = useState<string>(() => localStorage.getItem('site-theme') || 'default');
   const [posts, setPosts] = useState<BlogPostView[]>([]);
@@ -601,6 +614,7 @@ export function BlogSite() {
   const [activePost, setActivePost] = useState<BlogPostView | null>(null);
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [activeWiki, setActiveWiki] = useState<WikiView | null>(null);
+  const [activeNews, setActiveNews] = useState<NewsItem | null>(null);
   const [activeProject, setActiveProject] = useState<ContentItem | null>(null);
   const [wikiCategory, setWikiCategory] = useState<string>('All');
   const [wikiSearch, setWikiSearch] = useState('');
@@ -716,11 +730,20 @@ export function BlogSite() {
     Promise.all([
       loadArticles(language),
       loadWikiArticles(undefined, language),
-      loadPictures(),
+      // Domain-layer gallery loader (replaces legacy loadPictures)
+      loadPictureItems(),
       loadAllProjects(language),
       loadAboutMe(language),
       loadLegalNotice(language),
-    ]).then(([loadedPosts, loadedWiki, loadedPics, loadedProjects, loadedAboutMe, loadedLegalNotice]) => {
+    ]).then(([loadedPosts, loadedWiki, loadedGalleryItems, loadedProjects, loadedAboutMe, loadedLegalNotice]) => {
+      // Map GalleryItem[] → ImageItem[] shape for downstream picture state
+      const loadedPics: ImageItem[] = (loadedGalleryItems as any[]).map((g) => ({
+        id: g.id,
+        name: g.title,
+        path: g.imagePath ?? g.content,
+        thumbnail: g.thumbnailPath,
+        date: g.date,
+      }));
       if (!mounted) return;
       const mapped = loadedPosts.map(buildView);
       const mappedWiki = loadedWiki.map((item) => ({
@@ -1025,48 +1048,76 @@ export function BlogSite() {
       setActiveSection('home');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
       return;
     }
     if (rest === 'blog') {
       setActiveSection('blog');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
       return;
     }
     if (rest === 'about') {
       setActiveSection('about');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
       return;
     }
     if (rest === 'wiki') {
       setActiveSection('wiki');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
       return;
     }
     if (rest === 'cv') {
       setActiveSection('about');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
       return;
     }
     if (rest === 'gallery') {
       setActiveSection('gallery');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
       return;
     }
     if (rest === 'apps') {
       setActiveSection('apps');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
       return;
     }
     if (rest === 'search') {
       setActiveSection('search');
       setActivePost(null);
       setActiveWiki(null);
+      setActiveNews(null);
+      return;
+    }
+    if (rest === 'news') {
+      setActiveSection('news');
+      setActivePost(null);
+      setActiveWiki(null);
+      setActiveNews(null);
+      return;
+    }
+    if (rest.startsWith('news/')) {
+      const newsId = decodeURIComponent(rest.replace(/^news\//, '').replace(/\.md$/, ''));
+      setActiveSection('news');
+      setActivePost(null);
+      setActiveWiki(null);
+      // activeNews will be set by handleOpenNews once newsItems are loaded
+      // Store id in history state so we can restore it
+      if (newsItems.length > 0) {
+        const matchNews = newsItems.find((n) => n.id === newsId);
+        setActiveNews(matchNews ?? null);
+      }
       return;
     }
     if (rest.startsWith('wiki/')) {
@@ -1076,6 +1127,7 @@ export function BlogSite() {
         setActiveSection('wiki');
         setActiveWiki(matchWiki);
         setActivePost(null);
+        setActiveNews(null);
         return;
       }
     }
@@ -1086,12 +1138,14 @@ export function BlogSite() {
       setActiveSection('home');
       setActivePost(maybePost);
       setActiveWiki(null);
+      setActiveNews(null);
     }
   }
 
   const handleOpenPost = (post: BlogPostView) => {
     setActivePost(post);
     setActiveWiki(null);
+    setActiveNews(null);
     window.history.pushState({}, '', `${basePath}blog/${post.id}.md`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1100,6 +1154,7 @@ export function BlogSite() {
     setActiveSection(section);
     setActivePost(null);
     setActiveWiki(null);
+    setActiveNews(null);
     window.history.pushState({}, '', sectionToPath(section));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1107,7 +1162,17 @@ export function BlogSite() {
   const handleOpenWiki = (item: WikiView) => {
     setActiveSection('wiki');
     setActiveWiki(item);
+    setActiveNews(null);
     window.history.pushState({}, '', `${basePath}wiki/${item.relativePath?.replace(/\.md$/, '')}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenNews = (item: NewsItem) => {
+    setActiveSection('news');
+    setActiveNews(item);
+    setActivePost(null);
+    setActiveWiki(null);
+    window.history.pushState({}, '', `${basePath}news/${item.id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1183,7 +1248,7 @@ export function BlogSite() {
   return (
     <div className="min-h-screen text-foreground">
       <Navigation
-        activeSection={activeSection === 'cv' || activeSection === 'project' ? 'about' : activeSection as NavSection}
+        activeSection={(activeSection === 'cv' || activeSection === 'project') ? 'about' : activeSection as NavSection}
         onNavigate={navigateSection}
         theme={theme}
         setTheme={setTheme}
@@ -1265,7 +1330,31 @@ export function BlogSite() {
           )}
 
           {/* Latest News — vertical slice from src/content/news */}
-          <NewsSection limit={3} />
+          <NewsSection
+            limit={3}
+            onOpenNews={(item) => handleOpenNews(item as NewsItem)}
+            onViewAll={() => navigateSection('news')}
+          />
+
+          {/* Selected Projects */}
+          <ProjectsSection
+            limit={3}
+            onViewAll={() => {
+              setActiveSection('about');
+              setMainAboutTab('projects');
+              window.history.pushState({}, '', `${basePath}about/projects`);
+            }}
+          />
+
+          {/* Gallery Preview */}
+          <GallerySection
+            limit={4}
+            onViewAll={() => {
+              setActiveSection('gallery');
+              setGalleryPage(1);
+              window.history.pushState({}, '', `${basePath}gallery`);
+            }}
+          />
 
           {/* CTA Section */}
           <section className="container mx-auto px-6 py-24">
@@ -3020,6 +3109,79 @@ export function BlogSite() {
         </section>
       )}
 
+      {/* News Full Section */}
+      {activeSection === 'news' && (
+        <main className="pt-32 pb-24">
+          <div className="container mx-auto px-6">
+            {activeNews ? (
+              /* Detail view */
+              <section className="max-w-4xl mx-auto">
+                <ContentReader
+                  title={
+                    (language === 'ru' ? activeNews.title_ru : activeNews.title_en) ??
+                    activeNews.title
+                  }
+                  html={markdownToHtml(activeNews.content)}
+                  category={activeNews.category}
+                  date={
+                    activeNews.date
+                      ? new Date(activeNews.date).toLocaleDateString(
+                          language === 'ru' ? 'ru-RU' : 'en-US',
+                          { year: 'numeric', month: 'long', day: 'numeric' }
+                        )
+                      : undefined
+                  }
+                  tags={activeNews.tags}
+                  tagsLabel={ui.tags}
+                  onTagClick={(tag) => {
+                    setActiveNews(null);
+                    setActiveSection('search');
+                    setGlobalSearchQuery(tag);
+                    window.history.pushState({}, '', `${basePath}search`);
+                  }}
+                  headerMeta={
+                    <>
+                      <button
+                        onClick={() => {
+                          setActiveNews(null);
+                          window.history.pushState({}, '', `${basePath}news`);
+                        }}
+                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                        {ui.back}
+                      </button>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                        <FileText className="w-4 h-4" />
+                        <span className="font-medium text-foreground">{ui.nav.news}</span>
+                        <ArrowRight className="w-4 h-4 opacity-60" />
+                        <span className="text-foreground">
+                          {(language === 'ru' ? activeNews.title_ru : activeNews.title_en) ??
+                            activeNews.title}
+                        </span>
+                      </div>
+                    </>
+                  }
+                />
+              </section>
+            ) : (
+              /* List view */
+              <section className="max-w-4xl mx-auto">
+                <div className="text-center mb-12 animate-fade-in">
+                  <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                    <span className="gradient-text">{ui.nav.news}</span>
+                  </h1>
+                </div>
+                <NewsSection
+                  limit={99}
+                  onOpenNews={(item) => handleOpenNews(item as NewsItem)}
+                />
+              </section>
+            )}
+          </div>
+        </main>
+      )}
+
       {lightbox && pictures[lightbox.idx] && (
         <div
           className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex items-center justify-center animate-fade-in"
@@ -3121,15 +3283,29 @@ export function BlogSite() {
                     w.title.toLowerCase().includes(query) ||
                     w.excerpt.toLowerCase().includes(query)
                 );
-                const galleryResults = pictures.filter(
-                  (pic) => pic.name.toLowerCase().includes(query)
-                );
-                const projectResults = projects.filter(
-                  (pr) =>
-                    pr.title.toLowerCase().includes(query) ||
-                    pr.content.toLowerCase().includes(query) ||
-                    pr.tags?.some((t) => t.toLowerCase().includes(query))
-                );
+                const galleryResults = (() => {
+                  const tagMatches = galleryByTag.get(query);
+                  if (tagMatches && tagMatches.length > 0) {
+                    const matchIds = new Set(tagMatches.map((item) => item.id.replace('picture__', '')));
+                    return pictures.filter((pic) => matchIds.has(pic.id));
+                  }
+                  return pictures.filter(
+                    (pic) => pic.name.toLowerCase().includes(query)
+                  );
+                })();
+                const projectResults = (() => {
+                  const tagMatches = projectsByTag.get(query);
+                  if (tagMatches && tagMatches.length > 0) {
+                    const matchIds = new Set(tagMatches.map((p) => p.id));
+                    return projects.filter((p) => matchIds.has(p.id));
+                  }
+                  return projects.filter(
+                    (pr) =>
+                      pr.title.toLowerCase().includes(query) ||
+                      pr.content.toLowerCase().includes(query) ||
+                      pr.tags?.some((t) => t.toLowerCase().includes(query))
+                  );
+                })();
 
                 const totalResults = blogResults.length + wikiResults.length + galleryResults.length + projectResults.length;
 

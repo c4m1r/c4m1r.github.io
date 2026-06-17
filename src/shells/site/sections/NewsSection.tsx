@@ -6,16 +6,20 @@
  * No OS wrapper classes here — this is the site-shell view.
  */
 
-import { Calendar } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 import { useNews } from '../../../domain/news/useNews';
 import { useApp } from '../../../contexts/AppContext';
 
 interface NewsSectionProps {
   /** Max items to show. Default 3. */
   limit?: number;
+  /** Callback when user clicks on a news card */
+  onOpenNews?: (item: any) => void;
+  /** Callback when user clicks "View All". Optional. */
+  onViewAll?: () => void;
 }
 
-export function NewsSection({ limit = 3 }: NewsSectionProps) {
+export function NewsSection({ limit = 3, onOpenNews, onViewAll }: NewsSectionProps) {
   const { news, loading } = useNews();
   const { language } = useApp();
 
@@ -48,6 +52,15 @@ export function NewsSection({ limit = 3 }: NewsSectionProps) {
           <h2 className="text-3xl md:text-4xl font-bold mb-2">{headingText}</h2>
           <p className="text-muted-foreground">{subtitleText}</p>
         </div>
+        {onViewAll && (
+          <button
+            onClick={onViewAll}
+            className="flex items-center gap-2 text-primary hover:gap-4 transition-all font-medium"
+            aria-label={language === 'ru' ? 'Все новости' : 'View all'}
+          >
+            {language === 'ru' ? 'Все новости' : 'View all'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          </button>
+        )}
       </div>
 
       {/* News card list */}
@@ -75,9 +88,10 @@ export function NewsSection({ limit = 3 }: NewsSectionProps) {
           return (
             <article
               key={item.id}
-              className="neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up p-6 flex flex-col gap-3"
+              className={`neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up p-6 flex flex-col gap-3 ${onOpenNews ? 'cursor-pointer' : ''}`}
               style={{ animationDelay: `${index * 80}ms` }}
               aria-labelledby={`news-title-${item.id}`}
+              onClick={() => onOpenNews?.(item)}
             >
               {/* Meta row */}
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { translations } from '../i18n/translations';
 
-type GrubOption = 'blog' | 'webos' | 'win-xp' | 'win-98' | 'win7' | 'terminal';
+type GrubOption = 'blog' | 'webos' | 'win-xp' | 'win-98' | 'win7' | 'ubuntu' | 'terminal';
 
 export function GrubMenu() {
   const { setMode, setTheme, language } = useApp();
@@ -16,6 +16,7 @@ export function GrubMenu() {
     { key: 'win-xp', label: 'Windows XP' },
     { key: 'win-98', label: 'Windows 98' },
     { key: 'win7', label: 'Windows 7' },
+    { key: 'ubuntu', label: 'Ubuntu' },
     { key: 'terminal', label: t.terminal || 'Терминал' },
     { key: 'webos', label: t.webos || 'WebOS' },
   ];
@@ -78,6 +79,10 @@ export function GrubMenu() {
         return;
       case 'win7':
         setTheme('win7');
+        setMode('webos');
+        return;
+      case 'ubuntu':
+        setTheme('ubuntu');
         setMode('webos');
         return;
       case 'blog':

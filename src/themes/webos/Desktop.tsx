@@ -88,6 +88,22 @@ export function Desktop(props?: DesktopProps) {
   const menuHoverCooldownRef = useRef<number>(0);
   const [selectedIcons, setSelectedIcons] = useState<string[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
+
+  const [customWallpaper, setCustomWallpaper] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('desktop-custom-wallpaper');
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    const handleWallpaperChange = (e: Event) => {
+      const customEvent = e as CustomEvent<string | null>;
+      setCustomWallpaper(customEvent.detail || null);
+    };
+    window.addEventListener('wallpaper-changed', handleWallpaperChange);
+    return () => window.removeEventListener('wallpaper-changed', handleWallpaperChange);
+  }, []);
   const [selectionBox, setSelectionBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
   const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
   const trayRef = useRef<HTMLDivElement | null>(null);
@@ -1010,7 +1026,9 @@ export function Desktop(props?: DesktopProps) {
       ref={desktopRef}
       className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
       style={{
-        backgroundImage: isXpFamily && themeAssets.wallpaper
+        backgroundImage: customWallpaper
+          ? `url(${customWallpaper})`
+          : isXpFamily && themeAssets.wallpaper
           ? `url(${themeAssets.wallpaper})`
           : undefined,
         backgroundColor: isXpFamily ? 'transparent' : '#008080',

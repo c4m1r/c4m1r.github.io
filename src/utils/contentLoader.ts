@@ -1,6 +1,30 @@
 /**
- * Утилиты для динамической загрузки контента из content/
- * Поддерживает: blog posts, projects, wiki, images
+ * @legacy-adapter
+ *
+ * contentLoader.ts — Legacy compatibility shim.
+ *
+ * This file was the original content-loading hub before the domain layer was
+ * introduced (src/domain/). It is kept for backwards compatibility so that
+ * existing call-sites (e.g. BlogSite.tsx, BlogApp.tsx) can migrate
+ * incrementally without a big-bang rewrite.
+ *
+ * ⚠️  DO NOT add new features or loaders here.
+ * ✅  New loaders MUST go into the appropriate domain slice:
+ *       src/domain/articles/  — blog/article content
+ *       src/domain/gallery/   — pictures and wallpapers
+ *       src/domain/news/      — news items
+ *       src/domain/projects/  — project entries
+ *       src/domain/resume/    — CV / résumé data
+ *       src/domain/wiki/      — wiki articles
+ *
+ * Migration status (as of architecture stabilisation pass):
+ *  - Pictures:  ✅ migrated → loadPictureItems() in gallery.loader.ts
+ *  - Blog:      ✅ migrated → loadArticles() in articles.loader.ts
+ *  - Wiki:      ✅ migrated → loadWikiArticles() in wiki.loader.ts
+ *  - Projects:  ✅ migrated → loadAllProjects() in projects.loader.ts
+ *  - Resume:    ✅ migrated → loadCvLocale() in resume.loader.ts
+ *  - News:      ✅ migrated → loadNewsItems() in news.loader.ts
+ *  - Apps/Legal/AboutMe: 🚧 still here — pending future domain slice.
  */
 
 import { type ContentItem } from '../domain/content/types';

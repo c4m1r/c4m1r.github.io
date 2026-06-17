@@ -42,6 +42,8 @@ function App() {
       case 'win7':
         // TODO: Создать Windows7 тему
         return <WebOS />;
+      case 'ubuntu':
+        return <WebOS />;
       case 'webos':
         return <WebOS />;
       default:

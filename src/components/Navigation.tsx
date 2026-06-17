@@ -4,7 +4,7 @@ import { WeatherSwitcher } from './WeatherSwitcher';
 import { Globe } from 'lucide-react';
 import type { Language } from '../i18n/translations';
 
-export type SectionNav = 'home' | 'blog' | 'about' | 'wiki' | 'gallery' | 'apps' | 'search';
+export type SectionNav = 'home' | 'blog' | 'about' | 'wiki' | 'gallery' | 'apps' | 'search' | 'news';
 
 interface NavigationProps {
   activeSection: SectionNav;
