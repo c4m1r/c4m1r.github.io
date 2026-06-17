@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import {
   Grid3x3,
   ArrowLeft,
@@ -44,8 +44,13 @@ import { ContentReader } from '../components/ContentReader';
 import { Footer } from '../components/Footer';
 import { Hero } from '../components/Hero';
 import { NewsSection } from '../shells/site/sections/NewsSection';
+import { NewsPageSection } from '../shells/site/sections/NewsPageSection';
 import { ProjectsSection } from '../shells/site/sections/ProjectsSection';
 import { GallerySection } from '../shells/site/sections/GallerySection';
+import { ArticlesSection } from '../shells/site/sections/ArticlesSection';
+import { ArticleDetailSection } from '../shells/site/sections/ArticleDetailSection';
+import { WikiSection } from '../shells/site/sections/WikiSection';
+import { AboutSection } from '../shells/site/sections/AboutSection';
 import { useProjects } from '../domain/projects/useProjects';
 import { useGallery } from '../domain/gallery/useGallery';
 import { useNews } from '../domain/news/useNews';
@@ -168,7 +173,7 @@ const uiTexts: Record<Language, UiText> = {
     nowReading: 'Reading now',
     galleryTitle: 'Gallery',
     wikiTitle: 'Wiki',
-    cvTitle: 'CV (Резюме:)',
+    cvTitle: 'CV (Р В Р’В Р вЂ™Р’В Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В·Р В Р Р‹Р В РІР‚в„–Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’Вµ:)',
     aboutTitle: 'About me',
     projectsTitle: 'Projects:',
     sections: {
@@ -241,319 +246,319 @@ const uiTexts: Record<Language, UiText> = {
     },
   },
   ru: {
-    nav: { home: 'Главная', about: 'Обо мне', wiki: 'Вики', cv: 'Резюме', gallery: 'Галерея', blog: 'Блог', apps: 'Приложения', search: 'Поиск', news: 'Новости', legal: 'Правовая информация' },
-    heroTitle: 'IT инженер',
-    heroSubtitle: 'Создаю красивые цифровые решения с помощью кода, креативности и страсти. Изучайте мои работы, мысли и базу знаний.',
-    searchPlaceholder: 'Поиск по статьям...',
-    categories: 'Категории',
-    tags: 'Теги',
-    loading: 'Загрузка...',
-    nothing: 'Ничего не найдено.',
-    back: 'Назад',
-    nowReading: 'Читаю сейчас',
-    galleryTitle: 'Галерея',
-    wikiTitle: 'Вики',
-    cvTitle: 'CV (Резюме:)',
-    aboutTitle: 'Обо мне',
-    projectsTitle: 'Проекты:',
+    nav: { home: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В Р РЏ', about: 'Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋР’ВР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ', wiki: 'Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В', cv: 'Р В Р’В Р вЂ™Р’В Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В·Р В Р Р‹Р В РІР‚в„–Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’Вµ', gallery: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В Р РЏ', blog: 'Р В Р’В Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњ', apps: 'Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ', search: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚Сњ', news: 'Р В Р’В Р РЋРЎС™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚В', legal: 'Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В Р РЏ Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎвЂєР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ' },
+    heroTitle: 'IT Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™',
+    heroSubtitle: 'Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В·Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РІР‚в„– Р В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎвЂєР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ Р В Р Р‹Р В РЎвЂњ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљР’В°Р В Р Р‹Р В Р вЂ°Р В Р Р‹Р В РІР‚в„– Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°, Р В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚В Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚В. Р В Р’В Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚В Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“, Р В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚В Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРІР‚Сљ Р В Р’В Р вЂ™Р’В·Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњ.',
+    searchPlaceholder: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚Сњ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°Р В Р Р‹Р В Р РЏР В Р’В Р РЋР’В...',
+    categories: 'Р В Р’В Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В',
+    tags: 'Р В Р’В Р РЋРЎвЂєР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚В',
+    loading: 'Р В Р’В Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°...',
+    nothing: 'Р В Р’В Р РЋРЎС™Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚Сћ Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ.',
+    back: 'Р В Р’В Р РЋРЎС™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚В',
+    nowReading: 'Р В Р’В Р вЂ™Р’В§Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РІР‚в„– Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РЎвЂњ',
+    galleryTitle: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В Р РЏ',
+    wikiTitle: 'Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В',
+    cvTitle: 'CV (Р В Р’В Р вЂ™Р’В Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В·Р В Р Р‹Р В РІР‚в„–Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’Вµ:)',
+    aboutTitle: 'Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋР’ВР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ',
+    projectsTitle: 'Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“:',
     sections: {
-      explore: 'Исследуйте мой мир',
-      exploreSubtitle: 'Погрузитесь в различные аспекты моей работы и интересов',
+      explore: 'Р В Р’В Р вЂ™Р’ВР В Р Р‹Р В РЎвЂњР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р’В Р СћРІР‚ВР В Р Р‹Р РЋРІР‚СљР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™',
+      exploreSubtitle: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р Р‹Р В Р вЂ° Р В Р’В Р В РІР‚В  Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В ',
     },
     apps: {
-      title: 'Приложения',
-      subtitle: 'Демонстрация моих проектов',
-      selectPrompt: 'Выберите приложение, чтобы загрузить его в центре.',
-      descriptionLabel: 'Описание',
-      platformsLabel: 'Платформы',
-      technologiesLabel: 'Технологии',
-      badgesLabel: 'Метки',
-      dateLabel: 'Дата',
-      openFullLabel: 'Открыть полностью',
+      title: 'Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ',
+      subtitle: 'Р В Р’В Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ Р В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР’В¦ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В ',
+      selectPrompt: 'Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ, Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚Сћ Р В Р’В Р В РІР‚В  Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’Вµ.',
+      descriptionLabel: 'Р В Р’В Р РЋРІР‚С”Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ',
+      platformsLabel: 'Р В Р’В Р РЋРЎСџР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРЎвЂєР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
+      technologiesLabel: 'Р В Р’В Р РЋРЎвЂєР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В',
+      badgesLabel: 'Р В Р’В Р РЋРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В',
+      dateLabel: 'Р В Р’В Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°',
+      openFullLabel: 'Р В Р’В Р РЋРІР‚С”Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°Р В Р Р‹Р В РІР‚в„–',
       categories: {
-        ready: 'Готовые приложения',
-        prototype: 'Прототипы',
-        'webos-emulation': 'WebOS Эмуляция',
+        ready: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ',
+        prototype: 'Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚вЂќР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
+        'webos-emulation': 'WebOS Р В Р’В Р вЂ™Р’В­Р В Р’В Р РЋР’ВР В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ',
       },
     },
     latestPosts: {
-      title: 'Последние посты',
-      subtitle: 'Свежие мысли и идеи',
-      viewAll: 'Все посты',
+      title: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р’В Р СћРІР‚ВР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
+      subtitle: 'Р В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В¶Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚В',
+      viewAll: 'Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
     },
     cta: {
-      letsCreate: 'Давайте',
-      together: 'Создадим вместе',
-      description: 'Есть проект или просто хотите связаться? Буду рад услышать от вас.',
-      getInTouch: 'Связаться',
+      letsCreate: 'Р В Р’В Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ',
+      together: 'Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В·Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚ВР В Р’В Р РЋР’В Р В Р’В Р В РІР‚В Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ',
+      description: 'Р В Р’В Р Р†Р вЂљРЎС›Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р В РЎвЂњР В Р’В Р В РІР‚В Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°Р В Р Р‹Р В РЎвЂњР В Р Р‹Р В Р РЏ? Р В Р’В Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚СљР В Р’В Р СћРІР‚ВР В Р Р‹Р РЋРІР‚Сљ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚В Р В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РЎвЂњ.',
+      getInTouch: 'Р В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°Р В Р Р‹Р В РЎвЂњР В Р Р‹Р В Р РЏ',
     },
     blog: {
-      title: 'Блог',
-      subtitle: 'Мысли, туториалы и идеи о разработке, дизайне и технологиях.',
-      description: 'Мысли, туториалы и идеи о разработке, дизайне и технологиях.',
+      title: 'Р В Р’В Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњ',
+      subtitle: 'Р В Р’В Р РЋРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В, Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’Вµ, Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏР В Р Р‹Р Р†Р вЂљР’В¦.',
+      description: 'Р В Р’В Р РЋРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В, Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’Вµ, Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏР В Р Р‹Р Р†Р вЂљР’В¦.',
     },
     wiki: {
-      description: 'Кураторская база знаний концепций, инструментов и техник, которые я использую ежедневно.',
+      description: 'Р В Р’В Р РЋРІвЂћСћР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р В Р РЏ Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В° Р В Р’В Р вЂ™Р’В·Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂќР В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњ, Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В  Р В Р’В Р РЋРІР‚В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚Сњ, Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р В Р РЏ Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РІР‚в„– Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р СћРІР‚ВР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ.',
     },
     cv: {
-      experience: 'Опыт',
-      education: 'Образование',
-      prototypes: 'Прототипы',
-      rewards: 'Награды',
-      print: 'Печать',
-      downloadPdf: 'Скачать PDF',
-      viewDemo: 'Посмотреть демо',
+      experience: 'Р В Р’В Р РЋРІР‚С”Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†Р вЂљРЎв„ў',
+      education: 'Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ',
+      prototypes: 'Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚вЂќР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
+      rewards: 'Р В Р’В Р РЋРЎС™Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
+      print: 'Р В Р’В Р РЋРЎСџР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°',
+      downloadPdf: 'Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° PDF',
+      viewDemo: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚Сћ',
     },
     about: {
-      description: 'Узнайте о моем пути, навыках и том, что движет моей страстью к созиданию.',
+      description: 'Р В Р’В Р В РІвЂљВ¬Р В Р’В Р вЂ™Р’В·Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚В, Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’В¦ Р В Р’В Р РЋРІР‚В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’В, Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚Сћ Р В Р’В Р СћРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°Р В Р Р‹Р В РІР‚в„– Р В Р’В Р РЋРІР‚Сњ Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚в„–.',
     },
     gallery: {
-      description: 'Визуальное путешествие через проекты, фотографию и креативные исследования.',
-      allAlbums: 'Все альбомы',
+      description: 'Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В· Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“, Р В Р Р‹Р Р†Р вЂљРЎвЂєР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎвЂєР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚в„– Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ.',
+      allAlbums: 'Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’Вµ Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
     },
     search: {
-      title: 'Поиск',
-      subtitle: 'Найдите что угодно в блоге, вики и галерее',
-      placeholder: 'Поиск по всему контенту...',
-      allContent: 'Весь контент',
-      results: 'результатов',
+      title: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚Сњ',
+      subtitle: 'Р В Р’В Р РЋРЎС™Р В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р РЋРІР‚СљР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚СћР В Р’В Р СћРІР‚ВР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р В РІР‚В  Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’Вµ, Р В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’Вµ',
+      placeholder: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚Сњ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚Сћ Р В Р’В Р В РІР‚В Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’ВР В Р Р‹Р РЋРІР‚Сљ Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРІР‚Сљ...',
+      allContent: 'Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р Р‹Р В Р вЂ° Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ў',
+      results: 'Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В ',
     },
     stats: {
-      blogPosts: 'Посты блога',
-      wikiArticles: 'Статьи вики',
-      galleryImages: 'Изображения',
-      projects: 'Проекты',
+      blogPosts: 'Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’В°',
+      wikiArticles: 'Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°Р В Р’В Р РЋРІР‚В Р В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В',
+      galleryImages: 'Р В Р’В Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ',
+      projects: 'Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“',
     },
   },
   fr: {
-    nav: { home: 'Accueil', about: 'À propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', apps: 'Applications', search: 'Recherche', news: 'Actualités', legal: 'Mentions légales' },
-    heroTitle: 'Développeur créatif',
-    heroSubtitle: 'Créer de belles expériences numériques avec code, créativité et passion. Explorez mon travail, mes pensées et ma base de connaissances.',
+    nav: { home: 'Accueil', about: 'Р В РІР‚СљР В РІР‚С™ propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', apps: 'Applications', search: 'Recherche', news: 'ActualitР В РІР‚СљР вЂ™Р’В©s', legal: 'Mentions lР В РІР‚СљР вЂ™Р’В©gales' },
+    heroTitle: 'DР В РІР‚СљР вЂ™Р’В©veloppeur crР В РІР‚СљР вЂ™Р’В©atif',
+    heroSubtitle: 'CrР В РІР‚СљР вЂ™Р’В©er de belles expР В РІР‚СљР вЂ™Р’В©riences numР В РІР‚СљР вЂ™Р’В©riques avec code, crР В РІР‚СљР вЂ™Р’В©ativitР В РІР‚СљР вЂ™Р’В© et passion. Explorez mon travail, mes pensР В РІР‚СљР вЂ™Р’В©es et ma base de connaissances.',
     searchPlaceholder: 'Rechercher...',
-    categories: 'Catégories',
+    categories: 'CatР В РІР‚СљР вЂ™Р’В©gories',
     tags: 'Tags',
     loading: 'Chargement...',
-    nothing: 'Rien trouvé.',
+    nothing: 'Rien trouvР В РІР‚СљР вЂ™Р’В©.',
     back: 'Retour',
     nowReading: 'En lecture',
     galleryTitle: 'Galerie',
     wikiTitle: 'Wiki',
-    cvTitle: 'CV (Résumé:)',
-    aboutTitle: 'À propos',
+    cvTitle: 'CV (RР В РІР‚СљР вЂ™Р’В©sumР В РІР‚СљР вЂ™Р’В©:)',
+    aboutTitle: 'Р В РІР‚СљР В РІР‚С™ propos',
     projectsTitle: 'Projets:',
-    sections: { explore: 'Explorez mon monde', exploreSubtitle: 'Plongez dans différents aspects de mon travail et de mes intérêts' },
+    sections: { explore: 'Explorez mon monde', exploreSubtitle: 'Plongez dans diffР В РІР‚СљР вЂ™Р’В©rents aspects de mon travail et de mes intР В РІР‚СљР вЂ™Р’В©rР В РІР‚СљР В РІР‚С›ts' },
     apps: {
       title: 'Applications',
-      subtitle: 'Démonstration de mes projets',
+      subtitle: 'DР В РІР‚СљР вЂ™Р’В©monstration de mes projets',
       selectPrompt: 'Choisissez une application pour l\'ouvrir au centre.',
       descriptionLabel: 'Description',
       platformsLabel: 'Plateformes',
       technologiesLabel: 'Technologies',
-      badgesLabel: 'Étiquettes',
+      badgesLabel: 'Р В РІР‚СљР Р†Р вЂљР’В°tiquettes',
       dateLabel: 'Date',
       openFullLabel: 'Ouvrir complet',
       categories: {
-        ready: 'Applications prêtes',
+        ready: 'Applications prР В РІР‚СљР В РІР‚С›tes',
         prototype: 'Prototypes',
-        'webos-emulation': 'Émulation WebOS',
+        'webos-emulation': 'Р В РІР‚СљР Р†Р вЂљР’В°mulation WebOS',
       },
     },
-    latestPosts: { title: 'Derniers articles', subtitle: 'Nouvelles pensées et idées', viewAll: 'Voir tout' },
-    cta: { letsCreate: 'Créons', together: 'Ensemble', description: 'Que vous ayez un projet en tête ou que vous souhaitiez simplement vous connecter, j\'aimerais vous entendre.', getInTouch: 'Contactez-moi' },
-    blog: { title: 'Blog', subtitle: 'Pensées, tutoriels et idées sur le développement, le design et la technologie.', description: 'Pensées, tutoriels et idées sur le développement, le design et la technologie.' },
-    wiki: { description: 'Une base de connaissances organisée de concepts, d\'outils et de techniques que j\'utilise quotidiennement.' },
-    cv: { experience: 'Expérience', education: 'Éducation', prototypes: 'Prototypes', rewards: 'Récompenses', print: 'Imprimer', downloadPdf: 'Télécharger PDF', viewDemo: 'Voir la démo' },
-    about: { description: 'Découvrez mon parcours, mes compétences et ce qui alimente ma passion pour la création.' },
-    gallery: { description: 'Un voyage visuel à travers des projets, de la photographie et des explorations créatives.', allAlbums: 'Tous les albums' },
-    search: { title: 'Recherche', subtitle: 'Trouvez n\'importe quoi dans les articles de blog, les articles wiki et la galerie', placeholder: 'Rechercher dans tout le contenu...', allContent: 'Tout le contenu', results: 'résultats' },
+    latestPosts: { title: 'Derniers articles', subtitle: 'Nouvelles pensР В РІР‚СљР вЂ™Р’В©es et idР В РІР‚СљР вЂ™Р’В©es', viewAll: 'Voir tout' },
+    cta: { letsCreate: 'CrР В РІР‚СљР вЂ™Р’В©ons', together: 'Ensemble', description: 'Que vous ayez un projet en tР В РІР‚СљР В РІР‚С›te ou que vous souhaitiez simplement vous connecter, j\'aimerais vous entendre.', getInTouch: 'Contactez-moi' },
+    blog: { title: 'Blog', subtitle: 'PensР В РІР‚СљР вЂ™Р’В©es, tutoriels et idР В РІР‚СљР вЂ™Р’В©es sur le dР В РІР‚СљР вЂ™Р’В©veloppement, le design et la technologie.', description: 'PensР В РІР‚СљР вЂ™Р’В©es, tutoriels et idР В РІР‚СљР вЂ™Р’В©es sur le dР В РІР‚СљР вЂ™Р’В©veloppement, le design et la technologie.' },
+    wiki: { description: 'Une base de connaissances organisР В РІР‚СљР вЂ™Р’В©e de concepts, d\'outils et de techniques que j\'utilise quotidiennement.' },
+    cv: { experience: 'ExpР В РІР‚СљР вЂ™Р’В©rience', education: 'Р В РІР‚СљР Р†Р вЂљР’В°ducation', prototypes: 'Prototypes', rewards: 'RР В РІР‚СљР вЂ™Р’В©compenses', print: 'Imprimer', downloadPdf: 'TР В РІР‚СљР вЂ™Р’В©lР В РІР‚СљР вЂ™Р’В©charger PDF', viewDemo: 'Voir la dР В РІР‚СљР вЂ™Р’В©mo' },
+    about: { description: 'DР В РІР‚СљР вЂ™Р’В©couvrez mon parcours, mes compР В РІР‚СљР вЂ™Р’В©tences et ce qui alimente ma passion pour la crР В РІР‚СљР вЂ™Р’В©ation.' },
+    gallery: { description: 'Un voyage visuel Р В РІР‚СљР вЂ™Р’В  travers des projets, de la photographie et des explorations crР В РІР‚СљР вЂ™Р’В©atives.', allAlbums: 'Tous les albums' },
+    search: { title: 'Recherche', subtitle: 'Trouvez n\'importe quoi dans les articles de blog, les articles wiki et la galerie', placeholder: 'Rechercher dans tout le contenu...', allContent: 'Tout le contenu', results: 'rР В РІР‚СљР вЂ™Р’В©sultats' },
     stats: { blogPosts: 'Articles de blog', wikiArticles: 'Articles wiki', galleryImages: 'Images', projects: 'Projets' },
   },
   es: {
-    nav: { home: 'Inicio', about: 'Sobre mí', wiki: 'Wiki', cv: 'CV', gallery: 'Galería', blog: 'Blog', apps: 'Aplicaciones', search: 'Buscar', news: 'Noticias', legal: 'Aviso legal' },
+    nav: { home: 'Inicio', about: 'Sobre mР В РІР‚СљР вЂ™Р’В­', wiki: 'Wiki', cv: 'CV', gallery: 'GalerР В РІР‚СљР вЂ™Р’В­a', blog: 'Blog', apps: 'Aplicaciones', search: 'Buscar', news: 'Noticias', legal: 'Aviso legal' },
     heroTitle: 'Desarrollador creativo',
-    heroSubtitle: 'Construyendo hermosas experiencias digitales con código, creatividad y pasión. Explora mi trabajo, pensamientos y base de conocimientos.',
+    heroSubtitle: 'Construyendo hermosas experiencias digitales con cР В РІР‚СљР РЋРІР‚вЂњdigo, creatividad y pasiР В РІР‚СљР РЋРІР‚вЂњn. Explora mi trabajo, pensamientos y base de conocimientos.',
     searchPlaceholder: 'Buscar...',
-    categories: 'Categorías',
+    categories: 'CategorР В РІР‚СљР вЂ™Р’В­as',
     tags: 'Etiquetas',
     loading: 'Cargando...',
     nothing: 'Nada encontrado.',
-    back: 'Atrás',
+    back: 'AtrР В РІР‚СљР В Р вЂ№s',
     nowReading: 'Leyendo',
-    galleryTitle: 'Galería',
+    galleryTitle: 'GalerР В РІР‚СљР вЂ™Р’В­a',
     wikiTitle: 'Wiki',
-    cvTitle: 'CV (Currículum:)',
-    aboutTitle: 'Sobre mí',
+    cvTitle: 'CV (CurrР В РІР‚СљР вЂ™Р’В­culum:)',
+    aboutTitle: 'Sobre mР В РІР‚СљР вЂ™Р’В­',
     projectsTitle: 'Proyectos:',
-    sections: { explore: 'Explora mi mundo', exploreSubtitle: 'Sumérgete en diferentes aspectos de mi trabajo e intereses' },
+    sections: { explore: 'Explora mi mundo', exploreSubtitle: 'SumР В РІР‚СљР вЂ™Р’В©rgete en diferentes aspectos de mi trabajo e intereses' },
     apps: {
       title: 'Aplicaciones',
-      subtitle: 'Demostración de mis proyectos',
-      selectPrompt: 'Selecciona una aplicación para verla en el centro.',
-      descriptionLabel: 'Descripción',
+      subtitle: 'DemostraciР В РІР‚СљР РЋРІР‚вЂњn de mis proyectos',
+      selectPrompt: 'Selecciona una aplicaciР В РІР‚СљР РЋРІР‚вЂњn para verla en el centro.',
+      descriptionLabel: 'DescripciР В РІР‚СљР РЋРІР‚вЂњn',
       platformsLabel: 'Plataformas',
-      technologiesLabel: 'Tecnologías',
+      technologiesLabel: 'TecnologР В РІР‚СљР вЂ™Р’В­as',
       badgesLabel: 'Etiquetas',
       dateLabel: 'Fecha',
       openFullLabel: 'Abrir completo',
       categories: {
         ready: 'Aplicaciones listas',
         prototype: 'Prototipos',
-        'webos-emulation': 'Emulación WebOS',
+        'webos-emulation': 'EmulaciР В РІР‚СљР РЋРІР‚вЂњn WebOS',
       },
     },
-    latestPosts: { title: 'Últimas publicaciones', subtitle: 'Pensamientos e ideas frescas', viewAll: 'Ver todo' },
-    cta: { letsCreate: 'Vamos a', together: 'Crear juntos', description: 'Ya sea que tengas un proyecto en mente o simplemente quieras conectarte, me encantaría saber de ti.', getInTouch: 'Ponte en contacto' },
-    blog: { title: 'Blog', subtitle: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseño y tecnología.', description: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseño y tecnología.' },
-    wiki: { description: 'Una base de conocimientos curada de conceptos, herramientas y técnicas que uso a diario.' },
-    cv: { experience: 'Experiencia', education: 'Educación', prototypes: 'Prototipos', rewards: 'Premios', print: 'Imprimir', downloadPdf: 'Descargar PDF', viewDemo: 'Ver demo' },
-    about: { description: 'Conoce mi trayectoria, habilidades y lo que impulsa mi pasión por crear.' },
-    gallery: { description: 'Un viaje visual a través de proyectos, fotografía y exploraciones creativas.', allAlbums: 'Todos los álbumes' },
-    search: { title: 'Buscar', subtitle: 'Encuentra cualquier cosa en publicaciones de blog, artículos wiki y galería', placeholder: 'Buscar en todo el contenido...', allContent: 'Todo el contenido', results: 'resultados' },
-    stats: { blogPosts: 'Publicaciones', wikiArticles: 'Artículos wiki', galleryImages: 'Imágenes', projects: 'Proyectos' },
+    latestPosts: { title: 'Р В РІР‚СљР РЋРІвЂћСћltimas publicaciones', subtitle: 'Pensamientos e ideas frescas', viewAll: 'Ver todo' },
+    cta: { letsCreate: 'Vamos a', together: 'Crear juntos', description: 'Ya sea que tengas un proyecto en mente o simplemente quieras conectarte, me encantarР В РІР‚СљР вЂ™Р’В­a saber de ti.', getInTouch: 'Ponte en contacto' },
+    blog: { title: 'Blog', subtitle: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseР В РІР‚СљР вЂ™Р’В±o y tecnologР В РІР‚СљР вЂ™Р’В­a.', description: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseР В РІР‚СљР вЂ™Р’В±o y tecnologР В РІР‚СљР вЂ™Р’В­a.' },
+    wiki: { description: 'Una base de conocimientos curada de conceptos, herramientas y tР В РІР‚СљР вЂ™Р’В©cnicas que uso a diario.' },
+    cv: { experience: 'Experiencia', education: 'EducaciР В РІР‚СљР РЋРІР‚вЂњn', prototypes: 'Prototipos', rewards: 'Premios', print: 'Imprimir', downloadPdf: 'Descargar PDF', viewDemo: 'Ver demo' },
+    about: { description: 'Conoce mi trayectoria, habilidades y lo que impulsa mi pasiР В РІР‚СљР РЋРІР‚вЂњn por crear.' },
+    gallery: { description: 'Un viaje visual a travР В РІР‚СљР вЂ™Р’В©s de proyectos, fotografР В РІР‚СљР вЂ™Р’В­a y exploraciones creativas.', allAlbums: 'Todos los Р В РІР‚СљР В Р вЂ№lbumes' },
+    search: { title: 'Buscar', subtitle: 'Encuentra cualquier cosa en publicaciones de blog, artР В РІР‚СљР вЂ™Р’В­culos wiki y galerР В РІР‚СљР вЂ™Р’В­a', placeholder: 'Buscar en todo el contenido...', allContent: 'Todo el contenido', results: 'resultados' },
+    stats: { blogPosts: 'Publicaciones', wikiArticles: 'ArtР В РІР‚СљР вЂ™Р’В­culos wiki', galleryImages: 'ImР В РІР‚СљР В Р вЂ№genes', projects: 'Proyectos' },
   },
   zh: {
-    nav: { home: '首页', about: '关于', wiki: '维基', cv: '简历', gallery: '画廊', blog: '博客', apps: '应用', search: '搜索', news: '新闻', legal: '法律声明' },
-    heroTitle: '创意开发者',
-    heroSubtitle: '用代码、创意和热情构建美丽的数字体验。探索我的作品、思想和知识库。',
-    searchPlaceholder: '搜索...',
-    categories: '分类',
-    tags: '标签',
-    loading: '加载中...',
-    nothing: '未找到内容。',
-    back: '返回',
-    nowReading: '正在阅读',
-    galleryTitle: '画廊',
-    wikiTitle: '维基',
-    cvTitle: 'CV (简历:)',
-    aboutTitle: '关于',
-    projectsTitle: '项目：',
-    sections: { explore: '探索我的世界', exploreSubtitle: '深入了解我的工作和兴趣的不同方面' },
+    nav: { home: 'Р В РІвЂћвЂ“Р вЂ™Р’В¦Р Р†Р вЂљРІР‚СљР В РІвЂћвЂ“Р В Р вЂ№Р вЂ™Р’Вµ', about: 'Р В Р’ВµР Р†Р вЂљР’В¦Р РЋРІР‚вЂњР В РўвЂР РЋРІР‚СњР В РІР‚в„–', wiki: 'Р В Р’В·Р вЂ™Р’В»Р СћРІР‚ВР В Р’ВµР РЋРЎСџР РЋРІР‚Сњ', cv: 'Р В Р’В·Р вЂ™Р’В®Р В РІР‚С™Р В Р’ВµР В РІР‚в„–Р Р†Р вЂљР’В ', gallery: 'Р В Р’В·Р Р†Р вЂљРЎСљР вЂ™Р’В»Р В Р’ВµР вЂ™Р’В»Р В РІР‚В°', blog: 'Р В Р’ВµР В Р Р‰Р РЋРІвЂћСћР В Р’ВµР вЂ™Р’В®Р РЋРЎвЂє', apps: 'Р В Р’ВµР РЋРІР‚СњР Р†Р вЂљРЎСљР В Р’В·Р Р†Р вЂљРЎСљР В Р С“', search: 'Р В Р’В¶Р РЋРІР‚в„ўР РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє', news: 'Р В Р’В¶Р Р†Р вЂљРІР‚СљР вЂ™Р’В°Р В РІвЂћвЂ“Р Р†Р вЂљРІР‚СњР вЂ™Р’В»', legal: 'Р В Р’В¶Р РЋРІР‚вЂњР Р†Р вЂљРЎС›Р В Р’ВµР РЋРІР‚СћР Р†Р вЂљРІвЂћвЂ“Р В Р’ВµР В РІвЂљВ¬Р вЂ™Р’В°Р В Р’В¶Р вЂ™Р’ВР В РІР‚в„–' },
+    heroTitle: 'Р В Р’ВµР Р†РІР‚С™Р’В¬Р Р†Р вЂљРЎвЂќР В Р’В¶Р Р†Р вЂљРЎвЂєР В Р РЏР В Р’ВµР РЋР’ВР В РІР‚С™Р В Р’ВµР В Р РЏР Р†Р вЂљР’ВР В РЎвЂР В РІР‚С™Р Р†Р вЂљР’В¦',
+    heroSubtitle: 'Р В Р’В·Р Р†Р вЂљРЎСљР В Р С“Р В РўвЂР вЂ™Р’В»Р В РІвЂљВ¬Р В Р’В·Р вЂ™Р’В Р В РЎвЂњР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’ВµР Р†РІР‚С™Р’В¬Р Р†Р вЂљРЎвЂќР В Р’В¶Р Р†Р вЂљРЎвЂєР В Р РЏР В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’В·Р РЋРІР‚СљР вЂ™Р’В­Р В Р’В¶Р РЋРІР‚СљР Р†Р вЂљР’В¦Р В Р’В¶Р РЋРІР‚С”Р Р†Р вЂљРЎвЂєР В Р’ВµР вЂ™Р’В»Р РЋРІР‚СњР В Р’В·Р РЋРІР‚СћР В РІР‚в„–Р В РўвЂР РЋРІР‚ВР В РІР‚В¦Р В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’В¶Р Р†Р вЂљРЎС›Р вЂ™Р’В°Р В Р’ВµР вЂ™Р’В­Р Р†Р вЂљРІР‚СњР В РўвЂР В РІР‚В¦Р Р†Р вЂљРЎС™Р В РІвЂћвЂ“Р В РІР‚С›Р В Р вЂ°Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ўР В Р’В¶Р В РІР‚в„–Р РЋРЎвЂєР В Р’В·Р СћРІР‚ВР РЋРЎвЂєР В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В РўвЂР В РІР‚В¦Р РЋРЎв„ўР В Р’ВµР Р†Р вЂљРЎС™Р В РЎвЂњР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р В РІР‚С™Р РЋРЎС™Р В Р’В¶Р РЋРІР‚СљР РЋРІР‚вЂњР В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’В·Р РЋРЎСџР СћРЎвЂ™Р В РЎвЂР В РІР‚РЋР Р†Р вЂљР’В Р В Р’ВµР РЋРІР‚СњР Р†Р вЂљРЎС™Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў',
+    searchPlaceholder: 'Р В Р’В¶Р РЋРІР‚в„ўР РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє...',
+    categories: 'Р В Р’ВµР Р†РІР‚С™Р’В¬Р Р†Р вЂљР’В Р В Р’В·Р вЂ™Р’В±Р вЂ™Р’В»',
+    tags: 'Р В Р’В¶Р вЂ™Р’В Р Р†Р вЂљР Р‹Р В Р’В·Р вЂ™Р’В­Р РЋРІР‚Сћ',
+    loading: 'Р В Р’ВµР В РІР‚В°Р вЂ™Р’В Р В РЎвЂР В РІР‚В¦Р В РІР‚В¦Р В РўвЂР РЋРІР‚ВР вЂ™Р’В­...',
+    nothing: 'Р В Р’В¶Р РЋРЎв„ўР В РІР‚С›Р В Р’В¶Р Р†Р вЂљР’В°Р РЋРІР‚СћР В Р’ВµР Р†РІР‚С™Р’В¬Р вЂ™Р’В°Р В Р’ВµР Р†Р вЂљР’В Р Р†Р вЂљР’В¦Р В Р’ВµР вЂ™Р’В®Р Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў',
+    back: 'Р В РЎвЂР РЋРІР‚вЂќР Р†Р вЂљРЎСљР В Р’ВµР Р†Р вЂљРЎвЂќР РЋРІР‚С”',
+    nowReading: 'Р В Р’В¶Р вЂ™Р’В­Р В РІвЂљВ¬Р В Р’ВµР РЋРЎв„ўР В Р С“Р В РІвЂћвЂ“Р вЂ™Р’ВР Р†Р вЂљР’В¦Р В РЎвЂР В РІР‚РЋР вЂ™Р’В»',
+    galleryTitle: 'Р В Р’В·Р Р†Р вЂљРЎСљР вЂ™Р’В»Р В Р’ВµР вЂ™Р’В»Р В РІР‚В°',
+    wikiTitle: 'Р В Р’В·Р вЂ™Р’В»Р СћРІР‚ВР В Р’ВµР РЋРЎСџР РЋРІР‚Сњ',
+    cvTitle: 'CV (Р В Р’В·Р вЂ™Р’В®Р В РІР‚С™Р В Р’ВµР В РІР‚в„–Р Р†Р вЂљР’В :)',
+    aboutTitle: 'Р В Р’ВµР Р†Р вЂљР’В¦Р РЋРІР‚вЂњР В РўвЂР РЋРІР‚СњР В РІР‚в„–',
+    projectsTitle: 'Р В РІвЂћвЂ“Р В Р вЂ№Р Р†РІР‚С›РІР‚вЂњР В Р’В·Р Р†Р вЂљРЎвЂќР вЂ™Р’В®Р В РЎвЂ”Р РЋР’ВР РЋРІвЂћСћ',
+    sections: { explore: 'Р В Р’В¶Р В РІР‚в„–Р РЋРЎвЂєР В Р’В·Р СћРІР‚ВР РЋРЎвЂєР В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В РўвЂР РЋРІР‚ВР Р†Р вЂљРІР‚СљР В Р’В·Р Р†Р вЂљРЎС›Р В Р вЂ°', exploreSubtitle: 'Р В Р’В¶Р вЂ™Р’В·Р вЂ™Р’В±Р В Р’ВµР Р†Р вЂљР’В¦Р СћРЎвЂ™Р В РўвЂР РЋРІР‚СњР Р†Р вЂљР’В Р В РЎвЂР вЂ™Р’В§Р В РІвЂљВ¬Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’ВµР вЂ™Р’В·Р СћРЎвЂ™Р В РўвЂР В РІР‚В¦Р РЋРЎв„ўР В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’ВµР Р†Р вЂљР’В¦Р СћРІР‚ВР В РЎвЂР вЂ™Р’В¶Р В РІвЂљВ¬Р В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В РўвЂР РЋРІР‚ВР В Р Р‰Р В Р’ВµР РЋРІР‚в„ўР В Р вЂ°Р В Р’В¶Р Р†Р вЂљРІР‚СљР Р†РІР‚С›РІР‚вЂњР В РІвЂћвЂ“Р РЋРЎС™Р РЋРЎвЂє' },
     apps: {
-      title: '应用',
-      subtitle: '我的项目演示',
-      selectPrompt: '选择一个应用，在中央窗口打开。',
-      descriptionLabel: '说明',
-      platformsLabel: '平台',
-      technologiesLabel: '技术',
-      badgesLabel: '标签',
-      dateLabel: '日期',
-      openFullLabel: '完整打开',
+      title: 'Р В Р’ВµР РЋРІР‚СњР Р†Р вЂљРЎСљР В Р’В·Р Р†Р вЂљРЎСљР В Р С“',
+      subtitle: 'Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В РІвЂћвЂ“Р В Р вЂ№Р Р†РІР‚С›РІР‚вЂњР В Р’В·Р Р†Р вЂљРЎвЂќР вЂ™Р’В®Р В Р’В¶Р РЋР’ВР Р†Р вЂљРЎСљР В Р’В·Р вЂ™Р’В¤Р РЋРІР‚Сњ',
+      selectPrompt: 'Р В РІвЂћвЂ“Р В РІР‚С™Р Р†Р вЂљР’В°Р В Р’В¶Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В©Р В РўвЂР РЋРІР‚ВР В РІР‚С™Р В РўвЂР РЋРІР‚ВР В РІР‚С›Р В Р’ВµР РЋРІР‚СњР Р†Р вЂљРЎСљР В Р’В·Р Р†Р вЂљРЎСљР В Р С“Р В РЎвЂ”Р РЋР’ВР В Р вЂ°Р В Р’ВµР РЋРЎв„ўР В Р С“Р В РўвЂР РЋРІР‚ВР вЂ™Р’В­Р В Р’ВµР вЂ™Р’В¤Р вЂ™Р’В®Р В Р’В·Р В РІР‚С›Р Р†Р вЂљРІР‚СњР В Р’ВµР В Р РЏР В РІвЂљВ¬Р В Р’В¶Р Р†Р вЂљР’В°Р Р†Р вЂљРЎС™Р В Р’ВµР РЋР’ВР В РІР‚С™Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў',
+      descriptionLabel: 'Р В РЎвЂР В РІР‚РЋР СћРІР‚ВР В Р’В¶Р вЂ™Р’ВР В РІР‚в„–',
+      platformsLabel: 'Р В Р’ВµР Р†РІР‚С›РІР‚вЂњР РЋРІР‚вЂњР В Р’ВµР В Р РЏР вЂ™Р’В°',
+      technologiesLabel: 'Р В Р’В¶Р В РІР‚В°Р В РІР‚С™Р В Р’В¶Р РЋРЎв„ўР В РІР‚РЋ',
+      badgesLabel: 'Р В Р’В¶Р вЂ™Р’В Р Р†Р вЂљР Р‹Р В Р’В·Р вЂ™Р’В­Р РЋРІР‚Сћ',
+      dateLabel: 'Р В Р’В¶Р Р†Р вЂљРІР‚СњР СћРЎвЂ™Р В Р’В¶Р РЋРЎв„ўР РЋРЎСџ',
+      openFullLabel: 'Р В Р’ВµР вЂ™Р’В®Р В Р вЂ°Р В Р’В¶Р Р†Р вЂљРЎС›Р СћРІР‚ВР В Р’В¶Р Р†Р вЂљР’В°Р Р†Р вЂљРЎС™Р В Р’ВµР РЋР’ВР В РІР‚С™',
       categories: {
-        ready: '现成应用',
-        prototype: '原型',
-        'webos-emulation': 'WebOS模拟',
+        ready: 'Р В Р’В·Р В РІР‚в„–Р вЂ™Р’В°Р В Р’В¶Р Р†РІР‚С™Р’В¬Р РЋРІР‚в„ўР В Р’ВµР РЋРІР‚СњР Р†Р вЂљРЎСљР В Р’В·Р Р†Р вЂљРЎСљР В Р С“',
+        prototype: 'Р В Р’ВµР В РІР‚в„–Р РЋРЎСџР В Р’ВµР РЋРІР‚С”Р Р†Р вЂљРІвЂћвЂ“',
+        'webos-emulation': 'WebOSР В Р’В¶Р В Р С“Р В Р вЂ№Р В Р’В¶Р Р†Р вЂљРІвЂћвЂ“Р РЋРЎСџ',
       },
     },
-    latestPosts: { title: '最新文章', subtitle: '新鲜的想法和见解', viewAll: '查看全部' },
-    cta: { letsCreate: '让我们', together: '一起创造', description: '无论您有项目想法还是只是想联系，我都很乐意听到您的声音。', getInTouch: '联系我' },
-    blog: { title: '博客', subtitle: '关于开发、设计和技术的想法、教程和见解。', description: '关于开发、设计和技术的想法、教程和见解。' },
-    wiki: { description: '我每天使用的概念、工具和技术的精选知识库。' },
-    cv: { experience: '经验', education: '教育', prototypes: '原型', rewards: '奖励', print: '打印', downloadPdf: '下载PDF', viewDemo: '查看演示' },
-    about: { description: '了解我的旅程、技能以及推动我创作热情的动力。' },
-    gallery: { description: '通过项目、摄影和创意探索的视觉之旅。', allAlbums: '所有相册' },
-    search: { title: '搜索', subtitle: '在博客文章、维基文章和画廊中查找任何内容', placeholder: '搜索所有内容...', allContent: '所有内容', results: '结果' },
-    stats: { blogPosts: '博客文章', wikiArticles: '维基文章', galleryImages: '图片', projects: '项目' },
+    latestPosts: { title: 'Р В Р’В¶Р РЋРЎв„ўР В РІР‚С™Р В Р’В¶Р Р†Р вЂљРІР‚СљР вЂ™Р’В°Р В Р’В¶Р Р†Р вЂљРІР‚СљР Р†Р вЂљР Р‹Р В Р’В·Р вЂ™Р’В«Р вЂ™Р’В ', subtitle: 'Р В Р’В¶Р Р†Р вЂљРІР‚СљР вЂ™Р’В°Р В РІвЂћвЂ“Р В РІР‚В Р РЋРЎв„ўР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’В¶Р РЋРІР‚СљР РЋРІР‚вЂњР В Р’В¶Р РЋРІР‚вЂњР Р†Р вЂљРЎС›Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В РЎвЂР вЂ™Р’В§Р В РЎвЂњР В РЎвЂР вЂ™Р’В§Р В РІвЂљВ¬', viewAll: 'Р В Р’В¶Р РЋРЎСџР СћРЎвЂ™Р В Р’В·Р РЋРЎв„ўР Р†Р вЂљРІвЂћвЂ“Р В Р’ВµР Р†Р вЂљР’В¦Р В Р С“Р В РІвЂћвЂ“Р РЋРІР‚СљР В Р С“' },
+    cta: { letsCreate: 'Р В РЎвЂР вЂ™Р’В®Р вЂ™Р’В©Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В РўвЂР вЂ™Р’В»Р вЂ™Р’В¬', together: 'Р В РўвЂР РЋРІР‚ВР В РІР‚С™Р В РЎвЂР вЂ™Р’ВµР вЂ™Р’В·Р В Р’ВµР Р†РІР‚С™Р’В¬Р Р†Р вЂљРЎвЂќР В РІвЂћвЂ“Р В РІР‚С™Р вЂ™Р’В ', description: 'Р В Р’В¶Р Р†Р вЂљРІР‚СњР вЂ™Р’В Р В РЎвЂР вЂ™Р’В®Р РЋРІР‚СњР В Р’В¶Р Р†Р вЂљРЎв„ўР В Р С“Р В Р’В¶Р РЋРЎв„ўР Р†Р вЂљР’В°Р В РІвЂћвЂ“Р В Р вЂ№Р Р†РІР‚С›РІР‚вЂњР В Р’В·Р Р†Р вЂљРЎвЂќР вЂ™Р’В®Р В Р’В¶Р РЋРІР‚СљР РЋРІР‚вЂњР В Р’В¶Р РЋРІР‚вЂњР Р†Р вЂљРЎС›Р В РЎвЂР РЋРІР‚вЂќР вЂ™Р’ВР В Р’В¶Р вЂ™Р’ВР В РІР‚РЋР В Р’ВµР В Р РЏР В РІР‚С›Р В Р’В¶Р вЂ™Р’ВР В РІР‚РЋР В Р’В¶Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂР В РЎвЂњР Р†Р вЂљРЎСљР В Р’В·Р РЋРІР‚вЂњР вЂ™Р’В»Р В РЎвЂ”Р РЋР’ВР В Р вЂ°Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В РІвЂћвЂ“Р РЋРІР‚СљР В РІР‚В¦Р В Р’ВµР РЋРІР‚СћР Р†РІР‚С™Р’В¬Р В РўвЂР Р†РІР‚С›РІР‚вЂњР РЋРІР‚в„ўР В Р’В¶Р Р†Р вЂљРЎвЂєР В Р РЏР В Р’ВµР РЋРІР‚в„ўР вЂ™Р’В¬Р В Р’ВµР Р†РІР‚С™Р’В¬Р вЂ™Р’В°Р В Р’В¶Р Р†Р вЂљРЎв„ўР В Р С“Р В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’ВµР В РІвЂљВ¬Р вЂ™Р’В°Р В РІвЂћвЂ“Р РЋРЎСџР РЋРІР‚вЂњР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў', getInTouch: 'Р В РЎвЂР В РЎвЂњР Р†Р вЂљРЎСљР В Р’В·Р РЋРІР‚вЂњР вЂ™Р’В»Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’В' },
+    blog: { title: 'Р В Р’ВµР В Р Р‰Р РЋРІвЂћСћР В Р’ВµР вЂ™Р’В®Р РЋРЎвЂє', subtitle: 'Р В Р’ВµР Р†Р вЂљР’В¦Р РЋРІР‚вЂњР В РўвЂР РЋРІР‚СњР В РІР‚в„–Р В Р’ВµР РЋР’ВР В РІР‚С™Р В Р’ВµР В Р РЏР Р†Р вЂљР’ВР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂР вЂ™Р’В®Р РЋРІР‚СћР В РЎвЂР вЂ™Р’В®Р В Р вЂ№Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’В¶Р В РІР‚В°Р В РІР‚С™Р В Р’В¶Р РЋРЎв„ўР В РІР‚РЋР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’В¶Р РЋРІР‚СљР РЋРІР‚вЂњР В Р’В¶Р РЋРІР‚вЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р Р†Р вЂљРЎС›Р Р†РІР‚С›РЎС›Р В Р’В·Р В Р С“Р Р†Р вЂљРІвЂћвЂ“Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В РЎвЂР вЂ™Р’В§Р В РЎвЂњР В РЎвЂР вЂ™Р’В§Р В РІвЂљВ¬Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў', description: 'Р В Р’ВµР Р†Р вЂљР’В¦Р РЋРІР‚вЂњР В РўвЂР РЋРІР‚СњР В РІР‚в„–Р В Р’ВµР РЋР’ВР В РІР‚С™Р В Р’ВµР В Р РЏР Р†Р вЂљР’ВР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂР вЂ™Р’В®Р РЋРІР‚СћР В РЎвЂР вЂ™Р’В®Р В Р вЂ№Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’В¶Р В РІР‚В°Р В РІР‚С™Р В Р’В¶Р РЋРЎв„ўР В РІР‚РЋР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’В¶Р РЋРІР‚СљР РЋРІР‚вЂњР В Р’В¶Р РЋРІР‚вЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р Р†Р вЂљРЎС›Р Р†РІР‚С›РЎС›Р В Р’В·Р В Р С“Р Р†Р вЂљРІвЂћвЂ“Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В РЎвЂР вЂ™Р’В§Р В РЎвЂњР В РЎвЂР вЂ™Р’В§Р В РІвЂљВ¬Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў' },
+    wiki: { description: 'Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В Р’В¶Р В РІР‚РЋР В Р РЏР В Р’ВµР вЂ™Р’В¤Р вЂ™Р’В©Р В РўвЂР В РІР‚В¦Р РЋРІР‚вЂќР В Р’В·Р Р†Р вЂљРЎСљР В Р С“Р В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’В¶Р вЂ™Р’В¦Р Р†Р вЂљРЎв„ўР В Р’ВµР РЋРІР‚вЂќР вЂ™Р’ВµР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’ВµР вЂ™Р’В·Р СћРЎвЂ™Р В Р’ВµР Р†Р вЂљР’В¦Р вЂ™Р’В·Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’В¶Р В РІР‚В°Р В РІР‚С™Р В Р’В¶Р РЋРЎв„ўР В РІР‚РЋР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’В·Р В РІР‚В Р РЋРІР‚СћР В РІвЂћвЂ“Р В РІР‚С™Р Р†Р вЂљР’В°Р В Р’В·Р РЋРЎСџР СћРЎвЂ™Р В РЎвЂР В РІР‚РЋР Р†Р вЂљР’В Р В Р’ВµР РЋРІР‚СњР Р†Р вЂљРЎС™Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў' },
+    cv: { experience: 'Р В Р’В·Р вЂ™Р’В»Р В Р РЏР В РІвЂћвЂ“Р В РІР‚С›Р В Р вЂ°', education: 'Р В Р’В¶Р Р†Р вЂљРЎС›Р Р†РІР‚С›РЎС›Р В РЎвЂР Р†Р вЂљРЎв„ўР В РІР‚В ', prototypes: 'Р В Р’ВµР В РІР‚в„–Р РЋРЎСџР В Р’ВµР РЋРІР‚С”Р Р†Р вЂљРІвЂћвЂ“', rewards: 'Р В Р’ВµР СћРЎвЂ™Р Р†Р вЂљРІР‚СљР В Р’ВµР В РІР‚В°Р вЂ™Р’В±', print: 'Р В Р’В¶Р Р†Р вЂљР’В°Р Р†Р вЂљРЎС™Р В Р’ВµР В Р Р‰Р вЂ™Р’В°', downloadPdf: 'Р В РўвЂР РЋРІР‚ВР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂР В РІР‚В¦Р В РІР‚В¦PDF', viewDemo: 'Р В Р’В¶Р РЋРЎСџР СћРЎвЂ™Р В Р’В·Р РЋРЎв„ўР Р†Р вЂљРІвЂћвЂ“Р В Р’В¶Р РЋР’ВР Р†Р вЂљРЎСљР В Р’В·Р вЂ™Р’В¤Р РЋРІР‚Сњ' },
+    about: { description: 'Р В РўвЂР РЋРІР‚СњР Р†Р вЂљР’В Р В РЎвЂР вЂ™Р’В§Р В РІвЂљВ¬Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’В¶Р Р†Р вЂљРІР‚СњР Р†Р вЂљР’В¦Р В Р’В·Р В Р С“Р Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р В РІР‚В°Р В РІР‚С™Р В РЎвЂР РЋРІР‚СљР В РІР‚В¦Р В РўвЂР вЂ™Р’В»Р СћРЎвЂ™Р В Р’ВµР В Р РЏР В РІР‚В°Р В Р’В¶Р В РІР‚в„–Р В Р С“Р В Р’ВµР В РІР‚В°Р В Р С“Р В Р’В¶Р Р†РІР‚С™Р’В¬Р Р†Р вЂљР’ВР В Р’ВµР Р†РІР‚С™Р’В¬Р Р†Р вЂљРЎвЂќР В РўвЂР В РІР‚В¦Р РЋРЎв„ўР В Р’В·Р РЋРІР‚СљР вЂ™Р’В­Р В Р’В¶Р РЋРІР‚СљР Р†Р вЂљР’В¦Р В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В Р’ВµР В РІР‚В°Р В Р С“Р В Р’ВµР В РІР‚В°Р Р†Р вЂљРЎвЂќР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў' },
+    gallery: { description: 'Р В РІвЂћвЂ“Р В РІР‚С™Р РЋРІвЂћСћР В РЎвЂР РЋРІР‚вЂќР Р†Р вЂљР Р‹Р В РІвЂћвЂ“Р В Р вЂ№Р Р†РІР‚С›РІР‚вЂњР В Р’В·Р Р†Р вЂљРЎвЂќР вЂ™Р’В®Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р Р†Р вЂљР’ВР Р†Р вЂљРЎвЂєР В Р’ВµР В РІР‚В¦Р вЂ™Р’В±Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’ВµР Р†РІР‚С™Р’В¬Р Р†Р вЂљРЎвЂќР В Р’В¶Р Р†Р вЂљРЎвЂєР В Р РЏР В Р’В¶Р В РІР‚в„–Р РЋРЎвЂєР В Р’В·Р СћРІР‚ВР РЋРЎвЂєР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В РЎвЂР вЂ™Р’В§Р Р†Р вЂљР’В Р В РЎвЂР вЂ™Р’В§Р Р†Р вЂљР’В°Р В РўвЂР Р†РІР‚С›РІР‚вЂњР Р†Р вЂљРІвЂћвЂ“Р В Р’В¶Р Р†Р вЂљРІР‚СњР Р†Р вЂљР’В¦Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў', allAlbums: 'Р В Р’В¶Р Р†Р вЂљР’В°Р В РІР‚С™Р В Р’В¶Р РЋРЎв„ўР Р†Р вЂљР’В°Р В Р’В·Р Р†Р вЂљРЎвЂќР РЋРІР‚ВР В Р’ВµР Р†Р вЂљР’В Р В Р вЂ°' },
+    search: { title: 'Р В Р’В¶Р РЋРІР‚в„ўР РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє', subtitle: 'Р В Р’ВµР РЋРЎв„ўР В Р С“Р В Р’ВµР В Р Р‰Р РЋРІвЂћСћР В Р’ВµР вЂ™Р’В®Р РЋРЎвЂєР В Р’В¶Р Р†Р вЂљРІР‚СљР Р†Р вЂљР Р‹Р В Р’В·Р вЂ™Р’В«Р вЂ™Р’В Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В·Р вЂ™Р’В»Р СћРІР‚ВР В Р’ВµР РЋРЎСџР РЋРІР‚СњР В Р’В¶Р Р†Р вЂљРІР‚СљР Р†Р вЂљР Р‹Р В Р’В·Р вЂ™Р’В«Р вЂ™Р’В Р В Р’ВµР Р†Р вЂљРІвЂћСћР В Р вЂ°Р В Р’В·Р Р†Р вЂљРЎСљР вЂ™Р’В»Р В Р’ВµР вЂ™Р’В»Р В РІР‚В°Р В РўвЂР РЋРІР‚ВР вЂ™Р’В­Р В Р’В¶Р РЋРЎСџР СћРЎвЂ™Р В Р’В¶Р Р†Р вЂљР’В°Р РЋРІР‚СћР В РўвЂР вЂ™Р’В»Р вЂ™Р’В»Р В РўвЂР В РІР‚В¦Р Р†Р вЂљРЎС›Р В Р’ВµР Р†Р вЂљР’В Р Р†Р вЂљР’В¦Р В Р’ВµР вЂ™Р’В®Р Р†РІР‚С›РІР‚вЂњ', placeholder: 'Р В Р’В¶Р РЋРІР‚в„ўР РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂєР В Р’В¶Р Р†Р вЂљР’В°Р В РІР‚С™Р В Р’В¶Р РЋРЎв„ўР Р†Р вЂљР’В°Р В Р’ВµР Р†Р вЂљР’В Р Р†Р вЂљР’В¦Р В Р’ВµР вЂ™Р’В®Р Р†РІР‚С›РІР‚вЂњ...', allContent: 'Р В Р’В¶Р Р†Р вЂљР’В°Р В РІР‚С™Р В Р’В¶Р РЋРЎв„ўР Р†Р вЂљР’В°Р В Р’ВµР Р†Р вЂљР’В Р Р†Р вЂљР’В¦Р В Р’ВµР вЂ™Р’В®Р Р†РІР‚С›РІР‚вЂњ', results: 'Р В Р’В·Р вЂ™Р’В»Р Р†Р вЂљРЎС™Р В Р’В¶Р РЋРІР‚С”Р РЋРЎв„ў' },
+    stats: { blogPosts: 'Р В Р’ВµР В Р Р‰Р РЋРІвЂћСћР В Р’ВµР вЂ™Р’В®Р РЋРЎвЂєР В Р’В¶Р Р†Р вЂљРІР‚СљР Р†Р вЂљР Р‹Р В Р’В·Р вЂ™Р’В«Р вЂ™Р’В ', wikiArticles: 'Р В Р’В·Р вЂ™Р’В»Р СћРІР‚ВР В Р’ВµР РЋРЎСџР РЋРІР‚СњР В Р’В¶Р Р†Р вЂљРІР‚СљР Р†Р вЂљР Р‹Р В Р’В·Р вЂ™Р’В«Р вЂ™Р’В ', galleryImages: 'Р В Р’ВµР Р†Р вЂљРЎвЂќР РЋРІР‚СћР В Р’В·Р Р†Р вЂљР’В°Р Р†Р вЂљР Р‹', projects: 'Р В РІвЂћвЂ“Р В Р вЂ№Р Р†РІР‚С›РІР‚вЂњР В Р’В·Р Р†Р вЂљРЎвЂќР вЂ™Р’В®' },
   },
   ja: {
-    nav: { home: 'ホーム', about: '概要', wiki: 'ウィキ', cv: '履歴書', gallery: 'ギャラリー', blog: 'ブログ', apps: 'アプリ', search: '検索', news: 'ニュース', legal: '法的通知' },
-    heroTitle: 'クリエイティブ開発者',
-    heroSubtitle: 'コード、創造性、情熱で美しいデジタル体験を構築。私の作品、思考、知識ベースを探索してください。',
-    searchPlaceholder: '検索...',
-    categories: 'カテゴリ',
-    tags: 'タグ',
-    loading: '読み込み中...',
-    nothing: '見つかりません。',
-    back: '戻る',
-    nowReading: '閲覧中',
-    galleryTitle: 'ギャラリー',
-    wikiTitle: 'ウィキ',
-    cvTitle: 'CV (履歴書:)',
-    aboutTitle: '概要',
-    projectsTitle: 'プロジェクト：',
+    nav: { home: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРЎвЂќР В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В ', about: 'Р В Р’В¶Р вЂ™Р’В¦Р Р†Р вЂљРЎв„ўР В РЎвЂР вЂ™Р’В¦Р В РЎвЂњ', wiki: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¦Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІвЂљВ¬Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В­', cv: 'Р В Р’ВµР вЂ™Р’В±Р СћРЎвЂ™Р В Р’В¶Р вЂ™Р’В­Р СћРІР‚ВР В Р’В¶Р Р†Р вЂљРЎвЂќР РЋРІР‚В', gallery: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В®Р В РЎвЂ“Р РЋРІР‚СљР В РІвЂљВ¬Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В©Р В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р РЋРІР‚СљР РЋР’В', blog: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СљР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В°', apps: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›', search: 'Р В Р’В¶Р вЂ™Р’В¤Р РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє', news: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р РЋРІР‚СљР СћРЎвЂ™Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†РІР‚С›РІР‚вЂњ', legal: 'Р В Р’В¶Р РЋРІР‚вЂњР Р†Р вЂљРЎС›Р В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В РІвЂћвЂ“Р В РІР‚С™Р РЋРІвЂћСћР В Р’В·Р РЋРЎСџР СћРЎвЂ™' },
+    heroTitle: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В Р С“Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІвЂљВ¬Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СљР В РІвЂћвЂ“Р Р†Р вЂљРІР‚СљР Р†Р вЂљРІвЂћвЂ“Р В Р’В·Р Р†РІР‚С›РЎС›Р РЋРІР‚СњР В РЎвЂР В РІР‚С™Р Р†Р вЂљР’В¦',
+    heroSubtitle: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В°Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’ВµР Р†Р вЂљР’В°Р вЂ™Р’ВµР В РІвЂћвЂ“Р В РІР‚С™Р вЂ™Р’В Р В Р’В¶Р В РІР‚С™Р вЂ™Р’В§Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р РЋРІР‚СљР Р†Р вЂљР’В¦Р В Р’В·Р Р†Р вЂљР’В Р вЂ™Р’В±Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В§Р В Р’В·Р РЋРІР‚СћР В РІР‚в„–Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІР‚СњР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР Р‹Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂќР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В«Р В РўвЂР В РІР‚В¦Р Р†Р вЂљРЎС™Р В РІвЂћвЂ“Р В Р С“Р Р†Р вЂљРЎС™Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В Р’В¶Р вЂ™Р’В§Р Р†Р вЂљРІвЂћвЂ“Р В Р’В·Р В РІР‚РЋР Р†Р вЂљР’В°Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ўР В Р’В·Р вЂ™Р’В§Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РўвЂР В РІР‚В¦Р РЋРЎв„ўР В Р’ВµР Р†Р вЂљРЎС™Р В РЎвЂњР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р В РІР‚С™Р РЋРЎС™Р В РЎвЂР В РІР‚С™Р РЋРІР‚СљР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В·Р РЋРЎСџР СћРЎвЂ™Р В РЎвЂР вЂ™Р’В­Р вЂ™Р’ВР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С›РЎС›Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В Р’В¶Р В РІР‚в„–Р РЋРЎвЂєР В Р’В·Р СћРІР‚ВР РЋРЎвЂєР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІР‚СњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В РЎвЂ“Р В РЎвЂњР В Р РЏР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂєР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў',
+    searchPlaceholder: 'Р В Р’В¶Р вЂ™Р’В¤Р РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє...',
+    categories: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В«Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР СћРІР‚ВР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›',
+    tags: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂќР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В°',
+    loading: 'Р В РЎвЂР В РІР‚С›Р вЂ™Р’В­Р В РЎвЂ“Р В РЎвЂњР РЋРІР‚вЂќР В РЎвЂР РЋРІР‚СћР РЋР’ВР В РЎвЂ“Р В РЎвЂњР РЋРІР‚вЂќР В РўвЂР РЋРІР‚ВР вЂ™Р’В­...',
+    nothing: 'Р В РЎвЂР вЂ™Р’В¦Р Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¤Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚В°Р В РЎвЂ“Р В РЎвЂњР РЋРІР‚СћР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂќР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРЎС™Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў',
+    back: 'Р В Р’В¶Р Р†РІР‚С™Р’В¬Р вЂ™Р’В»Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћвЂ“',
+    nowReading: 'Р В РІвЂћвЂ“Р Р†Р вЂљРІР‚СљР В РІР‚В Р В РЎвЂР вЂ™Р’В¦Р вЂ™Р’В§Р В РўвЂР РЋРІР‚ВР вЂ™Р’В­',
+    galleryTitle: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В®Р В РЎвЂ“Р РЋРІР‚СљР В РІвЂљВ¬Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В©Р В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р РЋРІР‚СљР РЋР’В',
+    wikiTitle: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¦Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІвЂљВ¬Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В­',
+    cvTitle: 'CV (Р В Р’ВµР вЂ™Р’В±Р СћРЎвЂ™Р В Р’В¶Р вЂ™Р’В­Р СћРІР‚ВР В Р’В¶Р Р†Р вЂљРЎвЂќР РЋРІР‚В:)',
+    aboutTitle: 'Р В Р’В¶Р вЂ™Р’В¦Р Р†Р вЂљРЎв„ўР В РЎвЂР вЂ™Р’В¦Р В РЎвЂњ',
+    projectsTitle: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ”Р РЋР’ВР РЋРІвЂћСћ',
     apps: {
-      title: 'アプリ',
-      subtitle: '私のプロジェクトのデモンストレーション',
-      selectPrompt: 'アプリを選ぶと中央に表示されます。',
-      descriptionLabel: '説明',
-      platformsLabel: 'プラットフォーム',
-      technologiesLabel: '技術',
-      badgesLabel: 'タグ',
-      dateLabel: '日付',
-      openFullLabel: 'フル表示',
+      title: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›',
+      subtitle: 'Р В Р’В·Р вЂ™Р’В§Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР Р‹Р В РЎвЂ“Р РЋРІР‚СљР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В¬Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В·Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В§Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњ',
+      selectPrompt: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В РІвЂћвЂ“Р В РЎвЂњР РЋРІР‚ВР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¶Р В РЎвЂ“Р В РЎвЂњР В Р С“Р В РўвЂР РЋРІР‚ВР вЂ™Р’В­Р В Р’ВµР вЂ™Р’В¤Р вЂ™Р’В®Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В«Р В РЎвЂР В Р вЂ№Р В Р С“Р В Р’В·Р вЂ™Р’В¤Р РЋРІР‚СњР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В Р вЂ°Р В РЎвЂ“Р В РЎвЂњР РЋРІР‚СћР В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў',
+      descriptionLabel: 'Р В РЎвЂР В РІР‚С›Р вЂ™Р’В¬Р В Р’В¶Р вЂ™Р’ВР В РІР‚в„–',
+      platformsLabel: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В©Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚СљР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРЎС›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В©Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В ',
+      technologiesLabel: 'Р В Р’В¶Р В РІР‚В°Р В РІР‚С™Р В РЎвЂР В Р вЂ№Р Р†Р вЂљРЎС™',
+      badgesLabel: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂќР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В°',
+      dateLabel: 'Р В Р’В¶Р Р†Р вЂљРІР‚СњР СћРЎвЂ™Р В РўвЂР вЂ™Р’В»Р вЂ™Р’В',
+      openFullLabel: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРЎС›Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В«Р В РЎвЂР В Р вЂ№Р В Р С“Р В Р’В·Р вЂ™Р’В¤Р РЋРІР‚Сњ',
       categories: {
-        ready: '完成アプリ',
-        prototype: 'プロトタイプ',
-        'webos-emulation': 'WebOSエミュレーション',
+        ready: 'Р В Р’ВµР вЂ™Р’В®Р В Р вЂ°Р В Р’В¶Р Р†РІР‚С™Р’В¬Р РЋРІР‚в„ўР В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›',
+        prototype: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂќР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚Сњ',
+        'webos-emulation': 'WebOSР В РЎвЂ“Р Р†Р вЂљРЎв„ўР В Р С“Р В РЎвЂ“Р РЋРІР‚СљР РЋРЎСџР В РЎвЂ“Р РЋРІР‚СљР СћРЎвЂ™Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В¬Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В·Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В§Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњ',
       },
     },
-    sections: { explore: '私の世界を探索', exploreSubtitle: '私の仕事と興味のさまざまな側面に飛び込む' },
-    latestPosts: { title: '最新の投稿', subtitle: '新鮮な考えと洞察', viewAll: 'すべて表示' },
-    cta: { letsCreate: '一緒に', together: '作成しましょう', description: 'プロジェクトのアイデアがある場合でも、単につながりたい場合でも、ぜひお聞かせください。', getInTouch: 'お問い合わせ' },
-    blog: { title: 'ブログ', subtitle: '開発、デザイン、テクノロジーに関する考え、チュートリアル、洞察。', description: '開発、デザイン、テクノロジーに関する考え、チュートリアル、洞察。' },
-    wiki: { description: '私が毎日使用する概念、ツール、テクニックのキュレートされた知識ベース。' },
-    cv: { experience: '経験', education: '学歴', prototypes: 'プロトタイプ', rewards: '賞', print: '印刷', downloadPdf: 'PDFダウンロード', viewDemo: 'デモを見る' },
-    about: { description: '私の旅、スキル、そして創造への情熱を駆り立てるものについて学んでください。' },
-    gallery: { description: 'プロジェクト、写真、クリエイティブな探求を通じた視覚的な旅。', allAlbums: 'すべてのアルバム' },
-    search: { title: '検索', subtitle: 'ブログ投稿、ウィキ記事、ギャラリー全体で何でも検索', placeholder: 'すべてのコンテンツを検索...', allContent: 'すべてのコンテンツ', results: '結果' },
-    stats: { blogPosts: 'ブログ投稿', wikiArticles: 'ウィキ記事', galleryImages: '画像', projects: 'プロジェクト' },
+    sections: { explore: 'Р В Р’В·Р вЂ™Р’В§Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РўвЂР РЋРІР‚ВР Р†Р вЂљРІР‚СљР В Р’В·Р Р†Р вЂљРЎС›Р В Р вЂ°Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В Р’В¶Р В РІР‚в„–Р РЋРЎвЂєР В Р’В·Р СћРІР‚ВР РЋРЎвЂє', exploreSubtitle: 'Р В Р’В·Р вЂ™Р’В§Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РўвЂР вЂ™Р’В»Р Р†Р вЂљРЎС›Р В РўвЂР РЋРІР‚СњР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р В РЎвЂњР В Р С“Р В РЎвЂР Р†РІР‚С™Р’В¬Р Р†РІР‚С™Р’В¬Р В Р’ВµР Р†Р вЂљР’ВР РЋРІР‚вЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р В РЎвЂњР РЋРІР‚СћР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІР‚СљР В РЎвЂ“Р В РЎвЂњР РЋРІР‚СћР В РЎвЂ“Р В РЎвЂњР В РІР‚С›Р В Р’ВµР В РЎвЂњР СћРІР‚ВР В РІвЂћвЂ“Р РЋРЎС™Р РЋРЎвЂєР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В«Р В РІвЂћвЂ“Р В РІвЂљВ¬Р Р†Р вЂљРЎвЂќР В РЎвЂ“Р В РЎвЂњР РЋРІР‚вЂњР В РЎвЂР РЋРІР‚СћР РЋР’ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚С™' },
+    latestPosts: { title: 'Р В Р’В¶Р РЋРЎв„ўР В РІР‚С™Р В Р’В¶Р Р†Р вЂљРІР‚СљР вЂ™Р’В°Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В Р’В¶Р В РІР‚В°Р Р†Р вЂљРЎС›Р В Р’В·Р В Р С“Р РЋРІР‚вЂќ', subtitle: 'Р В Р’В¶Р Р†Р вЂљРІР‚СљР вЂ™Р’В°Р В РІвЂћвЂ“Р вЂ™Р’В®Р вЂ™Р’В®Р В РЎвЂ“Р В РЎвЂњР В РІР‚С›Р В РЎвЂР В РІР‚С™Р РЋРІР‚СљР В РЎвЂ“Р В РЎвЂњР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РЎвЂњР В Р С“Р В Р’В¶Р СћРІР‚ВР РЋРІР‚С”Р В Р’ВµР В РІР‚РЋР РЋРЎСџ', viewAll: 'Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В РЎвЂР В Р вЂ№Р В Р С“Р В Р’В·Р вЂ™Р’В¤Р РЋРІР‚Сњ' },
+    cta: { letsCreate: 'Р В РўвЂР РЋРІР‚ВР В РІР‚С™Р В Р’В·Р вЂ™Р’В·Р Р†Р вЂљРІвЂћСћР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В«', together: 'Р В РўвЂР В РІР‚В¦Р РЋРЎв„ўР В Р’В¶Р Р†РІР‚С™Р’В¬Р РЋРІР‚в„ўР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІР‚СњР В РЎвЂ“Р В РЎвЂњР РЋРІР‚СћР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІР‚СњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљР Р‹Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљР’В ', description: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР Р‹Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р В РЎвЂњР В Р вЂ°Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎв„ўР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћвЂ“Р В Р’ВµР вЂ™Р’В Р СћРІР‚ВР В Р’ВµР РЋРІР‚в„ўР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРЎв„ўР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’ВµР В Р Р‰Р вЂ™Р’ВР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В«Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¤Р В РЎвЂ“Р В РЎвЂњР В РІР‚С›Р В РЎвЂ“Р В РЎвЂњР В Р вЂ°Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚В°Р В РЎвЂ“Р В РЎвЂњР РЋРЎСџР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂєР В Р’ВµР вЂ™Р’В Р СћРІР‚ВР В Р’ВµР РЋРІР‚в„ўР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРЎв„ўР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР РЋРЎв„ўР В РЎвЂ“Р В РЎвЂњР В РІР‚В Р В РЎвЂ“Р В РЎвЂњР В РІР‚В°Р В РЎвЂР В РЎвЂњР РЋРІР‚С”Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂќР В РЎвЂ“Р В РЎвЂњР В Р РЏР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂєР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў', getInTouch: 'Р В РЎвЂ“Р В РЎвЂњР В РІР‚В°Р В Р’ВµР Р†Р вЂљРЎС›Р В Р РЏР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂєР В Р’ВµР РЋРІР‚в„ўР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В Р РЏР В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂќ' },
+    blog: { title: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СљР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В°', subtitle: 'Р В РІвЂћвЂ“Р Р†Р вЂљРІР‚СљР Р†Р вЂљРІвЂћвЂ“Р В Р’В·Р Р†РІР‚С›РЎС›Р РЋРІР‚СњР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР Р‹Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¶Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР В РІР‚в„–Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В«Р В РІвЂћвЂ“Р Р†Р вЂљРІР‚СљР РЋРЎвЂєР В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂР В РІР‚С™Р РЋРІР‚СљР В РЎвЂ“Р В РЎвЂњР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР СћРЎвЂ™Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В«Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р СћРІР‚ВР РЋРІР‚С”Р В Р’ВµР В РІР‚РЋР РЋРЎСџР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў', description: 'Р В РІвЂћвЂ“Р Р†Р вЂљРІР‚СљР Р†Р вЂљРІвЂћвЂ“Р В Р’В·Р Р†РІР‚С›РЎС›Р РЋРІР‚СњР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР Р‹Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¶Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР В РІР‚в„–Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В«Р В РІвЂћвЂ“Р Р†Р вЂљРІР‚СљР РЋРЎвЂєР В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂР В РІР‚С™Р РЋРІР‚СљР В РЎвЂ“Р В РЎвЂњР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР СћРЎвЂ™Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В«Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’В¶Р СћРІР‚ВР РЋРІР‚С”Р В Р’ВµР В РІР‚РЋР РЋРЎСџР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў' },
+    wiki: { description: 'Р В Р’В·Р вЂ™Р’В§Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР В Р вЂ°Р В Р’В¶Р В РІР‚РЋР В РІР‚в„–Р В Р’В¶Р Р†Р вЂљРІР‚СњР СћРЎвЂ™Р В РўвЂР В РІР‚В¦Р РЋРІР‚вЂќР В Р’В·Р Р†Р вЂљРЎСљР В Р С“Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћвЂ“Р В Р’В¶Р вЂ™Р’В¦Р Р†Р вЂљРЎв„ўР В Р’ВµР РЋРІР‚вЂќР вЂ™Р’ВµР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В«Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚СљР В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В­Р В РЎвЂ“Р РЋРІР‚СљР СћРЎвЂ™Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В¬Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В Р вЂ°Р В РЎвЂ“Р В РЎвЂњР РЋРЎСџР В Р’В·Р РЋРЎСџР СћРЎвЂ™Р В РЎвЂР вЂ™Р’В­Р вЂ™Р’ВР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С›РЎС›Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў' },
+    cv: { experience: 'Р В Р’В·Р вЂ™Р’ВµР В Р вЂ°Р В РІвЂћвЂ“Р В Р С“Р Р†Р вЂљРЎС™', education: 'Р В Р’ВµР вЂ™Р’В­Р вЂ™Р’В¦Р В Р’В¶Р вЂ™Р’В­Р СћРІР‚В', prototypes: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂќР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚Сњ', rewards: 'Р В РЎвЂР РЋРІР‚вЂњР РЋРІР‚С”', print: 'Р В Р’ВµР В Р Р‰Р вЂ™Р’В°Р В Р’ВµР Р†РІР‚С™Р’В¬Р вЂ™Р’В·', downloadPdf: 'PDFР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С™Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¦Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В°', viewDemo: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР Р‹Р В РЎвЂ“Р РЋРІР‚СљР РЋРЎвЂєР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В РЎвЂР вЂ™Р’В¦Р Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћвЂ“' },
+    about: { description: 'Р В Р’В·Р вЂ™Р’В§Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В Р’В¶Р Р†Р вЂљРІР‚СњР Р†Р вЂљР’В¦Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В­Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В«Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р В РЎвЂњР РЋРЎС™Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРІР‚СњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В Р’ВµР Р†Р вЂљР’В°Р вЂ™Р’ВµР В РІвЂћвЂ“Р В РІР‚С™Р вЂ™Р’В Р В РЎвЂ“Р В РЎвЂњР РЋРІР‚ВР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В Р’В¶Р РЋРІР‚СљР Р†Р вЂљР’В¦Р В Р’В·Р Р†Р вЂљР’В Р вЂ™Р’В±Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В РІвЂћвЂ“Р вЂ™Р’В§Р Р†Р вЂљР’В Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚В°Р В Р’В·Р вЂ™Р’В«Р Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРЎв„ўР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В«Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¤Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂєР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В Р’ВµР вЂ™Р’В­Р вЂ™Р’В¦Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРЎС™Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В§Р В РЎвЂ“Р В РЎвЂњР В Р РЏР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎС›Р В РЎвЂ“Р В РЎвЂњР Р†Р вЂљРЎвЂєР В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў' },
+    gallery: { description: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В Р’ВµР Р†Р вЂљР’В Р Р†РІР‚С›РЎС›Р В Р’В·Р РЋРЎв„ўР РЋРЎСџР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В Р С“Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІвЂљВ¬Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СљР В РЎвЂ“Р В РЎвЂњР В РІР‚С›Р В Р’В¶Р В РІР‚в„–Р РЋРЎвЂєР В Р’В¶Р вЂ™Р’В±Р Р†Р вЂљРЎв„ўР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В РІвЂћвЂ“Р В РІР‚С™Р РЋРІвЂћСћР В РЎвЂ“Р В РЎвЂњР вЂ™Р’ВР В РЎвЂ“Р В РЎвЂњР РЋРЎСџР В РЎвЂР вЂ™Р’В¦Р Р†Р вЂљРІР‚СљР В РЎвЂР вЂ™Р’В¦Р РЋРІвЂћСћР В Р’В·Р РЋРІвЂћСћР Р†Р вЂљРЎвЂєР В РЎвЂ“Р В РЎвЂњР В РІР‚С›Р В Р’В¶Р Р†Р вЂљРІР‚СњР Р†Р вЂљР’В¦Р В РЎвЂ“Р В РІР‚С™Р Р†Р вЂљРЎв„ў', allAlbums: 'Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРЎвЂєР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В«Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚в„ўР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В ' },
+    search: { title: 'Р В Р’В¶Р вЂ™Р’В¤Р РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє', subtitle: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СљР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В°Р В Р’В¶Р В РІР‚В°Р Р†Р вЂљРЎС›Р В Р’В·Р В Р С“Р РЋРІР‚вЂќР В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¦Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІвЂљВ¬Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В­Р В РЎвЂР В Р С“Р вЂ™Р’ВР В РўвЂР РЋРІР‚СњР Р†Р вЂљРІвЂћвЂ“Р В РЎвЂ“Р В РІР‚С™Р В РЎвЂњР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В®Р В РЎвЂ“Р РЋРІР‚СљР В РІвЂљВ¬Р В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В©Р В РЎвЂ“Р РЋРІР‚СљР В РІР‚С›Р В РЎвЂ“Р РЋРІР‚СљР РЋР’ВР В Р’ВµР Р†Р вЂљР’В¦Р В Р С“Р В РўвЂР В РІР‚В¦Р Р†Р вЂљРЎС™Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В§Р В РўвЂР В РІР‚В¦Р Р†Р вЂљРЎС›Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРЎв„ўР В Р’В¶Р вЂ™Р’В¤Р РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє', placeholder: 'Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРЎвЂєР В РЎвЂ“Р Р†Р вЂљРЎв„ўР Р†Р вЂљРІвЂћСћР В Р’В¶Р вЂ™Р’В¤Р РЋРЎв„ўР В Р’В·Р СћРІР‚ВР РЋРЎвЂє...', allContent: 'Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РЎС›Р В РЎвЂ“Р В РЎвЂњР Р†РІР‚С›РІР‚вЂњР В РЎвЂ“Р В РЎвЂњР вЂ™Р’В¦Р В РЎвЂ“Р В РЎвЂњР вЂ™Р’В®Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљР’В Р В РЎвЂ“Р РЋРІР‚СљР РЋРІР‚вЂњР В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРЎвЂє', results: 'Р В Р’В·Р вЂ™Р’ВµР РЋРІР‚в„ўР В Р’В¶Р РЋРІР‚С”Р РЋРЎв„ў' },
+    stats: { blogPosts: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СљР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В°Р В Р’В¶Р В РІР‚В°Р Р†Р вЂљРЎС›Р В Р’В·Р В Р С“Р РЋРІР‚вЂќ', wikiArticles: 'Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В¦Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІвЂљВ¬Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В­Р В РЎвЂР В Р С“Р вЂ™Р’ВР В РўвЂР РЋРІР‚СњР Р†Р вЂљРІвЂћвЂ“', galleryImages: 'Р В Р’В·Р Р†Р вЂљРЎСљР вЂ™Р’В»Р В Р’ВµР РЋРІР‚СљР В Р РЏ', projects: 'Р В РЎвЂ“Р РЋРІР‚СљР Р†Р вЂљРІР‚СњР В РЎвЂ“Р РЋРІР‚СљР вЂ™Р’В­Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР РЋРІР‚ВР В РЎвЂ“Р Р†Р вЂљРЎв„ўР вЂ™Р’В§Р В РЎвЂ“Р Р†Р вЂљРЎв„ўР В РІР‚РЋР В РЎвЂ“Р РЋРІР‚СљР Р†РІР‚С™Р’В¬' },
   },
   ko: {
-    nav: { home: '홈', about: '소개', wiki: '위키', cv: '이력서', gallery: '갤러리', blog: '블로그', apps: '앱', search: '검색', news: '뉴스', legal: '법적 고지' },
-    heroTitle: '크리에이티브 개발자',
-    heroSubtitle: '코드, 창의성, 열정으로 아름다운 디지털 경험을 구축합니다. 제 작업, 생각, 지식 기반을 탐색하세요.',
-    searchPlaceholder: '검색...',
-    categories: '카테고리',
-    tags: '태그',
-    loading: '로드 중...',
-    nothing: '검색 결과 없음.',
-    back: '뒤로',
-    nowReading: '읽는 중',
-    galleryTitle: '갤러리',
-    wikiTitle: '위키',
-    cvTitle: 'CV (이력서:)',
-    aboutTitle: '소개',
-    projectsTitle: '프로젝트:',
-    sections: { explore: '내 세계 탐험', exploreSubtitle: '내 작업과 관심사의 다양한 측면에 빠져보세요' },
+    nav: { home: 'Р В Р вЂ¦Р Р†РІР‚С›РЎС›Р Р†РІР‚С™Р’В¬', about: 'Р В РЎВР Р†Р вЂљР’В Р В Р вЂ°Р В РЎвЂќР вЂ™Р’В°Р РЋРЎв„ў', wiki: 'Р В РЎВР РЋРЎв„ўР Р†Р вЂљРЎвЂєР В Р вЂ¦Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤', cv: 'Р В РЎВР РЋРЎС™Р СћРІР‚ВР В Р’В»Р вЂ™Р’В Р СћРЎвЂ™Р В РЎВР Р†Р вЂљРЎвЂєР РЋРЎв„ў', gallery: 'Р В РЎвЂќР вЂ™Р’В°Р вЂ™Р’В¤Р В Р’В»Р РЋРЎСџР вЂ™Р’В¬Р В Р’В»Р вЂ™Р’В¦Р вЂ™Р’В¬', blog: 'Р В Р’В»Р РЋРІР‚ВР Р†Р вЂљРЎСљР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎвЂќР вЂ™Р’В·Р РЋРІР‚В', apps: 'Р В РЎВР Р†Р вЂљРЎС›Р вЂ™Р’В±', search: 'Р В РЎвЂќР В РІР‚В Р В РІР‚С™Р В РЎВР РЋРІР‚СљР Р†Р вЂљР’В°', news: 'Р В Р’В»Р Р†Р вЂљР’В°Р СћРІР‚ВР В РЎВР В РІР‚В°Р вЂ™Р’В¤', legal: 'Р В Р’В»Р В РІР‚В Р Р†Р вЂљРЎС›Р В РЎВР вЂ™Р’В Р В РЎвЂњ Р В РЎвЂќР РЋРІР‚вЂњР вЂ™Р’В Р В РЎВР вЂ™Р’В§Р В РІР‚С™' },
+    heroTitle: 'Р В Р вЂ¦Р В РЎвЂњР вЂ™Р’В¬Р В Р’В»Р вЂ™Р’В¦Р вЂ™Р’В¬Р В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ўР В РЎВР РЋРЎС™Р СћРІР‚ВР В Р вЂ¦Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В°Р В Р’В»Р РЋРІР‚ВР В Р вЂ° Р В РЎвЂќР вЂ™Р’В°Р РЋРЎв„ўР В Р’В»Р вЂ™Р’В°Р РЋРЎв„ўР В РЎВР РЋРІР‚С”Р РЋРІР‚в„ў',
+    heroSubtitle: 'Р В РЎВР В РІР‚В¦Р Р†Р вЂљРЎСљР В Р’В»Р Р†Р вЂљРЎС™Р РЋРЎв„ў, Р В РЎВР вЂ™Р’В°Р В РІР‚В¦Р В РЎВР РЋРЎС™Р вЂ™Р’ВР В РЎВР Р†Р вЂљРЎвЂєР вЂ™Р’В±, Р В РЎВР Р†Р вЂљРІР‚СњР СћРІР‚ВР В РЎВР вЂ™Р’В Р Р†Р вЂљРЎС›Р В РЎВР РЋРЎв„ўР РЋР’ВР В Р’В»Р В Р вЂ№Р РЋРЎв„ў Р В РЎВР Р†Р вЂљРЎС›Р Р†Р вЂљРЎвЂєР В Р’В»Р вЂ™Р’В¦Р Р†Р вЂљРЎвЂєР В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¤Р В РЎВР РЋРІвЂћСћР СћРІР‚В Р В Р’В»Р Р†Р вЂљРЎСљР Р†Р вЂљРЎСљР В РЎВР вЂ™Р’В§Р В РІР‚С™Р В Р вЂ¦Р Р†Р вЂљРЎвЂєР РЋРІР‚В Р В РЎвЂќР В РІР‚В Р В РІР‚В¦Р В Р вЂ¦Р Р†Р вЂљРІР‚СњР вЂ™Р’ВР В РЎВР РЋРЎС™Р Р†Р вЂљРЎвЂє Р В РЎвЂќР вЂ™Р’ВµР вЂ™Р’В¬Р В РЎВР вЂ™Р’В¶Р Р†Р вЂљРЎС›Р В Р вЂ¦Р Р†Р вЂљРЎС›Р вЂ™Р’В©Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р Р†РІР‚С™Р’В¬Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¤. Р В РЎВР вЂ™Р’В Р РЋРЎв„ў Р В РЎВР РЋРІР‚С”Р Р†Р вЂљР’ВР В РЎВР Р†Р вЂљРІР‚СњР Р†Р вЂљР’В¦, Р В РЎВР РЋРІР‚СљР РЋРЎС™Р В РЎвЂќР вЂ™Р’В°Р В РЎвЂњ, Р В РЎВР вЂ™Р’В§Р В РІР‚С™Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р РЋРЎС™ Р В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°Р В Р’В»Р вЂ™Р’В°Р вЂ™Р’ВР В РЎВР РЋРЎС™Р Р†Р вЂљРЎвЂє Р В Р вЂ¦Р РЋРІР‚СљР РЋРІР‚в„ўР В РЎВР РЋРІР‚СљР Р†Р вЂљР’В°Р В Р вЂ¦Р Р†Р вЂљРЎС›Р вЂ™Р’ВР В РЎВР Р†Р вЂљРЎвЂєР РЋРІР‚ВР В РЎВР РЋРІвЂћСћР Р†Р вЂљРЎСљ.',
+    searchPlaceholder: 'Р В РЎвЂќР В РІР‚В Р В РІР‚С™Р В РЎВР РЋРІР‚СљР Р†Р вЂљР’В°...',
+    categories: 'Р В РЎВР Р†РІР‚С›РІР‚вЂњР СћРІР‚ВР В Р вЂ¦Р Р†Р вЂљР’В¦Р В Р вЂ°Р В РЎвЂќР РЋРІР‚вЂњР вЂ™Р’В Р В Р’В»Р вЂ™Р’В¦Р вЂ™Р’В¬',
+    tags: 'Р В Р вЂ¦Р РЋРІР‚СљР РЋРЎв„ўР В РЎвЂќР вЂ™Р’В·Р РЋРІР‚В',
+    loading: 'Р В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В Р’В»Р Р†Р вЂљРЎС™Р РЋРЎв„ў Р В РЎВР вЂ™Р’В¤Р Р†Р вЂљР’В...',
+    nothing: 'Р В РЎвЂќР В РІР‚В Р В РІР‚С™Р В РЎВР РЋРІР‚СљР Р†Р вЂљР’В° Р В РЎвЂќР В РІР‚В Р вЂ™Р’В°Р В РЎвЂќР РЋРІР‚вЂњР РЋР’В Р В РЎВР Р†Р вЂљРІР‚СњР Р†Р вЂљР’В Р В РЎВР РЋРЎС™Р В Р вЂ°.',
+    back: 'Р В Р’В»Р Р†Р вЂљРІвЂћСћР вЂ™Р’В¤Р В Р’В»Р В Р вЂ№Р РЋРЎв„ў',
+    nowReading: 'Р В РЎВР РЋРЎС™Р В РІР‚В¦Р В Р’В»Р В РІР‚В°Р Р†Р вЂљРЎСљ Р В РЎВР вЂ™Р’В¤Р Р†Р вЂљР’В',
+    galleryTitle: 'Р В РЎвЂќР вЂ™Р’В°Р вЂ™Р’В¤Р В Р’В»Р РЋРЎСџР вЂ™Р’В¬Р В Р’В»Р вЂ™Р’В¦Р вЂ™Р’В¬',
+    wikiTitle: 'Р В РЎВР РЋРЎв„ўР Р†Р вЂљРЎвЂєР В Р вЂ¦Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤',
+    cvTitle: 'CV (Р В РЎВР РЋРЎС™Р СћРІР‚ВР В Р’В»Р вЂ™Р’В Р СћРЎвЂ™Р В РЎВР Р†Р вЂљРЎвЂєР РЋРЎв„ў:)',
+    aboutTitle: 'Р В РЎВР Р†Р вЂљР’В Р В Р вЂ°Р В РЎвЂќР вЂ™Р’В°Р РЋРЎв„ў',
+    projectsTitle: 'Р В Р вЂ¦Р Р†Р вЂљРЎСљР Р†Р вЂљРЎвЂєР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎВР вЂ™Р’В Р РЋРЎС™Р В Р вЂ¦Р В РІР‚В°Р РЋРІР‚В:',
+    sections: { explore: 'Р В Р’В»Р Р†Р вЂљРЎв„ўР СћРІР‚В Р В РЎВР Р†Р вЂљРЎвЂєР РЋРІР‚ВР В РЎвЂќР РЋРІР‚вЂњР Р†Р вЂљРЎвЂє Р В Р вЂ¦Р РЋРІР‚СљР РЋРІР‚в„ўР В Р вЂ¦Р Р†Р вЂљРІР‚СњР вЂ™Р’В', exploreSubtitle: 'Р В Р’В»Р Р†Р вЂљРЎв„ўР СћРІР‚В Р В РЎВР РЋРІР‚С”Р Р†Р вЂљР’ВР В РЎВР Р†Р вЂљРІР‚СњР Р†Р вЂљР’В¦Р В РЎвЂќР РЋРІР‚вЂњР РЋР’В Р В РЎвЂќР СћРІР‚ВР В РІР‚С™Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¬Р В РЎВР Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В РЎВР РЋРЎС™Р вЂ™Р’В Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¤Р В РЎВР Р†Р вЂљРІР‚СљР Р†Р вЂљР’ВР В Р вЂ¦Р Р†Р вЂљРЎС›Р РЋРЎв„ў Р В РЎВР РЋРІР‚ВР В Р вЂ№Р В Р’В»Р вЂ™Р’В©Р СћРІР‚ВР В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ў Р В Р’В»Р Р†РІР‚С›РІР‚вЂњР вЂ™Р’В Р В РЎВР вЂ™Р’В Р РЋРІР‚ВР В Р’В»Р РЋРІР‚вЂњР СћРІР‚ВР В РЎВР Р†Р вЂљРЎвЂєР РЋРІР‚ВР В РЎВР РЋРІвЂћСћР Р†Р вЂљРЎСљ' },
     apps: {
-      title: '앱',
-      subtitle: '내 프로젝트 시연',
-      selectPrompt: '앱을 선택하면 중앙에서 열립니다.',
-      descriptionLabel: '설명',
-      platformsLabel: '플랫폼',
-      technologiesLabel: '기술',
-      badgesLabel: '태그',
-      dateLabel: '날짜',
-      openFullLabel: '전체 열기',
+      title: 'Р В РЎВР Р†Р вЂљРЎС›Р вЂ™Р’В±',
+      subtitle: 'Р В Р’В»Р Р†Р вЂљРЎв„ўР СћРІР‚В Р В Р вЂ¦Р Р†Р вЂљРЎСљР Р†Р вЂљРЎвЂєР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎВР вЂ™Р’В Р РЋРЎС™Р В Р вЂ¦Р В РІР‚В°Р РЋРІР‚В Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р РЋРЎв„ўР В РЎВР Р†Р вЂљРІР‚СњР вЂ™Р’В°',
+      selectPrompt: 'Р В РЎВР Р†Р вЂљРЎС›Р вЂ™Р’В±Р В РЎВР РЋРЎС™Р Р†Р вЂљРЎвЂє Р В РЎВР Р†Р вЂљРЎвЂєР вЂ™Р’В Р В Р вЂ¦Р РЋРІР‚СљР РЋРЎС™Р В Р вЂ¦Р Р†Р вЂљРЎС›Р вЂ™Р’ВР В Р’В»Р вЂ™Р’В©Р СћРІР‚В Р В РЎВР вЂ™Р’В¤Р Р†Р вЂљР’ВР В РЎВР Р†Р вЂљРЎС›Р Р†РІР‚С›РЎС›Р В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ўР В РЎВР Р†Р вЂљРЎвЂєР РЋРЎв„ў Р В РЎВР Р†Р вЂљРІР‚СњР СћРІР‚ВР В Р’В»Р вЂ™Р’В¦Р В РІР‚В¦Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р Р†РІР‚С™Р’В¬Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¤.',
+      descriptionLabel: 'Р В РЎВР Р†Р вЂљРЎвЂєР вЂ™Р’В¤Р В Р’В»Р В РІР‚С›Р Р†Р вЂљР’В¦',
+      platformsLabel: 'Р В Р вЂ¦Р Р†Р вЂљРЎСљР В Р вЂ°Р В Р’В»Р РЋРІР‚С”Р вЂ™Р’В«Р В Р вЂ¦Р В Р РЏР РЋР’В',
+      technologiesLabel: 'Р В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°Р В РЎВР Р†РІР‚С™Р’В¬Р вЂ™Р’В ',
+      badgesLabel: 'Р В Р вЂ¦Р РЋРІР‚СљР РЋРЎв„ўР В РЎвЂќР вЂ™Р’В·Р РЋРІР‚В',
+      dateLabel: 'Р В Р’В»Р Р†Р вЂљРЎв„ўР вЂ™Р’В Р В РЎВР вЂ™Р’В§Р РЋРЎв„ў',
+      openFullLabel: 'Р В РЎВР вЂ™Р’В Р Р†Р вЂљРЎвЂєР В РЎВР В РІР‚В Р СћРІР‚В Р В РЎВР Р†Р вЂљРІР‚СњР СћРІР‚ВР В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°',
       categories: {
-        ready: '완성된 앱',
-        prototype: '프로토타입',
-        'webos-emulation': 'WebOS 에뮬레이션',
+        ready: 'Р В РЎВР Р†РІР‚С›РЎС›Р Р†Р вЂљРЎвЂєР В РЎВР Р†Р вЂљРЎвЂєР вЂ™Р’В±Р В Р’В»Р РЋРІР‚в„ўР РЋРЎв„ў Р В РЎВР Р†Р вЂљРЎС›Р вЂ™Р’В±',
+        prototype: 'Р В Р вЂ¦Р Р†Р вЂљРЎСљР Р†Р вЂљРЎвЂєР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’В Р В Р вЂ¦Р РЋРІР‚СљР В РІР‚С™Р В РЎВР РЋРІР‚С”Р Р†Р вЂљР’В¦',
+        'webos-emulation': 'WebOS Р В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ўР В Р’В»Р вЂ™Р’В®Р вЂ™Р’В¬Р В Р’В»Р вЂ™Р’В Р Р†РІР‚С™Р’В¬Р В РЎВР РЋРЎС™Р СћРІР‚ВР В РЎВР Р†Р вЂљР’В¦Р вЂ™Р’В',
       },
     },
-    latestPosts: { title: '최신 게시물', subtitle: '신선한 생각과 통찰', viewAll: '모두 보기' },
-    cta: { letsCreate: '함께', together: '만들어요', description: '프로젝트 아이디어가 있거나 단순히 연결하고 싶다면 연락 주세요.', getInTouch: '연락하기' },
-    blog: { title: '블로그', subtitle: '개발, 디자인, 기술에 대한 생각, 튜토리얼, 통찰.', description: '개발, 디자인, 기술에 대한 생각, 튜토리얼, 통찰.' },
-    wiki: { description: '매일 사용하는 개념, 도구, 기술의 큐레이션된 지식 기반.' },
-    cv: { experience: '경력', education: '교육', prototypes: '프로토타입', rewards: '상', print: '인쇄', downloadPdf: 'PDF 다운로드', viewDemo: '데모 보기' },
-    about: { description: '내 여정, 기술, 창작에 대한 열정을 알아보세요.' },
-    gallery: { description: '프로젝트, 사진, 창의적 탐험을 통한 시각적 여정.', allAlbums: '모든 앨범' },
-    search: { title: '검색', subtitle: '블로그 게시물, 위키 문서, 갤러리 전체에서 무엇이든 찾기', placeholder: '모든 콘텐츠 검색...', allContent: '모든 콘텐츠', results: '결과' },
-    stats: { blogPosts: '블로그 게시물', wikiArticles: '위키 문서', galleryImages: '이미지', projects: '프로젝트' },
+    latestPosts: { title: 'Р В РЎВР вЂ™Р’ВµР РЋРЎв„ўР В РЎВР Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В  Р В РЎвЂќР В РІР‚В Р В Р вЂ°Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р РЋРЎв„ўР В Р’В»Р вЂ™Р’В¬Р РЋР’В', subtitle: 'Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В Р В РЎВР Р†Р вЂљРЎвЂєР вЂ™Р’В Р В Р вЂ¦Р Р†Р вЂљРЎС›Р РЋРЎв„ў Р В РЎВР РЋРІР‚СљР РЋРЎС™Р В РЎвЂќР вЂ™Р’В°Р В РЎвЂњР В РЎвЂќР РЋРІР‚вЂњР РЋР’В Р В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’ВµР В РЎВР вЂ™Р’В°Р вЂ™Р’В°', viewAll: 'Р В Р’В»Р В РІР‚С›Р В Р С“Р В Р’В»Р Р†Р вЂљР’ВР РЋРІР‚в„ў Р В Р’В»Р РЋРІР‚вЂњР СћРІР‚ВР В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°' },
+    cta: { letsCreate: 'Р В Р вЂ¦Р Р†Р вЂљРЎС›Р В Р С“Р В РЎвЂќР вЂ™Р’В»Р вЂ™Р’В', together: 'Р В Р’В»Р вЂ™Р’В§Р В Р вЂ°Р В Р’В»Р Р†Р вЂљРЎС™Р вЂ™Р’В¤Р В РЎВР Р†Р вЂљРІР‚СљР СћРІР‚ВР В РЎВР РЋРІвЂћСћР Р†Р вЂљРЎСљ', description: 'Р В Р вЂ¦Р Р†Р вЂљРЎСљР Р†Р вЂљРЎвЂєР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎВР вЂ™Р’В Р РЋРЎС™Р В Р вЂ¦Р В РІР‚В°Р РЋРІР‚В Р В РЎВР Р†Р вЂљРЎС›Р Р†Р вЂљРЎвЂєР В РЎВР РЋРЎС™Р СћРІР‚ВР В Р’В»Р Р†Р вЂљРЎСљР Р†Р вЂљРЎСљР В РЎВР Р†Р вЂљРІР‚СљР СћРІР‚ВР В РЎвЂќР вЂ™Р’В°Р В РІР‚С™ Р В РЎВР РЋРІР‚С”Р Р†РІР‚С™Р’В¬Р В РЎвЂќР вЂ™Р’В±Р вЂ™Р’В°Р В Р’В»Р Р†Р вЂљРЎв„ўР вЂ™Р’В Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р В Р С“Р В РЎВР Р†РІР‚С™Р’В¬Р РЋРЎв„ўР В Р вЂ¦Р РЋРІР‚С”Р Р†РІР‚С™Р’В¬ Р В РЎВР Р†Р вЂљРІР‚СњР вЂ™Р’В°Р В РЎвЂќР В РІР‚В Р вЂ™Р’В°Р В Р вЂ¦Р Р†Р вЂљРЎС›Р вЂ™Р’ВР В РЎвЂќР РЋРІР‚вЂњР вЂ™Р’В  Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¶Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¤Р В Р’В»Р вЂ™Р’В©Р СћРІР‚В Р В РЎВР Р†Р вЂљРІР‚СњР вЂ™Р’В°Р В Р’В»Р РЋРЎС™Р В РІР‚В¦ Р В РЎВР В РІвЂљВ¬Р РЋР’ВР В РЎВР Р†Р вЂљРЎвЂєР РЋРІР‚ВР В РЎВР РЋРІвЂћСћР Р†Р вЂљРЎСљ.', getInTouch: 'Р В РЎВР Р†Р вЂљРІР‚СњР вЂ™Р’В°Р В Р’В»Р РЋРЎС™Р В РІР‚В¦Р В Р вЂ¦Р Р†Р вЂљРЎС›Р вЂ™Р’ВР В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°' },
+    blog: { title: 'Р В Р’В»Р РЋРІР‚ВР Р†Р вЂљРЎСљР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎвЂќР вЂ™Р’В·Р РЋРІР‚В', subtitle: 'Р В РЎвЂќР вЂ™Р’В°Р РЋРЎв„ўР В Р’В»Р вЂ™Р’В°Р РЋРЎв„ў, Р В Р’В»Р Р†Р вЂљРЎСљР Р†Р вЂљРЎСљР В РЎВР РЋРІР‚С”Р РЋРІР‚в„ўР В РЎВР РЋРЎС™Р РЋРІР‚В, Р В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°Р В РЎВР Р†РІР‚С™Р’В¬Р вЂ™Р’В Р В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ў Р В Р’В»Р В Р вЂ°Р В РІР‚С™Р В Р вЂ¦Р Р†Р вЂљРЎС›Р РЋРЎв„ў Р В РЎВР РЋРІР‚СљР РЋРЎС™Р В РЎвЂќР вЂ™Р’В°Р В РЎвЂњ, Р В Р вЂ¦Р В РІР‚В°Р РЋРЎв„ўР В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’В Р В Р’В»Р вЂ™Р’В¦Р вЂ™Р’В¬Р В РЎВР Р†Р вЂљРІР‚СљР РЋР’В, Р В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’ВµР В РЎВР вЂ™Р’В°Р вЂ™Р’В°.', description: 'Р В РЎвЂќР вЂ™Р’В°Р РЋРЎв„ўР В Р’В»Р вЂ™Р’В°Р РЋРЎв„ў, Р В Р’В»Р Р†Р вЂљРЎСљР Р†Р вЂљРЎСљР В РЎВР РЋРІР‚С”Р РЋРІР‚в„ўР В РЎВР РЋРЎС™Р РЋРІР‚В, Р В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°Р В РЎВР Р†РІР‚С™Р’В¬Р вЂ™Р’В Р В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ў Р В Р’В»Р В Р вЂ°Р В РІР‚С™Р В Р вЂ¦Р Р†Р вЂљРЎС›Р РЋРЎв„ў Р В РЎВР РЋРІР‚СљР РЋРЎС™Р В РЎвЂќР вЂ™Р’В°Р В РЎвЂњ, Р В Р вЂ¦Р В РІР‚В°Р РЋРЎв„ўР В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’В Р В Р’В»Р вЂ™Р’В¦Р вЂ™Р’В¬Р В РЎВР Р†Р вЂљРІР‚СљР РЋР’В, Р В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’ВµР В РЎВР вЂ™Р’В°Р вЂ™Р’В°.' },
+    wiki: { description: 'Р В Р’В»Р вЂ™Р’В§Р вЂ™Р’В¤Р В РЎВР РЋРЎС™Р РЋР’В Р В РЎВР Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В РЎВР РЋРІвЂћСћР вЂ™Р’В©Р В Р вЂ¦Р Р†Р вЂљРЎС›Р вЂ™Р’ВР В Р’В»Р В РІР‚В°Р Р†Р вЂљРЎСљ Р В РЎвЂќР вЂ™Р’В°Р РЋРЎв„ўР В Р’В»Р Р†Р вЂљР’В¦Р РЋРІР‚в„ў, Р В Р’В»Р В Р РЏР Р†Р вЂљРЎвЂєР В РЎвЂќР вЂ™Р’ВµР вЂ™Р’В¬, Р В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°Р В РЎВР Р†РІР‚С™Р’В¬Р вЂ™Р’В Р В РЎВР РЋРЎС™Р вЂ™Р’В Р В Р вЂ¦Р В РЎвЂњР РЋРІР‚в„ўР В Р’В»Р вЂ™Р’В Р Р†РІР‚С™Р’В¬Р В РЎВР РЋРЎС™Р СћРІР‚ВР В РЎВР Р†Р вЂљР’В¦Р вЂ™Р’ВР В Р’В»Р РЋРІР‚в„ўР РЋРЎв„ў Р В РЎВР вЂ™Р’В§Р В РІР‚С™Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р РЋРЎС™ Р В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°Р В Р’В»Р вЂ™Р’В°Р вЂ™Р’В.' },
+    cv: { experience: 'Р В РЎвЂќР В РІР‚В Р В РІР‚В¦Р В Р’В»Р вЂ™Р’В Р СћРЎвЂ™', education: 'Р В РЎвЂќР вЂ™Р’ВµР РЋРІР‚в„ўР В РЎВР РЋРЎв„ўР В Р вЂ№', prototypes: 'Р В Р вЂ¦Р Р†Р вЂљРЎСљР Р†Р вЂљРЎвЂєР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’В Р В Р вЂ¦Р РЋРІР‚СљР В РІР‚С™Р В РЎВР РЋРІР‚С”Р Р†Р вЂљР’В¦', rewards: 'Р В РЎВР РЋРІР‚СљР В РЎвЂњ', print: 'Р В РЎВР РЋРЎС™Р РЋРІР‚ВР В РЎВР Р†Р вЂљР Р‹Р Р†Р вЂљРЎвЂє', downloadPdf: 'PDF Р В Р’В»Р Р†Р вЂљРІвЂћвЂ“Р вЂ™Р’В¤Р В РЎВР РЋРІвЂћСћР СћРІР‚ВР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В Р’В»Р Р†Р вЂљРЎС™Р РЋРЎв„ў', viewDemo: 'Р В Р’В»Р В Р Р‰Р вЂ™Р’В°Р В Р’В»Р В РІР‚С›Р В Р С“ Р В Р’В»Р РЋРІР‚вЂњР СћРІР‚ВР В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°' },
+    about: { description: 'Р В Р’В»Р Р†Р вЂљРЎв„ўР СћРІР‚В Р В РЎВР Р†Р вЂљРІР‚СњР вЂ™Р’В¬Р В РЎВР вЂ™Р’В Р Р†Р вЂљРЎС›, Р В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°Р В РЎВР Р†РІР‚С™Р’В¬Р вЂ™Р’В , Р В РЎВР вЂ™Р’В°Р В РІР‚В¦Р В РЎВР РЋРІР‚С”Р Р†Р вЂљР’ВР В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ў Р В Р’В»Р В Р вЂ°Р В РІР‚С™Р В Р вЂ¦Р Р†Р вЂљРЎС›Р РЋРЎв„ў Р В РЎВР Р†Р вЂљРІР‚СњР СћРІР‚ВР В РЎВР вЂ™Р’В Р Р†Р вЂљРЎС›Р В РЎВР РЋРЎС™Р Р†Р вЂљРЎвЂє Р В РЎВР Р†Р вЂљРЎС›Р В Р вЂ°Р В РЎВР Р†Р вЂљРЎС›Р Р†Р вЂљРЎвЂєР В Р’В»Р РЋРІР‚вЂњР СћРІР‚ВР В РЎВР Р†Р вЂљРЎвЂєР РЋРІР‚ВР В РЎВР РЋРІвЂћСћР Р†Р вЂљРЎСљ.' },
+    gallery: { description: 'Р В Р вЂ¦Р Р†Р вЂљРЎСљР Р†Р вЂљРЎвЂєР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎВР вЂ™Р’В Р РЋРЎС™Р В Р вЂ¦Р В РІР‚В°Р РЋРІР‚В, Р В РЎВР Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В РЎВР вЂ™Р’В§Р Р†Р вЂљРЎвЂє, Р В РЎВР вЂ™Р’В°Р В РІР‚В¦Р В РЎВР РЋРЎС™Р вЂ™Р’ВР В РЎВР вЂ™Р’В Р В РЎвЂњ Р В Р вЂ¦Р РЋРІР‚СљР РЋРІР‚в„ўР В Р вЂ¦Р Р†Р вЂљРІР‚СњР вЂ™Р’ВР В РЎВР РЋРЎС™Р Р†Р вЂљРЎвЂє Р В Р вЂ¦Р Р†Р вЂљР’В Р вЂ™Р’ВµР В Р вЂ¦Р Р†Р вЂљРЎС›Р РЋРЎв„ў Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р РЋРЎв„ўР В РЎвЂќР вЂ™Р’В°Р В РЎвЂњР В РЎВР вЂ™Р’В Р В РЎвЂњ Р В РЎВР Р†Р вЂљРІР‚СњР вЂ™Р’В¬Р В РЎВР вЂ™Р’В Р Р†Р вЂљРЎС›.', allAlbums: 'Р В Р’В»Р В РІР‚С›Р В Р С“Р В Р’В»Р Р†Р вЂљРЎС™Р вЂ™Р’В  Р В РЎВР Р†Р вЂљРЎС›Р В Р С“Р В Р’В»Р В РІР‚В Р Р†Р вЂљРЎСљ' },
+    search: { title: 'Р В РЎвЂќР В РІР‚В Р В РІР‚С™Р В РЎВР РЋРІР‚СљР Р†Р вЂљР’В°', subtitle: 'Р В Р’В»Р РЋРІР‚ВР Р†Р вЂљРЎСљР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎвЂќР вЂ™Р’В·Р РЋРІР‚В Р В РЎвЂќР В РІР‚В Р В Р вЂ°Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р РЋРЎв„ўР В Р’В»Р вЂ™Р’В¬Р РЋР’В, Р В РЎВР РЋРЎв„ўР Р†Р вЂљРЎвЂєР В Р вЂ¦Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤ Р В Р’В»Р вЂ™Р’В¬Р РЋРІР‚ВР В РЎВР Р†Р вЂљРЎвЂєР РЋРЎв„ў, Р В РЎвЂќР вЂ™Р’В°Р вЂ™Р’В¤Р В Р’В»Р РЋРЎСџР вЂ™Р’В¬Р В Р’В»Р вЂ™Р’В¦Р вЂ™Р’В¬ Р В РЎВР вЂ™Р’В Р Р†Р вЂљРЎвЂєР В РЎВР В РІР‚В Р СћРІР‚ВР В РЎВР Р†Р вЂљРІР‚СњР РЋРІР‚в„ўР В РЎВР Р†Р вЂљРЎвЂєР РЋРЎв„ў Р В Р’В»Р вЂ™Р’В¬Р СћРІР‚ВР В РЎВР Р†Р вЂљРІР‚СњР Р†Р вЂљР Р‹Р В РЎВР РЋРЎС™Р СћРІР‚ВР В Р’В»Р Р†Р вЂљРЎС™Р вЂ™Р’В  Р В РЎВР вЂ™Р’В°Р РЋРІР‚СћР В РЎвЂќР РЋРІР‚ВР вЂ™Р’В°', placeholder: 'Р В Р’В»Р В РІР‚С›Р В Р С“Р В Р’В»Р Р†Р вЂљРЎС™Р вЂ™Р’В  Р В РЎВР В РІР‚В¦Р вЂ™Р’ВР В Р вЂ¦Р Р†Р вЂљР’В¦Р РЋРІР‚в„ўР В РЎВР РЋРІР‚ВР вЂ™Р’В  Р В РЎвЂќР В РІР‚В Р В РІР‚С™Р В РЎВР РЋРІР‚СљР Р†Р вЂљР’В°...', allContent: 'Р В Р’В»Р В РІР‚С›Р В Р С“Р В Р’В»Р Р†Р вЂљРЎС™Р вЂ™Р’В  Р В РЎВР В РІР‚В¦Р вЂ™Р’ВР В Р вЂ¦Р Р†Р вЂљР’В¦Р РЋРІР‚в„ўР В РЎВР РЋРІР‚ВР вЂ™Р’В ', results: 'Р В РЎвЂќР В РІР‚В Р вЂ™Р’В°Р В РЎвЂќР РЋРІР‚вЂњР РЋР’В' },
+    stats: { blogPosts: 'Р В Р’В»Р РЋРІР‚ВР Р†Р вЂљРЎСљР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎвЂќР вЂ™Р’В·Р РЋРІР‚В Р В РЎвЂќР В РІР‚В Р В Р вЂ°Р В РЎВР Р†Р вЂљРІвЂћвЂ“Р РЋРЎв„ўР В Р’В»Р вЂ™Р’В¬Р РЋР’В', wikiArticles: 'Р В РЎВР РЋРЎв„ўР Р†Р вЂљРЎвЂєР В Р вЂ¦Р Р†Р вЂљРЎв„ўР вЂ™Р’В¤ Р В Р’В»Р вЂ™Р’В¬Р РЋРІР‚ВР В РЎВР Р†Р вЂљРЎвЂєР РЋРЎв„ў', galleryImages: 'Р В РЎВР РЋРЎС™Р СћРІР‚ВР В Р’В»Р В РІР‚РЋР РЋРІР‚ВР В РЎВР вЂ™Р’В§Р В РІР‚С™', projects: 'Р В Р вЂ¦Р Р†Р вЂљРЎСљР Р†Р вЂљРЎвЂєР В Р’В»Р В Р вЂ№Р РЋРЎв„ўР В РЎВР вЂ™Р’В Р РЋРЎС™Р В Р вЂ¦Р В РІР‚В°Р РЋРІР‚В' },
   },
 };
 
 const themeOptions = [
-  { id: 'default', name: 'Frutiger Aero', icon: '🌿' },
-  { id: 'vaporwave', name: 'Vaporwave', icon: '🌴' },
-  { id: 'cyberpunk', name: 'Cyberpunk', icon: '⚡' },
-  { id: 'skeuomorphism', name: 'Skeuomorphism', icon: '📱' },
-  { id: 'pcb', name: 'PCB Circuit', icon: '🔌' },
+  { id: 'default', name: 'Frutiger Aero', icon: 'Р РЋР вЂљР РЋРЎСџР В Р вЂ°Р РЋРІР‚вЂќ' },
+  { id: 'vaporwave', name: 'Vaporwave', icon: 'Р РЋР вЂљР РЋРЎСџР В Р вЂ°Р СћРІР‚В' },
+  { id: 'cyberpunk', name: 'Cyberpunk', icon: 'Р В Р вЂ Р РЋРІвЂћСћР В Р вЂ№' },
+  { id: 'skeuomorphism', name: 'Skeuomorphism', icon: 'Р РЋР вЂљР РЋРЎСџР Р†Р вЂљРЎС™Р вЂ™Р’В±' },
+  { id: 'pcb', name: 'PCB Circuit', icon: 'Р РЋР вЂљР РЋРЎСџР Р†Р вЂљРЎСљР В Р вЂ°' },
 ] as const;
 
 
 function buildView(post: ContentItem): BlogPostView {
   const plain = stripMarkdown(post.content);
-  const excerpt = (post as any).excerpt || plain.slice(0, 180) + (plain.length > 180 ? '…' : '');
+  const excerpt = (post as any).excerpt || plain.slice(0, 180) + (plain.length > 180 ? 'Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦' : '');
   const words = plain.split(/\s+/).filter(Boolean).length;
   const readingTime = `${Math.max(1, Math.round(words / 180))} min read`;
 
@@ -639,11 +644,11 @@ export function BlogSite() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('site-theme', theme);
-    setHeroKey((k) => k + 1); // перезапуск анимаций при смене темы
+    setHeroKey((k) => k + 1); // Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚Сњ Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚В Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“
   }, [theme]);
 
-  // Обработка изменения размера iframe
-  // Загрузка index файла категории при изменении wikiCategory
+  // Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В° Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В° iframe
+  // Р В Р’В Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В° index Р В Р Р‹Р Р†Р вЂљРЎвЂєР В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’В° Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В wikiCategory
   useEffect(() => {
     if (wikiCategory === 'All') {
       setWikiCategoryIndex(null);
@@ -655,7 +660,7 @@ export function BlogSite() {
       .catch(err => console.error('Failed to load category index:', err));
   }, [wikiCategory, language]);
 
-  // Обработка кликов по внутренним ссылкам в markdown
+  // Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В° Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В  Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚Сћ Р В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋР’В Р В Р Р‹Р В РЎвЂњР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋР’В Р В Р’В Р В РІР‚В  markdown
   useEffect(() => {
     const handleWikiLinkClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -666,9 +671,9 @@ export function BlogSite() {
         const wikiLink = link.getAttribute('data-wiki-link');
         
         if (wikiLink) {
-          // Находим статью по относительному пути
+          // Р В Р’В Р РЋРЎС™Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚ВР В Р’В Р РЋР’В Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°Р В Р Р‹Р В РІР‚в„– Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р Р‹Р РЋРІР‚Сљ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚В
           const targetArticle = wiki.find(article => {
-            // Проверяем различные варианты совпадения
+            // Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ
             const fileName = wikiLink.replace('.md', '');
             return article.id === fileName || 
                    article.relativePath?.endsWith(wikiLink) ||
@@ -698,7 +703,7 @@ export function BlogSite() {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return; // Double check
       
-      // Вычисляем высоту относительно позиции мыши
+      // Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРІР‚Сљ Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В Р В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р РЋРІР‚В
       const iframe = document.querySelector('[data-iframe-container]');
       if (!iframe) return;
       
@@ -736,7 +741,7 @@ export function BlogSite() {
       loadAboutMe(language),
       loadLegalNotice(language),
     ]).then(([loadedPosts, loadedWiki, loadedGalleryItems, loadedProjects, loadedAboutMe, loadedLegalNotice]) => {
-      // Map GalleryItem[] → ImageItem[] shape for downstream picture state
+      // Map GalleryItem[] Р В Р вЂ Р Р†Р вЂљР’В Р Р†Р вЂљРІвЂћСћ ImageItem[] shape for downstream picture state
       const loadedPics: ImageItem[] = (loadedGalleryItems as any[]).map((g) => ({
         id: g.id,
         name: g.title,
@@ -748,7 +753,7 @@ export function BlogSite() {
       const mapped = loadedPosts.map(buildView);
       const mappedWiki = loadedWiki.map((item) => ({
         ...item,
-        excerpt: stripMarkdown(item.content).slice(0, 200) + (item.content.length > 200 ? '…' : ''),
+        excerpt: stripMarkdown(item.content).slice(0, 200) + (item.content.length > 200 ? 'Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦' : ''),
         html: markdownToHtml(item.content),
         categoryPath: item.category || item.pathSegments?.join('/') || 'wiki',
       }));
@@ -761,27 +766,27 @@ export function BlogSite() {
       setLegalNotice(loadedLegalNotice);
       setLoading(false);
       
-      // Обновляем активный пост, если он открыт
+      // Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ў, Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦ Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†Р вЂљРЎв„ў
       setActivePost(prev => {
         if (!prev) return null;
         const updated = mapped.find(p => p.id === prev.id);
-        // Создаём новый объект, чтобы React гарантированно увидел изменения
+        // Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В·Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р РЋР’В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ў, Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ React Р В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р РЋРІР‚СљР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В» Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ
         return updated ? { ...updated } : null;
       });
       
-      // Обновляем активную wiki страницу, если она открыта
+      // Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РІР‚в„– wiki Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР’В Р В Р Р‹Р РЋРІР‚Сљ, Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В° Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°
       setActiveWiki(prev => {
         if (!prev) return null;
         const updated = mappedWiki.find(w => w.id === prev.id);
-        // Создаём новый объект, чтобы React гарантированно увидел изменения
+        // Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В·Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р РЋР’В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ў, Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ React Р В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р РЋРІР‚СљР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В» Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ
         return updated ? { ...updated } : null;
       });
       
-      // Обновляем активный проект, если он открыт
+      // Р В Р’В Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В±Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ў, Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦ Р В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†Р вЂљРЎв„ў
       setActiveProject(prev => {
         if (!prev) return null;
         const updated = loadedProjects.find(p => p.id === prev.id);
-        // Создаём новый объект, чтобы React гарантированно увидел изменения
+        // Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В·Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р РЋР’В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ў, Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ React Р В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р РЋРІР‚СљР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В» Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ
         return updated ? { ...updated } : null;
       });
       
@@ -790,7 +795,7 @@ export function BlogSite() {
     return () => {
       mounted = false;
     };
-  }, [language]); // Перезагружаем при смене языка
+  }, [language]); // Р В Р’В Р РЋРЎСџР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚В Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°
 
   useEffect(() => {
     syncFromLocation(window.location.pathname, posts, wiki);
@@ -844,7 +849,7 @@ export function BlogSite() {
     return mapping;
   }, [apps]);
 
-  // Построение дерева категорий Wiki
+  // Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В° Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњ Wiki
   const wikiCategoryTree = useMemo(() => {
     interface CategoryNode {
       name: string;
@@ -923,7 +928,7 @@ export function BlogSite() {
     });
   }, [wiki, wikiCategory, wikiSearch]);
 
-  // Построение дерева альбомов Gallery (аналогично Wiki)
+  // Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В° Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В  Gallery (Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Wiki)
   const galleryAlbumTree = useMemo(() => {
     interface AlbumNode {
       name: string;
@@ -935,13 +940,13 @@ export function BlogSite() {
     const root = new Map<string, AlbumNode>();
 
     pictures.forEach((pic) => {
-      // Извлекаем путь к папке из URL изображения
-      // Формат: /assets/picture-hash.jpg или подобный, нужно использовать pic.id или другое поле
+      // Р В Р’В Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р’В Р РЋРІР‚Сњ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В· URL Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ
+      // Р В Р’В Р вЂ™Р’В¤Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ў: /assets/picture-hash.jpg Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ, Р В Р’В Р В РІР‚В¦Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° pic.id Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р СћРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’Вµ
       const pathParts = pic.path.split('/');
       const picturesIndex = pathParts.findIndex(part => part === 'pictures');
       
       if (picturesIndex === -1 || picturesIndex === pathParts.length - 1) {
-        // Нет структуры папок, помещаем в General
+        // Р В Р’В Р РЋРЎС™Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р’В Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РІР‚С™Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚Сњ, Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР’В°Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р В РІР‚В  General
         if (!root.has('General')) {
           root.set('General', {
             name: 'General',
@@ -954,8 +959,8 @@ export function BlogSite() {
         return;
       }
 
-      // Получаем сегменты пути после pictures/
-      const segments = pathParts.slice(picturesIndex + 1, -1); // Убираем имя файла
+      // Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’Вµ pictures/
+      const segments = pathParts.slice(picturesIndex + 1, -1); // Р В Р’В Р В РІвЂљВ¬Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋР’ВР В Р Р‹Р В Р РЏ Р В Р Р‹Р Р†Р вЂљРЎвЂєР В Р’В Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’В°
       
       if (segments.length === 0) {
         if (!root.has('General')) {
@@ -1010,7 +1015,7 @@ export function BlogSite() {
       const segments = pathParts.slice(picturesIndex + 1, -1);
       const picPath = segments.join('/');
       
-      // Проверяем точное совпадение или начало пути
+      // Р В Р’В Р РЋРЎСџР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚В
       return picPath === selectedAlbum || picPath.startsWith(selectedAlbum + '/');
     });
   }, [pictures, selectedAlbum]);
@@ -1036,9 +1041,9 @@ export function BlogSite() {
 
   const latestPosts = posts.slice(0, 3);
   const statCards = [
-    { label: 'Статей', value: posts.length, icon: BookOpen, accent: 'bg-aero-sky/30' },
-    { label: 'Wiki заметок', value: wiki.length, icon: FileText, accent: 'bg-aero-sun/30' },
-    { label: 'Изображений', value: pictures.length, icon: ImageIcon, accent: 'bg-aero-water/30' },
+    { label: 'Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†РІР‚С›РІР‚вЂњ', value: posts.length, icon: BookOpen, accent: 'bg-aero-sky/30' },
+    { label: 'Wiki Р В Р’В Р вЂ™Р’В·Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚Сњ', value: wiki.length, icon: FileText, accent: 'bg-aero-sun/30' },
+    { label: 'Р В Р’В Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњ', value: pictures.length, icon: ImageIcon, accent: 'bg-aero-water/30' },
   ];
 
 
@@ -1205,7 +1210,7 @@ export function BlogSite() {
           disabled={currentPage === 1}
           className="neu px-4 py-2 rounded-xl bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
         >
-          ←
+          Р В Р вЂ Р Р†Р вЂљР’В Р РЋРІР‚в„ў
         </button>
         {pages.map((page, idx) => (
           page === '...' ? (
@@ -1229,7 +1234,7 @@ export function BlogSite() {
           disabled={currentPage === totalPages}
           className="neu px-4 py-2 rounded-xl bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
         >
-          →
+          Р В Р вЂ Р Р†Р вЂљР’В Р Р†Р вЂљРІвЂћСћ
         </button>
       </div>
     );
@@ -1329,7 +1334,7 @@ export function BlogSite() {
             </section>
           )}
 
-          {/* Latest News — vertical slice from src/content/news */}
+          {/* Latest News Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ vertical slice from src/content/news */}
           <NewsSection
             limit={3}
             onOpenNews={(item) => handleOpenNews(item as NewsItem)}
@@ -1382,142 +1387,61 @@ export function BlogSite() {
       )}
 
       {activeSection === 'blog' && !activePost && (
-        <main className="pt-32 pb-24">
-          <div className="container mx-auto px-6">
-            {/* Header */}
-            <section className="max-w-4xl mx-auto text-center mb-16">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-                <span className="gradient-text">{ui.blog.title}</span>
-              </h1>
-              <p className="text-xl text-muted-foreground animate-fade-in animation-delay-100">
-                {ui.blog.subtitle}
-              </p>
-            </section>
-
-            {/* Filters */}
-            <section className="max-w-4xl mx-auto mb-12 animate-fade-in animation-delay-200">
-              <div className="glass rounded-2xl p-6 flex flex-col md:flex-row gap-4">
-                {/* Search */}
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder={ui.searchPlaceholder}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-card border border-border focus:border-primary focus:outline-none transition-colors"
-                  />
-                </div>
-
-                {/* Categories */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-                  <Filter className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
-                        selectedCategory === category
-                          ? 'neu-sm bg-primary text-primary-foreground'
-                          : 'bg-muted hover:bg-muted/80 text-muted-foreground'
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Posts Grid */}
-            <section className="max-w-6xl mx-auto">
-              {loading ? (
-                <div className="text-center py-16">
-                  <p className="text-muted-foreground text-lg">{ui.loading}</p>
-                </div>
-              ) : paginatedBlog.length === 0 ? (
-                <div className="text-center py-16">
-                  <p className="text-muted-foreground text-lg">{ui.nothing}</p>
-                </div>
-              ) : (
-                <>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {paginatedBlog.map((post, index) => (
-                      <ContentCard
-                        key={post.id}
-                        item={post}
-                        onClick={() => handleOpenPost(post)}
-                        index={index}
-                        animationClass="animate-fade-in"
-                      />
-                    ))}
-                  </div>
-                  <Pagination currentPage={blogPage} totalPages={totalBlogPages} onPageChange={setBlogPage} />
-                </>
-              )}
-            </section>
-          </div>
-        </main>
+        <ArticlesSection
+          labels={{
+            title: ui.blog.title,
+            subtitle: ui.blog.subtitle,
+            searchPlaceholder: ui.searchPlaceholder,
+            loading: ui.loading,
+            nothing: ui.nothing,
+          }}
+          loading={loading}
+          paginatedPosts={paginatedBlog}
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          currentPage={blogPage}
+          totalPages={totalBlogPages}
+          onPageChange={setBlogPage}
+          onOpenPost={handleOpenPost}
+        />
       )}
 
       {/* Blog Post Detail View */}
       {(activeSection === 'home' || activeSection === 'blog') && activePost && (
-        <main className="pt-32 pb-24" key={`post-${activePost.id}-${language}`}>
-          <div className="container mx-auto px-6">
-            <section className="max-w-4xl mx-auto">
-              <ContentReader
-                  title={activePost.title}
-                  html={activePost.html}
-                  excerpt={activePost.excerpt}
-                  preview={activePost.preview}
-                  category={activePost.category}
-                  date={activePost.date}
-                  readingTime={activePost.readingTime}
-                  tags={activePost.tags}
-                  tagsLabel={ui.tags}
-                  onTagClick={(tag) => {
-                    setActivePost(null);
-                    setActiveSection('search');
-                    setGlobalSearchQuery(tag);
-                    window.history.pushState({}, '', `${basePath}search`);
-                  }}
-                  tagCounts={
-                    activePost.tags
-                      ? Object.fromEntries(
-                          activePost.tags.map((tag) => [
-                            tag,
-                            posts.filter((p) => p.tags?.includes(tag)).length +
-                              wiki.filter((w) => w.tags?.includes(tag)).length +
-                              projects.filter((pr) => pr.tags?.includes(tag)).length,
-                          ])
-                        )
-                      : {}
-                  }
-                  headerMeta={
-                    <>
-                      <button
-                        onClick={() => {
-                          setActivePost(null);
-                          window.history.pushState({}, '', activeSection === 'blog' ? `${basePath}blog` : basePath);
-                        }}
-                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
-                      >
-                        <ArrowLeft className="w-4 h-4" />
-                        {ui.back}
-                      </button>
-
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        <BookOpen className="w-4 h-4" />
-                        <span className="font-medium text-foreground">{ui.nav.blog}</span>
-                        <ArrowRight className="w-4 h-4 opacity-60" />
-                        <span className="text-foreground">{activePost.title}</span>
-                      </div>
-                    </>
-                  }
-                />
-              </section>
-          </div>
-        </main>
+        <ArticleDetailSection
+          activePost={activePost}
+          language={language}
+          labels={{
+            back: ui.back,
+            tags: ui.tags,
+            blogLabel: ui.nav.blog,
+          }}
+          onBack={() => {
+            setActivePost(null);
+            window.history.pushState({}, '', activeSection === 'blog' ? `blog` : basePath);
+          }}
+          onTagClick={(tag) => {
+            setActivePost(null);
+            setActiveSection('search');
+            setGlobalSearchQuery(tag);
+            window.history.pushState({}, '', `search`);
+          }}
+          tagCounts={
+            activePost.tags
+              ? Object.fromEntries(
+                  activePost.tags.map((tag) => [
+                    tag,
+                    posts.filter((p) => p.tags?.includes(tag)).length +
+                      wiki.filter((w) => w.tags?.includes(tag)).length +
+                      projects.filter((pr) => pr.tags?.includes(tag)).length,
+                  ])
+                )
+              : {}
+          }
+        />
       )}
 
       {/* Project Detail View */}
@@ -1621,735 +1545,25 @@ export function BlogSite() {
       )}
 
       {activeSection === 'about' && (
-        <section className="max-w-6xl mx-auto px-6 py-12 space-y-6">
-          <div className="grid sm:grid-cols-3 gap-4">
-            {statCards.map((card, idx) => {
-              const Icon = card.icon;
-              return (
-                <div
-                  key={card.label}
-                  className="glass rounded-2xl p-4 flex items-center gap-3 neu-sm fade-in-up"
-                  style={{ animationDelay: `${idx * 80}ms` }}
-                >
-                  <div className={`w-12 h-12 rounded-xl ${card.accent} flex items-center justify-center`}>
-                    <Icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">{card.label}</div>
-                    <div className="text-2xl font-bold text-foreground">{card.value}</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="relative overflow-hidden glass rounded-3xl p-8 neu-sm fade-in-up">
-            <div className="absolute inset-0 noise-overlay pointer-events-none" />
-            <div className="relative z-10">
-              <div className="flex flex-wrap gap-2 mb-4 items-center">
-                <button
-                  onClick={() => setMainAboutTab('about')}
-                  className={`inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm ${
-                    mainAboutTab === 'about' ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
-                  }`}
-                >
-                  About me
-                </button>
-                <button
-                  onClick={() => setMainAboutTab('projects')}
-                  className={`inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm ${
-                    mainAboutTab === 'projects' ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
-                  }`}
-                >
-                  <Folder className="w-4 h-4" />
-                  {ui.projectsTitle.replace(':', '')}
-                </button>
-                <span className="text-muted-foreground text-sm">CV (Резюме):</span>
-                {(['it', 'education', 'gamedev', 'rewards'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => {
-                      setMainAboutTab('cv');
-                      setActiveCvTab(tab);
-                    }}
-                    className={`inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm ${
-                      mainAboutTab === 'cv' && activeCvTab === tab ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-                <button
-                  onClick={() => setMainAboutTab('legal')}
-                  className={`inline-flex items-center gap-2 glass px-3 py-2 rounded-full text-sm ${
-                    mainAboutTab === 'legal' ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
-                  }`}
-                  title={ui.nav.legal}
-                >
-                  <Scale className="w-4 h-4" />
-                </button>
-              </div>
-
-              {mainAboutTab === 'about' && aboutMe && (
-                <div 
-                  className="prose prose-lg max-w-none"
-                  dangerouslySetInnerHTML={{ __html: markdownToHtml(aboutMe.content) }}
-                />
-              )}
-
-              {mainAboutTab === 'cv' && (
-                <>
-                  <div className="grid md:grid-cols-2 gap-4 mt-4">
-                    {(cv?.[activeCvTab] || []).map((item: any, idx: number) => (
-                      <div key={idx} className="bg-card rounded-2xl p-4 border border-border card-hover">
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-2">
-                          <span className="font-semibold text-foreground">{item.title}</span>
-                          {item.year && <span>{item.year}</span>}
-                          {item.subtitle && <span>· {item.subtitle}</span>}
-                        </div>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                          {item.details?.map((d: string, di: number) => {
-                            // Парсим технологии в формате ^category^tech^
-                            const parts: (string | JSX.Element)[] = [];
-                            let lastIndex = 0;
-                            const regex = /\^([^\^]+)\^([^\^]+)\^/g;
-                            let match;
-                            
-                            while ((match = regex.exec(d)) !== null) {
-                              // Добавляем текст перед совпадением
-                              if (match.index > lastIndex) {
-                                parts.push(d.substring(lastIndex, match.index));
-                              }
-                              
-                              const category = match[1];
-                              const tech = match[2];
-                              
-                              // Добавляем кликабельный бадж с подсказкой категории
-                              parts.push(
-                                <span
-                                  key={`${di}-${match.index}`}
-                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors mx-0.5"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveSection('search');
-                                    setGlobalSearchQuery(tech);
-                                    window.history.pushState({}, '', `${basePath}search`);
-                                  }}
-                                  title={`Category: ${category}`}
-                                >
-                                  <span className="text-[10px] opacity-70">{category}</span>
-                                  <span className="font-medium">{tech}</span>
-                                </span>
-                              );
-                              
-                              lastIndex = match.index + match[0].length;
-                            }
-                            
-                            // Добавляем оставшийся текст
-                            if (lastIndex < d.length) {
-                              parts.push(d.substring(lastIndex));
-                            }
-                            
-                            return <li key={di}>{parts.length > 0 ? parts : d}</li>;
-                          })}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-
-                  {activeCvTab === 'gamedev' && (cv as any)?.prototypes && (
-                    <div className="mt-6">
-                      <h3 className="text-2xl font-bold mb-4">Game Prototypes</h3>
-                      <div className="grid md:grid-cols-3 gap-6">
-                        {(cv as any).prototypes.map((proto: any, index: number) => (
-                          <div
-                            key={proto.title || index}
-                            className="neu rounded-3xl overflow-hidden bg-card card-hover"
-                            style={{ animationDelay: `${index * 100}ms` }}
-                          >
-                            <div className="aspect-video bg-gradient-hero relative flex items-center justify-center">
-                              <Play className="w-10 h-10 text-primary-foreground/50" />
-                            </div>
-                            <div className="p-6">
-                              <h4 className="text-xl font-bold mb-2">{proto.title || 'Prototype'}</h4>
-                              <p className="text-muted-foreground text-sm mb-4">{proto.description || 'Demo'}</p>
-                              <div className="flex flex-wrap gap-2 mb-4">
-                                {(proto.tech || []).map((t: string) => (
-                                  <span key={t} className="px-2 py-1 text-xs font-medium rounded-lg bg-muted text-muted-foreground">
-                                    {t}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {mainAboutTab === 'projects' && (
-                <div className="mt-4">
-                  <h3 className="text-3xl font-bold mb-6 gradient-text">{ui.projectsTitle}</h3>
-                  
-                  {projects.length === 0 ? (
-                    <div className="text-center py-16">
-                      <p className="text-muted-foreground text-lg">{ui.loading}</p>
-                    </div>
-                  ) : (
-                    <>
-                  
-                  {/* Category Tabs */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {['All', 'IT', 'Gamedev', 'Design'].map((cat) => {
-                      const count = cat === 'All' ? projects.length : projects.filter(p => p.category === cat).length;
-                      return (
-                        <button
-                          key={cat}
-                          onClick={() => setSelectedCategory(cat)}
-                          className={`inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm ${
-                            selectedCategory === cat ? 'bg-primary/20 text-primary' : 'text-foreground/80 hover:bg-card/60'
-                          }`}
-                        >
-                          {cat} ({count})
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Projects Grid */}
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {projects
-                      .filter(p => selectedCategory === 'All' || p.category === selectedCategory)
-                      .map((project, index) => (
-                        <article
-                          key={project.id}
-                          className="neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up cursor-pointer"
-                          style={{ animationDelay: `${index * 80}ms` }}
-                          onClick={() => {
-                            setActiveProject(project);
-                            setActiveSection('project');
-                            window.history.pushState({}, '', `/site/about/projects/${project.id}`);
-                          }}
-                        >
-                          <div className="aspect-video bg-gradient-hero relative overflow-hidden">
-                            {project.preview ? (
-                              project.preview.endsWith('.webm') || project.preview.endsWith('.mp4') ? (
-                                <video 
-                                  src={project.preview} 
-                                  className="w-full h-full object-cover"
-                                  autoPlay
-                                  loop
-                                  muted
-                                  playsInline
-                                />
-                              ) : (
-                                <img 
-                                  src={project.preview} 
-                                  alt={project.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              )
-                            ) : (
-                              <div className="w-full h-full bg-gradient-hero flex items-center justify-center">
-                                <Briefcase className="w-10 h-10 text-primary-foreground/50" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="p-6">
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                              <span className="px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                                {project.category}
-                              </span>
-                              {project.date && <span>· {project.date}</span>}
-                            </div>
-                            <h4 className="text-xl font-bold mb-2 text-foreground">{project.title}</h4>
-                            <p className="text-muted-foreground text-sm line-clamp-3">
-                              {stripMarkdown(project.content).slice(0, 150)}...
-                            </p>
-                            {project.tags && project.tags.length > 0 && (
-                              <div className="mt-4 flex flex-wrap gap-2">
-                                {project.tags.slice(0, 3).map((tag) => {
-                                  const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
-                                                   wiki.filter((w) => w.tags?.includes(tag)).length +
-                                                   projects.filter((pr) => pr.tags?.includes(tag)).length;
-                                  return (
-                                    <button
-                                      key={tag}
-                                      onClick={() => {
-                                        setActiveSection('search');
-                                        setGlobalSearchQuery(tag);
-                                      }}
-                                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-xs font-medium"
-                                    >
-                                      <Tag className="w-3 h-3" />
-                                      {tag}
-                                      <span className="text-xs opacity-70">
-                                        ({tagCount})
-                                      </span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        </article>
-                      ))}
-                  </div>
-                  </>
-                  )}
-                </div>
-              )}
-
-              {mainAboutTab === 'legal' && legalNotice && (
-                <div className="mt-4">
-                  <h2 className="text-3xl font-bold mb-6">{legalNotice.title}</h2>
-                  {legalNotice.updatedAt && (
-                    <p className="text-sm text-muted-foreground mb-6">
-                      Last Updated: {legalNotice.updatedAt}
-                    </p>
-                  )}
-                  <div
-                    className="prose prose-lg max-w-none text-foreground markdown-body"
-                    dangerouslySetInnerHTML={{ __html: markdownToHtml(legalNotice.content) }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Skills & Technologies Radar Chart */}
-          {mainAboutTab === 'cv' && cv && (() => {
-            // Собираем статистику по категориям из ВСЕГО резюме
-            const categoryCounts: Record<string, Record<string, number>> = {};
-            
-            Object.keys(cv).forEach(section => {
-              const sectionData = (cv as Record<string, unknown>)[section];
-              if (Array.isArray(sectionData)) {
-                sectionData.forEach((item: any) => {
-                  if (!item.details) return;
-                  
-                  item.details.forEach((detail: string) => {
-                    const matches = detail.match(/\^([^\^]+)\^([^\^]+)\^/g);
-                    if (matches) {
-                      matches.forEach(match => {
-                        const parts = match.split('^').filter(Boolean);
-                        if (parts.length >= 2) {
-                          const [category, tech] = parts;
-                          if (!categoryCounts[category]) {
-                            categoryCounts[category] = {};
-                          }
-                          categoryCounts[category][tech] = (categoryCounts[category][tech] || 0) + 1;
-                        }
-                      });
-                    }
-                  });
-                });
-              }
-            });
-            
-            // Обработка категории Business - добавляем управленческие термины
-            Object.keys(categoryCounts).forEach(cat => {
-              if (cat.toLowerCase().includes('management') || cat.toLowerCase().includes('leadership')) {
-                // Если есть отдельная категория Management/Leadership - переносим в Business
-                if (cat !== 'Business') {
-                  if (!categoryCounts['Business']) {
-                    categoryCounts['Business'] = {};
-                  }
-                  Object.entries(categoryCounts[cat]).forEach(([tech, count]) => {
-                    categoryCounts['Business'][tech] = (categoryCounts['Business'][tech] || 0) + count;
-                  });
-                  delete categoryCounts[cat];
-                }
-              }
-            });
-            
-            // Подсчитываем общее количество для каждой категории
-            const categoryTotals = Object.entries(categoryCounts).map(([category, techs]) => ({
-              category,
-              total: Object.values(techs).reduce((sum, count) => sum + count, 0),
-              techs
-            })).sort((a, b) => a.category.localeCompare(b.category)); // Сортировка по алфавиту
-            
-            if (categoryTotals.length === 0) return null;
-            
-            const maxValue = Math.max(...categoryTotals.map(c => c.total));
-            const numCategories = categoryTotals.length;
-            
-            // Параметры radar chart
-            const centerX = 250;
-            const centerY = 250;
-            const maxRadius = 180;
-            const levels = 5;
-            
-            // Функция для расчета точек многоугольника
-            const getPoint = (index: number, value: number) => {
-              const angle = (Math.PI * 2 * index) / numCategories - Math.PI / 2;
-              const radius = (value / maxValue) * maxRadius;
-              return {
-                x: centerX + radius * Math.cos(angle),
-                y: centerY + radius * Math.sin(angle)
-              };
-            };
-            
-            // Функция для расчета точек осей (labels)
-            const getLabelPoint = (index: number, distance: number) => {
-              const angle = (Math.PI * 2 * index) / numCategories - Math.PI / 2;
-              return {
-                x: centerX + distance * Math.cos(angle),
-                y: centerY + distance * Math.sin(angle)
-              };
-            };
-            
-            return (
-              <div className="relative overflow-hidden glass rounded-3xl p-8 neu-sm fade-in-up mb-6">
-                <div className="absolute inset-0 noise-overlay pointer-events-none" />
-                <div className="relative z-10">
-                  <h3 className="text-2xl font-bold mb-6 text-center">
-                    {language === 'en' && 'Skills & Technologies Overview'}
-                    {language === 'ru' && 'Обзор навыков и технологий'}
-                    {language === 'fr' && 'Aperçu des compétences et technologies'}
-                  </h3>
-                  
-                  <div className="flex justify-center items-center">
-                    <div className="relative group">
-                      <svg width="550" height="550" viewBox="0 0 500 500" className="max-w-full">
-                        {/* Концентрические многоугольники (уровни) */}
-                        {Array.from({ length: levels }, (_, i) => {
-                          const radius = ((i + 1) / levels) * maxRadius;
-                          const value = Math.round((maxValue / levels) * (i + 1));
-                          const levelNumber = i + 1;
-                          
-                          // Определяем, является ли этот уровень "жирным" (только уровни 4, 7, 11, 14, 18)
-                          const thickLevels = [4, 7, 11, 14, 18];
-                          const isThickLevel = thickLevels.includes(levelNumber);
-                          
-                          // Строим точки многоугольника для этого уровня
-                          const polygonPoints = categoryTotals
-                            .map((_cat, index) => {
-                              const angle = (Math.PI * 2 * index) / numCategories - Math.PI / 2;
-                              const x = centerX + radius * Math.cos(angle);
-                              const y = centerY + radius * Math.sin(angle);
-                              return `${x},${y}`;
-                            })
-                            .join(' ');
-                          
-                          return (
-                            <g key={i}>
-                              {/* Многоугольник уровня */}
-                              <polygon
-                                points={polygonPoints}
-                                fill="none"
-                                stroke="hsl(var(--foreground))"
-                                strokeWidth={isThickLevel ? "2.5" : "1"}
-                                opacity={isThickLevel ? "0.7" : "0.25"}
-                              />
-                              {/* Подписи уровней для всех линий */}
-                              <text
-                                x={centerX + 5}
-                                y={centerY - radius}
-                                className={isThickLevel ? "text-xs fill-foreground font-semibold" : "text-xs fill-muted-foreground"}
-                                opacity={isThickLevel ? "0.8" : "0.5"}
-                              >
-                                {value}
-                              </text>
-                            </g>
-                          );
-                        })}
-                        
-                        {/* Оси от центра к каждой категории */}
-                        {categoryTotals.map((cat, index) => {
-                          const point = getLabelPoint(index, maxRadius);
-                          return (
-                            <line
-                              key={`axis-${cat.category}`}
-                              x1={centerX}
-                              y1={centerY}
-                              x2={point.x}
-                              y2={point.y}
-                              stroke="hsl(var(--foreground))"
-                              strokeWidth="1.5"
-                              opacity="0.4"
-                            />
-                          );
-                        })}
-                        
-                        {/* Заливка области данных */}
-                        <polygon
-                          points={categoryTotals
-                            .map((cat, index) => {
-                              const point = getPoint(index, cat.total);
-                              return `${point.x},${point.y}`;
-                            })
-                            .join(' ')}
-                          fill="hsl(var(--primary))"
-                          opacity="0.2"
-                          stroke="hsl(var(--primary))"
-                          strokeWidth="2"
-                        />
-                        
-                        {/* Точки данных с интерактивностью */}
-                        {categoryTotals.map((cat, index) => {
-                          const point = getPoint(index, cat.total);
-                          const techList = Object.entries(cat.techs)
-                            .sort((a, b) => b[1] - a[1])
-                            .slice(0, 10)
-                            .map(([tech, count]) => `${tech}: ${count}`)
-                            .join('\n');
-                          
-                          return (
-                            <g key={`point-${cat.category}`}>
-                              <circle
-                                cx={point.x}
-                                cy={point.y}
-                                r="8"
-                                fill="hsl(var(--primary))"
-                                className="cursor-pointer transition-all hover:scale-125"
-                                style={{ transformOrigin: `${point.x}px ${point.y}px` }}
-                              >
-                                <title>{`${cat.category} (Total: ${cat.total})\n\n${techList}${Object.keys(cat.techs).length > 10 ? `\n\n+${Object.keys(cat.techs).length - 10} more technologies` : ''}`}</title>
-                              </circle>
-                            </g>
-                          );
-                        })}
-                        
-                        {/* Подписи категорий */}
-                        {categoryTotals.map((cat, index) => {
-                          const labelPoint = getLabelPoint(index, maxRadius + 45);
-                          return (
-                            <text
-                              key={`label-${cat.category}`}
-                              x={labelPoint.x}
-                              y={labelPoint.y}
-                              textAnchor="middle"
-                              dominantBaseline="middle"
-                              className="text-xs font-bold fill-current cursor-pointer hover:fill-primary transition-colors"
-                              onClick={() => {
-                                // При клике на категорию - показываем первую технологию из неё
-                                const topTech = Object.entries(cat.techs).sort((a, b) => b[1] - a[1])[0][0];
-                                setActiveSection('search');
-                                setGlobalSearchQuery(topTech);
-                                window.history.pushState({}, '', `${basePath}search`);
-                              }}
-                            >
-                              {cat.category}
-                            </text>
-                          );
-                        })}
-                        
-                        {/* Центральная точка */}
-                        <circle
-                          cx={centerX}
-                          cy={centerY}
-                          r="5"
-                          fill="hsl(var(--muted-foreground))"
-                          opacity="0.5"
-                        />
-                      </svg>
-                      
-                    </div>
-                  </div>
-                  
-                  {/* Легенда */}
-                  <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {categoryTotals.slice(0, 8).map((cat) => (
-                      <div key={cat.category} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
-                        <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium truncate">{cat.category}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {cat.total} {language === 'ru' ? 'упоминаний' : language === 'fr' ? 'mentions' : 'mentions'}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Tags Pie Chart */}
-          <div className="relative overflow-hidden glass rounded-3xl p-8 neu-sm fade-in-up">
-            <div className="absolute inset-0 noise-overlay pointer-events-none" />
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-6 text-center">{ui.tags}</h3>
-              
-              {(() => {
-                // Собираем статистику по тегам
-                const tagCounts: Record<string, number> = {};
-                posts.forEach(p => p.tags?.forEach(tag => {
-                  tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                }));
-                wiki.forEach(w => w.tags?.forEach(tag => {
-                  tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                }));
-                projects.forEach(pr => pr.tags?.forEach(tag => {
-                  tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                }));
-                
-                const sortedTags = Object.entries(tagCounts)
-                  .sort((a, b) => b[1] - a[1]);
-                
-                const topTags = sortedTags.slice(0, 27);
-                const hasMore = sortedTags.length > 27;
-                // Считаем totalCount ТОЛЬКО для отображаемых тегов (топ-27)
-                const totalCount = topTags.reduce((sum, [, count]) => sum + count, 0);
-                
-                // Генерируем цвета для каждого тега
-                const colors = [
-                  'hsl(200, 90%, 55%)', 'hsl(160, 80%, 52%)', 'hsl(45, 98%, 62%)',
-                  'hsl(280, 70%, 62%)', 'hsl(340, 75%, 58%)', 'hsl(120, 65%, 50%)',
-                  'hsl(60, 90%, 55%)', 'hsl(180, 75%, 45%)', 'hsl(300, 80%, 60%)',
-                  'hsl(30, 85%, 55%)', 'hsl(210, 85%, 60%)', 'hsl(150, 70%, 50%)',
-                  'hsl(270, 75%, 65%)', 'hsl(0, 80%, 60%)', 'hsl(90, 70%, 50%)',
-                  'hsl(240, 70%, 60%)', 'hsl(330, 75%, 60%)', 'hsl(75, 80%, 55%)',
-                  'hsl(195, 85%, 50%)', 'hsl(315, 70%, 60%)', 'hsl(45, 90%, 60%)',
-                  'hsl(165, 75%, 48%)', 'hsl(255, 75%, 62%)', 'hsl(15, 80%, 58%)',
-                  'hsl(135, 70%, 52%)', 'hsl(285, 75%, 60%)', 'hsl(225, 80%, 58%)',
-                ];
-                
-                // Генерируем SVG круговую диаграмму
-                const radius = 120;
-                const centerX = 150;
-                const centerY = 150;
-                
-                // Предварительно рассчитываем углы для каждого сегмента
-                const segments = topTags.map(([tag, count]) => {
-                  const percentage = count / totalCount;
-                  return {
-                    tag,
-                    count,
-                    percentage,
-                    angle: percentage * 360
-                  };
-                });
-                
-                // Накапливаем углы
-                let accumulatedAngle = 0;
-                const segmentsWithAngles = segments.map(seg => {
-                  const startAngle = accumulatedAngle;
-                  const endAngle = accumulatedAngle + seg.angle;
-                  accumulatedAngle = endAngle;
-                  return { ...seg, startAngle, endAngle };
-                });
-                
-                return (
-                  <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-                    {/* Круговая диаграмма */}
-                    <div className="relative">
-                      <svg width="300" height="300" viewBox="0 0 300 300" className="transform -rotate-90">
-                        {segmentsWithAngles.map((seg, index) => {
-                          const x1 = centerX + radius * Math.cos((seg.startAngle * Math.PI) / 180);
-                          const y1 = centerY + radius * Math.sin((seg.startAngle * Math.PI) / 180);
-                          const x2 = centerX + radius * Math.cos((seg.endAngle * Math.PI) / 180);
-                          const y2 = centerY + radius * Math.sin((seg.endAngle * Math.PI) / 180);
-                          
-                          const largeArc = seg.angle > 180 ? 1 : 0;
-                          
-                          const pathData = [
-                            `M ${centerX} ${centerY}`,
-                            `L ${x1} ${y1}`,
-                            `A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`,
-                            'Z'
-                          ].join(' ');
-                          
-                          return (
-                            <g key={seg.tag}>
-                              <path
-                                d={pathData}
-                                fill={colors[index % colors.length]}
-                                opacity="0.9"
-                                className="hover:opacity-100 transition-opacity cursor-pointer"
-                                onClick={() => {
-                                  setActiveSection('search');
-                                  setGlobalSearchQuery(seg.tag);
-                                  window.history.pushState({}, '', `${basePath}search`);
-                                }}
-                              >
-                                <title>{seg.tag}: {seg.count} ({(seg.percentage * 100).toFixed(1)}%)</title>
-                              </path>
-                              {/* Показываем процент если сегмент достаточно большой */}
-                              {seg.percentage > 0.05 && (() => {
-                                const midAngle = (seg.startAngle + seg.endAngle) / 2;
-                                const labelRadius = radius * 0.7;
-                                const labelX = centerX + labelRadius * Math.cos((midAngle * Math.PI) / 180);
-                                const labelY = centerY + labelRadius * Math.sin((midAngle * Math.PI) / 180);
-                                
-                                return (
-                                  <text
-                                    x={labelX}
-                                    y={labelY}
-                                    className="text-xs font-bold pointer-events-none transform rotate-90"
-                                    fill="white"
-                                    textAnchor="middle"
-                                    dominantBaseline="middle"
-                                    style={{ 
-                                      paintOrder: 'stroke',
-                                      stroke: 'rgba(0,0,0,0.5)',
-                                      strokeWidth: '2px'
-                                    }}
-                                  >
-                                    {(seg.percentage * 100).toFixed(0)}%
-                                  </text>
-                                );
-                              })()}
-                            </g>
-                          );
-                        })}
-                        {/* Центральный круг для красоты */}
-                        <circle
-                          cx={centerX}
-                          cy={centerY}
-                          r="40"
-                          fill="hsl(var(--background))"
-                          className="opacity-95"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold">{sortedTags.length}</div>
-                          <div className="text-xs text-muted-foreground uppercase tracking-wider">Tags</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Легенда */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-2xl">
-                      {topTags.map(([tag, count], index) => (
-                        <button
-                          key={tag}
-                          onClick={() => {
-                            setActiveSection('search');
-                            setGlobalSearchQuery(tag);
-                            window.history.pushState({}, '', `${basePath}search`);
-                          }}
-                          className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors text-left"
-                        >
-                          <div 
-                            className="w-4 h-4 rounded flex-shrink-0"
-                            style={{ backgroundColor: colors[index % colors.length] }}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium truncate">{tag}</div>
-                            <div className="text-xs text-muted-foreground">{count} {count === 1 ? 'item' : 'items'}</div>
-                          </div>
-                        </button>
-                      ))}
-                      {hasMore && (
-                        <div className="flex items-center gap-2 p-2 text-muted-foreground">
-                          <div className="w-4 h-4 rounded bg-muted flex-shrink-0" />
-                          <div className="text-sm">... and {sortedTags.length - 27} more</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        </section>
+        <AboutSection
+          ui={ui}
+          language={language}
+          aboutMe={aboutMe}
+          legalNotice={legalNotice}
+          projects={projects}
+          posts={posts}
+          wiki={wiki}
+          mainAboutTab={mainAboutTab}
+          setMainAboutTab={setMainAboutTab}
+          activeCvTab={activeCvTab}
+          setActiveCvTab={setActiveCvTab}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          setActiveProject={setActiveProject}
+          setActiveSection={setActiveSection}
+          setGlobalSearchQuery={setGlobalSearchQuery}
+          basePath={basePath}
+        />
       )}
 
       {activeSection === 'apps' && ui.apps && (
@@ -2363,7 +1577,7 @@ export function BlogSite() {
           </div>
 
           <div className="space-y-6">
-            {/* Iframe на всю ширину экрана */}
+            {/* Iframe Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В° Р В Р’В Р В РІР‚В Р В Р Р‹Р В РЎвЂњР В Р Р‹Р В РІР‚в„– Р В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р Р‹Р РЋРІР‚Сљ Р В Р Р‹Р В Р Р‰Р В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В° */}
             <div className="w-full">
               <div className="glass rounded-3xl border border-border neu-sm overflow-hidden" data-iframe-container>
                 {selectedApp ? (
@@ -2401,12 +1615,12 @@ export function BlogSite() {
                         e.preventDefault();
                         setIsResizing(true);
                       }}
-                      title="Потяните для изменения высоты"
+                      title="Р В Р’В Р РЋРЎСџР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р РЏР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏ Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В Р РЏ Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“"
                     >
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <div className="flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
                           <div className="text-[10px] uppercase tracking-[0.3em] text-foreground font-bold">
-                            Изменить размер
+                            Р В Р’В Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ° Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™
                           </div>
                           <div className="flex gap-1.5">
                             <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
@@ -2423,10 +1637,10 @@ export function BlogSite() {
               </div>
             </div>
 
-            {/* Описание и списки ниже - ограничены по ширине */}
+            {/* Р В Р’В Р РЋРІР‚С”Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚В Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’В¶Р В Р’В Р вЂ™Р’Вµ - Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚Сћ Р В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ */}
             <div className="max-w-6xl mx-auto">
               <div className="grid gap-6 lg:grid-cols-[minmax(0,300px)_1fr]">
-                {/* Списки категорий слева */}
+                {/* Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В° */}
                 <div className="space-y-4">
                 {APP_CATEGORIES.map((category) => {
                   const items = appsByCategory[category] || [];
@@ -2455,7 +1669,7 @@ export function BlogSite() {
                                 onClick={() => setSelectedApp(app)}
                               >
                                 <div className="font-semibold text-sm">{app.title}</div>
-                                <div className="text-[10px] text-muted-foreground mt-0.5">{app.date || '—'}</div>
+                                <div className="text-[10px] text-muted-foreground mt-0.5">{app.date || 'Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ'}</div>
                               </button>
                             );
                           })}
@@ -2466,7 +1680,7 @@ export function BlogSite() {
                 })}
               </div>
 
-              {/* Описание справа */}
+              {/* Р В Р’В Р РЋРІР‚С”Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚вЂќР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В° */}
               {selectedApp && (
                 <div className="glass rounded-3xl border border-border p-6 neu-sm space-y-5">
                   <div className="flex items-start justify-between gap-4">
@@ -2482,7 +1696,7 @@ export function BlogSite() {
                         onClick={() => window.open(selectedApp.url, '_blank', 'noreferrer')}
                         className="neu px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:scale-105 transition-transform whitespace-nowrap"
                       >
-                        {language === 'ru' ? 'Открыть' : 'Open Full'}
+                        {language === 'ru' ? 'Р В Р’В Р РЋРІР‚С”Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СњР В Р Р‹Р В РІР‚С™Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В Р вЂ°' : 'Open Full'}
                       </button>
                     )}
                   </div>
@@ -2492,7 +1706,7 @@ export function BlogSite() {
                       <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
                         {ui.apps?.dateLabel || 'Date'}
                       </div>
-                      <div className="text-sm font-semibold text-foreground">{selectedApp.date || '—'}</div>
+                      <div className="text-sm font-semibold text-foreground">{selectedApp.date || 'Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ'}</div>
                     </div>
 
                     <div className="space-y-1.5">
@@ -2501,7 +1715,7 @@ export function BlogSite() {
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {(!selectedApp.platforms || selectedApp.platforms.length === 0) ? (
-                          <span className="text-sm text-muted-foreground">—</span>
+                          <span className="text-sm text-muted-foreground">Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ</span>
                         ) : (
                           selectedApp.platforms.map((platform) => (
                             <span key={platform} className="px-2.5 py-1 rounded-lg bg-muted text-xs font-semibold">
@@ -2514,11 +1728,11 @@ export function BlogSite() {
 
                     <div className="space-y-1.5">
                       <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
-                        {language === 'ru' ? 'Технологии' : 'Technologies'}
+                        {language === 'ru' ? 'Р В Р’В Р РЋРЎвЂєР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В' : 'Technologies'}
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {(!selectedApp.technologies || selectedApp.technologies.length === 0) ? (
-                          <span className="text-sm text-muted-foreground">—</span>
+                          <span className="text-sm text-muted-foreground">Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ</span>
                         ) : (
                           selectedApp.technologies.map((tech) => (
                             <span key={tech} className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold">
@@ -2535,7 +1749,7 @@ export function BlogSite() {
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {(!selectedApp.badges || selectedApp.badges.length === 0) ? (
-                          <span className="text-sm text-muted-foreground">—</span>
+                          <span className="text-sm text-muted-foreground">Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљ</span>
                         ) : (
                           selectedApp.badges.map((badge) => (
                             <span key={badge} className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-semibold">
@@ -2555,256 +1769,35 @@ export function BlogSite() {
       )}
 
       {activeSection === 'wiki' && (
-        <section className="max-w-6xl mx-auto px-6 py-12 space-y-8">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm text-foreground/80">
-              <Layers className="w-4 h-4" />
-              <span>{ui.wikiTitle}</span>
-            </div>
-            <div className="text-muted-foreground">Знания и заметки</div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Layers className="w-4 h-4" />
-              <span>{ui.categories}</span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {wikiCategories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => {
-                    setActiveWiki(null);
-                    setWikiCategory(cat);
-                  }}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    wikiCategory === cat ? 'neu-sm bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {`${cat}${cat !== 'All' && wikiCategoryStats[cat] ? ` (${wikiCategoryStats[cat]})` : ''}`}
-                </button>
-              ))}
-            </div>
-            <div className="relative w-full md:w-80 ml-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                value={wikiSearch}
-                onChange={(e) => setWikiSearch(e.target.value)}
-                placeholder={ui.searchPlaceholder}
-                className="w-full pl-10 pr-3 py-2 rounded-xl bg-card border border-border focus:border-primary outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="grid lg:grid-cols-[1fr_2fr] gap-6">
-            <aside className="glass rounded-2xl p-4 neu-sm self-start">
-              <div className="flex items-center gap-2 text-sm font-semibold mb-3">
-                <Layers className="w-4 h-4 text-primary" />
-                <span>{ui.categories}</span>
-              </div>
-              <div className="space-y-2">
-                {wikiCategories.map((cat) => {
-                  const categoryNode = wikiCategoryTree.get(cat);
-                  const subcategories = categoryNode ? Array.from(categoryNode.children.entries()) : [];
-                  const hasSubcategories = cat !== 'All' && subcategories.length > 0;
-                  const isExpanded = expandedWikiCategories.has(cat);
-                  
-                  // Рекурсивный рендер подкатегорий
-                  const renderSubcategories = (subcats: [string, any][], level: number = 1): JSX.Element => {
-                    return (
-                      <>
-                        {subcats.map(([subName, subNode]) => {
-                          const subPath = subNode.fullPath;
-                          const hasChildren = subNode.children && subNode.children.size > 0;
-                          const isSubExpanded = expandedWikiCategories.has(subPath);
-                          
-                          return (
-                            <div key={subPath} className="space-y-1">
-                              <div className="flex items-center gap-1" style={{ paddingLeft: `${level * 8}px` }}>
-                                {hasChildren && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      const newExpanded = new Set(expandedWikiCategories);
-                                      if (isSubExpanded) {
-                                        newExpanded.delete(subPath);
-                                      } else {
-                                        newExpanded.add(subPath);
-                                      }
-                                      setExpandedWikiCategories(newExpanded);
-                                    }}
-                                    className="p-1 hover:bg-muted rounded transition-colors flex-shrink-0"
-                                  >
-                                    {isSubExpanded ? (
-                                      <ChevronDown className="w-3 h-3 text-muted-foreground" />
-                                    ) : (
-                                      <ChevronRight className="w-3 h-3 text-muted-foreground" />
-                                    )}
-                                  </button>
-                                )}
-                                <button
-                                  onClick={() => {
-                                    setActiveWiki(null);
-                                    setWikiCategory(subPath);
-                                  }}
-                                  className={`flex-1 flex items-center justify-between px-2 py-1 rounded-lg text-xs transition-all ${
-                                    wikiCategory === subPath ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                                  } ${!hasChildren ? 'ml-4' : ''}`}
-                                >
-                                  <span>{subName}</span>
-                                  <span className="text-xs opacity-60">{subNode.count}</span>
-                                </button>
-                              </div>
-                              {hasChildren && isSubExpanded && (
-                                <div className="space-y-1">
-                                  {renderSubcategories(Array.from(subNode.children.entries()), level + 1)}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </>
-                    );
-                  };
-                  
-                  return (
-                    <div key={cat} className="space-y-1">
-                      <div className="flex items-center gap-1">
-                        {hasSubcategories && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const newExpanded = new Set(expandedWikiCategories);
-                              if (isExpanded) {
-                                newExpanded.delete(cat);
-                              } else {
-                                newExpanded.add(cat);
-                              }
-                              setExpandedWikiCategories(newExpanded);
-                            }}
-                            className="p-1 hover:bg-muted rounded transition-colors"
-                            aria-label={isExpanded ? 'Свернуть' : 'Развернуть'}
-                          >
-                            {isExpanded ? (
-                              <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                            ) : (
-                              <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                            )}
-                          </button>
-                        )}
-                        <button
-                          onClick={() => {
-                            setActiveWiki(null);
-                            setWikiCategory(cat);
-                          }}
-                          className={`flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
-                            wikiCategory === cat ? 'neu-sm bg-primary/10 text-primary' : 'hover:bg-muted text-foreground'
-                          } ${!hasSubcategories ? 'ml-5' : ''}`}
-                        >
-                          <span>{cat}</span>
-                          {cat !== 'All' && wikiCategoryStats[cat] ? (
-                            <span className="text-xs text-muted-foreground">{wikiCategoryStats[cat]}</span>
-                          ) : null}
-                        </button>
-                      </div>
-                      {hasSubcategories && isExpanded && (
-                        <div className="ml-4 space-y-1">
-                          {renderSubcategories(subcategories)}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </aside>
-
-            <div className="space-y-6">
-              {activeWiki && (
-                <ContentReader
-                  title={activeWiki.title}
-                  html={activeWiki.html}
-                  date={activeWiki.updatedAt}
-                  category={activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}
-                  tags={activeWiki.tags}
-                  tagsLabel={ui.tags}
-                  onTagClick={(tag) => {
-                    setActiveWiki(null);
-                    setActiveSection('search');
-                    setGlobalSearchQuery(tag);
-                    window.history.pushState({}, '', `${basePath}search`);
-                  }}
-                  tagCounts={
-                    activeWiki.tags
-                      ? Object.fromEntries(
-                          activeWiki.tags.map((tag) => [
-                            tag,
-                            posts.filter((p) => p.tags?.includes(tag)).length +
-                              wiki.filter((w) => w.tags?.includes(tag)).length +
-                              projects.filter((pr) => pr.tags?.includes(tag)).length,
-                          ])
-                        )
-                      : {}
-                  }
-                  headerMeta={
-                    <>
-                      <button
-                        onClick={() => {
-                          setActiveWiki(null);
-                          window.history.pushState({}, '', `${basePath}wiki`);
-                        }}
-                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-4"
-                      >
-                        <ArrowLeft className="w-4 h-4" />
-                        {ui.back}
-                      </button>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
-                        <span className="inline-flex items-center gap-1">
-                          <Layers className="w-4 h-4" />
-                          {activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}
-                        </span>
-                        <ArrowRight className="w-4 h-4 opacity-60" />
-                        <span className="font-medium text-foreground">{activeWiki.title}</span>
-                      </div>
-                    </>
-                  }
-                />
-              )}
-              {!activeWiki && (
-                <>
-                  {/* Отображение index категории если есть */}
-                  {wikiCategoryIndex && wikiCategory !== 'All' && (
-                    <div className="glass rounded-3xl p-6 md:p-8 neu-sm fade-in-up mb-6">
-                      <h3 className="text-2xl font-bold mb-4">{wikiCategoryIndex.title}</h3>
-                      <div className="prose prose-lg max-w-none text-foreground markdown-body" dangerouslySetInnerHTML={{ __html: markdownToHtml(wikiCategoryIndex.content) }} />
-                    </div>
-                  )}
-
-                  {paginatedWiki.length === 0 ? (
-                    <div className="text-muted-foreground">{ui.nothing}</div>
-                  ) : (
-                    <>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {paginatedWiki.map((item) => (
-                        <article
-                          key={item.relativePath}
-                          className="glass rounded-2xl p-4 neu-sm hover:cursor-pointer hover:-translate-y-1 transition-transform"
-                          onClick={() => handleOpenWiki(item)}
-                        >
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                            <FileText className="w-4 h-4" />
-                            <span>{item.categoryPath || 'wiki'}</span>
-                            {item.updatedAt && <span>· {item.updatedAt}</span>}
-                          </div>
-                          <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                          <p className="text-sm text-muted-foreground line-clamp-3">{item.excerpt}</p>
-                        </article>
-                      ))}
-                    </div>
-                    <Pagination currentPage={wikiPage} totalPages={totalWikiPages} onPageChange={setWikiPage} />
-                  </>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </section>
+        <WikiSection
+          ui={ui}
+          language={language}
+          wikiCategories={wikiCategories}
+          wikiCategoryStats={wikiCategoryStats}
+          wikiCategoryTree={wikiCategoryTree as any}
+          expandedWikiCategories={expandedWikiCategories}
+          setExpandedWikiCategories={setExpandedWikiCategories}
+          wikiCategory={wikiCategory}
+          setWikiCategory={setWikiCategory}
+          wikiSearch={wikiSearch}
+          setWikiSearch={setWikiSearch}
+          activeWiki={activeWiki}
+          setActiveWiki={setActiveWiki}
+          wikiCategoryIndex={wikiCategoryIndex}
+          paginatedWiki={paginatedWiki}
+          wikiPage={wikiPage}
+          totalWikiPages={totalWikiPages}
+          setWikiPage={setWikiPage}
+          getTagCount={(tag) =>
+            posts.filter((p) => p.tags?.includes(tag)).length +
+            wiki.filter((w) => w.tags?.includes(tag)).length +
+            projects.filter((pr) => pr.tags?.includes(tag)).length
+          }
+          handleOpenWiki={handleOpenWiki}
+          setActiveSection={setActiveSection}
+          setGlobalSearchQuery={setGlobalSearchQuery}
+          basePath={basePath}
+        />
       )}
 
       {activeSection === 'cv' && (
@@ -2854,18 +1847,18 @@ export function BlogSite() {
                   <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-2">
                     <span className="font-semibold text-foreground">{item.title}</span>
                     {item.year && <span>{item.year}</span>}
-                    {item.subtitle && <span>· {item.subtitle}</span>}
+                    {item.subtitle && <span>Р В РІР‚в„ўР вЂ™Р’В· {item.subtitle}</span>}
                   </div>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                     {item.details?.map((d: string, di: number) => {
-                      // Парсим технологии в формате ^category^tech^
+                      // Р В Р’В Р РЋРЎСџР В Р’В Р вЂ™Р’В°Р В Р Р‹Р В РІР‚С™Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚ВР В Р’В Р РЋР’В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В Р В Р’В Р В РІР‚В  Р В Р Р‹Р Р†Р вЂљРЎвЂєР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’Вµ ^category^tech^
                       const parts: (string | JSX.Element)[] = [];
                       let lastIndex = 0;
                       const regex = /\^([^\^]+)\^([^\^]+)\^/g;
                       let match;
                       
                       while ((match = regex.exec(d)) !== null) {
-                        // Добавляем текст перед совпадением
+                        // Р В Р’В Р Р†Р вЂљРЎСљР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р СћРІР‚В Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В
                         if (match.index > lastIndex) {
                           parts.push(d.substring(lastIndex, match.index));
                         }
@@ -2873,7 +1866,7 @@ export function BlogSite() {
                         const category = match[1];
                         const tech = match[2];
                         
-                        // Добавляем кликабельный бадж
+                        // Р В Р’В Р Р†Р вЂљРЎСљР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В¶
                         parts.push(
                           <span
                             key={`${di}-${match.index}`}
@@ -2893,7 +1886,7 @@ export function BlogSite() {
                         lastIndex = match.index + match[0].length;
                       }
                       
-                      // Добавляем оставшийся текст
+                      // Р В Р’В Р Р†Р вЂљРЎСљР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р В РЎвЂњР В Р Р‹Р В Р РЏ Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ў
                       if (lastIndex < d.length) {
                         parts.push(d.substring(lastIndex));
                       }
@@ -2945,14 +1938,14 @@ export function BlogSite() {
             <div className="text-muted-foreground">{ui.loading}</div>
           ) : (
             <div className="grid lg:grid-cols-[1fr_3fr] gap-6">
-              {/* Боковая панель навигации */}
+              {/* Р В Р’В Р Р†Р вЂљР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В Р РЏ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’ВµР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ° Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚В */}
               <aside className="glass rounded-2xl p-4 neu-sm self-start">
                 <div className="flex items-center gap-2 text-sm font-semibold mb-3">
                   <Folder className="w-4 h-4 text-primary" />
-                  <span>{language === 'ru' ? 'Альбомы' : 'Albums'}</span>
+                  <span>{language === 'ru' ? 'Р В Р’В Р РЋРІР‚в„ўР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“' : 'Albums'}</span>
                 </div>
                 <div className="space-y-2">
-                  {/* Кнопка "Все альбомы" */}
+                  {/* Р В Р’В Р РЋРІвЂћСћР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В° "Р В Р’В Р Р†Р вЂљРІвЂћСћР В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’Вµ Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“" */}
                   <button
                     onClick={() => {
                       setSelectedAlbum(null);
@@ -2968,7 +1961,7 @@ export function BlogSite() {
                     <span className="text-xs text-muted-foreground">{pictures.length}</span>
                   </button>
 
-                  {/* Список альбомов с рекурсией */}
+                  {/* Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚Сњ Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В  Р В Р Р‹Р В РЎвЂњ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РІР‚С™Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†РІР‚С›РІР‚вЂњ */}
                   {galleryAlbums.map((albumName) => {
                     const albumNode = galleryAlbumTree.get(albumName);
                     if (!albumNode) return null;
@@ -2977,7 +1970,7 @@ export function BlogSite() {
                     const hasSubalbums = subalbums.length > 0;
                     const isExpanded = expandedGalleryAlbums.has(albumName);
                     
-                    // Рекурсивный рендер подальбомов
+                    // Р В Р’В Р вЂ™Р’В Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚СњР В Р Р‹Р РЋРІР‚СљР В Р Р‹Р В РІР‚С™Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™ Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р’В Р СћРІР‚ВР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В 
                     const renderSubalbums = (subalbs: [string, any][], level: number = 1): JSX.Element => {
                       return (
                         <>
@@ -3085,7 +2078,7 @@ export function BlogSite() {
                 </div>
               </aside>
 
-              {/* Основной контент */}
+              {/* Р В Р’В Р РЋРІР‚С”Р В Р Р‹Р В РЎвЂњР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРЎв„ў */}
               <div className="space-y-6">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {paginatedGallery.map((pic) => (
@@ -3111,75 +2104,16 @@ export function BlogSite() {
 
       {/* News Full Section */}
       {activeSection === 'news' && (
-        <main className="pt-32 pb-24">
-          <div className="container mx-auto px-6">
-            {activeNews ? (
-              /* Detail view */
-              <section className="max-w-4xl mx-auto">
-                <ContentReader
-                  title={
-                    (language === 'ru' ? activeNews.title_ru : activeNews.title_en) ??
-                    activeNews.title
-                  }
-                  html={markdownToHtml(activeNews.content)}
-                  category={activeNews.category}
-                  date={
-                    activeNews.date
-                      ? new Date(activeNews.date).toLocaleDateString(
-                          language === 'ru' ? 'ru-RU' : 'en-US',
-                          { year: 'numeric', month: 'long', day: 'numeric' }
-                        )
-                      : undefined
-                  }
-                  tags={activeNews.tags}
-                  tagsLabel={ui.tags}
-                  onTagClick={(tag) => {
-                    setActiveNews(null);
-                    setActiveSection('search');
-                    setGlobalSearchQuery(tag);
-                    window.history.pushState({}, '', `${basePath}search`);
-                  }}
-                  headerMeta={
-                    <>
-                      <button
-                        onClick={() => {
-                          setActiveNews(null);
-                          window.history.pushState({}, '', `${basePath}news`);
-                        }}
-                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
-                      >
-                        <ArrowLeft className="w-4 h-4" />
-                        {ui.back}
-                      </button>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        <FileText className="w-4 h-4" />
-                        <span className="font-medium text-foreground">{ui.nav.news}</span>
-                        <ArrowRight className="w-4 h-4 opacity-60" />
-                        <span className="text-foreground">
-                          {(language === 'ru' ? activeNews.title_ru : activeNews.title_en) ??
-                            activeNews.title}
-                        </span>
-                      </div>
-                    </>
-                  }
-                />
-              </section>
-            ) : (
-              /* List view */
-              <section className="max-w-4xl mx-auto">
-                <div className="text-center mb-12 animate-fade-in">
-                  <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                    <span className="gradient-text">{ui.nav.news}</span>
-                  </h1>
-                </div>
-                <NewsSection
-                  limit={99}
-                  onOpenNews={(item) => handleOpenNews(item as NewsItem)}
-                />
-              </section>
-            )}
-          </div>
-        </main>
+        <NewsPageSection
+          ui={ui}
+          language={language}
+          activeNews={activeNews}
+          setActiveNews={setActiveNews}
+          setActiveSection={setActiveSection}
+          setGlobalSearchQuery={setGlobalSearchQuery}
+          handleOpenNews={handleOpenNews}
+          basePath={basePath}
+        />
       )}
 
       {lightbox && pictures[lightbox.idx] && (
@@ -3456,7 +2390,7 @@ export function BlogSite() {
                                   <span className="px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
                                     {project.category}
                                   </span>
-                                  {project.date && <span>· {project.date}</span>}
+                                  {project.date && <span>Р В РІР‚в„ўР вЂ™Р’В· {project.date}</span>}
                                 </div>
                                 <h3 className="text-xl font-bold mb-2 text-foreground">{project.title}</h3>
                                 <p className="text-muted-foreground text-sm line-clamp-3">

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Grid3x3, BookOpen, FileText, Image as ImageIcon, Menu, Palette, User, X, Search } from 'lucide-react';
+import { Grid3x3, BookOpen, FileText, Image as ImageIcon, Menu, Palette, User, X, Search, Calendar } from 'lucide-react';
 import { WeatherSwitcher } from './WeatherSwitcher';
 import { Globe } from 'lucide-react';
 import type { Language } from '../i18n/translations';
-
-export type SectionNav = 'home' | 'blog' | 'about' | 'wiki' | 'gallery' | 'apps' | 'search' | 'news';
+import { type SectionNav } from '../shells/site/siteTypes';
 
 interface NavigationProps {
   activeSection: SectionNav;
@@ -57,6 +56,7 @@ export function Navigation({
     { key: 'wiki', label: navLabels.wiki, icon: <FileText className="w-4 h-4" /> },
     { key: 'gallery', label: navLabels.gallery, icon: <ImageIcon className="w-4 h-4" /> },
     { key: 'apps', label: navLabels.apps, icon: <Grid3x3 className="w-4 h-4" /> },
+    { key: 'news', label: navLabels.news, icon: <Calendar className="w-4 h-4" /> },
   ];
 
   const searchButton = (
