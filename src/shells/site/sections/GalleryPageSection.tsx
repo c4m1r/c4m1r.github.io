@@ -6,9 +6,9 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { Folder, ChevronDown, ChevronRight, X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Folder, ChevronDown, ChevronRight, X, ArrowRight } from 'lucide-react';
 import { useGallery } from '../../../domain/gallery/useGallery';
-import { type GalleryItem } from '../../../domain/gallery/gallery.types';
+
 
 // Simple pagination matching BlogSite style
 interface SectionPaginationProps {

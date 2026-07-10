@@ -331,7 +331,7 @@ export function AboutSection({
                         </p>
                         {project.tags && project.tags.length > 0 && (
                           <div className="mt-4 flex flex-wrap gap-2">
-                            {project.tags.slice(0, 3).map((tag) => {
+                            {project.tags.slice(0, 3).map((tag: string) => {
                               const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
                                                wiki.filter((w) => w.tags?.includes(tag)).length +
                                                projects.filter((pr) => pr.tags?.includes(tag)).length;
@@ -641,13 +641,13 @@ export function AboutSection({
           {(() => {
             // Собираем статистику по тегам
             const tagCounts: Record<string, number> = {};
-            posts.forEach(p => p.tags?.forEach(tag => {
+            posts.forEach(p => p.tags?.forEach((tag: string) => {
               tagCounts[tag] = (tagCounts[tag] || 0) + 1;
             }));
-            wiki.forEach(w => w.tags?.forEach(tag => {
+            wiki.forEach(w => w.tags?.forEach((tag: string) => {
               tagCounts[tag] = (tagCounts[tag] || 0) + 1;
             }));
-            projects.forEach(pr => pr.tags?.forEach(tag => {
+            projects.forEach(pr => pr.tags?.forEach((tag: string) => {
               tagCounts[tag] = (tagCounts[tag] || 0) + 1;
             }));
             
