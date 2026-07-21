@@ -24,6 +24,7 @@ import { appRegistry } from '../../shells/desktop/appRegistry';
 import { desktopShortcuts } from '../../shells/desktop/shortcutsRegistry';
 import { THEME_ASSETS } from './themeAssets';
 import { THEME_STYLES } from './themeStyles';
+import { AsciiAurora } from '../../components/effects';
 
 const DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
 const MINESWEEPER_WINDOW_ID = 'app:minesweeper';
@@ -1079,6 +1080,17 @@ export function Desktop(props?: DesktopProps) {
         });
       }}
     >
+      {theme === 'ubuntu' && (
+        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+          <AsciiAurora variant="ubuntu" opacity={0.18} columns={110} rows={36} frameInterval={110} speed={0.52} />
+        </div>
+      )}
+      {theme === 'webos' && (
+        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+          <AsciiAurora variant="webos" opacity={0.14} columns={104} rows={34} frameInterval={105} speed={0.62} />
+        </div>
+      )}
+
       {desktopIcons.map((icon) => (
         <div
           key={icon.id}

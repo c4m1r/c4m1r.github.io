@@ -1,5 +1,6 @@
 import { loadProjects, loadAboutProjects } from '../../utils/contentLoader';
 import { type Project } from './projects.types';
+import { routes } from '../../shells/site/siteRoutes';
 
 /**
  * Loads all project content items (standard + about projects) and
@@ -25,9 +26,10 @@ export async function loadAllProjects(language: string = 'en'): Promise<Project[
     .map((item) => ({
       ...item,
       kind: 'projects' as const,
-      projectPath: `/projects/${item.id}`,
+      projectPath: routes.project(item.id),
       route: {
-        path: `/projects/${item.id}`,
+        path: routes.project(item.id),
+        sitePath: routes.project(item.id),
         osUri: `projects://${item.id}`,
         appId: 'projects-grid',
       },

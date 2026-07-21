@@ -5,15 +5,20 @@
  * Decouples routing logic from BlogSite UI component.
  */
 
-import { Section } from './siteTypes';
+import { Section, type SiteCanonicalPath, type SiteRouteKind, type SiteRouteTarget } from './siteTypes';
+import { siteUrlConfig } from './siteUrlConfig';
 
-export const basePath = '/site/';
+export const basePath = siteUrlConfig.basePath;
 
 export interface ParsedRoute {
   section: Section;
   postId: string | null;
   wikiSlug: string | null;
   newsId: string | null;
+  projectId: string | null;
+  galleryItemId: string | null;
+  appId: string | null;
+  searchQuery: string | null;
 }
 
 /**
@@ -24,55 +29,73 @@ export function sectionToPath(section: Section): string {
     case 'home':
       return basePath;
     case 'blog':
-      return `${basePath}blog`;
+      return siteUrlConfig.routes.blog;
     case 'about':
-      return `${basePath}about`;
+      return siteUrlConfig.routes.about;
     case 'wiki':
-      return `${basePath}wiki`;
+      return siteUrlConfig.routes.wiki;
     case 'cv':
-      return `${basePath}cv`;
+      return siteUrlConfig.routes.about;
     case 'gallery':
-      return `${basePath}gallery`;
+      return siteUrlConfig.routes.gallery;
     case 'search':
-      return `${basePath}search`;
+      return siteUrlConfig.routes.search;
     case 'apps':
-      return `${basePath}apps`;
+      return siteUrlConfig.routes.apps;
     case 'news':
-      return `${basePath}news`;
+      return siteUrlConfig.routes.news;
     case 'project':
-      return `${basePath}about/projects`;
+      return siteUrlConfig.routes.projects;
     default:
       return basePath;
   }
 }
 
 /**
+ * Replaces a single route template parameter with an encoded value.
+ */
+const fillRouteParam = (template: string, param: string, value: string): SiteCanonicalPath =>
+  template.replace(param, encodeURIComponent(value)) as SiteCanonicalPath;
+
+/**
  * Formats route URL helpers for specific resources.
  */
 export const routes = {
-  home: () => basePath,
-  about: () => `${basePath}about`,
-  projects: () => `${basePath}about/projects`,
-  cv: () => `${basePath}cv`,
-  gallery: () => `${basePath}gallery`,
-  apps: () => `${basePath}apps`,
-  search: () => `${basePath}search`,
-  news: (id?: string) => (id ? `${basePath}news/${id}` : `${basePath}news`),
-  blog: (id?: string) => (id ? `${basePath}blog/${id}.md` : `${basePath}blog`),
-  wiki: (slug?: string) => (slug ? `${basePath}wiki/${slug}` : `${basePath}wiki`),
+  home: (): SiteCanonicalPath => siteUrlConfig.routes.home,
+  about: (): SiteCanonicalPath => siteUrlConfig.routes.about,
+  projects: (): SiteCanonicalPath => siteUrlConfig.routes.projects,
+  project: (id: string): SiteCanonicalPath => fillRouteParam(siteUrlConfig.routes.projectItem, ':id', id),
+  cv: (): SiteCanonicalPath => siteUrlConfig.routes.about,
+  gallery: (): SiteCanonicalPath => siteUrlConfig.routes.gallery,
+  galleryItem: (id: string): SiteCanonicalPath => fillRouteParam(siteUrlConfig.routes.galleryItem, ':id', id),
+  apps: (): SiteCanonicalPath => siteUrlConfig.routes.apps,
+  app: (id: string): SiteCanonicalPath => fillRouteParam(siteUrlConfig.routes.appItem, ':id', id),
+  search: (query?: string): SiteCanonicalPath => (query ? `${siteUrlConfig.routes.search}?q=${encodeURIComponent(query)}` : siteUrlConfig.routes.search),
+  news: (id?: string): SiteCanonicalPath => (id ? fillRouteParam(siteUrlConfig.routes.newsItem, ':id', id) : siteUrlConfig.routes.news),
+  blog: (id?: string): SiteCanonicalPath => (id ? fillRouteParam(siteUrlConfig.routes.article, ':id', id) : siteUrlConfig.routes.blog),
+  wiki: (slug?: string): SiteCanonicalPath => (slug ? fillRouteParam(siteUrlConfig.routes.wikiItem, ':slug', slug) : siteUrlConfig.routes.wiki),
 };
+
+export function makeSiteRouteTarget(kind: SiteRouteKind, path: SiteCanonicalPath): SiteRouteTarget {
+  return { kind, path };
+}
 
 /**
  * Parses a pathname into a structured route descriptor.
  */
 export function parsePath(pathname: string): ParsedRoute {
-  const rest = pathname.replace(basePath, '').replace(/^\/+/, '');
+  const [pathOnly, queryString = ''] = pathname.split('?');
+  const rest = pathOnly.replace(basePath, '').replace(/^\/+/, '');
 
   const route: ParsedRoute = {
     section: 'home',
     postId: null,
     wikiSlug: null,
     newsId: null,
+    projectId: null,
+    galleryItemId: null,
+    appId: null,
+    searchQuery: null,
   };
 
   if (!rest) {
@@ -103,12 +126,36 @@ export function parsePath(pathname: string): ParsedRoute {
     route.section = 'apps';
     return route;
   }
+  if (rest === 'about/projects' || rest === 'projects') {
+    route.section = 'about';
+    return route;
+  }
   if (rest === 'search') {
     route.section = 'search';
+    route.searchQuery = new URLSearchParams(queryString).get('q');
     return route;
   }
   if (rest === 'news') {
     route.section = 'news';
+    return route;
+  }
+
+
+  if (rest.startsWith('projects/')) {
+    route.section = 'project';
+    route.projectId = decodeURIComponent(rest.replace(/^projects\//, ''));
+    return route;
+  }
+
+  if (rest.startsWith('gallery/')) {
+    route.section = 'gallery';
+    route.galleryItemId = decodeURIComponent(rest.replace(/^gallery\//, ''));
+    return route;
+  }
+
+  if (rest.startsWith('apps/')) {
+    route.section = 'apps';
+    route.appId = decodeURIComponent(rest.replace(/^apps\//, ''));
     return route;
   }
 

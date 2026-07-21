@@ -1,5 +1,6 @@
 import { loadPictures, loadWallpapers } from '../../utils/contentLoader';
 import { type GalleryItem } from './gallery.types';
+import { routes } from '../../shells/site/siteRoutes';
 
 /**
  * Normalises raw ImageItem arrays into domain GalleryItem objects.
@@ -22,6 +23,12 @@ export async function loadGalleryItems(): Promise<GalleryItem[]> {
     thumbnailPath: pic.thumbnail ?? pic.path,
     mediaType: 'picture' as const,
     date: pic.date,
+    route: {
+      path: routes.galleryItem(pic.id),
+      sitePath: routes.galleryItem(pic.id),
+      osUri: `pictures://${pic.id}`,
+      appId: 'pictures',
+    },
   }));
 
   const wallpaperItems: GalleryItem[] = wallpapers.map((pic) => ({
@@ -34,6 +41,12 @@ export async function loadGalleryItems(): Promise<GalleryItem[]> {
     thumbnailPath: pic.thumbnail ?? pic.path,
     mediaType: 'wallpaper' as const,
     date: pic.date,
+    route: {
+      path: routes.galleryItem(`wallpaper__${pic.id}`),
+      sitePath: routes.galleryItem(`wallpaper__${pic.id}`),
+      osUri: `pictures://wallpaper/${pic.id}`,
+      appId: 'pictures',
+    },
   }));
 
   return [...pictureItems, ...wallpaperItems];

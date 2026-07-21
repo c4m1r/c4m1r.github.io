@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Language, detectLanguage } from '../i18n/translations';
+import { siteUrlConfig } from '../shells/site/siteUrlConfig';
 
 type Mode = 'grub' | 'blog' | 'webos' | 'terminal';
 export type ThemeId = 'win-98' | 'win-xp' | 'webos' | 'win7' | 'win10' | 'win11' | 'ubuntu' | 'arch' | 'halloween';
@@ -31,10 +32,29 @@ const getInitialLanguage = (): Language => {
   return detectLanguage();
 };
 
+const getInitialMode = (): Mode => {
+  if (typeof window === 'undefined') {
+    return 'grub';
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get('redirect');
+  if (redirect?.startsWith(siteUrlConfig.basePath)) {
+    window.history.replaceState({}, '', redirect);
+    return 'blog';
+  }
+
+  if (window.location.pathname.startsWith(siteUrlConfig.basePath)) {
+    return 'blog';
+  }
+
+  return 'grub';
+};
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<Mode>('grub');
+  const [mode, setMode] = useState<Mode>(getInitialMode);
   const [language, setLanguage] = useState<Language>(getInitialLanguage);
   const [theme, setTheme] = useState<ThemeId>('win-xp');
 
