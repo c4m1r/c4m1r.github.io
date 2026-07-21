@@ -1,6 +1,7 @@
 import { parseFrontmatter } from '../content/frontmatter';
 import { resolveImagePath } from '../../utils/contentLoader';
 import { type Article } from './articles.types';
+import { routes } from '../../shells/site/siteRoutes';
 
 // Discover all blog markdown files at build time
 const blogModules = import.meta.glob('/src/content/blog/*.md', {
@@ -43,8 +44,8 @@ export async function loadArticles(language: string = 'en'): Promise<Article[]> 
         processedIds.add(baseId);
         const words = body.split(/\s+/).filter(Boolean).length;
         const readingTime = Math.max(1, Math.round(words / 200));
-        const articlePath = `/blog/${baseId}`;
-        const osUri = `blog://${baseId}`;
+        const articlePath = routes.blog(baseId);
+        const osUri = `reader://article/${baseId}`;
 
         posts.push({
           id: baseId,
@@ -64,8 +65,9 @@ export async function loadArticles(language: string = 'en'): Promise<Article[]> 
           related: Array.isArray(metadata.related) ? metadata.related : [],
           route: {
             path: articlePath,
+            sitePath: articlePath,
             osUri,
-            appId: 'blog',
+            appId: 'content-reader',
           },
         });
       };

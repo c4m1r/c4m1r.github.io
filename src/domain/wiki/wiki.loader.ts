@@ -1,5 +1,6 @@
 import { parseFrontmatter } from '../content/frontmatter';
 import { type WikiArticle, type WikiIndex } from './wiki.types';
+import { routes } from '../../shells/site/siteRoutes';
 
 // All wiki markdown files discovered at build time
 const wikiModules = import.meta.glob('/src/content/wiki/**/*.md', {
@@ -20,7 +21,7 @@ function makeWikiId(dirs: string[], slug: string): string {
  * e.g. "/wiki/IT/1C/installation"
  */
 function makeWikiPath(dirs: string[], slug: string): string {
-  return ['', 'wiki', ...dirs, slug].join('/');
+  return routes.wiki([...dirs, slug].join('/'));
 }
 
 /**
@@ -81,7 +82,7 @@ export async function loadWikiArticles(
         relativePath,
         pathSegments: dirs,
         // ContentRouteInfo-compatible route (satisfies ContentItem.route type)
-        route: { path: wikiPath, osUri, appId: 'wiki' },
+        route: { path: wikiPath, sitePath: wikiPath, osUri, appId: 'wiki' },
 
         // Wiki-specific fields
         categoryPath,

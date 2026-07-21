@@ -8,6 +8,7 @@ import { Folder, Scale, Play, Briefcase, Tag } from 'lucide-react';
 import { type Language } from '../../../i18n/translations';
 import { loadCvLocale } from '../../../domain/resume/resume.loader';
 import { stripMarkdown, markdownToHtml } from '../../../domain/content/markdown';
+import { routes } from '../siteRoutes';
 
 export interface AboutSectionProps {
   ui: any;
@@ -33,7 +34,6 @@ export interface AboutSectionProps {
   setActiveSection: (section: any) => void;
   setGlobalSearchQuery: (query: string) => void;
   
-  basePath: string;
 }
 
 export function AboutSection({
@@ -53,7 +53,6 @@ export function AboutSection({
   setActiveProject,
   setActiveSection,
   setGlobalSearchQuery,
-  basePath,
 }: AboutSectionProps) {
   
   const cv = loadCvLocale(language);
@@ -194,7 +193,7 @@ export function AboutSection({
                                 e.stopPropagation();
                                 setActiveSection('search');
                                 setGlobalSearchQuery(tech);
-                                window.history.pushState({}, '', `${basePath}search`);
+                                window.history.pushState({}, '', routes.search(tech));
                               }}
                               title={`Category: ${category}`}
                             >
@@ -291,7 +290,7 @@ export function AboutSection({
                       onClick={() => {
                         setActiveProject(project);
                         setActiveSection('project');
-                        window.history.pushState({}, '', `/site/about/projects/${project.id}`);
+                        window.history.pushState({}, '', routes.project(project.id));
                       }}
                     >
                       <div className="aspect-video bg-gradient-hero relative overflow-hidden">
@@ -592,7 +591,7 @@ export function AboutSection({
                             const topTech = Object.entries(cat.techs).sort((a, b) => b[1] - a[1])[0][0];
                             setActiveSection('search');
                             setGlobalSearchQuery(topTech);
-                            window.history.pushState({}, '', `${basePath}search`);
+                            window.history.pushState({}, '', routes.search(topTech));
                           }}
                         >
                           {cat.category}
@@ -705,7 +704,7 @@ export function AboutSection({
                           onClick={() => {
                             setActiveSection('search');
                             setGlobalSearchQuery(tag);
-                            window.history.pushState({}, '', `${basePath}search`);
+                            window.history.pushState({}, '', routes.search(tag));
                           }}
                         >
                           <title>{`${tag}: ${count} items (${Math.round(percent * 100)}%)`}</title>
@@ -724,7 +723,7 @@ export function AboutSection({
                       onClick={() => {
                         setActiveSection('search');
                         setGlobalSearchQuery(tag);
-                        window.history.pushState({}, '', `${basePath}search`);
+                        window.history.pushState({}, '', routes.search(tag));
                       }}
                       className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors text-left"
                     >

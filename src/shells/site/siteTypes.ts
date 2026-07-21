@@ -62,3 +62,27 @@ export type TranslationSectionNav =
   | 'search'
   | 'apps'
   | 'news';
+
+export type SiteRouteKind =
+  | 'home'
+  | 'blog'
+  | 'article'
+  | 'news'
+  | 'newsItem'
+  | 'wiki'
+  | 'wikiItem'
+  | 'gallery'
+  | 'galleryItem'
+  | 'about'
+  | 'projects'
+  | 'projectItem'
+  | 'apps'
+  | 'appItem'
+  | 'search';
+
+export type SiteCanonicalPath = `/site/${string}`;
+
+export interface SiteRouteTarget {
+  kind: SiteRouteKind;
+  path: SiteCanonicalPath;
+}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      (function () {
+        var originalPath = window.location.pathname;
+        var originalSearch = window.location.search;
+        var originalHash = window.location.hash;
+        var target = '/' + '?redirect=' + encodeURIComponent(originalPath + originalSearch + originalHash);
+        window.location.replace(target);
+      })();
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+</html>

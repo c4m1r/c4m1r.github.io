@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { translations } from '../i18n/translations';
+import { AsciiAurora } from '../components/effects';
 
 export function Terminal() {
   const { language } = useApp();
@@ -43,10 +44,18 @@ export function Terminal() {
 
   return (
     <div
-      className="min-h-screen bg-black text-green-400 font-mono p-4"
+      className="relative min-h-screen overflow-hidden bg-black text-green-400 font-mono p-4"
       onClick={() => inputRef.current?.focus()}
     >
-      <div className="max-w-4xl mx-auto">
+      <AsciiAurora
+        variant="terminal"
+        opacity={0.16}
+        columns={96}
+        rows={34}
+        frameInterval={90}
+        speed={0.72}
+      />
+      <div className="relative z-10 max-w-4xl mx-auto">
         {history.map((line, index) => (
           <div key={index} className="whitespace-pre-wrap">
             {line}

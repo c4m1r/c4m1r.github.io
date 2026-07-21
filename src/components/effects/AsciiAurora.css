@@ -1,0 +1,63 @@
+.ascii-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  contain: layout paint;
+  opacity: var(--ascii-aurora-opacity, 0.3);
+  color: var(--ascii-aurora-color, currentColor);
+  mask-image: radial-gradient(circle at center, transparent 0%, black 28%, black 74%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, transparent 0%, black 28%, black 74%, transparent 100%);
+}
+
+.ascii-aurora__pre {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  white-space: pre;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  transform: translateZ(0);
+}
+
+.ascii-aurora--terminal {
+  --ascii-aurora-color: hsl(135 90% 62%);
+  text-shadow: 0 0 12px hsl(135 90% 55% / 0.45);
+}
+
+.ascii-aurora--ubuntu {
+  --ascii-aurora-color: hsl(24 95% 62%);
+  text-shadow: 0 0 14px hsl(300 80% 55% / 0.35);
+}
+
+.ascii-aurora--webos {
+  --ascii-aurora-color: hsl(190 95% 70%);
+  text-shadow: 0 0 14px hsl(190 95% 55% / 0.42);
+}
+
+.ascii-aurora--blog {
+  --ascii-aurora-color: hsl(145 70% 58%);
+  text-shadow: 0 0 16px hsl(185 85% 60% / 0.28);
+}
+
+.ascii-aurora--circuit {
+  --ascii-aurora-color: hsl(112 90% 58%);
+  text-shadow: 0 0 10px hsl(112 95% 45% / 0.5);
+}
+
+.ascii-aurora--cyberpunk {
+  --ascii-aurora-color: hsl(304 100% 68%);
+  text-shadow: 0 0 16px hsl(190 100% 58% / 0.45);
+}
+
+.ascii-aurora--vaporwave {
+  --ascii-aurora-color: hsl(276 100% 75%);
+  text-shadow: 0 0 16px hsl(34 100% 62% / 0.38);
+}

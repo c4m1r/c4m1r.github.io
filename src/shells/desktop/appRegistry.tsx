@@ -152,6 +152,23 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     showInStartMenu: true,
     showOnDesktop: true,
   },
+  'content-reader': {
+    id: 'content-reader',
+    title: {
+      en: 'Content Reader',
+      ru: 'Просмотр контента',
+      fr: 'Lecteur de contenu',
+      es: 'Lector de contenido',
+      zh: '内容阅读器',
+      ja: 'コンテンツ リーダー',
+      ko: '콘텐츠 리더',
+    },
+    iconKey: 'richTextIcon',
+    component: BlogApp,
+    defaultWindow: { width: 960, height: 640 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
   'blog': {
     id: 'blog',
     title: {

@@ -8,7 +8,7 @@
  * Each result carries its domain kind so callers can route/display accordingly.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useProjects } from '../projects/useProjects';
 import { useGallery } from '../gallery/useGallery';
 import { useNews } from '../news/useNews';
@@ -51,8 +51,12 @@ function titleMatches(item: ContentItem, q: string): boolean {
   );
 }
 
-export function useGlobalSearch(): UseGlobalSearchResult {
-  const [query, setQuery] = useState('');
+export function useGlobalSearch(initialQuery: string = ''): UseGlobalSearchResult {
+  const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
 
   const { projects, loading: projectsLoading } = useProjects();
   const { items: galleryItems, loading: galleryLoading } = useGallery();
