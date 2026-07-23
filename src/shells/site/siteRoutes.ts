@@ -171,10 +171,15 @@ export function parsePath(pathname: string): ParsedRoute {
     return route;
   }
 
-  // Handle post match slug fallback
-  const cleaned = rest.startsWith('blog/') ? rest.replace(/^blog\//, '') : rest;
-  const slug = cleaned.replace(/\.md$/, '');
+  if (rest.startsWith('blog/')) {
+    route.section = 'blog';
+    route.postId = decodeURIComponent(rest.replace(/^blog\//, '').replace(/\.md$/, ''));
+    return route;
+  }
+
+  // Handle legacy bare post slug fallback
+  const slug = rest.replace(/\.md$/, '');
   route.section = 'home';
-  route.postId = slug;
+  route.postId = decodeURIComponent(slug);
   return route;
 }

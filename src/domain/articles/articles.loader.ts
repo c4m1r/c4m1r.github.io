@@ -1,5 +1,5 @@
 import { parseFrontmatter } from '../content/frontmatter';
-import { resolveImagePath } from '../../utils/contentLoader';
+import { resolveImagePath } from '../assets/assetResolver';
 import { type Article } from './articles.types';
 import { routes } from '../../shells/site/siteRoutes';
 

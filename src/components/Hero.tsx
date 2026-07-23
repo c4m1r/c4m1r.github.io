@@ -61,7 +61,7 @@ export function Hero({ title, subtitle, theme = 'default' }: HeroProps) {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="site-hero relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Background Layer - Slowest parallax */}
       <div
@@ -122,13 +122,13 @@ export function Hero({ title, subtitle, theme = 'default' }: HeroProps) {
           </span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-fade-in animation-delay-100">
+        <h1 className="site-hero-title text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-fade-in animation-delay-100">
           <span className="gradient-text">{title.split(' ')[0]}</span>
           <br />
           <span className="text-foreground">{title.split(' ').slice(1).join(' ')}</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto mb-12 animate-fade-in animation-delay-200">
+        <p className="site-hero-subtitle text-lg md:text-xl text-foreground/75 max-w-2xl mx-auto mb-12 animate-fade-in animation-delay-200">
           {subtitle}
         </p>
       </div>

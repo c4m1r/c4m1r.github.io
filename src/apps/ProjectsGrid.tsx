@@ -13,6 +13,10 @@ interface ProjectsByCategory {
   projects: Project[];
 }
 
+function isVideoPreview(preview: string): boolean {
+  return /\.(webm|mp4)(?:[?#].*)?$/i.test(preview);
+}
+
 export function ProjectsGrid() {
   const { projects, loading, byCategory } = useProjects();
   const [focusedId, setFocusedId] = useState<string | null>(null);
@@ -76,13 +80,25 @@ export function ProjectsGrid() {
                     onClick={() => setFocusedId(project.id)}
                   >
                     {project.preview ? (
-                      <img
-                        src={project.preview}
-                        alt={project.title}
-                        className="w-10 h-10 object-contain"
-                        style={{ opacity: isFocused ? 0.6 : 1 }}
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                      />
+                      isVideoPreview(project.preview) ? (
+                        <video
+                          src={project.preview}
+                          className="w-10 h-10 object-contain"
+                          style={{ opacity: isFocused ? 0.6 : 1 }}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          src={project.preview}
+                          alt={project.title}
+                          className="w-10 h-10 object-contain"
+                          style={{ opacity: isFocused ? 0.6 : 1 }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      )
                     ) : (
                       <div className="w-10 h-10 rounded bg-white/20 flex items-center justify-center text-xl">
                         📁

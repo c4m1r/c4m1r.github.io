@@ -9,14 +9,9 @@ import { Layers, Search, ChevronDown, ChevronRight, ArrowLeft, ArrowRight, FileT
 import { ContentReader } from '../../../components/ContentReader';
 import { routes } from '../siteRoutes';
 import { type Language } from '../../../i18n/translations';
+import { type Section } from '../siteTypes';
+import { type WikiCategoryNode as CategoryNode } from '../hooks/useWikiCategoryTree';
 import { markdownToHtml } from '../../../domain/content/markdown';
-
-export interface CategoryNode {
-  name: string;
-  fullPath: string;
-  children: Map<string, CategoryNode>;
-  count: number;
-}
 
 export interface WikiViewItem {
   id: string;
@@ -87,7 +82,14 @@ function SectionPagination({ currentPage, totalPages, onPageChange }: SectionPag
 }
 
 export interface WikiSectionProps {
-  ui: any;
+  ui: {
+    wikiTitle: string;
+    categories: string;
+    searchPlaceholder: string;
+    tags: string;
+    back: string;
+    nothing: string;
+  };
   language: Language;
   wikiCategories: string[];
   wikiCategoryStats: Record<string, number>;
@@ -107,7 +109,7 @@ export interface WikiSectionProps {
   setWikiPage: (page: number) => void;
   getTagCount: (tag: string) => number;
   handleOpenWiki: (item: WikiViewItem) => void;
-  setActiveSection: (section: any) => void;
+  setActiveSection: (section: Section) => void;
   setGlobalSearchQuery: (query: string) => void;
 }
 

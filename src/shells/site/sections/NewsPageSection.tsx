@@ -13,11 +13,11 @@ import { markdownToHtml } from '../../../domain/content/markdown';
 import { routes } from '../siteRoutes';
 
 export interface NewsPageSectionProps {
-  ui: any;
+  ui: { tags: string; back: string; nav: { news: string } };
   language: Language;
   activeNews: NewsItem | null;
   setActiveNews: (news: NewsItem | null) => void;
-  setActiveSection: (section: any) => void;
+  setActiveSection: (section: Section) => void;
   setGlobalSearchQuery: (query: string) => void;
   handleOpenNews: (item: NewsItem) => void;
 }

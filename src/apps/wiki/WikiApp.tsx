@@ -3,7 +3,7 @@ import { ChevronDown, ChevronRight, FileText, Folder, Home } from 'lucide-react'
 import { useWiki } from '../../domain/wiki/useWiki';
 import { markdownToHtml } from '../../domain/content/markdown';
 import { type WikiArticle, type WikiCategory } from '../../domain/wiki/wiki.types';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 
 export function WikiApp() {
   const { categories, loading } = useWiki();

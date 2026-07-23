@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useApp } from '../contexts/AppContext';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
 
 type GrubOption = 'blog' | 'webos' | 'win-xp' | 'win-98' | 'win7' | 'ubuntu' | 'terminal';
@@ -11,7 +11,7 @@ export function GrubMenu() {
   const [countdown, setCountdown] = useState(3);
   const [autobootActive, setAutobootActive] = useState(true);
 
-  const options: { key: GrubOption; label: string }[] = [
+  const options: { key: GrubOption; label: string }[] = useMemo(() => [
     { key: 'blog', label: t.blogSite || 'Мой сайт' },
     { key: 'win-xp', label: 'Windows XP' },
     { key: 'win-98', label: 'Windows 98' },
@@ -19,7 +19,41 @@ export function GrubMenu() {
     { key: 'ubuntu', label: 'Ubuntu' },
     { key: 'terminal', label: t.terminal || 'Терминал' },
     { key: 'webos', label: t.webos || 'WebOS' },
-  ];
+  ], [t.blogSite, t.terminal, t.webos]);
+
+  const handleBoot = useCallback((option: GrubOption) => {
+    switch (option) {
+      case 'webos':
+        setTheme('webos');
+        setMode('webos');
+        return;
+      case 'win-xp':
+        setTheme('win-xp');
+        setMode('webos');
+        return;
+      case 'win-98':
+        setTheme('win-98');
+        setMode('webos');
+        return;
+      case 'win7':
+        setTheme('win7');
+        setMode('webos');
+        return;
+      case 'ubuntu':
+        setTheme('ubuntu');
+        setMode('webos');
+        return;
+      case 'blog':
+        setMode('blog');
+        return;
+      case 'terminal':
+        setMode('terminal');
+        return;
+      default:
+        setMode('webos');
+        return;
+    }
+  }, [setMode, setTheme]);
 
   useEffect(() => {
     if (!autobootActive) return;
@@ -30,7 +64,7 @@ export function GrubMenu() {
     } else {
       handleBoot(options[selectedIndex].key);
     }
-  }, [countdown, autobootActive]);
+  }, [autobootActive, countdown, handleBoot, options, selectedIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -61,40 +95,7 @@ export function GrubMenu() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('touchstart', handleTouchStart);
     };
-  }, [selectedIndex]);
-
-  const handleBoot = (option: GrubOption) => {
-    switch (option) {
-      case 'webos':
-        setTheme('webos');
-        setMode('webos');
-        return;
-      case 'win-xp':
-        setTheme('win-xp');
-        setMode('webos');
-        return;
-      case 'win-98':
-        setTheme('win-98');
-        setMode('webos');
-        return;
-      case 'win7':
-        setTheme('win7');
-        setMode('webos');
-        return;
-      case 'ubuntu':
-        setTheme('ubuntu');
-        setMode('webos');
-        return;
-      case 'blog':
-        setMode('blog');
-        return;
-      case 'terminal':
-        setMode('terminal');
-        return;
-      default:
-        return;
-    }
-  };
+  }, [handleBoot, options, selectedIndex]);
 
   return (
     <div className="min-h-screen bg-black text-white font-mono p-8 flex flex-col">

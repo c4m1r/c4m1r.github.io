@@ -3,8 +3,8 @@
  * Поддерживает: драг, ресайз, минимизацию, максимизацию
  */
 
-import { useState, useRef, useEffect, ReactNode } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useCallback, useState, useRef, useEffect, ReactNode } from 'react';
+import { useApp } from '../../contexts/useApp';
 
 interface WindowProps {
   id: string;
@@ -62,19 +62,33 @@ export function Window({
   const [resizeDirection, setResizeDirection] = useState<string | null>(null);
   const latestPosition = useRef({ x: initialX, y: initialY });
   const latestSize = useRef({ width, height });
+  const savedPositionRef = useRef({ x: initialX, y: initialY });
+  const savedSizeRef = useRef({ width, height });
   const didDrag = useRef(false);
   const didResize = useRef(false);
 
   useEffect(() => {
+    savedPositionRef.current = savedPosition;
+  }, [savedPosition]);
+
+  useEffect(() => {
+    savedSizeRef.current = savedSize;
+  }, [savedSize]);
+
+  useEffect(() => {
     if (maximized) {
-      setSavedPosition(position);
-      setSavedSize({ width, height });
-      latestSize.current = { width, height };
+      const positionToRestore = latestPosition.current;
+      const sizeToRestore = latestSize.current;
+      savedPositionRef.current = positionToRestore;
+      savedSizeRef.current = sizeToRestore;
+      setSavedPosition(positionToRestore);
+      setSavedSize(sizeToRestore);
       setPosition({ x: 0, y: 0 });
       latestPosition.current = { x: 0, y: 0 };
     } else {
-      setPosition(savedPosition);
-      latestPosition.current = savedPosition;
+      const positionToRestore = savedPositionRef.current;
+      setPosition(positionToRestore);
+      latestPosition.current = positionToRestore;
     }
   }, [maximized]);
 
@@ -105,7 +119,7 @@ export function Window({
     setResizeDirection(direction);
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (isDragging && !maximized && !minimized) {
       const newX = Math.max(0, Math.min(e.clientX - dragOffset.x, window.innerWidth - currentWidth));
       const newY = Math.max(0, Math.min(e.clientY - dragOffset.y, window.innerHeight - 30 - currentHeight));
@@ -116,7 +130,9 @@ export function Window({
       latestPosition.current = { x: newX, y: newY };
       didDrag.current = true;
       if (!maximized) {
-        setSavedPosition({ x: newX, y: newY });
+        const nextPosition = { x: newX, y: newY };
+        savedPositionRef.current = nextPosition;
+        setSavedPosition(nextPosition);
       }
     } else if (isResizing && !maximized && !minimized && resizable) {
       let newWidth = savedSize.width;
@@ -129,13 +145,15 @@ export function Window({
         newHeight = Math.max(100, e.clientY - position.y);
       }
 
-      setSavedSize({ width: newWidth, height: newHeight });
-      latestSize.current = { width: newWidth, height: newHeight };
+      const nextSize = { width: newWidth, height: newHeight };
+      savedSizeRef.current = nextSize;
+      setSavedSize(nextSize);
+      latestSize.current = nextSize;
       didResize.current = true;
     }
-  };
+  }, [currentHeight, currentWidth, dragOffset, isDragging, isResizing, maximized, minimized, position, resizable, resizeDirection, savedSize]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setIsDragging(false);
     setIsResizing(false);
     setResizeDirection(null);
@@ -147,7 +165,7 @@ export function Window({
     }
     didDrag.current = false;
     didResize.current = false;
-  };
+  }, [onDragEnd, onResizeEnd]);
 
   useEffect(() => {
     if (isDragging || isResizing) {
@@ -158,7 +176,7 @@ export function Window({
         window.removeEventListener('mouseup', handleMouseUp);
       };
     }
-  }, [isDragging, isResizing, dragOffset, maximized, minimized, currentWidth, currentHeight, resizeDirection, position, savedSize]);
+  }, [handleMouseMove, handleMouseUp, isDragging, isResizing]);
 
   const handleMinimize = () => {
     if (onMinimize) onMinimize();

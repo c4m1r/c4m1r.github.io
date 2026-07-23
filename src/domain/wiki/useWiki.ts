@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { loadWikiArticles, loadWikiIndexes } from './wiki.loader';
 import { buildWikiCategoryTree } from './wikiGraph';
 import { type WikiArticle, type WikiCategory, type WikiById, type WikiByTag } from './wiki.types';

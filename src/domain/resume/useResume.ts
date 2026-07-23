@@ -10,7 +10,7 @@
  */
 
 import { useMemo } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { loadCvLocale, CV_TABS } from './resume.loader';
 import type { ResumeSlice } from './resume.types';
 

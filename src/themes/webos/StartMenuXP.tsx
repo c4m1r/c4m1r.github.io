@@ -1,4 +1,4 @@
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
 import { Power, Settings, HelpCircle, Search, FileText, ChevronsRight } from 'lucide-react';
 import { THEME_ASSETS, ThemeAssetId } from './themeAssets';

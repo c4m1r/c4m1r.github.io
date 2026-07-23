@@ -3,7 +3,7 @@ import { Calendar } from 'lucide-react';
 import { loadArticles } from '../domain/articles/articles.loader';
 import { type ContentItem } from '../utils/contentLoader';
 import { Notepad } from './notepad';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexts/useApp';
 
 export function BlogApp() {
   const { language } = useApp();

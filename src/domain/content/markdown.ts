@@ -4,7 +4,7 @@ export function stripMarkdown(raw: string): string {
     .replace(/`([^`]+)`/g, '$1')
     .replace(/!\[[^\]]*]\([^)]+\)/g, '')
     .replace(/\[[^\]]+]\(([^)]+)\)/g, '$1')
-    .replace(/[#>*_`~\-]+/g, ' ')
+    .replace(/[#>*_`~-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -72,15 +72,20 @@ export function markdownToHtml(md: string): string {
   // Обрабатываем inline элементы
   let processed = lines
     // Bold **text** или __text__
-    .replace(/\*\*([^\*]+)\*\*/g, '<strong class="font-semibold">$1</strong>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold">$1</strong>')
     .replace(/__([^_]+)__/g, '<strong class="font-semibold">$1</strong>')
     // Italic *text* или _text_ (но не внутри слов)
-    .replace(/\*([^\*\n]+)\*/g, '<em class="italic">$1</em>')
+    .replace(/\*([^*\n]+)\*/g, '<em class="italic">$1</em>')
     .replace(/\b_([^_\n]+)_\b/g, '<em class="italic">$1</em>')
     // Inline code `code`
     .replace(/`([^`\n]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-muted text-sm font-mono">$1</code>')
-    // Images
-    .replace(/!\[([^\]]*)]\(([^)]+)\)/g, '<img alt="$1" src="$2" class="my-4 rounded-xl max-w-full" loading="lazy" />')
+    // Images and lightweight video previews
+    .replace(/!\[([^\]]*)]\(([^)]+)\)/g, (_match, alt, url) => {
+      if (/\.(webm|mp4)(?:[?#].*)?$/i.test(url)) {
+        return `<video aria-label="${alt}" src="${url}" class="my-4 rounded-xl max-w-full" autoplay loop muted playsinline></video>`;
+      }
+      return `<img alt="${alt}" src="${url}" class="my-4 rounded-xl max-w-full" loading="lazy" />`;
+    })
     // Links - обрабатываем внутренние и внешние по-разному
     .replace(/\[([^\]]+)]\(([^)]+)\)/g, (_match, text, url) => {
       // Внешние ссылки

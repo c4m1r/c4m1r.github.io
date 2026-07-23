@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { THEME_ASSETS, ThemeAssetId } from './themeAssets';
 
 interface BootScreenProps {

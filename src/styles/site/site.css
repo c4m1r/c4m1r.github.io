@@ -1,0 +1,109 @@
+/* Visual polish pass: scoped site Hero readability and micro-texture tweaks */
+@layer components {
+  .site-hero {
+    isolation: isolate;
+  }
+
+  .site-hero::before,
+  .site-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .site-hero::before {
+    z-index: 2;
+    opacity: 0;
+  }
+
+  .site-hero::after {
+    z-index: 3;
+    opacity: 0;
+  }
+
+  .site-hero-title,
+  .site-hero-subtitle {
+    text-wrap: balance;
+    text-shadow: 0 2px 18px hsl(var(--background) / 0.28);
+  }
+
+  .site-hero button:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
+    box-shadow: 0 0 0 5px hsl(var(--ring) / 0.18);
+  }
+
+  [data-theme="frutiger-aero"] .site-hero::after {
+    opacity: 0.9;
+    background:
+      radial-gradient(circle at 18% 28%, rgba(255,255,255,0.75) 0 0.35rem, rgba(255,255,255,0.22) 0.42rem, transparent 1.6rem),
+      radial-gradient(circle at 78% 22%, rgba(255,255,255,0.6) 0 0.28rem, rgba(120,210,255,0.22) 0.36rem, transparent 1.35rem),
+      radial-gradient(circle at 68% 76%, rgba(255,255,255,0.62) 0 0.24rem, rgba(255,224,150,0.24) 0.34rem, transparent 1.2rem),
+      linear-gradient(115deg, rgba(255,255,255,0.22), transparent 34%, rgba(255,244,204,0.16) 60%, transparent 78%);
+    filter: blur(0.2px);
+  }
+
+  [data-theme="frutiger-aero"] .site-hero-title {
+    text-shadow: 0 2px 22px rgba(255,255,255,0.8), 0 10px 42px rgba(80,170,255,0.3);
+  }
+
+  [data-theme="vaporwave"] .site-hero-title .gradient-text,
+  [data-theme="vaporwave"] footer .gradient-text {
+    text-shadow: 0 0 12px rgba(255, 80, 255, 0.78), 0 0 30px rgba(0, 240, 255, 0.42);
+    filter: saturate(1.14);
+  }
+
+  [data-theme="vaporwave"] .site-hero::before {
+    opacity: 0.5;
+    background:
+      linear-gradient(180deg, transparent 58%, rgba(255, 82, 220, 0.16) 59%, transparent 61%),
+      repeating-linear-gradient(0deg, rgba(0,255,255,0.08) 0 1px, transparent 1px 18px);
+    mix-blend-mode: screen;
+  }
+
+  [data-theme="cyberpunk"] .site-hero-title .gradient-text,
+  [data-theme="cyberpunk"] footer .gradient-text {
+    text-shadow: 0 0 10px rgba(255,255,0,0.72), 0 0 28px rgba(0,255,255,0.36);
+  }
+
+  [data-theme="cyberpunk"] .site-hero::before {
+    opacity: 0.42;
+    background:
+      repeating-linear-gradient(112deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 18px),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.24) 0 2px, transparent 2px 7px),
+      linear-gradient(135deg, rgba(140,140,160,0.16), transparent 42%, rgba(255,255,0,0.08));
+    mix-blend-mode: screen;
+  }
+
+  [data-theme="pcb"] {
+    --glass-bg: 140 54% 17% / 0.88;
+    --glass-border: 45 92% 58% / 0.5;
+  }
+
+  [data-theme="pcb"] .site-hero::before {
+    opacity: 0.72;
+    background:
+      linear-gradient(90deg, transparent 0 18%, rgba(255,210,64,0.2) 19%, transparent 20% 48%, rgba(255,210,64,0.18) 49%, transparent 50%),
+      linear-gradient(0deg, transparent 0 24%, rgba(255,210,64,0.12) 25%, transparent 26% 68%, rgba(255,210,64,0.14) 69%, transparent 70%);
+    mask-image: radial-gradient(circle at 42% 45%, #000 0 22%, transparent 58%);
+    animation: pcbSignalWave 5.8s linear infinite;
+  }
+
+  [data-theme="pcb"] .site-hero-title,
+  [data-theme="pcb"] .site-hero-subtitle {
+    text-shadow: 0 2px 18px rgba(0,0,0,0.55), 0 0 18px rgba(255,210,64,0.22);
+  }
+}
+
+@keyframes pcbSignalWave {
+  0% { transform: translate3d(-2%, 0, 0); opacity: 0.36; }
+  45% { opacity: 0.78; }
+  100% { transform: translate3d(2%, 0, 0); opacity: 0.36; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="pcb"] .site-hero::before {
+    animation: none;
+  }
+}

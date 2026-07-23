@@ -1,30 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Grid3x3,
-  ArrowLeft,
   ArrowRight,
   BookOpen,
   Calendar,
   Image as ImageIcon,
-  Tag,
   User,
   FileText,
-  Briefcase,
-  Play,
 } from 'lucide-react';
 import {
-  loadAppEntries,
-  loadAboutMe,
-  loadLegalNotice,
   type AppCategoryId,
   type AppEntry,
-  type ContentItem,
-} from '../utils/contentLoader';
+} from '../domain/apps/apps.types';
+import { type ContentItem } from '../domain/content/types';
 import { loadArticles } from '../domain/articles/articles.loader';
+import { loadAboutMe, loadLegalNotice } from '../domain/about/about.loader';
+import { loadAppEntries } from '../domain/apps/apps.loader';
 import { loadWikiArticles, loadWikiCategoryIndex } from '../domain/wiki/wiki.loader';
 import { loadAllProjects } from '../domain/projects/projects.loader';
 import { type Language } from '../i18n/translations';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexts/useApp';
 import { stripMarkdown, markdownToHtml } from '../domain/content/markdown';
 import { loadCvLocale } from '../domain/resume/resume.loader';
 import { Navigation } from '../components/Navigation';
@@ -45,7 +40,6 @@ import { SearchSection } from '../shells/site/sections/SearchSection';
 import { useNews } from '../domain/news/useNews';
 import { useGlobalSearch, type SearchResult } from '../domain/search/useGlobalSearch';
 import { type NewsItem } from '../domain/news/news.types';
-import { markdownToHtml as _markdownToHtml } from '../domain/content/markdown';
 import { type Section, type NavSection, type TranslationSectionNav } from '../shells/site/siteTypes';
 import { sectionToPath, parsePath, routes } from '../shells/site/siteRoutes';
 
@@ -144,8 +138,6 @@ type UiText = {
     projects: string;
   };
 };
-
-const APP_CATEGORIES: AppCategoryId[] = ['ready', 'prototype', 'webos-emulation'];
 
 const uiTexts: Record<Language, UiText> = {
   en: {
@@ -602,6 +594,62 @@ export function BlogSite() {
   const [expandedWikiCategories, setExpandedWikiCategories] = useState<Set<string>>(new Set());
   const itemsPerPage = 12;
 
+  const syncFromLocation = useCallback((
+    pathname: string,
+    postsList: BlogPostView[],
+    wikiList: WikiView[],
+    projectList: ContentItem[],
+  ) => {
+    const route = parsePath(pathname);
+
+    setActivePost(null);
+    setActiveWiki(null);
+    setActiveNews(null);
+    setActiveProject(null);
+    setActiveSection(route.section);
+
+    if (route.newsId && newsItems.length > 0) {
+      const matchNews = newsItems.find((n) => n.id === route.newsId);
+      setActiveNews(matchNews ?? null);
+    }
+
+    if (route.searchQuery) {
+      setGlobalSearchQuery(route.searchQuery);
+    }
+
+    if (route.projectId) {
+      const matchProject = projectList.find((p) => p.id === route.projectId);
+      if (matchProject) {
+        setActiveSection('project');
+        setActiveProject(matchProject);
+      }
+      return;
+    }
+
+    if (route.galleryItemId) {
+      setSelectedPictureId(route.galleryItemId);
+    }
+
+    if (route.wikiSlug) {
+      const matchWiki = wikiList.find(
+        (w) => w.relativePath?.replace(/\.md$/, '') === route.wikiSlug
+      );
+      if (matchWiki) {
+        setActiveSection('wiki');
+        setActiveWiki(matchWiki);
+      }
+      return;
+    }
+
+    if (route.postId) {
+      const maybePost = postsList.find((p) => p.id === route.postId);
+      if (maybePost) {
+        setActiveSection(route.section === 'blog' ? 'blog' : 'home');
+        setActivePost(maybePost);
+      }
+    }
+  }, [newsItems, setGlobalSearchQuery]);
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('site-theme', theme);
@@ -695,7 +743,7 @@ export function BlogSite() {
       const mapped = loadedPosts.map(buildView);
       const mappedWiki = loadedWiki.map((item) => ({
         ...item,
-        excerpt: stripMarkdown(item.content).slice(0, 200) + (item.content.length > 200 ? 'вЂ¦' : ''),
+        excerpt: stripMarkdown(item.content).slice(0, 200) + (item.content.length > 200 ? '…' : ''),
         html: markdownToHtml(item.content),
         categoryPath: item.category || item.pathSegments?.join('/') || 'wiki',
       }));
@@ -751,7 +799,11 @@ export function BlogSite() {
     loadAppEntries(language).then((loaded) => {
       if (!mounted) return;
       setApps(loaded);
+      const route = parsePath(window.location.pathname + window.location.search);
       setSelectedApp((prev) => {
+        if (route.appId) {
+          return loaded.find((app) => app.id === route.appId) ?? loaded[0] ?? null;
+        }
         if (prev) {
           const match = loaded.find((app) => app.id === prev.id);
           return match ?? loaded[0] ?? null;
@@ -929,14 +981,12 @@ export function BlogSite() {
       return;
     }
 
-    if (route.postId) {
-      const maybePost = postsList.find((p) => p.id === route.postId);
-      if (maybePost) {
-        setActiveSection('home');
-        setActivePost(maybePost);
-      }
-    }
-  }
+  useEffect(() => {
+    const route = parsePath(window.location.pathname + window.location.search);
+    if (!route.appId) return;
+    setActiveSection('apps');
+    setSelectedApp(apps.find((app) => app.id === route.appId) ?? null);
+  }, [apps]);
 
   const handleOpenPost = (post: ArticleItem) => {
     const fullPost = posts.find((p) => p.id === post.id);
@@ -1056,7 +1106,7 @@ export function BlogSite() {
         setTheme={setTheme}
         language={language}
         setLanguage={setLanguage}
-        themeOptions={themeOptions as any}
+        themeOptions={themeOptions}
         navLabels={ui.nav}
       />
 
@@ -1559,7 +1609,7 @@ export function BlogSite() {
           language={language}
           wikiCategories={wikiCategories}
           wikiCategoryStats={wikiCategoryStats}
-          wikiCategoryTree={wikiCategoryTree as any}
+          wikiCategoryTree={wikiCategoryTree}
           expandedWikiCategories={expandedWikiCategories}
           setExpandedWikiCategories={setExpandedWikiCategories}
           wikiCategory={wikiCategory}
@@ -1573,11 +1623,7 @@ export function BlogSite() {
           wikiPage={wikiPage}
           totalWikiPages={totalWikiPages}
           setWikiPage={setWikiPage}
-          getTagCount={(tag) =>
-            posts.filter((p) => p.tags?.includes(tag)).length +
-            wiki.filter((w) => w.tags?.includes(tag)).length +
-            projects.filter((pr) => pr.tags?.includes(tag)).length
-          }
+          getTagCount={getGlobalTagCount}
           handleOpenWiki={(item) => handleOpenWiki(item as WikiView)}
           setActiveSection={setActiveSection}
           setGlobalSearchQuery={setGlobalSearchQuery}

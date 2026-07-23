@@ -14,6 +14,10 @@ import { useGallery } from '../gallery/useGallery';
 import { useNews } from '../news/useNews';
 import { useArticles } from '../articles/useArticles';
 import { useWiki } from '../wiki/useWiki';
+import { loadAppEntries } from '../apps/apps.loader';
+import { loadAboutMe, loadLegalNotice } from '../about/about.loader';
+import { loadCvLocale } from '../resume/resume.loader';
+import { useApp } from '../../contexts/useApp';
 import { type ContentItem, type ContentKind } from '../content/types';
 
 export interface SearchResult {
@@ -63,13 +67,52 @@ export function useGlobalSearch(initialQuery: string = ''): UseGlobalSearchResul
   const { news, loading: newsLoading } = useNews();
   const { articles, loading: articlesLoading } = useArticles();
   const { articles: wikiArticles, loading: wikiLoading } = useWiki();
+  const [extraItems, setExtraItems] = useState<ContentItem[]>([]);
+  const [extraLoading, setExtraLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    Promise.all([loadAppEntries(language), loadAboutMe(language), loadLegalNotice(language)])
+      .then(([apps, aboutMe, legalNotice]) => {
+        if (!mounted) return;
+
+        const cv = loadCvLocale(language);
+        const resumeContent = Object.values(cv)
+          .flat()
+          .map((entry) => [entry.title, entry.subtitle, entry.year, ...(entry.details || [])].filter(Boolean).join(' '))
+          .join('\n');
+
+        setExtraItems([
+          ...apps.map((app): ContentItem => ({ ...app, kind: 'apps' })),
+          ...(aboutMe ? [{ ...aboutMe, kind: 'about' as const }] : []),
+          ...(legalNotice ? [{ ...legalNotice, kind: 'about' as const }] : []),
+          {
+            id: 'resume',
+            kind: 'resume',
+            title: 'Resume',
+            content: resumeContent,
+            category: 'CV',
+            tags: ['resume', 'cv', 'experience', 'education'],
+          },
+        ]);
+      })
+      .finally(() => {
+        if (mounted) setExtraLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [language]);
 
   const loading =
     projectsLoading ||
     galleryLoading ||
     newsLoading ||
     articlesLoading ||
-    wikiLoading;
+    wikiLoading ||
+    extraLoading;
 
   const results = useMemo<SearchResult[]>(() => {
     const q = query.trim();
@@ -117,8 +160,16 @@ export function useGlobalSearch(initialQuery: string = ''): UseGlobalSearchResul
       }
     }
 
+    // Apps/About/Resume
+    for (const item of extraItems) {
+      const matchedTags = matchesQuery(item, q);
+      if (matchedTags.length > 0 || titleMatches(item, q)) {
+        out.push({ item, kind: item.kind || 'about', matchedTags });
+      }
+    }
+
     return out;
-  }, [query, projects, galleryItems, news, articles, wikiArticles]);
+  }, [query, projects, galleryItems, news, articles, wikiArticles, extraItems]);
 
   return { query, setQuery, results, loading };
 }

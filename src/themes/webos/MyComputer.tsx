@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import folderIcon from '../winxp/assets/icons/folder_plain.png';
 import computerIcon from '../winxp/assets/icons/mycomputer.png';

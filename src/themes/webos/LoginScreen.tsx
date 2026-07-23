@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
 import { Power } from 'lucide-react';
 import userAvatar from '../winxp/assets/user.gif';
@@ -23,6 +23,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     'arch':   'ubuntu',
   };
   const osClassName = OS_CLASS_MAP[theme] ?? 'classic';
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   if (theme === 'win-98') {
     return (
@@ -80,8 +81,6 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       </div>
     );
   }
-
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleUserClick = () => {
     setIsLoggingIn(true);

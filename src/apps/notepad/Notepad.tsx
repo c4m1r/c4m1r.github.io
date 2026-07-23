@@ -4,7 +4,7 @@
  */
 
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 
 interface NotepadProps {
   initialContent?: string;

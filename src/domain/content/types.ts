@@ -43,7 +43,7 @@ export interface BaseContentItem {
   related?: string[];
 }
 
-export interface ContentItem extends BaseContentItem {}
+export type ContentItem = BaseContentItem;
 
 export interface ContentRelation {
   sourceId: string;

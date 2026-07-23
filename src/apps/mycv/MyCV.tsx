@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import profileGif from '../../themes/winxp/assets/avatars/profile.gif';
 import { useResume } from '../../domain/resume/useResume';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import type { CvTabId } from '../../domain/resume/resume.types';
 import type { Language } from '../../i18n/translations';
 

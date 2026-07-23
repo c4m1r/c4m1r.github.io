@@ -2,9 +2,9 @@ import { useState, useCallback } from 'react';
 import { BootScreen } from './BootScreen';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
-import { Desktop } from './Desktop';
+import { DesktopShell } from '../../shells/desktop/DesktopShell';
 import { SystemTransitionScreen } from './SystemTransitionScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 
 type WebOSState = 'boot' | 'login' | 'welcome' | 'desktop' | 'logoff' | 'shutdown';
 
@@ -53,5 +53,5 @@ export function WebOS() {
     );
   }
 
-  return <Desktop onSystemCommand={handleSystemCommand} />;
+  return <DesktopShell onSystemCommand={handleSystemCommand} />;
 }

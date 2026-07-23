@@ -1,4 +1,4 @@
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { StartMenu98 } from './StartMenu98';
 import { StartMenuXP } from './StartMenuXP';
 

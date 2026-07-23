@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexts/useApp';
 import { Folder, FileText, ChevronRight, ChevronDown } from 'lucide-react';
 
 export interface MarkdownFile {
@@ -40,13 +40,13 @@ export function MarkdownViewer({ title, categories }: MarkdownViewerProps) {
 
   const renderMarkdown = (content: string) => {
     // Простой парсер markdown для базового форматирования
-    let html = content
+    const html = content
       .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mb-4 mt-6">$1</h1>')
       .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-semibold mb-3 mt-5">$1</h2>')
       .replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold mb-2 mt-4">$1</h3>')
       .replace(/^\*\*(.*)\*\*/gim, '<strong class="font-bold">$1</strong>')
       .replace(/^\*(.*)\*/gim, '<em class="italic">$1</em>')
-      .replace(/^\- (.*$)/gim, '<li class="ml-4 mb-1">$1</li>')
+      .replace(/^- (.*$)/gim, '<li class="ml-4 mb-1">$1</li>')
       .replace(/\n\n/g, '</p><p class="mb-4">')
       .replace(/\n/g, '<br />');
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
 import { AsciiAurora } from '../components/effects';
 
@@ -24,11 +24,27 @@ export function Terminal() {
     setHistory((prev) => [...prev, `$ ${cmd}`]);
 
     if (trimmed === 'help') {
-      setHistory((prev) => [...prev, '', t.help, '']);
+      setHistory((prev) => [
+        ...prev,
+        '',
+        t.help,
+        '  htop - Show pseudo site runtime monitor',
+        '  mc - Browse site material shortcuts',
+        '  news/wiki/projects/gallery/apps/search - Open site sections',
+        '',
+      ]);
     } else if (trimmed === 'clear') {
       setHistory([]);
     } else if (trimmed === '') {
       setHistory((prev) => [...prev, '']);
+    } else if (pseudoScreens[trimmed]) {
+      setHistory((prev) => [...prev, '', ...pseudoScreens[trimmed], '']);
+    } else if (isRouteCommand(trimmed)) {
+      const target = TERMINAL_SITE_ROUTES[trimmed];
+      setHistory((prev) => [...prev, `Opening ${target}…`, '']);
+      window.setTimeout(() => {
+        window.location.href = target;
+      }, 120);
     } else {
       setHistory((prev) => [...prev, `Command not found: ${trimmed}`, 'Type "help" for available commands.', '']);
     }

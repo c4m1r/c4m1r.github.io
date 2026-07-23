@@ -3,13 +3,9 @@
  * Используется всеми темами
  */
 
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 
-interface DesktopProps {
-  onSystemCommand?: (command: 'logoff' | 'shutdown') => void;
-}
-
-export function Desktop({}: DesktopProps) {
+export function Desktop() {
   const { theme } = useApp();
 
   return (

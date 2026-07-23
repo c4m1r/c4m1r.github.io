@@ -1,6 +1,7 @@
 import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
+import { routes } from '../shells/site/siteRoutes';
 
 const socialLinks = [
   { icon: Github, href: 'https://github.com/c4m1r', label: 'GitHub' },
@@ -14,10 +15,10 @@ export function Footer() {
   const t = translations[language].site;
   
   const footerLinks = [
-    { href: '/site/about', label: t.nav.about },
-    { href: '/site/blog', label: t.nav.blog },
-    { href: '/site/wiki', label: t.nav.wiki },
-    { href: '/site/gallery', label: t.nav.gallery },
+    { href: routes.about(), label: t.nav.about },
+    { href: routes.blog(), label: t.nav.blog },
+    { href: routes.wiki(), label: t.nav.wiki },
+    { href: routes.gallery(), label: t.nav.gallery },
   ];
 
   return (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
 import { Power } from 'lucide-react';
 import userAvatar from './assets/avatars/profile.gif';

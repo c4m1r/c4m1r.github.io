@@ -7,19 +7,22 @@
 import { Folder, Scale, Play, Briefcase, Tag } from 'lucide-react';
 import { type Language } from '../../../i18n/translations';
 import { loadCvLocale } from '../../../domain/resume/resume.loader';
+import { type CvEntry, type CvLocale } from '../../../domain/resume/resume.types';
+import { type ContentItem } from '../../../domain/content/types';
+import { type Section } from '../siteTypes';
 import { stripMarkdown, markdownToHtml } from '../../../domain/content/markdown';
 import { routes } from '../siteRoutes';
 
 export interface AboutSectionProps {
-  ui: any;
+  ui: AboutSectionUi;
   language: Language;
   
   // State from BlogSite
   aboutMe: { content: string } | null;
   legalNotice: { title: string; content: string; updatedAt?: string } | null;
-  projects: any[];
-  posts: any[];
-  wiki: any[];
+  projects: ContentItem[];
+  posts: TaggedContentItem[];
+  wiki: TaggedContentItem[];
   
   // Tab states and setters
   mainAboutTab: 'about' | 'cv' | 'projects' | 'legal';
@@ -30,8 +33,8 @@ export interface AboutSectionProps {
   setSelectedCategory: (category: string) => void;
   
   // Handlers
-  setActiveProject: (project: any) => void;
-  setActiveSection: (section: any) => void;
+  setActiveProject: (project: ContentItem) => void;
+  setActiveSection: (section: Section) => void;
   setGlobalSearchQuery: (query: string) => void;
   
 }
@@ -55,7 +58,7 @@ export function AboutSection({
   setGlobalSearchQuery,
 }: AboutSectionProps) {
   
-  const cv = loadCvLocale(language);
+  const cv = loadCvLocale(language) as CvDataWithPrototypes;
 
   const statCards = [
     { 
@@ -160,7 +163,7 @@ export function AboutSection({
           {mainAboutTab === 'cv' && (
             <>
               <div className="grid md:grid-cols-2 gap-4 mt-4">
-                {(cv?.[activeCvTab] || []).map((item: any, idx: number) => (
+                {(cv?.[activeCvTab] || []).map((item: CvEntry, idx: number) => (
                   <div key={idx} className="bg-card rounded-2xl p-4 border border-border card-hover">
                     <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-2">
                       <span className="font-semibold text-foreground">{item.title}</span>
@@ -172,7 +175,7 @@ export function AboutSection({
                         // Парсим технологии в формате ^category^tech^
                         const parts: (string | JSX.Element)[] = [];
                         let lastIndex = 0;
-                        const regex = /\^([^\^]+)\^([^\^]+)\^/g;
+                        const regex = /\^([^^]+)\^([^^]+)\^/g;
                         let match;
                         
                         while ((match = regex.exec(d)) !== null) {
@@ -217,11 +220,11 @@ export function AboutSection({
                 ))}
               </div>
 
-              {activeCvTab === 'gamedev' && (cv as any)?.prototypes && (
+              {activeCvTab === 'gamedev' && cv.prototypes && (
                 <div className="mt-6">
                   <h3 className="text-2xl font-bold mb-4">Game Prototypes</h3>
                   <div className="grid md:grid-cols-3 gap-6">
-                    {(cv as any).prototypes.map((proto: any, index: number) => (
+                    {cv.prototypes.map((proto: CvPrototype, index: number) => (
                       <div
                         key={proto.title || index}
                         className="neu rounded-3xl overflow-hidden bg-card card-hover"
@@ -388,11 +391,11 @@ export function AboutSection({
         Object.keys(cv).forEach(section => {
           const sectionData = (cv as Record<string, unknown>)[section];
           if (Array.isArray(sectionData)) {
-            sectionData.forEach((item: any) => {
+            sectionData.forEach((item: CvEntry) => {
               if (!item.details) return;
               
               item.details.forEach((detail: string) => {
-                const matches = detail.match(/\^([^\^]+)\^([^\^]+)\^/g);
+                const matches = detail.match(/\^([^^]+)\^([^^]+)\^/g);
                 if (matches) {
                   matches.forEach(match => {
                     const parts = match.split('^').filter(Boolean);

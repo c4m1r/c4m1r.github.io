@@ -1,10 +1,7 @@
 import { type ContentItem, type ContentGraph } from './types';
 import { buildContentGraph } from './contentGraph';
-import {
-  loadAppEntries,
-  loadAboutMe,
-  loadLegalNotice,
-} from '../../utils/contentLoader';
+import { loadAppEntries } from '../apps/apps.loader';
+import { loadAboutMe, loadLegalNotice } from '../about/about.loader';
 import { loadNewsItems } from '../news/news.loader';
 import { loadWikiArticles } from '../wiki/wiki.loader';
 import { loadArticles } from '../articles/articles.loader';
