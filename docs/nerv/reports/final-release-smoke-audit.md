@@ -126,3 +126,18 @@ Top 10 media/assets from `dist/assets`:
 - Media optimization.
 - CSS split.
 - Visual polish.
+
+# Emergency build repair
+
+- GitHub Pages build failed after `edffc135 ver.0.6.6`.
+- Root cause: duplicate and malformed `syncFromLocation` in `BlogSite.tsx` left a duplicate symbol and unbalanced component structure.
+- Secondary check: Terminal route and pseudo command declarations were verified and restored at module scope.
+- Build restored after this emergency repair pass.
+
+# Emergency AppContext runtime repair
+
+- After the build repair, browser runtime failed with `useApp must be used within AppProvider`.
+- Root cause: `AppProvider` and `useApp` were using different `AppContext` instances after the context split/regression.
+- Fixed by making `appContextCore` the single source of `AppContext`.
+- `AppContext.tsx` now provides only `AppProvider` and no longer creates or exports a duplicate hook implementation.
+- `useApp` reads from the same context instance that `AppProvider` provides.

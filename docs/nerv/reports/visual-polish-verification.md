@@ -25,3 +25,10 @@
 - Browser route smoke for Terminal shortcuts into `/site` sections.
 - Hero visual smoke across default, Frutiger Aero, Vaporwave, Cyberpunk, PCB, and skeuomorphism.
 - Desktop smoke for XP/Win98/Win7/Ubuntu/WebOS with special attention to icon selection box and app launch.
+
+# Emergency build repair
+
+- GitHub Pages build failed after `edffc135 ver.0.6.6`.
+- Root cause: duplicate and malformed `syncFromLocation` in `BlogSite.tsx` left a duplicate symbol and unbalanced component structure.
+- Secondary check: Terminal route and pseudo command declarations were verified and restored at module scope.
+- Build restored after this emergency repair pass.
