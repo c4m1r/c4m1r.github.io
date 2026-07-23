@@ -1,7 +1,6 @@
 import { BookOpen, Briefcase, FileText, Image as ImageIcon, Newspaper, Search, Tag } from 'lucide-react';
 import { type SearchResult } from '../../../domain/search/useGlobalSearch';
 import { stripMarkdown } from '../../../domain/content/markdown';
-import { type ContentItem } from '../../../domain/content/types';
 
 interface SearchSectionLabels {
   title: string;
@@ -50,20 +49,13 @@ const kindIcons: Partial<Record<SearchResult['kind'], typeof BookOpen>> = {
   gallery: ImageIcon,
 };
 
-interface SearchDisplayItem extends ContentItem {
-  excerpt?: string;
-  description?: string;
-  thumbnailPath?: string;
-  imagePath?: string;
-}
-
 function getResultExcerpt(result: SearchResult): string {
-  const item = result.item as SearchDisplayItem;
+  const item = result.item as any;
   return item.excerpt || item.description || stripMarkdown(item.content || '').slice(0, 150);
 }
 
 function getResultPreview(result: SearchResult): string | undefined {
-  const item = result.item as SearchDisplayItem;
+  const item = result.item as any;
   return item.thumbnailPath || item.preview || item.imagePath;
 }
 

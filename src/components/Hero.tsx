@@ -25,10 +25,7 @@ function getHeroAsciiVariant(theme: string): AsciiAuroraProps['variant'] | null 
 }
 
 function getHeroAsciiOpacity(theme: string): number {
-  if (theme === 'cyberpunk') return 0.34;
-  if (theme === 'vaporwave') return 0.32;
-  if (theme === 'pcb') return 0.24;
-  return theme === 'default' ? 0.1 : 0.28;
+  return theme === 'default' ? 0.12 : 0.28;
 }
 
 export function Hero({ title, subtitle, theme = 'default' }: HeroProps) {

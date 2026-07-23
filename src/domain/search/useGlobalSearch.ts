@@ -56,7 +56,6 @@ function titleMatches(item: ContentItem, q: string): boolean {
 }
 
 export function useGlobalSearch(initialQuery: string = ''): UseGlobalSearchResult {
-  const { language } = useApp();
   const [query, setQuery] = useState(initialQuery);
 
   useEffect(() => {

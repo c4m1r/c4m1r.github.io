@@ -1,6 +1,6 @@
 import { parseFrontmatter } from '../content/frontmatter';
 import { type WikiArticle, type WikiIndex } from './wiki.types';
-import { sitePathBuilders } from '../content/sitePathBuilders';
+import { routes } from '../../shells/site/siteRoutes';
 
 // All wiki markdown files discovered at build time
 const wikiModules = import.meta.glob('/src/content/wiki/**/*.md', {
@@ -21,7 +21,7 @@ function makeWikiId(dirs: string[], slug: string): string {
  * e.g. "/wiki/IT/1C/installation"
  */
 function makeWikiPath(dirs: string[], slug: string): string {
-  return sitePathBuilders.wiki([...dirs, slug].join('/'));
+  return routes.wiki([...dirs, slug].join('/'));
 }
 
 /**

@@ -10,7 +10,6 @@ import { NewsSection } from './NewsSection';
 import { type Language } from '../../../i18n/translations';
 import { type NewsItem } from '../../../domain/news/news.types';
 import { markdownToHtml } from '../../../domain/content/markdown';
-import { type Section } from '../siteTypes';
 import { routes } from '../siteRoutes';
 
 export interface NewsPageSectionProps {

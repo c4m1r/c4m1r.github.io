@@ -13,24 +13,6 @@ import { type Section } from '../siteTypes';
 import { stripMarkdown, markdownToHtml } from '../../../domain/content/markdown';
 import { routes } from '../siteRoutes';
 
-
-interface AboutSectionUi {
-  nav: { legal: string };
-  projectsTitle: string;
-  loading: string;
-  tags: string;
-}
-
-interface CvPrototype {
-  title?: string;
-  description?: string;
-  tech?: string[];
-}
-
-type CvDataWithPrototypes = CvLocale & { prototypes?: CvPrototype[] };
-
-type TaggedContentItem = ContentItem & { tags?: string[] };
-
 export interface AboutSectionProps {
   ui: AboutSectionUi;
   language: Language;

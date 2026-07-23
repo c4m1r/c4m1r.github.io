@@ -1037,12 +1037,12 @@ export function Desktop(props?: DesktopShellProps) {
     >
       {theme === 'ubuntu' && (
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-          <AsciiAurora variant="ubuntu" opacity={0.14} columns={110} rows={36} frameInterval={110} speed={0.52} />
+          <AsciiAurora variant="ubuntu" opacity={0.18} columns={110} rows={36} frameInterval={110} speed={0.52} />
         </div>
       )}
       {theme === 'webos' && (
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-          <AsciiAurora variant="webos" opacity={0.12} columns={104} rows={34} frameInterval={105} speed={0.62} />
+          <AsciiAurora variant="webos" opacity={0.14} columns={104} rows={34} frameInterval={105} speed={0.62} />
         </div>
       )}
 

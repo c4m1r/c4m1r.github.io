@@ -3,6 +3,7 @@ import {
   Grid3x3,
   ArrowRight,
   BookOpen,
+  Calendar,
   Image as ImageIcon,
   User,
   FileText,
@@ -36,11 +37,6 @@ import { ArticleDetailSection } from '../shells/site/sections/ArticleDetailSecti
 import { WikiSection } from '../shells/site/sections/WikiSection';
 import { AboutSection } from '../shells/site/sections/AboutSection';
 import { SearchSection } from '../shells/site/sections/SearchSection';
-import { ProjectDetailSection } from '../shells/site/sections/ProjectDetailSection';
-import { AppsSection } from '../shells/site/sections/AppsSection';
-import { CvSection } from '../shells/site/sections/CvSection';
-import { useSiteTagCounts } from '../shells/site/hooks/useSiteTagCounts';
-import { useWikiCategoryTree } from '../shells/site/hooks/useWikiCategoryTree';
 import { useNews } from '../domain/news/useNews';
 import { useGlobalSearch, type SearchResult } from '../domain/search/useGlobalSearch';
 import { type NewsItem } from '../domain/news/news.types';
@@ -542,9 +538,7 @@ const themeOptions = [
 
 function buildView(post: ContentItem): BlogPostView {
   const plain = stripMarkdown(post.content);
-  const excerpt = ('excerpt' in post && typeof post.excerpt === 'string')
-    ? post.excerpt
-    : plain.slice(0, 180) + (plain.length > 180 ? '…' : '');
+  const excerpt = (post as any).excerpt || plain.slice(0, 180) + (plain.length > 180 ? '…' : '');
   const words = plain.split(/\s+/).filter(Boolean).length;
   const readingTime = `${Math.max(1, Math.round(words / 180))} min read`;
 
@@ -781,11 +775,11 @@ export function BlogSite() {
     return () => {
       mounted = false;
     };
-  }, [language, syncFromLocation]);
+  }, [language]);
 
   useEffect(() => {
     syncFromLocation(window.location.pathname + window.location.search, posts, wiki, projects);
-  }, [posts, wiki, projects, syncFromLocation]);
+  }, [posts, wiki, projects]);
 
   useEffect(() => {
     if (activeSection !== 'search') return;
@@ -852,8 +846,55 @@ export function BlogSite() {
     });
     return mapping;
   }, [apps]);
-  const { tree: wikiCategoryTree, stats: wikiCategoryStats, categories: wikiCategories } = useWikiCategoryTree(wiki);
-  const tagCounts = useSiteTagCounts(posts, wiki, projects);
+  const wikiCategoryTree = useMemo(() => {
+    interface CategoryNode {
+      name: string;
+      fullPath: string;
+      children: Map<string, CategoryNode>;
+      count: number;
+    }
+
+    const root = new Map<string, CategoryNode>();
+
+    wiki.forEach((w) => {
+      const segments = w.pathSegments || (w.categoryPath ? w.categoryPath.split('/') : []);
+      if (segments.length === 0) return;
+
+      let currentMap = root;
+      let currentPath = '';
+
+      segments.forEach((segment) => {
+        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+        
+        if (!currentMap.has(segment)) {
+          currentMap.set(segment, {
+            name: segment,
+            fullPath: currentPath,
+            children: new Map(),
+            count: 0,
+          });
+        }
+
+        const node = currentMap.get(segment)!;
+        node.count++;
+        currentMap = node.children;
+      });
+    });
+
+    return root;
+  }, [wiki]);
+
+  const wikiCategories = useMemo(() => {
+    return ['All', ...Array.from(wikiCategoryTree.keys())];
+  }, [wikiCategoryTree]);
+
+  const wikiCategoryStats = useMemo(() => {
+    const counts: Record<string, number> = {};
+    wikiCategoryTree.forEach((node, key) => {
+      counts[key] = node.count;
+    });
+    return counts;
+  }, [wikiCategoryTree]);
 
   const filtered = useMemo(() => {
     return posts.filter((post) => {
@@ -898,12 +939,47 @@ export function BlogSite() {
   const latestPosts = posts.slice(0, 3);
 
 
-  useEffect(() => {
-    const route = parsePath(window.location.pathname + window.location.search);
-    if (!route.newsId) return;
-    setActiveSection('news');
-    setActiveNews(newsItems.find((item) => item.id === route.newsId) ?? null);
-  }, [newsItems]);
+  function syncFromLocation(pathname: string, postsList: BlogPostView[], wikiList: WikiView[], projectList = projects) {
+    const route = parsePath(pathname);
+
+    setActivePost(null);
+    setActiveWiki(null);
+    setActiveNews(null);
+    setActiveProject(null);
+    setActiveSection(route.section);
+
+    if (route.newsId && newsItems.length > 0) {
+      const matchNews = newsItems.find((n) => n.id === route.newsId);
+      setActiveNews(matchNews ?? null);
+    }
+
+    if (route.searchQuery) {
+      setGlobalSearchQuery(route.searchQuery);
+    }
+
+    if (route.projectId) {
+      const matchProject = projectList.find((p) => p.id === route.projectId);
+      if (matchProject) {
+        setActiveSection('project');
+        setActiveProject(matchProject);
+      }
+      return;
+    }
+
+    if (route.galleryItemId) {
+      setSelectedPictureId(route.galleryItemId);
+    }
+
+    if (route.wikiSlug) {
+      const matchWiki = wikiList.find(
+        (w) => w.relativePath?.replace(/\.md$/, '') === route.wikiSlug
+      );
+      if (matchWiki) {
+        setActiveSection('wiki');
+        setActiveWiki(matchWiki);
+      }
+      return;
+    }
 
   useEffect(() => {
     const route = parsePath(window.location.pathname + window.location.search);
@@ -961,7 +1037,10 @@ export function BlogSite() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const getGlobalTagCount = (tag: string) => tagCounts[tag] || 0;
+  const getGlobalTagCount = (tag: string) =>
+    posts.filter((p) => p.tags?.includes(tag)).length +
+    wiki.filter((w) => w.tags?.includes(tag)).length +
+    projects.filter((project) => project.tags?.includes(tag)).length;
 
   const handleOpenSearchResult = (result: SearchResult) => {
     const { item, kind } = result;
@@ -1011,21 +1090,6 @@ export function BlogSite() {
       setSelectedApp(app ?? null);
       setActiveSection('apps');
       window.history.pushState({}, '', routes.app(item.id));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (kind === 'about') {
-      setMainAboutTab(item.id === 'legal-notice' ? 'legal' : 'about');
-      setActiveSection('about');
-      window.history.pushState({}, '', routes.about());
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (kind === 'resume') {
-      setActiveSection('cv');
-      window.history.pushState({}, '', routes.about());
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -1226,16 +1290,102 @@ export function BlogSite() {
 
       {/* Project Detail View */}
       {activeSection === 'project' && activeProject && (
-        <ProjectDetailSection
-          ui={ui}
-          language={language}
-          activeProject={activeProject}
-          tagCounts={tagCounts}
-          setActiveProject={setActiveProject}
-          setActiveSection={setActiveSection}
-          setMainAboutTab={setMainAboutTab}
-          setGlobalSearchQuery={setGlobalSearchQuery}
-        />
+        <main className="pt-32 pb-24" key={`project-${activeProject.id}-${language}`}>
+          <div className="container mx-auto px-6">
+            <section className="max-w-4xl mx-auto">
+              <div className="glass rounded-3xl p-6 md:p-10 neu-sm animate-fade-in">
+                <button
+                  onClick={() => {
+                    setActiveProject(null);
+                    setActiveSection('about');
+                    setMainAboutTab('projects');
+                    window.history.pushState({}, '', routes.about());
+                  }}
+                  className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  {ui.back}
+                </button>
+
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                  <Briefcase className="w-4 h-4" />
+                  <span className="font-medium text-foreground">{ui.projectsTitle}</span>
+                  <ArrowRight className="w-4 h-4 opacity-60" />
+                  <span className="text-foreground">{activeProject.title}</span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
+                  {activeProject.date && (
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4" />
+                      {activeProject.date}
+                    </span>
+                  )}
+                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                    {activeProject.category || 'Other'}
+                  </span>
+                </div>
+
+                <h2 className="text-3xl md:text-4xl font-bold mb-8">{activeProject.title}</h2>
+
+                {activeProject.preview && (
+                  <div className="mb-8 rounded-2xl overflow-hidden neu-sm">
+                    {activeProject.preview.endsWith('.webm') || activeProject.preview.endsWith('.mp4') ? (
+                      <video 
+                        src={activeProject.preview} 
+                        className="w-full h-auto"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <img 
+                        src={activeProject.preview} 
+                        alt={activeProject.title}
+                        className="w-full h-auto"
+                      />
+                    )}
+                  </div>
+                )}
+
+                <div
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: markdownToHtml(activeProject.content) }}
+                />
+
+                {activeProject.tags && activeProject.tags.length > 0 && (
+                  <div className="mt-8 flex flex-wrap items-center gap-3">
+                    <span className="text-muted-foreground font-medium">{ui.tags}:</span>
+                    {activeProject.tags.map((tag) => {
+                      const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
+                                       wiki.filter((w) => w.tags?.includes(tag)).length +
+                                       projects.filter((pr) => pr.tags?.includes(tag)).length;
+                      return (
+                        <button
+                          key={tag}
+                          onClick={() => {
+                            setActiveProject(null);
+                            setActiveSection('search');
+                            setGlobalSearchQuery(tag);
+                            window.history.pushState({}, '', routes.search(tag));
+                          }}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
+                        >
+                          <Tag className="w-3 h-3" />
+                          {tag}
+                          <span className="text-xs opacity-70">
+                            ({tagCount})
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        </main>
       )}
 
       {activeSection === 'about' && (
@@ -1260,15 +1410,197 @@ export function BlogSite() {
       )}
 
       {activeSection === 'apps' && ui.apps && (
-        <AppsSection
-          appsByCategory={appsByCategory}
-          selectedApp={selectedApp}
-          setSelectedApp={setSelectedApp}
-          iframeHeight={iframeHeight}
-          setIsResizing={setIsResizing}
-          language={language}
-          ui={{ apps: ui.apps }}
-        />
+        <section className="w-full px-6 py-12 space-y-8">
+          <div className="max-w-6xl mx-auto space-y-2">
+            <div className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+              {ui.apps.subtitle}
+            </div>
+            <h2 className="text-4xl font-bold">{ui.apps.title}</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl">{ui.apps.selectPrompt}</p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="w-full">
+              <div className="glass rounded-3xl border border-border neu-sm overflow-hidden" data-iframe-container>
+                {selectedApp ? (
+                  <>
+                    <div className="relative w-full overflow-hidden bg-background" style={{ height: `${iframeHeight}px` }}>
+                      {selectedApp.url ? (
+                        <iframe
+                          title={selectedApp.iframeTitle ?? selectedApp.title}
+                          src={selectedApp.url}
+                          className="absolute inset-0 h-full w-full border-0"
+                          loading="lazy"
+                          sandbox="allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+                          No preview available
+                        </div>
+                      )}
+                      <div className="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-10">
+                        {(selectedApp.badges || []).map((badge) => (
+                          <span
+                            key={badge}
+                            className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] rounded-full bg-primary text-primary-foreground shadow-lg"
+                          >
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Resize handle */}
+                    <div 
+                      className="relative h-10 bg-gradient-to-b from-border/20 via-border/40 to-border/60 cursor-ns-resize hover:bg-primary/20 transition-all group select-none"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setIsResizing(true);
+                      }}
+                      title="Drag to resize"
+                    >
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                          <div className="text-[10px] uppercase tracking-[0.3em] text-foreground font-bold">Resize</div>
+                          <div className="flex gap-1.5">
+                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
+                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
+                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-96 text-muted-foreground">Loading apps...</div>
+                )}
+              </div>
+            </div>
+            <div className="max-w-6xl mx-auto">
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,300px)_1fr]">
+                <div className="space-y-4">
+                {APP_CATEGORIES.map((category) => {
+                  const items = appsByCategory[category] || [];
+                  const label = (ui.apps?.categories as any)?.[category] || category;
+                  return (
+                    <div key={category} className="glass rounded-2xl border border-border p-4 neu-sm space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-base font-bold">{label}</h3>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-[0.3em]">{items.length}</span>
+                      </div>
+                      {items.length === 0 ? (
+                        <p className="text-xs text-muted-foreground italic">Soon.</p>
+                      ) : (
+                        <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin' }}>
+                          {items.map((app) => {
+                            const isActive = selectedApp?.id === app.id;
+                            return (
+                              <button
+                                key={app.id}
+                                type="button"
+                                className={`w-full text-left rounded-xl border transition-all duration-200 px-3 py-2 ${
+                                  isActive
+                                    ? 'border-primary bg-primary/10 text-primary shadow-sm'
+                                    : 'border-border/60 bg-card/50 hover:border-primary/60 hover:bg-card'
+                                }`}
+                                onClick={() => setSelectedApp(app)}
+                              >
+                                <div className="font-semibold text-sm">{app.title}</div>
+                                <div className="text-[10px] text-muted-foreground mt-0.5">{app.date || 'N/A'}</div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              {selectedApp && (
+                <div className="glass rounded-3xl border border-border p-6 neu-sm space-y-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-2">
+                      <h3 className="text-2xl font-bold text-foreground">{selectedApp.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {selectedApp.description || selectedApp.content || 'Description is missing.'}
+                      </p>
+                    </div>
+                    {selectedApp.url && (
+                      <button
+                        type="button"
+                        onClick={() => window.open(selectedApp.url, '_blank', 'noreferrer')}
+                        className="neu px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:scale-105 transition-transform whitespace-nowrap"
+                      >
+                        {language === 'ru' ? 'Открыть' : 'Open Full'}
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-3 border-t border-border/50">
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {ui.apps?.dateLabel || 'Date'}
+                      </div>
+                      <div className="text-sm font-semibold text-foreground">{selectedApp.date || 'N/A'}</div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {ui.apps?.platformsLabel || 'Platforms'}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(!selectedApp.platforms || selectedApp.platforms.length === 0) ? (
+                          <span className="text-sm text-muted-foreground">N/A</span>
+                        ) : (
+                          selectedApp.platforms.map((platform) => (
+                            <span key={platform} className="px-2.5 py-1 rounded-lg bg-muted text-xs font-semibold">
+                              {platform}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {language === 'ru' ? 'Технологии' : 'Technologies'}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(!selectedApp.technologies || selectedApp.technologies.length === 0) ? (
+                          <span className="text-sm text-muted-foreground">N/A</span>
+                        ) : (
+                          selectedApp.technologies.map((tech) => (
+                            <span key={tech} className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold">
+                              {tech}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
+                        {ui.apps?.badgesLabel || 'Tags'}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(!selectedApp.badges || selectedApp.badges.length === 0) ? (
+                          <span className="text-sm text-muted-foreground">N/A</span>
+                        ) : (
+                          selectedApp.badges.map((badge) => (
+                            <span key={badge} className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+                              {badge}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              </div>
+            </div>
+          </div>
+        </section>
       )}
 
       {activeSection === 'wiki' && (
@@ -1299,14 +1631,128 @@ export function BlogSite() {
       )}
 
       {activeSection === 'cv' && (
-        <CvSection
-          cv={cv}
-          activeCvTab={activeCvTab}
-          setActiveCvTab={setActiveCvTab}
-          setActiveSection={setActiveSection}
-          setGlobalSearchQuery={setGlobalSearchQuery}
-          ui={{ cvTitle: ui.cvTitle }}
-        />
+        <section className="max-w-6xl mx-auto px-6 py-12 space-y-8">
+          <h2 className="text-3xl font-bold">{ui.cvTitle}</h2>
+          <div className="flex flex-wrap gap-3 items-center">
+            {(['it', 'education', 'gamedev', 'rewards'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveCvTab(tab)}
+                className={`px-4 py-2 rounded-xl font-medium transition-all ${
+                  activeCvTab === tab ? 'neu-sm bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+            <div className="flex gap-2 ml-auto">
+              <button
+                onClick={() => window.print()}
+                className="neu px-4 py-2 rounded-xl bg-card hover:bg-primary/10 transition-colors flex items-center gap-2"
+              >
+                <span>Print</span>
+              </button>
+              <button
+                onClick={() => {
+                  const blob = new Blob([JSON.stringify(cv, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'cv.json';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="neu px-4 py-2 rounded-xl bg-primary text-primary-foreground flex items-center gap-2"
+              >
+                <span>Download JSON</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="glass rounded-3xl p-6 neu-sm fade-in-up">
+            <h3 className="text-2xl font-semibold mb-4 capitalize">{activeCvTab}</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {(cv?.[activeCvTab] || []).map((item: any, idx: number) => (
+                <div key={idx} className="bg-card rounded-2xl p-4 border border-border card-hover">
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-2">
+                    <span className="font-semibold text-foreground">{item.title}</span>
+                    {item.year && <span>{item.year}</span>}
+                    {item.subtitle && <span>• {item.subtitle}</span>}
+                  </div>
+                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                    {item.details?.map((d: string, di: number) => {
+                      const parts: (string | JSX.Element)[] = [];
+                      let lastIndex = 0;
+                      const regex = /\^([^\^]+)\^([^\^]+)\^/g;
+                      let match;
+                      
+                      while ((match = regex.exec(d)) !== null) {
+                        if (match.index > lastIndex) {
+                          parts.push(d.substring(lastIndex, match.index));
+                        }
+                        
+                        const category = match[1];
+                        const tech = match[2];
+                        parts.push(
+                          <span
+                            key={`${di}-${match.index}`}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors mx-0.5"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveSection('search');
+                              setGlobalSearchQuery(tech);
+                              window.history.pushState({}, '', routes.search(tech));
+                            }}
+                          >
+                            <span className="text-[10px] opacity-70">{category}</span>
+                            <span className="font-medium">{tech}</span>
+                          </span>
+                        );
+                        
+                        lastIndex = match.index + match[0].length;
+                      }
+                      if (lastIndex < d.length) {
+                        parts.push(d.substring(lastIndex));
+                      }
+                      
+                      return <li key={di}>{parts.length > 0 ? parts : d}</li>;
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {activeCvTab === 'gamedev' && (cv as any)?.prototypes && (
+            <div className="max-w-6xl mx-auto">
+              <h3 className="text-2xl font-bold mb-6">Game Prototypes</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {(cv as any).prototypes.map((proto: any, index: number) => (
+                  <div
+                    key={proto.title || index}
+                    className="neu rounded-3xl overflow-hidden bg-card card-hover"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="aspect-video bg-gradient-hero relative flex items-center justify-center">
+                      <Play className="w-10 h-10 text-primary-foreground/50" />
+                    </div>
+                    <div className="p-6">
+                      <h4 className="text-xl font-bold mb-2">{proto.title || 'Prototype'}</h4>
+                      <p className="text-muted-foreground text-sm mb-4">{proto.description || 'Demo'}</p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {(proto.tech || []).map((t: string) => (
+                          <span key={t} className="px-2 py-1 text-xs font-medium rounded-lg bg-muted text-muted-foreground">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
       )}
 
       {activeSection === 'gallery' && (

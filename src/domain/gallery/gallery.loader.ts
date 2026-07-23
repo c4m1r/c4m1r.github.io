@@ -1,6 +1,7 @@
 import { getPictureAssetEntries } from '../assets/assetResolver';
 import { sitePathBuilders } from '../content/sitePathBuilders';
 import { type GalleryItem } from './gallery.types';
+import { routes } from '../../shells/site/siteRoutes';
 
 export interface ImageItem {
   id: string;
@@ -79,9 +80,9 @@ export async function loadGalleryItems(): Promise<GalleryItem[]> {
     mediaType: 'picture' as const,
     date: pic.date,
     route: {
-      path: sitePathBuilders.galleryItem(pic.id),
-      sitePath: sitePathBuilders.galleryItem(pic.id),
-      osUri: `gallery://${pic.id}`,
+      path: routes.galleryItem(pic.id),
+      sitePath: routes.galleryItem(pic.id),
+      osUri: `pictures://${pic.id}`,
       appId: 'pictures',
     },
   }));
@@ -97,9 +98,9 @@ export async function loadGalleryItems(): Promise<GalleryItem[]> {
     mediaType: 'wallpaper' as const,
     date: pic.date,
     route: {
-      path: sitePathBuilders.galleryItem(`wallpaper__${pic.id}`),
-      sitePath: sitePathBuilders.galleryItem(`wallpaper__${pic.id}`),
-      osUri: `gallery://wallpaper/${pic.id}`,
+      path: routes.galleryItem(`wallpaper__${pic.id}`),
+      sitePath: routes.galleryItem(`wallpaper__${pic.id}`),
+      osUri: `pictures://wallpaper/${pic.id}`,
       appId: 'pictures',
     },
   }));

@@ -1,6 +1,6 @@
 import { parseFrontmatter } from '../content/frontmatter';
 import { type NewsItem } from './news.types';
-import { sitePathBuilders } from '../content/sitePathBuilders';
+import { routes } from '../../shells/site/siteRoutes';
 
 /**
  * Loads all markdown files from src/content/news and parses them into NewsItem objects
@@ -18,7 +18,7 @@ export async function loadNewsItems(language: string = 'en'): Promise<NewsItem[]
       
       const { metadata, body } = parseFrontmatter(content, language);
       const id = metadata.id || filename;
-      const sitePath = sitePathBuilders.news(id);
+      const sitePath = routes.news(id);
       
       news.push({
         id,
