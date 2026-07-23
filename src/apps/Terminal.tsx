@@ -3,6 +3,36 @@ import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
 import { AsciiAurora } from '../components/effects';
 
+type TerminalRouteCommand = 'news' | 'wiki' | 'projects' | 'gallery' | 'apps' | 'search';
+
+const TERMINAL_SITE_ROUTES: Record<TerminalRouteCommand, string> = {
+  news: '/site/news',
+  wiki: '/site/wiki',
+  projects: '/site/about/projects',
+  gallery: '/site/gallery',
+  apps: '/site/apps',
+  search: '/site/search',
+};
+
+const isRouteCommand = (cmd: string): cmd is TerminalRouteCommand =>
+  Object.prototype.hasOwnProperty.call(TERMINAL_SITE_ROUTES, cmd);
+
+const pseudoScreens: Record<string, string[]> = {
+  htop: [
+    'PID USER      PRI  NI  VIRT   RES   CPU% MEM%  COMMAND',
+    '101 site       20   0  512M   96M    3.4  1.2  vite-preview',
+    '102 content    20   0  128M   32M    0.8  0.4  markdown-index',
+    '103 nerv       20   0   64M   18M    0.2  0.2  route-daemon',
+  ],
+  mc: [
+    '┌─ Site shortcuts ───────────────────────────┐',
+    '│ news      wiki      projects               │',
+    '│ gallery   apps      search                 │',
+    '└─────────────────────────────────────────────┘',
+  ],
+};
+
+
 export function Terminal() {
   const { language } = useApp();
   const t = translations[language].terminal;
