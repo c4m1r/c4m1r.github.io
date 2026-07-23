@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { parseICS, CalendarEvent } from './icsParser';
 
 const CALENDAR_FILES: Record<string, string> = {
@@ -28,7 +28,7 @@ async function fetchCalendar(locale: string): Promise<CalendarEvent[]> {
 
   try {
     return await tryFetch(primary);
-  } catch (error) {
+  } catch {
     if (fallback) {
       try {
         return await tryFetch(fallback);

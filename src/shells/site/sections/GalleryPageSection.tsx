@@ -9,6 +9,18 @@ import { useState, useEffect, useMemo } from 'react';
 import { Folder, ChevronDown, ChevronRight, X, ArrowRight } from 'lucide-react';
 import { useGallery } from '../../../domain/gallery/useGallery';
 
+interface GallerySectionUi {
+  galleryTitle: string;
+  loading: string;
+  gallery: { allAlbums: string };
+}
+
+interface AlbumNode {
+  name: string;
+  fullPath: string;
+  children: Map<string, AlbumNode>;
+  count: number;
+}
 
 // Simple pagination matching BlogSite style
 interface SectionPaginationProps {
@@ -67,7 +79,7 @@ function SectionPagination({ currentPage, totalPages, onPageChange }: SectionPag
 }
 
 export interface GalleryPageSectionProps {
-  ui: any;
+  ui: GallerySectionUi;
   language: string;
   initialPictureId?: string | null;
   onClearInitialPicture?: () => void;
@@ -91,13 +103,6 @@ export function GalleryPageSection({
 
   // Album tree structure parser
   const galleryAlbumTree = useMemo(() => {
-    interface AlbumNode {
-      name: string;
-      fullPath: string;
-      children: Map<string, AlbumNode>;
-      count: number;
-    }
-
     const root = new Map<string, AlbumNode>();
 
     pictures.forEach((pic) => {
@@ -265,7 +270,7 @@ export function GalleryPageSection({
                   const hasSubalbums = subalbums.length > 0;
                   const isExpanded = expandedGalleryAlbums.has(albumName);
                   
-                  const renderSubalbums = (subalbs: [string, any][], level: number = 1): JSX.Element => {
+                  const renderSubalbums = (subalbs: [string, AlbumNode][], level: number = 1): JSX.Element => {
                     return (
                       <>
                         {subalbs.map(([subName, subNode]) => {

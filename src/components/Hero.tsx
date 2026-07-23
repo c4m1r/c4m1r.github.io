@@ -1,14 +1,42 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Sparkles } from 'lucide-react';
+import { AsciiAurora, type AsciiAuroraProps } from './effects';
 
 interface HeroProps {
   title: string;
   subtitle: string;
+  theme?: string;
 }
 
-export function Hero({ title, subtitle }: HeroProps) {
+function getHeroAsciiVariant(theme: string): AsciiAuroraProps['variant'] | null {
+  switch (theme) {
+    case 'pcb':
+      return 'circuit';
+    case 'cyberpunk':
+      return 'cyberpunk';
+    case 'vaporwave':
+      return 'vaporwave';
+    case 'default':
+      return 'blog';
+    case 'skeuomorphism':
+    default:
+      return null;
+  }
+}
+
+function getHeroAsciiOpacity(theme: string): number {
+  if (theme === 'cyberpunk') return 0.34;
+  if (theme === 'vaporwave') return 0.32;
+  if (theme === 'pcb') return 0.24;
+  return theme === 'default' ? 0.1 : 0.28;
+}
+
+export function Hero({ title, subtitle, theme = 'default' }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const asciiVariant = getHeroAsciiVariant(theme);
+  const hasAscii = asciiVariant !== null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +44,14 @@ export function Hero({ title, subtitle }: HeroProps) {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const syncMobile = () => setIsMobile(mediaQuery.matches);
+    syncMobile();
+    mediaQuery.addEventListener('change', syncMobile);
+    return () => mediaQuery.removeEventListener('change', syncMobile);
   }, []);
 
   const scrollToContent = () => {
@@ -28,7 +64,7 @@ export function Hero({ title, subtitle }: HeroProps) {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="site-hero relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Background Layer - Slowest parallax */}
       <div
@@ -38,6 +74,24 @@ export function Hero({ title, subtitle }: HeroProps) {
         }}
       />
 
+      {asciiVariant && (
+        <div
+          className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            transform: `translateY(${scrollY * 0.15}px)`,
+          }}
+        >
+          <AsciiAurora
+            variant={asciiVariant}
+            opacity={getHeroAsciiOpacity(theme)}
+            columns={isMobile ? 56 : 104}
+            rows={isMobile ? 22 : 34}
+            frameInterval={theme === 'cyberpunk' ? 64 : 92}
+            speed={theme === 'vaporwave' ? 0.55 : 0.85}
+          />
+        </div>
+      )}
+
       {/* Mid Layer - Decorative shapes */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -46,9 +100,9 @@ export function Hero({ title, subtitle }: HeroProps) {
         }}
       >
         {/* Floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-aero-sky/30 blur-3xl animate-float" />
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 rounded-full bg-aero-grass/20 blur-3xl animate-float animation-delay-200" />
-        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-aero-sun/20 blur-3xl animate-float animation-delay-400" />
+        <div className={`absolute top-1/4 left-1/4 w-64 h-64 rounded-full blur-3xl animate-float ${hasAscii ? 'bg-aero-sky/15' : 'bg-aero-sky/30'}`} />
+        <div className={`absolute top-1/3 right-1/4 w-96 h-96 rounded-full blur-3xl animate-float animation-delay-200 ${hasAscii ? 'bg-aero-grass/10' : 'bg-aero-grass/20'}`} />
+        <div className={`absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full blur-3xl animate-float animation-delay-400 ${hasAscii ? 'bg-aero-sun/10' : 'bg-aero-sun/20'}`} />
         
         {/* Glass panels */}
         <div className="absolute top-20 right-20 w-32 h-32 glass rounded-3xl rotate-12 opacity-50" />
@@ -71,13 +125,13 @@ export function Hero({ title, subtitle }: HeroProps) {
           </span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-fade-in animation-delay-100">
+        <h1 className="site-hero-title text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-fade-in animation-delay-100">
           <span className="gradient-text">{title.split(' ')[0]}</span>
           <br />
           <span className="text-foreground">{title.split(' ').slice(1).join(' ')}</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto mb-12 animate-fade-in animation-delay-200">
+        <p className="site-hero-subtitle text-lg md:text-xl text-foreground/75 max-w-2xl mx-auto mb-12 animate-fade-in animation-delay-200">
           {subtitle}
         </p>
       </div>

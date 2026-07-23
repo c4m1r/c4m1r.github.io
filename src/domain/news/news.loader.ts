@@ -1,5 +1,6 @@
 import { parseFrontmatter } from '../content/frontmatter';
 import { type NewsItem } from './news.types';
+import { sitePathBuilders } from '../content/sitePathBuilders';
 
 /**
  * Loads all markdown files from src/content/news and parses them into NewsItem objects
@@ -16,9 +17,11 @@ export async function loadNewsItems(language: string = 'en'): Promise<NewsItem[]
       const filename = path.split('/').pop()?.replace('.md', '') || '';
       
       const { metadata, body } = parseFrontmatter(content, language);
+      const id = metadata.id || filename;
+      const sitePath = sitePathBuilders.news(id);
       
       news.push({
-        id: metadata.id || filename,
+        id,
         kind: 'news',
         title: metadata.title || filename,
         title_ru: metadata.title_ru,
@@ -29,7 +32,13 @@ export async function loadNewsItems(language: string = 'en'): Promise<NewsItem[]
         tags: metadata.tags || [],
         visibility: metadata.visibility,
         display: metadata.display,
-        route: metadata.route,
+        route: {
+          ...metadata.route,
+          path: metadata.route?.path ?? sitePath,
+          sitePath: metadata.route?.sitePath ?? sitePath,
+          osUri: metadata.route?.osUri ?? `news://${id}`,
+          appId: metadata.route?.appId ?? 'news',
+        },
       });
     }
   } catch (error) {

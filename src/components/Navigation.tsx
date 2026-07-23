@@ -12,7 +12,7 @@ interface NavigationProps {
   setTheme: (theme: string) => void;
   language: Language;
   setLanguage: (lang: Language) => void;
-  themeOptions: { id: string; name: string; icon: string }[];
+  themeOptions: readonly { id: string; name: string; icon: string }[];
   navLabels: Record<SectionNav, string>;
 }
 

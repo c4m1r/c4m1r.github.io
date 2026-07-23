@@ -7,18 +7,40 @@
 import { Folder, Scale, Play, Briefcase, Tag } from 'lucide-react';
 import { type Language } from '../../../i18n/translations';
 import { loadCvLocale } from '../../../domain/resume/resume.loader';
+import { type CvEntry, type CvLocale } from '../../../domain/resume/resume.types';
+import { type ContentItem } from '../../../domain/content/types';
+import { type Section } from '../siteTypes';
 import { stripMarkdown, markdownToHtml } from '../../../domain/content/markdown';
+import { routes } from '../siteRoutes';
+
+
+interface AboutSectionUi {
+  nav: { legal: string };
+  projectsTitle: string;
+  loading: string;
+  tags: string;
+}
+
+interface CvPrototype {
+  title?: string;
+  description?: string;
+  tech?: string[];
+}
+
+type CvDataWithPrototypes = CvLocale & { prototypes?: CvPrototype[] };
+
+type TaggedContentItem = ContentItem & { tags?: string[] };
 
 export interface AboutSectionProps {
-  ui: any;
+  ui: AboutSectionUi;
   language: Language;
   
   // State from BlogSite
   aboutMe: { content: string } | null;
   legalNotice: { title: string; content: string; updatedAt?: string } | null;
-  projects: any[];
-  posts: any[];
-  wiki: any[];
+  projects: ContentItem[];
+  posts: TaggedContentItem[];
+  wiki: TaggedContentItem[];
   
   // Tab states and setters
   mainAboutTab: 'about' | 'cv' | 'projects' | 'legal';
@@ -29,11 +51,10 @@ export interface AboutSectionProps {
   setSelectedCategory: (category: string) => void;
   
   // Handlers
-  setActiveProject: (project: any) => void;
-  setActiveSection: (section: any) => void;
+  setActiveProject: (project: ContentItem) => void;
+  setActiveSection: (section: Section) => void;
   setGlobalSearchQuery: (query: string) => void;
   
-  basePath: string;
 }
 
 export function AboutSection({
@@ -53,10 +74,9 @@ export function AboutSection({
   setActiveProject,
   setActiveSection,
   setGlobalSearchQuery,
-  basePath,
 }: AboutSectionProps) {
   
-  const cv = loadCvLocale(language);
+  const cv = loadCvLocale(language) as CvDataWithPrototypes;
 
   const statCards = [
     { 
@@ -161,7 +181,7 @@ export function AboutSection({
           {mainAboutTab === 'cv' && (
             <>
               <div className="grid md:grid-cols-2 gap-4 mt-4">
-                {(cv?.[activeCvTab] || []).map((item: any, idx: number) => (
+                {(cv?.[activeCvTab] || []).map((item: CvEntry, idx: number) => (
                   <div key={idx} className="bg-card rounded-2xl p-4 border border-border card-hover">
                     <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-2">
                       <span className="font-semibold text-foreground">{item.title}</span>
@@ -173,7 +193,7 @@ export function AboutSection({
                         // Парсим технологии в формате ^category^tech^
                         const parts: (string | JSX.Element)[] = [];
                         let lastIndex = 0;
-                        const regex = /\^([^\^]+)\^([^\^]+)\^/g;
+                        const regex = /\^([^^]+)\^([^^]+)\^/g;
                         let match;
                         
                         while ((match = regex.exec(d)) !== null) {
@@ -194,7 +214,7 @@ export function AboutSection({
                                 e.stopPropagation();
                                 setActiveSection('search');
                                 setGlobalSearchQuery(tech);
-                                window.history.pushState({}, '', `${basePath}search`);
+                                window.history.pushState({}, '', routes.search(tech));
                               }}
                               title={`Category: ${category}`}
                             >
@@ -218,11 +238,11 @@ export function AboutSection({
                 ))}
               </div>
 
-              {activeCvTab === 'gamedev' && (cv as any)?.prototypes && (
+              {activeCvTab === 'gamedev' && cv.prototypes && (
                 <div className="mt-6">
                   <h3 className="text-2xl font-bold mb-4">Game Prototypes</h3>
                   <div className="grid md:grid-cols-3 gap-6">
-                    {(cv as any).prototypes.map((proto: any, index: number) => (
+                    {cv.prototypes.map((proto: CvPrototype, index: number) => (
                       <div
                         key={proto.title || index}
                         className="neu rounded-3xl overflow-hidden bg-card card-hover"
@@ -291,7 +311,7 @@ export function AboutSection({
                       onClick={() => {
                         setActiveProject(project);
                         setActiveSection('project');
-                        window.history.pushState({}, '', `/site/about/projects/${project.id}`);
+                        window.history.pushState({}, '', routes.project(project.id));
                       }}
                     >
                       <div className="aspect-video bg-gradient-hero relative overflow-hidden">
@@ -389,11 +409,11 @@ export function AboutSection({
         Object.keys(cv).forEach(section => {
           const sectionData = (cv as Record<string, unknown>)[section];
           if (Array.isArray(sectionData)) {
-            sectionData.forEach((item: any) => {
+            sectionData.forEach((item: CvEntry) => {
               if (!item.details) return;
               
               item.details.forEach((detail: string) => {
-                const matches = detail.match(/\^([^\^]+)\^([^\^]+)\^/g);
+                const matches = detail.match(/\^([^^]+)\^([^^]+)\^/g);
                 if (matches) {
                   matches.forEach(match => {
                     const parts = match.split('^').filter(Boolean);
@@ -592,7 +612,7 @@ export function AboutSection({
                             const topTech = Object.entries(cat.techs).sort((a, b) => b[1] - a[1])[0][0];
                             setActiveSection('search');
                             setGlobalSearchQuery(topTech);
-                            window.history.pushState({}, '', `${basePath}search`);
+                            window.history.pushState({}, '', routes.search(topTech));
                           }}
                         >
                           {cat.category}
@@ -705,7 +725,7 @@ export function AboutSection({
                           onClick={() => {
                             setActiveSection('search');
                             setGlobalSearchQuery(tag);
-                            window.history.pushState({}, '', `${basePath}search`);
+                            window.history.pushState({}, '', routes.search(tag));
                           }}
                         >
                           <title>{`${tag}: ${count} items (${Math.round(percent * 100)}%)`}</title>
@@ -724,7 +744,7 @@ export function AboutSection({
                       onClick={() => {
                         setActiveSection('search');
                         setGlobalSearchQuery(tag);
-                        window.history.pushState({}, '', `${basePath}search`);
+                        window.history.pushState({}, '', routes.search(tag));
                       }}
                       className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors text-left"
                     >

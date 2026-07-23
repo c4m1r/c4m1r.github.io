@@ -1,4 +1,4 @@
 /**
  * WebOS ContextMenu - экспортирует универсальный ContextMenu
  */
-export * from '../../apps/desktop/components/ContextMenu';
+export { ContextMenu } from '../../apps/desktop/components/ContextMenu';

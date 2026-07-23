@@ -1,54 +1,50 @@
-import { useApp } from './contexts/AppContext';
+import { lazy, Suspense } from 'react';
+import { useApp } from './contexts/useApp';
 import { GrubMenu } from './apps/GrubMenu';
-import { BlogSite } from './apps/BlogSite';
-import { Terminal } from './apps/Terminal';
-import { WindowsXP } from './themes/winxp';
-import { WebOS } from './themes/webos';
 import { WeatherProvider } from './contexts/WeatherContext';
 import { WeatherEffects } from './components/WeatherEffects';
+
+const BlogSite = lazy(() => import('./apps/BlogSite').then((module) => ({ default: module.BlogSite })));
+const Terminal = lazy(() => import('./apps/Terminal').then((module) => ({ default: module.Terminal })));
+const WindowsXP = lazy(() => import('./themes/winxp').then((module) => ({ default: module.WindowsXP })));
+const WebOS = lazy(() => import('./themes/webos').then((module) => ({ default: module.WebOS })));
+
+function LazyFallback() {
+  return <div className="min-h-screen bg-background" aria-live="polite" />;
+}
 
 function App() {
   const { mode, theme } = useApp();
 
-  // Режим GRUB загрузчика
   if (mode === 'grub') {
     return <GrubMenu />;
   }
 
-  // Режим блога
   if (mode === 'blog') {
     return (
       <WeatherProvider>
         <WeatherEffects />
-        <BlogSite />
+        <Suspense fallback={<LazyFallback />}>
+          <BlogSite />
+        </Suspense>
       </WeatherProvider>
     );
   }
 
-  // Режим терминала
   if (mode === 'terminal') {
-    return <Terminal />;
+    return (
+      <Suspense fallback={<LazyFallback />}>
+        <Terminal />
+      </Suspense>
+    );
   }
 
-  // Режим WebOS/Desktop - динамическая загрузка темы
   if (mode === 'webos') {
-    // В зависимости от темы загружаем нужный компонент
-    switch (theme) {
-      case 'win-xp':
-        return <WindowsXP />;
-      case 'win-98':
-        // TODO: Создать Windows98 тему
-        return <WebOS />;
-      case 'win7':
-        // TODO: Создать Windows7 тему
-        return <WebOS />;
-      case 'ubuntu':
-        return <WebOS />;
-      case 'webos':
-        return <WebOS />;
-      default:
-        return <WindowsXP />;
-    }
+    return (
+      <Suspense fallback={<LazyFallback />}>
+        {theme === 'win-xp' ? <WindowsXP /> : <WebOS />}
+      </Suspense>
+    );
   }
 
   return <GrubMenu />;

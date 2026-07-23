@@ -1,0 +1,20 @@
+export const siteUrlConfig = {
+  basePath: '/site/',
+  routes: {
+    home: '/site/',
+    blog: '/site/blog',
+    article: '/site/blog/:id',
+    news: '/site/news',
+    newsItem: '/site/news/:id',
+    wiki: '/site/wiki',
+    wikiItem: '/site/wiki/:slug',
+    gallery: '/site/gallery',
+    galleryItem: '/site/gallery/:id',
+    about: '/site/about',
+    projects: '/site/about/projects',
+    projectItem: '/site/projects/:id',
+    apps: '/site/apps',
+    appItem: '/site/apps/:id',
+    search: '/site/search',
+  },
+} as const;

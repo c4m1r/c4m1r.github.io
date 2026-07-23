@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { resolveAsset } from '../../utils/assetResolver';
 
 interface TrackDefinition {
@@ -188,23 +188,10 @@ export function WindowsMediaPlayer() {
 
   const currentTrack = tracks[currentIndex] ?? tracks[0] ?? fallbackTracks[0];
 
-  const formattedTime = useMemo(() => {
-    const audio = audioRef.current;
-    if (!audio || !audio.duration) return '00:00 / 00:00';
-    const currentMinutes = Math.floor(audio.currentTime / 60)
-      .toString()
-      .padStart(2, '0');
-    const currentSeconds = Math.floor(audio.currentTime % 60)
-      .toString()
-      .padStart(2, '0');
-    const totalMinutes = Math.floor(audio.duration / 60)
-      .toString()
-      .padStart(2, '0');
-    const totalSeconds = Math.floor(audio.duration % 60)
-      .toString()
-      .padStart(2, '0');
-    return `${currentMinutes}:${currentSeconds} / ${totalMinutes}:${totalSeconds}`;
-  }, [progress]);
+  const audio = audioRef.current;
+  const formattedTime = audio && audio.duration
+    ? `${Math.floor(audio.currentTime / 60).toString().padStart(2, '0')}:${Math.floor(audio.currentTime % 60).toString().padStart(2, '0')} / ${Math.floor(audio.duration / 60).toString().padStart(2, '0')}:${Math.floor(audio.duration % 60).toString().padStart(2, '0')}`
+    : '00:00 / 00:00';
 
   return (
     <div className="flex h-full w-full flex-col bg-[#dfe7f6] text-xs font-tahoma text-[#15396b]">

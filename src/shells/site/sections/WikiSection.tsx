@@ -7,15 +7,11 @@
 
 import { Layers, Search, ChevronDown, ChevronRight, ArrowLeft, ArrowRight, FileText } from 'lucide-react';
 import { ContentReader } from '../../../components/ContentReader';
+import { routes } from '../siteRoutes';
 import { type Language } from '../../../i18n/translations';
+import { type Section } from '../siteTypes';
+import { type WikiCategoryNode as CategoryNode } from '../hooks/useWikiCategoryTree';
 import { markdownToHtml } from '../../../domain/content/markdown';
-
-export interface CategoryNode {
-  name: string;
-  fullPath: string;
-  children: Map<string, CategoryNode>;
-  count: number;
-}
 
 export interface WikiViewItem {
   id: string;
@@ -86,7 +82,14 @@ function SectionPagination({ currentPage, totalPages, onPageChange }: SectionPag
 }
 
 export interface WikiSectionProps {
-  ui: any;
+  ui: {
+    wikiTitle: string;
+    categories: string;
+    searchPlaceholder: string;
+    tags: string;
+    back: string;
+    nothing: string;
+  };
   language: Language;
   wikiCategories: string[];
   wikiCategoryStats: Record<string, number>;
@@ -106,9 +109,8 @@ export interface WikiSectionProps {
   setWikiPage: (page: number) => void;
   getTagCount: (tag: string) => number;
   handleOpenWiki: (item: WikiViewItem) => void;
-  setActiveSection: (section: any) => void;
+  setActiveSection: (section: Section) => void;
   setGlobalSearchQuery: (query: string) => void;
-  basePath: string;
 }
 
 export function WikiSection({
@@ -134,7 +136,6 @@ export function WikiSection({
   handleOpenWiki,
   setActiveSection,
   setGlobalSearchQuery,
-  basePath,
 }: WikiSectionProps) {
   return (
     <section className="max-w-6xl mx-auto px-6 py-12 space-y-8">
@@ -312,7 +313,7 @@ export function WikiSection({
                 setActiveWiki(null);
                 setActiveSection('search');
                 setGlobalSearchQuery(tag);
-                window.history.pushState({}, '', `${basePath}search`);
+                window.history.pushState({}, '', routes.search(tag));
               }}
               tagCounts={
                 activeWiki.tags
@@ -329,7 +330,7 @@ export function WikiSection({
                   <button
                     onClick={() => {
                       setActiveWiki(null);
-                      window.history.pushState({}, '', `${basePath}wiki`);
+                      window.history.pushState({}, '', routes.wiki());
                     }}
                     className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-4"
                   >

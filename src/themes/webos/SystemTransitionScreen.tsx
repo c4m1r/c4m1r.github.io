@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 
 type TransitionMode = 'logoff' | 'shutdown';
 

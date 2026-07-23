@@ -10,16 +10,17 @@ import { NewsSection } from './NewsSection';
 import { type Language } from '../../../i18n/translations';
 import { type NewsItem } from '../../../domain/news/news.types';
 import { markdownToHtml } from '../../../domain/content/markdown';
+import { type Section } from '../siteTypes';
+import { routes } from '../siteRoutes';
 
 export interface NewsPageSectionProps {
-  ui: any;
+  ui: { tags: string; back: string; nav: { news: string } };
   language: Language;
   activeNews: NewsItem | null;
   setActiveNews: (news: NewsItem | null) => void;
-  setActiveSection: (section: any) => void;
+  setActiveSection: (section: Section) => void;
   setGlobalSearchQuery: (query: string) => void;
   handleOpenNews: (item: NewsItem) => void;
-  basePath: string;
 }
 
 export function NewsPageSection({
@@ -30,7 +31,6 @@ export function NewsPageSection({
   setActiveSection,
   setGlobalSearchQuery,
   handleOpenNews,
-  basePath,
 }: NewsPageSectionProps) {
   return (
     <main className="pt-32 pb-24">
@@ -59,14 +59,14 @@ export function NewsPageSection({
                 setActiveNews(null);
                 setActiveSection('search');
                 setGlobalSearchQuery(tag);
-                window.history.pushState({}, '', `${basePath}search`);
+                window.history.pushState({}, '', routes.search(tag));
               }}
               headerMeta={
                 <>
                   <button
                     onClick={() => {
                       setActiveNews(null);
-                      window.history.pushState({}, '', `${basePath}news`);
+                      window.history.pushState({}, '', routes.news());
                     }}
                     className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
                   >

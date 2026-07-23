@@ -1,31 +1,24 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Grid3x3,
-  ArrowLeft,
   ArrowRight,
   BookOpen,
-  Calendar,
-  Search,
   Image as ImageIcon,
-  Tag,
   User,
   FileText,
-  Briefcase,
-  Play,
 } from 'lucide-react';
 import {
-  loadAppEntries,
-  loadAboutMe,
-  loadLegalNotice,
   type AppCategoryId,
   type AppEntry,
-  type ContentItem,
-} from '../utils/contentLoader';
+} from '../domain/apps/apps.types';
+import { type ContentItem } from '../domain/content/types';
 import { loadArticles } from '../domain/articles/articles.loader';
+import { loadAboutMe, loadLegalNotice } from '../domain/about/about.loader';
+import { loadAppEntries } from '../domain/apps/apps.loader';
 import { loadWikiArticles, loadWikiCategoryIndex } from '../domain/wiki/wiki.loader';
 import { loadAllProjects } from '../domain/projects/projects.loader';
 import { type Language } from '../i18n/translations';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexts/useApp';
 import { stripMarkdown, markdownToHtml } from '../domain/content/markdown';
 import { loadCvLocale } from '../domain/resume/resume.loader';
 import { Navigation } from '../components/Navigation';
@@ -42,13 +35,17 @@ import { ArticlesSection, type ArticleItem } from '../shells/site/sections/Artic
 import { ArticleDetailSection } from '../shells/site/sections/ArticleDetailSection';
 import { WikiSection } from '../shells/site/sections/WikiSection';
 import { AboutSection } from '../shells/site/sections/AboutSection';
-import { useProjects } from '../domain/projects/useProjects';
-import { useGallery } from '../domain/gallery/useGallery';
+import { SearchSection } from '../shells/site/sections/SearchSection';
+import { ProjectDetailSection } from '../shells/site/sections/ProjectDetailSection';
+import { AppsSection } from '../shells/site/sections/AppsSection';
+import { CvSection } from '../shells/site/sections/CvSection';
+import { useSiteTagCounts } from '../shells/site/hooks/useSiteTagCounts';
+import { useWikiCategoryTree } from '../shells/site/hooks/useWikiCategoryTree';
 import { useNews } from '../domain/news/useNews';
+import { useGlobalSearch, type SearchResult } from '../domain/search/useGlobalSearch';
 import { type NewsItem } from '../domain/news/news.types';
-import { markdownToHtml as _markdownToHtml } from '../domain/content/markdown';
 import { type Section, type NavSection, type TranslationSectionNav } from '../shells/site/siteTypes';
-import { basePath, sectionToPath, parsePath, routes } from '../shells/site/siteRoutes';
+import { sectionToPath, parsePath, routes } from '../shells/site/siteRoutes';
 
 
 interface BlogPostView extends ContentItem {
@@ -146,8 +143,6 @@ type UiText = {
   };
 };
 
-const APP_CATEGORIES: AppCategoryId[] = ['ready', 'prototype', 'webos-emulation'];
-
 const uiTexts: Record<Language, UiText> = {
   en: {
     nav: { home: 'Home', about: 'About', wiki: 'Wiki', cv: 'CV', gallery: 'Gallery', blog: 'Blog', apps: 'Apps', search: 'Search', news: 'News', legal: 'Legal Notice' },
@@ -235,7 +230,7 @@ const uiTexts: Record<Language, UiText> = {
     },
   },
   ru: {
-    nav: { home: 'Главная', about: 'Обо мне', wiki: 'Вики', cv: 'Резюме', gallery: 'Галерея', blog: 'Блог', apps: 'Приложения', search: 'Поиск', news: 'Новости', legal: 'Правовая информация' },
+    nav: { home: 'Главная', about: 'Обо мне', wiki: 'Вики', cv: 'N/A', gallery: 'Галерея', blog: 'Блог', apps: 'Приложения', search: 'Поиск', news: 'Новости', legal: 'Правовая информация' },
     heroTitle: 'IT инженер',
     heroSubtitle: 'Создаю красивые цифровые решения с помощью кода, креативности и страсти. Изучайте мои работы, мысли и базу знаний.',
     searchPlaceholder: 'Поиск по статьям...',
@@ -320,133 +315,133 @@ const uiTexts: Record<Language, UiText> = {
     },
   },
   fr: {
-    nav: { home: 'Accueil', about: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р Р†Р вЂљРЎв„ў propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', apps: 'Applications', search: 'Recherche', news: 'ActualitР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©s', legal: 'Mentions lР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©gales' },
-    heroTitle: 'DР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©veloppeur crР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©atif',
-    heroSubtitle: 'CrР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©er de belles expР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©riences numР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©riques avec code, crР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©ativitР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В© et passion. Explorez mon travail, mes pensР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©es et ma base de connaissances.',
+    nav: { home: 'Accueil', about: 'À propos', wiki: 'Wiki', cv: 'CV', gallery: 'Galerie', blog: 'Blog', apps: 'Applications', search: 'Recherche', news: 'Actualités', legal: 'Mentions légales' },
+    heroTitle: 'Développeur créatif',
+    heroSubtitle: 'Créer de belles expériences numériques avec code, créativité et passion. Explorez mon travail, mes pensées et ma base de connaissances.',
     searchPlaceholder: 'Rechercher...',
-    categories: 'CatР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©gories',
+    categories: 'Catégories',
     tags: 'Tags',
     loading: 'Chargement...',
-    nothing: 'Rien trouvР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©.',
+    nothing: 'Rien trouvé.',
     back: 'Retour',
     nowReading: 'En lecture',
     galleryTitle: 'Galerie',
     wikiTitle: 'Wiki',
-    cvTitle: 'CV (RР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©sumР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©:)',
-    aboutTitle: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р Р†Р вЂљРЎв„ў propos',
+    cvTitle: 'CV (Résumé:)',
+    aboutTitle: 'À propos',
     projectsTitle: 'Projets:',
-    sections: { explore: 'Explorez mon monde', exploreSubtitle: 'Plongez dans diffР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©rents aspects de mon travail et de mes intР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©rР В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р Р†Р вЂљРЎвЂєts' },
+    sections: { explore: 'Explorez mon monde', exploreSubtitle: 'Plongez dans différents aspects de mon travail et de mes intérêts' },
     apps: {
       title: 'Applications',
-      subtitle: 'DР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©monstration de mes projets',
+      subtitle: 'Démonstration de mes projets',
       selectPrompt: 'Choisissez une application pour l\'ouvrir au centre.',
       descriptionLabel: 'Description',
       platformsLabel: 'Plateformes',
       technologiesLabel: 'Technologies',
-      badgesLabel: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°tiquettes',
+      badgesLabel: 'Étiquettes',
       dateLabel: 'Date',
       openFullLabel: 'Ouvrir complet',
       categories: {
-        ready: 'Applications prР В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р Р†Р вЂљРЎвЂєtes',
+        ready: 'Applications prêtes',
         prototype: 'Prototypes',
-        'webos-emulation': 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°mulation WebOS',
+        'webos-emulation': 'Émulation WebOS',
       },
     },
-    latestPosts: { title: 'Derniers articles', subtitle: 'Nouvelles pensР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©es et idР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©es', viewAll: 'Voir tout' },
-    cta: { letsCreate: 'CrР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©ons', together: 'Ensemble', description: 'Que vous ayez un projet en tР В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р Р†Р вЂљРЎвЂєte ou que vous souhaitiez simplement vous connecter, j\'aimerais vous entendre.', getInTouch: 'Contactez-moi' },
-    blog: { title: 'Blog', subtitle: 'PensР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©es, tutoriels et idР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©es sur le dР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©veloppement, le design et la technologie.', description: 'PensР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©es, tutoriels et idР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©es sur le dР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©veloppement, le design et la technologie.' },
-    wiki: { description: 'Une base de connaissances organisР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©e de concepts, d\'outils et de techniques que j\'utilise quotidiennement.' },
-    cv: { experience: 'ExpР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©rience', education: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°ducation', prototypes: 'Prototypes', rewards: 'RР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©compenses', print: 'Imprimer', downloadPdf: 'TР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©lР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©charger PDF', viewDemo: 'Voir la dР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©mo' },
-    about: { description: 'DР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©couvrez mon parcours, mes compР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©tences et ce qui alimente ma passion pour la crР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©ation.' },
-    gallery: { description: 'Un voyage visuel Р В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В  travers des projets, de la photographie et des explorations crР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©atives.', allAlbums: 'Tous les albums' },
-    search: { title: 'Recherche', subtitle: 'Trouvez n\'importe quoi dans les articles de blog, les articles wiki et la galerie', placeholder: 'Rechercher dans tout le contenu...', allContent: 'Tout le contenu', results: 'rР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©sultats' },
+    latestPosts: { title: 'Derniers articles', subtitle: 'Nouvelles pensées et idées', viewAll: 'Voir tout' },
+    cta: { letsCreate: 'Créons', together: 'Ensemble', description: 'Que vous ayez un projet en tête ou que vous souhaitiez simplement vous connecter, j\'aimerais vous entendre.', getInTouch: 'Contactez-moi' },
+    blog: { title: 'Blog', subtitle: 'Pensées, tutoriels et idées sur le développement, le design et la technologie.', description: 'Pensées, tutoriels et idées sur le développement, le design et la technologie.' },
+    wiki: { description: 'Une base de connaissances organisée de concepts, d\'outils et de techniques que j\'utilise quotidiennement.' },
+    cv: { experience: 'Expérience', education: 'Éducation', prototypes: 'Prototypes', rewards: 'Récompenses', print: 'Imprimer', downloadPdf: 'Télécharger PDF', viewDemo: 'Voir la démo' },
+    about: { description: 'Découvrez mon parcours, mes compétences et ce qui alimente ma passion pour la création.' },
+    gallery: { description: 'Un voyage visuel à travers des projets, de la photographie et des explorations créatives.', allAlbums: 'Tous les albums' },
+    search: { title: 'Recherche', subtitle: 'Trouvez n\'importe quoi dans les articles de blog, les articles wiki et la galerie', placeholder: 'Rechercher dans tout le contenu...', allContent: 'Tout le contenu', results: 'résultats' },
     stats: { blogPosts: 'Articles de blog', wikiArticles: 'Articles wiki', galleryImages: 'Images', projects: 'Projets' },
   },
   es: {
-    nav: { home: 'Inicio', about: 'Sobre mР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­', wiki: 'Wiki', cv: 'CV', gallery: 'GalerР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­a', blog: 'Blog', apps: 'Aplicaciones', search: 'Buscar', news: 'Noticias', legal: 'Aviso legal' },
+    nav: { home: 'Inicio', about: 'Sobre mí', wiki: 'Wiki', cv: 'CV', gallery: 'Galería', blog: 'Blog', apps: 'Aplicaciones', search: 'Buscar', news: 'Noticias', legal: 'Aviso legal' },
     heroTitle: 'Desarrollador creativo',
-    heroSubtitle: 'Construyendo hermosas experiencias digitales con cР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљdigo, creatividad y pasiР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљn. Explora mi trabajo, pensamientos y base de conocimientos.',
+    heroSubtitle: 'Construyendo hermosas experiencias digitales con código, creatividad y pasión. Explora mi trabajo, pensamientos y base de conocimientos.',
     searchPlaceholder: 'Buscar...',
-    categories: 'CategorР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­as',
+    categories: 'Categorías',
     tags: 'Etiquetas',
     loading: 'Cargando...',
     nothing: 'Nada encontrado.',
-    back: 'AtrР В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р В РІР‚в„–s',
+    back: 'Atrás',
     nowReading: 'Leyendo',
-    galleryTitle: 'GalerР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­a',
+    galleryTitle: 'Galería',
     wikiTitle: 'Wiki',
-    cvTitle: 'CV (CurrР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­culum:)',
-    aboutTitle: 'Sobre mР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­',
+    cvTitle: 'CV (Currículum:)',
+    aboutTitle: 'Sobre mí',
     projectsTitle: 'Proyectos:',
-    sections: { explore: 'Explora mi mundo', exploreSubtitle: 'SumР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©rgete en diferentes aspectos de mi trabajo e intereses' },
+    sections: { explore: 'Explora mi mundo', exploreSubtitle: 'Sumérgete en diferentes aspectos de mi trabajo e intereses' },
     apps: {
       title: 'Aplicaciones',
-      subtitle: 'DemostraciР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљn de mis proyectos',
-      selectPrompt: 'Selecciona una aplicaciР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљn para verla en el centro.',
-      descriptionLabel: 'DescripciР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљn',
+      subtitle: 'Demostración de mis proyectos',
+      selectPrompt: 'Selecciona una aplicación para verla en el centro.',
+      descriptionLabel: 'Descripción',
       platformsLabel: 'Plataformas',
-      technologiesLabel: 'TecnologР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­as',
+      technologiesLabel: 'Tecnologías',
       badgesLabel: 'Etiquetas',
       dateLabel: 'Fecha',
       openFullLabel: 'Abrir completo',
       categories: {
         ready: 'Aplicaciones listas',
         prototype: 'Prototipos',
-        'webos-emulation': 'EmulaciР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљn WebOS',
+        'webos-emulation': 'Emulación WebOS',
       },
     },
-    latestPosts: { title: 'Р В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†РІР‚С›РЎС›ltimas publicaciones', subtitle: 'Pensamientos e ideas frescas', viewAll: 'Ver todo' },
-    cta: { letsCreate: 'Vamos a', together: 'Crear juntos', description: 'Ya sea que tengas un proyecto en mente o simplemente quieras conectarte, me encantarР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­a saber de ti.', getInTouch: 'Ponte en contacto' },
-    blog: { title: 'Blog', subtitle: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В±o y tecnologР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­a.', description: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В±o y tecnologР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­a.' },
-    wiki: { description: 'Una base de conocimientos curada de conceptos, herramientas y tР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©cnicas que uso a diario.' },
-    cv: { experience: 'Experiencia', education: 'EducaciР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљn', prototypes: 'Prototipos', rewards: 'Premios', print: 'Imprimir', downloadPdf: 'Descargar PDF', viewDemo: 'Ver demo' },
-    about: { description: 'Conoce mi trayectoria, habilidades y lo que impulsa mi pasiР В Р’В Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚Сљn por crear.' },
-    gallery: { description: 'Un viaje visual a travР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В©s de proyectos, fotografР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­a y exploraciones creativas.', allAlbums: 'Todos los Р В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р В РІР‚в„–lbumes' },
-    search: { title: 'Buscar', subtitle: 'Encuentra cualquier cosa en publicaciones de blog, artР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­culos wiki y galerР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­a', placeholder: 'Buscar en todo el contenido...', allContent: 'Todo el contenido', results: 'resultados' },
-    stats: { blogPosts: 'Publicaciones', wikiArticles: 'ArtР В Р’В Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­culos wiki', galleryImages: 'ImР В Р’В Р Р†Р вЂљРЎС™Р В Р’В Р В РІР‚в„–genes', projects: 'Proyectos' },
+    latestPosts: { title: 'Últimas publicaciones', subtitle: 'Pensamientos e ideas frescas', viewAll: 'Ver todo' },
+    cta: { letsCreate: 'Vamos a', together: 'Crear juntos', description: 'Ya sea que tengas un proyecto en mente o simplemente quieras conectarte, me encantaría saber de ti.', getInTouch: 'Ponte en contacto' },
+    blog: { title: 'Blog', subtitle: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseño y tecnología.', description: 'Pensamientos, tutoriales e ideas sobre desarrollo, diseño y tecnología.' },
+    wiki: { description: 'Una base de conocimientos curada de conceptos, herramientas y técnicas que uso a diario.' },
+    cv: { experience: 'Experiencia', education: 'Educación', prototypes: 'Prototipos', rewards: 'Premios', print: 'Imprimir', downloadPdf: 'Descargar PDF', viewDemo: 'Ver demo' },
+    about: { description: 'Conoce mi trayectoria, habilidades y lo que impulsa mi pasión por crear.' },
+    gallery: { description: 'Un viaje visual a través de proyectos, fotografía y exploraciones creativas.', allAlbums: 'Todos los álbumes' },
+    search: { title: 'Buscar', subtitle: 'Encuentra cualquier cosa en publicaciones de blog, artículos wiki y galería', placeholder: 'Buscar en todo el contenido...', allContent: 'Todo el contenido', results: 'resultados' },
+    stats: { blogPosts: 'Publicaciones', wikiArticles: 'Artículos wiki', galleryImages: 'Imágenes', projects: 'Proyectos' },
   },
   zh: {
-    nav: { home: 'Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В РІР‚в„ўР вЂ™Р’В¦Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚в„–Р В РІР‚в„ўР вЂ™Р’Вµ', about: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р Р†Р вЂљРІвЂћвЂ“', wiki: 'Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В»Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р РЋРЎСџР В Р Р‹Р Р†Р вЂљРЎСљ', cv: 'Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В ', gallery: 'Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р Р†Р вЂљР’В°', blog: 'Р В Р’В Р вЂ™Р’ВµР В Р’В Р В Р вЂ°Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р Р‹Р РЋРІР‚С”', apps: 'Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р В РЎвЂњ', search: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІвЂћСћР В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В·Р В РЎС›Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚С”', news: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В РІР‚в„ўР вЂ™Р’В»', legal: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎС›Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†РІР‚С™Р’В¬Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’ВР В Р’В Р Р†Р вЂљРІвЂћвЂ“' },
-    heroTitle: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р Р‹Р вЂ™Р’ВР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р РЏР В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р РЋРІР‚ВР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦',
-    heroSubtitle: 'Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р В РЎвЂњР В Р’В Р СћРІР‚ВР В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В Р В Р’В Р РЋРІР‚СљР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В»Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В­Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В Р’В Р СћРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р Р†Р вЂљРЎвЂєР В Р’В Р В РІР‚В°Р В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В·Р В РЎС›Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р СћРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРЎСџР В РЎС›Р РЋРІР‚в„ўР В Р’В Р РЋРІР‚ВР В Р’В Р Р†Р вЂљР Р‹Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ',
-    searchPlaceholder: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІвЂћСћР В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В·Р В РЎС›Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚С”...',
-    categories: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В±Р В РІР‚в„ўР вЂ™Р’В»',
-    tags: 'Р В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В­Р В Р Р‹Р Р†Р вЂљРЎС›',
-    loading: 'Р В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљР’В°Р В РІР‚в„ўР вЂ™Р’В Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В РІР‚в„ўР вЂ™Р’В­...',
-    nothing: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљРЎвЂєР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ',
-    back: 'Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРІР‚СњР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎвЂќ',
-    nowReading: 'Р В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’В­Р В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р РЋРІвЂћСћР В Р’В Р В РЎвЂњР В Р’В Р Р†РІР‚С›РІР‚вЂњР В РІР‚в„ўР вЂ™Р’ВР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†Р вЂљР Р‹Р В РІР‚в„ўР вЂ™Р’В»',
-    galleryTitle: 'Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р Р†Р вЂљР’В°',
-    wikiTitle: 'Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В»Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р РЋРЎСџР В Р Р‹Р Р†Р вЂљРЎСљ',
-    cvTitle: 'CV (Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В :)',
-    aboutTitle: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р Р†Р вЂљРІвЂћвЂ“',
-    projectsTitle: 'Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚в„–Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р вЂ™Р’ВР В Р Р‹Р Р†РІР‚С›РЎС›',
-    sections: { explore: 'Р В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В·Р В РЎС›Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р’В Р В РІР‚В°', exploreSubtitle: 'Р В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В РЎС›Р РЋРІР‚в„ўР В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В·Р В РЎС›Р РЋРІР‚в„ўР В Р’В Р СћРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В¶Р В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ°Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРІвЂћСћР В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р РЋРЎв„ўР В Р Р‹Р РЋРІР‚С”' },
+    nav: { home: '首页', about: '关于我', wiki: '维基', cv: '简历', gallery: '画廊', blog: '博客', apps: '应用', search: '搜索', news: '新闻', legal: '法律声明' },
+    heroTitle: '创意开发者',
+    heroSubtitle: '用代码、创造力和热情打造美丽的数字体验。探索我的作品、想法和知识库。',
+    searchPlaceholder: '搜索...',
+    categories: '分类',
+    tags: '标签',
+    loading: '加载中...',
+    nothing: '未找到内容。',
+    back: '返回',
+    nowReading: '正在阅读',
+    galleryTitle: '画廊',
+    wikiTitle: '维基',
+    cvTitle: 'CV (简历:)',
+    aboutTitle: '关于我',
+    projectsTitle: '项目:',
+    sections: { explore: '探索我的世界', exploreSubtitle: '深入了解我的工作和兴趣的不同方面' },
     apps: {
-      title: 'Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р В РЎвЂњ',
-      subtitle: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚в„–Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р вЂ™Р’ВР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В¤Р В Р Р‹Р Р†Р вЂљРЎСљ',
-      selectPrompt: 'Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В РІР‚в„ўР вЂ™Р’В©Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р Р†Р вЂљРЎвЂєР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р В РЎвЂњР В Р’В Р РЋРІР‚вЂќР В Р Р‹Р вЂ™Р’ВР В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р РЋРІвЂћСћР В Р’В Р В РЎвЂњР В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В РІР‚в„ўР вЂ™Р’В­Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В¤Р В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р вЂ™Р’В·Р В Р’В Р Р†Р вЂљРЎвЂєР В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р РЏР В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р вЂ™Р’ВР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ',
-      descriptionLabel: 'Р В Р’В Р РЋРІР‚ВР В Р’В Р Р†Р вЂљР Р‹Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’ВР В Р’В Р Р†Р вЂљРІвЂћвЂ“',
-      platformsLabel: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р РЏР В РІР‚в„ўР вЂ™Р’В°',
-      technologiesLabel: 'Р В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљР Р‹',
-      badgesLabel: 'Р В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В­Р В Р Р‹Р Р†Р вЂљРЎС›',
-      dateLabel: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В РЎС›Р РЋРІР‚в„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р Р‹Р РЋРЎСџ',
-      openFullLabel: 'Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р Р‹Р вЂ™Р’ВР В Р’В Р Р†Р вЂљРЎв„ў',
+      title: '应用',
+      subtitle: '我的项目展示',
+      selectPrompt: '选择一个应用在中心查看。',
+      descriptionLabel: '描述',
+      platformsLabel: '平台',
+      technologiesLabel: '技术',
+      badgesLabel: '徽章',
+      dateLabel: '日期',
+      openFullLabel: '完整打开',
       categories: {
-        ready: 'Р В Р’В Р вЂ™Р’В·Р В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р Р‹Р Р†Р вЂљРІвЂћСћР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р В РЎвЂњ',
-        prototype: 'Р В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р РЋРЎСџР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎвЂќР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ',
-        'webos-emulation': 'WebOSР В Р’В Р вЂ™Р’В¶Р В Р’В Р В РЎвЂњР В Р’В Р В РІР‚в„–Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р РЋРЎСџ',
+        ready: '就绪应用',
+        prototype: '原型',
+        'webos-emulation': 'WebOS 模拟',
       },
     },
-    latestPosts: { title: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В«Р В РІР‚в„ўР вЂ™Р’В ', subtitle: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р Р†Р вЂљР’В Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р РЋРІР‚СљР В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р Р†РІР‚С™Р’В¬', viewAll: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРЎСџР В РЎС›Р РЋРІР‚в„ўР В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРІвЂћСћР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р В РЎвЂњР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р В РЎвЂњ' },
-    cta: { letsCreate: 'Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В®Р В РІР‚в„ўР вЂ™Р’В©Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р СћРІР‚ВР В РІР‚в„ўР вЂ™Р’В»Р В РІР‚в„ўР вЂ™Р’В¬', together: 'Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В РІР‚в„ўР вЂ™Р’В ', description: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В РІР‚в„ўР вЂ™Р’В Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В®Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В РЎвЂњР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚в„–Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРІР‚СњР В РІР‚в„ўР вЂ™Р’ВР В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’ВР В Р’В Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’ВµР В Р’В Р В Р РЏР В Р’В Р Р†Р вЂљРЎвЂєР В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’ВР В Р’В Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СљР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†Р вЂљРІР‚СљР В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р РЋРІР‚вЂќР В Р Р‹Р вЂ™Р’ВР В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎС›Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р’В Р СћРІР‚ВР В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р Р‹Р Р†Р вЂљРІвЂћСћР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРІвЂћСћР В РІР‚в„ўР вЂ™Р’В¬Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В РЎвЂњР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’ВµР В Р’В Р Р†РІР‚С™Р’В¬Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р Р‹Р РЋРЎСџР В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ', getInTouch: 'Р В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚СљР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†Р вЂљРІР‚СљР В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В' },
-    blog: { title: 'Р В Р’В Р вЂ™Р’ВµР В Р’В Р В Р вЂ°Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р Р‹Р РЋРІР‚С”', subtitle: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р вЂ™Р’ВР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р РЏР В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В®Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р В РІР‚в„–Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р вЂ Р Р†Р вЂљРЎвЂєР РЋРЎвЂєР В Р’В Р вЂ™Р’В·Р В Р’В Р В РЎвЂњР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р РЋРІР‚СљР В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ', description: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р вЂ™Р’ВР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р РЏР В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В®Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р В РІР‚в„–Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р вЂ Р Р†Р вЂљРЎвЂєР РЋРЎвЂєР В Р’В Р вЂ™Р’В·Р В Р’В Р В РЎвЂњР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р РЋРІР‚СљР В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ' },
-    wiki: { description: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљР Р‹Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В¤Р В РІР‚в„ўР вЂ™Р’В©Р В Р’В Р СћРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р В РЎвЂњР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В РІР‚в„ўР вЂ™Р’В¦Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРІР‚СњР В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В·Р В РЎС›Р РЋРІР‚в„ўР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В·Р В Р’В Р Р†Р вЂљР’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРЎСџР В РЎС›Р РЋРІР‚в„ўР В Р’В Р РЋРІР‚ВР В Р’В Р Р†Р вЂљР Р‹Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ' },
-    cv: { experience: 'Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р РЏР В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р Р†Р вЂљРЎвЂєР В Р’В Р В РІР‚В°', education: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р вЂ Р Р†Р вЂљРЎвЂєР РЋРЎвЂєР В Р’В Р РЋРІР‚ВР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљР’В ', prototypes: 'Р В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р РЋРЎСџР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎвЂќР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ', rewards: 'Р В Р’В Р вЂ™Р’ВµР В РЎС›Р РЋРІР‚в„ўР В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљР’В°Р В РІР‚в„ўР вЂ™Р’В±', print: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р вЂ°Р В РІР‚в„ўР вЂ™Р’В°', downloadPdf: 'Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р РЋРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р Р†Р вЂљР’В¦PDF', viewDemo: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРЎСџР В РЎС›Р РЋРІР‚в„ўР В Р’В Р вЂ™Р’В·Р В Р Р‹Р РЋРІвЂћСћР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р вЂ™Р’ВР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В¤Р В Р Р‹Р Р†Р вЂљРЎСљ' },
-    about: { description: 'Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р’В Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’В·Р В Р’В Р В РЎвЂњР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р СћРІР‚ВР В РІР‚в„ўР вЂ™Р’В»Р В РЎС›Р РЋРІР‚в„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р РЏР В Р’В Р Р†Р вЂљР’В°Р В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р В РЎвЂњР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљР’В°Р В Р’В Р В РЎвЂњР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р’В Р СћРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†Р вЂљРЎС™Р В РІР‚в„ўР вЂ™Р’В­Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљР’В°Р В Р’В Р В РЎвЂњР В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљР’В°Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ' },
-    gallery: { description: 'Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р Р‹Р Р†РІР‚С›РЎС›Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљРІР‚СњР В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚в„–Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В РІР‚в„ўР вЂ™Р’В®Р В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’ВµР В Р’В Р Р†Р вЂљР’В¦Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В¶Р В Р’В Р Р†Р вЂљРІвЂћвЂ“Р В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В·Р В РЎС›Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В·Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р РЋРІР‚ВР В РІР‚в„ўР вЂ™Р’В§Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р СћРІР‚ВР В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ', allAlbums: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р В РІР‚В°' },
-    search: { title: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІвЂћСћР В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В·Р В РЎС›Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚С”', subtitle: 'Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р РЋРІвЂћСћР В Р’В Р В РЎвЂњР В Р’В Р вЂ™Р’ВµР В Р’В Р В Р вЂ°Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В«Р В РІР‚в„ўР вЂ™Р’В Р В Р’В Р РЋРІР‚вЂњР В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В»Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р РЋРЎСџР В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В«Р В РІР‚в„ўР вЂ™Р’В Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р СћРІР‚ВР В Р Р‹Р Р†Р вЂљР’ВР В РІР‚в„ўР вЂ™Р’В­Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРЎСџР В РЎС›Р РЋРІР‚в„ўР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р СћРІР‚ВР В РІР‚в„ўР вЂ™Р’В»Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р СћРІР‚ВР В Р’В Р Р†Р вЂљР’В¦Р В Р вЂ Р В РІР‚С™Р РЋРЎвЂєР В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ', placeholder: 'Р В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРІвЂћСћР В Р Р‹Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В·Р В РЎС›Р Р†Р вЂљР’ВР В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ...', allContent: 'Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р РЋРІвЂћСћР В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ', results: 'Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В»Р В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В Р’В Р вЂ™Р’В¶Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р Р‹Р РЋРІвЂћСћ' },
-    stats: { blogPosts: 'Р В Р’В Р вЂ™Р’ВµР В Р’В Р В Р вЂ°Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р’В Р вЂ™Р’ВµР В РІР‚в„ўР вЂ™Р’В®Р В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В«Р В РІР‚в„ўР вЂ™Р’В ', wikiArticles: 'Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В»Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р РЋРЎСџР В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В¶Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎС™Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В·Р В РІР‚в„ўР вЂ™Р’В«Р В РІР‚в„ўР вЂ™Р’В ', galleryImages: 'Р В Р’В Р вЂ™Р’ВµР В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В Р вЂ Р В РІР‚С™Р В Р вЂ№', projects: 'Р В Р’В Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В РІР‚в„–Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В·Р В Р вЂ Р В РІР‚С™Р РЋРІР‚СњР В РІР‚в„ўР вЂ™Р’В®' },
+    latestPosts: { title: '最新文章', subtitle: '新鲜想法和观点', viewAll: '查看全部' },
+    cta: { letsCreate: '让我们', together: '一起创造', description: '无论你有一个项目想法，还是只是想联系，我都很乐意听到你的消息。', getInTouch: '联系我' },
+    blog: { title: '博客', subtitle: '关于开发、设计和技术的想法、教程和观点。', description: '关于开发、设计和技术的想法、教程和观点。' },
+    wiki: { description: '我日常使用的概念、工具和技术的精选知识库。' },
+    cv: { experience: '经验', education: '教育', prototypes: '原型', rewards: '奖励', print: '打印', downloadPdf: '下载 PDF', viewDemo: '查看演示' },
+    about: { description: '了解我的经历、技能以及驱动我创造热情的动力。' },
+    gallery: { description: '穿越项目、摄影和创意探索的视觉旅程。', allAlbums: '所有相册' },
+    search: { title: '搜索', subtitle: '在博客文章、维基文章和画廊中查找任何内容', placeholder: '搜索所有内容...', allContent: '所有内容', results: '结果' },
+    stats: { blogPosts: '博客文章', wikiArticles: '维基文章', galleryImages: '图片', projects: '项目' },
   },
   ja: {
     nav: { home: 'ホーム', about: '概要', wiki: 'ウィキ', cv: '履歴書', gallery: 'ギャラリー', blog: 'ブログ', apps: 'アプリ', search: '検索', news: 'ニュース', legal: '法的通知' },
@@ -537,17 +532,19 @@ const uiTexts: Record<Language, UiText> = {
 };
 
 const themeOptions = [
-  { id: 'default', name: 'Frutiger Aero', icon: 'Р В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРЎСџР В Р’В Р В РІР‚В°Р В Р Р‹Р Р†Р вЂљРІР‚Сњ' },
-  { id: 'vaporwave', name: 'Vaporwave', icon: 'Р В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРЎСџР В Р’В Р В РІР‚В°Р В РЎС›Р Р†Р вЂљР’В' },
-  { id: 'cyberpunk', name: 'Cyberpunk', icon: 'Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†РІР‚С›РЎС›Р В Р’В Р В РІР‚в„–' },
-  { id: 'skeuomorphism', name: 'Skeuomorphism', icon: 'Р В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРЎСџР В Р вЂ Р В РІР‚С™Р РЋРЎв„ўР В РІР‚в„ўР вЂ™Р’В±' },
-  { id: 'pcb', name: 'PCB Circuit', icon: 'Р В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРЎСџР В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р В РІР‚В°' },
+  { id: 'default', name: 'Frutiger Aero', icon: '🌿' },
+  { id: 'vaporwave', name: 'Vaporwave', icon: '🌴' },
+  { id: 'cyberpunk', name: 'Cyberpunk', icon: '⚡' },
+  { id: 'skeuomorphism', name: 'Skeuomorphism', icon: '📱' },
+  { id: 'pcb', name: 'PCB Circuit', icon: '🔌' },
 ] as const;
 
 
 function buildView(post: ContentItem): BlogPostView {
   const plain = stripMarkdown(post.content);
-  const excerpt = (post as any).excerpt || plain.slice(0, 180) + (plain.length > 180 ? 'Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В РІР‚в„ўР вЂ™Р’В¦' : '');
+  const excerpt = ('excerpt' in post && typeof post.excerpt === 'string')
+    ? post.excerpt
+    : plain.slice(0, 180) + (plain.length > 180 ? '…' : '');
   const words = plain.split(/\s+/).filter(Boolean).length;
   const readingTime = `${Math.max(1, Math.round(words / 180))} min read`;
 
@@ -564,9 +561,13 @@ export function BlogSite() {
   const { language, setLanguage } = useApp();
   const ui = uiTexts[language] || uiTexts.en;
 
-  const { byTag: projectsByTag } = useProjects();
-  const { pictures, byTag: galleryByTag } = useGallery();
   const { news: newsItems } = useNews();
+  const {
+    query: globalSearchQuery,
+    setQuery: setGlobalSearchQuery,
+    results: globalSearchResults,
+    loading: globalSearchLoading,
+  } = useGlobalSearch();
 
   const [theme, setTheme] = useState<string>(() => localStorage.getItem('site-theme') || 'default');
   const [posts, setPosts] = useState<BlogPostView[]>([]);
@@ -589,7 +590,6 @@ export function BlogSite() {
   const [heroKey, setHeroKey] = useState(0);
   const [mainAboutTab, setMainAboutTab] = useState<'about' | 'cv' | 'projects' | 'legal'>('about');
   const [activeCvTab, setActiveCvTab] = useState<'it' | 'education' | 'gamedev' | 'rewards'>('it');
-  const [globalSearchQuery, setGlobalSearchQuery] = useState('');
   const [blogPage, setBlogPage] = useState(1);
   const [wikiPage, setWikiPage] = useState(1);
   const [selectedPictureId, setSelectedPictureId] = useState<string | null>(null);
@@ -600,14 +600,67 @@ export function BlogSite() {
   const [expandedWikiCategories, setExpandedWikiCategories] = useState<Set<string>>(new Set());
   const itemsPerPage = 12;
 
+  const syncFromLocation = useCallback((
+    pathname: string,
+    postsList: BlogPostView[],
+    wikiList: WikiView[],
+    projectList: ContentItem[],
+  ) => {
+    const route = parsePath(pathname);
+
+    setActivePost(null);
+    setActiveWiki(null);
+    setActiveNews(null);
+    setActiveProject(null);
+    setActiveSection(route.section);
+
+    if (route.newsId && newsItems.length > 0) {
+      const matchNews = newsItems.find((n) => n.id === route.newsId);
+      setActiveNews(matchNews ?? null);
+    }
+
+    if (route.searchQuery) {
+      setGlobalSearchQuery(route.searchQuery);
+    }
+
+    if (route.projectId) {
+      const matchProject = projectList.find((p) => p.id === route.projectId);
+      if (matchProject) {
+        setActiveSection('project');
+        setActiveProject(matchProject);
+      }
+      return;
+    }
+
+    if (route.galleryItemId) {
+      setSelectedPictureId(route.galleryItemId);
+    }
+
+    if (route.wikiSlug) {
+      const matchWiki = wikiList.find(
+        (w) => w.relativePath?.replace(/\.md$/, '') === route.wikiSlug
+      );
+      if (matchWiki) {
+        setActiveSection('wiki');
+        setActiveWiki(matchWiki);
+      }
+      return;
+    }
+
+    if (route.postId) {
+      const maybePost = postsList.find((p) => p.id === route.postId);
+      if (maybePost) {
+        setActiveSection(route.section === 'blog' ? 'blog' : 'home');
+        setActivePost(maybePost);
+      }
+    }
+  }, [newsItems, setGlobalSearchQuery]);
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('site-theme', theme);
-    setHeroKey((k) => k + 1); // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљ Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ
+    setHeroKey((k) => k + 1);
   }, [theme]);
-
-  // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° iframe
-  // Р В Р’В Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° index Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В wikiCategory
   useEffect(() => {
     if (wikiCategory === 'All') {
       setWikiCategoryIndex(null);
@@ -618,8 +671,6 @@ export function BlogSite() {
       .then(index => setWikiCategoryIndex(index))
       .catch(err => console.error('Failed to load category index:', err));
   }, [wikiCategory, language]);
-
-  // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В  Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС› Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В  markdown
   useEffect(() => {
     const handleWikiLinkClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -630,9 +681,7 @@ export function BlogSite() {
         const wikiLink = link.getAttribute('data-wiki-link');
         
         if (wikiLink) {
-          // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В°Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС› Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В
           const targetArticle = wiki.find(article => {
-            // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРЎСџР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ
             const fileName = wikiLink.replace('.md', '');
             return article.id === fileName || 
                    article.relativePath?.endsWith(wikiLink) ||
@@ -661,8 +710,6 @@ export function BlogSite() {
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return; // Double check
-      
-      // Р В Р’В Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС› Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В
       const iframe = document.querySelector('[data-iframe-container]');
       if (!iframe) return;
       
@@ -702,7 +749,7 @@ export function BlogSite() {
       const mapped = loadedPosts.map(buildView);
       const mappedWiki = loadedWiki.map((item) => ({
         ...item,
-        excerpt: stripMarkdown(item.content).slice(0, 200) + (item.content.length > 200 ? 'вЂ¦' : ''),
+        excerpt: stripMarkdown(item.content).slice(0, 200) + (item.content.length > 200 ? '…' : ''),
         html: markdownToHtml(item.content),
         categoryPath: item.category || item.pathSegments?.join('/') || 'wiki',
       }));
@@ -713,48 +760,56 @@ export function BlogSite() {
       setAboutMe(loadedAboutMe);
       setLegalNotice(loadedLegalNotice);
       setLoading(false);
-      
-      // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ, Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ
       setActivePost(prev => {
         if (!prev) return null;
         const updated = mapped.find(p => p.id === prev.id);
-        // Р В Р’В Р вЂ™Р’В Р В Р’В Р В РІР‚в„–Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ, Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ React Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС› Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В» Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ
         return updated ? { ...updated } : null;
       });
-      
-      // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРІвЂћвЂ“ wiki Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™, Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°
       setActiveWiki(prev => {
         if (!prev) return null;
         const updated = mappedWiki.find(w => w.id === prev.id);
-        // Р В Р’В Р вЂ™Р’В Р В Р’В Р В РІР‚в„–Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ, Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ React Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС› Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В» Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ
         return updated ? { ...updated } : null;
       });
-      
-      // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ, Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ
       setActiveProject(prev => {
         if (!prev) return null;
         const updated = loadedProjects.find(p => p.id === prev.id);
-        // Р В Р’В Р вЂ™Р’В Р В Р’В Р В РІР‚в„–Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљР’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ, Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ React Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС› Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В» Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ
         return updated ? { ...updated } : null;
       });
       
-      syncFromLocation(window.location.pathname, mapped, mappedWiki);
+      syncFromLocation(window.location.pathname + window.location.search, mapped, mappedWiki, loadedProjects);
     });
     return () => {
       mounted = false;
     };
-  }, [language]); // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРЎСџР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В¶Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°
+  }, [language, syncFromLocation]);
 
   useEffect(() => {
-    syncFromLocation(window.location.pathname, posts, wiki);
-  }, [posts, wiki]);
+    syncFromLocation(window.location.pathname + window.location.search, posts, wiki, projects);
+  }, [posts, wiki, projects, syncFromLocation]);
+
+  useEffect(() => {
+    if (activeSection !== 'search') return;
+
+    const timeout = window.setTimeout(() => {
+      const nextPath = globalSearchQuery.trim() ? routes.search(globalSearchQuery.trim()) : routes.search();
+      if (window.location.pathname + window.location.search !== nextPath) {
+        window.history.replaceState({}, '', nextPath);
+      }
+    }, 350);
+
+    return () => window.clearTimeout(timeout);
+  }, [activeSection, globalSearchQuery]);
 
   useEffect(() => {
     let mounted = true;
     loadAppEntries(language).then((loaded) => {
       if (!mounted) return;
       setApps(loaded);
+      const route = parsePath(window.location.pathname + window.location.search);
       setSelectedApp((prev) => {
+        if (route.appId) {
+          return loaded.find((app) => app.id === route.appId) ?? loaded[0] ?? null;
+        }
         if (prev) {
           const match = loaded.find((app) => app.id === prev.id);
           return match ?? loaded[0] ?? null;
@@ -778,8 +833,9 @@ export function BlogSite() {
     const unique = new Set<string>();
     posts.forEach((p) => p.tags?.forEach((tag) => unique.add(tag)));
     wiki.forEach((w) => w.tags?.forEach((tag) => unique.add(tag)));
+    projects.forEach((project) => project.tags?.forEach((tag) => unique.add(tag)));
     return Array.from(unique).sort();
-  }, [posts, wiki]);
+  }, [posts, wiki, projects]);
 
   const appsByCategory = useMemo(() => {
     const mapping: Record<AppCategoryId, AppEntry[]> = {
@@ -796,57 +852,8 @@ export function BlogSite() {
     });
     return mapping;
   }, [apps]);
-
-  // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРЎСџР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Wiki
-  const wikiCategoryTree = useMemo(() => {
-    interface CategoryNode {
-      name: string;
-      fullPath: string;
-      children: Map<string, CategoryNode>;
-      count: number;
-    }
-
-    const root = new Map<string, CategoryNode>();
-
-    wiki.forEach((w) => {
-      const segments = w.pathSegments || (w.categoryPath ? w.categoryPath.split('/') : []);
-      if (segments.length === 0) return;
-
-      let currentMap = root;
-      let currentPath = '';
-
-      segments.forEach((segment) => {
-        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
-        
-        if (!currentMap.has(segment)) {
-          currentMap.set(segment, {
-            name: segment,
-            fullPath: currentPath,
-            children: new Map(),
-            count: 0,
-          });
-        }
-
-        const node = currentMap.get(segment)!;
-        node.count++;
-        currentMap = node.children;
-      });
-    });
-
-    return root;
-  }, [wiki]);
-
-  const wikiCategories = useMemo(() => {
-    return ['All', ...Array.from(wikiCategoryTree.keys())];
-  }, [wikiCategoryTree]);
-
-  const wikiCategoryStats = useMemo(() => {
-    const counts: Record<string, number> = {};
-    wikiCategoryTree.forEach((node, key) => {
-      counts[key] = node.count;
-    });
-    return counts;
-  }, [wikiCategoryTree]);
+  const { tree: wikiCategoryTree, stats: wikiCategoryStats, categories: wikiCategories } = useWikiCategoryTree(wiki);
+  const tagCounts = useSiteTagCounts(posts, wiki, projects);
 
   const filtered = useMemo(() => {
     return posts.filter((post) => {
@@ -891,38 +898,19 @@ export function BlogSite() {
   const latestPosts = posts.slice(0, 3);
 
 
-  function syncFromLocation(pathname: string, postsList: BlogPostView[], wikiList: WikiView[]) {
-    const route = parsePath(pathname);
+  useEffect(() => {
+    const route = parsePath(window.location.pathname + window.location.search);
+    if (!route.newsId) return;
+    setActiveSection('news');
+    setActiveNews(newsItems.find((item) => item.id === route.newsId) ?? null);
+  }, [newsItems]);
 
-    setActivePost(null);
-    setActiveWiki(null);
-    setActiveNews(null);
-    setActiveSection(route.section);
-
-    if (route.newsId && newsItems.length > 0) {
-      const matchNews = newsItems.find((n) => n.id === route.newsId);
-      setActiveNews(matchNews ?? null);
-    }
-
-    if (route.wikiSlug) {
-      const matchWiki = wikiList.find(
-        (w) => w.relativePath?.replace(/\.md$/, '') === route.wikiSlug
-      );
-      if (matchWiki) {
-        setActiveSection('wiki');
-        setActiveWiki(matchWiki);
-      }
-      return;
-    }
-
-    if (route.postId) {
-      const maybePost = postsList.find((p) => p.id === route.postId);
-      if (maybePost) {
-        setActiveSection('home');
-        setActivePost(maybePost);
-      }
-    }
-  }
+  useEffect(() => {
+    const route = parsePath(window.location.pathname + window.location.search);
+    if (!route.appId) return;
+    setActiveSection('apps');
+    setSelectedApp(apps.find((app) => app.id === route.appId) ?? null);
+  }, [apps]);
 
   const handleOpenPost = (post: ArticleItem) => {
     const fullPost = posts.find((p) => p.id === post.id);
@@ -962,6 +950,87 @@ export function BlogSite() {
   };
 
 
+  const openSearchForQuery = (query: string) => {
+    setActivePost(null);
+    setActiveWiki(null);
+    setActiveNews(null);
+    setActiveProject(null);
+    setActiveSection('search');
+    setGlobalSearchQuery(query);
+    window.history.pushState({}, '', routes.search(query));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getGlobalTagCount = (tag: string) => tagCounts[tag] || 0;
+
+  const handleOpenSearchResult = (result: SearchResult) => {
+    const { item, kind } = result;
+
+    if (kind === 'articles') {
+      handleOpenPost(item as ArticleItem);
+      return;
+    }
+
+    if (kind === 'wiki') {
+      const wikiItem = wiki.find((entry) => entry.id === item.id) || (item as WikiView);
+      handleOpenWiki(wikiItem);
+      return;
+    }
+
+    if (kind === 'news') {
+      handleOpenNews(item as NewsItem);
+      return;
+    }
+
+    if (kind === 'projects') {
+      const project = projects.find((entry) => entry.id === item.id) || item;
+      setActiveProject(project);
+      setActivePost(null);
+      setActiveWiki(null);
+      setActiveNews(null);
+      setActiveSection('project');
+      window.history.pushState({}, '', routes.project(project.id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (kind === 'gallery') {
+      setSelectedPictureId(item.id);
+      setActivePost(null);
+      setActiveWiki(null);
+      setActiveNews(null);
+      setActiveProject(null);
+      setActiveSection('gallery');
+      window.history.pushState({}, '', routes.galleryItem(item.id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (kind === 'apps') {
+      const app = apps.find((entry) => entry.id === item.id);
+      setSelectedApp(app ?? null);
+      setActiveSection('apps');
+      window.history.pushState({}, '', routes.app(item.id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (kind === 'about') {
+      setMainAboutTab(item.id === 'legal-notice' ? 'legal' : 'about');
+      setActiveSection('about');
+      window.history.pushState({}, '', routes.about());
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (kind === 'resume') {
+      setActiveSection('cv');
+      window.history.pushState({}, '', routes.about());
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+
   const cv = loadCvLocale(language);
 
   return (
@@ -973,12 +1042,12 @@ export function BlogSite() {
         setTheme={setTheme}
         language={language}
         setLanguage={setLanguage}
-        themeOptions={themeOptions as any}
+        themeOptions={themeOptions}
         navLabels={ui.nav}
       />
 
       {activeSection === 'home' && (
-        <Hero key={heroKey} title={ui.heroTitle} subtitle={ui.heroSubtitle} />
+        <Hero key={heroKey} title={ui.heroTitle} subtitle={ui.heroSubtitle} theme={theme} />
       )}
 
       {activeSection === 'home' && !activePost && (
@@ -1047,8 +1116,6 @@ export function BlogSite() {
               </div>
             </section>
           )}
-
-          {/* Latest News Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРЎС™ vertical slice from src/content/news */}
           <NewsSection
             limit={3}
             onOpenNews={(item) => handleOpenNews(item as NewsItem)}
@@ -1061,7 +1128,7 @@ export function BlogSite() {
             onViewAll={() => {
               setActiveSection('about');
               setMainAboutTab('projects');
-              window.history.pushState({}, '', `${basePath}about/projects`);
+              window.history.pushState({}, '', routes.projects());
             }}
           />
 
@@ -1070,7 +1137,7 @@ export function BlogSite() {
             limit={4}
             onViewAll={() => {
               setActiveSection('gallery');
-              window.history.pushState({}, '', `${basePath}gallery`);
+              window.history.pushState({}, '', routes.gallery());
             }}
           />
 
@@ -1134,13 +1201,13 @@ export function BlogSite() {
           }}
           onBack={() => {
             setActivePost(null);
-            window.history.pushState({}, '', activeSection === 'blog' ? `blog` : basePath);
+            window.history.pushState({}, '', activeSection === 'blog' ? routes.blog() : routes.home());
           }}
           onTagClick={(tag) => {
             setActivePost(null);
             setActiveSection('search');
             setGlobalSearchQuery(tag);
-            window.history.pushState({}, '', `search`);
+            window.history.pushState({}, '', routes.search(tag));
           }}
           tagCounts={
             activePost.tags
@@ -1159,102 +1226,16 @@ export function BlogSite() {
 
       {/* Project Detail View */}
       {activeSection === 'project' && activeProject && (
-        <main className="pt-32 pb-24" key={`project-${activeProject.id}-${language}`}>
-          <div className="container mx-auto px-6">
-            <section className="max-w-4xl mx-auto">
-              <div className="glass rounded-3xl p-6 md:p-10 neu-sm animate-fade-in">
-                <button
-                  onClick={() => {
-                    setActiveProject(null);
-                    setActiveSection('about');
-                    setMainAboutTab('projects');
-                    window.history.pushState({}, '', `${basePath}about`);
-                  }}
-                  className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  {ui.back}
-                </button>
-
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                  <Briefcase className="w-4 h-4" />
-                  <span className="font-medium text-foreground">{ui.projectsTitle}</span>
-                  <ArrowRight className="w-4 h-4 opacity-60" />
-                  <span className="text-foreground">{activeProject.title}</span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
-                  {activeProject.date && (
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {activeProject.date}
-                    </span>
-                  )}
-                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                    {activeProject.category || 'Other'}
-                  </span>
-                </div>
-
-                <h2 className="text-3xl md:text-4xl font-bold mb-8">{activeProject.title}</h2>
-
-                {activeProject.preview && (
-                  <div className="mb-8 rounded-2xl overflow-hidden neu-sm">
-                    {activeProject.preview.endsWith('.webm') || activeProject.preview.endsWith('.mp4') ? (
-                      <video 
-                        src={activeProject.preview} 
-                        className="w-full h-auto"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                      />
-                    ) : (
-                      <img 
-                        src={activeProject.preview} 
-                        alt={activeProject.title}
-                        className="w-full h-auto"
-                      />
-                    )}
-                  </div>
-                )}
-
-                <div
-                  className="prose prose-lg max-w-none"
-                  dangerouslySetInnerHTML={{ __html: markdownToHtml(activeProject.content) }}
-                />
-
-                {activeProject.tags && activeProject.tags.length > 0 && (
-                  <div className="mt-8 flex flex-wrap items-center gap-3">
-                    <span className="text-muted-foreground font-medium">{ui.tags}:</span>
-                    {activeProject.tags.map((tag) => {
-                      const tagCount = posts.filter((p) => p.tags?.includes(tag)).length + 
-                                       wiki.filter((w) => w.tags?.includes(tag)).length +
-                                       projects.filter((pr) => pr.tags?.includes(tag)).length;
-                      return (
-                        <button
-                          key={tag}
-                          onClick={() => {
-                            setActiveProject(null);
-                            setActiveSection('search');
-                            setGlobalSearchQuery(tag);
-                            window.history.pushState({}, '', `${basePath}search`);
-                          }}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
-                        >
-                          <Tag className="w-3 h-3" />
-                          {tag}
-                          <span className="text-xs opacity-70">
-                            ({tagCount})
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
-        </main>
+        <ProjectDetailSection
+          ui={ui}
+          language={language}
+          activeProject={activeProject}
+          tagCounts={tagCounts}
+          setActiveProject={setActiveProject}
+          setActiveSection={setActiveSection}
+          setMainAboutTab={setMainAboutTab}
+          setGlobalSearchQuery={setGlobalSearchQuery}
+        />
       )}
 
       {activeSection === 'about' && (
@@ -1275,210 +1256,19 @@ export function BlogSite() {
           setActiveProject={setActiveProject}
           setActiveSection={setActiveSection}
           setGlobalSearchQuery={setGlobalSearchQuery}
-          basePath={basePath}
         />
       )}
 
       {activeSection === 'apps' && ui.apps && (
-        <section className="w-full px-6 py-12 space-y-8">
-          <div className="max-w-6xl mx-auto space-y-2">
-            <div className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-              {ui.apps.subtitle}
-            </div>
-            <h2 className="text-4xl font-bold">{ui.apps.title}</h2>
-            <p className="text-lg text-muted-foreground max-w-3xl">{ui.apps.selectPrompt}</p>
-          </div>
-
-          <div className="space-y-6">
-            {/* Iframe Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРІвЂћвЂ“ Р В Р’В Р В Р вЂ№Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р Р‹Р Р†Р вЂљРЎС™ Р В Р’В Р В Р вЂ№Р В Р’В Р В Р вЂ°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° */}
-            <div className="w-full">
-              <div className="glass rounded-3xl border border-border neu-sm overflow-hidden" data-iframe-container>
-                {selectedApp ? (
-                  <>
-                    <div className="relative w-full overflow-hidden bg-background" style={{ height: `${iframeHeight}px` }}>
-                      {selectedApp.url ? (
-                        <iframe
-                          title={selectedApp.iframeTitle ?? selectedApp.title}
-                          src={selectedApp.url}
-                          className="absolute inset-0 h-full w-full border-0"
-                          loading="lazy"
-                          sandbox="allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
-                          No preview available
-                        </div>
-                      )}
-                      <div className="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-10">
-                        {(selectedApp.badges || []).map((badge) => (
-                          <span
-                            key={badge}
-                            className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] rounded-full bg-primary text-primary-foreground shadow-lg"
-                          >
-                            {badge}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Resize handle */}
-                    <div 
-                      className="relative h-10 bg-gradient-to-b from-border/20 via-border/40 to-border/60 cursor-ns-resize hover:bg-primary/20 transition-all group select-none"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        setIsResizing(true);
-                      }}
-                      title="Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРЎСџР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ"
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="flex flex-col items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                          <div className="text-[10px] uppercase tracking-[0.3em] text-foreground font-bold">
-                            Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В° Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В·Р В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ў
-                          </div>
-                          <div className="flex gap-1.5">
-                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
-                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
-                            <div className="w-10 h-1 rounded-full bg-foreground/60"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center h-96 text-muted-foreground">Loading apps...</div>
-                )}
-              </div>
-            </div>
-
-            {/* Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В¶Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ - Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р В Р вЂ№Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС› Р В Р’В Р В Р вЂ№Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ */}
-            <div className="max-w-6xl mx-auto">
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,300px)_1fr]">
-                {/* Р В Р’В Р вЂ™Р’В Р В Р’В Р В РІР‚в„–Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° */}
-                <div className="space-y-4">
-                {APP_CATEGORIES.map((category) => {
-                  const items = appsByCategory[category] || [];
-                  const label = (ui.apps?.categories as any)?.[category] || category;
-                  return (
-                    <div key={category} className="glass rounded-2xl border border-border p-4 neu-sm space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-base font-bold">{label}</h3>
-                        <span className="text-[10px] text-muted-foreground uppercase tracking-[0.3em]">{items.length}</span>
-                      </div>
-                      {items.length === 0 ? (
-                        <p className="text-xs text-muted-foreground italic">Soon.</p>
-                      ) : (
-                        <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin' }}>
-                          {items.map((app) => {
-                            const isActive = selectedApp?.id === app.id;
-                            return (
-                              <button
-                                key={app.id}
-                                type="button"
-                                className={`w-full text-left rounded-xl border transition-all duration-200 px-3 py-2 ${
-                                  isActive
-                                    ? 'border-primary bg-primary/10 text-primary shadow-sm'
-                                    : 'border-border/60 bg-card/50 hover:border-primary/60 hover:bg-card'
-                                }`}
-                                onClick={() => setSelectedApp(app)}
-                              >
-                                <div className="font-semibold text-sm">{app.title}</div>
-                                <div className="text-[10px] text-muted-foreground mt-0.5">{app.date || 'Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРЎС™'}</div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В° */}
-              {selectedApp && (
-                <div className="glass rounded-3xl border border-border p-6 neu-sm space-y-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                      <h3 className="text-2xl font-bold text-foreground">{selectedApp.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {selectedApp.description || selectedApp.content || 'Description is missing.'}
-                      </p>
-                    </div>
-                    {selectedApp.url && (
-                      <button
-                        type="button"
-                        onClick={() => window.open(selectedApp.url, '_blank', 'noreferrer')}
-                        className="neu px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:scale-105 transition-transform whitespace-nowrap"
-                      >
-                        {language === 'ru' ? 'Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎвЂќР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В°' : 'Open Full'}
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-3 border-t border-border/50">
-                    <div className="space-y-1.5">
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
-                        {ui.apps?.dateLabel || 'Date'}
-                      </div>
-                      <div className="text-sm font-semibold text-foreground">{selectedApp.date || 'Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРЎС™'}</div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
-                        {ui.apps?.platformsLabel || 'Platforms'}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(!selectedApp.platforms || selectedApp.platforms.length === 0) ? (
-                          <span className="text-sm text-muted-foreground">Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРЎС™</span>
-                        ) : (
-                          selectedApp.platforms.map((platform) => (
-                            <span key={platform} className="px-2.5 py-1 rounded-lg bg-muted text-xs font-semibold">
-                              {platform}
-                            </span>
-                          ))
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
-                        {language === 'ru' ? 'Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В' : 'Technologies'}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(!selectedApp.technologies || selectedApp.technologies.length === 0) ? (
-                          <span className="text-sm text-muted-foreground">Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРЎС™</span>
-                        ) : (
-                          selectedApp.technologies.map((tech) => (
-                            <span key={tech} className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold">
-                              {tech}
-                            </span>
-                          ))
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
-                        {ui.apps?.badgesLabel || 'Tags'}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(!selectedApp.badges || selectedApp.badges.length === 0) ? (
-                          <span className="text-sm text-muted-foreground">Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В Р вЂ Р В РІР‚С™Р РЋРЎС™</span>
-                        ) : (
-                          selectedApp.badges.map((badge) => (
-                            <span key={badge} className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-semibold">
-                              {badge}
-                            </span>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              </div>
-            </div>
-          </div>
-        </section>
+        <AppsSection
+          appsByCategory={appsByCategory}
+          selectedApp={selectedApp}
+          setSelectedApp={setSelectedApp}
+          iframeHeight={iframeHeight}
+          setIsResizing={setIsResizing}
+          language={language}
+          ui={{ apps: ui.apps }}
+        />
       )}
 
       {activeSection === 'wiki' && (
@@ -1487,7 +1277,7 @@ export function BlogSite() {
           language={language}
           wikiCategories={wikiCategories}
           wikiCategoryStats={wikiCategoryStats}
-          wikiCategoryTree={wikiCategoryTree as any}
+          wikiCategoryTree={wikiCategoryTree}
           expandedWikiCategories={expandedWikiCategories}
           setExpandedWikiCategories={setExpandedWikiCategories}
           wikiCategory={wikiCategory}
@@ -1501,147 +1291,22 @@ export function BlogSite() {
           wikiPage={wikiPage}
           totalWikiPages={totalWikiPages}
           setWikiPage={setWikiPage}
-          getTagCount={(tag) =>
-            posts.filter((p) => p.tags?.includes(tag)).length +
-            wiki.filter((w) => w.tags?.includes(tag)).length +
-            projects.filter((pr) => pr.tags?.includes(tag)).length
-          }
+          getTagCount={getGlobalTagCount}
           handleOpenWiki={(item) => handleOpenWiki(item as WikiView)}
           setActiveSection={setActiveSection}
           setGlobalSearchQuery={setGlobalSearchQuery}
-          basePath={basePath}
         />
       )}
 
       {activeSection === 'cv' && (
-        <section className="max-w-6xl mx-auto px-6 py-12 space-y-8">
-          <h2 className="text-3xl font-bold">{ui.cvTitle}</h2>
-          <div className="flex flex-wrap gap-3 items-center">
-            {(['it', 'education', 'gamedev', 'rewards'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveCvTab(tab)}
-                className={`px-4 py-2 rounded-xl font-medium transition-all ${
-                  activeCvTab === tab ? 'neu-sm bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80 text-muted-foreground'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-            <div className="flex gap-2 ml-auto">
-              <button
-                onClick={() => window.print()}
-                className="neu px-4 py-2 rounded-xl bg-card hover:bg-primary/10 transition-colors flex items-center gap-2"
-              >
-                <span>Print</span>
-              </button>
-              <button
-                onClick={() => {
-                  const blob = new Blob([JSON.stringify(cv, null, 2)], { type: 'application/json' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'cv.json';
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }}
-                className="neu px-4 py-2 rounded-xl bg-primary text-primary-foreground flex items-center gap-2"
-              >
-                <span>Download JSON</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="glass rounded-3xl p-6 neu-sm fade-in-up">
-            <h3 className="text-2xl font-semibold mb-4 capitalize">{activeCvTab}</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {(cv?.[activeCvTab] || []).map((item: any, idx: number) => (
-                <div key={idx} className="bg-card rounded-2xl p-4 border border-border card-hover">
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-2">
-                    <span className="font-semibold text-foreground">{item.title}</span>
-                    {item.year && <span>{item.year}</span>}
-                    {item.subtitle && <span>Р В Р’В Р Р†Р вЂљРІвЂћСћР В РІР‚в„ўР вЂ™Р’В· {item.subtitle}</span>}
-                  </div>
-                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    {item.details?.map((d: string, di: number) => {
-                      // Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРЎСџР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В¦Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В  Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІР‚С”Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’Вµ ^category^tech^
-                      const parts: (string | JSX.Element)[] = [];
-                      let lastIndex = 0;
-                      const regex = /\^([^\^]+)\^([^\^]+)\^/g;
-                      let match;
-                      
-                      while ((match = regex.exec(d)) !== null) {
-                        // Р В Р’В Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р В Р вЂ№Р В Р’В Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРІР‚СњР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В
-                        if (match.index > lastIndex) {
-                          parts.push(d.substring(lastIndex, match.index));
-                        }
-                        
-                        const category = match[1];
-                        const tech = match[2];
-                        
-                        // Р В Р’В Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В РІР‚В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В¦Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РІР‚вЂњР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚Сљ Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В РЎС›Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В¶
-                        parts.push(
-                          <span
-                            key={`${di}-${match.index}`}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors mx-0.5"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveSection('search');
-                              setGlobalSearchQuery(tech);
-                              window.history.pushState({}, '', `${basePath}search`);
-                            }}
-                          >
-                            <span className="text-[10px] opacity-70">{category}</span>
-                            <span className="font-medium">{tech}</span>
-                          </span>
-                        );
-                        
-                        lastIndex = match.index + match[0].length;
-                      }
-                      
-                      // Р В Р’В Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р РЋРЎС™Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В±Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В»Р В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎС›Р В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В Р вЂ№Р В Р вЂ Р Р†Р вЂљРЎв„ўР вЂ™Р’В¬Р В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљР’ВР В Р’В Р вЂ™Р’В Р В Р вЂ Р Р†Р вЂљРЎвЂєР Р†Р вЂљРІР‚СљР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р’В Р В Р РЏ Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’ВµР В Р’В Р вЂ™Р’В Р В Р Р‹Р Р†Р вЂљРЎСљР В Р’В Р В Р вЂ№Р В Р’В Р РЋРІР‚СљР В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћ
-                      if (lastIndex < d.length) {
-                        parts.push(d.substring(lastIndex));
-                      }
-                      
-                      return <li key={di}>{parts.length > 0 ? parts : d}</li>;
-                    })}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {activeCvTab === 'gamedev' && (cv as any)?.prototypes && (
-            <div className="max-w-6xl mx-auto">
-              <h3 className="text-2xl font-bold mb-6">Game Prototypes</h3>
-              <div className="grid md:grid-cols-3 gap-6">
-                {(cv as any).prototypes.map((proto: any, index: number) => (
-                  <div
-                    key={proto.title || index}
-                    className="neu rounded-3xl overflow-hidden bg-card card-hover"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <div className="aspect-video bg-gradient-hero relative flex items-center justify-center">
-                      <Play className="w-10 h-10 text-primary-foreground/50" />
-                    </div>
-                    <div className="p-6">
-                      <h4 className="text-xl font-bold mb-2">{proto.title || 'Prototype'}</h4>
-                      <p className="text-muted-foreground text-sm mb-4">{proto.description || 'Demo'}</p>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {(proto.tech || []).map((t: string) => (
-                          <span key={t} className="px-2 py-1 text-xs font-medium rounded-lg bg-muted text-muted-foreground">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
+        <CvSection
+          cv={cv}
+          activeCvTab={activeCvTab}
+          setActiveCvTab={setActiveCvTab}
+          setActiveSection={setActiveSection}
+          setGlobalSearchQuery={setGlobalSearchQuery}
+          ui={{ cvTitle: ui.cvTitle }}
+        />
       )}
 
       {activeSection === 'gallery' && (
@@ -1663,282 +1328,37 @@ export function BlogSite() {
           setActiveSection={setActiveSection}
           setGlobalSearchQuery={setGlobalSearchQuery}
           handleOpenNews={handleOpenNews}
-          basePath={basePath}
         />
       )}
 
 
       {/* Search Page */}
       {activeSection === 'search' && (
-        <main className="pt-32 pb-24">
-          <div className="container mx-auto px-6">
-            {/* Header */}
-            <section className="max-w-4xl mx-auto text-center mb-16">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-                <span className="gradient-text">{ui.search.title}</span>
-              </h1>
-              <p className="text-xl text-muted-foreground animate-fade-in animation-delay-100">
-                {ui.search.subtitle}
-              </p>
-            </section>
-
-            {/* Search Input */}
-            <section className="max-w-4xl mx-auto mb-12">
-              <div className="glass rounded-3xl p-6 md:p-8 neu-sm fade-in-up">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder={ui.search.placeholder}
-                    value={globalSearchQuery}
-                    onChange={(e) => setGlobalSearchQuery(e.target.value)}
-                    className="w-full pl-14 pr-4 py-4 text-lg rounded-2xl bg-card border border-border focus:border-primary focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Search Results */}
-            <section className="max-w-6xl mx-auto">
-              {(() => {
-                const query = globalSearchQuery.toLowerCase().trim();
-                if (!query) {
-                  return (
-                    <div className="text-center py-16">
-                      <p className="text-muted-foreground text-lg">{ui.search.allContent}</p>
-                    </div>
-                  );
-                }
-
-                const blogResults = posts.filter(
-                  (p) =>
-                    p.title.toLowerCase().includes(query) ||
-                    p.excerpt.toLowerCase().includes(query) ||
-                    p.tags?.some((t) => t.toLowerCase().includes(query))
-                );
-                const wikiResults = wiki.filter(
-                  (w) =>
-                    w.title.toLowerCase().includes(query) ||
-                    w.excerpt.toLowerCase().includes(query)
-                );
-                const galleryResults = (() => {
-                  const tagMatches = galleryByTag.get(query);
-                  if (tagMatches && tagMatches.length > 0) {
-                    const matchIds = new Set(tagMatches.map((item) => item.id));
-                    return pictures.filter((pic) => matchIds.has(pic.id));
-                  }
-                  return pictures.filter(
-                    (pic) => pic.title.toLowerCase().includes(query)
-                  );
-                })();
-                const projectResults = (() => {
-                  const tagMatches = projectsByTag.get(query);
-                  if (tagMatches && tagMatches.length > 0) {
-                    const matchIds = new Set(tagMatches.map((p) => p.id));
-                    return projects.filter((p) => matchIds.has(p.id));
-                  }
-                  return projects.filter(
-                    (pr) =>
-                      pr.title.toLowerCase().includes(query) ||
-                      pr.content.toLowerCase().includes(query) ||
-                      pr.tags?.some((t) => t.toLowerCase().includes(query))
-                  );
-                })();
-
-                const totalResults = blogResults.length + wikiResults.length + galleryResults.length + projectResults.length;
-
-                if (totalResults === 0) {
-                  return (
-                    <div className="text-center py-16">
-                      <p className="text-muted-foreground text-lg">{ui.nothing}</p>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div className="space-y-12">
-                    <div className="text-center mb-8">
-                      <p className="text-muted-foreground">
-                        {totalResults} {ui.search.results}
-                      </p>
-                    </div>
-
-                    {/* Blog Results */}
-                    {blogResults.length > 0 && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                          <BookOpen className="w-6 h-6" />
-                          {ui.nav.blog} ({blogResults.length})
-                        </h2>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {blogResults.map((post) => (
-                            <article
-                              key={post.id}
-                              className="neu rounded-2xl overflow-hidden bg-card card-hover cursor-pointer"
-                              onClick={() => {
-                                setActivePost(post);
-                                setActiveSection('blog');
-                                window.history.pushState({}, '', `${basePath}blog/${post.id}.md`);
-                              }}
-                            >
-                              <div className="aspect-video bg-gradient-hero relative">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <BookOpen className="w-12 h-12 text-primary-foreground/50" />
-                                </div>
-                              </div>
-                              <div className="p-4">
-                                <h3 className="text-lg font-bold mb-2">{post.title}</h3>
-                                <p className="text-sm text-muted-foreground line-clamp-2">{post.excerpt}</p>
-                              </div>
-                            </article>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Wiki Results */}
-                    {wikiResults.length > 0 && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                          <FileText className="w-6 h-6" />
-                          {ui.nav.wiki} ({wikiResults.length})
-                        </h2>
-                        <div className="grid md:grid-cols-2 gap-6">
-                          {wikiResults.map((item) => (
-                            <article
-                              key={item.relativePath}
-                              className="glass rounded-2xl p-4 neu-sm hover:cursor-pointer hover:-translate-y-1 transition-transform"
-                              onClick={() => {
-                                setActiveWiki(item);
-                                setActiveSection('wiki');
-                                window.history.pushState({}, '', `${basePath}wiki/${item.relativePath!.replace(/\.md$/, '')}`);
-                              }}
-                            >
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                                <FileText className="w-4 h-4" />
-                                <span>{item.categoryPath || 'wiki'}</span>
-                              </div>
-                              <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                              <p className="text-sm text-muted-foreground line-clamp-2">{item.excerpt}</p>
-                            </article>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Gallery Results */}
-                    {galleryResults.length > 0 && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                          <ImageIcon className="w-6 h-6" />
-                          {ui.nav.gallery} ({galleryResults.length})
-                        </h2>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          {galleryResults.map((pic) => (
-                            <button
-                              key={pic.id}
-                              className="relative overflow-hidden rounded-xl neu card-hover aspect-square"
-                              onClick={() => {
-                                setSelectedPictureId(pic.id);
-                                setActiveSection('gallery');
-                                window.history.pushState({}, '', `${basePath}gallery`);
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                              }}
-                            >
-                              <img src={pic.thumbnailPath || pic.imagePath} alt={pic.title} className="w-full h-full object-cover" />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Project Results */}
-                    {projectResults.length > 0 && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                          <Briefcase className="w-6 h-6" />
-                          {ui.projectsTitle} ({projectResults.length})
-                        </h2>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {projectResults.map((project) => (
-                            <article
-                              key={project.id}
-                              className="neu rounded-2xl overflow-hidden bg-card card-hover cursor-pointer"
-                              onClick={() => {
-                                setActiveProject(project);
-                                setActiveSection('project');
-                                window.history.pushState({}, '', `/site/about/projects/${project.id}`);
-                              }}
-                            >
-                              <div className="aspect-video bg-gradient-hero relative overflow-hidden">
-                                {project.preview ? (
-                                  project.preview.endsWith('.webm') || project.preview.endsWith('.mp4') ? (
-                                    <video 
-                                      src={project.preview} 
-                                      className="w-full h-full object-cover"
-                                      autoPlay
-                                      loop
-                                      muted
-                                      playsInline
-                                    />
-                                  ) : (
-                                    <img 
-                                      src={project.preview} 
-                                      alt={project.title}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  )
-                                ) : (
-                                  <div className="w-full h-full bg-gradient-hero flex items-center justify-center">
-                                    <Briefcase className="w-10 h-10 text-primary-foreground/50" />
-                                  </div>
-                                )}
-                              </div>
-                              <div className="p-6">
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                                  <span className="px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                                    {project.category}
-                                  </span>
-                                  {project.date && <span>Р В Р’В Р Р†Р вЂљРІвЂћСћР В РІР‚в„ўР вЂ™Р’В· {project.date}</span>}
-                                </div>
-                                <h3 className="text-xl font-bold mb-2 text-foreground">{project.title}</h3>
-                                <p className="text-muted-foreground text-sm line-clamp-3">
-                                  {stripMarkdown(project.content).slice(0, 150)}...
-                                </p>
-                              </div>
-                            </article>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-            </section>
-
-            {/* Tags Cloud */}
-            <section className="max-w-6xl mx-auto mt-24">
-              <div className="glass rounded-3xl p-8 neu-sm">
-                <h2 className="text-2xl font-bold mb-6 text-center">{ui.tags}</h2>
-                <div className="flex flex-wrap justify-center gap-3">
-                  {allTags.map((tag) => (
-                    <button
-                      key={tag}
-                      onClick={() => setGlobalSearchQuery(tag)}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-colors text-sm font-medium"
-                    >
-                      <Tag className="w-3 h-3" />
-                      {tag}
-                      <span className="text-xs opacity-70">
-                        ({posts.filter((p) => p.tags?.includes(tag)).length + wiki.filter((w) => w.tags?.includes(tag)).length})
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-          </div>
-        </main>
+        <SearchSection
+          labels={{
+            title: ui.search.title,
+            subtitle: ui.search.subtitle,
+            placeholder: ui.search.placeholder,
+            allContent: ui.search.allContent,
+            results: ui.search.results,
+            nothing: ui.nothing,
+            loading: ui.loading,
+            tags: ui.tags,
+            blog: ui.nav.blog,
+            wiki: ui.nav.wiki,
+            news: ui.nav.news,
+            gallery: ui.nav.gallery,
+            projects: ui.projectsTitle,
+          }}
+          query={globalSearchQuery}
+          setQuery={setGlobalSearchQuery}
+          results={globalSearchResults}
+          loading={globalSearchLoading}
+          allTags={allTags}
+          getTagCount={getGlobalTagCount}
+          onTagClick={openSearchForQuery}
+          onOpenResult={handleOpenSearchResult}
+        />
       )}
 
       <Footer />

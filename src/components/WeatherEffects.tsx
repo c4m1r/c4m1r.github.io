@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useWeather, type WeatherEffect } from '../contexts/WeatherContext';
+import { useWeather } from '../contexts/useWeather';
+import { type WeatherEffect } from '../contexts/weatherTypes';
 
 interface Particle {
   x: number;

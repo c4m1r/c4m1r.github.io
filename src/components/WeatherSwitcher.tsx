@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useWeather } from '../contexts/WeatherContext';
+import { useWeather } from '../contexts/useWeather';
 import { Cloud } from 'lucide-react';
 
 export function WeatherSwitcher() {

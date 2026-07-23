@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { type NewsItem } from './news.types';
 import { loadNewsItems } from './news.loader';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 
 /**
  * Hook to retrieve and reactively update news items based on the active UI language.

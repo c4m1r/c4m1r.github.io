@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { loadAllProjects } from './projects.loader';
 import { type Project } from './projects.types';
 

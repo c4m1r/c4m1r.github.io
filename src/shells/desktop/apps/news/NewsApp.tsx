@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNews } from '../../../../domain/news/useNews';
 import { type NewsItem } from '../../../../domain/news/news.types';
 import { markdownToHtml } from '../../../../domain/content/markdown';
-import { useApp } from '../../../../contexts/AppContext';
+import { useApp } from '../../../../contexts/useApp';
 
 export function NewsApp() {
   const { news, loading } = useNews();

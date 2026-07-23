@@ -1,5 +1,5 @@
 import { Language } from '../../i18n/translations';
-import { ThemeId } from '../../contexts/AppContext';
+import { type ThemeId } from '../../contexts/appContextTypes';
 import { ContentKind } from '../../domain/content/types';
 
 export interface DesktopAppDefinition {
@@ -8,7 +8,7 @@ export interface DesktopAppDefinition {
   iconKey?: string; // key of ThemeAssets or standard asset key
   customIcon?: string; // direct path to import
   contentKinds?: ContentKind[];
-  component: React.ComponentType<any>;
+  component: React.ComponentType<Record<string, unknown>>;
   defaultWindow: {
     width: number;
     height: number;

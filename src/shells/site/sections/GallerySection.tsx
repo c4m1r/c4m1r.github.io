@@ -9,7 +9,7 @@
 import { Image as ImageIcon, ArrowRight, ZoomIn } from 'lucide-react';
 import { useState } from 'react';
 import { useGallery } from '../../../domain/gallery/useGallery';
-import { useApp } from '../../../contexts/AppContext';
+import { useApp } from '../../../contexts/useApp';
 import { type GalleryItem } from '../../../domain/gallery/gallery.types';
 
 interface GallerySectionProps {

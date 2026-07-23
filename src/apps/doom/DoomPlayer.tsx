@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { DoomVariantId, doomVariantMap } from './config';
 
 interface DoomPlayerProps {
@@ -9,7 +9,7 @@ interface DoomPlayerProps {
 export function DoomPlayer({ variantId }: DoomPlayerProps) {
   const { language } = useApp();
   const variant = doomVariantMap[variantId];
-  const builds = variant?.builds ?? [];
+  const builds = useMemo(() => variant?.builds ?? [], [variant]);
   const [activeBuildId, setActiveBuildId] = useState(builds[0]?.id ?? 'webgl');
 
   useEffect(() => {

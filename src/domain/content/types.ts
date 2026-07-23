@@ -13,8 +13,13 @@ export interface ContentDisplay {
 }
 
 export interface ContentRouteInfo {
+  /** Deprecated alias retained for existing consumers while loaders migrate to sitePath. */
   path?: string;
+  /** Browser canonical path for the site shell only. */
+  sitePath?: string;
+  /** Internal desktop/app pseudo URL only; never used as a browser route. */
   osUri?: string;
+  /** Desktop appRegistry id used to open this content in an OS shell. */
   appId?: string;
 }
 
@@ -38,7 +43,7 @@ export interface BaseContentItem {
   related?: string[];
 }
 
-export interface ContentItem extends BaseContentItem {}
+export type ContentItem = BaseContentItem;
 
 export interface ContentRelation {
   sourceId: string;

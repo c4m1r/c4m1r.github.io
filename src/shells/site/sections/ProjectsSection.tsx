@@ -8,7 +8,7 @@
 
 import { Briefcase, ArrowRight, Tag } from 'lucide-react';
 import { useProjects } from '../../../domain/projects/useProjects';
-import { useApp } from '../../../contexts/AppContext';
+import { useApp } from '../../../contexts/useApp';
 import { type Project } from '../../../domain/projects/projects.types';
 
 interface ProjectsSectionProps {
@@ -26,6 +26,10 @@ const CATEGORY_EMOJI: Record<string, string> = {
   Mobile: '📱',
   Other: '📁',
 };
+
+function isVideoPreview(preview: string): boolean {
+  return /\.(webm|mp4)(?:[?#].*)?$/i.test(preview);
+}
 
 function categoryEmoji(cat?: string): string {
   if (!cat) return '📁';
@@ -103,12 +107,23 @@ export function ProjectsSection({ limit = 6, onViewAll }: ProjectsSectionProps) 
             {/* Preview */}
             {project.preview && (
               <div className="w-full h-36 rounded-xl overflow-hidden bg-muted mb-1">
-                <img
-                  src={project.preview}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
+                {isVideoPreview(project.preview) ? (
+                  <video
+                    src={project.preview}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                ) : (
+                  <img
+                    src={project.preview}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )}
               </div>
             )}
 
@@ -133,7 +148,7 @@ export function ProjectsSection({ limit = 6, onViewAll }: ProjectsSectionProps) 
               <p className="text-muted-foreground line-clamp-2 text-sm flex-1">
                 {project.content
                   .replace(/<!--.*?-->/gs, '')
-                  .replace(/[#*`>_~\-]/g, '')
+                  .replace(/[#*`>_~-]/g, '')
                   .trim()
                   .slice(0, 180)}
               </p>

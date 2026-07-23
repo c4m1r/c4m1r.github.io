@@ -3,7 +3,7 @@
  * Централизованная система управления темами
  */
 
-import type { ThemeId } from '../contexts/AppContext';
+import type { ThemeId } from '../contexts/appContextTypes';
 
 // Импортируем обои напрямую через Vite
 import winxpBliss from '../content/pictures/wallpapers/winxp-bliss.jpg';

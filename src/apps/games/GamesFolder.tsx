@@ -1,4 +1,4 @@
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import { doomVariants, DoomVariantId } from '../doom/config';
 
 interface GamesFolderProps {

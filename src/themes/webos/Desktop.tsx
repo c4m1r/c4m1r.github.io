@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useApp } from '../../contexts/AppContext';
-import type { ThemeId } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
+import { type ThemeId } from '../../contexts/appContextTypes';
 import { translations } from '../../i18n/translations';
-import { loadMarkdownContent } from '../../utils/contentLoader';
+import { loadMarkdownContent } from '../../lib/loadMarkdownContent';
 import { StartMenu } from './StartMenu';
 import { Window } from '../../apps/desktop/Window';
 import { ErrorBox } from './ErrorBox';
@@ -22,13 +22,27 @@ import { LangSwitcher } from '../../apps/langs/LangSwitcher';
 import { MyCV } from '../../apps/mycv/MyCV';
 import { appRegistry } from '../../shells/desktop/appRegistry';
 import { desktopShortcuts } from '../../shells/desktop/shortcutsRegistry';
+import {
+  DESKTOP_PATH,
+  MINESWEEPER_WINDOW_ID,
+  XP_FAMILY_THEMES,
+} from '../../shells/desktop/desktopConstants';
+import { type DesktopIcon, type DesktopSelectionBox, type DesktopShellProps } from '../../shells/desktop/desktopTypes';
+import { getStoredCustomWallpaper } from '../../shells/desktop/runtime/desktopStorage';
+import { findAppDefinition } from '../../shells/desktop/runtime/appLaunch';
+import { getRelativeRect, isIconInsideSelectionBox } from '../../shells/desktop/runtime/iconHitTesting';
+import { getDesktopIconZIndex } from '../../shells/desktop/runtime/zIndex';
+import { getDesktopOsClassName, isThemeInFamily } from '../../shells/desktop/runtime/shortcutFilters';
+import { createSelectionBox, getViewportSize } from '../../shells/desktop/runtime/windowGeometry';
 import { THEME_ASSETS } from './themeAssets';
 import { THEME_STYLES } from './themeStyles';
+import { AsciiAurora } from '../../components/effects';
 
-const DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
-const MINESWEEPER_WINDOW_ID = 'app:minesweeper';
-
-const XP_FAMILY_THEMES: ThemeId[] = ['win-xp', 'webos'];
+/**
+ * Legacy desktop implementation. Do not add new runtime/window-manager logic
+ * here; add new runtime types, constants, and pure helpers under
+ * src/shells/desktop instead, then move stateful hooks gradually.
+ */
 
 const joinWindowsPath = (parent: string, child: string) => {
   if (!parent || parent === 'My Computer') {
@@ -43,29 +57,11 @@ const joinWindowsPath = (parent: string, child: string) => {
   return `${parent}\\${child}`;
 };
 
-interface DesktopIcon {
-  id: string;
-  icon: React.ReactNode;
-  label: string;
-  type: 'folder' | 'system';
-  x?: number;
-  y?: number;
-}
-
-interface DesktopProps {
-  onSystemCommand?: (command: 'logoff' | 'shutdown') => void;
-}
-
-export function Desktop(props?: DesktopProps) {
+export function Desktop(props?: DesktopShellProps) {
   const { onSystemCommand } = props ?? {};
   const { language, theme } = useApp();
   const t = translations[language].xp;
-  const getViewport = () => ({
-    width: typeof window !== 'undefined' ? window.innerWidth : 1280,
-    height: typeof window !== 'undefined' ? window.innerHeight : 720,
-  });
-
-  const [viewport, setViewport] = useState(getViewport());
+  const [viewport, setViewport] = useState(getViewportSize);
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [time, setTime] = useState(new Date());
   const [iconPositions, setIconPositions] = useState<Record<string, { x: number; y: number }>>({});
@@ -89,12 +85,7 @@ export function Desktop(props?: DesktopProps) {
   const [selectedIcons, setSelectedIcons] = useState<string[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
 
-  const [customWallpaper, setCustomWallpaper] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('desktop-custom-wallpaper');
-    }
-    return null;
-  });
+  const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
 
   useEffect(() => {
     const handleWallpaperChange = (e: Event) => {
@@ -104,7 +95,7 @@ export function Desktop(props?: DesktopProps) {
     window.addEventListener('wallpaper-changed', handleWallpaperChange);
     return () => window.removeEventListener('wallpaper-changed', handleWallpaperChange);
   }, []);
-  const [selectionBox, setSelectionBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+  const [selectionBox, setSelectionBox] = useState<DesktopSelectionBox | null>(null);
   const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
   const trayRef = useRef<HTMLDivElement | null>(null);
   const {
@@ -131,20 +122,8 @@ export function Desktop(props?: DesktopProps) {
     fallbackAssets.richTextIcon ?? fallbackAssets.notepadIcon ?? fallbackAssets.folderIcon
   );
   const themeStyles = THEME_STYLES[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_STYLES.webos;
-  const isXpFamily = XP_FAMILY_THEMES.includes(themeKey);
-
-  // Map ThemeId values to os-* CSS class suffixes defined in src/styles/os/
-  const OS_CLASS_MAP: Record<string, string> = {
-    'win-xp': 'winxp',
-    'webos':  'winxp',
-    'win-98': 'classic',
-    'win7':   'win7',
-    'win10':  'win7',
-    'win11':  'win7',
-    'ubuntu': 'ubuntu',
-    'arch':   'ubuntu',
-  };
-  const osClassName = OS_CLASS_MAP[themeKey] ?? 'classic';
+  const isXpFamily = isThemeInFamily(themeKey, XP_FAMILY_THEMES);
+  const osClassName = getDesktopOsClassName(themeKey);
   const startupSound = resolveAssetPath(themeAssets.startupSound, fallbackAssets.startupSound);
   const shutdownSound = resolveAssetPath(themeAssets.shutdownSound, fallbackAssets.shutdownSound);
   const logoffSound = resolveAssetPath(themeAssets.logoffSound, fallbackAssets.logoffSound);
@@ -155,7 +134,7 @@ export function Desktop(props?: DesktopProps) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const handleResize = () => setViewport({ width: window.innerWidth, height: window.innerHeight });
+    const handleResize = () => setViewport(getViewportSize());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -420,7 +399,7 @@ export function Desktop(props?: DesktopProps) {
   );
 
   const applicationShortcuts: DesktopIcon[] = desktopShortcuts.map((appId) => {
-    const app = appRegistry[appId];
+    const app = findAppDefinition(appRegistry, appId);
     if (!app) return null;
 
     let iconSrc = '';
@@ -542,29 +521,15 @@ export function Desktop(props?: DesktopProps) {
     (box: { left: number; top: number; width: number; height: number }) => {
       if (!desktopRef.current) return;
       const desktopRect = desktopRef.current.getBoundingClientRect();
-      const selectionLeft = box.left;
-      const selectionTop = box.top;
-      const selectionRight = selectionLeft + box.width;
-      const selectionBottom = selectionTop + box.height;
 
       const newlySelected: string[] = [];
 
       desktopIcons.forEach((icon) => {
         const node = iconRefs.current[icon.id];
         if (!node) return;
-        const nodeRect = node.getBoundingClientRect();
-        const iconLeft = nodeRect.left - desktopRect.left;
-        const iconTop = nodeRect.top - desktopRect.top;
-        const iconRight = nodeRect.right - desktopRect.left;
-        const iconBottom = nodeRect.bottom - desktopRect.top;
+        const iconRect = getRelativeRect(node.getBoundingClientRect(), desktopRect);
 
-        const intersects =
-          iconLeft < selectionRight &&
-          iconRight > selectionLeft &&
-          iconTop < selectionBottom &&
-          iconBottom > selectionTop;
-
-        if (intersects) {
+        if (isIconInsideSelectionBox(iconRect, box)) {
           newlySelected.push(icon.id);
         }
       });
@@ -588,15 +553,7 @@ export function Desktop(props?: DesktopProps) {
       const currentX = event.clientX - desktopRect.left;
       const currentY = event.clientY - desktopRect.top;
       const startPoint = selectionStartRef.current!;
-      const startX = startPoint.x;
-      const startY = startPoint.y;
-
-      const left = Math.min(startX, currentX);
-      const top = Math.min(startY, currentY);
-      const width = Math.abs(currentX - startX);
-      const height = Math.abs(currentY - startY);
-
-      const box = { left, top, width, height };
+      const box = createSelectionBox(startPoint, { x: currentX, y: currentY });
       setSelectionBox(box);
       updateSelectionFromBox(box);
     };
@@ -743,7 +700,6 @@ export function Desktop(props?: DesktopProps) {
     playLaunchSound();
   }, [
     fallbackAssets.gamesFolderIcon,
-    fallbackAssets.gamesIcon,
     gamesLabel,
     openDoomVariant,
     openWindow,
@@ -764,7 +720,7 @@ export function Desktop(props?: DesktopProps) {
   }, [openWindow, themeAssets.folderIcon, fallbackAssets.folderIcon]);
 
   const launchApp = useCallback((appId: string) => {
-    const app = appRegistry[appId];
+    const app = findAppDefinition(appRegistry, appId);
 
     if (!app) {
       switch (appId) {
@@ -1079,6 +1035,17 @@ export function Desktop(props?: DesktopProps) {
         });
       }}
     >
+      {theme === 'ubuntu' && (
+        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+          <AsciiAurora variant="ubuntu" opacity={0.14} columns={110} rows={36} frameInterval={110} speed={0.52} />
+        </div>
+      )}
+      {theme === 'webos' && (
+        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+          <AsciiAurora variant="webos" opacity={0.12} columns={104} rows={34} frameInterval={105} speed={0.62} />
+        </div>
+      )}
+
       {desktopIcons.map((icon) => (
         <div
           key={icon.id}
@@ -1087,7 +1054,7 @@ export function Desktop(props?: DesktopProps) {
             left: `${icon.x}px`,
             top: `${icon.y}px`,
             width: '96px',
-            zIndex: draggingIcon === icon.id ? 1000 : 1,
+            zIndex: getDesktopIconZIndex(icon.id, draggingIcon),
           }}
           ref={(element) => {
             iconRefs.current[icon.id] = element;

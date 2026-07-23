@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useApp } from '../../contexts/AppContext';
+import { useApp } from '../../contexts/useApp';
 import type { Language } from '../../i18n/translations';
 import flagEn from './flag-en.webp';
 import flagFr from './flag-fr.webp';

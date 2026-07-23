@@ -1,0 +1,56 @@
+/* Resume / CV App Layout & Styling Defaults */
+/* ────────────────────────────────────────────────────────────── */
+.cv-app {
+  background-color: var(--os-window-bg);
+  color: var(--os-input-color, #1b1b1b);
+  font-family: var(--os-font);
+}
+
+.cv-app__header {
+  border-bottom: var(--os-panel-border, 1px solid #bcbcbc);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.cv-app__avatar-wrapper {
+  background-color: #000;
+  border: 2px solid var(--os-window-border-color, #bcbcbc);
+}
+
+.cv-app__role {
+  color: var(--os-list-item-selected-bg, #2b4ca3);
+}
+
+.cv-app__tagline {
+  opacity: 0.7;
+}
+
+.cv-app__tab-button {
+  background: var(--os-button-bg);
+  color: var(--os-button-color);
+  border: var(--os-button-border);
+  border-radius: var(--os-button-radius);
+  cursor: pointer;
+}
+
+.cv-app__tab-button.selected {
+  background: var(--os-list-item-selected-bg);
+  color: var(--os-list-item-selected-color);
+  border-color: var(--os-list-item-selected-bg);
+}
+
+.cv-app__entry {
+  background: var(--os-panel-bg);
+  border: var(--os-panel-border);
+}
+
+.cv-app__entry-title {
+  color: var(--os-list-item-selected-bg, #0a3c97);
+}
+
+.cv-app__entry-subtitle {
+  opacity: 0.7;
+}
+
+.cv-app__entry-year {
+  opacity: 0.9;
+}

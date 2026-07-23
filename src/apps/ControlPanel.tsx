@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexts/useApp';
 import type { ThemeAssetId } from '../themes/webos/themeAssets';
 import { THEME_ASSETS } from '../themes/webos/themeAssets';
 import { useGallery } from '../domain/gallery/useGallery';

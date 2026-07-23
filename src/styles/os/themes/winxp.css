@@ -123,46 +123,46 @@
 
 /* Minimize button */
 .os-winxp .xp-titlebar__button--minimize {
-  background-image: url(../../themes/winxp/assets/icons/minimise.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/minimise.png) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
 }
 .os-winxp .xp-titlebar__button--minimize:hover {
-  background-image: url(../../themes/winxp/assets/icons/minimise_hover.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/minimise_hover.png) !important;
 }
 
 /* Maximize button */
 .os-winxp .xp-titlebar__button--maximize {
-  background-image: url(../../themes/winxp/assets/icons/maximise.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/maximise.png) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
 }
 .os-winxp .xp-titlebar__button--maximize:hover {
-  background-image: url(../../themes/winxp/assets/icons/maximise_hover.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/maximise_hover.png) !important;
 }
 
 /* Restore button */
 .os-winxp .xp-titlebar__button--restore {
-  background-image: url(../../themes/winxp/assets/icons/restore.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/Restore.png) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
 }
 .os-winxp .xp-titlebar__button--restore:hover {
-  background-image: url(../../themes/winxp/assets/icons/restore_hover.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/Restore.png) !important;
 }
 
 /* Close button (Red) */
 .os-winxp .xp-titlebar__button--close {
-  background-image: url(../../themes/winxp/assets/icons/close.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/close.png) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
 }
 .os-winxp .xp-titlebar__button--close:hover {
-  background-image: url(../../themes/winxp/assets/icons/close_hover.png) !important;
+  background-image: url(../../../themes/winxp/assets/icons/close_hover.png) !important;
 }
 
 /* 3. Standard Buttons */

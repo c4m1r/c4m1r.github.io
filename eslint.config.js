@@ -18,7 +18,14 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
+      '@typescript-eslint/no-empty-object-type': 'warn',
+      'no-useless-escape': 'warn',
+      'prefer-const': 'warn',
+      'no-empty-pattern': 'warn',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

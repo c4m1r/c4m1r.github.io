@@ -8,13 +8,14 @@
 
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useNews } from '../../../domain/news/useNews';
-import { useApp } from '../../../contexts/AppContext';
+import { type NewsItem } from '../../../domain/news/news.types';
+import { useApp } from '../../../contexts/useApp';
 
 interface NewsSectionProps {
   /** Max items to show. Default 3. */
   limit?: number;
   /** Callback when user clicks on a news card */
-  onOpenNews?: (item: any) => void;
+  onOpenNews?: (item: NewsItem) => void;
   /** Callback when user clicks "View All". Optional. */
   onViewAll?: () => void;
 }
@@ -80,7 +81,7 @@ export function NewsSection({ limit = 3, onOpenNews, onViewAll }: NewsSectionPro
 
           // Render a short excerpt — first paragraph of content
           const excerptLength = 220;
-          const plainText = item.content.replace(/<!--.*?-->/gs, '').replace(/[#*`>_~\-]/g, '').trim();
+          const plainText = item.content.replace(/<!--.*?-->/gs, '').replace(/[#*`>_~-]/g, '').trim();
           const excerpt =
             plainText.slice(0, excerptLength) +
             (plainText.length > excerptLength ? '…' : '');

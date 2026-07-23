@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { ThemeId } from '../../contexts/AppContext';
+import type { ThemeId } from '../../contexts/appContextTypes';
 
 type OSState = 'boot' | 'login' | 'welcome' | 'desktop' | 'logoff' | 'shutdown';
 
