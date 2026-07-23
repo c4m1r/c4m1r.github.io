@@ -70,3 +70,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     </AppContext.Provider>
   );
 }
+
+// Compatibility export for older imports; implementation lives in ./useApp and reads appContextCore.AppContext.
+// eslint-disable-next-line react-refresh/only-export-components
+export { useApp } from './useApp';
+export type { AppMode, ThemeId, AppContextType } from './appContextTypes';
