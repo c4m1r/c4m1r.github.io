@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useState, ReactNode, useEffect } from 'react';
 import { Language, detectLanguage } from '../i18n/translations';
 import { siteUrlConfig } from '../shells/site/siteUrlConfig';
 

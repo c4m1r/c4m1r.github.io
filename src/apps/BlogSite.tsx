@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Grid3x3,
+  ArrowLeft,
   ArrowRight,
   BookOpen,
   Calendar,
   Image as ImageIcon,
+  Tag,
   User,
   FileText,
+  Briefcase,
+  Play,
 } from 'lucide-react';
 import {
   type AppCategoryId,
@@ -56,6 +60,8 @@ interface WikiView extends ContentItem {
   categoryPath: string;
 }
 
+
+const APP_CATEGORIES: AppCategoryId[] = ['ready', 'prototype', 'webos-emulation'];
 
 type UiText = {
   nav: Record<TranslationSectionNav, string> & { legal: string };
@@ -938,48 +944,6 @@ export function BlogSite() {
 
   const latestPosts = posts.slice(0, 3);
 
-
-  function syncFromLocation(pathname: string, postsList: BlogPostView[], wikiList: WikiView[], projectList = projects) {
-    const route = parsePath(pathname);
-
-    setActivePost(null);
-    setActiveWiki(null);
-    setActiveNews(null);
-    setActiveProject(null);
-    setActiveSection(route.section);
-
-    if (route.newsId && newsItems.length > 0) {
-      const matchNews = newsItems.find((n) => n.id === route.newsId);
-      setActiveNews(matchNews ?? null);
-    }
-
-    if (route.searchQuery) {
-      setGlobalSearchQuery(route.searchQuery);
-    }
-
-    if (route.projectId) {
-      const matchProject = projectList.find((p) => p.id === route.projectId);
-      if (matchProject) {
-        setActiveSection('project');
-        setActiveProject(matchProject);
-      }
-      return;
-    }
-
-    if (route.galleryItemId) {
-      setSelectedPictureId(route.galleryItemId);
-    }
-
-    if (route.wikiSlug) {
-      const matchWiki = wikiList.find(
-        (w) => w.relativePath?.replace(/\.md$/, '') === route.wikiSlug
-      );
-      if (matchWiki) {
-        setActiveSection('wiki');
-        setActiveWiki(matchWiki);
-      }
-      return;
-    }
 
   useEffect(() => {
     const route = parsePath(window.location.pathname + window.location.search);
