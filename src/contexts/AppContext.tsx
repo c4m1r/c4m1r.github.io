@@ -54,7 +54,7 @@ const getInitialMode = (): Mode => {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<Mode>(getInitialMode);
+  const [mode, setMode] = useState<AppMode>(getInitialMode);
   const [language, setLanguage] = useState<Language>(getInitialLanguage);
   const [theme, setTheme] = useState<ThemeId>('win-xp');
 
