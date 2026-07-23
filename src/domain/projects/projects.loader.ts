@@ -1,12 +1,12 @@
-import { parseFrontmatter } from '../content/frontmatter';
-import { resolveImagePath } from '../assets/assetResolver';
-import { type ContentItem } from '../content/types';
+import { loadProjects, loadAboutProjects } from '../../utils/contentLoader';
 import { type Project } from './projects.types';
 import { routes } from '../../shells/site/siteRoutes';
 
 /**
  * Loads all project content items (standard + about projects) and
  * normalises them into domain Project objects with kind: 'projects' and route metadata.
+ *
+ * Delegates to contentLoader functions to preserve existing parsing logic.
  */
 export async function loadAllProjects(language: string = 'en'): Promise<Project[]> {
   const [standard, about] = await Promise.all([

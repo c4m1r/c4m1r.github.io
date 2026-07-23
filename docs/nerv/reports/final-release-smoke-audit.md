@@ -126,3 +126,10 @@ Top 10 media/assets from `dist/assets`:
 - Media optimization.
 - CSS split.
 - Visual polish.
+
+# Emergency build repair
+
+- GitHub Pages build failed after `edffc135 ver.0.6.6`.
+- Root cause: duplicate and malformed `syncFromLocation` in `BlogSite.tsx` left a duplicate symbol and unbalanced component structure.
+- Secondary check: Terminal route and pseudo command declarations were verified and restored at module scope.
+- Build restored after this emergency repair pass.

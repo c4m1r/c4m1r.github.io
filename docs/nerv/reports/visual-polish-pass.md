@@ -50,3 +50,10 @@ Small visual/runtime polish only. No loader, route helper, desktop runtime extra
 ## Risks
 - Browser visual smoke is still recommended for theme subjective polish: Frutiger Aero glass/bubbles, Vaporwave/Cyberpunk neon readability, PCB signal overlay, and mobile overflow.
 - Terminal navigation uses full-page navigation to existing canonical site paths; no React Router or route contract changes were introduced.
+
+# Emergency build repair
+
+- GitHub Pages build failed after `edffc135 ver.0.6.6`.
+- Root cause: duplicate and malformed `syncFromLocation` in `BlogSite.tsx` left a duplicate symbol and unbalanced component structure.
+- Secondary check: Terminal route and pseudo command declarations were verified and restored at module scope.
+- Build restored after this emergency repair pass.

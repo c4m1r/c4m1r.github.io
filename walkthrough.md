@@ -61,3 +61,10 @@
 - `npm run lint` is still blocked by the existing ESLint rule-load error.
 - `npm run build` passed with existing Vite/Browserslist/chunk warnings.
 - Screenshot capture was attempted with Playwright but blocked because browser download from the Playwright CDN returned 403 in this environment.
+
+# Emergency build repair
+
+- GitHub Pages build failed after `edffc135 ver.0.6.6`.
+- Root cause: duplicate and malformed `syncFromLocation` in `BlogSite.tsx` left a duplicate symbol and unbalanced component structure.
+- Secondary check: Terminal route and pseudo command declarations were verified and restored at module scope.
+- Build restored after this emergency repair pass.
