@@ -16,6 +16,8 @@ import { useArticles } from '../articles/useArticles';
 import { useWiki } from '../wiki/useWiki';
 import { type ContentItem, type ContentKind } from '../content/types';
 
+import { isFeatureEnabled } from '../../config/features';
+
 export interface SearchResult {
   item: ContentItem;
   kind: ContentKind;
@@ -64,10 +66,12 @@ export function useGlobalSearch(initialQuery: string = ''): UseGlobalSearchResul
   const { articles, loading: articlesLoading } = useArticles();
   const { articles: wikiArticles, loading: wikiLoading } = useWiki();
 
+  const isNewsEnabled = isFeatureEnabled('news');
+
   const loading =
     projectsLoading ||
     galleryLoading ||
-    newsLoading ||
+    (isNewsEnabled && newsLoading) ||
     articlesLoading ||
     wikiLoading;
 
@@ -94,10 +98,12 @@ export function useGlobalSearch(initialQuery: string = ''): UseGlobalSearchResul
     }
 
     // News
-    for (const item of news) {
-      const matchedTags = matchesQuery(item, q);
-      if (matchedTags.length > 0 || titleMatches(item, q)) {
-        out.push({ item: { ...item, kind: 'news' }, kind: 'news', matchedTags });
+    if (isNewsEnabled) {
+      for (const item of news) {
+        const matchedTags = matchesQuery(item, q);
+        if (matchedTags.length > 0 || titleMatches(item, q)) {
+          out.push({ item: { ...item, kind: 'news' }, kind: 'news', matchedTags });
+        }
       }
     }
 

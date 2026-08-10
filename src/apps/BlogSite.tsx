@@ -24,6 +24,7 @@ import { loadWikiArticles, loadWikiCategoryIndex } from '../domain/wiki/wiki.loa
 import { loadAllProjects } from '../domain/projects/projects.loader';
 import { type Language } from '../i18n/translations';
 import { useApp } from '../contexts/useApp';
+import { isFeatureEnabled } from '../config/features';
 import { stripMarkdown, markdownToHtml } from '../domain/content/markdown';
 import { loadCvLocale } from '../domain/resume/resume.loader';
 import { Navigation } from '../components/Navigation';
@@ -612,9 +613,17 @@ export function BlogSite() {
     setActiveWiki(null);
     setActiveNews(null);
     setActiveProject(null);
-    setActiveSection(route.section);
 
-    if (route.newsId && newsItems.length > 0) {
+    if (route.section === 'news' && !isFeatureEnabled('news')) {
+      setActiveSection('home');
+      if (typeof window !== 'undefined') {
+        window.history.replaceState({}, '', routes.home());
+      }
+    } else {
+      setActiveSection(route.section);
+    }
+
+    if (isFeatureEnabled('news') && route.newsId && newsItems.length > 0) {
       const matchNews = newsItems.find((n) => n.id === route.newsId);
       setActiveNews(matchNews ?? null);
     }
@@ -1144,11 +1153,13 @@ export function BlogSite() {
               </div>
             </section>
           )}
-          <NewsSection
-            limit={3}
-            onOpenNews={(item) => handleOpenNews(item as NewsItem)}
-            onViewAll={() => navigateSection('news')}
-          />
+          {isFeatureEnabled('news') && (
+            <NewsSection
+              limit={3}
+              onOpenNews={(item) => handleOpenNews(item as NewsItem)}
+              onViewAll={() => navigateSection('news')}
+            />
+          )}
 
           {/* Selected Projects */}
           <ProjectsSection
@@ -1729,7 +1740,7 @@ export function BlogSite() {
       )}
 
       {/* News Full Section */}
-      {activeSection === 'news' && (
+      {isFeatureEnabled('news') && activeSection === 'news' && (
         <NewsPageSection
           ui={ui}
           language={language}

@@ -18,6 +18,8 @@ import { WindowsMediaPlayer } from '../../apps/mediaplayer/WindowsMediaPlayer';
 import { Minesweeper } from '../../apps/minesweeper';
 import { ResumeApp } from './apps/resume/ResumeApp';
 
+import { isFeatureEnabled } from '../../config/features';
+
 export const appRegistry: Record<string, DesktopAppDefinition> = {
   'internet-explorer': {
     id: 'internet-explorer',
@@ -200,8 +202,8 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'newsIcon',
     component: NewsApp,
     defaultWindow: { width: 900, height: 600 },
-    showInStartMenu: true,
-    showOnDesktop: true,
+    showInStartMenu: isFeatureEnabled('news'),
+    showOnDesktop: isFeatureEnabled('news'),
   },
   'wiki': {
     id: 'wiki',

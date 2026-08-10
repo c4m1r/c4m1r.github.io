@@ -8,6 +8,8 @@ import { loadArticles } from '../articles/articles.loader';
 import { loadAllProjects } from '../projects/projects.loader';
 import { loadGalleryItems } from '../gallery/gallery.loader';
 
+import { isFeatureEnabled } from '../../config/features';
+
 /**
  * Loads all system content items asynchronously and tags them with their corresponding ContentKind.
  */
@@ -16,8 +18,10 @@ export async function loadAllContent(language: string = 'en'): Promise<ContentIt
 
   try {
     // 0. News
-    const newsItems = await loadNewsItems(language);
-    allItems.push(...newsItems.map(item => ({ ...item, kind: 'news' as const })));
+    if (isFeatureEnabled('news')) {
+      const newsItems = await loadNewsItems(language);
+      allItems.push(...newsItems.map(item => ({ ...item, kind: 'news' as const })));
+    }
 
     // 1. Articles (Blog)
     const articles = await loadArticles(language);

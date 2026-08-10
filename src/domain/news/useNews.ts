@@ -3,6 +3,8 @@ import { type NewsItem } from './news.types';
 import { loadNewsItems } from './news.loader';
 import { useApp } from '../../contexts/useApp';
 
+import { isFeatureEnabled } from '../../config/features';
+
 /**
  * Hook to retrieve and reactively update news items based on the active UI language.
  */
@@ -12,6 +14,12 @@ export function useNews() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isFeatureEnabled('news')) {
+      setNews([]);
+      setLoading(false);
+      return;
+    }
+
     let active = true;
     setLoading(true);
     
