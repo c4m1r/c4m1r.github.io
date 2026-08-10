@@ -155,15 +155,19 @@ export function getOsAppVisibility(
   theme: ThemeId,
   target: 'desktop' | 'startMenu'
 ): boolean {
+  if (defaultVisible === false) {
+    return false;
+  }
+
   const rules = getOsSkinRules(theme);
-  const rule = rules.appNames?.[appId];
-  if (target === 'desktop' && rule?.showOnDesktop !== undefined) {
-    return rule.showOnDesktop;
-  }
-  if (target === 'startMenu' && rule?.showInStartMenu !== undefined) {
-    return rule.showInStartMenu;
-  }
-  return defaultVisible ?? true;
+  const appRule = rules.appNames?.[appId];
+
+  const osOverride =
+    target === 'desktop'
+      ? appRule?.showOnDesktop
+      : appRule?.showInStartMenu;
+
+  return osOverride ?? defaultVisible ?? false;
 }
 
 export function getOsSystemLabel(
