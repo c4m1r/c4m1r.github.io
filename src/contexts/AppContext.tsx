@@ -1,57 +1,8 @@
-import { createContext, useState, ReactNode, useEffect } from 'react';
-import { Language, detectLanguage } from '../i18n/translations';
-import { siteUrlConfig } from '../shells/site/siteUrlConfig';
-
-type Mode = 'grub' | 'blog' | 'webos' | 'terminal';
-export type ThemeId = 'win-98' | 'win-xp' | 'webos' | 'win7' | 'win10' | 'win11' | 'ubuntu' | 'arch' | 'halloween';
-
-interface AppContextType {
-  mode: Mode;
-  setMode: (mode: Mode) => void;
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  theme: ThemeId;
-  setTheme: (theme: ThemeId) => void;
-}
-
-const LANGUAGE_STORAGE_KEY = 'webos-language';
-
-const supportedLanguages: Language[] = ['en', 'ru', 'fr', 'es', 'zh', 'ja', 'ko'];
-
-const isLanguage = (value: string | null): value is Language =>
-  !!value && (supportedLanguages as readonly string[]).includes(value);
-
-const getInitialLanguage = (): Language => {
-  if (typeof window === 'undefined') {
-    return 'en';
-  }
-  const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-  if (isLanguage(stored)) {
-    return stored;
-  }
-  return detectLanguage();
-};
-
-const getInitialMode = (): Mode => {
-  if (typeof window === 'undefined') {
-    return 'grub';
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  const redirect = params.get('redirect');
-  if (redirect?.startsWith(siteUrlConfig.basePath)) {
-    window.history.replaceState({}, '', redirect);
-    return 'blog';
-  }
-
-  if (window.location.pathname.startsWith(siteUrlConfig.basePath)) {
-    return 'blog';
-  }
-
-  return 'grub';
-};
-
-const AppContext = createContext<AppContextType | undefined>(undefined);
+import { useEffect, useState, type ReactNode } from 'react';
+import { AppContext } from './appContextCore';
+import { getInitialLanguage, getInitialMode, LANGUAGE_STORAGE_KEY } from './appContextDefaults';
+import { type AppMode, type ThemeId } from './appContextTypes';
+import { type Language } from '../i18n/translations';
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<AppMode>(getInitialMode);
@@ -71,7 +22,5 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Compatibility export for older imports; implementation lives in ./useApp and reads appContextCore.AppContext.
-// eslint-disable-next-line react-refresh/only-export-components
 export { useApp } from './useApp';
 export type { AppMode, ThemeId, AppContextType } from './appContextTypes';
