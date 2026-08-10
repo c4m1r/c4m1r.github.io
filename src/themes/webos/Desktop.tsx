@@ -37,6 +37,7 @@ import { createSelectionBox, getViewportSize } from '../../shells/desktop/runtim
 import { THEME_ASSETS } from './themeAssets';
 import { THEME_STYLES } from './themeStyles';
 import { AsciiAurora } from '../../components/effects';
+import { getOsAppTitle, getOsSystemLabel } from '../../shells/os/osSkins';
 
 /**
  * Legacy desktop implementation. Do not add new runtime/window-manager logic
@@ -124,13 +125,13 @@ export function Desktop(props?: DesktopShellProps) {
   const themeStyles = THEME_STYLES[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_STYLES.webos;
   const isXpFamily = isThemeInFamily(themeKey, XP_FAMILY_THEMES);
   const osClassName = getDesktopOsClassName(themeKey);
+  const startLabel = getOsSystemLabel('startButton', t.start ?? 'Start', themeKey, language);
   const startupSound = resolveAssetPath(themeAssets.startupSound, fallbackAssets.startupSound);
   const shutdownSound = resolveAssetPath(themeAssets.shutdownSound, fallbackAssets.shutdownSound);
   const logoffSound = resolveAssetPath(themeAssets.logoffSound, fallbackAssets.logoffSound);
   const uiSoundSet = themeAssets.uiSounds ?? {};
   const fallbackUiSoundSet = fallbackAssets.uiSounds ?? {};
   const closeWindowSound = resolveAssetPath(uiSoundSet.closeWindow, fallbackUiSoundSet?.closeWindow);
-  const startLabel = (t.start ?? 'Start').toLowerCase();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -413,7 +414,7 @@ export function Desktop(props?: DesktopShellProps) {
       iconSrc = themeAssets.notepadIcon ?? textDocumentIcon;
     }
 
-    const label = app.title[language] || app.title['en'];
+    const label = getOsAppTitle(appId, app.title, themeKey, language);
     const icon = renderShortcutIcon(iconSrc, themeAssets.folderIcon);
 
     return {
@@ -428,13 +429,13 @@ export function Desktop(props?: DesktopShellProps) {
     {
       id: 'my-computer',
       icon: getIconElement('computer'),
-      label: t.myComputer,
+      label: getOsSystemLabel('myComputer', t.myComputer, themeKey, language),
       type: 'system'
     },
     {
       id: 'recycle-bin',
       icon: getIconElement('recycle'),
-      label: t.recycleBin,
+      label: getOsSystemLabel('recycleBin', t.recycleBin, themeKey, language),
       type: 'system'
     },
     {

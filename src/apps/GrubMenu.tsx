@@ -1,59 +1,41 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
-
-type GrubOption = 'blog' | 'webos' | 'win-xp' | 'win-98' | 'win7' | 'ubuntu' | 'terminal';
+import { enabledOsBootProfiles } from '../shells/os/osProfiles';
+import { type OsBootProfile } from '../shells/os/osTypes';
 
 export function GrubMenu() {
   const { setMode, setTheme, language } = useApp();
   const t = translations[language].grub;
-  const [selectedIndex, setSelectedIndex] = useState(0); // Мой сайт по умолчанию
+
+  const defaultIndex = Math.max(
+    0,
+    enabledOsBootProfiles.findIndex((p) => p.defaultSelected)
+  );
+
+  const [selectedIndex, setSelectedIndex] = useState(defaultIndex);
   const [countdown, setCountdown] = useState(3);
   const [autobootActive, setAutobootActive] = useState(true);
 
-  const options: { key: GrubOption; label: string }[] = useMemo(() => [
-    { key: 'blog', label: t.blogSite || 'Мой сайт' },
-    { key: 'win-xp', label: 'Windows XP' },
-    { key: 'win-98', label: 'Windows 98' },
-    { key: 'win7', label: 'Windows 7' },
-    { key: 'ubuntu', label: 'Ubuntu' },
-    { key: 'terminal', label: t.terminal || 'Терминал' },
-    { key: 'webos', label: t.webos || 'WebOS' },
-  ], [t.blogSite, t.terminal, t.webos]);
+  const getProfileLabel = useCallback(
+    (profile: OsBootProfile) => {
+      if (profile.id === 'site') return t.blogSite || profile.label;
+      if (profile.id === 'terminal') return t.terminal || profile.label;
+      if (profile.id === 'webos') return t.webos || profile.label;
+      return profile.label;
+    },
+    [t.blogSite, t.terminal, t.webos]
+  );
 
-  const handleBoot = useCallback((option: GrubOption) => {
-    switch (option) {
-      case 'webos':
-        setTheme('webos');
-        setMode('webos');
-        return;
-      case 'win-xp':
-        setTheme('win-xp');
-        setMode('webos');
-        return;
-      case 'win-98':
-        setTheme('win-98');
-        setMode('webos');
-        return;
-      case 'win7':
-        setTheme('win7');
-        setMode('webos');
-        return;
-      case 'ubuntu':
-        setTheme('ubuntu');
-        setMode('webos');
-        return;
-      case 'blog':
-        setMode('blog');
-        return;
-      case 'terminal':
-        setMode('terminal');
-        return;
-      default:
-        setMode('webos');
-        return;
-    }
-  }, [setMode, setTheme]);
+  const handleBoot = useCallback(
+    (profile: OsBootProfile) => {
+      if (profile.theme) {
+        setTheme(profile.theme);
+      }
+      setMode(profile.mode);
+    },
+    [setMode, setTheme]
+  );
 
   useEffect(() => {
     if (!autobootActive) return;
@@ -62,9 +44,9 @@ export function GrubMenu() {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else {
-      handleBoot(options[selectedIndex].key);
+      handleBoot(enabledOsBootProfiles[selectedIndex]);
     }
-  }, [autobootActive, countdown, handleBoot, options, selectedIndex]);
+  }, [autobootActive, countdown, handleBoot, selectedIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -73,14 +55,14 @@ export function GrubMenu() {
       if (key === 'arrowup' || key === 'w') {
         e.preventDefault();
         setAutobootActive(false);
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : options.length - 1));
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : enabledOsBootProfiles.length - 1));
       } else if (key === 'arrowdown' || key === 's') {
         e.preventDefault();
         setAutobootActive(false);
-        setSelectedIndex((prev) => (prev < options.length - 1 ? prev + 1 : 0));
+        setSelectedIndex((prev) => (prev < enabledOsBootProfiles.length - 1 ? prev + 1 : 0));
       } else if (key === 'enter') {
         e.preventDefault();
-        handleBoot(options[selectedIndex].key);
+        handleBoot(enabledOsBootProfiles[selectedIndex]);
       }
     };
 
@@ -95,7 +77,7 @@ export function GrubMenu() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('touchstart', handleTouchStart);
     };
-  }, [handleBoot, options, selectedIndex]);
+  }, [handleBoot, selectedIndex]);
 
   return (
     <div className="min-h-screen bg-black text-white font-mono p-8 flex flex-col">
@@ -105,9 +87,9 @@ export function GrubMenu() {
 
       <div className="flex-1 flex flex-col justify-center max-w-2xl">
         <div className="space-y-1 mb-8">
-          {options.map((option, index) => (
+          {enabledOsBootProfiles.map((profile, index) => (
             <div
-              key={option.key}
+              key={profile.id}
               className={`px-4 py-2 cursor-pointer select-none ${
                 index === selectedIndex
                   ? 'bg-white text-black'
@@ -116,20 +98,20 @@ export function GrubMenu() {
               onClick={() => {
                 setSelectedIndex(index);
                 setAutobootActive(false);
-                handleBoot(option.key);
+                handleBoot(profile);
               }}
               onTouchStart={(e) => {
                 e.preventDefault();
                 setSelectedIndex(index);
                 setAutobootActive(false);
-                handleBoot(option.key);
+                handleBoot(profile);
               }}
               style={{
                 touchAction: 'manipulation',
                 WebkitTapHighlightColor: 'transparent',
               }}
             >
-              {option.label}
+              {getProfileLabel(profile)}
             </div>
           ))}
         </div>

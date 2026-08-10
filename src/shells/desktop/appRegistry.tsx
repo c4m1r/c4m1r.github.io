@@ -20,6 +20,7 @@ import { ResumeApp } from './apps/resume/ResumeApp';
 
 import { isFeatureEnabled } from '../../config/features';
 
+// Default app identity. OS-specific labels/icons are resolved through src/shells/os/osSkins.ts.
 export const appRegistry: Record<string, DesktopAppDefinition> = {
   'internet-explorer': {
     id: 'internet-explorer',
