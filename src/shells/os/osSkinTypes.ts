@@ -19,10 +19,29 @@ export interface OsSystemLabels {
   controlPanel?: Partial<Record<Language, string>>;
 }
 
+export interface OsBootRules {
+  splashTitle?: Partial<Record<Language, string>>;
+  bootAnimation?: 'bios' | 'splash' | 'instant';
+  soundId?: string;
+}
+
+export interface OsLoginRules {
+  welcomeText?: Partial<Record<Language, string>>;
+  loginStyle?: 'classic' | 'xp' | 'modern';
+  showUserTile?: boolean;
+}
+
+export interface OsStartMenuRules {
+  menuStyle?: 'classic' | 'xp-two-column' | 'modern-yaru';
+  pinnedAppIds?: string[];
+  showUserTile?: boolean;
+}
+
 export interface OsTaskbarRules {
   startButtonLabel?: Partial<Record<Language, string>>;
   startButtonMode?: 'text' | 'orb' | 'menu';
   density?: 'classic' | 'xp' | 'glass' | 'linux';
+  taskbarPosition?: 'bottom' | 'top';
 }
 
 export interface OsDesktopRules {
@@ -36,6 +55,9 @@ export interface OsSkinRules {
   displayName: string;
   appNames?: Record<string, OsAppDisplayRule>;
   systemLabels?: OsSystemLabels;
+  boot?: OsBootRules;
+  login?: OsLoginRules;
+  startMenu?: OsStartMenuRules;
   taskbar?: OsTaskbarRules;
   desktop?: OsDesktopRules;
 }
