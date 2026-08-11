@@ -134,6 +134,58 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     defaultWallpaper: '',
     soundsEnabled: false,
   },
+  'ios-26': {
+    id: 'ios-26',
+    name: 'iOS 26.6.1',
+    family: 'other',
+    version: '26.6.1',
+    hasBootScreen: false,
+    hasLoginScreen: false,
+    hasWelcomeScreen: false,
+    cssFile: './styles/os/themes/ios.css',
+    assetsPath: './themes/ios',
+    defaultWallpaper: '',
+    soundsEnabled: false,
+  },
+  'ios-16': {
+    id: 'ios-16',
+    name: 'iOS 16.7.16',
+    family: 'other',
+    version: '16.7.16',
+    hasBootScreen: false,
+    hasLoginScreen: false,
+    hasWelcomeScreen: false,
+    cssFile: './styles/os/themes/ios.css',
+    assetsPath: './themes/ios',
+    defaultWallpaper: '',
+    soundsEnabled: false,
+  },
+  'ios-9': {
+    id: 'ios-9',
+    name: 'iOS 9.3.6',
+    family: 'other',
+    version: '9.3.6',
+    hasBootScreen: false,
+    hasLoginScreen: false,
+    hasWelcomeScreen: false,
+    cssFile: './styles/os/themes/ios.css',
+    assetsPath: './themes/ios',
+    defaultWallpaper: '',
+    soundsEnabled: false,
+  },
+  'ios-5': {
+    id: 'ios-5',
+    name: 'iOS 5.1.1',
+    family: 'other',
+    version: '5.1.1',
+    hasBootScreen: false,
+    hasLoginScreen: false,
+    hasWelcomeScreen: false,
+    cssFile: './styles/os/themes/ios.css',
+    assetsPath: './themes/ios',
+    defaultWallpaper: '',
+    soundsEnabled: false,
+  },
 };
 
 /**
@@ -156,4 +208,3 @@ export function isXPFamily(themeId: ThemeId): boolean {
 export function isWindowsFamily(themeId: ThemeId): boolean {
   return THEME_CONFIGS[themeId]?.family === 'windows';
 }
-

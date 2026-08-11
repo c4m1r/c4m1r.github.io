@@ -37,7 +37,12 @@ import { createSelectionBox, getViewportSize } from '../../shells/desktop/runtim
 import { THEME_ASSETS } from './themeAssets';
 import { THEME_STYLES } from './themeStyles';
 import { AsciiAurora } from '../../components/effects';
-import { getOsAppTitle, getOsSystemLabel } from '../../shells/os/osSkins';
+import {
+  getOsAppTitle,
+  getOsDeviceSupportRules,
+  getOsSystemLabel,
+  getOsVersionRules,
+} from '../../shells/os/osSkins';
 
 /**
  * Legacy desktop implementation. Do not add new runtime/window-manager logic
@@ -125,6 +130,8 @@ export function Desktop(props?: DesktopShellProps) {
   const themeStyles = THEME_STYLES[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_STYLES.webos;
   const isXpFamily = isThemeInFamily(themeKey, XP_FAMILY_THEMES);
   const osClassName = getDesktopOsClassName(themeKey);
+  const osVersionRules = getOsVersionRules(themeKey);
+  const osDeviceRules = getOsDeviceSupportRules(themeKey);
   const startLabel = getOsSystemLabel('startButton', t.start ?? 'Start', themeKey, language);
   const startupSound = resolveAssetPath(themeAssets.startupSound, fallbackAssets.startupSound);
   const shutdownSound = resolveAssetPath(themeAssets.shutdownSound, fallbackAssets.shutdownSound);
@@ -983,6 +990,10 @@ export function Desktop(props?: DesktopShellProps) {
       ref={desktopRef}
       data-os-theme={themeKey}
       data-os-class={osClassName}
+      data-os-version={osVersionRules?.version}
+      data-device-family={osDeviceRules?.deviceFamily}
+      data-representative-device={osDeviceRules?.representativeDevice}
+      data-support-cycle={osDeviceRules?.supportCycleLabel}
       className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
       style={{
         backgroundImage: customWallpaper

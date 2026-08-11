@@ -49,6 +49,33 @@ export interface OsDesktopRules {
   systemIconStyle?: 'classic' | 'xp' | 'glass' | 'linux';
 }
 
+export interface OsVersionRules {
+  displayName?: string;
+  family?: 'iOS' | 'iPadOS' | 'Windows' | 'Ubuntu' | 'WebOS';
+  version?: string;
+  designEra?: 'skeuomorphic' | 'transitional-flat' | 'flat' | 'modern';
+  sourceStatus?: 'apple-documented' | 'user-requested' | 'estimated';
+  needsVerification?: boolean;
+  note?: string;
+}
+
+export interface OsDeviceSupportRules {
+  formFactor?: 'desktop' | 'tablet';
+  deviceFamily?: 'iPad';
+  representativeDevice?: string;
+  supportedDevicesSummary?: string;
+  supportCycleLabel?: string;
+  lastSupportedOs?: string;
+  lastSupportedOsNote?: string;
+}
+
+export interface OsHomeScreenRules {
+  layout?: 'desktop' | 'ipad-home-grid';
+  dockStyle?: 'ios-old-glass' | 'ios-flat-blur' | 'ios-modern-blur';
+  iconShape?: 'ios-old-rounded' | 'ios-flat-rounded' | 'ios-modern-rounded';
+  statusBarStyle?: 'ios-old' | 'ios-flat' | 'ios-modern';
+}
+
 export interface OsSkinRules {
   theme: ThemeId;
   osClassName: string;
@@ -60,4 +87,7 @@ export interface OsSkinRules {
   startMenu?: OsStartMenuRules;
   taskbar?: OsTaskbarRules;
   desktop?: OsDesktopRules;
+  osVersion?: OsVersionRules;
+  deviceSupport?: OsDeviceSupportRules;
+  homeScreen?: OsHomeScreenRules;
 }

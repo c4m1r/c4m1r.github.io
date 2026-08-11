@@ -3,8 +3,9 @@ import { useApp } from '../contexts/useApp';
 import type { ThemeAssetId } from '../themes/webos/themeAssets';
 import { THEME_ASSETS } from '../themes/webos/themeAssets';
 import { useGallery } from '../domain/gallery/useGallery';
+import { getOsDeviceSupportRules, getOsVersionRules } from '../shells/os/osSkins';
 
-type CPView = 'categories' | 'wallpaper';
+type CPView = 'categories' | 'wallpaper' | 'systemInfo';
 
 export function ControlPanel() {
   const { theme } = useApp();
@@ -12,6 +13,9 @@ export function ControlPanel() {
   const currentTheme = (theme as ThemeAssetId) ?? 'webos';
   const themeAssets = THEME_ASSETS[currentTheme] ?? THEME_ASSETS.webos;
   const controlPanelIcons = themeAssets.controlPanelIcons ?? {};
+
+  const versionRules = getOsVersionRules(theme);
+  const deviceRules = getOsDeviceSupportRules(theme);
 
   const [view, setView] = useState<CPView>('categories');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
@@ -45,33 +49,15 @@ export function ControlPanel() {
         items: ['Change or Remove Programs', 'Add New Programs', 'Windows Components'],
       },
       {
-        id: 'sounds',
-        title: 'Sounds, Speech, and Audio Devices',
-        emoji: '🔊',
-        items: ['Sounds and Audio Devices', 'Speech'],
-      },
-      {
-        id: 'maintenance',
-        title: 'Performance and Maintenance',
-        emoji: '⚙️',
-        items: ['System', 'Administrative Tools', 'Power Options', 'Scheduled Tasks'],
-      },
-      {
-        id: 'hardware',
-        title: 'Printers and Other Hardware',
-        emoji: '🖨️',
-        items: ['Printers and Faxes', 'Mouse', 'Keyboard', 'Scanners and Cameras'],
-      },
-      {
-        id: 'users',
+        id: 'user-accounts',
         title: 'User Accounts',
         emoji: '👤',
-        items: ['Change an account', 'Create a new account', 'Change logon/logoff options'],
+        items: ['User Accounts', 'Network Passwords'],
       },
       {
-        id: 'regional',
+        id: 'date-time',
         title: 'Date, Time, Language, and Regional Options',
-        emoji: '🌍',
+        emoji: '🕒',
         items: ['Date and Time', 'Regional and Language Options'],
       },
       {
@@ -119,6 +105,12 @@ export function ControlPanel() {
           >
             🖼️ Wallpaper
           </button>
+          <button
+            className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'systemInfo' ? 'bg-white/30' : 'hover:bg-white/20'}`}
+            onClick={() => setView('systemInfo')}
+          >
+            💻 System & Device Info
+          </button>
           <div className="pt-2 border-t border-white/20">
             <div className="p-2 hover:bg-white/20 rounded cursor-pointer">Windows Update</div>
             <div className="p-2 hover:bg-white/20 rounded cursor-pointer">Help and Support</div>
@@ -128,6 +120,57 @@ export function ControlPanel() {
 
       {/* Main Content */}
       <div className="flex-1 p-6 overflow-auto">
+
+        {/* ── System & Device Info View ── */}
+        {view === 'systemInfo' && (
+          <div className="space-y-4">
+            <h1 className={`text-2xl font-bold mb-2 ${isXpFamily ? 'text-[#003399]' : 'text-black'}`}>
+              System & Device Information
+            </h1>
+            <div className={`p-4 rounded-lg ${isXpFamily ? 'bg-white border border-[#c7d8ed]' : 'bg-white border-2 border-gray-400'} space-y-3 text-sm`}>
+              <div>
+                <span className="font-bold">OS Version: </span>
+                <span>{versionRules?.displayName ?? versionRules?.version ?? theme}</span>
+              </div>
+              {deviceRules?.deviceFamily && (
+                <div>
+                  <span className="font-bold">Device Family: </span>
+                  <span>{deviceRules.deviceFamily}</span>
+                </div>
+              )}
+              {deviceRules?.representativeDevice && (
+                <div>
+                  <span className="font-bold">Representative Device / Support Cycle: </span>
+                  <span>{deviceRules.representativeDevice}</span>
+                </div>
+              )}
+              {deviceRules?.supportCycleLabel && (
+                <div>
+                  <span className="font-bold">Support Cycle: </span>
+                  <span>{deviceRules.supportCycleLabel}</span>
+                </div>
+              )}
+              {deviceRules?.supportedDevicesSummary && (
+                <div>
+                  <span className="font-bold">Supported Devices Summary: </span>
+                  <p className="text-xs text-gray-700 mt-1">{deviceRules.supportedDevicesSummary}</p>
+                </div>
+              )}
+              {deviceRules?.lastSupportedOs && (
+                <div>
+                  <span className="font-bold">Last Supported OS: </span>
+                  <span>{deviceRules.lastSupportedOs}</span>
+                </div>
+              )}
+              {versionRules?.note && (
+                <div className="p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                  <span className="font-bold">Note: </span>
+                  {versionRules.note}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ── Categories view ── */}
         {view === 'categories' && (
@@ -159,10 +202,7 @@ export function ControlPanel() {
                       </h3>
                       <div className="text-xs text-gray-600 space-y-0.5">
                         {category.items.map((item, i) => (
-                          <div
-                            key={i}
-                            className={`${isXpFamily ? 'hover:underline' : ''} cursor-pointer`}
-                          >
+                          <div key={i} className="hover:underline cursor-pointer">
                             {item}
                           </div>
                         ))}
@@ -171,18 +211,6 @@ export function ControlPanel() {
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-gray-300">
-              <div className="flex items-center gap-2 text-sm">
-                <span className={isXpFamily ? 'text-[#003399]' : 'text-[#000080]'}>
-                  Switch to Classic View
-                </span>
-                <span className="text-gray-500">|</span>
-                <span className="text-gray-600 opacity-50 cursor-not-allowed">
-                  Classic View shows all Control Panel icons
-                </span>
-              </div>
             </div>
           </>
         )}
@@ -195,58 +223,36 @@ export function ControlPanel() {
                 Desktop Wallpaper
               </h1>
               <p className="text-sm text-gray-600">
-                Choose a background picture from{' '}
-                <code className="text-xs bg-gray-100 px-1 rounded">content/pictures/wallpapers/</code>
+                Choose a background picture from the gallery or custom uploads
               </p>
             </div>
 
-            {wallpapersLoading && (
-              <p className="text-sm text-gray-500">Loading wallpapers…</p>
-            )}
-
-            {!wallpapersLoading && wallpapers.length === 0 && (
-              <div className={`p-8 text-center rounded-lg border ${isXpFamily ? 'border-[#c7d8ed] bg-[#f0f5ff]' : 'border-gray-400 bg-white'}`}>
-                <p className="text-sm text-gray-500">
-                  No wallpapers found. Add images to{' '}
-                  <code className="text-xs bg-gray-100 px-1 rounded">src/content/pictures/wallpapers/</code>
-                </p>
-              </div>
-            )}
-
-            {!wallpapersLoading && wallpapers.length > 0 && (
+            {wallpapersLoading ? (
+              <div className="text-center py-8 text-gray-500">Loading gallery wallpapers...</div>
+            ) : (
               <>
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   {wallpapers.map((wp) => (
-                    <button
+                    <div
                       key={wp.id}
                       onClick={() => setSelectedWallpaper(wp.imagePath)}
-                      className={`relative rounded-lg overflow-hidden aspect-video border-2 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                      className={`relative aspect-video rounded overflow-hidden cursor-pointer border-2 transition-all ${
                         selectedWallpaper === wp.imagePath
-                          ? 'border-[#316ac5] shadow-md'
-                          : isXpFamily
-                          ? 'border-[#c7d8ed] hover:border-[#739fcf]'
-                          : 'border-gray-400 hover:border-gray-600'
+                          ? 'border-[#316ac5] ring-2 ring-[#316ac5]/50 scale-[1.02]'
+                          : 'border-gray-300 hover:border-gray-400'
                       }`}
-                      title={wp.title}
-                      aria-label={`Select wallpaper: ${wp.title}`}
-                      aria-pressed={selectedWallpaper === wp.imagePath}
                     >
-                      <img
-                        src={wp.thumbnailPath}
-                        alt={wp.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                      {selectedWallpaper === wp.imagePath && (
-                        <div className="absolute inset-0 ring-2 ring-inset ring-[#316ac5] rounded-md pointer-events-none" />
-                      )}
-                    </button>
+                      <img src={wp.imagePath} alt={wp.title} className="w-full h-full object-cover" />
+                      <div className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] p-1 truncate text-center">
+                        {wp.title}
+                      </div>
+                    </div>
                   ))}
                 </div>
 
-                {/* Preview */}
+                {/* Selected Wallpaper Actions */}
                 {(selectedWallpaper || customActive) && (
-                  <div className={`rounded-lg border p-4 ${isXpFamily ? 'border-[#c7d8ed] bg-[#f0f5ff]' : 'border-gray-400 bg-white'}`}>
+                  <div className={`p-4 rounded-lg ${isXpFamily ? 'bg-[#f0f5ff] border border-[#c7d8ed]' : 'bg-white border-2 border-gray-400'} mb-4`}>
                     <p className={`text-sm font-semibold mb-3 ${isXpFamily ? 'text-[#003399]' : 'text-[#000080]'}`}>
                       Preview
                     </p>

@@ -9,7 +9,11 @@ export type OsProfileId =
   | 'win-98'
   | 'win7'
   | 'ubuntu'
-  | 'webos';
+  | 'webos'
+  | 'ios-26'
+  | 'ios-16'
+  | 'ios-9'
+  | 'ios-5';
 
 export interface OsBootProfile {
   id: OsProfileId;

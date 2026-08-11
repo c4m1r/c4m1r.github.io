@@ -2,11 +2,13 @@ import { type ThemeId } from '../../contexts/appContextTypes';
 import { type Language } from '../../i18n/translations';
 import {
   type OsBootRules,
+  type OsDeviceSupportRules,
   type OsLoginRules,
   type OsSkinRules,
   type OsStartMenuRules,
   type OsSystemLabels,
   type OsTaskbarRules,
+  type OsVersionRules,
 } from './osSkinTypes';
 
 const PROTECTED_CONTENT_APP_IDS = new Set([
@@ -176,6 +178,167 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     },
   },
 
+  'ios-26': {
+    theme: 'ios-26',
+    osClassName: 'os-ios os-ios-modern os-ios-26',
+    displayName: 'iOS 26.6.1',
+    appNames: {
+      pictures: { title: { en: 'Photos', ru: 'Фото' } },
+      'control-panel': { title: { en: 'Settings', ru: 'Настройки' } },
+      'internet-explorer': { title: { en: 'Safari', ru: 'Safari' } },
+      notepad: { title: { en: 'Notes', ru: 'Заметки' } },
+    },
+    systemLabels: {
+      startButton: { en: 'App Library', ru: 'Библиотека' },
+      myComputer: { en: 'Files', ru: 'Файлы' },
+      recycleBin: { en: 'Recently Deleted', ru: 'Недавно удаленные' },
+    },
+    osVersion: {
+      displayName: 'iOS 26.6.1',
+      family: 'iOS',
+      version: 'iOS 26.6.1',
+      designEra: 'modern',
+      sourceStatus: 'user-requested',
+      needsVerification: true,
+      note: 'UI display label requested as iOS 26.6.1; official Apple security page currently documented iOS/iPadOS 26.6.',
+    },
+    deviceSupport: {
+      formFactor: 'tablet',
+      deviceFamily: 'iPad',
+      representativeDevice: 'iPad Pro / iPad Air modern support cycle',
+      supportedDevicesSummary:
+        'iPadOS 26 compatible iPads, e.g. iPad 8th generation and later, iPad Air 3rd generation and later, iPad mini 5th generation and later, iPad Pro 11-inch 1st generation and later, iPad Pro 12.9-inch 3rd generation and later',
+      supportCycleLabel: 'Modern iPadOS 26 support cycle',
+      lastSupportedOs: 'iOS 26.6.1',
+      lastSupportedOsNote:
+        'Display label requested; verify exact patch availability before treating as official.',
+    },
+    homeScreen: {
+      layout: 'ipad-home-grid',
+      dockStyle: 'ios-modern-blur',
+      iconShape: 'ios-modern-rounded',
+      statusBarStyle: 'ios-modern',
+    },
+  },
+
+  'ios-16': {
+    theme: 'ios-16',
+    osClassName: 'os-ios os-ios-16',
+    displayName: 'iOS 16.7.16',
+    appNames: {
+      pictures: { title: { en: 'Photos', ru: 'Фото' } },
+      'control-panel': { title: { en: 'Settings', ru: 'Настройки' } },
+      'internet-explorer': { title: { en: 'Safari', ru: 'Safari' } },
+      notepad: { title: { en: 'Notes', ru: 'Заметки' } },
+    },
+    systemLabels: {
+      startButton: { en: 'Home', ru: 'Домой' },
+      myComputer: { en: 'Files', ru: 'Файлы' },
+      recycleBin: { en: 'Recently Deleted', ru: 'Недавно удаленные' },
+    },
+    osVersion: {
+      displayName: 'iOS 16.7.16',
+      family: 'iOS',
+      version: 'iOS 16.7.16',
+      designEra: 'flat',
+      sourceStatus: 'apple-documented',
+    },
+    deviceSupport: {
+      formFactor: 'tablet',
+      deviceFamily: 'iPad',
+      representativeDevice:
+        'iPad 5th generation / iPad Pro 9.7-inch / iPad Pro 12.9-inch 1st generation',
+      supportedDevicesSummary:
+        'iOS/iPadOS 16.7.16 security update available for iPad 5th generation, iPad Pro 9.7-inch, and iPad Pro 12.9-inch 1st generation',
+      supportCycleLabel: 'Legacy iPadOS 16 security support cycle',
+      lastSupportedOs: 'iOS 16.7.16',
+    },
+    homeScreen: {
+      layout: 'ipad-home-grid',
+      dockStyle: 'ios-flat-blur',
+      iconShape: 'ios-flat-rounded',
+      statusBarStyle: 'ios-flat',
+    },
+  },
+
+  'ios-9': {
+    theme: 'ios-9',
+    osClassName: 'os-ios os-ios-9',
+    displayName: 'iOS 9.3.6',
+    appNames: {
+      pictures: { title: { en: 'Photos', ru: 'Фото' } },
+      'control-panel': { title: { en: 'Settings', ru: 'Настройки' } },
+      'internet-explorer': { title: { en: 'Safari', ru: 'Safari' } },
+      notepad: { title: { en: 'Notes', ru: 'Заметки' } },
+    },
+    systemLabels: {
+      startButton: { en: 'Home', ru: 'Домой' },
+      myComputer: { en: 'Files', ru: 'Файлы' },
+      recycleBin: { en: 'Trash', ru: 'Корзина' },
+    },
+    osVersion: {
+      displayName: 'iOS 9.3.6',
+      family: 'iOS',
+      version: 'iOS 9.3.6',
+      designEra: 'transitional-flat',
+      sourceStatus: 'apple-documented',
+    },
+    deviceSupport: {
+      formFactor: 'tablet',
+      deviceFamily: 'iPad',
+      representativeDevice: 'iPad 3rd generation Cellular / iPad 2 Cellular era',
+      supportedDevicesSummary:
+        'iOS 9.3.6 GPS/date fix support cycle for older cellular iPad/iPhone models',
+      supportCycleLabel: 'iOS 9 legacy cellular GPS/date support cycle',
+      lastSupportedOs: 'iOS 9.3.6',
+      lastSupportedOsNote: 'GPS/date issue fix for affected devices',
+    },
+    homeScreen: {
+      layout: 'ipad-home-grid',
+      dockStyle: 'ios-flat-blur',
+      iconShape: 'ios-flat-rounded',
+      statusBarStyle: 'ios-flat',
+    },
+  },
+
+  'ios-5': {
+    theme: 'ios-5',
+    osClassName: 'os-ios os-ios-5',
+    displayName: 'iOS 5.1.1',
+    appNames: {
+      pictures: { title: { en: 'Photos', ru: 'Фото' } },
+      'control-panel': { title: { en: 'Settings', ru: 'Настройки' } },
+      'internet-explorer': { title: { en: 'Safari', ru: 'Safari' } },
+      notepad: { title: { en: 'Notes', ru: 'Заметки' } },
+    },
+    systemLabels: {
+      startButton: { en: 'Home', ru: 'Домой' },
+      myComputer: { en: 'Files', ru: 'Файлы' },
+      recycleBin: { en: 'Trash', ru: 'Корзина' },
+    },
+    osVersion: {
+      displayName: 'iOS 5.1.1',
+      family: 'iOS',
+      version: 'iOS 5.1.1',
+      designEra: 'skeuomorphic',
+      sourceStatus: 'apple-documented',
+    },
+    deviceSupport: {
+      formFactor: 'tablet',
+      deviceFamily: 'iPad',
+      representativeDevice: 'iPad 1st generation / iPad 2',
+      supportedDevicesSummary: 'iOS 5.1.1 available for original iPad and iPad 2',
+      supportCycleLabel: 'Original iPad skeuomorphic iOS support cycle',
+      lastSupportedOs: 'iOS 5.1.1',
+    },
+    homeScreen: {
+      layout: 'ipad-home-grid',
+      dockStyle: 'ios-old-glass',
+      iconShape: 'ios-old-rounded',
+      statusBarStyle: 'ios-old',
+    },
+  },
+
   webos: {
     theme: 'webos',
     osClassName: 'os-shell',
@@ -330,4 +493,12 @@ export function getOsStartMenuRules(theme: ThemeId): OsStartMenuRules | undefine
 
 export function getOsTaskbarRules(theme: ThemeId): OsTaskbarRules | undefined {
   return getOsSkinRules(theme).taskbar;
+}
+
+export function getOsVersionRules(theme: ThemeId): OsVersionRules | undefined {
+  return getOsSkinRules(theme).osVersion;
+}
+
+export function getOsDeviceSupportRules(theme: ThemeId): OsDeviceSupportRules | undefined {
+  return getOsSkinRules(theme).deviceSupport;
 }

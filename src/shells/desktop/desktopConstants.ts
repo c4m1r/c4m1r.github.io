@@ -18,4 +18,8 @@ export const OS_CLASS_MAP: Record<string, string> = {
   win11: 'win7',
   ubuntu: 'ubuntu',
   arch: 'ubuntu',
+  'ios-26': 'ios os-ios-modern os-ios-26',
+  'ios-16': 'ios os-ios-16',
+  'ios-9': 'ios os-ios-9',
+  'ios-5': 'ios os-ios-5',
 };
