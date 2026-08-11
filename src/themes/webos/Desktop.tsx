@@ -981,6 +981,8 @@ export function Desktop(props?: DesktopShellProps) {
   return (
     <div
       ref={desktopRef}
+      data-os-theme={themeKey}
+      data-os-class={osClassName}
       className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
       style={{
         backgroundImage: customWallpaper

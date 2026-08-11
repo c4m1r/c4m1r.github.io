@@ -27,6 +27,14 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       myComputer: { en: 'My Computer', ru: 'Мой компьютер' },
       recycleBin: { en: 'Recycle Bin', ru: 'Корзина' },
     },
+    taskbar: {
+      startButtonMode: 'text',
+      density: 'xp',
+    },
+    desktop: {
+      iconLabelStyle: 'xp',
+      systemIconStyle: 'xp',
+    },
   },
 
   'win-98': {
@@ -44,6 +52,14 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       myComputer: { en: 'My Computer', ru: 'Мой компьютер' },
       recycleBin: { en: 'Recycle Bin', ru: 'Корзина' },
     },
+    taskbar: {
+      startButtonMode: 'text',
+      density: 'classic',
+    },
+    desktop: {
+      iconLabelStyle: 'classic',
+      systemIconStyle: 'classic',
+    },
   },
 
   win7: {
@@ -60,6 +76,14 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       startButton: { en: 'Start', ru: 'Пуск' },
       myComputer: { en: 'Computer', ru: 'Компьютер' },
       recycleBin: { en: 'Recycle Bin', ru: 'Корзина' },
+    },
+    taskbar: {
+      startButtonMode: 'orb',
+      density: 'glass',
+    },
+    desktop: {
+      iconLabelStyle: 'glass',
+      systemIconStyle: 'glass',
     },
   },
 
@@ -79,6 +103,14 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       myComputer: { en: 'Files', ru: 'Файлы' },
       recycleBin: { en: 'Trash', ru: 'Корзина' },
     },
+    taskbar: {
+      startButtonMode: 'menu',
+      density: 'linux',
+    },
+    desktop: {
+      iconLabelStyle: 'linux',
+      systemIconStyle: 'linux',
+    },
   },
 
   webos: {
@@ -88,6 +120,14 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     appNames: {},
     systemLabels: {
       startButton: { en: 'Menu', ru: 'Меню' },
+    },
+    taskbar: {
+      startButtonMode: 'text',
+      density: 'xp',
+    },
+    desktop: {
+      iconLabelStyle: 'xp',
+      systemIconStyle: 'xp',
     },
   },
 

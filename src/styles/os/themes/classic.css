@@ -57,3 +57,20 @@
   border-bottom-color: #ffffff;
   background-color: #ffffff;
 }
+
+.os-classic .taskbar {
+  background-color: #c0c0c0 !important;
+  border-top: 2px solid #ffffff !important;
+  box-shadow: inset 0 1px 0 #dfdfdf !important;
+}
+
+.os-classic .start-button {
+  background-color: #c0c0c0 !important;
+  box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080, 1px 1px 0px #000000 !important;
+  border-top: 1px solid #ffffff !important;
+  border-left: 1px solid #ffffff !important;
+  border-right: 1px solid #808080 !important;
+  border-bottom: 1px solid #808080 !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+}

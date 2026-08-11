@@ -19,10 +19,23 @@ export interface OsSystemLabels {
   controlPanel?: Partial<Record<Language, string>>;
 }
 
+export interface OsTaskbarRules {
+  startButtonLabel?: Partial<Record<Language, string>>;
+  startButtonMode?: 'text' | 'orb' | 'menu';
+  density?: 'classic' | 'xp' | 'glass' | 'linux';
+}
+
+export interface OsDesktopRules {
+  iconLabelStyle?: 'classic' | 'xp' | 'glass' | 'linux';
+  systemIconStyle?: 'classic' | 'xp' | 'glass' | 'linux';
+}
+
 export interface OsSkinRules {
   theme: ThemeId;
   osClassName: string;
   displayName: string;
   appNames?: Record<string, OsAppDisplayRule>;
   systemLabels?: OsSystemLabels;
+  taskbar?: OsTaskbarRules;
+  desktop?: OsDesktopRules;
 }
