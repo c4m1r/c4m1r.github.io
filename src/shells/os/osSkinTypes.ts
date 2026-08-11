@@ -1,5 +1,6 @@
 import { type ThemeId } from '../../contexts/appContextTypes';
 import { type Language } from '../../i18n/translations';
+import { type TouchAffordanceMetadata } from '../../system/integrations/shellIntegrationTypes';
 
 export interface OsAppDisplayRule {
   title?: Partial<Record<Language, string>>;
@@ -90,4 +91,5 @@ export interface OsSkinRules {
   osVersion?: OsVersionRules;
   deviceSupport?: OsDeviceSupportRules;
   homeScreen?: OsHomeScreenRules;
+  touchMetadata?: TouchAffordanceMetadata;
 }

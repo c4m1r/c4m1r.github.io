@@ -1,6 +1,10 @@
 import { type ThemeId } from '../../contexts/appContextTypes';
 import { type Language } from '../../i18n/translations';
 import {
+  DEFAULT_IOS_TOUCH_METADATA,
+  DEFAULT_MOUSE_TOUCH_METADATA,
+} from '../../system/integrations/shellIntegrations';
+import {
   type OsBootRules,
   type OsDeviceSupportRules,
   type OsLoginRules,
@@ -219,6 +223,7 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       iconShape: 'ios-modern-rounded',
       statusBarStyle: 'ios-modern',
     },
+    touchMetadata: DEFAULT_IOS_TOUCH_METADATA,
   },
 
   'ios-16': {
@@ -259,6 +264,7 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       iconShape: 'ios-flat-rounded',
       statusBarStyle: 'ios-flat',
     },
+    touchMetadata: DEFAULT_IOS_TOUCH_METADATA,
   },
 
   'ios-9': {
@@ -299,6 +305,7 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       iconShape: 'ios-flat-rounded',
       statusBarStyle: 'ios-flat',
     },
+    touchMetadata: DEFAULT_IOS_TOUCH_METADATA,
   },
 
   'ios-5': {
@@ -337,6 +344,7 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
       iconShape: 'ios-old-rounded',
       statusBarStyle: 'ios-old',
     },
+    touchMetadata: DEFAULT_IOS_TOUCH_METADATA,
   },
 
   webos: {
@@ -501,4 +509,8 @@ export function getOsVersionRules(theme: ThemeId): OsVersionRules | undefined {
 
 export function getOsDeviceSupportRules(theme: ThemeId): OsDeviceSupportRules | undefined {
   return getOsSkinRules(theme).deviceSupport;
+}
+
+export function getOsTouchMetadata(theme: ThemeId) {
+  return getOsSkinRules(theme).touchMetadata ?? DEFAULT_MOUSE_TOUCH_METADATA;
 }

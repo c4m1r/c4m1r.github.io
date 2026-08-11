@@ -3,19 +3,23 @@ import { useApp } from '../contexts/useApp';
 import type { ThemeAssetId } from '../themes/webos/themeAssets';
 import { THEME_ASSETS } from '../themes/webos/themeAssets';
 import { useGallery } from '../domain/gallery/useGallery';
-import { getOsDeviceSupportRules, getOsVersionRules } from '../shells/os/osSkins';
+import { getOsVersionRules } from '../shells/os/osSkins';
+import { getSystemSettingsSections } from '../system/settings/settingsSections';
+import { useSystemActions } from '../system/actions/useSystemActions';
+import { type SystemActionId } from '../system/actions/systemActionTypes';
 
 type CPView = 'categories' | 'wallpaper' | 'systemInfo';
 
 export function ControlPanel() {
-  const { theme } = useApp();
+  const { theme, language } = useApp();
+  const { executeAction } = useSystemActions();
   const isXpFamily = theme !== 'win-98';
   const currentTheme = (theme as ThemeAssetId) ?? 'webos';
   const themeAssets = THEME_ASSETS[currentTheme] ?? THEME_ASSETS.webos;
   const controlPanelIcons = themeAssets.controlPanelIcons ?? {};
 
   const versionRules = getOsVersionRules(theme);
-  const deviceRules = getOsDeviceSupportRules(theme);
+  const settingsSections = getSystemSettingsSections(theme);
 
   const [view, setView] = useState<CPView>('categories');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
@@ -112,8 +116,18 @@ export function ControlPanel() {
             💻 System & Device Info
           </button>
           <div className="pt-2 border-t border-white/20">
-            <div className="p-2 hover:bg-white/20 rounded cursor-pointer">Windows Update</div>
-            <div className="p-2 hover:bg-white/20 rounded cursor-pointer">Help and Support</div>
+            <div
+              className="p-2 hover:bg-white/20 rounded cursor-pointer"
+              onClick={() => executeAction('language.toggle')}
+            >
+              🌐 Language ({language.toUpperCase()})
+            </div>
+            <div
+              className="p-2 hover:bg-white/20 rounded cursor-pointer"
+              onClick={() => executeAction('settings.reset')}
+            >
+              🔄 Reset System Settings
+            </div>
           </div>
         </div>
       </div>
@@ -123,52 +137,81 @@ export function ControlPanel() {
 
         {/* ── System & Device Info View ── */}
         {view === 'systemInfo' && (
-          <div className="space-y-4">
-            <h1 className={`text-2xl font-bold mb-2 ${isXpFamily ? 'text-[#003399]' : 'text-black'}`}>
-              System & Device Information
-            </h1>
-            <div className={`p-4 rounded-lg ${isXpFamily ? 'bg-white border border-[#c7d8ed]' : 'bg-white border-2 border-gray-400'} space-y-3 text-sm`}>
-              <div>
-                <span className="font-bold">OS Version: </span>
-                <span>{versionRules?.displayName ?? versionRules?.version ?? theme}</span>
-              </div>
-              {deviceRules?.deviceFamily && (
-                <div>
-                  <span className="font-bold">Device Family: </span>
-                  <span>{deviceRules.deviceFamily}</span>
-                </div>
-              )}
-              {deviceRules?.representativeDevice && (
-                <div>
-                  <span className="font-bold">Representative Device / Support Cycle: </span>
-                  <span>{deviceRules.representativeDevice}</span>
-                </div>
-              )}
-              {deviceRules?.supportCycleLabel && (
-                <div>
-                  <span className="font-bold">Support Cycle: </span>
-                  <span>{deviceRules.supportCycleLabel}</span>
-                </div>
-              )}
-              {deviceRules?.supportedDevicesSummary && (
-                <div>
-                  <span className="font-bold">Supported Devices Summary: </span>
-                  <p className="text-xs text-gray-700 mt-1">{deviceRules.supportedDevicesSummary}</p>
-                </div>
-              )}
-              {deviceRules?.lastSupportedOs && (
-                <div>
-                  <span className="font-bold">Last Supported OS: </span>
-                  <span>{deviceRules.lastSupportedOs}</span>
-                </div>
-              )}
-              {versionRules?.note && (
-                <div className="p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-                  <span className="font-bold">Note: </span>
-                  {versionRules.note}
-                </div>
-              )}
+          <div className="space-y-6">
+            <div className="mb-4">
+              <h1 className={`text-2xl font-bold mb-1 ${isXpFamily ? 'text-[#003399]' : 'text-black'}`}>
+                System & Device Information
+              </h1>
+              <p className="text-xs text-gray-600">
+                Global System Services & OS Affordance Settings
+              </p>
             </div>
+
+            {/* Active & Frozen Settings Sections */}
+            {settingsSections.map((section) => (
+              <div
+                key={section.id}
+                className={`p-4 rounded-lg ${
+                  isXpFamily
+                    ? 'bg-white border border-[#c7d8ed]'
+                    : 'bg-white border-2 border-gray-400'
+                }`}
+              >
+                <h3 className={`font-bold text-sm mb-3 ${isXpFamily ? 'text-[#003399]' : 'text-[#000080]'}`}>
+                  {section.title[language] ?? section.title.en}
+                </h3>
+                <div className="space-y-2 text-xs">
+                  {section.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className={`flex items-center justify-between p-2 rounded ${
+                        item.frozen
+                          ? 'bg-gray-100 opacity-65 cursor-not-allowed'
+                          : 'bg-gray-50 hover:bg-blue-50'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-semibold text-gray-800">
+                          {item.label[language] ?? item.label.en}
+                          {item.frozen && (
+                            <span className="ml-2 text-[10px] bg-gray-300 text-gray-700 px-1.5 py-0.5 rounded font-mono">
+                              Frozen Placeholder
+                            </span>
+                          )}
+                        </div>
+                        {item.valueDescription && (
+                          <div className="text-gray-500 text-[11px]">
+                            {item.valueDescription[language] ?? item.valueDescription.en}
+                          </div>
+                        )}
+                        {item.note && (
+                          <div className="text-gray-400 text-[10px] italic">
+                            {item.note[language] ?? item.note.en}
+                          </div>
+                        )}
+                      </div>
+
+                      {item.actionId && !item.frozen && (
+                        <button
+                          onClick={() => executeAction(item.actionId as SystemActionId)}
+                          className="px-2.5 py-1 rounded bg-[#316ac5] text-white hover:bg-[#255199] transition-colors text-xs font-medium cursor-pointer"
+                        >
+                          Execute
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Quick Metadata summary note */}
+            {versionRules?.note && (
+              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                <span className="font-bold">Verification Note: </span>
+                {versionRules.note}
+              </div>
+            )}
           </div>
         )}
 
