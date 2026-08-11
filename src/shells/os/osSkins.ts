@@ -2,16 +2,25 @@ import { type ThemeId } from '../../contexts/appContextTypes';
 import { type Language } from '../../i18n/translations';
 import { type OsSkinRules, type OsSystemLabels } from './osSkinTypes';
 
+const PROTECTED_CONTENT_APP_IDS = new Set([
+  'my-cv',
+  'projects-grid',
+  'blog',
+  'wiki',
+  'about',
+  'content-reader',
+]);
+
 export const osSkinRules: Record<ThemeId, OsSkinRules> = {
   'win-xp': {
     theme: 'win-xp',
     osClassName: 'os-winxp',
     displayName: 'Windows XP',
     appNames: {
-      'my-cv': { title: { en: 'My Documents', ru: 'Мои документы' } },
       pictures: { title: { en: 'My Pictures', ru: 'Мои рисунки' } },
       'control-panel': { title: { en: 'Control Panel', ru: 'Панель управления' } },
       'internet-explorer': { title: { en: 'Internet Explorer', ru: 'Internet Explorer' } },
+      notepad: { title: { en: 'Notepad', ru: 'Блокнот' } },
     },
     systemLabels: {
       startButton: { en: 'start', ru: 'пуск' },
@@ -25,9 +34,10 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     osClassName: 'os-classic',
     displayName: 'Windows 98',
     appNames: {
-      'my-cv': { title: { en: 'My Documents', ru: 'Мои документы' } },
       pictures: { title: { en: 'My Pictures', ru: 'Мои рисунки' } },
       'control-panel': { title: { en: 'Control Panel', ru: 'Панель управления' } },
+      'internet-explorer': { title: { en: 'Internet Explorer', ru: 'Internet Explorer' } },
+      notepad: { title: { en: 'Notepad', ru: 'Блокнот' } },
     },
     systemLabels: {
       startButton: { en: 'Start', ru: 'Пуск' },
@@ -41,9 +51,10 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     osClassName: 'os-win7',
     displayName: 'Windows 7',
     appNames: {
-      'my-cv': { title: { en: 'Documents', ru: 'Документы' } },
       pictures: { title: { en: 'Pictures', ru: 'Изображения' } },
       'control-panel': { title: { en: 'Control Panel', ru: 'Панель управления' } },
+      'internet-explorer': { title: { en: 'Internet Explorer', ru: 'Internet Explorer' } },
+      notepad: { title: { en: 'Notepad', ru: 'Блокнот' } },
     },
     systemLabels: {
       startButton: { en: 'Start', ru: 'Пуск' },
@@ -57,14 +68,14 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     osClassName: 'os-ubuntu',
     displayName: 'Ubuntu',
     appNames: {
-      'my-cv': { title: { en: 'Files', ru: 'Файлы' } },
       pictures: { title: { en: 'Photos', ru: 'Фото' } },
       'control-panel': { title: { en: 'Settings', ru: 'Настройки' } },
       terminal: { title: { en: 'Terminal', ru: 'Терминал' } },
       'internet-explorer': { title: { en: 'Browser', ru: 'Браузер' } },
+      notepad: { title: { en: 'Text Editor', ru: 'Текстовый редактор' } },
     },
     systemLabels: {
-      startButton: { en: 'Activities', ru: 'Обзор' },
+      startButton: { en: 'Menu', ru: 'Меню' },
       myComputer: { en: 'Files', ru: 'Файлы' },
       recycleBin: { en: 'Trash', ru: 'Корзина' },
     },
@@ -131,6 +142,10 @@ export function getOsAppTitle(
   theme: ThemeId,
   language: Language
 ): string {
+  if (PROTECTED_CONTENT_APP_IDS.has(appId)) {
+    return defaultTitle[language] ?? defaultTitle.en ?? '';
+  }
+
   const rules = getOsSkinRules(theme);
   const override = rules.appNames?.[appId]?.title;
   if (override) {
