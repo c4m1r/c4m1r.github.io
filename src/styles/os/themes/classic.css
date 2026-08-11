@@ -1,5 +1,10 @@
 /* Classic / Windows 98 visual overrides */
 
+.os-classic {
+  --os-font: "MS Sans Serif", "Tahoma", sans-serif;
+  background-color: #008080;
+}
+
 .os-classic .os-window,
 .os-win-98 .os-window {
   box-shadow: 1px 1px 0px #000000;
@@ -12,7 +17,10 @@
 
 .os-classic .os-titlebar,
 .os-win-98 .os-titlebar {
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%) !important;
+  color: #ffffff !important;
   padding: 2px 4px;
+  font-weight: bold;
 }
 
 .os-classic .os-button,
@@ -73,4 +81,5 @@
   border-bottom: 1px solid #808080 !important;
   color: #000000 !important;
   font-weight: bold !important;
+  border-radius: 0 !important;
 }
