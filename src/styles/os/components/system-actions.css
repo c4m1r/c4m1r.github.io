@@ -1,0 +1,111 @@
+/* ============================================================
+   System Actions Scoped Stylesheet — system-actions.css
+   Scope: .system-action-trigger, .system-action-menu, .system-action-button
+   ============================================================ */
+
+/* Base Tray Trigger */
+.system-action-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* ── 1. Windows XP Tray Affordance ─────────────────────────── */
+.os-winxp .system-action-trigger {
+  padding: 2px 4px;
+  border: 1px transparent solid;
+}
+
+.os-winxp .system-action-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.os-winxp .system-action-menu {
+  border-color: #0055ea;
+  box-shadow: 0 4px 16px rgba(0, 85, 234, 0.35);
+}
+
+/* ── 2. Windows 98 Classic Tray Affordance ─────────────────── */
+.os-classic .system-action-trigger {
+  padding: 1px 3px;
+  border: 1px inset #ffffff;
+  background-color: #c0c0c0;
+}
+
+.os-classic .system-action-menu {
+  background-color: #c0c0c0;
+  border: 2px outset #ffffff;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  border-radius: 0;
+}
+
+/* ── 3. Windows 7 Aero Glass Affordance ────────────────────── */
+.os-win7 .system-action-trigger {
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.os-win7 .system-action-trigger:hover {
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.6);
+}
+
+.os-win7 .system-action-menu {
+  background: rgba(240, 245, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ── 4. Ubuntu Yaru Panel Indicator Affordance ─────────────── */
+.os-ubuntu .system-action-trigger {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #ffffff;
+}
+
+.os-ubuntu .system-action-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.os-ubuntu .system-action-menu {
+  background-color: #383838;
+  color: #ffffff;
+  border: 1px solid #4d4d4d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.os-ubuntu .system-action-menu button {
+  color: #f7f7f7;
+}
+
+.os-ubuntu .system-action-menu button:hover {
+  background-color: #e95420;
+  color: #ffffff;
+}
+
+/* ── 5. iOS Touch Affordance ───────────────────────────────── */
+.os-ios .system-action-trigger {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.os-ios .system-action-menu {
+  width: 260px;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.os-ios .system-action-button {
+  min-height: 44px;
+  font-size: 13px;
+  border-radius: 10px;
+}

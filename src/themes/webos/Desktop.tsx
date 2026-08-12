@@ -43,6 +43,7 @@ import {
   getOsSystemLabel,
   getOsVersionRules,
 } from '../../shells/os/osSkins';
+import { SystemActionMenu } from '../../system/actions/SystemActionMenu';
 
 /**
  * Legacy desktop implementation. Do not add new runtime/window-manager logic
@@ -80,6 +81,7 @@ export function Desktop(props?: DesktopShellProps) {
   const [volumeLevel, setVolumeLevel] = useState(70);
   const [showVolumePanel, setShowVolumePanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
@@ -349,11 +351,27 @@ export function Desktop(props?: DesktopShellProps) {
       if (trayRef.current && !trayRef.current.contains(event.target as Node)) {
         setShowVolumePanel(false);
         setShowNotificationPanel(false);
+        setShowSystemActionMenu(false);
       }
     };
     document.addEventListener('mousedown', handleClickAway);
     return () => document.removeEventListener('mousedown', handleClickAway);
   }, []);
+
+  useEffect(() => {
+    const handleOpenSettings = () => {
+      openApp('control-panel');
+    };
+    const handleOpenAbout = () => {
+      openApp('about');
+    };
+    window.addEventListener('open-system-settings', handleOpenSettings);
+    window.addEventListener('open-system-about', handleOpenAbout);
+    return () => {
+      window.removeEventListener('open-system-settings', handleOpenSettings);
+      window.removeEventListener('open-system-about', handleOpenAbout);
+    };
+  }, [openApp]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1328,6 +1346,25 @@ export function Desktop(props?: DesktopShellProps) {
                 No new notifications
               </div>
             )}
+          </div>
+
+          {/* System Actions Tray Control */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowSystemActionMenu((prev) => !prev);
+                setShowVolumePanel(false);
+                setShowNotificationPanel(false);
+              }}
+              className="taskbar-tray-icon system-action-trigger"
+              title="System Actions"
+            >
+              <span className="text-xs">⚡</span>
+            </button>
+            <SystemActionMenu
+              isOpen={showSystemActionMenu}
+              onClose={() => setShowSystemActionMenu(false)}
+            />
           </div>
 
           {/* Tray Expansion Slider */}
