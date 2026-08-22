@@ -359,21 +359,6 @@ export function Desktop(props?: DesktopShellProps) {
   }, []);
 
   useEffect(() => {
-    const handleOpenSettings = () => {
-      openApp('control-panel');
-    };
-    const handleOpenAbout = () => {
-      openApp('about');
-    };
-    window.addEventListener('open-system-settings', handleOpenSettings);
-    window.addEventListener('open-system-about', handleOpenAbout);
-    return () => {
-      window.removeEventListener('open-system-settings', handleOpenSettings);
-      window.removeEventListener('open-system-about', handleOpenAbout);
-    };
-  }, [openApp]);
-
-  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'r') {
         e.preventDefault();
