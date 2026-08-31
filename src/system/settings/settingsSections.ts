@@ -89,7 +89,7 @@ export function getSystemSettingsSections(themeId: ThemeId): SettingSection[] {
         valueDescription: { en: 'Disabled (GRUB always starts first)', ru: 'Отключено (GRUB всегда первый)' },
         note: {
           en: 'GRUB bootloader is required as default entry screen for pseudo-OS selection.',
-          ru: 'Загрузчик GRUB всегда остается стартовым экраном выбор псевдо-ОС.',
+          ru: 'Загрузчик GRUB всегда остается стартовым экраном выбора псевдо-ОС.',
         },
       },
     ],
@@ -113,27 +113,37 @@ export function getSystemSettingsSections(themeId: ThemeId): SettingSection[] {
       { id: 'xp-net', label: { en: 'Network Connections', ru: 'Сетевые подключения' }, frozen: true },
       { id: 'xp-disp', label: { en: 'Display Settings', ru: 'Параметры экрана' }, frozen: true },
       { id: 'xp-sound', label: { en: 'Sounds and Audio Devices', ru: 'Звуки и аудиоустройства' }, frozen: true },
+      { id: 'xp-admin', label: { en: 'Administrative Tools', ru: 'Администрирование' }, frozen: true },
     ],
     'win-98': [
       { id: 'w98-hardware', label: { en: 'Add New Hardware', ru: 'Установка оборудования' }, frozen: true },
       { id: 'w98-pass', label: { en: 'Passwords', ru: 'Пароли' }, frozen: true },
+      { id: 'w98-modem', label: { en: 'Modems & Dial-Up', ru: 'Модемы и плагины' }, frozen: true },
     ],
     win7: [
       { id: 'w7-aero', label: { en: 'Aero Glass Personalization', ru: 'Персонализация Aero' }, frozen: true },
       { id: 'w7-security', label: { en: 'Action Center & Security', ru: 'Центр поддержки и безопасность' }, frozen: true },
+      { id: 'w7-update', label: { en: 'Windows Update', ru: 'Центр обновления Windows' }, frozen: true },
     ],
     ubuntu: [
       { id: 'ub-gnome', label: { en: 'Appearance & Dock Settings', ru: 'Внешний вид и Dock' }, frozen: true },
       { id: 'ub-privacy', label: { en: 'Privacy & Security', ru: 'Конфиденциальность' }, frozen: true },
+      { id: 'ub-display', label: { en: 'Display & Scaling', ru: 'Экраны и масштабирование' }, frozen: true },
+    ],
+    webos: [
+      { id: 'webos-palm', label: { en: 'Palm Profile Sync', ru: 'Синхронизация Palm Profile' }, frozen: true },
+      { id: 'webos-cards', label: { en: 'Card View Animations', ru: 'Анимация карточек' }, frozen: true },
     ],
     'ios-26': [
       { id: 'ios-wifi', label: { en: 'Wi-Fi & Cellular', ru: 'Wi-Fi и сотовая связь' }, frozen: true },
       { id: 'ios-bt', label: { en: 'Bluetooth & AirDrop', ru: 'Bluetooth и AirDrop' }, frozen: true },
       { id: 'ios-acc', label: { en: 'Accessibility & Touch', ru: 'Универсальный доступ' }, frozen: true },
+      { id: 'ios-stage', label: { en: 'Stage Manager Layout', ru: 'Режим Stage Manager' }, frozen: true },
     ],
     'ios-16': [
       { id: 'ios-wifi', label: { en: 'Wi-Fi', ru: 'Wi-Fi' }, frozen: true },
       { id: 'ios-bt', label: { en: 'Bluetooth', ru: 'Bluetooth' }, frozen: true },
+      { id: 'ios-focus', label: { en: 'Focus Modes', ru: 'Фокусирование' }, frozen: true },
     ],
     'ios-9': [
       { id: 'ios-wifi', label: { en: 'Wi-Fi', ru: 'Wi-Fi' }, frozen: true },
@@ -142,6 +152,14 @@ export function getSystemSettingsSections(themeId: ThemeId): SettingSection[] {
     'ios-5': [
       { id: 'ios-wifi', label: { en: 'Wi-Fi', ru: 'Wi-Fi' }, frozen: true },
       { id: 'ios-icloud', label: { en: 'iCloud Sync (iOS 5)', ru: 'Синхронизация iCloud (iOS 5)' }, frozen: true },
+    ],
+    arch: [
+      { id: 'arch-pacman', label: { en: 'Pacman Package Manager', ru: 'Пакетный менеджер Pacman' }, frozen: true },
+      { id: 'arch-systemd', label: { en: 'Systemd Services', ru: 'Службы Systemd' }, frozen: true },
+    ],
+    halloween: [
+      { id: 'spooky-sound', label: { en: 'Spooky Sound FX', ru: 'Звуковые эффекты ужасов' }, frozen: true },
+      { id: 'pumpkin-glow', label: { en: 'Pumpkin Glow Mode', ru: 'Режим свечения тыквы' }, frozen: true },
     ],
   };
 
