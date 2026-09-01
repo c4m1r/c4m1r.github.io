@@ -13,7 +13,6 @@ type CPView = 'categories' | 'wallpaper' | 'systemInfo';
 export function ControlPanel() {
   const { theme, language } = useApp();
   const { executeAction } = useSystemActions();
-  const isXpFamily = theme !== 'win-98';
   const currentTheme = (theme as ThemeAssetId) ?? 'webos';
   const themeAssets = THEME_ASSETS[currentTheme] ?? THEME_ASSETS.webos;
   const controlPanelIcons = themeAssets.controlPanelIcons ?? {};
@@ -31,6 +30,15 @@ export function ControlPanel() {
   });
 
   const { wallpapers, loading: wallpapersLoading } = useGallery();
+
+  // OS-specific visual theme map
+  const isIos = theme.startsWith('ios');
+  const isWin98 = theme === 'win-98';
+  const isWinXp = theme === 'win-xp';
+  const isWin7 = theme === 'win7';
+  const isUbuntu = theme === 'ubuntu';
+  const isArch = theme === 'arch';
+  const isHalloween = theme === 'halloween';
 
   const categories = useMemo(
     () => [
@@ -91,10 +99,79 @@ export function ControlPanel() {
     return <div className="text-3xl">{fallback}</div>;
   };
 
+  // Container & section style resolvers
+  const sidebarClass = isWin98
+    ? 'bg-[#000080] text-white'
+    : isWinXp
+    ? 'bg-gradient-to-b from-[#1f62d2] to-[#3886ef] text-white'
+    : isWin7
+    ? 'bg-gradient-to-b from-[#1e3c72] to-[#2a5298] text-white'
+    : isUbuntu
+    ? 'bg-[#2c2c2c] text-white'
+    : isArch
+    ? 'bg-[#0f1419] text-[#1793d1] border-r border-[#1793d1]/30 font-mono'
+    : isHalloween
+    ? 'bg-[#120524] text-[#ff7518] border-r border-[#ff7518]/30'
+    : isIos
+    ? 'bg-[#1c1c1e] text-white'
+    : 'bg-gradient-to-b from-[#003b46] to-[#07575b] text-white';
+
+  const mainClass = isWin98
+    ? 'bg-[#c0c0c0] text-black'
+    : isWinXp
+    ? 'bg-white text-black'
+    : isWin7
+    ? 'bg-[#f4f7fb] text-black'
+    : isUbuntu
+    ? 'bg-[#383838] text-white'
+    : isArch
+    ? 'bg-[#171d23] text-[#e6eff8] font-mono'
+    : isHalloween
+    ? 'bg-[#1a0933] text-[#f0e6ff]'
+    : isIos
+    ? 'bg-black text-white'
+    : 'bg-[#07575b] text-white';
+
+  const titleClass = isWin98
+    ? 'text-[#000080]'
+    : isWinXp
+    ? 'text-[#003399]'
+    : isWin7
+    ? 'text-[#1e3e6b]'
+    : isUbuntu
+    ? 'text-[#e95420]'
+    : isArch
+    ? 'text-[#1793d1]'
+    : isHalloween
+    ? 'text-[#ff7518]'
+    : isIos
+    ? 'text-white'
+    : 'text-[#66a5ad]';
+
+  const cardClass = isWin98
+    ? 'bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080]'
+    : isWinXp
+    ? 'bg-gradient-to-b from-[#f0f5ff] to-[#e8f0ff] border border-[#c7d8ed] rounded-lg hover:border-[#739fcf]'
+    : isWin7
+    ? 'bg-white/90 border border-[#b8c9dc] shadow-sm rounded-md hover:border-[#7098c4]'
+    : isUbuntu
+    ? 'bg-[#454545] border border-[#525252] rounded-md text-white'
+    : isArch
+    ? 'bg-[#1f262e] border border-[#1793d1]/40 rounded-sm text-[#e6eff8]'
+    : isHalloween
+    ? 'bg-[#281048] border border-[#ff7518]/50 shadow-[0_0_12px_rgba(255,117,24,0.2)] rounded-lg text-[#f0e6ff]'
+    : isIos
+    ? 'bg-[#1c1c1e] border border-white/10 rounded-xl text-white'
+    : 'bg-[#66a5ad]/20 border border-[#66a5ad]/40 rounded-xl text-white';
+
   return (
-    <div className={`w-full h-full flex ${isXpFamily ? 'bg-white' : 'bg-[#c0c0c0]'} overflow-auto`}>
+    <div
+      className={`w-full h-full flex ${mainClass} overflow-auto`}
+      data-os-theme={theme}
+      data-settings-surface="control-panel"
+    >
       {/* Sidebar */}
-      <div className={`w-[200px] flex-shrink-0 ${isXpFamily ? 'bg-gradient-to-b from-[#1f62d2] to-[#3886ef]' : 'bg-[#000080]'} text-white p-4`}>
+      <div className={`w-[200px] flex-shrink-0 ${sidebarClass} p-4`}>
         <h2 className="text-sm font-bold mb-4">Control Panel</h2>
         <div className="space-y-2 text-xs">
           <button
@@ -139,25 +216,18 @@ export function ControlPanel() {
         {view === 'systemInfo' && (
           <div className="space-y-6">
             <div className="mb-4">
-              <h1 className={`text-2xl font-bold mb-1 ${isXpFamily ? 'text-[#003399]' : 'text-black'}`}>
+              <h1 className={`text-2xl font-bold mb-1 ${titleClass}`}>
                 System & Device Information
               </h1>
-              <p className="text-xs text-gray-600">
+              <p className="text-xs opacity-75">
                 Global System Services & OS Affordance Settings
               </p>
             </div>
 
             {/* Active & Frozen Settings Sections */}
             {settingsSections.map((section) => (
-              <div
-                key={section.id}
-                className={`p-4 rounded-lg ${
-                  isXpFamily
-                    ? 'bg-white border border-[#c7d8ed]'
-                    : 'bg-white border-2 border-gray-400'
-                }`}
-              >
-                <h3 className={`font-bold text-sm mb-3 ${isXpFamily ? 'text-[#003399]' : 'text-[#000080]'}`}>
+              <div key={section.id} className={`p-4 ${cardClass}`}>
+                <h3 className={`font-bold text-sm mb-3 ${titleClass}`}>
                   {section.title[language] ?? section.title.en}
                 </h3>
                 <div className="space-y-2 text-xs">
@@ -165,27 +235,29 @@ export function ControlPanel() {
                     <div
                       key={item.id}
                       className={`flex items-center justify-between p-2 rounded ${
+                        isIos ? 'min-h-[44px] py-3' : ''
+                      } ${
                         item.frozen
-                          ? 'bg-gray-100 opacity-65 cursor-not-allowed'
-                          : 'bg-gray-50 hover:bg-blue-50'
+                          ? 'bg-black/10 dark:bg-white/5 opacity-60 cursor-not-allowed'
+                          : 'bg-black/5 dark:bg-white/10 hover:bg-blue-500/10'
                       }`}
                     >
                       <div>
-                        <div className="font-semibold text-gray-800">
+                        <div className="font-semibold">
                           {item.label[language] ?? item.label.en}
                           {item.frozen && (
-                            <span className="ml-2 text-[10px] bg-gray-300 text-gray-700 px-1.5 py-0.5 rounded font-mono">
-                              Frozen Placeholder
+                            <span className="ml-2 text-[10px] bg-gray-500/30 px-1.5 py-0.5 rounded font-mono">
+                              Visual Placeholder
                             </span>
                           )}
                         </div>
                         {item.valueDescription && (
-                          <div className="text-gray-500 text-[11px]">
+                          <div className="opacity-75 text-[11px]">
                             {item.valueDescription[language] ?? item.valueDescription.en}
                           </div>
                         )}
                         {item.note && (
-                          <div className="text-gray-400 text-[10px] italic">
+                          <div className="opacity-60 text-[10px] italic">
                             {item.note[language] ?? item.note.en}
                           </div>
                         )}
@@ -207,7 +279,7 @@ export function ControlPanel() {
 
             {/* Quick Metadata summary note */}
             {versionRules?.note && (
-              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+              <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded text-xs">
                 <span className="font-bold">Verification Note: </span>
                 {versionRules.note}
               </div>
@@ -219,31 +291,27 @@ export function ControlPanel() {
         {view === 'categories' && (
           <>
             <div className="mb-6">
-              <h1 className={`text-2xl font-bold mb-2 ${isXpFamily ? 'text-[#003399]' : 'text-black'}`}>
+              <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
                 Pick a category
               </h1>
-              <p className="text-sm text-gray-600">or pick a Control Panel icon</p>
+              <p className="text-sm opacity-75">or pick a Control Panel icon</p>
             </div>
 
             <div className="space-y-4">
               {categories.map((category, index) => (
                 <div
                   key={index}
-                  className={`${
-                    isXpFamily
-                      ? 'bg-gradient-to-b from-[#f0f5ff] to-[#e8f0ff] border border-[#c7d8ed] rounded-lg hover:border-[#739fcf]'
-                      : 'bg-white border-2 border-gray-400'
-                  } p-4 cursor-pointer transition-colors`}
+                  className={`${cardClass} p-4 cursor-pointer transition-colors`}
                 >
                   <div className="flex items-start gap-3 mb-2">
                     <div className="flex-shrink-0">
                       {renderCategoryIcon(category.id, category.emoji)}
                     </div>
                     <div className="flex-1">
-                      <h3 className={`font-bold text-base ${isXpFamily ? 'text-[#003399]' : 'text-[#000080]'} mb-1`}>
+                      <h3 className={`font-bold text-base ${titleClass} mb-1`}>
                         {category.title}
                       </h3>
-                      <div className="text-xs text-gray-600 space-y-0.5">
+                      <div className="text-xs opacity-80 space-y-0.5">
                         {category.items.map((item, i) => (
                           <div key={i} className="hover:underline cursor-pointer">
                             {item}
@@ -262,16 +330,16 @@ export function ControlPanel() {
         {view === 'wallpaper' && (
           <>
             <div className="mb-6">
-              <h1 className={`text-2xl font-bold mb-2 ${isXpFamily ? 'text-[#003399]' : 'text-black'}`}>
+              <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
                 Desktop Wallpaper
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm opacity-75">
                 Choose a background picture from the gallery or custom uploads
               </p>
             </div>
 
             {wallpapersLoading ? (
-              <div className="text-center py-8 text-gray-500">Loading gallery wallpapers...</div>
+              <div className="text-center py-8 opacity-60">Loading gallery wallpapers...</div>
             ) : (
               <>
                 <div className="grid grid-cols-3 gap-3 mb-6">
@@ -282,7 +350,7 @@ export function ControlPanel() {
                       className={`relative aspect-video rounded overflow-hidden cursor-pointer border-2 transition-all ${
                         selectedWallpaper === wp.imagePath
                           ? 'border-[#316ac5] ring-2 ring-[#316ac5]/50 scale-[1.02]'
-                          : 'border-gray-300 hover:border-gray-400'
+                          : 'border-gray-500/30 hover:border-gray-500/60'
                       }`}
                     >
                       <img src={wp.imagePath} alt={wp.title} className="w-full h-full object-cover" />
@@ -295,12 +363,12 @@ export function ControlPanel() {
 
                 {/* Selected Wallpaper Actions */}
                 {(selectedWallpaper || customActive) && (
-                  <div className={`p-4 rounded-lg ${isXpFamily ? 'bg-[#f0f5ff] border border-[#c7d8ed]' : 'bg-white border-2 border-gray-400'} mb-4`}>
-                    <p className={`text-sm font-semibold mb-3 ${isXpFamily ? 'text-[#003399]' : 'text-[#000080]'}`}>
+                  <div className={`p-4 ${cardClass} mb-4`}>
+                    <p className={`text-sm font-semibold mb-3 ${titleClass}`}>
                       Preview
                     </p>
                     {selectedWallpaper && (
-                      <div className="relative w-full max-w-xs mx-auto aspect-video rounded overflow-hidden border border-gray-300 shadow mb-3">
+                      <div className="relative w-full max-w-xs mx-auto aspect-video rounded overflow-hidden border border-gray-500/30 shadow mb-3">
                         <img
                           src={selectedWallpaper}
                           alt="Wallpaper preview"

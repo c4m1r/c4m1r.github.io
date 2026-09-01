@@ -44,6 +44,11 @@
   border-radius: 0;
 }
 
+.os-classic .system-action-menu button:hover:not(:disabled) {
+  background-color: #000080 !important;
+  color: #ffffff !important;
+}
+
 /* ── 3. Windows 7 Aero Glass Affordance ────────────────────── */
 .os-win7 .system-action-trigger {
   padding: 2px 5px;
@@ -85,12 +90,52 @@
   color: #f7f7f7;
 }
 
-.os-ubuntu .system-action-menu button:hover {
-  background-color: #e95420;
-  color: #ffffff;
+.os-ubuntu .system-action-menu button:hover:not(:disabled) {
+  background-color: #e95420 !important;
+  color: #ffffff !important;
 }
 
-/* ── 5. iOS Touch Affordance ───────────────────────────────── */
+/* ── 5. Arch Linux Dark Slate Affordance ───────────────────── */
+.os-arch .system-action-trigger {
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: #1793d1;
+}
+
+.os-arch .system-action-menu {
+  background-color: #171d23;
+  color: #e6eff8;
+  border: 1px solid #1793d1;
+  box-shadow: 0 4px 16px rgba(23, 147, 209, 0.4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.os-arch .system-action-menu button:hover:not(:disabled) {
+  background-color: #1793d1 !important;
+  color: #ffffff !important;
+}
+
+/* ── 6. Halloween Spooky Glow Affordance ───────────────────── */
+.os-spooky .system-action-trigger {
+  padding: 2px 6px;
+  color: #ff7518;
+  text-shadow: 0 0 6px rgba(255, 117, 24, 0.7);
+}
+
+.os-spooky .system-action-menu {
+  background-color: #1a0933;
+  color: #f0e6ff;
+  border: 1px solid #ff7518;
+  box-shadow: 0 0 16px rgba(255, 117, 24, 0.5);
+}
+
+.os-spooky .system-action-menu button:hover:not(:disabled) {
+  background-color: #ff7518 !important;
+  color: #1a0933 !important;
+  font-weight: bold;
+}
+
+/* ── 7. iOS Touch Affordance ───────────────────────────────── */
 .os-ios .system-action-trigger {
   min-width: 44px;
   min-height: 44px;
