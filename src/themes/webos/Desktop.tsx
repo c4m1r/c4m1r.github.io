@@ -39,11 +39,11 @@ import { THEME_STYLES } from './themeStyles';
 import { AsciiAurora } from '../../components/effects';
 import {
   getOsAppTitle,
-  getOsDeviceSupportRules,
   getOsSystemLabel,
-  getOsVersionRules,
 } from '../../shells/os/osSkins';
-import { SystemActionMenu } from '../../system/actions/SystemActionMenu';
+import { TaskbarSystemArea } from '../../shells/desktop/components/TaskbarSystemArea';
+import { getDesktopOsAttributes } from '../../shells/desktop/runtime/desktopOsAttributes';
+import { useDesktopSystemActionBridge } from '../../shells/desktop/runtime/useDesktopSystemActionBridge';
 
 /**
  * Legacy desktop implementation. Do not add new runtime/window-manager logic
@@ -132,8 +132,6 @@ export function Desktop(props?: DesktopShellProps) {
   const themeStyles = THEME_STYLES[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_STYLES.webos;
   const isXpFamily = isThemeInFamily(themeKey, XP_FAMILY_THEMES);
   const osClassName = getDesktopOsClassName(themeKey);
-  const osVersionRules = getOsVersionRules(themeKey);
-  const osDeviceRules = getOsDeviceSupportRules(themeKey);
   const startLabel = getOsSystemLabel('startButton', t.start ?? 'Start', themeKey, language);
   const startupSound = resolveAssetPath(themeAssets.startupSound, fallbackAssets.startupSound);
   const shutdownSound = resolveAssetPath(themeAssets.shutdownSound, fallbackAssets.shutdownSound);
@@ -988,17 +986,17 @@ export function Desktop(props?: DesktopShellProps) {
     focusWindow(id);
   };
 
+  const osAttributes = getDesktopOsAttributes(themeKey);
+
+  useDesktopSystemActionBridge({
+    onOpenSettings: () => launchApp('control-panel'),
+    onOpenAbout: () => launchApp('about'),
+  });
+
   return (
     <div
       ref={desktopRef}
-      data-os-theme={themeKey}
-      data-os-class={osClassName}
-      data-os-version={osVersionRules?.version}
-      data-design-era={osVersionRules?.designEra}
-      data-device-family={osDeviceRules?.deviceFamily}
-      data-representative-device={osDeviceRules?.representativeDevice}
-      data-support-cycle={osDeviceRules?.supportCycleLabel}
-      data-form-factor={osDeviceRules?.formFactor}
+      {...osAttributes}
       className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
       style={{
         backgroundImage: customWallpaper
@@ -1276,105 +1274,33 @@ export function Desktop(props?: DesktopShellProps) {
 
           {/* Notification Tray / Clock */}
           <div ref={trayRef} className={`taskbar-tray ${themeStyles.systemTray.join(' ')}`}>
-          <button
-            onClick={toggleFullscreen}
-            className="taskbar-tray-icon"
-            title={isFullscreen ? 'Exit full screen' : 'Full screen'}
-          >
-            {fullscreenIconSrc && (
-              <img src={fullscreenIconSrc} alt="fullscreen" className="w-4 h-4" />
-            )}
-          </button>
-          <div className="relative">
-            <button
-              onClick={handleVolumeToggle}
-              className="taskbar-tray-icon"
-              title="Volume"
-            >
-              <img
-                src={volumeLevel === 0 ? muteIconSrc : volumeIconSrc}
-                alt="volume"
-                className="w-4 h-4"
-              />
-            </button>
-            {showVolumePanel && (
-              <div className="absolute right-0 bottom-full mb-2 w-32 rounded-lg border border-[#90aee6] bg-[#fefefe] px-3 py-3 shadow-[0_6px_16px_rgba(0,0,0,0.35)] flex items-center gap-3">
-                <img
-                  src={volumeLevel === 0 ? muteIconSrc : volumeIconSrc}
-                  alt="Volume icon"
-                  className="volume-panel__icon"
-                />
-                <div className="volume-slider-wrapper">
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={volumeLevel}
-                    {...{ orient: 'vertical' }}
-                    onChange={(e) => setVolumeLevel(Number(e.currentTarget.value))}
-                    className="volume-slider"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="relative">
-            <button
-              onClick={handleNotificationToggle}
-              className="taskbar-tray-icon"
-              title="Notifications"
-            >
-              {notificationIconSrc && (
-                <img src={notificationIconSrc} alt="notifications" className="w-4 h-4" />
-              )}
-            </button>
-            {showNotificationPanel && (
-              <div className="absolute right-0 bottom-full mb-2 w-48 rounded-lg border border-[#90aee6] bg-[#fefefe] px-4 py-3 shadow-[0_6px_16px_rgba(0,0,0,0.35)] text-[11px] text-[#1b1b1b]">
-                No new notifications
-              </div>
-            )}
-          </div>
-
-          {/* System Actions Tray Control */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setShowSystemActionMenu((prev) => !prev);
-                setShowVolumePanel(false);
-                setShowNotificationPanel(false);
-              }}
-              className="taskbar-tray-icon system-action-trigger"
-              title="System Actions"
-            >
-              <span className="text-xs">⚡</span>
-            </button>
-            <SystemActionMenu
-              isOpen={showSystemActionMenu}
-              onClose={() => setShowSystemActionMenu(false)}
-            />
-          </div>
-
-          {/* Tray Expansion Slider */}
-          {isXpFamily && themeAssets.trayExpandIcon && (
-            <button
-              className="taskbar-tray-icon taskbar-tray-icon--compact"
-              title="Show hidden icons"
-            >
-              <img src={themeAssets.trayExpandIcon} alt="" className="w-3 h-3" />
-            </button>
-          )}
-
-          {/* Clock */}
-          <div className="taskbar-tray-time">
-            <span
-              className="text-[11px] font-semibold tracking-wide uppercase"
-              style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)', letterSpacing: '0.05em' }}
-            >
-              {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          </div>
-          </div>
+          <TaskbarSystemArea
+            language={language}
+            isXpFamily={isXpFamily}
+            trayRef={trayRef}
+            volumeLevel={volumeLevel}
+            showVolumePanel={showVolumePanel}
+            showNotificationPanel={showNotificationPanel}
+            showSystemActionMenu={showSystemActionMenu}
+            onVolumeToggle={handleVolumeToggle}
+            onNotificationToggle={handleNotificationToggle}
+            onSystemActionToggle={() => {
+              setShowSystemActionMenu((prev) => !prev);
+              setShowVolumePanel(false);
+              setShowNotificationPanel(false);
+            }}
+            onVolumeLevelChange={(val) => setVolumeLevel(val)}
+            isFullscreen={isFullscreen}
+            onFullscreenToggle={toggleFullscreen}
+            time={time}
+            volumeIconSrc={volumeIconSrc}
+            muteIconSrc={muteIconSrc}
+            fullscreenIconSrc={fullscreenIconSrc}
+            notificationIconSrc={notificationIconSrc}
+            trayExpandIconSrc={themeAssets.trayExpandIcon}
+          />
         </div>
+      </div>
       </div>
 
       {
