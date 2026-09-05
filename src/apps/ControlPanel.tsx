@@ -247,7 +247,7 @@ export function ControlPanel() {
                           {item.label[language] ?? item.label.en}
                           {item.frozen && (
                             <span className="ml-2 text-[10px] bg-gray-500/30 px-1.5 py-0.5 rounded font-mono">
-                              Visual Placeholder
+                              {language === 'ru' ? 'Визуальный макет' : 'Visual Placeholder'}
                             </span>
                           )}
                         </div>

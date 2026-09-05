@@ -5,6 +5,7 @@
 
 import { useCallback, useState, useRef, useEffect, ReactNode } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { getWindowChromeSkin } from '../../shells/desktop/runtime/windowChromeSkin';
 
 interface WindowProps {
   id: string;
@@ -190,6 +191,7 @@ export function Window({
     }
   };
 
+  const windowSkin = getWindowChromeSkin(theme);
   const isXpFamily = theme !== 'win-98';
 
   if (minimized) {
@@ -200,6 +202,7 @@ export function Window({
   if (isXpFamily) {
     const xpClasses = [
       'absolute flex flex-col xp-window os-window',
+      windowSkin.className,
       maximized ? 'xp-window--maximized' : '',
       focused ? 'xp-window--active' : 'xp-window--inactive os-window--inactive',
     ]
@@ -209,6 +212,7 @@ export function Window({
     return (
       <div
         ref={windowRef}
+        {...windowSkin.dataAttributes}
         className={xpClasses}
         style={{
           left: `${position.x}px`,
@@ -278,6 +282,7 @@ export function Window({
   // Windows 98 styles
   const win98Classes = [
     'absolute win98-window os-window',
+    windowSkin.className,
     focused ? 'win98-window--active' : 'win98-window--inactive os-window--inactive',
   ]
     .filter(Boolean)
@@ -286,6 +291,7 @@ export function Window({
   return (
     <div
       ref={windowRef}
+      {...windowSkin.dataAttributes}
       className={win98Classes}
       style={{
         left: `${position.x}px`,
