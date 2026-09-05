@@ -24,3 +24,6 @@ This report documents the Phase 1 modularization of `src/themes/webos/Desktop.ts
 - **Window Manager & StartMenu Preserved**: Window drag/resize, StartMenu toggle, context menu, and app launching mechanisms remain 100% intact.
 - **Zero Runtime Forks**: Single `DesktopShell` engine, single `appRegistry`, zero `XpDesktopRuntime`, `UbuntuDesktopRuntime`, or `IosDesktopRuntime` components.
 - **Asset Preservation**: 100% of media and asset files (`.mp3`, `.gif`, `.webm`, `.png`) are preserved.
+
+> [!NOTE]
+> Extraction continued in Phase 2 with `DesktopStartMenuSurface.tsx` and `windowChromeSkin.ts`. See [desktop-runtime-extraction-phase-2.md](file:///Users/admin/Documents/_git/c4m1r-github/docs/nerv/reports/desktop-runtime-extraction-phase-2.md).

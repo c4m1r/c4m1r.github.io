@@ -16,11 +16,27 @@ interface Particle {
 }
 
 export function WeatherEffects() {
-  const { effect } = useWeather();
+  const { effect, setEffect } = useWeather();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>();
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const handleCustomEffect = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      const effectName = customEvent.detail ?? 'fireworks';
+      if (effectName === 'fireworks' && setEffect) {
+        setEffect('fireworks');
+      }
+    };
+    window.addEventListener('trigger-system-effect', handleCustomEffect);
+    window.addEventListener('trigger-global-effect', handleCustomEffect);
+    return () => {
+      window.removeEventListener('trigger-system-effect', handleCustomEffect);
+      window.removeEventListener('trigger-global-effect', handleCustomEffect);
+    };
+  }, [setEffect]);
 
   useEffect(() => {
     const update = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });

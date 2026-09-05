@@ -3,7 +3,8 @@ import { useApp } from '../../contexts/useApp';
 import { type ThemeId } from '../../contexts/appContextTypes';
 import { translations } from '../../i18n/translations';
 import { loadMarkdownContent } from '../../lib/loadMarkdownContent';
-import { StartMenu } from './StartMenu';
+import { DesktopStartMenuSurface } from '../../shells/desktop/components/DesktopStartMenuSurface';
+
 import { Window } from '../../apps/desktop/Window';
 import { ErrorBox } from './ErrorBox';
 import { Notepad } from '../../apps/notepad';
@@ -1303,21 +1304,18 @@ export function Desktop(props?: DesktopShellProps) {
       </div>
       </div>
 
-      {
-        showStartMenu && (
-          <div onClick={(e) => e.stopPropagation()}>
-            <StartMenu
-              onClose={closeStartMenu}
-              onLaunchApp={launchApp}
-              onOpenPath={openPathFromMenu}
-              onSystemCommand={(command) => {
-                handleSystemCommand(command);
-              }}
-              onHover={handleMenuHoverSound}
-            />
-          </div>
-        )
-      }
+      <div onClick={(e) => e.stopPropagation()}>
+        <DesktopStartMenuSurface
+          isOpen={showStartMenu}
+          onClose={closeStartMenu}
+          onLaunchApp={launchApp}
+          onOpenPath={openPathFromMenu}
+          onSystemCommand={(command) => {
+            handleSystemCommand(command);
+          }}
+          onHover={handleMenuHoverSound}
+        />
+      </div>
 
       {
         contextMenu && (
