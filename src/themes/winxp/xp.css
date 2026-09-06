@@ -1248,65 +1248,14 @@
 .xp-boot-screen__identity {
   display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: center;
 }
 
-/* 4-Tile XP Flag */
-.xp-boot-screen__flag,
-.xp-welcome-screen__flag {
-  width: 52px;
-  height: 52px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 3px;
-  transform: skewY(-5deg);
-}
-
-.xp-flag-tile {
-  border-radius: 3px;
-  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.4);
-}
-
-.xp-flag-red { background: linear-gradient(135deg, #f04e38 0%, #d83018 100%); }
-.xp-flag-green { background: linear-gradient(135deg, #5ebc34 0%, #46a41c 100%); }
-.xp-flag-blue { background: linear-gradient(135deg, #0081d6 0%, #0065b8 100%); }
-.xp-flag-yellow { background: linear-gradient(135deg, #ffc800 0%, #e6a800 100%); }
-
-.xp-boot-screen__text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1;
-}
-
-.xp-boot-screen__microsoft {
-  font-size: 20px;
-  font-style: italic;
-  font-weight: 500;
-  color: #ffffff;
-  letter-spacing: 0.04em;
-}
-
-.xp-boot-screen__product {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.xp-boot-screen__windows {
-  font-size: 38px;
-  font-weight: 700;
-  color: #ffffff;
-  font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
-  letter-spacing: -0.02em;
-}
-
-.xp-boot-screen__xp {
-  font-size: 32px;
-  font-weight: 800;
-  font-style: italic;
-  color: #f7931e;
-  font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+.xp-boot-screen__logo-img {
+  width: 260px;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
 /* Boot Progress Indicator Frame */
@@ -1401,43 +1350,14 @@
 .xp-welcome-screen__identity {
   display: flex;
   align-items: center;
-  gap: 16px;
   margin-bottom: 24px;
 }
 
-.xp-welcome-screen__brand {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1;
-}
-
-.xp-welcome-screen__microsoft {
-  font-size: 16px;
-  font-style: italic;
-  color: #ffffff;
-  opacity: 0.9;
-}
-
-.xp-welcome-screen__product {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.xp-welcome-screen__windows {
-  font-size: 32px;
-  font-weight: 700;
-  color: #ffffff;
-  font-family: 'Trebuchet MS', sans-serif;
-}
-
-.xp-welcome-screen__xp {
-  font-size: 28px;
-  font-weight: 800;
-  font-style: italic;
-  color: #ff9400;
-  font-family: 'Trebuchet MS', sans-serif;
+.xp-welcome-screen__logo-img {
+  width: 220px;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .xp-welcome-screen__instruction {
@@ -1558,19 +1478,11 @@
   background: rgba(255, 255, 255, 0.15) !important;
 }
 
-.xp-welcome-screen__power-icon-wrapper {
+.xp-welcome-screen__power-icon {
   width: 28px;
   height: 28px;
-  border-radius: 4px;
-  background: linear-gradient(to bottom, #d84141, #941818);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.xp-welcome-screen__power-icon {
-  color: #ffffff;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .xp-welcome-screen__footer-note {

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
-import { Power } from 'lucide-react';
+import bootLogo from './assets/boot/boot-windows-logo.png';
+import shutdownIcon from './assets/icons/shutdown.png';
 import userAvatar from './assets/user.gif';
 import './xp.css';
 
@@ -23,6 +24,12 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     setMode('grub');
   };
 
+  const footerNote = language === 'ru'
+    ? 'После входа в систему вы можете добавить или изменить учетные записи в Панели управления.'
+    : 'After you log on, you can add or change accounts in Control Panel.';
+
+  const loginTitleText = t.loginTitle || (language === 'ru' ? 'Чтобы начать, щелкните свое имя пользователя' : 'To begin, click your user name');
+
   return (
     <div className="xp-welcome-screen os-shell os-winxp">
       {/* Top Accent Bar */}
@@ -33,22 +40,14 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         {/* Left Half: XP Identity & Instructions */}
         <div className="xp-welcome-screen__left">
           <div className="xp-welcome-screen__identity">
-            <div className="xp-welcome-screen__flag" aria-hidden="true">
-              <span className="xp-flag-tile xp-flag-red" />
-              <span className="xp-flag-tile xp-flag-green" />
-              <span className="xp-flag-tile xp-flag-blue" />
-              <span className="xp-flag-tile xp-flag-yellow" />
-            </div>
-            <div className="xp-welcome-screen__brand">
-              <span className="xp-welcome-screen__microsoft">Microsoft</span>
-              <div className="xp-welcome-screen__product">
-                <span className="xp-welcome-screen__windows">Windows</span>
-                <span className="xp-welcome-screen__xp">XP</span>
-              </div>
-            </div>
+            <img
+              src={bootLogo}
+              alt="Microsoft Windows XP"
+              className="xp-welcome-screen__logo-img"
+            />
           </div>
           <div className="xp-welcome-screen__instruction">
-            {t.loginTitle || 'To begin, click your user name'}
+            {loginTitleText}
           </div>
         </div>
 
@@ -78,8 +77,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               <span className="xp-welcome-screen__username">{t.user || 'C4m1r'}</span>
               <span className="xp-welcome-screen__user-status">
                 {isLoggingIn
-                  ? t.loggingIn || 'Loading your personal settings...'
-                  : t.loginHint || 'Click on your user name to begin'}
+                  ? t.loggingIn || (language === 'ru' ? 'Загрузка личных параметров...' : 'Loading your personal settings...')
+                  : t.loginHint || (language === 'ru' ? 'Выберите имя пользователя для начала работы' : 'Click on your user name to begin')}
               </span>
             </div>
           </button>
@@ -90,16 +89,14 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       <footer className="xp-welcome-screen__footer">
         <button
           onClick={handleShutdown}
-          className="xp-welcome-screen__power-btn os-button"
+          className="xp-welcome-screen__power-btn"
         >
-          <div className="xp-welcome-screen__power-icon-wrapper">
-            <Power size={14} className="xp-welcome-screen__power-icon" />
-          </div>
-          <span>{t.turnOffComputer || 'Turn off computer'}</span>
+          <img src={shutdownIcon} alt="" className="xp-welcome-screen__power-icon" />
+          <span>{t.turnOffComputer || (language === 'ru' ? 'Выключение компьютера' : 'Turn off computer')}</span>
         </button>
 
         <div className="xp-welcome-screen__footer-note">
-          After you log on, you can add or change accounts via Control Panel.
+          {footerNote}
         </div>
       </footer>
     </div>
