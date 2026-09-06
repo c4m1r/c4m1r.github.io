@@ -109,13 +109,13 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
       </div>
 
       {/* Windows Picture and Fax Viewer Bottom Toolbar (XP style) */}
-      <div className="h-12 bg-[#ece9d8] flex items-center justify-center px-4 gap-1 shadow-inner os-toolbar">
+      <div className="h-12 bg-[#ece9d8] flex items-center justify-center px-4 gap-1 border-t border-[#aca899] shadow-inner">
         {/* Navigation Controls */}
         <div className="flex items-center gap-1 border-r border-[#aca899] pr-2 mr-1">
           <button
             onClick={handlePrev}
             disabled={imageList.length <= 1}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded disabled:opacity-40 os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded disabled:opacity-40 bg-transparent text-[#003c74] cursor-pointer"
             title="Previous Image (Left Arrow)"
           >
             <ChevronLeft size={16} className="text-[#003c74]" />
@@ -123,7 +123,7 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
           <button
             onClick={handleNext}
             disabled={imageList.length <= 1}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded disabled:opacity-40 os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded disabled:opacity-40 bg-transparent text-[#003c74] cursor-pointer"
             title="Next Image (Right Arrow)"
           >
             <ChevronRight size={16} className="text-[#003c74]" />
@@ -134,7 +134,7 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
         <div className="flex items-center gap-1 border-r border-[#aca899] pr-2 mr-1">
           <button
             onClick={handleFit}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
             title="Best Fit (1:1)"
           >
             <Maximize2 size={16} className="text-[#003c74]" />
@@ -142,10 +142,10 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
           <button
             onClick={() => setIsPlayingSlideshow((prev) => !prev)}
             disabled={imageList.length <= 1}
-            className={`p-1 border rounded disabled:opacity-40 os-button ${
+            className={`p-1.5 border rounded disabled:opacity-40 cursor-pointer ${
               isPlayingSlideshow
                 ? 'bg-[#ffe7a2] border-[#003c74]'
-                : 'hover:bg-[#ffe7a2] border-transparent hover:border-[#003c74]'
+                : 'bg-transparent hover:bg-[#ffe7a2] border-transparent hover:border-[#003c74]'
             }`}
             title={isPlayingSlideshow ? 'Pause Slideshow' : 'Start Slideshow (F5)'}
           >
@@ -157,14 +157,14 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
           </button>
           <button
             onClick={handleZoomIn}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
             title="Zoom In (+)"
           >
             <ZoomIn size={16} className="text-[#003c74]" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
             title="Zoom Out (-)"
           >
             <ZoomOut size={16} className="text-[#003c74]" />
@@ -175,14 +175,14 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
         <div className="flex items-center gap-1 border-r border-[#aca899] pr-2 mr-1">
           <button
             onClick={handleRotateCcw}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
             title="Rotate Counter-Clockwise"
           >
             <RotateCcw size={16} className="text-[#003c74]" />
           </button>
           <button
             onClick={handleRotateCw}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
             title="Rotate Clockwise"
           >
             <RotateCw size={16} className="text-[#003c74]" />
@@ -193,20 +193,20 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
         <div className="flex items-center gap-1">
           <button
             onClick={handlePrint}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
             title="Print Picture"
           >
             <Printer size={16} className="text-[#003c74]" />
           </button>
           <button
             onClick={handleDownload}
-            className="p-1 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded os-button"
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
             title="Save Copy As"
           >
             <Download size={16} className="text-[#003c74]" />
           </button>
           <button
-            className="p-1 opacity-50 cursor-not-allowed border border-transparent rounded os-button"
+            className="p-1.5 opacity-40 cursor-not-allowed border border-transparent rounded bg-transparent text-[#003c74]"
             title="Delete (Disabled)"
             disabled
           >
