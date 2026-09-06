@@ -34,6 +34,7 @@ import {
 import { type DesktopIcon, type DesktopSelectionBox as DesktopSelectionBoxData, type DesktopShellProps } from '../../shells/desktop/desktopTypes';
 import { getStoredCustomWallpaper } from '../../shells/desktop/runtime/desktopStorage';
 import { findAppDefinition } from '../../shells/desktop/runtime/appLaunch';
+import { resolveAppWindowConfig, resolveRunCommandTarget } from '../../shells/desktop/runtime/desktopAppLauncher';
 import { getRelativeRect, isIconInsideSelectionBox } from '../../shells/desktop/runtime/iconHitTesting';
 import { getDesktopOsClassName, isThemeInFamily } from '../../shells/desktop/runtime/shortcutFilters';
 import { createSelectionBox, getViewportSize } from '../../shells/desktop/runtime/windowGeometry';
@@ -732,9 +733,15 @@ export function Desktop(props?: DesktopShellProps) {
   }, [openWindow, themeAssets.folderIcon, fallbackAssets.folderIcon]);
 
   const launchApp = useCallback((appId: string) => {
-    const app = findAppDefinition(appRegistry, appId);
+    const config = resolveAppWindowConfig(
+      appRegistry,
+      appId,
+      themeAssets as unknown as Record<string, string | undefined>,
+      language,
+      textDocumentIcon
+    );
 
-    if (!app) {
+    if (!config) {
       switch (appId) {
         case 'my-computer':
           openExplorerWindow('My Computer');
@@ -761,7 +768,7 @@ export function Desktop(props?: DesktopShellProps) {
       return;
     }
 
-    const Component = app.component;
+    const Component = config.app.component;
     let content: React.ReactNode = null;
 
     if (appId === 'minesweeper') {
@@ -770,11 +777,11 @@ export function Desktop(props?: DesktopShellProps) {
       content = <Component onOpenImage={handleOpenPictureFromGallery} />;
     } else if (appId === 'notepad') {
       openWindow({
-        id: `app:notepad-${Date.now()}`,
-        title: app.title[language] || app.title['en'],
-        icon: textDocumentIcon,
-        width: app.defaultWindow.width,
-        height: app.defaultWindow.height,
+        id: config.windowId,
+        title: config.title,
+        icon: config.iconSrc || textDocumentIcon,
+        width: config.width,
+        height: config.height,
         content: <Component initialContent="" />,
       });
       playLaunchSound();
@@ -787,24 +794,13 @@ export function Desktop(props?: DesktopShellProps) {
       content = <Component />;
     }
 
-    let iconSrc = '';
-    if (app.iconKey) {
-      iconSrc = themeAssets[app.iconKey as keyof typeof themeAssets] as string;
-    }
-    if (!iconSrc && app.iconKey === 'richTextIcon') {
-      iconSrc = textDocumentIcon;
-    }
-    if (!iconSrc && app.iconKey === 'notepadIcon') {
-      iconSrc = themeAssets.notepadIcon ?? textDocumentIcon;
-    }
-
     openWindow({
-      id: `app:${appId}`,
-      title: app.title[language] || app.title['en'],
-      icon: iconSrc || undefined,
-      width: app.defaultWindow.width,
-      height: app.defaultWindow.height,
-      resizable: app.defaultWindow.resizable ?? true,
+      id: config.windowId,
+      title: config.title,
+      icon: config.iconSrc,
+      width: config.width,
+      height: config.height,
+      resizable: config.resizable,
       content,
     });
     playLaunchSound();
@@ -823,35 +819,7 @@ export function Desktop(props?: DesktopShellProps) {
   ]);
 
   const handleRunCommand = useCallback((command: string) => {
-    const lowerCommand = command.toLowerCase();
-    
-    const aliasMap: Record<string, string> = {
-      notepad: 'notepad',
-      calc: 'calculator',
-      calculator: 'calculator',
-      mspaint: 'paint',
-      paint: 'paint',
-      control: 'control-panel',
-      iexplore: 'internet-explorer',
-      winmine: 'minesweeper',
-      minesweeper: 'minesweeper',
-      pictures: 'pictures',
-      pics: 'pictures',
-      blog: 'blog',
-      news: 'news',
-      wiki: 'wiki',
-      calendar: 'calendar',
-      terminal: 'terminal',
-      taskmgr: 'task-manager',
-      taskmanager: 'task-manager',
-      projects: 'projects-grid',
-      games: 'games-folder',
-      doom1: 'doom1',
-      doom2: 'doom2',
-      doom3: 'doom3',
-    };
-    
-    const appId = aliasMap[lowerCommand];
+    const appId = resolveRunCommandTarget(command);
     if (appId) {
       launchApp(appId);
     } else {
