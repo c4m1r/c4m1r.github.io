@@ -17,7 +17,7 @@ import { MyComputer } from '../../apps/explorer';
 import { RunDialog } from './RunDialog';
 import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
-import { useWindowManagerState } from '../../apps/desktop/windowManager';
+import { useDesktopWindowManager } from '../../shells/desktop/runtime/useDesktopWindowManager';
 import { DoomPlayer } from '../../apps/doom/DoomPlayer';
 import { GamesFolder } from '../../apps/games/GamesFolder';
 import { doomVariantMap, DoomVariantId } from '../../apps/doom/config';
@@ -110,16 +110,7 @@ export function Desktop(props?: DesktopShellProps) {
   const [selectionBox, setSelectionBox] = useState<DesktopSelectionBoxData | null>(null);
   const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
   const trayRef = useRef<HTMLDivElement | null>(null);
-  const {
-    windows,
-    openWindow,
-    closeWindow,
-    focusWindow,
-    minimizeWindow,
-    maximizeWindow,
-    restoreWindow,
-    updateWindow,
-  } = useWindowManagerState();
+
 
   const themeKey: ThemeId = theme;
   const themeAssets = THEME_ASSETS[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_ASSETS.webos;
@@ -258,6 +249,23 @@ export function Desktop(props?: DesktopShellProps) {
   const playCloseWindowSound = useCallback(() => {
     playSystemSound(closeWindowSound, 0.38, { frequency: 480, duration: 0.1, gain: 0.06 });
   }, [closeWindowSound, playSystemSound]);
+
+  const {
+    windows,
+    openWindow,
+    closeWindow,
+    updateWindow,
+    handleCloseWindow,
+    handleMinimizeWindow,
+    handleMaximizeWindow,
+    handleRestoreWindow,
+    handleFocusWindow,
+    handleTaskbarWindowClick,
+  } = useDesktopWindowManager({
+    playCloseWindowSound,
+    playMinimizeSound,
+    playRestoreSound,
+  });
   const handleMenuHoverSound = useCallback(() => {
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
     if (now - menuHoverCooldownRef.current < 110) {
@@ -962,28 +970,7 @@ export function Desktop(props?: DesktopShellProps) {
     }
   }, [draggingIcon, dragOffset]);
 
-  const handleCloseWindow = (id: string) => {
-    playCloseWindowSound();
-    closeWindow(id);
-  };
 
-  const handleMinimizeWindow = (id: string) => {
-    playMinimizeSound();
-    minimizeWindow(id);
-  };
-
-  const handleMaximizeWindow = (id: string) => {
-    maximizeWindow(id);
-  };
-
-  const handleRestoreWindow = (id: string) => {
-    playRestoreSound();
-    restoreWindow(id);
-  };
-
-  const handleFocusWindow = (id: string) => {
-    focusWindow(id);
-  };
 
   const osAttributes = getDesktopOsAttributes(themeKey);
 
@@ -1178,15 +1165,7 @@ export function Desktop(props?: DesktopShellProps) {
             {windows.map((window) => (
               <button
                 key={window.id}
-                onClick={() => {
-                  if (window.focused) {
-                    handleMinimizeWindow(window.id);
-                  } else if (window.minimized) {
-                    handleRestoreWindow(window.id);
-                  } else {
-                    handleFocusWindow(window.id);
-                  }
-                }}
+                onClick={() => handleTaskbarWindowClick(window)}
                 className={`taskbar-button flex-shrink-0 truncate max-w-[170px] select-none os-button ${window.focused ? 'is-active' : ''} ${window.minimized ? 'is-minimized' : ''}`}
                 title={window.title}
               >
