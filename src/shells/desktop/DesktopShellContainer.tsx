@@ -653,6 +653,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
     if (!config) {
       switch (appId) {
+        case 'run':
+          setShowRunDialog(true);
+          playLaunchSound();
+          break;
         case 'my-computer':
           openExplorerWindow('My Computer');
           break;

@@ -189,8 +189,8 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       id: 'run',
       title: 'Run...',
       icon: placeIcons.run ?? undefined,
-      appId: 'unavailable:Run',
-      disabled: true,
+      appId: 'run',
+      disabled: false,
     },
   ];
 

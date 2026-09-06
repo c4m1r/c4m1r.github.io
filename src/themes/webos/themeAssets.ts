@@ -41,6 +41,10 @@ import notificationIconWebos from '../winxp/assets/icons/Information.png';
 import calendarIconWebos from '../winxp/assets/icons/Date and Time.png';
 import terminalIconWebos from '../winxp/assets/icons/cmd.png';
 import newsIconWebos from '../winxp/assets/icons/OE News Post.png';
+import runIconWebos from '../winxp/assets/icons/run.png';
+import helpIconWebos from '../winxp/assets/icons/help.png';
+import searchIconWebos from '../winxp/assets/icons/search.png';
+import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 
 type StartMenuIconSet = {
   internetExplorer?: string;
@@ -179,13 +183,13 @@ const sharedWebosAssets: ThemeAssets = {
     myMusic: folderMusicWebos,
     myComputer: myComputerWebos,
     recentDocuments: folderRecentWebos,
-    controlPanel: folderPlainWebos,
+    controlPanel: controlPanelIconWebos,
     programAccess: folderPlainWebos,
-    connectTo: folderPlainWebos,
-    printers: folderPlainWebos,
-    help: folderPlainWebos,
-    search: folderPlainWebos,
-    run: folderPlainWebos,
+    connectTo: networkIconWebos,
+    printers: printersIconWebos,
+    help: helpIconWebos,
+    search: searchIconWebos,
+    run: runIconWebos,
   },
   controlPanelIcons: {
     appearance: appearanceIconWebos,
