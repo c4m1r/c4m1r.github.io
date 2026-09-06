@@ -1,45 +1,31 @@
 # Desktop Runtime Extraction Map
 
-## Current owner
-- `src/themes/webos/Desktop.tsx` still owns most stateful desktop runtime behavior: window orchestration, icon placement/dragging, selection box, context menu opening, taskbar interactions, custom wallpaper event handling, sound playback, app launch routing, and start/run/task-manager orchestration.
-- `src/themes/webos/*` still owns boot, login, welcome, transition screens, theme assets, theme styles, and theme-specific UI surfaces.
-- `src/shells/desktop/DesktopShell.tsx` is the public entrypoint used by theme wrappers.
-- `src/shells/desktop/DesktopRuntime.tsx` is the only direct adapter to the legacy WebOS Desktop implementation.
-- `src/shells/desktop/appRegistry.tsx` owns desktop app definitions.
-- `src/shells/desktop/shortcutsRegistry.ts` owns desktop shortcut ids.
+## Final Architecture Status (Completed)
 
-## Target owner
-- `src/shells/desktop` owns runtime/window manager contracts, runtime constants, icon/selection/context-menu orchestration, taskbar/start-menu orchestration, and app-launch coordination.
-- `src/shells/desktop/runtime` owns small pure helpers first, then gradually receives stateful hooks in later passes.
-- `src/themes/*` owns boot/login/welcome screens, theme assets, theme CSS, sound assets, wallpaper assets, and theme-specific visual configuration.
-- Legacy `themes/webos/Desktop.tsx` should shrink until it becomes either a compatibility adapter or disappears behind `DesktopRuntime`.
+- **Desktop Shell**: `src/shells/desktop` now fully owns the desktop runtime environment.
+  - `DesktopShell.tsx`: Public entrypoint for OS theme wrappers.
+  - `DesktopShellContainer.tsx`: Canonical desktop workspace rendering surfaces, taskbar, start menu, window stack, icon grid, context menu, run dialog, and error surfaces.
+  - `runtime/windowManager.ts`: Canonical window manager state engine.
+  - `components/`: Shared desktop surfaces (`DesktopStartMenuSurface`, `DesktopContextMenuSurface`, `DesktopIconGrid`, `DesktopSelectionBox`, `TaskbarSystemArea`, `RunDialog`, `DesktopErrorBox`).
+  - `components/start-menu/`: Start menu presentation components (`StartMenu`, `StartMenuXP`, `StartMenu98`).
 
-## Moved in pass 1
-- Runtime contracts moved to `src/shells/desktop/desktopTypes.ts`.
-- Runtime constants moved to `src/shells/desktop/desktopConstants.ts`.
-- Pure viewport/selection geometry helpers moved to `src/shells/desktop/runtime/windowGeometry.ts`.
-- Pure custom wallpaper storage helper moved to `src/shells/desktop/runtime/desktopStorage.ts`.
-- Pure OS class/theme family helpers moved to `src/shells/desktop/runtime/shortcutFilters.ts`.
-- Pure icon z-index helper moved to `src/shells/desktop/runtime/zIndex.ts`.
-- `DesktopRuntime.tsx` now documents the boundary contract.
-- `themes/webos/Desktop.tsx` now documents that new runtime logic must go under `shells/desktop`.
+- **OS Themes**: `src/themes/*` now exclusively owns boot, login, welcome, and transition screens, along with visual stylesheets and theme assets.
+  - `src/themes/webos/Desktop.tsx` and legacy compatibility wrappers (`Window.tsx`, `Notepad.tsx`, `PictureViewer.tsx`, `ContextMenu.tsx`, `ErrorDialog.tsx`) are completely **DELETED**.
 
-## Moved in passes 4-6
-- App launch & run command resolution moved to `src/shells/desktop/runtime/desktopAppLauncher.ts`.
-- Window manager state & sound bindings moved to `src/shells/desktop/runtime/useDesktopWindowManager.ts`.
-- Icon grid positioning, selection box collision, and drag listeners moved to `src/shells/desktop/runtime/useDesktopIconGridState.ts`.
-- Arch Linux (`arch`) & Halloween Edition (`halloween`) officially activated as GRUB boot profiles.
+- **Content Domain**: `src/domain/*` owns all content parsing and glob loading.
+  - `src/utils/contentLoader.ts` is completely **DELETED**.
+  - `loadMarkdownContent` extracted to `src/domain/content/loadMarkdownContent.ts`.
+  - `loadGalleryItems`, `loadPictureItems`, `loadWallpaperItems` owned by `src/domain/gallery/gallery.loader.ts`.
+  - `loadAllProjects` owned by `src/domain/projects/projects.loader.ts`.
 
-## Risky areas
-- Window drag/resize/maximize/restore/minimize/close behavior.
-- Icon dragging and persisted icon positions.
-- Selection box hit testing.
-- Context menu positioning and menu item actions.
-- Taskbar focus/minimize/restore behavior.
-- Start menu launch paths and hover/click sounds.
-- Custom wallpaper storage and `wallpaper-changed` event behavior.
-- Fullscreen, volume, notifications, shutdown/logoff flows.
-- ASCII ambient layer z-index and theme gating.
+- **Applications**: `src/apps/*` owns application components.
+  - `MyComputer` moved to `src/apps/explorer/MyComputer.tsx`.
 
-## Manual checks required
-Use `docs/nerv/reports/desktop-runtime-manual-checklist.md` after each extraction step. The minimum required matrix is XP, Win98, Win7, Ubuntu, and WebOS with app open, drag, resize, maximize, restore, minimize, close, focus/z-index, taskbar click, context menu, custom wallpaper, and ASCII scope checks.
+## Historical Extraction Timeline
+
+1. **Pass 1**: Runtime contracts, constants, pure geometry, storage, and z-index helpers extracted to `src/shells/desktop/`.
+2. **Pass 2**: Taskbar system area and action bridge extracted (`TaskbarSystemArea.tsx`, `useDesktopSystemActionBridge.ts`, `desktopOsAttributes.ts`).
+3. **Pass 3**: Start menu surface extracted (`DesktopStartMenuSurface.tsx`, `startMenuSurface.ts`, `windowChromeSkin.ts`).
+4. **Pass 4**: Workspace surface extracted (`DesktopIconGrid.tsx`, `DesktopSelectionBox.tsx`, `DesktopContextMenuSurface.tsx`).
+5. **Pass 5**: Desktop shell consolidation under `DesktopShellContainer.tsx`.
+6. **Pass 6 (FINAL PASS)**: Total deletion of legacy wrappers (`Desktop.tsx`, `windowManager.ts`, `MyComputer.tsx`, `StartMenu.tsx`, `contentLoader.ts`), state engine finalization under `src/shells/desktop/runtime/windowManager.ts`, domain loader finalization, and CSS optimization.
