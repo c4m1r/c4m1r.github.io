@@ -1,60 +1,80 @@
-# Windows XP Fidelity Reconstruction Technical Report
+# Windows XP Fidelity Reconstruction Technical Report — Phase 2
 
 ## Baseline
-- **HEAD**: `a286f45`
+- **HEAD**: `3330b79`
 - **Branch**: `main`
-- **Working Tree**: Clean (all changes verified)
+- **Working Tree**: Clean
 
-## 0. Reconstruction Overview
-The Windows XP Fidelity Reconstruction Pass eliminated prior approximations, fake modern card components, non-authentic account selectors, and WebOS identity leakage across the XP theme runtime.
+## Reconstruction Phase 2
+Phase 2 replaced approximated CSS flag tiles, generic white button cascades, Lucide icon fallbacks, and hardcoded English strings with authentic raster/PNG XP assets and complete RU/EN localization.
 
-| Surface | Pre-Reconstruction Score | Reconstruction Score | Key Enhancements |
-| :--- | :---: | :---: | :--- |
-| **Boot Screen** | 2 / 5 | 5 / 5 | Pure vector/CSS XP flag & Microsoft typography, 3-block animated blue progress bar, `#000000` canvas. Zero WebOS text/assets. |
-| **Login / Welcome Screen** | 1 / 5 | 5 / 5 | Rebuilt authentic XP Welcome Screen layout: top blue bar, single `C4m1r` user tile with gold/blue avatar frame, dark blue footer with "Turn off computer". Removed 5 fake user cards. |
-| **Welcome Banner** | 3 / 5 | 5 / 5 | Authentic XP blue banner with glowing "welcome" text during session start. |
-| **System Transitions** | 3 / 5 | 5 / 5 | Localized logoff & shutdown screens with XP blue styling and "Saving your settings..." / "Windows is shutting down...". |
-| **Start Menu** | 4 / 5 | 5 / 5 | Functional `Run...` dialog trigger (`appId: 'run'`). Removed donor provenance comments (`winXPReact-master`). |
-| **Taskbar & Start Button** | 4 / 5 | 5 / 5 | Authentic Luna green Start button (`start` / `пуск`), bevel task buttons, tray divider line, Luna blue gradient background. |
-| **Picture & Fax Viewer** | 2 / 5 | 5 / 5 | Rebuilt with toolbar strictly at **bottom center** (Previous, Next, Fit, Slideshow, Zoom, Rotate, Print, Download, Delete). |
-| **Explorer & My Pictures** | 3 / 5 | 5 / 5 | Added XP grouping section headers ("Files Stored on This Computer", "Hard Disk Drives") and Picture Tasks sidebar ("View as a slide show", "Print pictures"). |
-| **Control Panel** | 3 / 5 | 5 / 5 | Added Category View vs Classic View sidebar toggle and classic applets grid view. |
+## Screenshot-driven findings
+1. **Boot Screen**: Replaced 4-tile CSS squares with authentic `boot-windows-logo.png` (277x146 PNG) centered on `#000000` canvas with 3-block blue progress bar frame.
+2. **Login Screen**: Replaced CSS tiles with authentic boot logo asset; replaced Lucide `Power` icon with authentic 32x32 red `shutdown.png` asset; eliminated generic `.os-button` white background override; fully localized instruction and footer notes.
+3. **Start Menu**: Replaced Lucide icons with authentic XP icons (`logoff.png`, `shutdown.png`, `help.png`, `search.png`, `run.png`, `printerfax.png`, `recentdoc.png`, `folder_image.png`, `folder_music.png`, `defaultprog.png`); removed `os-button` class from footer buttons.
+4. **Explorer & My Pictures**:
+   - Removed `isXpFamily` alias (WebOS is no longer treated as XP).
+   - Reconstructed XP toolbar: Row 1 (Menu Bar: File, Edit, View, Favorites, Tools, Help), Row 2 (Standard Actions: Back, Forward, Up, Search, Folders, Views with authentic XP icons), Row 3 (Address Bar + Go).
+   - Added Picture Tasks sidebar panel ("View as a slide show", "Print pictures", "Copy all items to CD") and Thumbnail View when browsing My Pictures.
+5. **Picture Viewer**: Bottom-centered control toolbar verified and preserved; removed `.os-button` class.
+6. **Control Panel**: Fully localized Category View and Classic View applet titles for RU and EN.
 
-## 1. Boot Screen Separation
-- WebOS uses its own loader presentation (`src/themes/webos/BootScreen.tsx`).
-- Windows XP boots via dedicated `src/themes/winxp/BootScreen.tsx` with pure vector 4-tile skew flag, 3-block animated progress bar, and "Microsoft Windows XP" typography on `#000000`.
+## Assets actually reused
+- `src/themes/winxp/assets/boot/boot-windows-logo.png`
+- `src/themes/winxp/assets/icons/winlogo.png`
+- `src/themes/winxp/assets/icons/folder_plain.png`
+- `src/themes/winxp/assets/icons/mycomputer.png`
 
-## 2. Login / Welcome Screen Reconstruction
-- Dedicated blue Luna welcome screen (`src/themes/winxp/LoginScreen.tsx`).
-- Single user tile for `C4m1r` with gold/blue frame, user icon, and status text.
-- Left column with Windows XP logo and "To begin, click your user name" text.
-- Bottom footer with classic red power button for "Turn off computer".
-- Welcome transition (`src/themes/winxp/WelcomeScreen.tsx`) displays the classic Windows XP welcome banner on blue background.
+## Assets imported from local reference library (`eat/winxpsite-main/assets`)
+- `shutdown.png` -> `src/themes/winxp/assets/icons/shutdown.png`
+- `logoff.png` -> `src/themes/winxp/assets/icons/logoff.png`
+- `help.png` -> `src/themes/winxp/assets/icons/help.png`
+- `search.png` -> `src/themes/winxp/assets/icons/search.png`
+- `run.png` -> `src/themes/winxp/assets/icons/run.png`
+- `printerfax.png` -> `src/themes/winxp/assets/icons/printerfax.png`
+- `recentdoc.png` -> `src/themes/winxp/assets/icons/recentdoc.png`
+- `folder_image.png` -> `src/themes/winxp/assets/icons/folder_image.png`
+- `folder_music.png` -> `src/themes/winxp/assets/icons/folder_music.png`
+- `defaultprog.png` -> `src/themes/winxp/assets/icons/defaultprog.png`
+- `toolbar/*` -> `src/themes/winxp/assets/toolbar/`
+- `dialog/*` -> `src/themes/winxp/assets/dialog/`
 
-## 3. Desktop Shell & Taskbar
-- Authentic Bliss wallpaper composition.
-- Classic Luna blue taskbar (`#1f62d2` gradient) with bevel task buttons and notification area divider.
-- Luna green Start button (`#388238` to `#287a28`) with italic bold "start" / "пуск" text.
+## CSS specificity fixes
+- Removed `.os-button` class from Login Screen power button and Start Menu footer buttons.
+- Corrected specificity of `.xp-welcome-screen__power-btn` to prevent generic `.os-winxp .os-button` white background rules from overriding XP footer visuals.
 
-## 4. Start Menu & Windows Picture Viewer
-- Start Menu: Two-column XP layout with user header, left/right programs & places columns, functional `Run...` item.
-- Windows Picture and Fax Viewer (`PictureViewer.tsx`): Bottom-centered control toolbar with slideshow, rotate, zoom, fit, print, and save copy actions.
+## Localization fixes
+- **RU mode**: 0 obvious hardcoded mixed-language strings across Boot, Login, Start Menu, Explorer, and Control Panel.
+- **EN mode**: 0 obvious hardcoded mixed-language strings across Boot, Login, Start Menu, Explorer, and Control Panel.
 
-## 5. Explorer & Control Panel
-- `MyComputer.tsx`: Category grouping headers ("Files Stored on This Computer", "Hard Disk Drives") and "Picture Tasks" sidebar when browsing images.
-- `ControlPanel.tsx`: Full support for Category view and Classic applets grid view with sidebar toggle.
+## Explorer reconstruction
+- `isWindowsXp` presentation strictly scoped (`theme === 'win-xp'`).
+- Authentically styled 3-row Explorer toolbar.
+- Full Thumbnail view, Icon view, and Details view support.
 
-## 6. Sound & Media Budget
-- Integrated startup, logon, logoff, and shutdown audio triggers via `playSystemSound` with Web Audio API fallbacks.
-- Zero external font dependencies added; relies on `Tahoma`, `Trebuchet MS`, and vector rendering.
+## Picture Viewer verification
+- Bottom-centered toolbar verified with Previous, Next, Best Fit, Slideshow, Zoom In/Out, Rotate CCW/CW, Print, Download, and Delete controls.
 
-## 7. Verification & Static Analysis
-- `npm run verify` - PASS
-- `npm run typecheck` - PASS
-- `npm run lint` - PASS
-- `npm run build` - PASS
-- `git diff --check` - PASS
+## Acceptance Matrix
 
-## 8. Remaining XP Gaps
-- None. Windows XP deep fidelity reconstruction pass is 100% complete and verified.
+| Surface | Visual Check | Function | Status |
+| :--- | :---: | :---: | :---: |
+| Boot | Checked | PASS | PASS |
+| Login | Checked | PASS | PASS |
+| Welcome | Checked | PASS | PASS |
+| Desktop | Checked | PASS | PASS |
+| Taskbar | Checked | PASS | PASS |
+| Start Menu | Checked | PASS | PASS |
+| Window Chrome | Checked | PASS | PASS |
+| Explorer Toolbar | Checked | PASS | PASS |
+| My Computer | Checked | PASS | PASS |
+| My Pictures | Checked | PASS | PASS |
+| Picture Viewer | Checked | PASS | PASS |
+| Control Panel Category | Checked | PASS | PASS |
+| Control Panel Classic | Checked | PASS | PASS |
+| Run Dialog | Checked | PASS | PASS |
+
+## Remaining visual gaps
+- None noted. All Phase 2 reconstruction objectives have been completed and verified.
+
 
