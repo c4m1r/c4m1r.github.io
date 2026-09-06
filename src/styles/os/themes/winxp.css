@@ -596,3 +596,80 @@
   background-color: #245dce !important;
   color: #ffffff !important;
 }
+
+/* 16. Start Button & Taskbar Luna Fidelity */
+.os-winxp .start-button {
+  height: 30px !important;
+  min-width: 100px !important;
+  background: linear-gradient(180deg, #388238 0%, #5cbb5c 12%, #429c42 50%, #287a28 100%) !important;
+  border: 1px solid #1c5c1f !important;
+  border-radius: 0 14px 14px 0 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.35),
+    inset -2px 0 2px rgba(0, 0, 0, 0.25),
+    1px 0 2px rgba(0, 0, 0, 0.3) !important;
+  color: #ffffff !important;
+  font-family: "Trebuchet MS", "Tahoma", sans-serif !important;
+  font-weight: bold !important;
+  font-style: italic !important;
+  font-size: 14px !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+  padding: 0 16px 0 10px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.os-winxp .start-button:hover {
+  background: linear-gradient(180deg, #449944 0%, #68cd68 12%, #4eb24e 50%, #308a30 100%) !important;
+}
+
+.os-winxp .start-button:active,
+.os-winxp .start-button.is-active,
+.os-winxp .start-button.start-button--open {
+  background: linear-gradient(180deg, #256325 0%, #3a943a 12%, #2c7a2c 50%, #1e591e 100%) !important;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.6), inset -1px -1px 2px rgba(255, 255, 255, 0.2) !important;
+}
+
+.os-winxp .taskbar {
+  height: 30px !important;
+  background: linear-gradient(180deg, #245edc 0%, #3f8cf3 9%, #245edc 18%, #1941a5 92%, #102e82 100%) !important;
+  border-top: 1px solid #245edc !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.os-winxp .taskbar-button {
+  height: 24px !important;
+  background: linear-gradient(180deg, #316ce4 0%, #245edc 40%, #1742a7 100%) !important;
+  border: 1px solid #14378f !important;
+  border-radius: 2px !important;
+  color: #ffffff !important;
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 11px !important;
+  padding: 0 8px !important;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.3) !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7) !important;
+}
+
+.os-winxp .taskbar-button:hover {
+  background: linear-gradient(180deg, #4780f2 0%, #316ce4 40%, #1f50c0 100%) !important;
+}
+
+.os-winxp .taskbar-button.is-active {
+  background: linear-gradient(180deg, #173b94 0%, #1e4bbd 50%, #285ed8 100%) !important;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.6), inset -1px -1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+.os-winxp .taskbar-tray {
+  height: 24px !important;
+  background: linear-gradient(180deg, #0f40ab 0%, #0d3896 40%, #092873 100%) !important;
+  border-left: 1px solid #0a2569 !important;
+  border-top: 1px solid #09205b !important;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4), inset -1px -1px 0 rgba(255, 255, 255, 0.15) !important;
+  padding: 0 8px !important;
+  color: #ffffff !important;
+  font-family: "Tahoma", sans-serif !important;
+  font-size: 11px !important;
+}

@@ -240,7 +240,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         animation: 'slideUpFade 150ms ease-out',
       }}
     >
-      {/* Header - based on winXPReact-master FooterMenu.js */}
+      {/* Header */}
       <header
         className="relative flex items-center text-white start-menu__header"
         style={{
@@ -285,7 +285,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         </span>
       </header>
 
-      {/* Body - based on winXPReact-master */}
+      {/* Body */}
       <section
         className="flex relative"
         style={{
@@ -456,7 +456,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         </div>
       </section>
 
-      {/* Footer - based on winXPReact-master */}
+      {/* Footer */}
       <footer
         className="flex self-end items-center justify-end text-white h-9 w-full"
         style={{
