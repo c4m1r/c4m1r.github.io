@@ -1,8 +1,19 @@
 import { useApp } from '../../../../contexts/useApp';
 import { translations } from '../../../../i18n/translations';
-import { Power, Settings, HelpCircle, Search, FileText, ChevronsRight } from 'lucide-react';
+import { ChevronsRight } from 'lucide-react';
 import { THEME_ASSETS, ThemeAssetId } from '../../../../themes/webos/themeAssets';
 import { appRegistry } from '../../appRegistry';
+
+import logoffIcon from '../../../../themes/winxp/assets/icons/logoff.png';
+import shutdownIcon from '../../../../themes/winxp/assets/icons/shutdown.png';
+import helpIcon from '../../../../themes/winxp/assets/icons/help.png';
+import searchIcon from '../../../../themes/winxp/assets/icons/search.png';
+import runIcon from '../../../../themes/winxp/assets/icons/run.png';
+import printersIcon from '../../../../themes/winxp/assets/icons/printerfax.png';
+import recentDocIcon from '../../../../themes/winxp/assets/icons/recentdoc.png';
+import picturesIcon from '../../../../themes/winxp/assets/icons/folder_image.png';
+import musicIcon from '../../../../themes/winxp/assets/icons/folder_music.png';
+import defaultProgIcon from '../../../../themes/winxp/assets/icons/defaultprog.png';
 
 export interface StartMenuXPProps {
   onClose: () => void;
@@ -35,6 +46,7 @@ const MY_MUSIC_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music
 export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand, appearance = 'webos', onHover }: StartMenuXPProps) {
   const { language, theme } = useApp();
   const t = translations[language].xp;
+  const isRu = language === 'ru';
   const currentTheme = theme as ThemeAssetId;
   const themeAssets = THEME_ASSETS[currentTheme] ?? THEME_ASSETS.webos;
   const startMenuIcons = themeAssets.startMenuIcons;
@@ -51,18 +63,18 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       title: appRegistry['internet-explorer']?.title[language] || 'Internet Explorer',
       icon: startMenuIcons.internetExplorer ?? themeAssets.internetExplorerIcon,
       appId: 'internet-explorer',
-      tag: t.internet ?? 'Internet',
+      tag: t.internet ?? (isRu ? 'Интернет' : 'Internet'),
     },
     {
       id: 'primary-email',
       title: appRegistry['outlook']?.title[language] || 'Outlook Express',
       icon: startMenuIcons.outlook ?? themeAssets.mailIcon,
       appId: 'outlook',
-      tag: t.email ?? 'E-mail',
+      tag: t.email ?? (isRu ? 'Электронная почта' : 'E-mail'),
     },
   ];
 
-  const gamesTitle = t.games ?? 'Games';
+  const gamesTitle = t.games ?? (isRu ? 'Игры' : 'Games');
 
   const pinnedPrograms: MenuItem[] = [
     {
@@ -73,7 +85,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     },
     {
       id: 'projects-grid',
-      title: t.myProjects ?? 'My Projects',
+      title: t.myProjects ?? (isRu ? 'Мои Проекты' : 'My Projects'),
       icon: startMenuIcons.projects ?? themeAssets.projectsIcon ?? fallbackIcon,
       appId: 'projects-grid',
     },
@@ -106,8 +118,8 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     },
     {
       id: 'my-computer',
-      title: t.myComputer,
-      icon: themeAssets.computerIcon ?? fallbackIcon,
+      title: t.myComputer || (isRu ? 'Мой компьютер' : 'My Computer'),
+      icon: placeIcons.myComputer ?? themeAssets.computerIcon ?? fallbackIcon,
       appId: 'my-computer',
     },
   ];
@@ -115,89 +127,89 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const placesLinks: MenuItem[] = [
     {
       id: 'my-documents',
-      title: t.myDocuments,
+      title: t.myDocuments || (isRu ? 'Мои документы' : 'My Documents'),
       icon: placeIcons.myDocuments ?? themeAssets.folderIcon,
       path: MY_DOCUMENTS_PATH,
     },
     {
       id: 'recent-documents',
-      title: 'My Recent Documents',
-      icon: placeIcons.recentDocuments ?? themeAssets.folderIcon,
+      title: isRu ? 'Недавние документы' : 'My Recent Documents',
+      icon: placeIcons.recentDocuments ?? recentDocIcon,
       path: MY_DESKTOP_PATH,
     },
     {
       id: 'my-pictures',
-      title: 'My Pictures',
-      icon: placeIcons.myPictures ?? themeAssets.folderIcon,
+      title: isRu ? 'Мои рисунки' : 'My Pictures',
+      icon: placeIcons.myPictures ?? picturesIcon,
       path: MY_PICTURES_PATH,
     },
     {
       id: 'my-music',
-      title: 'My Music',
-      icon: placeIcons.myMusic ?? themeAssets.folderIcon,
+      title: isRu ? 'Моя музыка' : 'My Music',
+      icon: placeIcons.myMusic ?? musicIcon,
       path: MY_MUSIC_PATH,
     },
     {
       id: 'my-computer',
-      title: t.myComputer,
+      title: t.myComputer || (isRu ? 'Мой компьютер' : 'My Computer'),
       icon: placeIcons.myComputer ?? themeAssets.computerIcon,
       appId: 'my-computer',
     },
     {
       id: 'control-panel',
-      title: appRegistry['control-panel']?.title[language] || 'Control Panel',
+      title: appRegistry['control-panel']?.title[language] || (isRu ? 'Панель управления' : 'Control Panel'),
       icon: placeIcons.controlPanel ?? fallbackIcon,
       appId: 'control-panel',
     },
     {
       id: 'program-access',
-      title: 'Set Program Access and Defaults',
-      icon: placeIcons.programAccess ?? fallbackIcon,
+      title: isRu ? 'Выбор программ по умолчанию' : 'Set Program Access and Defaults',
+      icon: placeIcons.programAccess ?? defaultProgIcon,
       appId: 'unavailable:Program Access',
       disabled: true,
     },
     {
       id: 'connect-to',
-      title: 'Connect To',
+      title: isRu ? 'Подключение' : 'Connect To',
       icon: placeIcons.connectTo ?? fallbackIcon,
       appId: 'unavailable:Connect To',
       disabled: true,
     },
     {
       id: 'printers',
-      title: 'Printers and Faxes',
-      icon: placeIcons.printers ?? fallbackIcon,
+      title: isRu ? 'Принтеры и факсы' : 'Printers and Faxes',
+      icon: placeIcons.printers ?? printersIcon,
       appId: 'unavailable:Printers and Faxes',
       disabled: true,
     },
     { id: 'separator-places', isSeparator: true },
     {
       id: 'help',
-      title: 'Help and Support',
-      icon: placeIcons.help ?? undefined,
+      title: isRu ? 'Справка и поддержка' : 'Help and Support',
+      icon: placeIcons.help ?? helpIcon,
       appId: 'unavailable:Help',
       disabled: true,
     },
     {
       id: 'search',
-      title: 'Search',
-      icon: placeIcons.search ?? undefined,
+      title: isRu ? 'Поиск' : 'Search',
+      icon: placeIcons.search ?? searchIcon,
       appId: 'unavailable:Search',
       disabled: true,
     },
     {
       id: 'run',
-      title: 'Run...',
-      icon: placeIcons.run ?? undefined,
+      title: isRu ? 'Выполнить...' : 'Run...',
+      icon: placeIcons.run ?? runIcon,
       appId: 'run',
       disabled: false,
     },
   ];
 
-  const frequentLabel = t.frequentPrograms ?? 'Frequently used programs';
-  const allProgramsLabel = t.allPrograms ?? 'All Programs';
-  const logOffLabel = t.logOff ?? 'Log Off';
-  const turnOffLabel = t.turnOff ?? 'Turn Off Computer';
+  const frequentLabel = t.frequentPrograms ?? (isRu ? 'Часто используемые программы' : 'Frequently used programs');
+  const allProgramsLabel = t.allPrograms ?? (isRu ? 'Все программы' : 'All Programs');
+  const logOffLabel = t.logOff ?? (isRu ? 'Завершение работы' : 'Log Off');
+  const turnOffLabel = t.turnOff ?? (isRu ? 'Выключить компьютер' : 'Turn Off Computer');
 
   const handleMenuAction = (entry: MenuItem) => {
     if (entry.disabled) {
@@ -310,7 +322,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               return (
                 <button
                   key={shortcut.id}
-                  className="start-menu-item start-menu-item--primary os-list-item os-button"
+                  className="start-menu-item start-menu-item--primary os-list-item"
                   onClick={() => handleMenuAction(shortcut)}
                   onMouseEnter={handleHover}
                 >
@@ -341,9 +353,9 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
                 return (
                   <button
                     key={program.id}
-                    className={`start-menu-item os-list-item os-button ${program.disabled ? 'disabled' : ''}`}
+                    className={`start-menu-item os-list-item ${program.disabled ? 'disabled' : ''}`}
                     onClick={() => handleMenuAction(program)}
-                  onMouseEnter={handleHover}
+                    onMouseEnter={handleHover}
                   >
                     <div className="start-menu-item__icon">
                       {iconSrc ? (
@@ -376,7 +388,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             return (
               <button
                 key={program.id}
-                className={`start-menu-item os-list-item os-button ${program.disabled ? 'disabled' : ''}`}
+                className={`start-menu-item os-list-item ${program.disabled ? 'disabled' : ''}`}
                 onClick={() => handleMenuAction(program)}
                 onMouseEnter={handleHover}
               >
@@ -399,7 +411,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
           {/* All Programs */}
           <button
-            className="start-menu-item start-menu-item--footer os-button"
+            className="start-menu-item start-menu-item--footer"
             onClick={() => {
               onLaunchApp?.('all-programs');
               onClose();
@@ -425,25 +437,19 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               );
             }
 
-            const iconSrc = place.icon ?? (place.id === 'my-computer' ? themeAssets.computerIcon : fallbackIcon);
+            const iconSrc = place.icon ?? fallbackIcon;
             return (
               <button
                 key={place.id}
-                className={`start-menu-item os-list-item os-button ${place.disabled ? 'disabled' : ''}`}
+                className={`start-menu-item os-list-item ${place.disabled ? 'disabled' : ''}`}
                 onClick={() => handleMenuAction(place)}
                 onMouseEnter={handleHover}
               >
                 <div className="start-menu-item__icon">
                   {iconSrc ? (
-                    <img src={iconSrc} alt="" className="w-5 h-5" />
-                  ) : place.id === 'help' ? (
-                    <HelpCircle size={16} className="text-[#215dc6]" />
-                  ) : place.id === 'search' ? (
-                    <Search size={16} className="text-gray-600" />
-                  ) : place.id === 'run' ? (
-                    <FileText size={16} className="text-gray-600" />
+                    <img src={iconSrc} alt="" className="w-5 h-5 object-contain" />
                   ) : (
-                    <Settings size={16} className="text-gray-600" />
+                    <span className="w-5 h-5" />
                   )}
                 </div>
                 <div className="start-menu-item__title font-bold">{place.title}</div>
@@ -458,33 +464,33 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
       {/* Footer */}
       <footer
-        className="flex self-end items-center justify-end text-white h-9 w-full"
+        className="flex self-end items-center justify-end text-white h-9 w-full px-3"
         style={{
           background: 'linear-gradient(to bottom, #4282d6 0%, #3b85e0 3%, #418ae3 5%, #418ae3 17%, #3c87e2 21%, #3786e4 26%, #3482e3 29%, #2e7ee1 39%, #2374df 49%, #2072db 57%, #196edb 62%, #176bd8 72%, #1468d5 75%, #1165d2 83%, #0f61cb 88%)',
         }}
       >
-        <div
-          className="p-0.5 flex mr-[10px] items-center hover:bg-[rgba(60,80,210,0.5)] cursor-pointer rounded os-button"
+        <button
+          className="p-1 flex mr-3 items-center hover:bg-white/20 cursor-pointer rounded bg-transparent border-0 text-white text-[12px] font-sans"
           onClick={() => {
             onSystemCommand?.('logoff');
             onClose();
           }}
           onMouseEnter={handleHover}
         >
-          <Power size={22} className="text-yellow-400 mr-0.5 rounded-[3px]" />
-          <span className="text-[11px]">{logOffLabel}</span>
-        </div>
-        <div
-          className="p-0.5 flex mr-[10px] items-center hover:bg-[rgba(60,80,210,0.5)] cursor-pointer rounded os-button"
+          <img src={logoffIcon} alt="" className="w-5 h-5 mr-1.5 object-contain" />
+          <span>{logOffLabel}</span>
+        </button>
+        <button
+          className="p-1 flex items-center hover:bg-white/20 cursor-pointer rounded bg-transparent border-0 text-white text-[12px] font-sans"
           onClick={() => {
             onSystemCommand?.('shutdown');
             onClose();
           }}
           onMouseEnter={handleHover}
         >
-          <Power size={22} className="text-red-400 mr-0.5 rounded-[3px]" />
-          <span className="text-[11px]">{turnOffLabel}</span>
-        </div>
+          <img src={shutdownIcon} alt="" className="w-5 h-5 mr-1.5 object-contain" />
+          <span>{turnOffLabel}</span>
+        </button>
       </footer>
     </section>
   );
