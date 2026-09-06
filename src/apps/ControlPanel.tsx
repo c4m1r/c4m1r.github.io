@@ -42,86 +42,106 @@ export function ControlPanel() {
   const isArch = theme === 'arch';
   const isHalloween = theme === 'halloween';
 
+  const isRu = language === 'ru';
+
   const categories = useMemo(
     () => [
       {
         id: 'appearance',
-        title: 'Appearance and Themes',
+        title: isRu ? 'Оформление и темы' : 'Appearance and Themes',
         emoji: '🎨',
-        items: ['Display', 'Taskbar and Start Menu', 'Folder Options', 'Fonts'],
+        items: isRu
+          ? ['Экран', 'Панель задач и меню «Пуск»', 'Свойства папки', 'Шрифты']
+          : ['Display', 'Taskbar and Start Menu', 'Folder Options', 'Fonts'],
       },
       {
         id: 'network',
-        title: 'Network and Internet Connections',
+        title: isRu ? 'Сеть и подключения к Интернету' : 'Network and Internet Connections',
         emoji: '🌐',
-        items: ['Internet Options', 'Network Connections', 'Windows Firewall'],
+        items: isRu
+          ? ['Свойства обозревателя', 'Сетевые подключения', 'Брандмауэр Windows']
+          : ['Internet Options', 'Network Connections', 'Windows Firewall'],
       },
       {
         id: 'programs',
-        title: 'Add or Remove Programs',
+        title: isRu ? 'Установка и удаление программ' : 'Add or Remove Programs',
         emoji: '💿',
-        items: ['Change or Remove Programs', 'Add New Programs', 'Windows Components'],
+        items: isRu
+          ? ['Изменение или удаление программ', 'Установка новых программ', 'Компоненты Windows']
+          : ['Change or Remove Programs', 'Add New Programs', 'Windows Components'],
       },
       {
         id: 'sounds',
-        title: 'Sounds, Speech, and Audio Devices',
+        title: isRu ? 'Звук, речь и аудиоустройства' : 'Sounds, Speech, and Audio Devices',
         emoji: '🔊',
-        items: ['Adjust the system volume', 'Change the sound scheme', 'Speech'],
+        items: isRu
+          ? ['Громкость', 'Звуковые схемы', 'Речь']
+          : ['Adjust the system volume', 'Change the sound scheme', 'Speech'],
       },
       {
         id: 'maintenance',
-        title: 'Performance and Maintenance',
+        title: isRu ? 'Производительность и обслуживание' : 'Performance and Maintenance',
         emoji: '🛡️',
-        items: ['Administrative Tools', 'Power Options', 'System'],
+        items: isRu
+          ? ['Администрирование', 'Электропитание', 'Система']
+          : ['Administrative Tools', 'Power Options', 'System'],
       },
       {
         id: 'hardware',
-        title: 'Printers and Other Hardware',
+        title: isRu ? 'Принтеры и другое оборудование' : 'Printers and Other Hardware',
         emoji: '🖨️',
-        items: ['Printers and Faxes', 'Game Controllers', 'Keyboard', 'Mouse'],
+        items: isRu
+          ? ['Принтеры и факсы', 'Игровые устройства', 'Клавиатура', 'Мышь']
+          : ['Printers and Faxes', 'Game Controllers', 'Keyboard', 'Mouse'],
       },
       {
         id: 'user-accounts',
-        title: 'User Accounts',
+        title: isRu ? 'Учетные записи пользователей' : 'User Accounts',
         emoji: '👤',
-        items: ['User Accounts', 'Network Passwords'],
+        items: isRu
+          ? ['Учетные записи пользователей', 'Сетевые пароли']
+          : ['User Accounts', 'Network Passwords'],
       },
       {
         id: 'date-time',
-        title: 'Date, Time, Language, and Regional Options',
+        title: isRu ? 'Дата, время, язык и региональные стандарты' : 'Date, Time, Language, and Regional Options',
         emoji: '🕒',
-        items: ['Date and Time', 'Regional and Language Options'],
+        items: isRu
+          ? ['Дата и время', 'Язык и региональные стандарты']
+          : ['Date and Time', 'Regional and Language Options'],
       },
       {
         id: 'accessibility',
-        title: 'Accessibility Options',
+        title: isRu ? 'Специальные возможности' : 'Accessibility Options',
         emoji: '♿',
-        items: ['Accessibility Options', 'Narrator', 'Magnifier', 'On-Screen Keyboard'],
+        items: isRu
+          ? ['Специальные возможности', 'Диктор', 'Экранная лупа', 'Экранная клавиатура']
+          : ['Accessibility Options', 'Narrator', 'Magnifier', 'On-Screen Keyboard'],
       },
     ],
-    []
+    [isRu]
   );
 
   const classicApplets = useMemo(
     () => [
-      { id: 'accessibility', title: 'Accessibility Options', emoji: '♿' },
-      { id: 'programs', title: 'Add or Remove Programs', emoji: '💿' },
-      { id: 'maintenance', title: 'Administrative Tools', emoji: '🛡️' },
-      { id: 'date-time', title: 'Date and Time', emoji: '🕒' },
-      { id: 'appearance', title: 'Display', emoji: '🎨' },
-      { id: 'appearance', title: 'Folder Options', emoji: '📁' },
-      { id: 'appearance', title: 'Fonts', emoji: '🔤' },
-      { id: 'hardware', title: 'Game Controllers', emoji: '🎮' },
-      { id: 'network', title: 'Internet Options', emoji: '🌐' },
-      { id: 'hardware', title: 'Keyboard', emoji: '⌨️' },
-      { id: 'hardware', title: 'Mouse', emoji: '🖱️' },
-      { id: 'network', title: 'Network Connections', emoji: '📡' },
-      { id: 'hardware', title: 'Printers and Faxes', emoji: '🖨️' },
-      { id: 'sounds', title: 'Sounds and Audio Devices', emoji: '🔊' },
-      { id: 'maintenance', title: 'System', emoji: '💻' },
-      { id: 'user-accounts', title: 'User Accounts', emoji: '👤' },
+      { id: 'accessibility', title: isRu ? 'Специальные возможности' : 'Accessibility Options', emoji: '♿' },
+      { id: 'programs', title: isRu ? 'Установка и удаление программ' : 'Add or Remove Programs', emoji: '💿' },
+      { id: 'maintenance', title: isRu ? 'Администрирование' : 'Administrative Tools', emoji: '🛡️' },
+      { id: 'date-time', title: isRu ? 'Дата и время' : 'Date and Time', emoji: '🕒' },
+      { id: 'appearance', title: isRu ? 'Экран' : 'Display', emoji: '🎨' },
+      { id: 'appearance', title: isRu ? 'Свойства папки' : 'Folder Options', emoji: '📁' },
+      { id: 'appearance', title: isRu ? 'Шрифты' : 'Fonts', emoji: '🔤' },
+      { id: 'hardware', title: isRu ? 'Игровые устройства' : 'Game Controllers', emoji: '🎮' },
+      { id: 'network', title: isRu ? 'Свойства обозревателя' : 'Internet Options', emoji: '🌐' },
+      { id: 'hardware', title: isRu ? 'Клавиатура' : 'Keyboard', emoji: '⌨️' },
+      { id: 'hardware', title: isRu ? 'Мышь' : 'Mouse', emoji: '🖱️' },
+      { id: 'network', title: isRu ? 'Сетевые подключения' : 'Network Connections', emoji: '📡' },
+      { id: 'hardware', title: isRu ? 'Принтеры и факсы' : 'Printers and Faxes', emoji: '🖨️' },
+      { id: 'sounds', title: isRu ? 'Звуковые устройства' : 'Sounds and Audio Devices', emoji: '🔊' },
+      { id: 'maintenance', title: isRu ? 'Система' : 'System', emoji: '💻' },
+      { id: 'user-accounts', title: isRu ? 'Учетные записи пользователей' : 'User Accounts', emoji: '👤' },
     ],
-    []
+    [isRu]
   );
 
   const renderCategoryIcon = (categoryId: string, fallback: string) => {
@@ -214,44 +234,46 @@ export function ControlPanel() {
     >
       {/* Sidebar */}
       <div className={`w-[200px] flex-shrink-0 ${sidebarClass} p-4`}>
-        <h2 className="text-sm font-bold mb-4">Control Panel</h2>
+        <h2 className="text-sm font-bold mb-4">{isRu ? 'Панель управления' : 'Control Panel'}</h2>
         <div className="space-y-2 text-xs">
           <button
             className="w-full text-left p-2 rounded cursor-pointer transition-colors hover:bg-white/20 font-semibold"
             onClick={() => setDisplayMode(displayMode === 'category' ? 'classic' : 'category')}
           >
-            {displayMode === 'category' ? '🔄 Switch to Classic View' : '🗂️ Switch to Category View'}
+            {displayMode === 'category'
+              ? (isRu ? '🔄 Классический вид' : '🔄 Switch to Classic View')
+              : (isRu ? '🗂️ Вид по категориям' : '🗂️ Switch to Category View')}
           </button>
           <button
             className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'categories' ? 'bg-white/30' : 'hover:bg-white/20'}`}
             onClick={() => setView('categories')}
           >
-            📋 Control Panel Home
+            📋 {isRu ? 'Главная' : 'Control Panel Home'}
           </button>
           <button
             className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'wallpaper' ? 'bg-white/30' : 'hover:bg-white/20'}`}
             onClick={() => setView('wallpaper')}
           >
-            🖼️ Wallpaper
+            🖼️ {isRu ? 'Фоновый рисунок' : 'Wallpaper'}
           </button>
           <button
             className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'systemInfo' ? 'bg-white/30' : 'hover:bg-white/20'}`}
             onClick={() => setView('systemInfo')}
           >
-            💻 System & Device Info
+            💻 {isRu ? 'Система' : 'System & Device Info'}
           </button>
           <div className="pt-2 border-t border-white/20">
             <div
               className="p-2 hover:bg-white/20 rounded cursor-pointer"
               onClick={() => executeAction('language.toggle')}
             >
-              🌐 Language ({language.toUpperCase()})
+              🌐 {isRu ? 'Язык' : 'Language'} ({language.toUpperCase()})
             </div>
             <div
               className="p-2 hover:bg-white/20 rounded cursor-pointer"
               onClick={() => executeAction('settings.reset')}
             >
-              🔄 Reset System Settings
+              🔄 {isRu ? 'Сброс настроек' : 'Reset System Settings'}
             </div>
           </div>
         </div>
@@ -340,9 +362,11 @@ export function ControlPanel() {
           <>
             <div className="mb-6">
               <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
-                Pick a category
+                {isRu ? 'Выберите категорию' : 'Pick a category'}
               </h1>
-              <p className="text-sm opacity-75">or pick a Control Panel icon</p>
+              <p className="text-sm opacity-75">
+                {isRu ? 'или выберите значок Панели управления' : 'or pick a Control Panel icon'}
+              </p>
             </div>
 
             <div className="space-y-4">
