@@ -1215,424 +1215,411 @@
    WINDOWS XP SPECIFIC COMPONENTS
    ===================================================================== */
 
-/* Boot Screen */
-.boot-screen.boot-screen--xp {
-  min-height: 100vh;
-  background: #000;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 14px;
-  padding: 40px 32px;
-  transition: opacity 500ms linear;
-  position: relative;
-  overflow: hidden;
-}
+/* =====================================================================
+   WINDOWS XP SPECIFIC COMPONENTS
+   ===================================================================== */
 
-.boot-screen__center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 48px;
-  margin-bottom: 80px;
-}
-
-.boot-screen__logo {
-  width: 400px;
-  max-width: 80vw;
-}
-
-.boot-screen__fallback {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.boot-screen__fallback-logo {
-  width: 64px;
-  height: 64px;
-  position: relative;
-}
-
-.boot-screen__fallback-logo::before,
-.boot-screen__fallback-logo::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #d84141, #e7b22a 45%, #4aa048 70%, #3a6ad7);
-}
-
-.boot-screen__fallback-logo::after {
-  inset: 10px;
-  background: #fff;
-  transform: rotate(45deg);
-}
-
-.boot-screen__fallback-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.boot-screen__fallback-brand {
-  font-size: 36px;
-  font-style: italic;
-  font-weight: 600;
-}
-
-.boot-screen__fallback-product {
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.boot-screen__loader {
-  width: 180px;
-  height: 26px;
-  border: 2px solid #b2b2b2;
-  border-radius: 8px;
-  padding: 3px 1px;
-  overflow: hidden;
-  font-size: 0;
-  display: flex;
-  align-items: center;
-}
-
-.boot-screen__loader div {
-  width: 12px;
-  height: 100%;
-  margin-right: 3px;
-  background: linear-gradient(to bottom, #2838c7 0%, #5979ef 20%, #869ef3 45%, #5979ef 70%, #2838c7 100%);
-  animation: bootLoader 1.8s linear infinite;
-}
-
-.boot-screen__loader div:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.boot-screen__loader div:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.boot-screen__copyright {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  font-family: 'Arial', sans-serif;
-  font-size: 16px;
-}
-
-@keyframes bootLoader {
-  0% {
-    transform: translateX(-60px);
-  }
-  100% {
-    transform: translateX(220px);
-  }
-}
-
-/* Login Screen */
-.login-screen-xp {
+/* Authentic XP Boot Screen */
+.xp-boot-screen {
   min-height: 100vh;
   width: 100%;
-  background: radial-gradient(circle at 50% 40%, #5a7edc 0%, #0f3ea6 35%, #041a5c 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
-
-.login-screen__container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 600px;
-  padding: 40px;
-}
-
-.login-screen__header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.login-screen__title {
+  background-color: #000000;
   color: #ffffff;
-  font-size: 18px;
-  font-weight: 500;
-  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Tahoma', 'Trebuchet MS', Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  transition: opacity 300ms ease-out;
 }
 
-.login-screen__users {
+.xp-boot-screen__center {
   display: flex;
-  gap: 24px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
   margin-bottom: 60px;
 }
 
-.login-screen__user-card {
+.xp-boot-screen__identity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 4-Tile XP Flag */
+.xp-boot-screen__flag,
+.xp-welcome-screen__flag {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  transform: skewY(-5deg);
+}
+
+.xp-flag-tile {
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.xp-flag-red { background: linear-gradient(135deg, #f04e38 0%, #d83018 100%); }
+.xp-flag-green { background: linear-gradient(135deg, #5ebc34 0%, #46a41c 100%); }
+.xp-flag-blue { background: linear-gradient(135deg, #0081d6 0%, #0065b8 100%); }
+.xp-flag-yellow { background: linear-gradient(135deg, #ffc800 0%, #e6a800 100%); }
+
+.xp-boot-screen__text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 200ms ease;
-  backdrop-filter: blur(10px);
+  line-height: 1;
 }
 
-.login-screen__user-card:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-4px);
-}
-
-.login-screen__user-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-screen__user-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.login-screen__user-name {
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.login-screen__footer {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.login-screen__shutdown-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: #ffffff;
-  font-size: 14px;
+.xp-boot-screen__microsoft {
+  font-size: 20px;
+  font-style: italic;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 200ms ease;
-  backdrop-filter: blur(10px);
-}
-
-.login-screen__shutdown-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-/* Modernized Windows XP login for XP theme */
-.xp-login-modern {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  font-family: 'Segoe UI', 'Tahoma', sans-serif;
-}
-
-.xp-login-modern__background {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.4), transparent 45%),
-    radial-gradient(circle at 80% 80%, rgba(41, 134, 255, 0.35), transparent 55%),
-    linear-gradient(180deg, #1d4fd8 0%, #0f2d84 45%, #03113c 100%);
-  filter: saturate(1.1);
-  transform: scale(1.05);
-}
-
-.xp-login-modern__panel {
-  position: relative;
-  z-index: 1;
-  width: min(460px, 90%);
-  padding: 2.5rem 2rem 2rem;
-  background: rgba(7, 19, 75, 0.85);
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow:
-    0 20px 40px rgba(4, 6, 22, 0.75),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  text-align: center;
-}
-
-.xp-login-modern__instruction {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 0.03em;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
-}
-
-.xp-login-modern__user-card {
-  width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 18px;
-  padding: 1.5rem 1rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(14, 54, 116, 0.6));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 3px rgba(0, 0, 0, 0.4),
-    0 10px 20px rgba(1, 11, 38, 0.6);
-  cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.9rem;
-}
-
-.xp-login-modern__user-card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 3px rgba(0, 0, 0, 0.5),
-    0 20px 30px rgba(1, 11, 38, 0.75);
-}
-
-.xp-login-modern__avatar-frame {
-  width: 120px;
-  height: 120px;
-  border-radius: 16px;
-  padding: 6px;
-  background: linear-gradient(180deg, #0c3d93 0%, #1c62da 60%, #6fb1f1 100%);
-  box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.6),
-    inset 0 8px 16px rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.xp-login-modern__avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.xp-login-modern__username {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #f0f4ff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
-}
-
-.xp-login-modern__footer {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.xp-login-modern__power-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.6rem;
-  background: linear-gradient(180deg, #4a83ff 0%, #284fc3 60%, #0f275f 100%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
-  color: #fff;
-  font-weight: 600;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 5px 12px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
-  font-family: 'Segoe UI', 'Tahoma', sans-serif;
-}
-
-.xp-login-modern__power-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 10px 20px rgba(0, 0, 0, 0.7);
-}
-
-.xp-login-modern__power-icon {
-  width: 18px;
-  height: 18px;
-  stroke-width: 2;
-}
-
-.xp-login-modern__power-btn--inline {
-  padding: 0.4rem 1rem;
-  font-size: 0.85rem;
-  border-radius: 12px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 10px rgba(0, 0, 0, 0.4);
-}
-
-.xp-login-modern--loading {
-  min-height: 100vh;
-  background: radial-gradient(circle at 30% -10%, rgba(255, 255, 255, 0.2), transparent 30%),
-    radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.15), transparent 35%),
-    linear-gradient(180deg, #12286a 0%, #050a2b 60%, #010511 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.xp-login-modern__panel--loading {
-  padding: 3rem;
-  background: rgba(6, 12, 54, 0.9);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.7);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-}
-
-.xp-login-modern__loading-ring {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.4);
-  border-top-color: rgba(255, 255, 255, 0.85);
-  animation: xpSpin 0.9s ease-in-out infinite;
-}
-
-.xp-login-modern__loading-text {
-  color: #e2e7ff;
+  color: #ffffff;
   letter-spacing: 0.04em;
 }
 
+.xp-boot-screen__product {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
 
-.xp-login-modern--main {
+.xp-boot-screen__windows {
+  font-size: 38px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.xp-boot-screen__xp {
+  font-size: 32px;
+  font-weight: 800;
+  font-style: italic;
+  color: #f7931e;
+  font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+}
+
+/* Boot Progress Indicator Frame */
+.xp-boot-screen__loader {
+  width: 180px;
+  height: 20px;
+  border: 2px solid #5a5a5a;
+  border-radius: 5px;
+  padding: 2px;
+  background-color: #0a0a0a;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.9);
+}
+
+.xp-boot-screen__loader-bar {
+  display: flex;
+  gap: 3px;
+  height: 100%;
+  width: 48px;
+  position: absolute;
+  top: 2px;
+  left: 0;
+  animation: xpBootSlide 1.8s linear infinite;
+}
+
+.xp-boot-screen__block {
+  flex: 1;
+  height: 100%;
+  background: linear-gradient(to bottom, #3065e8 0%, #6da1f8 40%, #204db8 100%);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+@keyframes xpBootSlide {
+  0% { transform: translateX(-50px); }
+  100% { transform: translateX(190px); }
+}
+
+.xp-boot-screen__copyright {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  font-size: 13px;
+  color: #888888;
+  font-family: 'Tahoma', sans-serif;
+}
+
+/* Authentic Windows XP Welcome Screen (Login) */
+.xp-welcome-screen {
   min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at 50% 30%, #174ebf 0%, #0a297a 50%, #031345 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  font-family: 'Tahoma', 'Segoe UI', sans-serif;
+  position: relative;
+  user-select: none;
+}
+
+.xp-welcome-screen__top-bar {
+  height: 80px;
+  width: 100%;
+  background: linear-gradient(to bottom, #001e73 0%, #0a309e 100%);
+  border-bottom: 2px solid #005bd3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.xp-welcome-screen__body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 40px;
+}
+
+.xp-welcome-screen__left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  padding-right: 20px;
+}
+
+.xp-welcome-screen__identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.xp-welcome-screen__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+}
+
+.xp-welcome-screen__microsoft {
+  font-size: 16px;
+  font-style: italic;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.xp-welcome-screen__product {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.xp-welcome-screen__windows {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.xp-welcome-screen__xp {
+  font-size: 28px;
+  font-weight: 800;
+  font-style: italic;
+  color: #ff9400;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.xp-welcome-screen__instruction {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  opacity: 0.95;
+}
+
+.xp-welcome-screen__divider {
+  width: 1px;
+  height: 320px;
+  background: linear-gradient(to bottom, transparent 0%, #3e73df 20%, #76a4ff 50%, #3e73df 80%, transparent 100%);
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.xp-welcome-screen__right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 20px;
+}
+
+.xp-welcome-screen__user-tile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-align: left;
+  outline: none;
+}
+
+.xp-welcome-screen__user-tile:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.xp-welcome-screen__user-tile--logging-in {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.xp-welcome-screen__avatar-frame {
+  width: 52px;
+  height: 52px;
+  border-radius: 5px;
+  padding: 2px;
+  background: linear-gradient(135deg, #d3c490 0%, #8c7630 50%, #ffea9f 100%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xp-welcome-screen__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  object-fit: cover;
+  background: #000;
+}
+
+.xp-welcome-screen__user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.xp-welcome-screen__username {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.xp-welcome-screen__user-status {
+  color: #cce0ff;
+  font-size: 12px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.xp-welcome-screen__footer {
+  height: 80px;
+  width: 100%;
+  background: linear-gradient(to bottom, #00138c 0%, #08287a 100%);
+  border-top: 2px solid #005bd3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.xp-welcome-screen__power-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+.xp-welcome-screen__power-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.xp-welcome-screen__power-icon-wrapper {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: linear-gradient(to bottom, #d84141, #941818);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.xp-welcome-screen__power-icon {
+  color: #ffffff;
+}
+
+.xp-welcome-screen__footer-note {
+  color: #8daeff;
+  font-size: 11px;
+  max-width: 400px;
+  text-align: right;
+}
+
+/* Authentic Windows XP Welcome Banner */
+.xp-welcome-banner {
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at 50% 40%, #174ebf 0%, #0a297a 50%, #031345 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  user-select: none;
+}
+
+.xp-welcome-banner__top-bar,
+.xp-welcome-banner__bottom-bar {
+  height: 80px;
+  width: 100%;
+  background: linear-gradient(to bottom, #00138c 0%, #08287a 100%);
+  border-bottom: 2px solid #005bd3;
+}
+
+.xp-welcome-banner__bottom-bar {
+  border-bottom: none;
+  border-top: 2px solid #005bd3;
+}
+
+.xp-welcome-banner__center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xp-welcome-banner__title {
+  font-family: 'Trebuchet MS', 'Georgia', serif;
+  font-size: 48px;
+  font-style: italic;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 .xp-login-modern__content {

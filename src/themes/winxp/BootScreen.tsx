@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import bootLogo from './assets/boot/boot-windows-logo.png';
 import './xp.css';
 
 interface BootScreenProps {
@@ -8,53 +7,47 @@ interface BootScreenProps {
 
 export function BootScreen({ onComplete }: BootScreenProps) {
   const [fadeIn, setFadeIn] = useState(false);
-  const [logoFailed, setLogoFailed] = useState(false);
 
   useEffect(() => {
     setFadeIn(true);
-  }, []);
-
-  useEffect(() => {
-    // Автоматическое завершение через 3 секунды
     const timer = setTimeout(onComplete, 3000);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <div
-      className="boot-screen boot-screen--xp os-shell os-winxp"
+      className="xp-boot-screen os-shell os-winxp"
       style={{ opacity: fadeIn ? 1 : 0 }}
     >
-      <div className="boot-screen__center">
-        {!logoFailed && (
-          <img
-            src={bootLogo}
-            alt="Windows XP"
-            className="boot-screen__logo"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-              setLogoFailed(true);
-            }}
-          />
-        )}
-        {logoFailed && (
-          <div className="boot-screen__fallback">
-            <div className="boot-screen__fallback-logo" />
-            <div className="boot-screen__fallback-text">
-              <span className="boot-screen__fallback-brand">Microsoft</span>
-              <span className="boot-screen__fallback-product">Windows XP</span>
+      <div className="xp-boot-screen__center">
+        {/* Authentic Windows XP Boot Brand */}
+        <div className="xp-boot-screen__identity">
+          <div className="xp-boot-screen__flag" aria-hidden="true">
+            <span className="xp-flag-tile xp-flag-red" />
+            <span className="xp-flag-tile xp-flag-green" />
+            <span className="xp-flag-tile xp-flag-blue" />
+            <span className="xp-flag-tile xp-flag-yellow" />
+          </div>
+          <div className="xp-boot-screen__text">
+            <span className="xp-boot-screen__microsoft">Microsoft</span>
+            <div className="xp-boot-screen__product">
+              <span className="xp-boot-screen__windows">Windows</span>
+              <span className="xp-boot-screen__xp">XP</span>
             </div>
           </div>
-        )}
-        <div className="boot-screen__loader">
-          <div />
-          <div />
-          <div />
+        </div>
+
+        {/* XP Progress Indicator Frame */}
+        <div className="xp-boot-screen__loader" aria-label="Loading">
+          <div className="xp-boot-screen__loader-bar">
+            <div className="xp-boot-screen__block" />
+            <div className="xp-boot-screen__block" />
+            <div className="xp-boot-screen__block" />
+          </div>
         </div>
       </div>
 
-      <div className="boot-screen__copyright">Copyright © Microsoft Corporation</div>
+      <div className="xp-boot-screen__copyright">Copyright © Microsoft Corporation</div>
     </div>
   );
 }
-

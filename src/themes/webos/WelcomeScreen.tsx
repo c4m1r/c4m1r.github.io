@@ -39,14 +39,14 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         paddingBottom: '94px'
       }}
     >
-      {/* Main content area with radial gradient - based on winOS-master Content.tsx */}
+      {/* Main content area */}
       <div 
         className="w-full h-full flex items-center justify-start relative"
         style={{
           background: 'radial-gradient(circle at 5% 8%, #91b0ee, #5a7edc 15%)'
         }}
       >
-        {/* Decorative top line - based on winOS-master Content.tsx */}
+        {/* Decorative top line */}
         <div 
           className="absolute top-0 left-0 right-0"
           style={{
@@ -55,7 +55,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
           }}
         />
 
-        {/* Decorative bottom line - based on winOS-master Content.tsx */}
+        {/* Decorative bottom line */}
         <div 
           className="absolute bottom-0 left-0 right-0"
           style={{
@@ -64,7 +64,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
           }}
         />
 
-        {/* Welcome Title - based on winOS-master Title.tsx */}
+        {/* Welcome Title */}
         <span
           className="text-white font-bold italic z-10"
           style={{

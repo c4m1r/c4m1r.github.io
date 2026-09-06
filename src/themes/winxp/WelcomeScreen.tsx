@@ -12,28 +12,26 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     setFadeIn(true);
     const timer = setTimeout(() => {
       onComplete();
-    }, 3000);
+    }, 1800);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
-    <div className="welcome-screen-xp os-shell os-winxp">
-      <div className="welcome-screen__gradient">
-        <div className="welcome-screen__line-top" />
-        <div className="welcome-screen__line-bottom" />
-
+    <div className="xp-welcome-banner os-shell os-winxp">
+      <div className="xp-welcome-banner__top-bar" />
+      <div className="xp-welcome-banner__center">
         <span
-          className="welcome-screen__title"
+          className="xp-welcome-banner__title"
           style={{
             opacity: fadeIn ? 1 : 0,
-            transition: 'opacity 500ms linear'
+            transition: 'opacity 300ms ease-out',
           }}
         >
           welcome
         </span>
       </div>
+      <div className="xp-welcome-banner__bottom-bar" />
     </div>
   );
 }
-
