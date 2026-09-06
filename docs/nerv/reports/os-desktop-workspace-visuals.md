@@ -23,4 +23,4 @@ This report details the desktop workspace visual enhancements added across all O
 - **Media Asset Preservation**: 100% of tracked media and asset files (`.mp3`, `.gif`, `.webm`, `.png`) are preserved. Zero binary additions > 250 KB. Zero new audio/video files.
 - **Feature Flag Priority**: `features.news = false` in `src/config/features.ts` maintains absolute precedence.
 - **Protected Portfolio Apps**: All 6 core portfolio content apps (`my-cv`, `projects-grid`, `blog`, `wiki`, `about`, `content-reader`) remain protected.
-- **Arch / Halloween Status**: Approved directions with placeholders and visual hooks completely intact. GRUB boot profiles deferred safely to prevent boot regressions.
+- **Arch / Halloween Status**: Approved directions with placeholders, visual hooks, and official GRUB boot profiles (`arch` and `halloween`) fully integrated in production.

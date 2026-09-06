@@ -35,8 +35,8 @@ This report documents the visual fidelity optimization pass across all pseudo-OS
    - `ios-5`: Skeuomorphic glossy dock bevels and grouped settings borders.
 
 5. **Arch Linux & Halloween Directions**:
-   - Approved directions with placeholders and visual hooks completely intact in `osSkins.ts`, `THEME_STYLES`, `system-actions.css`, and `ControlPanel.tsx`.
-   - Existing 11 GRUB bootloader entries preserved without risk of breaking GRUB navigation.
+   - Approved directions with full GRUB boot entries (`arch` order 41, `halloween` order 49), skin definitions, `THEME_STYLES`, `system-actions.css`, and `ControlPanel.tsx` visual maps.
+   - All 13 GRUB bootloader entries fully navigable and integrated without breaking GRUB state.
 
 ---
 
