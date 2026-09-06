@@ -26,3 +26,6 @@ Phase 2 of the desktop runtime extraction further modularized legacy `src/themes
 
 ## Risks & Next Extraction Targets
 - Next planned extraction targets: StartMenu inner columns, desktop icon layout grid engine, and contextual menu handlers.
+
+> [!NOTE]
+> Extraction continued in Phase 3 with `DesktopIconGrid.tsx`, `DesktopSelectionBox.tsx`, and `DesktopContextMenuSurface.tsx`. See [desktop-runtime-extraction-phase-3.md](file:///Users/admin/Documents/_git/c4m1r-github/docs/nerv/reports/desktop-runtime-extraction-phase-3.md).

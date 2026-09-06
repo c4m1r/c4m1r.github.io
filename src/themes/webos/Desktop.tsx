@@ -4,12 +4,15 @@ import { type ThemeId } from '../../contexts/appContextTypes';
 import { translations } from '../../i18n/translations';
 import { loadMarkdownContent } from '../../lib/loadMarkdownContent';
 import { DesktopStartMenuSurface } from '../../shells/desktop/components/DesktopStartMenuSurface';
+import { DesktopIconGrid } from '../../shells/desktop/components/DesktopIconGrid';
+import { DesktopSelectionBox } from '../../shells/desktop/components/DesktopSelectionBox';
+import { DesktopContextMenuSurface } from '../../shells/desktop/components/DesktopContextMenuSurface';
 
 import { Window } from '../../apps/desktop/Window';
 import { ErrorBox } from './ErrorBox';
 import { Notepad } from '../../apps/notepad';
 import { PictureViewer } from '../../apps/pictureview';
-import { ContextMenu, ContextMenuItem } from '../../apps/desktop/components';
+import { ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
 import { RunDialog } from './RunDialog';
 import { Folder, HardDrive, Trash2 } from 'lucide-react';
@@ -28,11 +31,10 @@ import {
   MINESWEEPER_WINDOW_ID,
   XP_FAMILY_THEMES,
 } from '../../shells/desktop/desktopConstants';
-import { type DesktopIcon, type DesktopSelectionBox, type DesktopShellProps } from '../../shells/desktop/desktopTypes';
+import { type DesktopIcon, type DesktopSelectionBox as DesktopSelectionBoxData, type DesktopShellProps } from '../../shells/desktop/desktopTypes';
 import { getStoredCustomWallpaper } from '../../shells/desktop/runtime/desktopStorage';
 import { findAppDefinition } from '../../shells/desktop/runtime/appLaunch';
 import { getRelativeRect, isIconInsideSelectionBox } from '../../shells/desktop/runtime/iconHitTesting';
-import { getDesktopIconZIndex } from '../../shells/desktop/runtime/zIndex';
 import { getDesktopOsClassName, isThemeInFamily } from '../../shells/desktop/runtime/shortcutFilters';
 import { createSelectionBox, getViewportSize } from '../../shells/desktop/runtime/windowGeometry';
 import { THEME_ASSETS } from './themeAssets';
@@ -104,7 +106,7 @@ export function Desktop(props?: DesktopShellProps) {
     window.addEventListener('wallpaper-changed', handleWallpaperChange);
     return () => window.removeEventListener('wallpaper-changed', handleWallpaperChange);
   }, []);
-  const [selectionBox, setSelectionBox] = useState<DesktopSelectionBox | null>(null);
+  const [selectionBox, setSelectionBox] = useState<DesktopSelectionBoxData | null>(null);
   const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
   const trayRef = useRef<HTMLDivElement | null>(null);
   const {
@@ -933,6 +935,34 @@ export function Desktop(props?: DesktopShellProps) {
     setDragOffset({ x: offsetX, y: offsetY });
   };
 
+  const handleIconContextMenu = useCallback(
+    (e: React.MouseEvent, icon: DesktopIcon) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!selectedIcons.includes(icon.id)) {
+        setSelectedIcons([icon.id]);
+      }
+      closeStartMenu();
+      setContextMenu({
+        x: e.clientX,
+        y: e.clientY,
+        items: [
+          { label: 'Open', onClick: () => handleIconDoubleClick(icon) },
+          { separator: true },
+          { label: 'Cut', disabled: true },
+          { label: 'Copy', disabled: true },
+          { separator: true },
+          { label: 'Create Shortcut', disabled: true },
+          { label: 'Delete', disabled: true },
+          { label: 'Rename', disabled: true },
+          { separator: true },
+          { label: 'Properties', disabled: true },
+        ],
+      });
+    },
+    [selectedIcons, closeStartMenu, handleIconDoubleClick]
+  );
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!draggingIcon || !desktopRef.current) return;
@@ -1064,82 +1094,22 @@ export function Desktop(props?: DesktopShellProps) {
         </div>
       )}
 
-      {desktopIcons.map((icon) => (
-        <div
-          key={icon.id}
-          className="absolute cursor-pointer group"
-          style={{
-            left: `${icon.x}px`,
-            top: `${icon.y}px`,
-            width: '96px',
-            zIndex: getDesktopIconZIndex(icon.id, draggingIcon),
-          }}
-          ref={(element) => {
-            iconRefs.current[icon.id] = element;
-          }}
-          data-icon-id={icon.id}
-          onMouseDown={(e) => handleIconMouseDown(e, icon.id)}
-          onDoubleClick={() => handleIconDoubleClick(icon)}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (!selectedIcons.includes(icon.id)) {
-              setSelectedIcons([icon.id]);
-            }
-            closeStartMenu();
-            setContextMenu({
-              x: e.clientX,
-              y: e.clientY,
-              items: [
-                { label: 'Open', onClick: () => handleIconDoubleClick(icon) },
-                { separator: true },
-                { label: 'Cut', disabled: true },
-                { label: 'Copy', disabled: true },
-                { separator: true },
-                { label: 'Create Shortcut', disabled: true },
-                { label: 'Delete', disabled: true },
-                { label: 'Rename', disabled: true },
-                { separator: true },
-                { label: 'Properties', disabled: true },
-              ],
-            });
-          }}
-        >
-          <div
-            className={`p-2 rounded flex flex-col items-center justify-center ${
-              isXpFamily
-                ? selectedIcons.includes(icon.id)
-                  ? 'bg-blue-600/40'
-                  : 'group-hover:bg-blue-500/30'
-                : selectedIcons.includes(icon.id)
-                  ? 'bg-blue-800/40 border border-gray-200'
-                  : 'group-hover:bg-blue-800/50 border border-transparent group-hover:border-gray-300'
-            } transition-colors ${draggingIcon === icon.id ? 'opacity-80' : ''}`}
-          >
-            <div className={`flex items-center justify-center ${!isXpFamily && 'opacity-90'}`} style={{ textShadow: '0 1px 2px rgba(0,0,0,0.7)' }}>
-              {icon.icon}
-            </div>
-            <div className={`text-white text-[11px] text-center mt-1 w-full break-words ${isXpFamily ? 'drop-shadow-lg font-semibold' : ''}`} style={{
-              textShadow: '0 1px 3px rgba(0,0,0,0.85), 0 0 6px rgba(0,0,0,0.6)',
-              lineHeight: '1.2'
-            }}>
-              {icon.label}
-            </div>
-          </div>
-        </div>
-      ))}
+      <DesktopIconGrid
+        desktopIcons={desktopIcons}
+        selectedIcons={selectedIcons}
+        draggingIcon={draggingIcon}
+        iconRefs={iconRefs}
+        isXpFamily={isXpFamily}
+        themeKey={themeKey}
+        onIconMouseDown={handleIconMouseDown}
+        onIconDoubleClick={handleIconDoubleClick}
+        onIconContextMenu={handleIconContextMenu}
+      />
 
-      {selectionBox && (
-        <div
-          className="absolute border border-[#1d5fbf] bg-[#75a9ff55] pointer-events-none"
-          style={{
-            left: `${selectionBox.left}px`,
-            top: `${selectionBox.top}px`,
-            width: `${selectionBox.width}px`,
-            height: `${selectionBox.height}px`,
-          }}
-        />
-      )}
+      <DesktopSelectionBox
+        selectionBox={selectionBox}
+        themeKey={themeKey}
+      />
 
       {windows.map((window) => {
         return (
@@ -1317,16 +1287,11 @@ export function Desktop(props?: DesktopShellProps) {
         />
       </div>
 
-      {
-        contextMenu && (
-          <ContextMenu
-            x={contextMenu.x}
-            y={contextMenu.y}
-            items={contextMenu.items}
-            onClose={() => setContextMenu(null)}
-          />
-        )
-      }
+      <DesktopContextMenuSurface
+        contextMenu={contextMenu}
+        onClose={() => setContextMenu(null)}
+        themeKey={themeKey}
+      />
 
       {showRunDialog && (
         <RunDialog
