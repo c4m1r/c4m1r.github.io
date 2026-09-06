@@ -6,7 +6,7 @@
  * Language-aware. No OS wrapper classes — this is the site-shell view.
  */
 
-import { Briefcase, ArrowRight, Tag } from 'lucide-react';
+import { Briefcase, ArrowRight, Tag, ExternalLink } from 'lucide-react';
 import { useProjects } from '../../../domain/projects/useProjects';
 import { useApp } from '../../../contexts/useApp';
 import { type Project } from '../../../domain/projects/projects.types';
@@ -16,6 +16,8 @@ interface ProjectsSectionProps {
   limit?: number;
   /** Called when user clicks "View All". Optional. */
   onViewAll?: () => void;
+  /** Called when user clicks a project card to view detail. Optional. */
+  onOpenProject?: (project: Project) => void;
 }
 
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -36,15 +38,15 @@ function categoryEmoji(cat?: string): string {
   return CATEGORY_EMOJI[cat] ?? CATEGORY_EMOJI[cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()] ?? '📁';
 }
 
-export function ProjectsSection({ limit = 6, onViewAll }: ProjectsSectionProps) {
+export function ProjectsSection({ limit = 6, onViewAll, onOpenProject }: ProjectsSectionProps) {
   const { projects, loading } = useProjects();
   const { language } = useApp();
 
   const headingText = language === 'ru' ? 'Проекты' : 'Projects';
   const subtitleText =
     language === 'ru'
-      ? 'Избранные работы и эксперименты'
-      : 'Selected works and experiments';
+      ? 'Избранные работы, приложения и архитектурные исследования'
+      : 'Selected works, applications, and architectural research';
   const viewAllText = language === 'ru' ? 'Все проекты' : 'View all';
   const loadingText = language === 'ru' ? 'Загрузка...' : 'Loading…';
   const noContentText =
@@ -87,7 +89,7 @@ export function ProjectsSection({ limit = 6, onViewAll }: ProjectsSectionProps) 
         {onViewAll && (
           <button
             onClick={onViewAll}
-            className="flex items-center gap-2 text-primary hover:gap-4 transition-all font-medium"
+            className="flex items-center gap-2 text-primary hover:gap-4 transition-all font-medium focus:outline-none focus:ring-2 focus:ring-primary rounded-lg px-2 py-1"
             aria-label={viewAllText}
           >
             {viewAllText} <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -97,79 +99,115 @@ export function ProjectsSection({ limit = 6, onViewAll }: ProjectsSectionProps) 
 
       {/* Project cards grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {items.map((project, index) => (
-          <article
-            key={project.id}
-            className="neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up p-6 flex flex-col gap-3"
-            style={{ animationDelay: `${index * 80}ms` }}
-            aria-labelledby={`project-title-${project.id}`}
-          >
-            {/* Preview */}
-            {project.preview && (
-              <div className="w-full h-36 rounded-xl overflow-hidden bg-muted mb-1">
-                {isVideoPreview(project.preview) ? (
-                  <video
-                    src={project.preview}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                  />
-                ) : (
-                  <img
-                    src={project.preview}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+        {items.map((project, index) => {
+          const isClickable = Boolean(onOpenProject);
+          const handleCardClick = () => {
+            onOpenProject?.(project);
+          };
+
+          const handleKeyDown = (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onOpenProject?.(project);
+            }
+          };
+
+          return (
+            <article
+              key={project.id}
+              className={`neu rounded-3xl overflow-hidden bg-card card-hover fade-in-up p-6 flex flex-col gap-3 transition-all ${
+                isClickable ? 'cursor-pointer hover:border-primary/50 hover:shadow-lg' : ''
+              }`}
+              style={{ animationDelay: `${index * 80}ms` }}
+              aria-labelledby={`project-title-${project.id}`}
+              onClick={handleCardClick}
+              onKeyDown={handleKeyDown}
+              tabIndex={isClickable ? 0 : undefined}
+              role={isClickable ? 'button' : undefined}
+            >
+              {/* Preview */}
+              {project.preview && (
+                <div className="w-full h-40 rounded-xl overflow-hidden bg-muted mb-1 relative group">
+                  {isVideoPreview(project.preview) ? (
+                    <video
+                      src={project.preview}
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={project.preview}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  )}
+                  {isClickable && (
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1.5">
+                      <ExternalLink className="w-4 h-4" />
+                      {language === 'ru' ? 'Подробнее' : 'View Details'}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Category & Status Badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                {project.category && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full glass capitalize w-fit">
+                    <span aria-hidden="true">{categoryEmoji(project.category)}</span>
+                    {project.category}
+                  </span>
+                )}
+                {project.status && (
+                  <span className="inline-flex items-center text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    {project.status}
+                  </span>
                 )}
               </div>
-            )}
 
-            {/* Category badge */}
-            {project.category && (
-              <span className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full glass capitalize w-fit">
-                <span aria-hidden="true">{categoryEmoji(project.category)}</span>
-                {project.category}
-              </span>
-            )}
+              {/* Title */}
+              <h3
+                id={`project-title-${project.id}`}
+                className="text-xl font-bold text-foreground hover:text-primary transition-colors flex items-center justify-between"
+              >
+                <span>{project.title}</span>
+                {isClickable && (
+                  <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                )}
+              </h3>
 
-            {/* Title */}
-            <h3
-              id={`project-title-${project.id}`}
-              className="text-xl font-bold text-foreground hover:text-primary transition-colors"
-            >
-              {project.title}
-            </h3>
+              {/* Excerpt */}
+              {project.content && (
+                <p className="text-muted-foreground line-clamp-2 text-sm flex-1">
+                  {project.content
+                    .replace(/<!--.*?-->/gs, '')
+                    .replace(/[#*`>_~-]/g, '')
+                    .trim()
+                    .slice(0, 180)}
+                </p>
+              )}
 
-            {/* Excerpt */}
-            {project.content && (
-              <p className="text-muted-foreground line-clamp-2 text-sm flex-1">
-                {project.content
-                  .replace(/<!--.*?-->/gs, '')
-                  .replace(/[#*`>_~-]/g, '')
-                  .trim()
-                  .slice(0, 180)}
-              </p>
-            )}
-
-            {/* Tags */}
-            {project.tags && project.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-auto pt-2">
-                <Tag className="w-3 h-3 text-muted-foreground mt-0.5 flex-shrink-0" aria-hidden="true" />
-                {project.tags.slice(0, 4).map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-block px-2 py-1 text-xs rounded-lg bg-muted text-muted-foreground"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </article>
-        ))}
+              {/* Technologies / Tags */}
+              {project.tags && project.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-auto pt-2">
+                  <Tag className="w-3 h-3 text-muted-foreground mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  {project.tags.slice(0, 4).map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-md bg-muted text-muted-foreground"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </article>
+          );
+        })}
       </div>
     </section>
   );

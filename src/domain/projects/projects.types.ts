@@ -10,14 +10,22 @@ export interface Project extends ContentItem {
   /** Preview image or video URL */
   preview?: string;
 
-  /** Project tags / technologies */
+  /** Project tags / keywords */
   tags?: string[];
 
-  /** High-level category (e.g. "game", "tool", "web") */
+  /** High-level category (e.g. "IT", "Gamedev", "Design", "Web", "Mobile") */
   category?: string;
 
   author?: string;
   updatedAt?: string;
+
+  /** Optional metadata fields for rich project experience */
+  featured?: boolean;
+  status?: string;
+  year?: string;
+  technologies?: string[];
+  repositoryUrl?: string;
+  demoUrl?: string;
 
   /** Canonical web path, e.g. "/projects/hexcraft" */
   projectPath: string;
