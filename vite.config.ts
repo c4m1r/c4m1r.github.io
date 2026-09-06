@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   base: '/',            // открыть сайт по https://c4m1r.github.io/
-  publicDir: 'src/public', // папка для статических файлов
+  publicDir: 'public', // canonical static assets folder
   build: {
     outDir: 'dist'      // стандартная папка для сборки Vite
   },
