@@ -28,4 +28,3 @@ artifacts
 *.sln
 *.sw?
 .env
-/eat

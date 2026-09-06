@@ -1,0 +1,15 @@
+// Repo refreshed on 2025-11-15
+// log the pageview with their URL
+export const pageview = (url) => {
+  window.gtag('config', GA_TRACKING_ID, {
+    page_path: url,
+  });
+};
+
+// log specific events happening.
+export const event = ({ action, params }) => {
+  window.gtag('event', action, params);
+};
+
+// Google Analytics Measurement ID
+export const GA_TRACKING_ID = 'G-0EEBPFMJN4';

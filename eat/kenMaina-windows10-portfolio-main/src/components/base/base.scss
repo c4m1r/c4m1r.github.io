@@ -1,0 +1,134 @@
+@import "../../theme/variables";
+
+.taskbar-clock {
+	height: 40px !important;
+	width: unset !important;
+	margin-right: unset !important;
+	display: flex;
+	align-items: center;
+	padding: 0 8px;
+	white-space: nowrap;
+}
+
+.clock-timer {
+	font-size: 12px !important;
+	color: var(--font-white) !important;
+	line-height: 1.2;
+}
+
+.app-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+	padding: 4px;
+}
+
+.app-icon:hover {
+background: rgba(74, 74, 74, 0.5) !important;
+backdrop-filter: blur(20px) !important;
+-webkit-backdrop-filter: blur(20px) !important;
+cursor: pointer;
+}
+
+.app-icon:focus-visible {
+outline: 2px solid var(--color-blue);
+outline-offset: 2px;
+border-radius: 4px;
+}
+
+.app-icon:active {
+transform: scale(0.95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+.app-icon {
+transition: none;
+}
+
+.app-icon:active {
+transform: none;
+}
+}
+
+/* Responsive improvements */
+@media screen and (max-width: 768px) {
+	.taskbar-clock {
+		height: 36px !important;
+		padding: 0 6px;
+		font-size: 10px;
+	}
+
+	.clock-timer {
+		font-size: 10px !important;
+	}
+
+	.app-icon {
+		padding: 3px;
+		border-radius: 3px;
+	}
+}
+
+@media screen and (max-width: 640px) {
+	.taskbar-clock {
+		height: 32px !important;
+		padding: 0 5px;
+		font-size: 9px;
+	}
+
+	.clock-timer {
+		font-size: 9px !important;
+	}
+
+	.app-icon {
+		padding: 2px;
+		border-radius: 2px;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.taskbar-clock {
+		height: 28px !important;
+		padding: 0 3px;
+		font-size: 8px;
+	}
+
+	.clock-timer {
+		font-size: 8px !important;
+		display: none;
+	}
+
+	.app-icon {
+		padding: 1px;
+		border-radius: 1px;
+		min-width: 28px;
+		min-height: 28px;
+	}
+}
+
+@media screen and (max-width: 320px) {
+	.taskbar-clock {
+		height: 26px !important;
+		padding: 0 2px;
+		font-size: 7px;
+	}
+
+	.clock-timer {
+		display: none;
+	}
+
+	.app-icon {
+		min-width: 24px;
+		min-height: 24px;
+		padding: 1px;
+	}
+}
+
+/* Social Block Horizontal Alignment */
+.social-block {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+}

@@ -1,0 +1,26 @@
+{
+  "name": "homescreen-app",
+  "type": "module",
+  "version": "0.0.7",
+  "scripts": {
+    "start": "vite --host",
+    "dev": "vite --host",
+    "build": "vite build",
+    "serve": "vite preview",
+    "deploy": "vite build && current_version=$(grep '\"version\"' package.json | awk -F: '{gsub(/[\", ]/, \"\", $2); print $2}') && new_version=$(echo $current_version | awk -F. '{$NF = $NF + 1;} 1' OFS=.) && jq --arg new_version \"$new_version\" '.version |= $new_version' package.json > tmp_package.json && mv tmp_package.json package.json && git add . && git commit -m \"Deploy $new_version\" && git push origin master"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.8.1",
+    "vite": "^5.0.12",
+    "vite-plugin-mkcert": "^1.17.3"
+  },
+  "dependencies": {
+    "@preact/signals": "^1.2.3",
+    "@twind/core": "^1.1.3",
+    "@twind/preset-autoprefix": "^1.0.7",
+    "@twind/preset-tailwind": "^1.1.4",
+    "chokidar": "^3.6.0",
+    "deepsignal": "^1.5.0",
+    "preact": "^10.19.3"
+  }
+}

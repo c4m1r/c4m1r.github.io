@@ -1,0 +1,51 @@
+@import url('https://fonts.cdnfonts.com/css/depixel');
+@font-face {
+    font-family: "Pixelated MS Sans Serif";
+    src: url(https://unpkg.com/98.css@0.1.16/dist/ms_sans_serif.woff) format("woff");
+    src: url(https://unpkg.com/98.css@0.1.16/dist/ms_sans_serif.woff2) format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+:root{
+  --gray: #c0c7c8;
+  --dark-gray: #87888F;
+  --light-gray: #e7e7e7;
+  --marine: #0000A8
+}
+
+
+body,
+#root,
+.App{
+  margin:0;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #57A8A8;
+  /* font-family: 'Tahoma'; */
+
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+
+  user-select: none;
+
+}
+
+
+
+.App img {
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+
+.App{
+  display: flex;
+  flex-direction: column;
+}
+
+.Desktop,
+.WindowManager{
+  flex-grow: 1;
+}

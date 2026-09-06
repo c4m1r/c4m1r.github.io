@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Homescreen</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="application-name" content="Homescreen" />
+    <meta name="apple-mobile-web-app-title" content="Homescreen" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta
+      name="description"
+      content="A remake of the iOS homescreen using just HTML, CSS and JavaScript"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/180.png" />
+    <link rel="icon" type="image/png" href="/icons/64.png" />
+    <script src="/index" type="module"></script>
+  </head>
+  <body></body>
+  <script type="module">
+    window.navigator.standalone && document.body.classList.add("standalone");
+    // If we are in an iframe then we need to set the safe area insets
+    // as the browser will not know about the overlayed chrome
+    if (window.self !== window.top) {
+      const styles = document.createElement("style");
+      styles.textContent = `
+        :root {
+          --safe-area-inset-top: 52px;
+          --safe-area-inset-right: 16px;
+          --safe-area-inset-bottom: 32px;
+          --safe-area-inset-left: 12px;
+        }
+      `;
+      document.head.appendChild(styles);
+    }
+  </script>
+</html>

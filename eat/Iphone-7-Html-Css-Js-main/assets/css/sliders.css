@@ -1,0 +1,57 @@
+.galleryis{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: aqua;
+    display: none;
+}
+
+.swiper-wrapper {
+    position: relative;
+}
+.swiper-button-prev {
+    box-shadow: 3px 3px 3px black;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 3px solid white;
+    border-radius: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000 !important;
+    font-weight: 700;
+    font-size: 30px;
+}
+.swiper-button-prev:hover {
+    cursor: pointer;
+}
+.swiper-button-next {
+    box-shadow: 3px 3px 3px black;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 3px solid white;
+    border-radius: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000 !important;
+    font-weight: 700;
+    font-size: 30px;
+}
+.swiper-button-next:hover {
+    cursor: pointer;
+}
+

@@ -1,0 +1,125 @@
+@use 'variables' as vars;
+
+.video-container {
+  --container-width: 31.25rem;
+  --container-height: 23.125rem;
+  --button-padding: 0.75rem 1.5rem;
+  --button-radius: 3.125rem;
+  --emoji-size: 1.5rem;
+  --icon-size: 3.125rem;
+  --icon-gap: 1rem;
+
+  position: relative;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: var(--container-width);
+  height: var(--container-height);
+  box-sizing: border-box;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-block-end: 2.5rem;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+
+  &.fade-out {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.welcome-button {
+  background: linear-gradient(135deg, #1d92ff, #0056b3);
+  padding: var(--button-padding);
+  border-radius: var(--button-radius);
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.text {
+  display: inline-block;
+  margin-inline-end: 0.5rem;
+}
+
+.emoji {
+  font-size: var(--emoji-size);
+}
+
+.floating-emoji {
+  position: absolute;
+  inset-block-end: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, 0);
+  font-size: 2.5rem;
+  animation: waveUp 2.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.ios-buttons {
+  position: absolute;
+  inset-block-end: 1rem;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: var(--icon-gap);
+}
+
+.icon-container {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@keyframes waveUp {
+  0% {
+    transform: translate(-50%, 0) rotate(0deg);
+    opacity: 1;
+  }
+  20% {
+    transform: translate(-50%, -30px) rotate(15deg);
+  }
+  40% {
+    transform: translate(-50%, -60px) rotate(-15deg);
+  }
+  60% {
+    transform: translate(-50%, -90px) rotate(10deg);
+  }
+  80% {
+    transform: translate(-50%, -120px) rotate(-5deg);
+  }
+  100% {
+    transform: translate(-50%, -150px) rotate(0deg);
+    opacity: 0;
+  }
+}

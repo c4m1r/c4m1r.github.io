@@ -1,0 +1,561 @@
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_320.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_321.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_322.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_323.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_324.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_325.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_326.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_327.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_328.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_329.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_336.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_338.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_339.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Accessibility\accessibilitycpl_340.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenterCPL_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenterCPL_3.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenterCPL_4.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenterCPL_5.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenterCPL_6.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenterCPL_7.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_3.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_4.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_5.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_6.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_7.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_8.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Action Center\ActionCenter_9.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\AuthFWGP_100.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\baaupdate_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\explorer_262.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\Faultrep_5201.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\imageres_27.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\imageres_78.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\imageres_80.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\imageres_87.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercfg_202.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercpl_506.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercpl_507.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercpl_512.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercpl_513.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercpl_514.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercpl_515.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powercpl_516.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powrprof_512.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powrprof_513.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Control Panel\powrprof_514.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Default Programs\cmd_IDI_APPICON.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Default Programs\mspaint_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Default Programs\notepad_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_200.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_201.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_202.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_203.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_204.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_205.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_206.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_207.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\DVD Types\imagesp1_208.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\AdmTmpl_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\AdmTmpl_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\AdmTmpl_3.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\AdmTmpl_4.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\AdmTmpl_6.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\appwiz_1507.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\appwiz_251.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\audiosrv_203.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsquery_151.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsquery_152.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4096.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4097.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4098.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4099.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4100.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4102.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4106.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4108.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4110.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4111.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4112.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4113.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4114.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4115.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4116.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4117.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4118.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4119.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4120.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4121.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4122.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4123.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4124.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4125.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4126.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4127.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4128.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4129.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4130.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4131.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4132.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4133.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4134.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4135.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4136.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\dsuiext_4137.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_100.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_101.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1010.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1013.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1015.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1017.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1018.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_102.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1021.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1022.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1024.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1026.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1027.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1029.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_103.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1030.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1031.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1032.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1033.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1034.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1035.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1036.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_1037.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_104.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_105.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_106.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_107.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_110.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_111.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_114.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_116.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_117.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_119.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_120.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_121.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_122.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_124.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_125.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_126.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_127.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_128.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_130.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_131.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_132.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_133.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_134.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_135.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_136.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_137.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_138.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_139.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_14.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_140.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_141.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_142.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_144.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_145.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_146.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_147.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_149.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_15.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_150.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_151.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_152.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_155.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_157.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_158.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_159.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_160.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_161.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_163.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_164.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_165.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_167.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_168.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_169.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_17.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_170.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_171.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_172.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_173.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_175.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_176.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_177.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_179.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_180.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_181.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_182.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_19.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_190.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_191.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_192.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_193.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_194.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_195.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_196.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_197.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_21.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_22.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_23.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_24.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_25.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_26.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_28.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_29.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_30.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_31.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_32.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_33.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_34.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_35.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_36.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_37.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_38.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_39.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_40.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_41.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_42.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_43.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_44.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_45.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_46.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_47.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_48.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_49.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_50.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_51.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_5100.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_5101.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_52.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_53.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_56.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_57.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_58.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_59.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_60.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_61.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_62.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_63.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_64.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_65.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_66.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_67.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_68.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_69.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_70.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_71.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_72.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_73.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_74.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_75.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_76.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_79.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_81.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_82.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_83.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_84.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_86.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_88.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_89.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_90.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_91.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_92.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_93.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_94.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_95.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_96.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_97.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_99.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_SHIDI_FLIP3D.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Filetypes, Devices, Miscellaneous\imageres_SHIDI_SHIELD_INTERNAL.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\bckgRes_1009.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\Chess_128.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\ChkrRes_1009.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\FreeCell_121.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\Hearts_108.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\Mahjong_102.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\MineSweeper_111.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\MoreGames_IDI_MOREGAMES.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\PurblePlace_102.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\ShvlRes_1009.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\Solitaire_108.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Games\SpiderSolitaire_108.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Imaging Devices\WLXPhotoAcq_1075.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Imaging Devices\WLXPhotoAcq_1076.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Imaging Devices\WLXPhotoAcq_1077.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Imaging Devices\WLXPhotoAcq_1081.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\hmmapi_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iedvtool_3000.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32528.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32529.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32534.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32536.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32537.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32538.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32539.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32542.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32546.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32552.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32553.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_32554.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Internet Explorer\iexplore_7.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_1001.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_1002.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_1003.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_1004.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_1005.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_1008.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_1014.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Libraries\imageres_148.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_10.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_3.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_4.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_5.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_6.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_7.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_8.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_9.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_EHTRAY.ICON.DOWNLOADING.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_EHTRAY.ICON.RECORDING.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_EHTRAY.ICON.SHUTDOWN.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_EHTRAY.ICON.WARNING.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Media Center\ehres_EHTRAY.LOG.ICON.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_11.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_12.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_14.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_15.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_16.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_17.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_18.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_19.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_22.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_23.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_27.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_28.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_504.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_505.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_506.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_6.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_7.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Network and Sharing Center\netcenter_8.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_139.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_168.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_17.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_240.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_242.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_244.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5000.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5001.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5002.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5003.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5004.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5005.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5006.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Printers\prnfldr_5007.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\explorer_258.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\explorer_259.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\explorer_ICO_MYCOMPUTER.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\imageres_109.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\imageres_20.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\imageres_54.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\imageres_55.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\imageres_85.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_1003.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_151.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_152.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_153.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_154.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_155.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_156.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_157.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16715.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16739.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16741.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16767.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16769.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16771.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16772.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16782.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16783.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16784.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16785.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_16786.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_17.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_18.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_22.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_23.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_231.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_24.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_240.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_25.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_252.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_253.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_260.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_261.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_262.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_264.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_265.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_267.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_268.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_269.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_27.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_270.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_271.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_272.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_274.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_275.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_276.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_278.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_279.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_283.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_292.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_294.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_302.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_319.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_320.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_40.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_41.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Shell32.dll\shell32_47.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_108.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_112.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_113.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_115.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_123.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_129.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_162.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_184.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_185.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_186.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_189.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Special Folders\imageres_8.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_10.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_1020.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_1025.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_143.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_166.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_174.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_178.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_18.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_183.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_3.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_5.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_6.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_77.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Standard Folders\imageres_9.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Tasks\DxpTaskSync_50.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Tasks\DxpTaskSync_52.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Tasks\DxpTaskSync_53.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Tasks\DxpTaskSync_60.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Tasks\DxpTaskSync_61.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Tasks\DxpTaskSync_62.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Tasks\DxpTaskSync_65.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Defender\MsMpRes_103.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Defender\MsMpRes_132.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Defender\MsMpRes_134.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Defender\MsMpRes_151.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Defender\MsMpRes_334.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows DVD Maker\DVDMaker_128.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows DVD Maker\DVDMaker_440.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Journal\Journal_104.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Journal\Journal_105.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Journal\Journal_127.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Messenger\msgsres_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Messenger\msgsres_712.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Messenger\msgsres_713.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Messenger\msgsres_714.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Messenger\msgsres_722.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Photo Gallery\WLXPhotoLibraryResources_2054.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Photo Gallery\WLXPhotoLibraryResources_2057.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Photo Gallery\WLXPhotoLibraryResources_2059.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Live Photo Gallery\WLXPhotoLibraryResources_238.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_15.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_19.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_20.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_23.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_41.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_42.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Mail\MSOERES_7.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_141.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_142.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_143.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_144.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_151.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_152.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_153.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_154.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_155.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_156.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_157.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_161.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_162.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_163.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_164.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\DXPTaskRingtone_50.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\player.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\WMPDMC_107.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\WMPDMC_116.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\wmplayer_120.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Media Player\wmpnscfg_100.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows PowerShell\powershell_ise_0.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows PowerShell\powershell_ise_1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows PowerShell\powershell_MSH_MAIN.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows PowerShell\powershell_MSH_SECURITY.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Sidebar\sidebar_100.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Windows Sidebar\sidebar_103.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 1.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 10.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 11.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 13.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 14.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 15.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 16.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 17.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 18.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 19.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 2.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 20.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 21.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 22.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 23.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 24.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 25.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 26.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 27.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 28.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 29.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 3.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 30.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 31.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 32.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 33.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 34.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 35.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 36.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 37.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 38.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 39.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 4.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 5.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 6.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 7.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 8.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\WMP12 Icons\WMP 12 9.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Wordpad\wordpad_128.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Wordpad\wordpad_154.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Wordpad\wordpad_156.ico
+d:\ProjectFiles\winxp-portfolio\public\win7\Wordpad\wordpad_157.ico

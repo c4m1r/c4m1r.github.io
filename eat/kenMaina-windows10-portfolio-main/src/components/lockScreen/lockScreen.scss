@@ -1,0 +1,175 @@
+@import "../../theme/variables";
+
+.SignInOverlay {
+	background: rgba(0, 0, 0, 0.25);
+	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+
+	// Main sign-in content - flexbox centered container
+	.sign-in-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		width: 100%;
+		max-width: 400px;
+		padding: 20px;
+		box-sizing: border-box;
+	}
+
+	// Avatar container - flexbox centered
+	.avatar-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		margin-bottom: 16px;
+	}
+
+	// Avatar image - responsive sizing
+	.avatar-image {
+		width: 160px;
+		height: 160px;
+		min-width: 100px;
+		min-height: 100px;
+		max-width: 200px;
+		max-height: 200px;
+		object-fit: cover;
+		object-position: center 20%; // Center on the face (upper portion of image)
+		border: 3px solid rgba(255, 255, 255, 0.3);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+		&:hover {
+			transform: scale(1.02);
+			box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+		}
+	}
+
+	// Responsive breakpoints for different viewport sizes
+	// Mobile devices (320px - 480px)
+	@media screen and (max-width: 480px) {
+		.sign-in-content {
+			max-width: 90%;
+			padding: 15px;
+		}
+
+		.avatar-image {
+			width: 120px;
+			height: 120px;
+		}
+	}
+
+	// Small tablets (481px - 767px)
+	@media screen and (min-width: 481px) and (max-width: 767px) {
+		.sign-in-content {
+			max-width: 350px;
+			padding: 18px;
+		}
+
+		.avatar-image {
+			width: 140px;
+			height: 140px;
+		}
+	}
+
+	// Tablets (768px - 1024px)
+	@media screen and (min-width: 768px) and (max-width: 1024px) {
+		.sign-in-content {
+			max-width: 380px;
+		}
+
+		.avatar-image {
+			width: 160px;
+			height: 160px;
+		}
+	}
+
+	// Desktop (1025px and above)
+	@media screen and (min-width: 1025px) {
+		.sign-in-content {
+			max-width: 400px;
+		}
+
+		.avatar-image {
+			width: 180px;
+			height: 180px;
+		}
+	}
+
+	// Large screens (1440px and above)
+	@media screen and (min-width: 1440px) {
+		.avatar-image {
+			width: 200px;
+			height: 200px;
+		}
+	}
+}
+
+
+// Synchronized bouncing animation for social icons
+@keyframes socialBounce {
+
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	25% {
+		transform: translateY(-12px);
+	}
+
+	50% {
+		transform: translateY(0);
+	}
+
+	75% {
+		transform: translateY(-6px);
+	}
+}
+
+.SignInOverlay {
+	.social-block {
+		display: flex;
+		align-items: center;
+
+		img {
+			animation: socialBounce 2s ease-in-out infinite;
+			transition: transform 0.3s ease, filter 0.3s ease;
+			cursor: pointer;
+
+			// Staggered animation delay for wave effect
+			&:nth-child(1) {
+				animation-delay: 0s;
+			}
+
+			&:nth-child(2) {
+				animation-delay: 0.15s;
+			}
+
+			&:nth-child(3) {
+				animation-delay: 0.3s;
+			}
+
+			&:nth-child(4) {
+				animation-delay: 0.45s;
+			}
+
+			&:nth-child(5) {
+				animation-delay: 0.6s;
+			}
+
+			&:hover {
+				animation-play-state: paused;
+				transform: translateY(-8px) scale(1.1);
+				filter: brightness(1.2) drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+			}
+		}
+	}
+}

@@ -1,0 +1,27 @@
+/* Use CSS variables for dynamic theming */
+:root {
+    --transition-all: all 0.15s ease;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 10px 26px rgba(0, 0, 0, 0.55);
+}
+
+/* Use will-change sparingly */
+.window-frame {
+    will-change: box-shadow, border-color;
+}
+
+/* GPU acceleration for animations */
+.animated-element {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

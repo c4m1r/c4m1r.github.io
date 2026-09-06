@@ -1,0 +1,413 @@
+@import './variables';
+
+/* ============ SPACING MIXIN ============ */
+@mixin app-content-spacing($desktop: var(--spacing-md), $tablet: 10px, $mobile: 8px) {
+    padding: $desktop;
+
+    @media screen and (max-width: 768px) {
+        padding: $tablet;
+    }
+
+    @media screen and (max-width: 640px) {
+        padding: $mobile;
+    }
+}
+
+/* ============ DIVIDER LINE MIXIN ============ */
+@mixin divider-line($color: var(--border-light), $margin: var(--spacing-md)) {
+    border: 1px solid $color;
+    margin: $margin 0;
+}
+
+/* ============ HOVER STATE MIXIN ============ */
+@mixin hover-state($bg: var(--overlay-hover), $duration: var(--transition-base)) {
+    transition: background $duration;
+
+    &:hover {
+        background: $bg;
+    }
+}
+
+/* ============ FOCUS STATE MIXIN ============ */
+@mixin focus-state($color: var(--color-blue), $duration: var(--transition-base)) {
+    transition: all $duration;
+
+    &:focus-visible {
+        outline: 2px solid $color;
+        outline-offset: 2px;
+    }
+}
+
+/* ============ FOCUS RING MIXIN (WCAG COMPLIANT) ============ */
+@mixin focus-ring($color: var(--color-blue), $offset: 2px) {
+    outline: 2px solid $color;
+    outline-offset: $offset;
+    box-shadow: 
+        0 0 0 4px rgba(0, 162, 237, 0.1),  // Outer glow for visibility
+        inset 0 0 0 1px rgba(0, 0, 0, 0.2); // Inner ring for definition
+}
+
+/* ============ RESPONSIVE FONT MIXIN ============ */
+@mixin responsive-font($desktop: 14px, $tablet: 13px, $mobile: 12px, $compact: 11px, $tiny: 10px) {
+    font-size: $desktop;
+
+    @media screen and (max-width: 1024px) {
+        font-size: $tablet;
+    }
+
+    @media screen and (max-width: 768px) {
+        font-size: $tablet;
+    }
+
+    @media screen and (max-width: 640px) {
+        font-size: $mobile;
+    }
+
+    @media screen and (max-width: 480px) {
+        font-size: $compact;
+    }
+
+    @media screen and (max-width: 320px) {
+        font-size: $tiny;
+    }
+}
+
+/* ============ FLEX CENTER MIXIN ============ */
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============ FLEX BETWEEN MIXIN ============ */
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ============ TRANSITION ALL MIXIN ============ */
+@mixin transition-all($duration: var(--transition-base)) {
+    transition: all $duration;
+}
+
+/* ============ TRUNCATE MIXIN ============ */
+@mixin truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ============ LINE CLAMP MIXIN ============ */
+@mixin line-clamp($lines: 1) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ============ GLASSMORPHISM MIXIN ============ */
+@mixin glass-effect($bg: rgba(28, 28, 30, 0.8), $blur: 10px) {
+    background: $bg;
+    backdrop-filter: blur($blur);
+    -webkit-backdrop-filter: blur($blur);
+}
+
+/* ============ SHADOW ELEVATION MIXIN ============ */
+@mixin shadow-elevation($level: 1) {
+    @if $level == 0 {
+        box-shadow: none;
+    } @else if $level == 1 {
+        box-shadow: var(--shadow-sm);
+    } @else if $level == 2 {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    } @else if $level == 3 {
+        box-shadow: var(--shadow-md);
+    } @else if $level == 4 {
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+/* ============ BUTTON MIXIN ============ */
+@mixin button-base($bg: var(--color-blue), $color: #ffffff, $padding: 8px 16px) {
+    background: $bg;
+    color: $color;
+    padding: $padding;
+    border: none;
+    border-radius: 6px;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-base);
+
+    &:hover {
+        opacity: 0.85;
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        transform: scale(0.98);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-blue);
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        &:active {
+            transform: none;
+        }
+    }
+}
+
+/* ============ INPUT MIXIN ============ */
+@mixin input-base($padding: 8px 12px) {
+    background: var(--overlay-light);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    padding: $padding;
+    border-radius: 6px;
+    font-size: var(--font-size-base);
+    transition: all var(--transition-base);
+
+    &:hover {
+        border-color: var(--border-medium);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-blue);
+        outline-offset: 2px;
+        border-color: var(--color-blue);
+        box-shadow: 0 0 0 4px rgba(0, 162, 237, 0.15);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+/* ============ GRID RESPONSIVE MIXIN ============ */
+@mixin grid-responsive($desktop-cols: 3, $tablet-cols: 2, $mobile-cols: 1, $gap: var(--spacing-lg)) {
+    display: grid;
+    grid-template-columns: repeat($desktop-cols, 1fr);
+    gap: $gap;
+
+    @media screen and (max-width: 1024px) {
+        grid-template-columns: repeat($tablet-cols, 1fr);
+    }
+
+    @media screen and (max-width: 768px) {
+        grid-template-columns: repeat($tablet-cols, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    @media screen and (max-width: 640px) {
+        grid-template-columns: repeat($mobile-cols, 1fr);
+        gap: var(--spacing-md);
+    }
+}
+
+/* ============ ABSOLUTE CENTER MIXIN ============ */
+@mixin absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ============ HIDE ON BREAKPOINT MIXIN ============ */
+@mixin hide-on-mobile {
+    @media screen and (max-width: 768px) {
+        display: none !important;
+    }
+}
+
+@mixin hide-on-tablet {
+    @media screen and (max-width: 1024px) {
+        display: none !important;
+    }
+}
+
+@mixin hide-on-desktop {
+    @media screen and (min-width: 1025px) {
+        display: none !important;
+    }
+}
+
+/* ============ SHOW ONLY ON BREAKPOINT MIXIN ============ */
+@mixin show-on-mobile {
+    display: none !important;
+
+    @media screen and (max-width: 768px) {
+        display: block !important;
+    }
+}
+
+@mixin show-on-desktop {
+    @media screen and (max-width: 768px) {
+        display: none !important;
+    }
+}
+
+/* ============ TEXT OVERFLOW MIXIN ============ */
+@mixin overflow-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ============ SCROLLBAR HIDE MIXIN ============ */
+@mixin scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* ============ ASPECT RATIO MIXIN ============ */
+@mixin aspect-ratio($width, $height) {
+    position: relative;
+
+    &::before {
+        content: '';
+        display: block;
+        width: 100%;
+        padding-bottom: ($height / $width) * 100%;
+    }
+
+    > * {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* ============ LOADING SHIMMER MIXIN ============ */
+@mixin shimmer-animation {
+    background: linear-gradient(
+        90deg,
+        var(--bg-secondary) 25%,
+        var(--bg-light) 50%,
+        var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+
+    @keyframes shimmer {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        background: var(--bg-secondary);
+    }
+}
+
+/* ============ WINDOW LAUNCH ANIMATION MIXIN ============ */
+@mixin launch-animation($duration: 0.3s) {
+    animation: windowLaunch $duration cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    @keyframes windowLaunch {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ============ RIPPLE EFFECT MIXIN ============ */
+@mixin ripple-effect {
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    &:active::after {
+        animation: ripple 0.6s ease-out;
+    }
+
+    @keyframes ripple {
+        to {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &:active::after {
+            animation: none;
+        }
+    }
+}
+
+/* ============ REDUCED MOTION SUPPORT ============ */
+@mixin respect-motion-preference {
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* ============ ERROR STATE MIXIN ============ */
+@mixin error-state() {
+  border-color: var(--color-alert);
+  background: rgba(255, 76, 76, 0.05);
+  box-shadow: 
+    0 0 0 1px var(--color-alert),
+    0 0 8px rgba(255, 76, 76, 0.15);
+}
+
+@mixin error-message() {
+  color: var(--color-alert);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  
+  &::before {
+    content: '⚠ ';
+  }
+}

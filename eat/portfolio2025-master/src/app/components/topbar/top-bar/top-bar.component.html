@@ -1,0 +1,38 @@
+<nav 
+  class="top-bar" 
+  role="menubar"
+  aria-label="Main menu">
+  <app-menu-item 
+    class="apple" 
+    [menuItems]="appleMenuItems()" 
+    [isAppleMenu]="true"
+    (itemClick)="onMenuItemClick($event)">
+    <img 
+      src="assets/icons/apple.svg" 
+      alt="Apple menu" 
+      width="16" 
+      height="16" />
+  </app-menu-item>
+  
+  <app-menu-item 
+    class="finder" 
+    [menuItems]="finderMenuItems()"
+    (itemClick)="onMenuItemClick($event)">
+    <span class="finder-text">Finder</span>
+  </app-menu-item>
+  
+  <app-menu-item 
+    class="help" 
+    [menuItems]="helpMenuItems()"
+    (itemClick)="onMenuItemClick($event)">
+    <span class="help-text">Help</span>
+  </app-menu-item>
+
+  <div 
+    class="spacer" 
+    role="separator" 
+    aria-hidden="true">
+  </div>
+  
+  <app-clock></app-clock>
+</nav>

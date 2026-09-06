@@ -1,0 +1,119 @@
+@import '../../theme/variables';
+@import '../../theme/mixins';
+
+.vscode-app-container {
+    height: 100%;
+    display: flex;
+    flex: 1;
+    background: var(--bg-primary);
+
+    /* Sidebar */
+    .vs-sidebar {
+        width: 200px;
+        background: rgba(0, 0, 0, 0.2);
+        border-right: 1px solid var(--border-light);
+        overflow-y: auto;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+
+        @media screen and (max-width: 768px) {
+            width: 160px;
+        }
+
+        @media screen and (max-width: 640px) {
+            width: 140px;
+        }
+
+        .sidebar-section {
+            padding: var(--spacing-sm);
+
+            .sidebar-item {
+                padding: 8px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                @include responsive-font(13px, 12px, 11px);
+                transition: all var(--transition-base);
+                margin-bottom: 2px;
+                @include hover-state();
+
+                &.active {
+                    background: var(--color-blue);
+                    color: var(--color-white);
+                }
+            }
+        }
+    }
+
+    /* Main Editor Area */
+    .vs-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        /* Editor Tabs */
+        .editor-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0;
+            gap: 2px;
+            overflow-x: auto;
+            flex-shrink: 0;
+
+            .editor-tab {
+                padding: 8px 16px;
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                cursor: pointer;
+                @include responsive-font(12px, 11px, 10px);
+                transition: all var(--transition-base);
+                border-bottom: 2px solid transparent;
+                white-space: nowrap;
+
+                &:hover {
+                    background: var(--overlay-light);
+                }
+
+                &.active {
+                    color: var(--text-primary);
+                    border-bottom-color: var(--color-blue);
+                    background: var(--overlay-light);
+                }
+            }
+        }
+
+        /* Editor Content */
+        .editor-content {
+            flex: 1;
+            overflow: auto;
+            background: linear-gradient(90deg, rgba(50, 50, 50, 0.3) 0%, transparent 100%);
+            font-family: 'Monaco', 'Courier New', monospace;
+            @include responsive-font(12px, 11px, 10px);
+            line-height: 1.6;
+            color: var(--text-secondary);
+            @include app-content-spacing();
+
+            .code-line {
+                margin-bottom: 2px;
+            }
+
+            .code-keyword {
+                color: #d4a574;
+            }
+
+            .code-string {
+                color: #ce9178;
+            }
+
+            .code-function {
+                color: #dcdcaa;
+            }
+
+            .code-comment {
+                color: #6a9955;
+            }
+        }
+    }
+}

@@ -1,0 +1,41 @@
+<div class="video-container">
+  <video
+    #video
+    preload="auto"
+    loop
+    poster="./assets/videos/poster.png"
+    playsinline
+    class="video-player"
+    muted
+    autoplay
+  >
+    <source src="./assets/videos/wave-optimized.webm" type="video/webm" />
+  </video>
+
+  @if (showWelcomeButton()) {
+    <div class="overlay" [class.fade-out]="emojiAnimating()">
+      <button class="welcome-button" (click)="handleWelcomeClick()">
+        <span class="text">Say Hi</span>
+        <span class="emoji">👋</span>
+      </button>
+    </div>
+  }
+
+  @if (emojiAnimating()) {
+    <div class="floating-emoji">👋</div>
+  }
+
+  @if (!showWelcomeButton()) {
+    <div class="ios-buttons">
+      <div class="icon-container">
+        <img src="./assets/icons/camera-off.svg" alt="Camera Off" />
+      </div>
+      <div class="icon-container">
+        <img src="./assets/icons/mic-mute.svg" alt="Mic Mute" />
+      </div>
+      <div class="icon-container">
+        <img src="./assets/icons/hand-end.svg" alt="Hand End" />
+      </div>
+    </div>
+  }
+</div>

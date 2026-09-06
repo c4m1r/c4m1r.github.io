@@ -1,0 +1,60 @@
+{
+  "name": "ken maina",
+  "version": "0.2.0",
+  "private": true,
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@fluentui/react": "^8.120.8",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "firebase": "^11.0.2",
+    "moment-timezone": "^0.5.46",
+    "quill": "^1.3.7",
+    "react": "^18.3.1",
+    "react-calendar": "^5.0.0",
+    "react-contexify": "^6.0.0",
+    "react-dom": "^18.3.1",
+    "react-draggable": "^4.4.6",
+    "react-ga4": "^2.1.0",
+    "react-live-clock": "^6.1.25",
+    "react-moment": "^1.1.3",
+    "react-quilljs": "^1.2.14",
+    "react-redux": "^9.1.2",
+    "react-resizable": "^3.0.5",
+    "react-router-dom": "^6.28.0",
+    "react-scripts": "5.0.1",
+    "react-spreadsheet": "^0.10.1",
+    "redux": "^5.0.1",
+    "sass": "^1.81.0",
+    "uikit": "^3.22.2",
+    "web-vitals": "^4.2.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
+  }
+}
