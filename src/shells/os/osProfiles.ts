@@ -47,6 +47,15 @@ export const osBootProfiles: OsBootProfile[] = [
     enabled: true,
   },
   {
+    id: 'arch' as OsProfileId,
+    label: 'Arch Linux',
+    kind: 'desktop' as const,
+    mode: 'webos' as const,
+    theme: 'arch' as const,
+    order: 41,
+    enabled: true,
+  },
+  {
     id: 'ios-26' as OsProfileId,
     label: 'iOS 26.6.1',
     kind: 'desktop' as const,
@@ -80,6 +89,15 @@ export const osBootProfiles: OsBootProfile[] = [
     mode: 'webos' as const,
     theme: 'ios-5' as const,
     order: 48,
+    enabled: true,
+  },
+  {
+    id: 'halloween' as OsProfileId,
+    label: 'Halloween Edition',
+    kind: 'desktop' as const,
+    mode: 'webos' as const,
+    theme: 'halloween' as const,
+    order: 49,
     enabled: true,
   },
   {

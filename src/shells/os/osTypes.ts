@@ -13,7 +13,9 @@ export type OsProfileId =
   | 'ios-26'
   | 'ios-16'
   | 'ios-9'
-  | 'ios-5';
+  | 'ios-5'
+  | 'arch'
+  | 'halloween';
 
 export interface OsBootProfile {
   id: OsProfileId;

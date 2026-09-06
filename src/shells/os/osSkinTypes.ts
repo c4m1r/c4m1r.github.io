@@ -52,17 +52,17 @@ export interface OsDesktopRules {
 
 export interface OsVersionRules {
   displayName?: string;
-  family?: 'iOS' | 'iPadOS' | 'Windows' | 'Ubuntu' | 'WebOS';
+  family?: 'iOS' | 'iPadOS' | 'Windows' | 'Ubuntu' | 'WebOS' | 'Linux' | 'Seasonal';
   version?: string;
-  designEra?: 'skeuomorphic' | 'transitional-flat' | 'flat' | 'modern';
-  sourceStatus?: 'apple-documented' | 'user-requested' | 'estimated';
+  designEra?: 'skeuomorphic' | 'transitional-flat' | 'flat' | 'modern' | 'modern-linux' | 'seasonal-dark';
+  sourceStatus?: 'apple-documented' | 'user-requested' | 'estimated' | 'community-documented' | 'custom-theme';
   needsVerification?: boolean;
   note?: string;
 }
 
 export interface OsDeviceSupportRules {
   formFactor?: 'desktop' | 'tablet';
-  deviceFamily?: 'iPad';
+  deviceFamily?: string;
   representativeDevice?: string;
   supportedDevicesSummary?: string;
   supportCycleLabel?: string;

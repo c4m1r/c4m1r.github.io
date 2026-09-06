@@ -402,19 +402,103 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     theme: 'arch',
     osClassName: 'os-arch',
     displayName: 'Arch Linux',
-    appNames: {},
+    appNames: {
+      pictures: { title: { en: 'Visual Viewer', ru: 'Просмотр графики' } },
+      'control-panel': { title: { en: 'System Settings', ru: 'Параметры системы' } },
+      'internet-explorer': { title: { en: 'Web Browser', ru: 'Веб-браузер' } },
+      notepad: { title: { en: 'Text Editor', ru: 'Текстовый редактор' } },
+    },
     systemLabels: {
       startButton: { en: 'Applications', ru: 'Приложения' },
+      myComputer: { en: 'System Root', ru: 'Корень системы' },
+      recycleBin: { en: 'Trash', ru: 'Корзина' },
+    },
+    osVersion: {
+      displayName: 'Arch Linux (Rolling)',
+      family: 'Linux',
+      version: 'Rolling Release',
+      designEra: 'modern-linux',
+      sourceStatus: 'community-documented',
+    },
+    deviceSupport: {
+      formFactor: 'desktop',
+      deviceFamily: 'x86_64 PC',
+      representativeDevice: 'Custom Workstation / ThinkPad',
+      supportedDevicesSummary: 'Arch Linux rolling release for 64-bit systems',
+      supportCycleLabel: 'Continuous rolling release support cycle',
+    },
+    boot: {
+      splashTitle: { en: 'Arch Linux', ru: 'Arch Linux' },
+      bootAnimation: 'instant',
+    },
+    login: {
+      welcomeText: { en: 'Arch Linux Terminal', ru: 'Терминал Arch Linux' },
+      loginStyle: 'xp',
+      showUserTile: false,
+    },
+    startMenu: {
+      menuStyle: 'xp-two-column',
+      showUserTile: false,
+    },
+    taskbar: {
+      startButtonMode: 'text',
+      density: 'xp',
+    },
+    desktop: {
+      iconLabelStyle: 'xp',
+      systemIconStyle: 'xp',
     },
   },
 
   halloween: {
     theme: 'halloween',
     osClassName: 'os-spooky',
-    displayName: 'Halloween',
-    appNames: {},
+    displayName: 'Halloween Edition',
+    appNames: {
+      pictures: { title: { en: 'Spooky Gallery', ru: 'Жуткая галерея' } },
+      'control-panel': { title: { en: 'Ghostly Settings', ru: 'Призрачные настройки' } },
+      'internet-explorer': { title: { en: 'Web Cauldron', ru: 'Веб-котел' } },
+      notepad: { title: { en: 'Grimoire', ru: 'Гримуар' } },
+    },
     systemLabels: {
       startButton: { en: 'Trick or Treat', ru: 'Сладость или пакость' },
+      myComputer: { en: 'Haunted Drive', ru: 'Призрачный диск' },
+      recycleBin: { en: 'Graveyard', ru: 'Кладбище' },
+    },
+    osVersion: {
+      displayName: 'Halloween Edition',
+      family: 'Seasonal',
+      version: 'Spooky 2026',
+      designEra: 'seasonal-dark',
+      sourceStatus: 'custom-theme',
+    },
+    deviceSupport: {
+      formFactor: 'desktop',
+      deviceFamily: 'Seasonal Edition',
+      representativeDevice: 'Pumpkin Workstation',
+      supportedDevicesSummary: 'Special seasonal Halloween layout',
+      supportCycleLabel: 'October seasonal event cycle',
+    },
+    boot: {
+      splashTitle: { en: 'Halloween Edition', ru: 'Halloween Edition' },
+      bootAnimation: 'instant',
+    },
+    login: {
+      welcomeText: { en: 'Welcome to Spooky Shell', ru: 'Добро пожаловать в Жуткую Оболочку' },
+      loginStyle: 'xp',
+      showUserTile: false,
+    },
+    startMenu: {
+      menuStyle: 'xp-two-column',
+      showUserTile: false,
+    },
+    taskbar: {
+      startButtonMode: 'text',
+      density: 'xp',
+    },
+    desktop: {
+      iconLabelStyle: 'xp',
+      systemIconStyle: 'xp',
     },
   },
 };
