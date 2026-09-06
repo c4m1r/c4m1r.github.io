@@ -37,6 +37,3 @@ export { BlogApp } from './BlogApp';
 export { ProjectsApp } from './ProjectsApp';
 export { AboutApp } from './AboutApp';
 export { MarkdownViewer } from './MarkdownViewer';
-
-// Утилиты
-export * from '../utils/contentLoader';

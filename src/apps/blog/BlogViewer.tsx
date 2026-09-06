@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { loadArticles } from '../../domain/articles/articles.loader';
-import { type ContentItem } from '../../utils/contentLoader';
+import { type ContentItem } from '../../domain/content/types';
 import { Notepad } from '../notepad';
 import { Calendar, Tag, ArrowLeft } from 'lucide-react';
 

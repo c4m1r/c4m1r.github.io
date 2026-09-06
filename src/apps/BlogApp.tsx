@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { loadArticles } from '../domain/articles/articles.loader';
-import { type ContentItem } from '../utils/contentLoader';
+import { type ContentItem } from '../domain/content/types';
 import { Notepad } from './notepad';
 import { useApp } from '../contexts/useApp';
 

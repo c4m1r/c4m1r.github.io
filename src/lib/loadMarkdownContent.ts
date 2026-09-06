@@ -1,1 +1,1 @@
-export { loadMarkdownContent } from '../utils/contentLoader';
+export { loadMarkdownContent } from '../domain/content/loadMarkdownContent';

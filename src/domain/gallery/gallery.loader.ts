@@ -1,11 +1,71 @@
-import { loadPictures, loadWallpapers } from '../../utils/contentLoader';
 import { type GalleryItem } from './gallery.types';
 import { routes } from '../../shells/site/siteRoutes';
 
+export interface ImageItem {
+  id: string;
+  name: string;
+  path: string;
+  thumbnail?: string;
+  size?: string;
+  date?: string;
+}
+
+const pictureModules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,png,gif,webp}', {
+  query: '?url',
+  import: 'default',
+  eager: false,
+});
+
+const wallpaperModules = import.meta.glob('/src/content/pictures/wallpapers/*.{jpg,jpeg,png,webp}', {
+  query: '?url',
+  import: 'default',
+  eager: false,
+});
+
+export async function loadPictures(): Promise<ImageItem[]> {
+  const pictures: ImageItem[] = [];
+  try {
+    for (const path in pictureModules) {
+      const url = (await pictureModules[path]()) as string;
+      const filename = path.split('/').pop() || '';
+      const name = filename.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
+
+      pictures.push({
+        id: filename,
+        name,
+        path: url,
+        thumbnail: url,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load pictures:', error);
+  }
+  return pictures;
+}
+
+export async function loadWallpapers(): Promise<ImageItem[]> {
+  const wallpapers: ImageItem[] = [];
+  try {
+    for (const path in wallpaperModules) {
+      const url = (await wallpaperModules[path]()) as string;
+      const filename = path.split('/').pop() || '';
+      const name = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+
+      wallpapers.push({
+        id: filename,
+        name,
+        path: url,
+        thumbnail: url,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load wallpapers:', error);
+  }
+  return wallpapers;
+}
+
 /**
  * Normalises raw ImageItem arrays into domain GalleryItem objects.
- * Delegates filesystem scanning to the existing contentLoader utilities
- * so the glob logic stays in one place.
  */
 export async function loadGalleryItems(): Promise<GalleryItem[]> {
   const [pictures, wallpapers] = await Promise.all([
