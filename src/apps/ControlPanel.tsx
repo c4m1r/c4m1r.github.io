@@ -9,6 +9,7 @@ import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 
 type CPView = 'categories' | 'wallpaper' | 'systemInfo';
+type CPDisplayMode = 'category' | 'classic';
 
 export function ControlPanel() {
   const { theme, language } = useApp();
@@ -21,6 +22,7 @@ export function ControlPanel() {
   const settingsSections = getSystemSettingsSections(theme);
 
   const [view, setView] = useState<CPView>('categories');
+  const [displayMode, setDisplayMode] = useState<CPDisplayMode>('category');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
   const [customActive, setCustomActive] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -61,6 +63,24 @@ export function ControlPanel() {
         items: ['Change or Remove Programs', 'Add New Programs', 'Windows Components'],
       },
       {
+        id: 'sounds',
+        title: 'Sounds, Speech, and Audio Devices',
+        emoji: '🔊',
+        items: ['Adjust the system volume', 'Change the sound scheme', 'Speech'],
+      },
+      {
+        id: 'maintenance',
+        title: 'Performance and Maintenance',
+        emoji: '🛡️',
+        items: ['Administrative Tools', 'Power Options', 'System'],
+      },
+      {
+        id: 'hardware',
+        title: 'Printers and Other Hardware',
+        emoji: '🖨️',
+        items: ['Printers and Faxes', 'Game Controllers', 'Keyboard', 'Mouse'],
+      },
+      {
         id: 'user-accounts',
         title: 'User Accounts',
         emoji: '👤',
@@ -78,6 +98,28 @@ export function ControlPanel() {
         emoji: '♿',
         items: ['Accessibility Options', 'Narrator', 'Magnifier', 'On-Screen Keyboard'],
       },
+    ],
+    []
+  );
+
+  const classicApplets = useMemo(
+    () => [
+      { id: 'accessibility', title: 'Accessibility Options', emoji: '♿' },
+      { id: 'programs', title: 'Add or Remove Programs', emoji: '💿' },
+      { id: 'maintenance', title: 'Administrative Tools', emoji: '🛡️' },
+      { id: 'date-time', title: 'Date and Time', emoji: '🕒' },
+      { id: 'appearance', title: 'Display', emoji: '🎨' },
+      { id: 'appearance', title: 'Folder Options', emoji: '📁' },
+      { id: 'appearance', title: 'Fonts', emoji: '🔤' },
+      { id: 'hardware', title: 'Game Controllers', emoji: '🎮' },
+      { id: 'network', title: 'Internet Options', emoji: '🌐' },
+      { id: 'hardware', title: 'Keyboard', emoji: '⌨️' },
+      { id: 'hardware', title: 'Mouse', emoji: '🖱️' },
+      { id: 'network', title: 'Network Connections', emoji: '📡' },
+      { id: 'hardware', title: 'Printers and Faxes', emoji: '🖨️' },
+      { id: 'sounds', title: 'Sounds and Audio Devices', emoji: '🔊' },
+      { id: 'maintenance', title: 'System', emoji: '💻' },
+      { id: 'user-accounts', title: 'User Accounts', emoji: '👤' },
     ],
     []
   );
@@ -175,10 +217,16 @@ export function ControlPanel() {
         <h2 className="text-sm font-bold mb-4">Control Panel</h2>
         <div className="space-y-2 text-xs">
           <button
+            className="w-full text-left p-2 rounded cursor-pointer transition-colors hover:bg-white/20 font-semibold"
+            onClick={() => setDisplayMode(displayMode === 'category' ? 'classic' : 'category')}
+          >
+            {displayMode === 'category' ? '🔄 Switch to Classic View' : '🗂️ Switch to Category View'}
+          </button>
+          <button
             className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'categories' ? 'bg-white/30' : 'hover:bg-white/20'}`}
             onClick={() => setView('categories')}
           >
-            Categories
+            📋 Control Panel Home
           </button>
           <button
             className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'wallpaper' ? 'bg-white/30' : 'hover:bg-white/20'}`}
@@ -287,8 +335,8 @@ export function ControlPanel() {
           </div>
         )}
 
-        {/* ── Categories view ── */}
-        {view === 'categories' && (
+        {/* ── Categories view / Classic view ── */}
+        {view === 'categories' && displayMode === 'category' && (
           <>
             <div className="mb-6">
               <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
@@ -320,6 +368,36 @@ export function ControlPanel() {
                       </div>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* ── Classic View Applets Grid ── */}
+        {view === 'categories' && displayMode === 'classic' && (
+          <>
+            <div className="mb-6">
+              <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
+                Control Panel
+              </h1>
+              <p className="text-sm opacity-75">Classic View</p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {classicApplets.map((applet, index) => (
+                <div
+                  key={index}
+                  className={`${cardClass} p-3 flex flex-col items-center text-center cursor-pointer hover:scale-[1.02] transition-transform`}
+                  onClick={() => {
+                    if (applet.id === 'appearance') setView('wallpaper');
+                    else if (applet.id === 'maintenance') setView('systemInfo');
+                  }}
+                >
+                  <div className="mb-2">
+                    {renderCategoryIcon(applet.id, applet.emoji)}
+                  </div>
+                  <span className="text-xs font-semibold leading-tight">{applet.title}</span>
                 </div>
               ))}
             </div>

@@ -26,10 +26,12 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   const [addressInput, setAddressInput] = useState(currentPath);
   const [viewMode, setViewMode] = useState<'icons' | 'details'>('icons');
   const [showSidebar, setShowSidebar] = useState(true);
-  const isXpFamily = theme !== 'win-98';
+  const isXpFamily = theme === 'win-xp' || theme === 'webos';
+  const isMyPictures = path.toLowerCase().includes('picture');
 
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     tasks: true,
+    pictureTasks: true,
     places: true,
     details: true,
   });
@@ -299,6 +301,40 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           <div className="w-48 bg-[#7ba2e7] overflow-y-auto p-3 flex flex-col gap-3 os-sidebar" style={{
             background: 'linear-gradient(to bottom, #7ba2e7 0%, #6375d6 100%)'
           }}>
+            {/* Picture Tasks */}
+            {isMyPictures && (
+              <div className="rounded overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-white to-[#c6d3f7] px-3 py-1 flex justify-between items-center cursor-pointer os-panel"
+                  onClick={() => toggleGroup('pictureTasks')}
+                >
+                  <span className="font-bold text-[#215dc6]">Picture Tasks</span>
+                  {expandedGroups.pictureTasks ? <ChevronUp size={14} className="text-[#215dc6]" /> : <ChevronDown size={14} className="text-[#215dc6]" />}
+                </div>
+                {expandedGroups.pictureTasks && (
+                  <div className="bg-[#d6dff7] p-2 flex flex-col gap-1 border-x border-b border-white/50">
+                    <button
+                      onClick={() => {
+                        const pictureItems = items.filter(i => /\.(png|jpg|jpeg|gif)$/i.test(i.name));
+                        if (pictureItems.length > 0 && onOpenItem) {
+                          onOpenItem(pictureItems[0], path);
+                        }
+                      }}
+                      className="text-left hover:underline text-[#215dc6] flex items-center gap-2 os-button"
+                    >
+                      <span className="w-1 h-1 bg-[#215dc6] rounded-full" /> View as a slide show
+                    </button>
+                    <button onClick={() => window.print()} className="text-left hover:underline text-[#215dc6] flex items-center gap-2 os-button">
+                      <span className="w-1 h-1 bg-[#215dc6] rounded-full" /> Print pictures
+                    </button>
+                    <button disabled className="text-left text-gray-500 opacity-60 flex items-center gap-2 os-button">
+                      <span className="w-1 h-1 bg-gray-400 rounded-full" /> Copy all items to CD
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* File and Folder Tasks */}
             <div className="rounded overflow-hidden">
               <div
@@ -366,34 +402,114 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         {/* Content */}
         <div className="flex-1 bg-white p-4 overflow-y-auto os-list" onClick={() => setSelectedItem(null)}>
           {viewMode === 'icons' ? (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4">
-              {items.map((item, i) => (
-                <div
-                  key={i}
-                  className={`flex flex-col items-center group cursor-pointer border border-transparent p-1 os-list-item ${selectedItem === item.name ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedItem(item.name);
-                  }}
-                  onDoubleClick={(e) => {
-                    e.stopPropagation();
-                    handleNavigate(item);
-                  }}
-                >
-                  <div className="w-12 h-12 flex items-center justify-center mb-1">
-                    <img
-                      src={getFileIcon(item) as string}
-                      alt={item.name}
-                      className={`max-w-full max-h-full drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    />
+            path === 'My Computer' && isXpFamily ? (
+              <div className="space-y-6">
+                {items.filter((i) => i.type === 'folder').length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 pb-1 border-b border-[#003c74]/20 font-bold text-[#003c74] text-xs">
+                      <span>Files Stored on This Computer</span>
+                    </div>
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-4">
+                      {items
+                        .filter((i) => i.type === 'folder')
+                        .map((item, i) => (
+                          <div
+                            key={i}
+                            className={`flex flex-col items-center group cursor-pointer border border-transparent p-1 os-list-item ${selectedItem === item.name ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedItem(item.name);
+                            }}
+                            onDoubleClick={(e) => {
+                              e.stopPropagation();
+                              handleNavigate(item);
+                            }}
+                          >
+                            <div className="w-12 h-12 flex items-center justify-center mb-1">
+                              <img
+                                src={getFileIcon(item) as string}
+                                alt={item.name}
+                                className={`max-w-full max-h-full drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
+                            </div>
+                            <span className={`text-center text-xs px-1 rounded break-words w-full ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'text-black'}`}>
+                              {item.name}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
                   </div>
-                  <span className={`text-center text-xs px-1 rounded break-words w-full ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'text-black'}`}>
-                    {item.name}
-                  </span>
-                </div>
-              ))}
-            </div>
+                )}
+
+                {items.filter((i) => i.type === 'drive').length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 pb-1 border-b border-[#003c74]/20 font-bold text-[#003c74] text-xs">
+                      <span>Hard Disk Drives</span>
+                    </div>
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-4">
+                      {items
+                        .filter((i) => i.type === 'drive')
+                        .map((item, i) => (
+                          <div
+                            key={i}
+                            className={`flex flex-col items-center group cursor-pointer border border-transparent p-1 os-list-item ${selectedItem === item.name ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedItem(item.name);
+                            }}
+                            onDoubleClick={(e) => {
+                              e.stopPropagation();
+                              handleNavigate(item);
+                            }}
+                          >
+                            <div className="w-12 h-12 flex items-center justify-center mb-1">
+                              <img
+                                src={getFileIcon(item) as string}
+                                alt={item.name}
+                                className={`max-w-full max-h-full drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
+                            </div>
+                            <span className={`text-center text-xs px-1 rounded break-words w-full ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'text-black'}`}>
+                              {item.name}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4">
+                {items.map((item, i) => (
+                  <div
+                    key={i}
+                    className={`flex flex-col items-center group cursor-pointer border border-transparent p-1 os-list-item ${selectedItem === item.name ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedItem(item.name);
+                    }}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      handleNavigate(item);
+                    }}
+                  >
+                    <div className="w-12 h-12 flex items-center justify-center mb-1">
+                      <img
+                        src={getFileIcon(item) as string}
+                        alt={item.name}
+                        className={`max-w-full max-h-full drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    </div>
+                    <span className={`text-center text-xs px-1 rounded break-words w-full ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'text-black'}`}>
+                      {item.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )
           ) : (
             <table className="w-full text-left border-collapse">
               <thead className="bg-[#ece9d8] text-[#215dc6] uppercase text-[11px]">
