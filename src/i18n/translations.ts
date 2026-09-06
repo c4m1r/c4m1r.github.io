@@ -87,6 +87,7 @@ export const translations = {
       welcomeMessage: 'To begin, click your user name',
       loginHint: 'Click on your user name to begin',
       turnOffComputer: 'Turn off computer',
+      footerNote: 'After you log on, you can add or change accounts in Control Panel.',
     },
     terminal: {
       welcome: 'Terminal Mode - Development in Progress',
@@ -179,6 +180,7 @@ export const translations = {
       welcomeMessage: 'Для начала работы нажмите на имя пользователя',
       loginHint: 'Выберите имя пользователя для начала работы',
       turnOffComputer: 'Выключить компьютер',
+      footerNote: 'После входа в систему вы можете добавить или изменить учетные записи в Панели управления.',
     },
     terminal: {
       welcome: 'Режим терминала - В процессе разработки',
@@ -271,6 +273,7 @@ export const translations = {
       welcomeMessage: "Pour commencer, cliquez sur votre nom d'utilisateur",
       loginHint: "Cliquez sur votre nom d'utilisateur pour commencer",
       turnOffComputer: 'Arrêter l\'ordinateur',
+      footerNote: 'Après vous être connecté, vous pouvez ajouter ou modifier des comptes dans le Panneau de configuration.',
     },
     terminal: {
       welcome: 'Mode terminal - En développement',
@@ -363,6 +366,7 @@ export const translations = {
       welcomeMessage: 'Para comenzar, haga clic en su nombre de usuario',
       loginHint: 'Haga clic en su nombre de usuario para comenzar',
       turnOffComputer: 'Apagar equipo',
+      footerNote: 'Después de iniciar sesión, puede agregar o cambiar cuentas en el Panel de control.',
     },
     terminal: {
       welcome: 'Modo Terminal - Desarrollo en Progreso',
@@ -455,6 +459,7 @@ export const translations = {
       welcomeMessage: '要开始，请单击您的用户名',
       loginHint: '单击您的用户名开始',
       turnOffComputer: '关闭计算机',
+      footerNote: '登录后，可以在控制面板中添加或更改帐户。',
     },
     terminal: {
       welcome: '终端模式 - 开发中',
@@ -547,6 +552,7 @@ export const translations = {
       welcomeMessage: '開始するには、ユーザー名をクリックしてください',
       loginHint: 'ユーザー名をクリックして開始してください',
       turnOffComputer: 'コンピュータの電源を切る',
+      footerNote: 'ログオン後、コントロールパネルでアカウントの追加や変更ができます。',
     },
     terminal: {
       welcome: 'ターミナルモード - 開発中',
@@ -639,6 +645,7 @@ export const translations = {
       welcomeMessage: '시작하려면 사용자 이름을 클릭하십시오',
       loginHint: '사용자 이름을 클릭하여 시작하십시오',
       turnOffComputer: '컴퓨터 끄기',
+      footerNote: '로그온한 후 제어판에서 계정을 추가하거나 변경할 수 있습니다.',
     },
     terminal: {
       welcome: '터미널 모드 - 개발 중',

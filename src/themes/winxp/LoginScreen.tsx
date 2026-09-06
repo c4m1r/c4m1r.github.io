@@ -24,12 +24,6 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     setMode('grub');
   };
 
-  const footerNote = language === 'ru'
-    ? 'После входа в систему вы можете добавить или изменить учетные записи в Панели управления.'
-    : 'After you log on, you can add or change accounts in Control Panel.';
-
-  const loginTitleText = t.loginTitle || (language === 'ru' ? 'Чтобы начать, щелкните свое имя пользователя' : 'To begin, click your user name');
-
   return (
     <div className="xp-welcome-screen os-shell os-winxp">
       {/* Top Accent Bar */}
@@ -47,7 +41,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             />
           </div>
           <div className="xp-welcome-screen__instruction">
-            {loginTitleText}
+            {t.loginTitle}
           </div>
         </div>
 
@@ -76,9 +70,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             <div className="xp-welcome-screen__user-details">
               <span className="xp-welcome-screen__username">{t.user || 'C4m1r'}</span>
               <span className="xp-welcome-screen__user-status">
-                {isLoggingIn
-                  ? t.loggingIn || (language === 'ru' ? 'Загрузка личных параметров...' : 'Loading your personal settings...')
-                  : t.loginHint || (language === 'ru' ? 'Выберите имя пользователя для начала работы' : 'Click on your user name to begin')}
+                {isLoggingIn ? t.loggingIn : t.loginHint}
               </span>
             </div>
           </button>
@@ -92,11 +84,11 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           className="xp-welcome-screen__power-btn"
         >
           <img src={shutdownIcon} alt="" className="xp-welcome-screen__power-icon" />
-          <span>{t.turnOffComputer || (language === 'ru' ? 'Выключение компьютера' : 'Turn off computer')}</span>
+          <span>{t.turnOffComputer}</span>
         </button>
 
         <div className="xp-welcome-screen__footer-note">
-          {footerNote}
+          {t.footerNote}
         </div>
       </footer>
     </div>

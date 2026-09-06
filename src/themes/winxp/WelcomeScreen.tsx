@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useApp } from '../../contexts/useApp';
+import { translations } from '../../i18n/translations';
 import './xp.css';
 
 interface WelcomeScreenProps {
@@ -6,6 +8,8 @@ interface WelcomeScreenProps {
 }
 
 export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
+  const { language } = useApp();
+  const t = translations[language].xp;
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
@@ -28,7 +32,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             transition: 'opacity 300ms ease-out',
           }}
         >
-          welcome
+          {t.welcome ? t.welcome.toLowerCase() : 'welcome'}
         </span>
       </div>
       <div className="xp-welcome-banner__bottom-bar" />
