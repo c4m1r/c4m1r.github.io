@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, Suspense } from 'react';
 import {
   Grid3x3,
   ArrowLeft,
@@ -36,12 +36,35 @@ import { NewsSection } from '../shells/site/sections/NewsSection';
 import { NewsPageSection } from '../shells/site/sections/NewsPageSection';
 import { ProjectsSection } from '../shells/site/sections/ProjectsSection';
 import { GallerySection } from '../shells/site/sections/GallerySection';
-import { GalleryPageSection } from '../shells/site/sections/GalleryPageSection';
 import { ArticlesSection, type ArticleItem } from '../shells/site/sections/ArticlesSection';
-import { ArticleDetailSection } from '../shells/site/sections/ArticleDetailSection';
-import { WikiSection } from '../shells/site/sections/WikiSection';
-import { AboutSection } from '../shells/site/sections/AboutSection';
-import { SearchSection } from '../shells/site/sections/SearchSection';
+import { ExploreSystemSection } from '../shells/site/sections/ExploreSystemSection';
+
+const GalleryPageSection = React.lazy(() =>
+  import('../shells/site/sections/GalleryPageSection').then((m) => ({ default: m.GalleryPageSection }))
+);
+const ArticleDetailSection = React.lazy(() =>
+  import('../shells/site/sections/ArticleDetailSection').then((m) => ({ default: m.ArticleDetailSection }))
+);
+const WikiSection = React.lazy(() =>
+  import('../shells/site/sections/WikiSection').then((m) => ({ default: m.WikiSection }))
+);
+const AboutSection = React.lazy(() =>
+  import('../shells/site/sections/AboutSection').then((m) => ({ default: m.AboutSection }))
+);
+const SearchSection = React.lazy(() =>
+  import('../shells/site/sections/SearchSection').then((m) => ({ default: m.SearchSection }))
+);
+
+function SectionLoadingFallback() {
+  return (
+    <div className="container mx-auto px-6 py-24 min-h-[50vh] flex items-center justify-center text-muted-foreground text-sm">
+      <div className="flex items-center gap-3">
+        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <span>Loading...</span>
+      </div>
+    </div>
+  );
+}
 import { useNews } from '../domain/news/useNews';
 import { useGlobalSearch, type SearchResult } from '../domain/search/useGlobalSearch';
 import { type NewsItem } from '../domain/news/news.types';
@@ -559,7 +582,7 @@ function buildView(post: ContentItem): BlogPostView {
 
 
 export function BlogSite() {
-  const { language, setLanguage } = useApp();
+  const { language, setLanguage, setMode } = useApp();
   const ui = uiTexts[language] || uiTexts.en;
 
   const { news: newsItems } = useNews();
@@ -577,6 +600,7 @@ export function BlogSite() {
   const [aboutMe, setAboutMe] = useState<ContentItem | null>(null);
   const [legalNotice, setLegalNotice] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(true);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedTag] = useState<string | null>(null);
@@ -600,6 +624,33 @@ export function BlogSite() {
   const [isResizing, setIsResizing] = useState(false);
   const [expandedWikiCategories, setExpandedWikiCategories] = useState<Set<string>>(new Set());
   const itemsPerPage = 12;
+
+  // Dynamic Document Title Management
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    if (activePost) {
+      document.title = `${activePost.title} — c4m1r`;
+    } else if (activeProject) {
+      document.title = `${activeProject.title} — c4m1r`;
+    } else if (activeWiki) {
+      document.title = `${activeWiki.title} — Wiki — c4m1r`;
+    } else if (activeSection === 'home') {
+      document.title = 'c4m1r | IT Engineer & Software Architect';
+    } else if (activeSection === 'about') {
+      document.title = 'About & CV — c4m1r';
+    } else if (activeSection === 'blog') {
+      document.title = 'Blog — c4m1r';
+    } else if (activeSection === 'apps') {
+      document.title = 'Apps & Prototypes — c4m1r';
+    } else if (activeSection === 'wiki') {
+      document.title = 'Wiki Knowledge Base — c4m1r';
+    } else if (activeSection === 'gallery') {
+      document.title = 'Gallery — c4m1r';
+    } else if (activeSection === 'search') {
+      document.title = globalSearchQuery ? `Search: "${globalSearchQuery}" — c4m1r` : 'Search — c4m1r';
+    }
+  }, [activeSection, activePost, activeProject, activeWiki, globalSearchQuery]);
 
   const syncFromLocation = useCallback((
     pathname: string,
@@ -1164,12 +1215,21 @@ export function BlogSite() {
           {/* Selected Projects */}
           <ProjectsSection
             limit={3}
+            onOpenProject={(project) => {
+              setActiveProject(project);
+              setActiveSection('project');
+              window.history.pushState({}, '', routes.project(project.id));
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             onViewAll={() => {
               setActiveSection('about');
               setMainAboutTab('projects');
               window.history.pushState({}, '', routes.projects());
             }}
           />
+
+          {/* Interactive Multiverse OS Teaser */}
+          <ExploreSystemSection onOpenGrub={() => setMode('grub')} />
 
           {/* Gallery Preview */}
           <GallerySection
@@ -1230,37 +1290,39 @@ export function BlogSite() {
 
       {/* Blog Post Detail View */}
       {(activeSection === 'home' || activeSection === 'blog') && activePost && (
-        <ArticleDetailSection
-          activePost={activePost}
-          language={language}
-          labels={{
-            back: ui.back,
-            tags: ui.tags,
-            blogLabel: ui.nav.blog,
-          }}
-          onBack={() => {
-            setActivePost(null);
-            window.history.pushState({}, '', activeSection === 'blog' ? routes.blog() : routes.home());
-          }}
-          onTagClick={(tag) => {
-            setActivePost(null);
-            setActiveSection('search');
-            setGlobalSearchQuery(tag);
-            window.history.pushState({}, '', routes.search(tag));
-          }}
-          tagCounts={
-            activePost.tags
-              ? Object.fromEntries(
-                  activePost.tags.map((tag) => [
-                    tag,
-                    posts.filter((p) => p.tags?.includes(tag)).length +
-                      wiki.filter((w) => w.tags?.includes(tag)).length +
-                      projects.filter((pr) => pr.tags?.includes(tag)).length,
-                  ])
-                )
-              : {}
-          }
-        />
+        <Suspense fallback={<SectionLoadingFallback />}>
+          <ArticleDetailSection
+            activePost={activePost}
+            language={language}
+            labels={{
+              back: ui.back,
+              tags: ui.tags,
+              blogLabel: ui.nav.blog,
+            }}
+            onBack={() => {
+              setActivePost(null);
+              window.history.pushState({}, '', activeSection === 'blog' ? routes.blog() : routes.home());
+            }}
+            onTagClick={(tag) => {
+              setActivePost(null);
+              setActiveSection('search');
+              setGlobalSearchQuery(tag);
+              window.history.pushState({}, '', routes.search(tag));
+            }}
+            tagCounts={
+              activePost.tags
+                ? Object.fromEntries(
+                    activePost.tags.map((tag) => [
+                      tag,
+                      posts.filter((p) => p.tags?.includes(tag)).length +
+                        wiki.filter((w) => w.tags?.includes(tag)).length +
+                        projects.filter((pr) => pr.tags?.includes(tag)).length,
+                    ])
+                  )
+                : {}
+            }
+          />
+        </Suspense>
       )}
 
       {/* Project Detail View */}
@@ -1364,24 +1426,26 @@ export function BlogSite() {
       )}
 
       {activeSection === 'about' && (
-        <AboutSection
-          ui={ui}
-          language={language}
-          aboutMe={aboutMe}
-          legalNotice={legalNotice}
-          projects={projects}
-          posts={posts}
-          wiki={wiki}
-          mainAboutTab={mainAboutTab}
-          setMainAboutTab={setMainAboutTab}
-          activeCvTab={activeCvTab}
-          setActiveCvTab={setActiveCvTab}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          setActiveProject={setActiveProject}
-          setActiveSection={setActiveSection}
-          setGlobalSearchQuery={setGlobalSearchQuery}
-        />
+        <Suspense fallback={<SectionLoadingFallback />}>
+          <AboutSection
+            ui={ui}
+            language={language}
+            aboutMe={aboutMe}
+            legalNotice={legalNotice}
+            projects={projects}
+            posts={posts}
+            wiki={wiki}
+            mainAboutTab={mainAboutTab}
+            setMainAboutTab={setMainAboutTab}
+            activeCvTab={activeCvTab}
+            setActiveCvTab={setActiveCvTab}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            setActiveProject={setActiveProject}
+            setActiveSection={setActiveSection}
+            setGlobalSearchQuery={setGlobalSearchQuery}
+          />
+        </Suspense>
       )}
 
       {activeSection === 'apps' && ui.apps && (
@@ -1579,30 +1643,32 @@ export function BlogSite() {
       )}
 
       {activeSection === 'wiki' && (
-        <WikiSection
-          ui={ui}
-          language={language}
-          wikiCategories={wikiCategories}
-          wikiCategoryStats={wikiCategoryStats}
-          wikiCategoryTree={wikiCategoryTree}
-          expandedWikiCategories={expandedWikiCategories}
-          setExpandedWikiCategories={setExpandedWikiCategories}
-          wikiCategory={wikiCategory}
-          setWikiCategory={setWikiCategory}
-          wikiSearch={wikiSearch}
-          setWikiSearch={setWikiSearch}
-          activeWiki={activeWiki}
-          setActiveWiki={(w) => setActiveWiki(w as WikiView | null)}
-          wikiCategoryIndex={wikiCategoryIndex}
-          paginatedWiki={paginatedWiki}
-          wikiPage={wikiPage}
-          totalWikiPages={totalWikiPages}
-          setWikiPage={setWikiPage}
-          getTagCount={getGlobalTagCount}
-          handleOpenWiki={(item) => handleOpenWiki(item as WikiView)}
-          setActiveSection={setActiveSection}
-          setGlobalSearchQuery={setGlobalSearchQuery}
-        />
+        <Suspense fallback={<SectionLoadingFallback />}>
+          <WikiSection
+            ui={ui}
+            language={language}
+            wikiCategories={wikiCategories}
+            wikiCategoryStats={wikiCategoryStats}
+            wikiCategoryTree={wikiCategoryTree}
+            expandedWikiCategories={expandedWikiCategories}
+            setExpandedWikiCategories={setExpandedWikiCategories}
+            wikiCategory={wikiCategory}
+            setWikiCategory={setWikiCategory}
+            wikiSearch={wikiSearch}
+            setWikiSearch={setWikiSearch}
+            activeWiki={activeWiki}
+            setActiveWiki={(w) => setActiveWiki(w as WikiView | null)}
+            wikiCategoryIndex={wikiCategoryIndex}
+            paginatedWiki={paginatedWiki}
+            wikiPage={wikiPage}
+            totalWikiPages={totalWikiPages}
+            setWikiPage={setWikiPage}
+            getTagCount={getGlobalTagCount}
+            handleOpenWiki={(item) => handleOpenWiki(item as WikiView)}
+            setActiveSection={setActiveSection}
+            setGlobalSearchQuery={setGlobalSearchQuery}
+          />
+        </Suspense>
       )}
 
       {activeSection === 'cv' && (
@@ -1731,12 +1797,14 @@ export function BlogSite() {
       )}
 
       {activeSection === 'gallery' && (
-        <GalleryPageSection
-          ui={ui}
-          language={language}
-          initialPictureId={selectedPictureId}
-          onClearInitialPicture={() => setSelectedPictureId(null)}
-        />
+        <Suspense fallback={<SectionLoadingFallback />}>
+          <GalleryPageSection
+            ui={ui}
+            language={language}
+            initialPictureId={selectedPictureId}
+            onClearInitialPicture={() => setSelectedPictureId(null)}
+          />
+        </Suspense>
       )}
 
       {/* News Full Section */}
@@ -1755,31 +1823,33 @@ export function BlogSite() {
 
       {/* Search Page */}
       {activeSection === 'search' && (
-        <SearchSection
-          labels={{
-            title: ui.search.title,
-            subtitle: ui.search.subtitle,
-            placeholder: ui.search.placeholder,
-            allContent: ui.search.allContent,
-            results: ui.search.results,
-            nothing: ui.nothing,
-            loading: ui.loading,
-            tags: ui.tags,
-            blog: ui.nav.blog,
-            wiki: ui.nav.wiki,
-            news: ui.nav.news,
-            gallery: ui.nav.gallery,
-            projects: ui.projectsTitle,
-          }}
-          query={globalSearchQuery}
-          setQuery={setGlobalSearchQuery}
-          results={globalSearchResults}
-          loading={globalSearchLoading}
-          allTags={allTags}
-          getTagCount={getGlobalTagCount}
-          onTagClick={openSearchForQuery}
-          onOpenResult={handleOpenSearchResult}
-        />
+        <Suspense fallback={<SectionLoadingFallback />}>
+          <SearchSection
+            labels={{
+              title: ui.search.title,
+              subtitle: ui.search.subtitle,
+              placeholder: ui.search.placeholder,
+              allContent: ui.search.allContent,
+              results: ui.search.results,
+              nothing: ui.nothing,
+              loading: ui.loading,
+              tags: ui.tags,
+              blog: ui.nav.blog,
+              wiki: ui.nav.wiki,
+              news: ui.nav.news,
+              gallery: ui.nav.gallery,
+              projects: ui.projectsTitle,
+            }}
+            query={globalSearchQuery}
+            setQuery={setGlobalSearchQuery}
+            results={globalSearchResults}
+            loading={globalSearchLoading}
+            allTags={allTags}
+            getTagCount={getGlobalTagCount}
+            onTagClick={openSearchForQuery}
+            onOpenResult={handleOpenSearchResult}
+          />
+        </Suspense>
       )}
 
       <Footer />
