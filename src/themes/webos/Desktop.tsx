@@ -18,6 +18,7 @@ import { RunDialog } from './RunDialog';
 import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
 import { useDesktopWindowManager } from '../../shells/desktop/runtime/useDesktopWindowManager';
+import { useDesktopIconGridState } from '../../shells/desktop/runtime/useDesktopIconGridState';
 import { DoomPlayer } from '../../apps/doom/DoomPlayer';
 import { GamesFolder } from '../../apps/games/GamesFolder';
 import { doomVariantMap, DoomVariantId } from '../../apps/doom/config';
@@ -31,13 +32,12 @@ import {
   MINESWEEPER_WINDOW_ID,
   XP_FAMILY_THEMES,
 } from '../../shells/desktop/desktopConstants';
-import { type DesktopIcon, type DesktopSelectionBox as DesktopSelectionBoxData, type DesktopShellProps } from '../../shells/desktop/desktopTypes';
+import { type DesktopIcon, type DesktopShellProps } from '../../shells/desktop/desktopTypes';
 import { getStoredCustomWallpaper } from '../../shells/desktop/runtime/desktopStorage';
 import { findAppDefinition } from '../../shells/desktop/runtime/appLaunch';
 import { resolveAppWindowConfig, resolveRunCommandTarget } from '../../shells/desktop/runtime/desktopAppLauncher';
-import { getRelativeRect, isIconInsideSelectionBox } from '../../shells/desktop/runtime/iconHitTesting';
 import { getDesktopOsClassName, isThemeInFamily } from '../../shells/desktop/runtime/shortcutFilters';
-import { createSelectionBox, getViewportSize } from '../../shells/desktop/runtime/windowGeometry';
+import { getViewportSize } from '../../shells/desktop/runtime/windowGeometry';
 import { THEME_ASSETS } from './themeAssets';
 import { THEME_STYLES } from './themeStyles';
 import { AsciiAurora } from '../../components/effects';
@@ -75,9 +75,6 @@ export function Desktop(props?: DesktopShellProps) {
   const [viewport, setViewport] = useState(getViewportSize);
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [time, setTime] = useState(new Date());
-  const [iconPositions, setIconPositions] = useState<Record<string, { x: number; y: number }>>({});
-  const [draggingIcon, setDraggingIcon] = useState<string | null>(null);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [errorWindow, setErrorWindow] = useState<{ id: string; message: string } | null>(null);
   const [showRunDialog, setShowRunDialog] = useState(false);
   const [showTaskManager, setShowTaskManager] = useState(false);
@@ -94,8 +91,6 @@ export function Desktop(props?: DesktopShellProps) {
   const startupPlayedRef = useRef<Record<string, boolean>>({});
   const audioContextRef = useRef<AudioContext | null>(null);
   const menuHoverCooldownRef = useRef<number>(0);
-  const [selectedIcons, setSelectedIcons] = useState<string[]>([]);
-  const [isSelecting, setIsSelecting] = useState(false);
 
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
 
@@ -107,8 +102,6 @@ export function Desktop(props?: DesktopShellProps) {
     window.addEventListener('wallpaper-changed', handleWallpaperChange);
     return () => window.removeEventListener('wallpaper-changed', handleWallpaperChange);
   }, []);
-  const [selectionBox, setSelectionBox] = useState<DesktopSelectionBoxData | null>(null);
-  const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
   const trayRef = useRef<HTMLDivElement | null>(null);
 
 
@@ -504,110 +497,22 @@ export function Desktop(props?: DesktopShellProps) {
     }))
   ];
 
-  const taskbarHeight = 30;
-  const iconSpacingY = 100;
-  const iconSpacingX = 110;
-  const baseOffsetX = 40;
-  const baseOffsetY = 40;
-  const availableHeight = Math.max(
-    iconSpacingY,
-    viewport.height - taskbarHeight - baseOffsetY * 2
-  );
-  const iconsPerColumn = Math.max(1, Math.floor(availableHeight / iconSpacingY));
-
-  const desktopIcons: DesktopIcon[] = initialDesktopIcons.map((icon, index) => {
-    const savedPosition = iconPositions[icon.id];
-    if (savedPosition) {
-      return { ...icon, x: savedPosition.x, y: savedPosition.y };
-    }
-
-    const columnIndex = Math.floor(index / iconsPerColumn);
-    const rowIndex = index % iconsPerColumn;
-    return {
-      ...icon,
-      x: baseOffsetX + columnIndex * iconSpacingX,
-      y: baseOffsetY + rowIndex * iconSpacingY,
-    };
+  const {
+    desktopIcons,
+    selectedIcons,
+    setSelectedIcons,
+    draggingIcon,
+    selectionBox,
+    handleDesktopMouseDown,
+    handleIconMouseDown,
+    clearSelection,
+  } = useDesktopIconGridState({
+    initialDesktopIcons,
+    viewport,
+    desktopRef,
+    iconRefs,
+    onCloseStartMenu: closeStartMenu,
   });
-
-  if (!iconPositions['recycle-bin']) {
-    const recycleIcon = desktopIcons.find((icon) => icon.id === 'recycle-bin');
-    if (recycleIcon) {
-      recycleIcon.x = Math.max(baseOffsetX, viewport.width - baseOffsetX - 72);
-      recycleIcon.y = Math.max(baseOffsetY, viewport.height - taskbarHeight - baseOffsetY - 72);
-    }
-  }
-
-  const updateSelectionFromBox = useCallback(
-    (box: { left: number; top: number; width: number; height: number }) => {
-      if (!desktopRef.current) return;
-      const desktopRect = desktopRef.current.getBoundingClientRect();
-
-      const newlySelected: string[] = [];
-
-      desktopIcons.forEach((icon) => {
-        const node = iconRefs.current[icon.id];
-        if (!node) return;
-        const iconRect = getRelativeRect(node.getBoundingClientRect(), desktopRect);
-
-        if (isIconInsideSelectionBox(iconRect, box)) {
-          newlySelected.push(icon.id);
-        }
-      });
-
-      setSelectedIcons((prev) => {
-        if (prev.length === newlySelected.length && prev.every((id) => newlySelected.includes(id))) {
-          return prev;
-        }
-        return newlySelected;
-      });
-    },
-    [desktopIcons]
-  );
-
-  useEffect(() => {
-    if (!isSelecting) return;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      if (!desktopRef.current) return;
-      const desktopRect = desktopRef.current.getBoundingClientRect();
-      const currentX = event.clientX - desktopRect.left;
-      const currentY = event.clientY - desktopRect.top;
-      const startPoint = selectionStartRef.current!;
-      const box = createSelectionBox(startPoint, { x: currentX, y: currentY });
-      setSelectionBox(box);
-      updateSelectionFromBox(box);
-    };
-
-    const handleMouseUp = () => {
-      setIsSelecting(false);
-      setSelectionBox(null);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isSelecting, updateSelectionFromBox]);
-
-  const handleDesktopMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return;
-    if (!desktopRef.current) return;
-
-    closeStartMenu();
-    if (event.target === desktopRef.current) {
-      const desktopRect = desktopRef.current.getBoundingClientRect();
-      const startX = event.clientX - desktopRect.left;
-      const startY = event.clientY - desktopRect.top;
-      selectionStartRef.current = { x: startX, y: startY };
-      setIsSelecting(true);
-      setSelectionBox({ left: startX, top: startY, width: 0, height: 0 });
-      setSelectedIcons([]);
-    }
-  };
 
   const handleOpenFile = useCallback(async (item: FileSystemItem, parentPath: string) => {
     const fullPath = joinWindowsPath(parentPath, item.name);
@@ -878,38 +783,7 @@ export function Desktop(props?: DesktopShellProps) {
     }
   };
 
-  const handleIconMouseDown = (e: React.MouseEvent, iconId: string) => {
-    e.preventDefault();
-    const icon = desktopIcons.find(i => i.id === iconId);
-    if (!icon || icon.x === undefined || icon.y === undefined) return;
 
-    if (e.button === 0) {
-      if (e.ctrlKey) {
-        setSelectedIcons((prev) => {
-          if (prev.includes(iconId)) {
-            return prev.filter((id) => id !== iconId);
-          }
-          return [...prev, iconId];
-        });
-      } else if (!selectedIcons.includes(iconId)) {
-        setSelectedIcons([iconId]);
-      }
-    } else if (!selectedIcons.includes(iconId)) {
-      setSelectedIcons((prev) => {
-        if (prev.includes(iconId)) {
-          return prev.filter((id) => id !== iconId);
-        }
-        return [...prev, iconId];
-      });
-    }
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-
-    setDraggingIcon(iconId);
-    setDragOffset({ x: offsetX, y: offsetY });
-  };
 
   const handleIconContextMenu = useCallback(
     (e: React.MouseEvent, icon: DesktopIcon) => {
@@ -939,36 +813,7 @@ export function Desktop(props?: DesktopShellProps) {
     [selectedIcons, closeStartMenu, handleIconDoubleClick]
   );
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!draggingIcon || !desktopRef.current) return;
 
-      const desktopRect = desktopRef.current.getBoundingClientRect();
-      const newX = e.clientX - desktopRect.left - dragOffset.x;
-      const newY = e.clientY - desktopRect.top - dragOffset.y;
-
-      setIconPositions(prev => ({
-        ...prev,
-        [draggingIcon]: {
-          x: Math.max(0, Math.min(newX, desktopRect.width - 100)),
-          y: Math.max(0, Math.min(newY, desktopRect.height - 100)),
-        }
-      }));
-    };
-
-    const handleMouseUp = () => {
-      setDraggingIcon(null);
-    };
-
-    if (draggingIcon) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
-  }, [draggingIcon, dragOffset]);
 
 
 
@@ -1000,7 +845,7 @@ export function Desktop(props?: DesktopShellProps) {
         closeStartMenu();
         setContextMenu(null);
         if (desktopRef.current && event.target === desktopRef.current) {
-          setSelectedIcons([]);
+          clearSelection();
         }
       }}
       onContextMenu={(e) => {

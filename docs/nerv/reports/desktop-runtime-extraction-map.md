@@ -24,15 +24,11 @@
 - `DesktopRuntime.tsx` now documents the boundary contract.
 - `themes/webos/Desktop.tsx` now documents that new runtime logic must go under `shells/desktop`.
 
-## Safe move order
-1. Keep `DesktopShell` as the public entrypoint and keep theme wrappers importing it.
-2. Move pure helpers/constants/types only.
-3. Extract a read-only `useDesktopViewport` hook after geometry helpers are stable.
-4. Extract icon selection/box math into a hook with browser smoke testing.
-5. Extract icon drag orchestration with XP/Win7/Ubuntu/WebOS manual verification.
-6. Extract context menu orchestration after icon selection/drag is stable.
-7. Extract taskbar/start-menu orchestration last because it touches launch, focus, minimize/restore, and system commands.
-8. Replace `DesktopRuntime` legacy import only after the stateful runtime is fully owned by `shells/desktop`.
+## Moved in passes 4-6
+- App launch & run command resolution moved to `src/shells/desktop/runtime/desktopAppLauncher.ts`.
+- Window manager state & sound bindings moved to `src/shells/desktop/runtime/useDesktopWindowManager.ts`.
+- Icon grid positioning, selection box collision, and drag listeners moved to `src/shells/desktop/runtime/useDesktopIconGridState.ts`.
+- Arch Linux (`arch`) & Halloween Edition (`halloween`) officially activated as GRUB boot profiles.
 
 ## Risky areas
 - Window drag/resize/maximize/restore/minimize/close behavior.
