@@ -1,6 +1,6 @@
 import { Folder, Star, FileText, Settings, Search, HelpCircle, Play, LogOut, Power } from 'lucide-react';
 
-interface StartMenu98Props {
+export interface StartMenu98Props {
   onClose: () => void;
   onLaunchApp?: (appId: string) => void;
   onOpenPath?: (path: string) => void;
@@ -63,11 +63,9 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
               }
               onClose();
             }}
-            onMouseEnter={onHover}
+            onMouseEnter={() => onHover?.()}
           >
-            <div className="w-4 h-4 flex items-center justify-center text-gray-700">
-              {item.icon}
-            </div>
+            {item.icon}
             <span>{item.label}</span>
           </button>
         ))}
@@ -75,4 +73,3 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
     </div>
   );
 }
-

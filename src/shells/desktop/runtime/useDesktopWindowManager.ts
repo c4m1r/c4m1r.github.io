@@ -3,7 +3,7 @@ import {
   useWindowManagerState,
   type ManagedWindow,
   type WindowManagerState,
-} from '../../../apps/desktop/windowManager';
+} from './windowManager';
 
 export interface UseDesktopWindowManagerOptions {
   playCloseWindowSound?: () => void;

@@ -9,12 +9,12 @@ import { DesktopSelectionBox } from './components/DesktopSelectionBox';
 import { DesktopContextMenuSurface } from './components/DesktopContextMenuSurface';
 
 import { Window } from '../../apps/desktop/Window';
-import { ErrorBox } from '../../themes/webos/ErrorBox';
+import { DesktopErrorBox } from './components/DesktopErrorBox';
 import { Notepad } from '../../apps/notepad';
 import { PictureViewer } from '../../apps/pictureview';
 import { ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
-import { RunDialog } from '../../themes/webos/RunDialog';
+import { RunDialog } from './components/RunDialog';
 import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
 import { useDesktopWindowManager } from './runtime/useDesktopWindowManager';
@@ -945,7 +945,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             zIndex={1000}
             focused={true}
           >
-            <ErrorBox
+            <DesktopErrorBox
               message={errorWindow.message}
               onClose={() => setErrorWindow(null)}
             />

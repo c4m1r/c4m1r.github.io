@@ -1,8 +1,8 @@
-import { useApp } from '../../contexts/useApp';
-import { translations } from '../../i18n/translations';
+import { useApp } from '../../../../contexts/useApp';
+import { translations } from '../../../../i18n/translations';
 import { Power, Settings, HelpCircle, Search, FileText, ChevronsRight } from 'lucide-react';
-import { THEME_ASSETS, ThemeAssetId } from './themeAssets';
-import { appRegistry } from '../../shells/desktop/appRegistry';
+import { THEME_ASSETS, ThemeAssetId } from '../../../../themes/webos/themeAssets';
+import { appRegistry } from '../../appRegistry';
 
 export interface StartMenuXPProps {
   onClose: () => void;

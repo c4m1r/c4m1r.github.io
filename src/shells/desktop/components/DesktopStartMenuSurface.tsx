@@ -1,5 +1,5 @@
 import { useApp } from '../../../contexts/useApp';
-import { StartMenu } from '../../../themes/webos/StartMenu';
+import { StartMenu } from './start-menu/StartMenu';
 import { getStartMenuSurface } from '../runtime/startMenuSurface';
 
 export interface DesktopStartMenuSurfaceProps {

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import errorSoundSrc from '../winxp/assets/sounds/error.wav';
-import errorIcon from '../winxp/assets/icons/897(32x32).png';
+import errorSoundSrc from '../../../themes/winxp/assets/sounds/error.wav';
+import errorIcon from '../../../themes/winxp/assets/icons/897(32x32).png';
 
-interface ErrorBoxProps {
+export interface DesktopErrorBoxProps {
   onClose: () => void;
   message?: string;
 }
@@ -15,7 +15,7 @@ function lineBreak(str: string) {
   ));
 }
 
-export function ErrorBox({ onClose, message = "Something's wrong!" }: ErrorBoxProps) {
+export function DesktopErrorBox({ onClose, message = "Something's wrong!" }: DesktopErrorBoxProps) {
   useEffect(() => {
     try {
       const audio = new Audio(errorSoundSrc);
@@ -70,4 +70,3 @@ export function ErrorBox({ onClose, message = "Something's wrong!" }: ErrorBoxPr
     </div>
   );
 }
-

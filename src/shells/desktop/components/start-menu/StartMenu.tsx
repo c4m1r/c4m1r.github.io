@@ -1,8 +1,8 @@
-import { useApp } from '../../contexts/useApp';
+import { useApp } from '../../../../contexts/useApp';
 import { StartMenu98 } from './StartMenu98';
 import { StartMenuXP } from './StartMenuXP';
 
-interface StartMenuProps {
+export interface StartMenuProps {
   onClose: () => void;
   onLaunchApp?: (appId: string) => void;
   onOpenPath?: (path: string) => void;

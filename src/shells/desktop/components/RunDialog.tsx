@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { useApp } from '../../contexts/useApp';
+import { useApp } from '../../../contexts/useApp';
 
-interface RunDialogProps {
+export interface RunDialogProps {
   onClose: () => void;
   onRun: (command: string) => void;
 }
@@ -135,4 +135,3 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
     </div>
   );
 }
-

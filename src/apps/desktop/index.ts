@@ -1,11 +1,7 @@
 /**
- * Экспорт всех компонентов Desktop системы
+ * Reusable desktop presentation primitives.
+ * Stateful runtime window management is owned by src/shells/desktop/runtime.
  */
 
-export { Desktop } from './Desktop';
-export { DesktopOS } from './DesktopOS';
 export { Window } from './Window';
-export { useWindowManagerState } from './windowManager';
-export type { ManagedWindow, OpenWindowOptions, WindowManagerState } from './windowManager';
 export * from './components';
-

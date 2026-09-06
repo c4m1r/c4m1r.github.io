@@ -1,6 +1,6 @@
 /**
- * Универсальный менеджер окон для всех тем
- * Управляет состоянием окон: открытие, закрытие, фокус, минимизация, развёртывание
+ * Window state engine owned by src/shells/desktop/runtime.
+ * Controls window state: opening, closing, focusing, minimizing, maximizing, restoring.
  */
 
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
@@ -236,4 +236,3 @@ export function useWindowManagerState(initialWindows: OpenWindowOptions[] = []):
     [windows, openWindow, closeWindow, focusWindow, minimizeWindow, maximizeWindow, restoreWindow, updateWindow]
   );
 }
-
