@@ -30,6 +30,7 @@ export function Navigation({
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [themeTransitionKey, setThemeTransitionKey] = useState(0);
 
   useEffect(() => {
     if (!isMobileOpen) return;
@@ -73,6 +74,25 @@ export function Navigation({
   );
 
   const currentLang = languageOptions.find((l) => l.code === language) || languageOptions[0];
+  const currentTheme = themeOptions.find((option) => option.id === theme) || themeOptions[0];
+
+  const handleThemeChange = (nextTheme: string) => {
+    if (nextTheme !== theme) {
+      setTheme(nextTheme);
+      setThemeTransitionKey((key) => key + 1);
+    }
+    setIsThemeOpen(false);
+  };
+
+  const themeIndicator = (
+    <span
+      key={`${theme}-${themeTransitionKey}`}
+      className="inline-flex h-5 min-w-5 items-center justify-center text-lg leading-none animate-fade-in"
+      aria-hidden="true"
+    >
+      {currentTheme?.icon ?? <Palette className="w-5 h-5" />}
+    </span>
+  );
 
   const NavButtons = ({ mobile }: { mobile?: boolean }) => (
     <div className={`flex ${mobile ? 'flex-col gap-2' : 'items-center gap-2'}`}>
@@ -97,27 +117,27 @@ export function Navigation({
             <div className="relative">
               <button
                 onClick={() => setIsThemeOpen(!isThemeOpen)}
-                className="w-full neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200 flex items-center gap-3"
+                className={`w-full neu p-3 rounded-xl bg-card hover:scale-[1.02] transition-all duration-200 flex items-center gap-3 ${
+                  isThemeOpen ? 'ring-2 ring-primary/40' : ''
+                }`}
                 aria-label="Change theme"
+                aria-expanded={isThemeOpen}
               >
-                <Palette className="w-5 h-5 text-foreground" />
+                {themeIndicator}
                 <span className="text-sm font-medium">
-                  {themeOptions.find((t) => t.id === theme)?.name || 'Theme'}
+                  {currentTheme?.name || 'Theme'}
                 </span>
               </button>
               {isThemeOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsThemeOpen(false)} />
-                  <div className="absolute left-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px]">
+                  <div className="absolute left-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px] animate-fade-in">
                     {themeOptions.map((t) => (
                       <button
                         key={t.id}
-                        onClick={() => {
-                          setTheme(t.id);
-                          setIsThemeOpen(false);
-                        }}
+                        onClick={() => handleThemeChange(t.id)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                          theme === t.id ? 'bg-primary/20 text-primary' : 'hover:bg-muted text-foreground'
+                          theme === t.id ? 'bg-primary/20 text-primary translate-x-1' : 'hover:bg-muted hover:translate-x-1 text-foreground'
                         }`}
                       >
                         <span className="text-lg">{t.icon}</span>
@@ -193,7 +213,7 @@ export function Navigation({
   );
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/80 border-b border-border">
+    <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/80 border-b border-border transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <button
           onClick={() => onNavigate('home')}
@@ -215,24 +235,25 @@ export function Navigation({
             <div className="relative">
               <button
                 onClick={() => setIsThemeOpen(!isThemeOpen)}
-                className="neu p-3 rounded-xl bg-card hover:scale-105 transition-transform duration-200"
-                aria-label="Change theme"
+                className={`neu p-3 rounded-xl bg-card hover:scale-105 transition-all duration-200 ${
+                  isThemeOpen ? 'ring-2 ring-primary/40' : ''
+                }`}
+                aria-label={`Change theme. Current: ${currentTheme?.name || theme}`}
+                aria-expanded={isThemeOpen}
+                title={currentTheme?.name}
               >
-                <Palette className="w-5 h-5 text-foreground" />
+                {themeIndicator}
               </button>
               {isThemeOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsThemeOpen(false)} />
-                  <div className="absolute right-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px]">
+                  <div className="absolute right-0 top-full mt-2 z-50 glass rounded-xl p-2 min-w-[200px] animate-fade-in">
                     {themeOptions.map((t) => (
                       <button
                         key={t.id}
-                        onClick={() => {
-                          setTheme(t.id);
-                          setIsThemeOpen(false);
-                        }}
+                        onClick={() => handleThemeChange(t.id)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                          theme === t.id ? 'bg-primary/20 text-primary' : 'hover:bg-muted text-foreground'
+                          theme === t.id ? 'bg-primary/20 text-primary translate-x-1' : 'hover:bg-muted hover:translate-x-1 text-foreground'
                         }`}
                       >
                         <span className="text-lg">{t.icon}</span>
