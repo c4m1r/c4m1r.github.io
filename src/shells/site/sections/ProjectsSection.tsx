@@ -2,10 +2,11 @@
  * ProjectsSection — site-shell widget for the home page.
  *
  * Reads projects from domain via useProjects() hook.
- * Displays up to `limit` latest items grouped by category.
+ * Displays up to `limit` latest items with an interactive category filter.
  * Language-aware. No OS wrapper classes — this is the site-shell view.
  */
 
+import { useMemo, useState } from 'react';
 import { Briefcase, ArrowRight, Tag, ExternalLink } from 'lucide-react';
 import { useProjects } from '../../../domain/projects/useProjects';
 import { useApp } from '../../../contexts/useApp';
@@ -19,6 +20,9 @@ interface ProjectsSectionProps {
   /** Called when user clicks a project card to view detail. Optional. */
   onOpenProject?: (project: Project) => void;
 }
+
+const ALL_PROJECTS_CATEGORY = '__all__';
+const CATEGORY_ORDER = ['IT', 'Gamedev', 'Design', 'Web', 'Mobile', 'Other'];
 
 const CATEGORY_EMOJI: Record<string, string> = {
   IT: '💻',
@@ -38,9 +42,33 @@ function categoryEmoji(cat?: string): string {
   return CATEGORY_EMOJI[cat] ?? CATEGORY_EMOJI[cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase()] ?? '📁';
 }
 
+function categoryLabel(category: string, language: string): string {
+  if (language === 'ru') {
+    switch (category) {
+      case 'IT':
+        return 'IT-инфраструктура';
+      case 'Gamedev':
+        return 'Геймдев';
+      case 'Design':
+        return 'Дизайн';
+      case 'Web':
+        return 'Веб';
+      case 'Mobile':
+        return 'Мобильные';
+      case 'Other':
+        return 'Другое';
+      default:
+        return category;
+    }
+  }
+
+  return category === 'IT' ? 'IT Infrastructure' : category;
+}
+
 export function ProjectsSection({ limit = 6, onViewAll, onOpenProject }: ProjectsSectionProps) {
   const { projects, loading } = useProjects();
   const { language } = useApp();
+  const [activeCategory, setActiveCategory] = useState(ALL_PROJECTS_CATEGORY);
 
   const headingText = language === 'ru' ? 'Проекты' : 'Projects';
   const subtitleText =
@@ -53,8 +81,43 @@ export function ProjectsSection({ limit = 6, onViewAll, onOpenProject }: Project
     language === 'ru'
       ? 'Проекты появятся здесь'
       : 'Projects will appear here';
+  const allCategoriesText = language === 'ru' ? 'Все' : 'All';
+  const filterLabel = language === 'ru' ? 'Фильтр проектов по категории' : 'Filter projects by category';
 
-  const items: Project[] = projects.slice(0, limit);
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(
+      new Set(projects.map((project) => project.category).filter((category): category is string => Boolean(category))),
+    );
+
+    return uniqueCategories.sort((left, right) => {
+      const leftIndex = CATEGORY_ORDER.indexOf(left);
+      const rightIndex = CATEGORY_ORDER.indexOf(right);
+
+      if (leftIndex === -1 && rightIndex === -1) return left.localeCompare(right);
+      if (leftIndex === -1) return 1;
+      if (rightIndex === -1) return -1;
+      return leftIndex - rightIndex;
+    });
+  }, [projects]);
+
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    projects.forEach((project) => {
+      if (!project.category) return;
+      counts.set(project.category, (counts.get(project.category) ?? 0) + 1);
+    });
+    return counts;
+  }, [projects]);
+
+  const filteredProjects = useMemo(
+    () =>
+      activeCategory === ALL_PROJECTS_CATEGORY
+        ? projects
+        : projects.filter((project) => project.category === activeCategory),
+    [activeCategory, projects],
+  );
+
+  const items: Project[] = filteredProjects.slice(0, limit);
 
   if (loading) {
     return (
@@ -64,7 +127,7 @@ export function ProjectsSection({ limit = 6, onViewAll, onOpenProject }: Project
     );
   }
 
-  if (items.length === 0) {
+  if (projects.length === 0) {
     return (
       <section className="container mx-auto px-6 py-16">
         <p className="text-muted-foreground text-sm">{noContentText}</p>
@@ -75,7 +138,7 @@ export function ProjectsSection({ limit = 6, onViewAll, onOpenProject }: Project
   return (
     <section className="container mx-auto px-6 py-16" aria-labelledby="projects-section-heading">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex items-center justify-between mb-8 gap-6">
         <div>
           <h2
             id="projects-section-heading"
@@ -97,8 +160,44 @@ export function ProjectsSection({ limit = 6, onViewAll, onOpenProject }: Project
         )}
       </div>
 
+      {categories.length > 1 && (
+        <div className="flex flex-wrap items-center gap-2 mb-8" role="group" aria-label={filterLabel}>
+          <button
+            type="button"
+            onClick={() => setActiveCategory(ALL_PROJECTS_CATEGORY)}
+            aria-pressed={activeCategory === ALL_PROJECTS_CATEGORY}
+            className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary ${
+              activeCategory === ALL_PROJECTS_CATEGORY
+                ? 'neu-sm bg-primary text-primary-foreground'
+                : 'neu bg-card text-muted-foreground hover:text-foreground hover:-translate-y-0.5'
+            }`}
+          >
+            <span>{allCategoriesText}</span>
+            <span className="text-xs opacity-70">{projects.length}</span>
+          </button>
+
+          {categories.map((category) => (
+            <button
+              key={category}
+              type="button"
+              onClick={() => setActiveCategory(category)}
+              aria-pressed={activeCategory === category}
+              className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary ${
+                activeCategory === category
+                  ? 'neu-sm bg-primary text-primary-foreground'
+                  : 'neu bg-card text-muted-foreground hover:text-foreground hover:-translate-y-0.5'
+              }`}
+            >
+              <span aria-hidden="true">{categoryEmoji(category)}</span>
+              <span>{categoryLabel(category, language)}</span>
+              <span className="text-xs opacity-70">{categoryCounts.get(category) ?? 0}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Project cards grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" aria-live="polite">
         {items.map((project, index) => {
           const isClickable = Boolean(onOpenProject);
           const handleCardClick = () => {

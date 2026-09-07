@@ -5,7 +5,7 @@
  * No local state (except for recursive tree rendering state if needed, but here it's passed via props).
  */
 
-import { Layers, Search, ChevronDown, ChevronRight, ArrowLeft, ArrowRight, FileText } from 'lucide-react';
+import { Layers, Search, ChevronDown, ChevronRight, ArrowLeft, FileText } from 'lucide-react';
 import { ContentReader } from '../../../components/ContentReader';
 import { routes } from '../siteRoutes';
 import { type Language } from '../../../i18n/translations';
@@ -113,6 +113,11 @@ export interface WikiSectionProps {
   setGlobalSearchQuery: (query: string) => void;
 }
 
+function getWikiBreadcrumbSegments(item: WikiViewItem): string[] {
+  if (item.pathSegments?.length) return item.pathSegments.filter(Boolean);
+  return item.categoryPath?.split('/').filter(Boolean) ?? [];
+}
+
 export function WikiSection({
   ui,
   language,
@@ -137,6 +142,34 @@ export function WikiSection({
   setActiveSection,
   setGlobalSearchQuery,
 }: WikiSectionProps) {
+  const activeWikiBreadcrumbs = activeWiki ? getWikiBreadcrumbSegments(activeWiki) : [];
+  const breadcrumbLabel = language === 'ru' ? 'Навигация по Wiki' : 'Wiki breadcrumb';
+
+  const navigateToWikiRoot = () => {
+    setActiveWiki(null);
+    setWikiCategory('All');
+    setWikiPage(1);
+    window.history.pushState({}, '', routes.wiki());
+  };
+
+  const navigateToWikiCategory = (segmentIndex: number) => {
+    const targetSegments = activeWikiBreadcrumbs.slice(0, segmentIndex + 1);
+    const targetPath = targetSegments.join('/');
+    const nextExpanded = new Set(expandedWikiCategories);
+    let cumulativePath = '';
+
+    targetSegments.forEach((segment) => {
+      cumulativePath = cumulativePath ? `${cumulativePath}/${segment}` : segment;
+      nextExpanded.add(cumulativePath);
+    });
+
+    setExpandedWikiCategories(nextExpanded);
+    setActiveWiki(null);
+    setWikiCategory(targetPath);
+    setWikiPage(1);
+    window.history.pushState({}, '', routes.wiki());
+  };
+
   return (
     <section className="max-w-6xl mx-auto px-6 py-12 space-y-8">
       <div className="flex flex-wrap items-center gap-3">
@@ -145,7 +178,7 @@ export function WikiSection({
           <span>{ui.wikiTitle}</span>
         </div>
         <div className="text-muted-foreground">
-          {language === 'ru' ? 'Знания и заметки' : language === 'fr' ? 'Connaissances et notes' : language === 'es' ? 'Conocimientos y notas' : language === 'zh' ? '知识和笔记' : language === 'ja' ? '知识とメモ' : language === 'ko' ? '지식 및 메모' : 'Knowledge and notes'}
+          {language === 'ru' ? 'Знания и заметки' : language === 'fr' ? 'Connaissances et notes' : language === 'es' ? 'Conocimientos y notas' : language === 'zh' ? '知识和笔记' : language === 'ja' ? '知識とメモ' : language === 'ko' ? '지식 및 메모' : 'Knowledge and notes'}
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <Layers className="w-4 h-4" />
@@ -337,14 +370,38 @@ export function WikiSection({
                     <ArrowLeft className="w-4 h-4" />
                     {ui.back}
                   </button>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
-                    <span className="inline-flex items-center gap-1">
+
+                  <nav
+                    aria-label={breadcrumbLabel}
+                    className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground mb-3"
+                  >
+                    <button
+                      type="button"
+                      onClick={navigateToWikiRoot}
+                      className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 hover:bg-muted hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
                       <Layers className="w-4 h-4" />
-                      {activeWiki.pathSegments ? activeWiki.pathSegments.join(' / ') : (activeWiki.categoryPath || 'wiki')}
+                      <span>{ui.wikiTitle}</span>
+                    </button>
+
+                    {activeWikiBreadcrumbs.map((segment, index) => (
+                      <span key={`${segment}-${index}`} className="inline-flex items-center gap-1.5">
+                        <ChevronRight className="w-3.5 h-3.5 opacity-50" aria-hidden="true" />
+                        <button
+                          type="button"
+                          onClick={() => navigateToWikiCategory(index)}
+                          className="rounded-md px-1.5 py-1 hover:bg-muted hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                          {segment}
+                        </button>
+                      </span>
+                    ))}
+
+                    <ChevronRight className="w-3.5 h-3.5 opacity-50" aria-hidden="true" />
+                    <span className="font-medium text-foreground px-1.5 py-1" aria-current="page">
+                      {activeWiki.title}
                     </span>
-                    <ArrowRight className="w-4 h-4 opacity-60" />
-                    <span className="font-medium text-foreground">{activeWiki.title}</span>
-                  </div>
+                  </nav>
                 </>
               }
             />
