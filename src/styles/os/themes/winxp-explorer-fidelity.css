@@ -1,0 +1,283 @@
+/*
+ * Windows XP Explorer / My Computer fidelity layer.
+ *
+ * The Explorer app intentionally keeps its existing navigation and virtual
+ * filesystem behavior. These selectors target its unique root class and only
+ * change the Windows XP presentation.
+ */
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none {
+  background: #ffffff !important;
+  color: #000000 !important;
+  font-family: Tahoma, 'Segoe UI', sans-serif !important;
+  font-size: 11px !important;
+}
+
+/* Explorer chrome: menu bar, standard toolbar and address bar. */
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child {
+  border-bottom: 1px solid #aca899 !important;
+  background: #ece9d8 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(1) {
+  height: 20px !important;
+  min-height: 20px !important;
+  padding: 0 2px !important;
+  border-bottom: 0 !important;
+  background: #ece9d8 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(1) > button {
+  height: 19px !important;
+  padding: 1px 7px 2px !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #000000 !important;
+  font: 11px Tahoma, 'Segoe UI', sans-serif !important;
+  line-height: 15px !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(1) > button:hover {
+  border-color: #316ac5 !important;
+  background: #316ac5 !important;
+  color: #ffffff !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(2) {
+  min-height: 36px !important;
+  padding: 2px 3px !important;
+  gap: 1px !important;
+  border-top: 1px solid #ffffff !important;
+  border-bottom: 1px solid #aca899 !important;
+  background: #ece9d8 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(2) > button {
+  min-height: 30px !important;
+  padding: 2px 6px !important;
+  gap: 3px !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #000000 !important;
+  font: 11px Tahoma, 'Segoe UI', sans-serif !important;
+  box-shadow: none !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(2) > button:hover:not(:disabled) {
+  border-color: #aca899 !important;
+  background: linear-gradient(#ffffff, #e9e7d8) !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(2) > button:active:not(:disabled) {
+  border-color: #7f9db9 !important;
+  background: #dddacb !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(2) > button:disabled {
+  opacity: 0.45 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(2) > button img {
+  width: 24px !important;
+  height: 24px !important;
+  object-fit: contain !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(2) > div {
+  height: 26px !important;
+  margin: 0 3px !important;
+  background: linear-gradient(to right, #aca899 0 1px, #ffffff 1px 2px, transparent 2px) !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(3) {
+  min-height: 25px !important;
+  padding: 2px 3px !important;
+  gap: 4px !important;
+  border-top: 1px solid #ffffff !important;
+  background: #ece9d8 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(3) > span {
+  margin-right: 2px !important;
+  color: #000000 !important;
+  font-weight: 400 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(3) > div {
+  height: 21px !important;
+  border: 1px solid #7f9db9 !important;
+  background: #ffffff !important;
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.08) !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(3) input {
+  height: 19px !important;
+  padding: 1px 2px !important;
+  font: 11px Tahoma, 'Segoe UI', sans-serif !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(3) > button {
+  height: 21px !important;
+  padding: 0 5px !important;
+  gap: 2px !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #000000 !important;
+  font: 11px Tahoma, 'Segoe UI', sans-serif !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:first-child > div:nth-child(3) > button:hover {
+  border-color: #aca899 !important;
+  background: #ffffff !important;
+}
+
+/* XP common tasks pane. */
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .w-48 {
+  width: 185px !important;
+  padding: 10px 9px !important;
+  gap: 10px !important;
+  background: linear-gradient(180deg, #748aff 0%, #6375d6 100%) !important;
+  border-right: 1px solid #3159a5 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .w-48 > div {
+  border-radius: 4px 4px 0 0 !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .w-48 > div > div:first-child {
+  min-height: 24px !important;
+  padding: 4px 8px !important;
+  border-radius: 4px 4px 0 0 !important;
+  background: linear-gradient(90deg, #ffffff 0%, #f5f7ff 48%, #c6d3f7 100%) !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .w-48 > div > div:first-child span {
+  color: #215dc6 !important;
+  font: bold 11px Tahoma, 'Segoe UI', sans-serif !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .w-48 > div > div:nth-child(2) {
+  padding: 7px 8px 8px !important;
+  gap: 5px !important;
+  border: 0 !important;
+  background: #d6dff7 !important;
+  color: #215dc6 !important;
+  font-size: 11px !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .w-48 button {
+  min-height: 18px !important;
+  padding: 0 !important;
+  color: #215dc6 !important;
+  font: 11px Tahoma, 'Segoe UI', sans-serif !important;
+}
+
+/* Main content pane. */
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .flex-1.bg-white {
+  padding: 10px 12px !important;
+  background: #ffffff !important;
+}
+
+/* My Computer default view is tile-like, not a modern centered card grid. */
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 {
+  row-gap: 18px !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 > div > div:first-child {
+  margin-bottom: 5px !important;
+  padding: 0 0 2px !important;
+  border-bottom: 1px solid #d7d7d7 !important;
+  color: #003399 !important;
+  font: bold 11px Tahoma, 'Segoe UI', sans-serif !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 > div > div.grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(170px, 1fr)) !important;
+  gap: 3px 18px !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 > div > div.grid > div {
+  display: flex !important;
+  min-height: 52px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  padding: 2px 3px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 > div > div.grid > div:hover {
+  background: transparent !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 > div > div.grid > div > div:first-child {
+  width: 48px !important;
+  height: 48px !important;
+  flex: 0 0 48px !important;
+  margin: 0 7px 0 0 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 > div > div.grid > div > span {
+  width: auto !important;
+  max-width: calc(100% - 58px) !important;
+  padding: 1px 2px !important;
+  border-radius: 0 !important;
+  text-align: left !important;
+  font-size: 11px !important;
+  line-height: 15px !important;
+}
+
+/* Details view header and rows follow the compact XP list presentation. */
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none table {
+  font: 11px Tahoma, 'Segoe UI', sans-serif !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none table thead {
+  background: #ece9d8 !important;
+  color: #000000 !important;
+  text-transform: none !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none table th {
+  height: 20px !important;
+  padding: 1px 5px !important;
+  border-right: 1px solid #aca899 !important;
+  border-bottom: 1px solid #aca899 !important;
+  font-weight: 400 !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none table td {
+  height: 21px !important;
+  padding: 1px 5px !important;
+  font-size: 11px !important;
+}
+
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none table tr:not(.bg-\[\#316ac5\]):hover {
+  background: #e8f1ff !important;
+}
+
+/* Status bar. */
+.os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:last-child {
+  min-height: 20px !important;
+  padding: 2px 5px !important;
+  border-top: 1px solid #aca899 !important;
+  background: #ece9d8 !important;
+  color: #000000 !important;
+  font-size: 11px !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+}
+
+@media (max-width: 640px) {
+  .os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none > div:nth-child(2) > .w-48 {
+    width: 160px !important;
+  }
+
+  .os-winxp .os-window-body > .flex.flex-col.h-full.bg-white.font-tahoma.text-xs.select-none .space-y-6 > div > div.grid {
+    grid-template-columns: 1fr !important;
+  }
+}
