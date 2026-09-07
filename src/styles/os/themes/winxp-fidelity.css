@@ -1,0 +1,293 @@
+/*
+ * Windows XP Luna fidelity layer.
+ *
+ * This file intentionally comes after the broader winxp.css skin. It is the
+ * authoritative shell-level correction layer for surfaces that have an exact
+ * visual reference in eat/winxpsite-main. Keep behavior in shared desktop
+ * components and use this layer only for XP presentation.
+ */
+
+/* Window chrome: use the same Luna gradients and proportions as the reference. */
+.os-winxp .os-window {
+  background-color: rgb(8, 49, 217) !important;
+}
+
+.os-winxp .os-window--inactive {
+  background-color: rgb(117, 135, 221) !important;
+}
+
+.os-winxp .os-titlebar {
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 4px 0 6px !important;
+  background: linear-gradient(
+    rgb(0, 88, 238) 0%,
+    rgb(53, 147, 255) 4%,
+    rgb(40, 142, 255) 6%,
+    rgb(18, 125, 255) 8%,
+    rgb(3, 111, 252) 10%,
+    rgb(2, 98, 238) 14%,
+    rgb(0, 87, 229) 20%,
+    rgb(0, 84, 227) 24%,
+    rgb(0, 85, 235) 56%,
+    rgb(0, 91, 245) 66%,
+    rgb(2, 106, 254) 76%,
+    rgb(0, 98, 239) 86%,
+    rgb(0, 82, 214) 92%,
+    rgb(0, 64, 171) 94%,
+    rgb(0, 48, 146) 100%
+  ) !important;
+}
+
+.os-winxp .os-window--inactive .os-titlebar {
+  background: linear-gradient(
+    rgb(118, 151, 231) 0%,
+    rgb(126, 158, 227) 3%,
+    rgb(148, 175, 232) 6%,
+    rgb(151, 180, 233) 8%,
+    rgb(130, 165, 228) 14%,
+    rgb(124, 159, 226) 17%,
+    rgb(121, 150, 222) 25%,
+    rgb(123, 153, 225) 56%,
+    rgb(130, 169, 233) 81%,
+    rgb(128, 165, 231) 89%,
+    rgb(123, 150, 225) 94%,
+    rgb(122, 147, 223) 97%,
+    rgb(171, 186, 227) 100%
+  ) !important;
+}
+
+.os-winxp .xp-titlebar__controls {
+  gap: 1px !important;
+}
+
+.os-winxp .xp-titlebar__button {
+  width: 25px !important;
+  height: 25px !important;
+  min-width: 25px !important;
+  min-height: 25px !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background-size: 25px 25px !important;
+}
+
+.os-winxp .xp-titlebar__button--close {
+  margin-right: 1px !important;
+}
+
+/* Taskbar: exact Luna contour from the /eat reference, kept at native 30px. */
+.os-winxp .taskbar {
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: linear-gradient(
+    rgb(31, 47, 134) 0%,
+    rgb(49, 101, 196) 3%,
+    rgb(54, 130, 229) 6%,
+    rgb(68, 144, 230) 10%,
+    rgb(56, 131, 229) 12%,
+    rgb(43, 113, 224) 15%,
+    rgb(38, 99, 218) 18%,
+    rgb(35, 91, 214) 20%,
+    rgb(34, 88, 213) 23%,
+    rgb(33, 87, 214) 38%,
+    rgb(36, 93, 219) 54%,
+    rgb(37, 98, 223) 86%,
+    rgb(36, 95, 220) 89%,
+    rgb(33, 88, 212) 92%,
+    rgb(29, 78, 192) 95%,
+    rgb(25, 65, 165) 98%,
+    rgb(25, 65, 165) 100%
+  ) !important;
+  box-shadow: none !important;
+}
+
+.os-winxp .taskbar__inner {
+  gap: 0 !important;
+  padding: 0 !important;
+}
+
+/* The imported bitmap already contains the Windows logo, wordmark and contour. */
+.os-winxp .start-button {
+  flex: 0 0 97px !important;
+  width: 97px !important;
+  min-width: 97px !important;
+  max-width: 97px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url('../../../themes/winxp/assets/widgets/xp_btn_norm.png') !important;
+  background-position: left top !important;
+  background-repeat: no-repeat !important;
+  background-size: 97px 30px !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.os-winxp .start-button::before,
+.os-winxp .start-button::after {
+  display: none !important;
+  content: none !important;
+}
+
+.os-winxp .start-button:hover {
+  background-image: url('../../../themes/winxp/assets/widgets/xp_btn_hover.png') !important;
+  filter: none !important;
+}
+
+.os-winxp .start-button:active,
+.os-winxp .start-button.is-active,
+.os-winxp .start-button.start-button--open {
+  background-image: url('../../../themes/winxp/assets/widgets/xp_btn_clicked.png') !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Keep accessible children in the tree while avoiding duplicate bitmap text/logo. */
+.os-winxp .start-button__icon,
+.os-winxp .start-button__label {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.os-winxp .taskbar-windows {
+  height: 100% !important;
+  gap: 3px !important;
+  padding: 2px 5px 0 !important;
+}
+
+.os-winxp .taskbar-button {
+  height: 24px !important;
+  margin-top: 0 !important;
+  max-width: 200px !important;
+  padding: 0 8px !important;
+  background: rgb(60, 129, 243) !important;
+  border: 0 !important;
+  border-radius: 2px !important;
+  box-shadow:
+    rgba(0, 0, 0, 0.3) -1px 0 inset,
+    rgba(255, 255, 255, 0.2) 1px 1px 1px inset !important;
+}
+
+.os-winxp .taskbar-button:hover {
+  background: rgb(60, 129, 243) !important;
+  filter: brightness(1.2) !important;
+}
+
+.os-winxp .taskbar-button.is-active,
+.os-winxp .taskbar-button:active {
+  background: rgb(30, 82, 183) !important;
+  box-shadow:
+    rgba(0, 0, 0, 0.2) 0 0 1px 1px inset,
+    rgba(0, 0, 0, 0.7) 1px 0 1px inset !important;
+  filter: none !important;
+}
+
+.os-winxp .taskbar-button.is-minimized {
+  opacity: 1 !important;
+  background: rgb(60, 129, 243) !important;
+}
+
+.os-winxp .taskbar-divider {
+  display: none !important;
+}
+
+.os-winxp .taskbar-lang {
+  height: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 4px !important;
+  background: linear-gradient(
+    rgb(12, 89, 185) 1%,
+    rgb(19, 158, 233) 6%,
+    rgb(24, 181, 242) 10%,
+    rgb(19, 155, 235) 14%,
+    rgb(18, 144, 232) 19%,
+    rgb(13, 141, 234) 63%,
+    rgb(13, 159, 241) 81%,
+    rgb(15, 158, 237) 88%,
+    rgb(17, 155, 233) 91%,
+    rgb(19, 146, 226) 94%,
+    rgb(19, 126, 215) 97%,
+    rgb(9, 91, 201) 100%
+  ) !important;
+  box-shadow: rgb(24, 187, 255) 1px 0 1px inset !important;
+}
+
+.os-winxp .taskbar-tray {
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 7px 0 3px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: linear-gradient(
+    rgb(12, 89, 185) 1%,
+    rgb(19, 158, 233) 6%,
+    rgb(24, 181, 242) 10%,
+    rgb(19, 155, 235) 14%,
+    rgb(18, 144, 232) 19%,
+    rgb(13, 141, 234) 63%,
+    rgb(13, 159, 241) 81%,
+    rgb(15, 158, 237) 88%,
+    rgb(17, 155, 233) 91%,
+    rgb(19, 146, 226) 94%,
+    rgb(19, 126, 215) 97%,
+    rgb(9, 91, 201) 100%
+  ) !important;
+  box-shadow: none !important;
+}
+
+.os-winxp .taskbar-tray-time {
+  height: 30px !important;
+  min-width: 58px !important;
+  padding: 0 5px !important;
+  font-size: 11px !important;
+}
+
+/* Start menu shell: dimensions/colors from eat/winxpsite-main, responsive capped. */
+.os-winxp .start-menu-win-xp {
+  width: min(440px, 100vw) !important;
+  min-width: min(440px, 100vw) !important;
+  height: min(600px, calc(100vh - 30px)) !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  border-radius: 5px 5px 0 0 !important;
+  background: rgb(66, 130, 214) !important;
+  box-shadow: rgba(0, 0, 0, 0.5) 2px 4px 2px !important;
+  filter: none !important;
+}
+
+.os-winxp .start-menu-win-xp .start-menu__header {
+  height: 72px !important;
+  min-height: 72px !important;
+  padding: 6px 5px 5px !important;
+  background: linear-gradient(
+    rgb(24, 104, 206) 0%,
+    rgb(14, 96, 203) 12%,
+    rgb(14, 96, 203) 20%,
+    rgb(17, 100, 207) 32%,
+    rgb(22, 103, 207) 33%,
+    rgb(27, 108, 211) 47%,
+    rgb(30, 112, 217) 54%,
+    rgb(36, 118, 220) 60%,
+    rgb(41, 122, 224) 65%,
+    rgb(52, 130, 227) 77%,
+    rgb(55, 134, 229) 79%,
+    rgb(66, 142, 233) 90%,
+    rgb(71, 145, 235) 100%
+  ) !important;
+}
+
+.os-winxp .start-menu-win-xp .start-menu-section--left {
+  background: #ffffff !important;
+}
+
+.os-winxp .start-menu-win-xp .start-menu-section--right {
+  background: #d2e5fa !important;
+  border-left: 1px solid #a6bbd6 !important;
+}
