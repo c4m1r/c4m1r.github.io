@@ -42,7 +42,8 @@ export function DesktopIconGrid({
             style={{
               left: `${icon.x}px`,
               top: `${icon.y}px`,
-              width: '96px',
+              width: isXpFamily ? '80px' : '96px',
+              height: isXpFamily ? '80px' : undefined,
               zIndex: getDesktopIconZIndex(icon.id, draggingIcon),
             }}
             ref={(element) => {
@@ -55,35 +56,53 @@ export function DesktopIconGrid({
             onDoubleClick={() => onIconDoubleClick(icon)}
             onContextMenu={(e) => onIconContextMenu(e, icon)}
           >
-            <div
-              className={`p-2 rounded flex flex-col items-center justify-center ${
-                isXpFamily
-                  ? isSelected
-                    ? 'bg-blue-600/40'
-                    : 'group-hover:bg-blue-500/30'
-                  : isSelected
+            {isXpFamily ? (
+              <div className={`relative w-20 h-20 ${isDragging ? 'opacity-80' : ''}`}>
+                <div
+                  className="absolute top-0 left-[5px] right-[5px] h-12 flex items-start justify-center [&_img]:w-10 [&_img]:h-10 [&_img]:object-contain [&_svg]:w-10 [&_svg]:h-10"
+                  style={{
+                    opacity: isSelected ? 0.8 : 1,
+                    filter: isSelected ? 'drop-shadow(0 0 0 #0000ff)' : undefined,
+                  }}
+                >
+                  {icon.icon}
+                </div>
+                <div
+                  className={`absolute top-12 left-0 right-0 min-h-[15px] max-h-[30px] px-0.5 overflow-hidden text-white text-[12px] leading-[15px] text-center ${
+                    isSelected ? 'bg-[#0b61ff]' : ''
+                  }`}
+                  style={{
+                    textShadow: isSelected ? 'none' : '1px 1px 1px rgba(0,0,0,0.9)',
+                  }}
+                >
+                  {icon.label}
+                </div>
+              </div>
+            ) : (
+              <div
+                className={`p-2 rounded flex flex-col items-center justify-center ${
+                  isSelected
                     ? 'bg-blue-800/40 border border-gray-200'
                     : 'group-hover:bg-blue-800/50 border border-transparent group-hover:border-gray-300'
-              } transition-colors ${isDragging ? 'opacity-80' : ''}`}
-            >
-              <div
-                className={`flex items-center justify-center ${!isXpFamily ? 'opacity-90' : ''}`}
-                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.7)' }}
+                } transition-colors ${isDragging ? 'opacity-80' : ''}`}
               >
-                {icon.icon}
+                <div
+                  className="flex items-center justify-center opacity-90"
+                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.7)' }}
+                >
+                  {icon.icon}
+                </div>
+                <div
+                  className="text-white text-[11px] text-center mt-1 w-full break-words"
+                  style={{
+                    textShadow: '0 1px 3px rgba(0,0,0,0.85), 0 0 6px rgba(0,0,0,0.6)',
+                    lineHeight: '1.2',
+                  }}
+                >
+                  {icon.label}
+                </div>
               </div>
-              <div
-                className={`text-white text-[11px] text-center mt-1 w-full break-words ${
-                  isXpFamily ? 'drop-shadow-lg font-semibold' : ''
-                }`}
-                style={{
-                  textShadow: '0 1px 3px rgba(0,0,0,0.85), 0 0 6px rgba(0,0,0,0.6)',
-                  lineHeight: '1.2',
-                }}
-              >
-                {icon.label}
-              </div>
-            </div>
+            )}
           </div>
         );
       })}
