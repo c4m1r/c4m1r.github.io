@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../../contexts/useApp';
+import runIconXp from '../../../themes/winxp/assets/icons/run.png';
 
 export interface RunDialogProps {
   onClose: () => void;
@@ -7,10 +8,12 @@ export interface RunDialogProps {
 }
 
 export function RunDialog({ onClose, onRun }: RunDialogProps) {
-  const { theme } = useApp();
+  const { theme, language } = useApp();
   const [command, setCommand] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const isWindowsXp = theme === 'win-xp';
   const isXpFamily = theme !== 'win-98';
+  const isRu = language === 'ru';
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -29,6 +32,106 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
       onClose();
     }
   };
+
+  const labels = {
+    title: isRu ? 'Выполнить' : 'Run',
+    description: isRu
+      ? 'Введите имя программы, папки, документа или ресурса Интернета, и Windows откроет их.'
+      : 'Type the name of a program, folder, document, or Internet resource, and Windows will open it for you.',
+    open: isRu ? 'Открыть:' : 'Open:',
+    cancel: isRu ? 'Отмена' : 'Cancel',
+    browse: isRu ? 'Обзор...' : 'Browse...',
+    close: isRu ? 'Закрыть' : 'Close',
+  };
+
+  if (isWindowsXp) {
+    return (
+      <div
+        className="fixed inset-0 z-[99999] flex items-center justify-center"
+        style={{ backgroundColor: 'transparent' }}
+        onClick={onClose}
+      >
+        <div
+          className="os-window w-[411px] overflow-hidden rounded-t-[8px] bg-[#0831d9] p-[3px] pt-0 font-tahoma text-[11px] shadow-[2px_3px_8px_rgba(0,0,0,0.45)]"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={handleKeyDown}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="xp-run-dialog-title"
+        >
+          <div className="os-titlebar flex h-[30px] items-center justify-between px-[5px] text-white">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <span id="xp-run-dialog-title" className="os-titlebar-title truncate text-[13px] font-bold [text-shadow:1px_1px_1px_#0f2f76]">
+                {labels.title}
+              </span>
+            </div>
+            <div className="xp-titlebar__controls flex items-center">
+              <button
+                type="button"
+                onClick={onClose}
+                className="xp-titlebar__button xp-titlebar__button--close border-0 bg-transparent p-0"
+                aria-label={labels.close}
+                title={labels.close}
+              />
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="os-window-body bg-[#ece9d8] px-[11px] pb-[10px] pt-[13px] text-black">
+            <div className="flex items-start gap-[12px]">
+              <img
+                src={runIconXp}
+                alt=""
+                aria-hidden="true"
+                className="mt-[1px] h-8 w-8 shrink-0 object-contain"
+              />
+              <p className="m-0 max-w-[330px] leading-[15px]">
+                {labels.description}
+              </p>
+            </div>
+
+            <div className="mt-[16px] flex items-center gap-[8px]">
+              <label htmlFor="xp-run-command" className="w-[45px] shrink-0 text-right">
+                {labels.open}
+              </label>
+              <input
+                id="xp-run-command"
+                ref={inputRef}
+                type="text"
+                value={command}
+                onChange={(e) => setCommand(e.target.value)}
+                className="os-input h-[21px] flex-1 border border-[#7f9db9] bg-white px-[3px] py-0 font-tahoma text-[11px] text-black outline-none shadow-[inset_1px_1px_1px_rgba(0,0,0,0.12)] focus:border-[#316ac5]"
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="mt-[14px] flex justify-end gap-[7px]">
+              <button
+                type="submit"
+                className="os-button h-[23px] min-w-[75px] rounded-[3px] border border-[#003c74] bg-[#ece9d8] px-[10px] font-tahoma text-[11px] text-black shadow-[inset_1px_1px_0_#fff,inset_-1px_-1px_0_#aca899] hover:bg-[#f5f3e8] active:shadow-[inset_1px_1px_1px_#777]"
+              >
+                OK
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="os-button h-[23px] min-w-[75px] rounded-[3px] border border-[#003c74] bg-[#ece9d8] px-[10px] font-tahoma text-[11px] text-black shadow-[inset_1px_1px_0_#fff,inset_-1px_-1px_0_#aca899] hover:bg-[#f5f3e8] active:shadow-[inset_1px_1px_1px_#777]"
+              >
+                {labels.cancel}
+              </button>
+              <button
+                type="button"
+                className="os-button h-[23px] min-w-[75px] cursor-not-allowed rounded-[3px] border border-[#aca899] bg-[#ece9d8] px-[10px] font-tahoma text-[11px] text-[#808080] shadow-[inset_1px_1px_0_#fff,inset_-1px_-1px_0_#aca899]"
+                disabled
+                title={labels.browse}
+              >
+                {labels.browse}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -69,7 +172,6 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
           </div>
         </div>
 
-        {/* Content */}
         <form onSubmit={handleSubmit} className="p-4 os-window-body">
           <div className="flex items-start gap-3 mb-4">
             <div className="text-4xl">🏃</div>
@@ -95,7 +197,6 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end gap-2">
             <button
               type="submit"
