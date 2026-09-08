@@ -7,6 +7,7 @@ import type { ThemeId } from '../contexts/appContextTypes';
 
 // Импортируем обои напрямую через Vite
 import winxpBliss from '../content/pictures/wallpapers/winxp-bliss.jpg';
+import win7Wallpaper from './win7/assets/images/desktop-wallpaper.jpg';
 
 export interface ThemeConfig {
   id: ThemeId;
@@ -69,9 +70,9 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: true,
     hasLoginScreen: true,
     hasWelcomeScreen: false,
-    cssFile: './themes/winxp/xp.css', // TODO: Создать отдельный CSS
-    assetsPath: './themes/win7',
-    defaultWallpaper: '',
+    cssFile: './styles/os/themes/win7.css',
+    assetsPath: './themes/win7/assets',
+    defaultWallpaper: win7Wallpaper,
     soundsEnabled: true,
   },
   'win10': {

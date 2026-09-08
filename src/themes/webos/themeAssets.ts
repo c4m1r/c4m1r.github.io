@@ -46,6 +46,7 @@ import runIconWebos from '../winxp/assets/icons/run.png';
 import helpIconWebos from '../winxp/assets/icons/help.png';
 import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
+import { WIN7_ASSETS } from '../win7/assets';
 
 type StartMenuIconSet = {
   internetExplorer?: string;
@@ -73,13 +74,14 @@ type PlaceIconSet = {
   run?: string;
 };
 
-export type ThemeAssetId = 'webos' | 'win-xp' | 'win-98';
+export type ThemeAssetId = 'webos' | 'win-xp' | 'win-98' | 'win7';
 
 export interface ThemeAssets {
   folderIcon?: string;
   computerIcon?: string;
   recycleIcon?: string;
   startButtonIcon?: string;
+  startButtonHoverIcon?: string;
   trayExpandIcon?: string;
   wallpaper?: string;
   userAvatar?: string;
@@ -213,9 +215,36 @@ const xpThemeAssets: ThemeAssets = {
   placesIcons: { ...sharedWebosAssets.placesIcons },
 };
 
+const win7ThemeAssets: ThemeAssets = {
+  ...sharedWebosAssets,
+  folderIcon: WIN7_ASSETS.folderIcon,
+  computerIcon: WIN7_ASSETS.computerIcon,
+  startButtonIcon: WIN7_ASSETS.startOrb,
+  startButtonHoverIcon: WIN7_ASSETS.startOrbHover,
+  wallpaper: WIN7_ASSETS.desktopWallpaper,
+  userAvatar: WIN7_ASSETS.userAvatar,
+  internetExplorerIcon: WIN7_ASSETS.internetExplorerIcon,
+  mailIcon: WIN7_ASSETS.mailIcon,
+  volumeIcon: WIN7_ASSETS.volumeIcon,
+  startupSound: WIN7_ASSETS.startupSound,
+  startMenuIcons: {
+    ...sharedWebosAssets.startMenuIcons,
+    internetExplorer: WIN7_ASSETS.internetExplorerIcon,
+    outlook: WIN7_ASSETS.mailIcon,
+  },
+  placesIcons: {
+    ...sharedWebosAssets.placesIcons,
+    myComputer: WIN7_ASSETS.computerIcon,
+    myDocuments: WIN7_ASSETS.folderIcon,
+    myPictures: WIN7_ASSETS.folderIcon,
+    myMusic: WIN7_ASSETS.folderIcon,
+  },
+};
+
 export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   webos: sharedWebosAssets,
   'win-xp': xpThemeAssets,
+  win7: win7ThemeAssets,
   'win-98': {
     startupSound: '/sounds/system/win98-startup.mp3',
     shutdownSound: '/sounds/system/win98-shutdown.mp3',
