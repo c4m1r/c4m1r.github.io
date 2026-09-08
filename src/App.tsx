@@ -7,6 +7,7 @@ import { WeatherEffects } from './components/WeatherEffects';
 const BlogSite = lazy(() => import('./apps/BlogSite').then((module) => ({ default: module.BlogSite })));
 const Terminal = lazy(() => import('./apps/Terminal').then((module) => ({ default: module.Terminal })));
 const WindowsXP = lazy(() => import('./themes/winxp').then((module) => ({ default: module.WindowsXP })));
+const Windows7 = lazy(() => import('./themes/win7').then((module) => ({ default: module.Windows7 })));
 const WebOS = lazy(() => import('./themes/webos').then((module) => ({ default: module.WebOS })));
 
 function LazyFallback() {
@@ -42,7 +43,7 @@ function App() {
   if (mode === 'webos') {
     return (
       <Suspense fallback={<LazyFallback />}>
-        {theme === 'win-xp' ? <WindowsXP /> : <WebOS />}
+        {theme === 'win-xp' ? <WindowsXP /> : theme === 'win7' ? <Windows7 /> : <WebOS />}
       </Suspense>
     );
   }
