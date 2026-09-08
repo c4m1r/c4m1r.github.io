@@ -57,19 +57,13 @@ export function DesktopIconGrid({
             onContextMenu={(e) => onIconContextMenu(e, icon)}
           >
             {isXpFamily ? (
-              <div className={`relative w-20 h-20 ${isDragging ? 'opacity-80' : ''}`}>
-                <div
-                  className="absolute top-0 left-[5px] right-[5px] h-12 flex items-start justify-center [&_img]:w-10 [&_img]:h-10 [&_img]:object-contain [&_svg]:w-10 [&_svg]:h-10"
-                  style={{
-                    opacity: isSelected ? 0.8 : 1,
-                    filter: isSelected ? 'drop-shadow(0 0 0 #0000ff)' : undefined,
-                  }}
-                >
+              <div className={`desktop-icon__xp-layout relative w-20 h-20 ${isDragging ? 'opacity-80' : ''}`}>
+                <div className="desktop-icon__glyph absolute top-0 left-[5px] right-[5px] h-12 flex items-start justify-center [&_img]:w-10 [&_img]:h-10 [&_img]:object-contain [&_svg]:w-10 [&_svg]:h-10">
                   {icon.icon}
                 </div>
                 <div
-                  className={`absolute top-12 left-0 right-0 min-h-[15px] max-h-[30px] px-0.5 overflow-hidden text-white text-[12px] leading-[15px] text-center ${
-                    isSelected ? 'bg-[#0b61ff]' : ''
+                  className={`desktop-icon__label absolute top-12 left-0 right-0 min-h-[15px] max-h-[30px] px-0.5 overflow-hidden text-white text-[12px] leading-[15px] text-center ${
+                    isSelected ? 'is-selected' : ''
                   }`}
                   style={{
                     textShadow: isSelected ? 'none' : '1px 1px 1px rgba(0,0,0,0.9)',
