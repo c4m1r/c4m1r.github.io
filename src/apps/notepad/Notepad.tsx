@@ -11,7 +11,6 @@ interface NotepadProps {
   onClose?: () => void;
 }
 
-// Simple markdown renderer
 function renderMarkdown(text: string): string {
   return text
     .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mb-4 mt-6 text-blue-800">$1</h1>')
@@ -32,9 +31,13 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
   const [showFileMenu, setShowFileMenu] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const isXpFamily = theme !== 'win-98';
+  const isXpFamily = theme === 'win-xp' || theme === 'webos';
+  const editorFont = theme === 'win7'
+    ? 'Consolas, "Lucida Console", monospace'
+    : isXpFamily
+      ? '"Lucida Console", monospace'
+      : '"Courier New", monospace';
 
-  // Check if content is markdown (starts with # or contains markdown syntax)
   const isMarkdown = useMemo(() => {
     return content.startsWith('#') || /\*\*|\*|^\d+\.|^- /.test(content);
   }, [content]);
@@ -52,45 +55,32 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
   };
 
   const handleSelectAll = () => {
-    if (textareaRef.current) {
-      textareaRef.current.select();
-    }
+    textareaRef.current?.select();
     setShowEditMenu(false);
   };
 
   const handleCopy = () => {
     if (isMarkdown) {
-      // For markdown, copy the raw markdown text
-      navigator.clipboard.writeText(content);
+      void navigator.clipboard.writeText(content);
     } else if (textareaRef.current) {
       const start = textareaRef.current.selectionStart;
       const end = textareaRef.current.selectionEnd;
-      const selectedText = content.substring(start, end);
-      navigator.clipboard.writeText(selectedText);
+      void navigator.clipboard.writeText(content.substring(start, end));
     }
     setShowEditMenu(false);
   };
 
   const handleCut = () => {
-    if (isMarkdown) {
-      // Cut not available for read-only markdown
-      return;
-    }
-    if (textareaRef.current) {
-      const start = textareaRef.current.selectionStart;
-      const end = textareaRef.current.selectionEnd;
-      const selectedText = content.substring(start, end);
-      navigator.clipboard.writeText(selectedText);
-      setContent(content.substring(0, start) + content.substring(end));
-    }
+    if (isMarkdown || !textareaRef.current) return;
+    const start = textareaRef.current.selectionStart;
+    const end = textareaRef.current.selectionEnd;
+    void navigator.clipboard.writeText(content.substring(start, end));
+    setContent(content.substring(0, start) + content.substring(end));
     setShowEditMenu(false);
   };
 
   const handlePaste = async () => {
-    if (isMarkdown) {
-      // Paste not available for read-only markdown
-      return;
-    }
+    if (isMarkdown) return;
     try {
       const text = await navigator.clipboard.readText();
       if (textareaRef.current) {
@@ -105,38 +95,31 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      {/* Menu Bar */}
-      <div className={`flex items-center h-[24px] px-1 border-b relative ${isXpFamily ? 'bg-[#ece9d8] border-[#aca899]' : 'bg-[#c0c0c0] border-gray-400'}`}>
+    <div className="notepad-app flex flex-col h-full bg-white">
+      <div className={`notepad-app__menubar flex items-center h-[24px] px-1 border-b relative ${isXpFamily ? 'bg-[#ece9d8] border-[#aca899]' : 'bg-[#f0f0f0] border-gray-400'}`}>
         <div className="relative">
           <button
             onClick={() => {
               setShowFileMenu(!showFileMenu);
               setShowEditMenu(false);
             }}
-            className={`px-2 py-[2px] text-xs leading-snug ${showFileMenu ? (isXpFamily ? 'bg-[#316ac5] text-white' : 'bg-[#000080] text-white') : ''} ${isXpFamily ? 'hover:bg-[#316ac5] hover:text-white' : 'hover:bg-[#000080] hover:text-white'}`}
+            className={`notepad-app__menu-button px-2 py-[2px] text-xs leading-snug ${showFileMenu ? 'is-open' : ''}`}
           >
             File
           </button>
           {showFileMenu && (
-            <div className="absolute top-full left-0 mt-0.5 bg-[#f0f0f0] border border-[#8c96a6] shadow-lg z-50 min-w-[180px]">
-              <button
-                onClick={handleNew}
-                className={`w-full text-left px-4 py-1 text-xs ${isMarkdown ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#316ac5] hover:text-white'}`}
-                disabled={isMarkdown}
-              >
+            <div className="notepad-app__popup absolute top-full left-0 mt-0.5 bg-[#f0f0f0] border border-[#8c96a6] shadow-lg z-50 min-w-[180px]">
+              <button onClick={handleNew} className={`w-full text-left px-4 py-1 text-xs ${isMarkdown ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isMarkdown}>
                 New<span className="float-right text-[10px] opacity-60">Ctrl+N</span>
               </button>
-              <button className="w-full text-left px-4 py-1 text-xs hover:bg-[#316ac5] hover:text-white opacity-50 cursor-not-allowed">
+              <button disabled className="w-full text-left px-4 py-1 text-xs opacity-50 cursor-not-allowed">
                 Open...<span className="float-right text-[10px] opacity-60">Ctrl+O</span>
               </button>
-              <button className="w-full text-left px-4 py-1 text-xs hover:bg-[#316ac5] hover:text-white opacity-50 cursor-not-allowed">
+              <button disabled className="w-full text-left px-4 py-1 text-xs opacity-50 cursor-not-allowed">
                 Save<span className="float-right text-[10px] opacity-60">Ctrl+S</span>
               </button>
-              <div className="h-px bg-[#8c96a6] my-1" />
-              <button onClick={onClose} className="w-full text-left px-4 py-1 text-xs hover:bg-[#316ac5] hover:text-white">
-                Exit
-              </button>
+              <div className="notepad-app__popup-separator h-px bg-[#8c96a6] my-1" />
+              <button onClick={onClose} className="w-full text-left px-4 py-1 text-xs">Exit</button>
             </div>
           )}
         </div>
@@ -146,62 +129,46 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
               setShowEditMenu(!showEditMenu);
               setShowFileMenu(false);
             }}
-            className={`px-2 py-[2px] text-xs leading-snug ${showEditMenu ? (isXpFamily ? 'bg-[#316ac5] text-white' : 'bg-[#000080] text-white') : ''} ${isXpFamily ? 'hover:bg-[#316ac5] hover:text-white' : 'hover:bg-[#000080] hover:text-white'}`}
+            className={`notepad-app__menu-button px-2 py-[2px] text-xs leading-snug ${showEditMenu ? 'is-open' : ''}`}
           >
             Edit
           </button>
           {showEditMenu && (
-            <div className="absolute top-full left-0 mt-0.5 bg-[#f0f0f0] border border-[#8c96a6] shadow-lg z-50 min-w-[180px]">
-              <button
-                onClick={handleCut}
-                className={`w-full text-left px-4 py-1 text-xs ${isMarkdown ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#316ac5] hover:text-white'}`}
-                disabled={isMarkdown}
-              >
+            <div className="notepad-app__popup absolute top-full left-0 mt-0.5 bg-[#f0f0f0] border border-[#8c96a6] shadow-lg z-50 min-w-[180px]">
+              <button onClick={handleCut} className={`w-full text-left px-4 py-1 text-xs ${isMarkdown ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isMarkdown}>
                 Cut<span className="float-right text-[10px] opacity-60">Ctrl+X</span>
               </button>
-              <button onClick={handleCopy} className="w-full text-left px-4 py-1 text-xs hover:bg-[#316ac5] hover:text-white">
+              <button onClick={handleCopy} className="w-full text-left px-4 py-1 text-xs">
                 Copy<span className="float-right text-[10px] opacity-60">Ctrl+C</span>
               </button>
-              <button
-                onClick={handlePaste}
-                className={`w-full text-left px-4 py-1 text-xs ${isMarkdown ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#316ac5] hover:text-white'}`}
-                disabled={isMarkdown}
-              >
+              <button onClick={handlePaste} className={`w-full text-left px-4 py-1 text-xs ${isMarkdown ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isMarkdown}>
                 Paste<span className="float-right text-[10px] opacity-60">Ctrl+V</span>
               </button>
-              <div className="h-px bg-[#8c96a6] my-1" />
-              <button onClick={handleSelectAll} className="w-full text-left px-4 py-1 text-xs hover:bg-[#316ac5] hover:text-white">
+              <div className="notepad-app__popup-separator h-px bg-[#8c96a6] my-1" />
+              <button onClick={handleSelectAll} className="w-full text-left px-4 py-1 text-xs">
                 Select All<span className="float-right text-[10px] opacity-60">Ctrl+A</span>
               </button>
             </div>
           )}
         </div>
         {['Format', 'View', 'Help'].map((item) => (
-          <button
-            key={item}
-            className="px-2 py-[2px] text-xs opacity-50 cursor-not-allowed leading-snug"
-          >
+          <button key={item} className="notepad-app__menu-button px-2 py-[2px] text-xs opacity-50 cursor-not-allowed leading-snug">
             {item}
           </button>
         ))}
       </div>
 
-      {/* Content Area */}
-      <div className="flex-1 relative" onClick={() => {
+      <div className="notepad-app__editor flex-1 relative" onClick={() => {
         setShowFileMenu(false);
         setShowEditMenu(false);
       }}>
         {isMarkdown ? (
-          // Markdown view - read-only HTML rendering
           <div
             className="absolute inset-0 p-4 overflow-auto text-sm bg-white"
-            style={{
-              fontFamily: isXpFamily ? '"Lucida Console", monospace' : '"Courier New", monospace',
-            }}
+            style={{ fontFamily: editorFont }}
             dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
           />
         ) : (
-          // Plain text editing
           <>
             <textarea
               ref={textareaRef}
@@ -210,7 +177,7 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
                 border: 'none',
                 whiteSpace: 'pre',
                 overflowX: 'auto',
-                fontFamily: isXpFamily ? '"Lucida Console", monospace' : '"Courier New", monospace',
+                fontFamily: editorFont,
                 position: 'absolute',
                 top: 0,
                 left: 0,
@@ -226,7 +193,7 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
             <div
               className="w-full h-full p-1 overflow-auto whitespace-pre-wrap font-mono text-sm"
               style={{
-                fontFamily: isXpFamily ? '"Lucida Console", monospace' : '"Courier New", monospace',
+                fontFamily: editorFont,
                 position: 'absolute',
                 top: 0,
                 left: 0,
@@ -241,4 +208,3 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
     </div>
   );
 }
-
