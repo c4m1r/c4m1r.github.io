@@ -166,7 +166,6 @@ function XpClockCalendarPopup({
 
   const weekdayLabels = useMemo(() => {
     const formatter = new Intl.DateTimeFormat(language, { weekday: 'short' });
-    const sunday = new Date(2024, 0, 7);
     return Array.from({ length: 7 }, (_, index) => {
       const dayOffset = (weekStart + index) % 7;
       return formatter.format(new Date(2024, 0, 7 + dayOffset)).replace('.', '');
