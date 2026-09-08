@@ -1,0 +1,282 @@
+.win7-boot-screen,
+.win7-login-screen,
+.win7-transition-screen {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-boot-screen {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+}
+
+.win7-boot-screen__content {
+  display: flex;
+  min-height: 320px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.win7-boot-screen__animation {
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
+}
+
+.win7-boot-screen__fallback-logo {
+  width: 96px;
+  max-height: 96px;
+  object-fit: contain;
+  margin: 76px 0 78px;
+  filter: drop-shadow(0 0 16px rgba(130, 200, 255, 0.35));
+}
+
+.win7-boot-screen__text {
+  margin-top: -30px;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 2px #000;
+}
+
+.win7-boot-screen__hint {
+  position: absolute;
+  bottom: 28px;
+  left: 20px;
+  right: 20px;
+  color: #8f8f8f;
+  font-size: 11px;
+  text-align: center;
+}
+
+.win7-login-screen,
+.win7-transition-screen {
+  position: relative;
+  background-color: #18354e;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+.win7-login-screen::before,
+.win7-transition-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.06), transparent 30%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.2));
+}
+
+.win7-login-screen__center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: calc(100vh - 86px);
+  align-items: center;
+  justify-content: center;
+}
+
+.win7-login-screen__user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  padding: 12px 22px;
+  border-radius: 8px;
+}
+
+.win7-login-screen__user:hover .win7-login-screen__avatar-frame,
+.win7-login-screen__user:focus-visible .win7-login-screen__avatar-frame {
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 0 10px rgba(255, 255, 255, 0.45),
+    0 0 16px rgba(122, 197, 255, 0.8),
+    0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.win7-login-screen__user:focus-visible {
+  outline: 1px dotted rgba(255, 255, 255, 0.95);
+  outline-offset: 4px;
+}
+
+.win7-login-screen__avatar-frame {
+  display: flex;
+  width: 110px;
+  height: 110px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: 3px solid rgba(255, 255, 255, 0.38);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 0 10px rgba(255, 255, 255, 0.35),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.55),
+    0 8px 16px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(7px);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.win7-login-screen__avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.win7-login-screen__username {
+  margin-top: 10px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.win7-login-screen__prompt {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+}
+
+.win7-login-screen__footer {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  min-height: 86px;
+  padding: 0 28px 18px;
+}
+
+.win7-login-screen__brand {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 25px;
+  font-weight: 300;
+}
+
+.win7-login-screen__brand img {
+  width: 48px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.win7-login-screen__power {
+  position: relative;
+  grid-column: 3;
+  justify-self: end;
+}
+
+.win7-login-screen__power-button {
+  width: 46px;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.55);
+  border-radius: 3px;
+  background: linear-gradient(#6f91aa, #315c7a 48%, #214764 52%, #416d89);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 1px 4px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+
+.win7-login-screen__power-button:hover {
+  filter: brightness(1.12);
+}
+
+.win7-login-screen__power-button img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin: auto;
+}
+
+.win7-login-screen__power-menu {
+  position: absolute;
+  right: 0;
+  bottom: 38px;
+  width: 158px;
+  padding: 3px;
+  border: 1px solid #6d7885;
+  border-radius: 3px;
+  background: rgba(250, 250, 250, 0.98);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+  text-shadow: none;
+}
+
+.win7-login-screen__power-menu button {
+  display: block;
+  width: 100%;
+  padding: 6px 9px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: #111;
+  text-align: left;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-login-screen__power-menu button:hover {
+  border-color: #b8d6eb;
+  background: linear-gradient(#f9fcff, #e5f3fb);
+}
+
+.win7-transition-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.win7-transition-screen__logo,
+.win7-transition-screen__message,
+.win7-transition-screen__spinner {
+  position: relative;
+  z-index: 1;
+}
+
+.win7-transition-screen__logo {
+  width: 70px;
+  max-height: 62px;
+  object-fit: contain;
+}
+
+.win7-transition-screen__message {
+  margin-top: 14px;
+  font-size: 18px;
+}
+
+.win7-transition-screen__spinner {
+  width: 16px;
+  height: 16px;
+  margin-top: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: win7-shell-spin 800ms linear infinite;
+}
+
+@keyframes win7-shell-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .win7-transition-screen__spinner {
+    animation-duration: 1.6s;
+  }
+}
