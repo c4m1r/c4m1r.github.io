@@ -14,7 +14,6 @@ export function Paint() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Initialize white background
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
@@ -77,24 +76,23 @@ export function Paint() {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#ece9d8]">
-      {/* Toolbar */}
-      <div className="flex items-center gap-2 p-2 border-b-2 border-[#d4d0c8]">
+    <div className="paint-app w-full h-full flex flex-col bg-[#ece9d8]">
+      <div className="paint-app__toolbar flex items-center gap-2 p-2 border-b-2 border-[#d4d0c8]">
         <button
           onClick={() => setTool('brush')}
-          className={`px-3 py-1 border-2 ${tool === 'brush' ? 'border-black bg-white' : 'border-white border-b-[#808080] border-r-[#808080] bg-[#ece9d8]'} hover:bg-[#d4d0c8]`}
+          className={`px-3 py-1 border-2 ${tool === 'brush' ? 'is-active border-black bg-white' : 'border-white border-b-[#808080] border-r-[#808080] bg-[#ece9d8]'} hover:bg-[#d4d0c8]`}
           title="Brush"
         >
           🖌️
         </button>
         <button
           onClick={() => setTool('eraser')}
-          className={`px-3 py-1 border-2 ${tool === 'eraser' ? 'border-black bg-white' : 'border-white border-b-[#808080] border-r-[#808080] bg-[#ece9d8]'} hover:bg-[#d4d0c8]`}
+          className={`px-3 py-1 border-2 ${tool === 'eraser' ? 'is-active border-black bg-white' : 'border-white border-b-[#808080] border-r-[#808080] bg-[#ece9d8]'} hover:bg-[#d4d0c8]`}
           title="Eraser"
         >
           🧹
         </button>
-        <div className="w-px h-6 bg-[#808080]" />
+        <div className="paint-app__divider w-px h-6 bg-[#808080]" />
         <button
           onClick={clearCanvas}
           className="px-3 py-1 border-2 border-white border-b-[#808080] border-r-[#808080] bg-[#ece9d8] hover:bg-[#d4d0c8]"
@@ -102,7 +100,7 @@ export function Paint() {
         >
           🗑️
         </button>
-        <div className="w-px h-6 bg-[#808080]" />
+        <div className="paint-app__divider w-px h-6 bg-[#808080]" />
         <label className="flex items-center gap-2">
           <span className="text-sm">Size:</span>
           <select
@@ -120,21 +118,19 @@ export function Paint() {
         </label>
       </div>
 
-      {/* Color Palette */}
-      <div className="flex flex-wrap gap-1 p-2 border-b-2 border-[#d4d0c8]">
+      <div className="paint-app__palette flex flex-wrap gap-1 p-2 border-b-2 border-[#d4d0c8]">
         {colors.map((color) => (
           <button
             key={color}
             onClick={() => setCurrentColor(color)}
-            className={`w-6 h-6 border-2 ${currentColor === color ? 'border-black' : 'border-[#808080]'}`}
+            className={`paint-app__swatch w-6 h-6 border-2 ${currentColor === color ? 'is-active border-black' : 'border-[#808080]'}`}
             style={{ backgroundColor: color }}
             title={color}
           />
         ))}
       </div>
 
-      {/* Canvas Area */}
-      <div className="flex-1 p-2 overflow-auto bg-[#d4d0c8]">
+      <div className="paint-app__canvas-shell flex-1 p-2 overflow-auto bg-[#d4d0c8]">
         <canvas
           ref={canvasRef}
           width={800}
@@ -143,12 +139,11 @@ export function Paint() {
           onMouseMove={draw}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
-          className="bg-white border-2 border-[#5c5c5c] cursor-crosshair"
+          className="paint-app__canvas bg-white border-2 border-[#5c5c5c] cursor-crosshair"
         />
       </div>
 
-      {/* Status Bar */}
-      <div className="flex items-center justify-between px-2 py-1 border-t-2 border-white bg-[#ece9d8] text-xs">
+      <div className="paint-app__status flex items-center justify-between px-2 py-1 border-t-2 border-white bg-[#ece9d8] text-xs">
         <span>Tool: {tool === 'brush' ? 'Brush' : 'Eraser'}</span>
         <span>Color: {currentColor}</span>
         <span>Size: {brushSize}px</span>
@@ -156,4 +151,3 @@ export function Paint() {
     </div>
   );
 }
-

@@ -22,7 +22,7 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
 
   if (!variant || !activeBuild) {
     return (
-      <div className="flex items-center justify-center h-full bg-black text-white font-tahoma text-sm">
+      <div className="doom-player flex items-center justify-center h-full bg-black text-white font-tahoma text-sm">
         {language === 'ru' ? 'Не удалось загрузить конфигурацию DOOM.' : 'Unable to load DOOM config.'}
       </div>
     );
@@ -31,8 +31,8 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
   const isRu = language === 'ru';
 
   return (
-    <div className="flex h-full w-full flex-col bg-[#000] text-white font-tahoma text-xs">
-      <header className="px-3 py-2 border-b border-[#272727] bg-[#101010]">
+    <div className="doom-player flex h-full w-full flex-col bg-[#000] text-white font-tahoma text-xs">
+      <header className="doom-player__chrome px-3 py-2 border-b border-[#272727] bg-[#101010]">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
             <h1 className="text-lg font-semibold tracking-wide text-[#f44336] drop-shadow">
@@ -47,9 +47,9 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
               <button
                 key={build.id}
                 onClick={() => setActiveBuildId(build.id)}
-                className={`px-3 py-1 rounded border text-[11px] ${
+                className={`doom-player__button px-3 py-1 rounded border text-[11px] ${
                   build.id === activeBuildId
-                    ? 'bg-[#f44336] border-[#ff7961] text-white'
+                    ? 'is-active bg-[#f44336] border-[#ff7961] text-white'
                     : 'bg-[#1b1b1b] border-[#3d3d3d] text-[#d0d0d0] hover:border-[#f44336]'
                 }`}
               >
@@ -61,7 +61,7 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
                 href={variant.homepage}
                 target="_blank"
                 rel="noreferrer"
-                className="px-3 py-1 rounded border border-[#3d3d3d] text-[#9fd4ff] text-[11px] hover:border-[#9fd4ff]"
+                className="doom-player__link px-3 py-1 rounded border border-[#3d3d3d] text-[#9fd4ff] text-[11px] hover:border-[#9fd4ff]"
               >
                 {isRu ? 'Открыть на Emupedia' : 'Open on Emupedia'}
               </a>
@@ -73,27 +73,26 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
         </p>
       </header>
 
-      <div className="flex-1 relative bg-black overflow-hidden">
-          <iframe
-            key={activeBuild.url}
-            src={activeBuild.url}
-            title={variant.title}
-            className="w-full h-full border-0"
-            allowFullScreen
-            sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups"
-          />
-        <div className="absolute bottom-2 right-4 bg-[#111]/80 px-3 py-2 rounded text-[11px] text-[#ffb400] border border-[#ffb400]/40 shadow-lg max-w-sm">
+      <div className="doom-player__stage flex-1 relative bg-black overflow-hidden">
+        <iframe
+          key={activeBuild.url}
+          src={activeBuild.url}
+          title={variant.title}
+          className="w-full h-full border-0"
+          allowFullScreen
+          sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups"
+        />
+        <div className="doom-player__tip absolute bottom-2 right-4 bg-[#111]/80 px-3 py-2 rounded text-[11px] text-[#ffb400] border border-[#ffb400]/40 shadow-lg max-w-sm">
           {isRu
             ? 'Подсказка: первая загрузка может занять до минуты. Если WebAssembly завис, переключитесь на ASM.js.'
             : 'Tip: first launch can take up to a minute. Switch builds if the WebAssembly version hangs.'}
         </div>
       </div>
 
-      <footer className="bg-[#101010] border-t border-[#272727] px-3 py-2 text-[#bcbcbc] text-[11px] flex justify-between">
+      <footer className="doom-player__footer bg-[#101010] border-t border-[#272727] px-3 py-2 text-[#bcbcbc] text-[11px] flex justify-between">
         <span>Emupedia / wasm-doom</span>
         <span>{isRu ? 'Все права принадлежат id Software.' : 'All rights belong to id Software.'}</span>
       </footer>
     </div>
   );
 }
-

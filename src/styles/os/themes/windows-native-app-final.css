@@ -1,0 +1,335 @@
+/* Final native-app polish for Windows XP and Windows 7. */
+
+/* Notepad */
+.os-winxp .notepad-app__menubar {
+  height: 24px !important;
+  background: #ece9d8 !important;
+  border-bottom: 1px solid #aca899 !important;
+}
+
+.os-winxp .notepad-app__menu-button,
+.os-winxp .notepad-app__popup button {
+  font: 11px Tahoma, Arial, sans-serif !important;
+  color: #000 !important;
+}
+
+.os-winxp .notepad-app__menu-button:hover:not(:disabled),
+.os-winxp .notepad-app__menu-button.is-open,
+.os-winxp .notepad-app__popup button:hover:not(:disabled) {
+  background: #316ac5 !important;
+  color: #fff !important;
+}
+
+.os-winxp .notepad-app__popup {
+  padding: 2px !important;
+  background: #fff !important;
+  border: 1px solid #aca899 !important;
+  border-radius: 0 !important;
+  box-shadow: 2px 2px 3px rgba(0,0,0,.32) !important;
+}
+
+.os-winxp .notepad-app__popup-separator {
+  background: #aca899 !important;
+  box-shadow: 0 1px #fff !important;
+}
+
+.os-win7 .notepad-app__menubar {
+  height: 25px !important;
+  background: linear-gradient(#fbfcfd, #edf2f7) !important;
+  border-bottom: 1px solid #c7d0da !important;
+}
+
+.os-win7 .notepad-app__menu-button,
+.os-win7 .notepad-app__popup button {
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+  color: #111 !important;
+}
+
+.os-win7 .notepad-app__menu-button:hover:not(:disabled),
+.os-win7 .notepad-app__menu-button.is-open,
+.os-win7 .notepad-app__popup button:hover:not(:disabled) {
+  background: linear-gradient(#eaf5ff, #d8eaf9) !important;
+  color: #111 !important;
+  outline: 1px solid #b8d6eb !important;
+  outline-offset: -1px !important;
+}
+
+.os-win7 .notepad-app__popup {
+  padding: 3px 2px !important;
+  background: #f7f7f7 !important;
+  border: 1px solid #979797 !important;
+  border-radius: 2px !important;
+  box-shadow: 3px 3px 8px rgba(0,0,0,.28) !important;
+}
+
+.os-win7 .notepad-app__popup-separator {
+  background: #d4d4d4 !important;
+  box-shadow: 0 1px #fff !important;
+}
+
+/* Paint */
+.os-winxp .paint-app__toolbar,
+.os-winxp .paint-app__palette,
+.os-winxp .paint-app__status {
+  background: #ece9d8 !important;
+  border-color: #aca899 !important;
+  font: 11px Tahoma, Arial, sans-serif !important;
+}
+
+.os-winxp .paint-app__toolbar button,
+.os-winxp .paint-app__toolbar select {
+  min-height: 25px !important;
+  border: 1px solid #aca899 !important;
+  border-radius: 2px !important;
+  background: linear-gradient(#fff, #ece9d8) !important;
+  color: #000 !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.55) !important;
+}
+
+.os-winxp .paint-app__toolbar button.is-active {
+  background: #d8d3c0 !important;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,.22) !important;
+}
+
+.os-winxp .paint-app__swatch {
+  border-radius: 0 !important;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,.5) !important;
+}
+
+.os-winxp .paint-app__swatch.is-active {
+  outline: 1px dotted #000 !important;
+  outline-offset: 1px !important;
+}
+
+.os-winxp .paint-app__canvas {
+  border: 1px solid #808080 !important;
+  box-shadow: 1px 1px 0 #fff !important;
+}
+
+.os-win7 .paint-app__toolbar,
+.os-win7 .paint-app__palette,
+.os-win7 .paint-app__status {
+  background: linear-gradient(#fbfcfd, #edf2f7) !important;
+  border-color: #c4ced9 !important;
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+}
+
+.os-win7 .paint-app__toolbar {
+  min-height: 39px !important;
+}
+
+.os-win7 .paint-app__toolbar button,
+.os-win7 .paint-app__toolbar select {
+  min-height: 27px !important;
+  padding-inline: 8px !important;
+}
+
+.os-win7 .paint-app__toolbar button.is-active {
+  border-color: #3c7fb1 !important;
+  background: linear-gradient(#dff3fd, #c5e5f6) !important;
+  box-shadow: inset 0 0 3px rgba(28,106,158,.25) !important;
+}
+
+.os-win7 .paint-app__swatch {
+  border: 1px solid #6f7b88 !important;
+  border-radius: 1px !important;
+}
+
+.os-win7 .paint-app__swatch.is-active {
+  outline: 2px solid #3c7fb1 !important;
+  outline-offset: 1px !important;
+}
+
+.os-win7 .paint-app__canvas {
+  border: 1px solid #7c8995 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25) !important;
+}
+
+/* Task Manager */
+.os-winxp .task-manager-app {
+  background: #ece9d8 !important;
+  color: #000 !important;
+}
+
+.os-winxp .task-manager-app__tabs {
+  padding: 5px 5px 0 !important;
+  background: #ece9d8 !important;
+  border-bottom: 1px solid #aca899 !important;
+}
+
+.os-winxp .task-manager-app__tab {
+  margin-bottom: -1px !important;
+  border: 1px solid #aca899 !important;
+  border-bottom-color: #aca899 !important;
+  border-radius: 3px 3px 0 0 !important;
+  background: #e3dfcf !important;
+  color: #000 !important;
+  font: 11px Tahoma, Arial, sans-serif !important;
+}
+
+.os-winxp .task-manager-app__tab.is-active {
+  position: relative !important;
+  z-index: 1 !important;
+  background: #fff !important;
+  border-bottom-color: #fff !important;
+}
+
+.os-winxp .task-manager-app__table-head,
+.os-winxp .task-manager-app__status {
+  background: #ece9d8 !important;
+  border-color: #aca899 !important;
+  font: 11px Tahoma, Arial, sans-serif !important;
+}
+
+.os-winxp .task-manager-app__row.is-selected {
+  background: #316ac5 !important;
+  color: #fff !important;
+}
+
+.os-winxp .task-manager-app__meter {
+  border: 1px solid #aca899 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+}
+
+.os-win7 .task-manager-app {
+  background: #f0f3f7 !important;
+  color: #111 !important;
+}
+
+.os-win7 .task-manager-app__menubar {
+  min-height: 25px !important;
+  background: linear-gradient(#fbfcfd, #edf2f7) !important;
+  border-bottom: 1px solid #c4ced9 !important;
+}
+
+.os-win7 .task-manager-app__tabs {
+  padding: 6px 7px 0 !important;
+  background: #f0f3f7 !important;
+  border-bottom: 1px solid #9caab8 !important;
+}
+
+.os-win7 .task-manager-app__tab {
+  margin-bottom: -1px !important;
+  border: 1px solid #9caab8 !important;
+  border-radius: 3px 3px 0 0 !important;
+  background: linear-gradient(#f8fafc, #e3e9ef) !important;
+  color: #111 !important;
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+}
+
+.os-win7 .task-manager-app__tab:hover:not(.is-active) {
+  background: linear-gradient(#fff, #e9f5fd) !important;
+}
+
+.os-win7 .task-manager-app__tab.is-active {
+  position: relative !important;
+  z-index: 1 !important;
+  background: #fff !important;
+  border-bottom-color: #fff !important;
+}
+
+.os-win7 .task-manager-app__table-head {
+  background: linear-gradient(#f7f8fa, #e7ebef) !important;
+  border-color: #c2cbd4 !important;
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+  font-weight: 600 !important;
+}
+
+.os-win7 .task-manager-app__row {
+  border-bottom-color: #edf0f2 !important;
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+}
+
+.os-win7 .task-manager-app__row:hover:not(.is-selected) {
+  background: #eaf4fd !important;
+}
+
+.os-win7 .task-manager-app__row.is-selected {
+  background: #3399ff !important;
+  color: #fff !important;
+}
+
+.os-win7 .task-manager-app__meter {
+  border: 1px solid #c2cbd4 !important;
+  border-radius: 2px !important;
+  background: #fff !important;
+}
+
+.os-win7 .task-manager-app__status {
+  background: linear-gradient(#fbfcfd, #e8edf2) !important;
+  border-top: 1px solid #c2cbd4 !important;
+}
+
+.os-win7 .task-manager-app__end-task {
+  min-height: 25px !important;
+  border: 1px solid #8e9bab !important;
+  border-radius: 2px !important;
+  background: linear-gradient(#fff, #e9eef3) !important;
+  color: #111 !important;
+}
+
+/* Games folder and DOOM launcher */
+.os-winxp .games-folder-app__header h2,
+.os-winxp .games-folder-app__card h3 {
+  color: #003399 !important;
+  font-family: Tahoma, Arial, sans-serif !important;
+}
+
+.os-winxp .games-folder-app__card-header {
+  background: #f5f5f5 !important;
+  border-bottom-color: #d6d6d6 !important;
+}
+
+.os-winxp .games-folder-app__build {
+  border-color: #aca899 !important;
+  background: #ece9d8 !important;
+  color: #333 !important;
+}
+
+.os-winxp .games-folder-app__launch,
+.os-winxp .doom-player__button,
+.os-winxp .doom-player__link {
+  border: 1px solid #aca899 !important;
+  border-radius: 2px !important;
+  background: linear-gradient(#fff, #ece9d8) !important;
+  color: #000 !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.55) !important;
+  font: 11px Tahoma, Arial, sans-serif !important;
+}
+
+.os-winxp .doom-player__button.is-active {
+  background: #316ac5 !important;
+  border-color: #245a9d !important;
+  color: #fff !important;
+}
+
+.os-win7 .games-folder-app__header h2,
+.os-win7 .games-folder-app__card h3 {
+  color: #1e395b !important;
+  font-family: "Segoe UI", Tahoma, sans-serif !important;
+}
+
+.os-win7 .games-folder-app__card-header {
+  background: linear-gradient(#fff, #edf3f8) !important;
+  border-bottom-color: #d5dde5 !important;
+}
+
+.os-win7 .games-folder-app__build {
+  border-color: #b6c4d2 !important;
+  border-radius: 2px !important;
+  background: #eef5fb !important;
+  color: #1e395b !important;
+}
+
+.os-win7 .doom-player__button.is-active {
+  border-color: #3c7fb1 !important;
+  background: linear-gradient(#dff3fd, #c5e5f6) !important;
+  color: #111 !important;
+}
+
+/* Keep iframe content visually separate from the OS chrome. */
+.os-winxp .doom-player__stage,
+.os-win7 .doom-player__stage {
+  background: #000 !important;
+}

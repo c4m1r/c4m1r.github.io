@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { AppProvider } from './contexts/AppContext';
+import './shells/os/osRuntimeCorrections';
 import './index.css';
 import './themes/index.css';
 

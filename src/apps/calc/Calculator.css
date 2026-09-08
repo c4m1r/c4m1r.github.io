@@ -28,10 +28,11 @@
 
 .calc-app__grid {
   display: grid;
-  grid-template-cols: repeat(4, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(6, minmax(0, 1fr));
   gap: 4px;
   flex: 1;
+  min-height: 0;
 }
 
 .calc-app__btn {
@@ -76,7 +77,7 @@
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
   background-color: #ece9d8;
-  color: #0000ff; /* Numbers are blue by default in XP calc */
+  color: #0000ff;
   font-family: Tahoma, Arial, sans-serif;
 }
 
@@ -92,7 +93,7 @@
 
 .calc-app__btn--action,
 .os-winxp .calc-app__btn--action {
-  color: #ff0000; /* Action buttons are red in XP calc */
+  color: #ff0000;
 }
 
 .calc-app__btn--disabled,
