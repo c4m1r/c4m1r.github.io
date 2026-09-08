@@ -34,7 +34,10 @@ function displayLocation(path: string, isRu: boolean) {
   if (path === PATHS.documents) return isRu ? 'Документы' : 'Documents';
   if (path === PATHS.pictures) return isRu ? 'Изображения' : 'Pictures';
   if (path === PATHS.music) return isRu ? 'Музыка' : 'Music';
-  return path.replace('C:\\', `${isRu ? 'Локальный диск' : 'Local Disk'} (C:) > `).replaceAll('\\', ' > ');
+  return path
+    .replace('C:\\', `${isRu ? 'Локальный диск' : 'Local Disk'} (C:) > `)
+    .split('\\')
+    .join(' > ');
 }
 
 export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: MyComputerProps) {
@@ -287,7 +290,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
                   onDoubleClick={() => handleOpen(item)}
                 >
                   <span className="win7-explorer__details-name"><img src={getFileIcon(item) as string} alt="" />{item.name}</span>
-                  <span>09.09.2026 18:00</span>
+                  <span>—</span>
                   <span>{item.type === 'folder' ? (isRu ? 'Папка с файлами' : 'File folder') : item.type === 'drive' ? (isRu ? 'Локальный диск' : 'Local Disk') : (isRu ? 'Файл' : 'File')}</span>
                   <span>{item.size ?? ''}</span>
                 </button>
