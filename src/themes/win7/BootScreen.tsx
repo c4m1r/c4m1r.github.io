@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { WIN7_ASSETS } from './assets';
 
@@ -11,18 +11,18 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   const completedRef = useRef(false);
   const [videoFailed, setVideoFailed] = useState(false);
 
-  const complete = () => {
+  const complete = useCallback(() => {
     if (completedRef.current) return;
     completedRef.current = true;
     onComplete();
-  };
+  }, [onComplete]);
 
   useEffect(() => {
     // Keep startup usable even if the imported reference video cannot autoplay
     // or decode in a particular browser.
     const fallback = window.setTimeout(complete, 6500);
     return () => window.clearTimeout(fallback);
-  });
+  }, [complete]);
 
   return (
     <div className="win7-boot-screen os-shell os-win7" role="status" aria-live="polite">
