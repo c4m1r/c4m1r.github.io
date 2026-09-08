@@ -1,0 +1,768 @@
+/*
+ * Final shell fidelity layer for Windows XP / Windows 7 surfaces.
+ * Loaded after all legacy theme files so the shared runtime can retain its
+ * behavior while each Windows generation gets era-correct presentation.
+ */
+
+/* -------------------------------------------------------------------------
+   Windows 7 Aero window chrome
+   ------------------------------------------------------------------------- */
+
+.os-win7 .os-window:not(.xp-window--maximized) {
+  border: 1px solid rgba(17, 41, 65, .78) !important;
+  border-radius: 7px !important;
+  padding: 5px !important;
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.42), rgba(255,255,255,.06) 32%, rgba(20,68,112,.18) 68%, rgba(255,255,255,.18)),
+    rgba(82, 132, 174, .58) !important;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.38),
+    inset 0 0 0 1px rgba(255,255,255,.55) !important;
+  backdrop-filter: blur(13px) saturate(1.16) !important;
+  -webkit-backdrop-filter: blur(13px) saturate(1.16) !important;
+}
+
+.os-win7 .os-titlebar {
+  min-height: 29px !important;
+  height: 29px !important;
+  padding: 0 3px 0 7px !important;
+  color: #0b2238 !important;
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+  font-weight: 600 !important;
+  text-shadow:
+    0 0 5px rgba(255,255,255,.98),
+    0 1px 0 rgba(255,255,255,.92) !important;
+}
+
+.os-win7 .os-window--inactive .os-titlebar {
+  color: #53616d !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+.os-win7 .xp-titlebar__controls {
+  align-self: flex-start !important;
+  height: 20px !important;
+  margin-top: -1px !important;
+  border-color: rgba(15, 42, 68, .52) !important;
+  background: rgba(240,247,253,.42) !important;
+}
+
+.os-win7 .xp-titlebar__button {
+  height: 19px !important;
+}
+
+.os-win7 .xp-window--maximized.os-window {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: calc(100vh - 40px) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: linear-gradient(#527da4, #315c82) !important;
+  box-shadow: none !important;
+}
+
+.os-win7 .xp-window--maximized .os-titlebar {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding-left: 8px !important;
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,.24), rgba(255,255,255,.04) 45%, rgba(11,45,75,.24)) !important;
+  color: #fff !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85) !important;
+}
+
+.os-win7 .xp-window--maximized .os-window-body {
+  height: calc(100% - 28px) !important;
+}
+
+/* -------------------------------------------------------------------------
+   Dedicated Windows 7 Explorer
+   ------------------------------------------------------------------------- */
+
+.win7-explorer {
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+  color: #1f1f1f !important;
+  background: #fff !important;
+}
+
+.win7-explorer__navigation {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 39px;
+  padding: 5px 7px;
+  border-bottom: 1px solid #b8c5d3;
+  background: linear-gradient(#f8fbfe, #e9f0f6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+.win7-explorer__history-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.win7-explorer__history-buttons > button:not(.win7-explorer__history-menu),
+.win7-explorer__up {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border: 1px solid #8195aa;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 48% 20%, rgba(255,255,255,.95), rgba(255,255,255,.18) 43%, transparent 44%),
+    linear-gradient(#e9f6ff, #a9d2ef 52%, #6ea6d2 53%, #d6ecfb);
+  color: #244d6d;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.72), 0 1px 1px rgba(0,0,0,.18);
+}
+
+.win7-explorer__history-buttons > button:not(.win7-explorer__history-menu):hover:not(:disabled),
+.win7-explorer__up:hover:not(:disabled) {
+  border-color: #4b89b6;
+  filter: brightness(1.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), 0 0 4px rgba(73,166,224,.55);
+}
+
+.win7-explorer__history-buttons button:disabled,
+.win7-explorer__up:disabled {
+  opacity: .38;
+  filter: grayscale(.55);
+}
+
+.win7-explorer__history-menu {
+  width: 13px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #536577;
+}
+
+.win7-explorer__up {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  font-size: 14px;
+  background: linear-gradient(#fff, #e5edf5);
+}
+
+.win7-explorer__address,
+.win7-explorer__search {
+  height: 25px;
+  border: 1px solid #8797aa;
+  background: #fff;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.08), inset 0 0 0 1px rgba(255,255,255,.8);
+}
+
+.win7-explorer__address {
+  display: flex;
+  align-items: center;
+  min-width: 180px;
+  flex: 1 1 360px;
+  overflow: hidden;
+}
+
+.win7-explorer__address > img {
+  width: 16px;
+  height: 16px;
+  margin: 0 5px;
+  object-fit: contain;
+}
+
+.win7-explorer__address > button,
+.win7-explorer__address > input {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  padding: 0 4px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1e2f3e;
+  text-align: left;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.win7-explorer__address > svg {
+  margin-right: 5px;
+  color: #536577;
+}
+
+.win7-explorer__address.is-editing {
+  border-color: #3c7fb1;
+  box-shadow: 0 0 3px rgba(60,127,177,.42), inset 0 1px 2px rgba(0,0,0,.08);
+}
+
+.win7-explorer__search {
+  display: flex;
+  align-items: center;
+  flex: 0 1 210px;
+  min-width: 130px;
+}
+
+.win7-explorer__search input {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  padding: 0 5px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #222;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-explorer__search svg {
+  margin-right: 5px;
+  color: #536b80;
+}
+
+.win7-explorer__commandbar {
+  display: flex;
+  align-items: center;
+  min-height: 31px;
+  padding: 2px 6px;
+  border-bottom: 1px solid #cbd5df;
+  background: linear-gradient(#fafcfe, #edf2f7);
+}
+
+.win7-explorer__commandbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: #263746;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-explorer__commandbar button:hover:not(:disabled) {
+  border-color: #b4c9dc;
+  background: linear-gradient(#fff, #e7f2fb);
+}
+
+.win7-explorer__commandbar button:disabled {
+  color: #9aa4ad;
+}
+
+.win7-explorer__commandbar-separator {
+  width: 1px;
+  height: 20px;
+  margin: 0 3px;
+  background: #ccd5dd;
+  box-shadow: 1px 0 #fff;
+}
+
+.win7-explorer__commandbar-spacer {
+  flex: 1;
+}
+
+.win7-explorer__view-button {
+  padding-inline: 6px !important;
+}
+
+.win7-explorer__body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}
+
+.win7-explorer__sidebar {
+  width: 188px;
+  flex: 0 0 188px;
+  padding: 7px 5px 8px 7px;
+  overflow: auto;
+  border-right: 1px solid #d7dee5;
+  background: linear-gradient(to right, #f8fbfd, #f2f6fa);
+}
+
+.win7-explorer__sidebar section {
+  margin-bottom: 7px;
+}
+
+.win7-explorer__sidebar h3 {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin: 0 0 1px;
+  padding: 2px 4px;
+  color: #354b5e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.win7-explorer__sidebar button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 23px;
+  padding: 2px 5px 2px 17px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: #273846;
+  text-align: left;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-explorer__sidebar button:hover:not(:disabled),
+.win7-explorer__sidebar button.is-active {
+  border-color: #c5d7e7;
+  background: linear-gradient(#f7fcff, #e5f2fb);
+}
+
+.win7-explorer__sidebar button:disabled {
+  opacity: .66;
+}
+
+.win7-explorer__sidebar button > img,
+.win7-explorer__tree-root > img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.win7-explorer__tree-root {
+  padding-left: 5px !important;
+  font-weight: 500 !important;
+}
+
+.win7-explorer__content {
+  min-width: 0;
+  flex: 1;
+  padding: 9px 12px 14px;
+  overflow: auto;
+  background: #fff;
+}
+
+.win7-explorer__content-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #d9e1e8;
+}
+
+.win7-explorer__content-heading h2 {
+  margin: 0;
+  color: #1e395b;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.win7-explorer__content-heading span {
+  color: #6b7883;
+  font-size: 11px;
+}
+
+.win7-explorer__icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  align-content: start;
+  gap: 8px 12px;
+}
+
+.win7-explorer__icons > button {
+  display: flex;
+  min-height: 78px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding: 5px 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: #1d2a34;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-explorer__icons > button:hover,
+.win7-explorer__icons > button.is-selected {
+  border-color: #b7d2e8;
+  background: linear-gradient(rgba(242,250,255,.92), rgba(215,237,251,.92));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.72);
+}
+
+.win7-explorer__icons > button.is-selected {
+  border-color: #84b7dc;
+  background: linear-gradient(#e6f4fd, #cce9f8);
+}
+
+.win7-explorer__icons img {
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+}
+
+.win7-explorer__icons span {
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win7-explorer__details {
+  min-width: 520px;
+}
+
+.win7-explorer__details-header,
+.win7-explorer__details > button {
+  display: grid;
+  grid-template-columns: minmax(190px, 2fr) minmax(130px, 1fr) minmax(120px, 1fr) 80px;
+  align-items: center;
+}
+
+.win7-explorer__details-header {
+  min-height: 23px;
+  border-top: 1px solid #d5dce4;
+  border-bottom: 1px solid #b8c4d0;
+  background: linear-gradient(#fff, #eef2f6);
+  color: #374858;
+  font-size: 11px;
+}
+
+.win7-explorer__details-header span,
+.win7-explorer__details > button > span {
+  min-width: 0;
+  padding: 3px 7px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win7-explorer__details-header span + span {
+  border-left: 1px solid #d3dbe3;
+}
+
+.win7-explorer__details > button {
+  width: 100%;
+  min-height: 25px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #1f2a33;
+  text-align: left;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-explorer__details > button:hover,
+.win7-explorer__details > button.is-selected {
+  border-color: #c3d8e9;
+  background: #eaf5fc;
+}
+
+.win7-explorer__details > button.is-selected {
+  border-color: #91bee0;
+  background: #d9eefb;
+}
+
+.win7-explorer__details-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.win7-explorer__details-name img {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  object-fit: contain;
+}
+
+.win7-explorer__empty {
+  padding: 40px 15px;
+  color: #6f7880;
+  text-align: center;
+}
+
+.win7-explorer__statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+  padding: 2px 8px;
+  border-top: 1px solid #cbd4dc;
+  background: linear-gradient(#f8fafc, #e9eef3);
+  color: #52606c;
+  font-size: 11px;
+}
+
+/* -------------------------------------------------------------------------
+   Windows 7 Control Panel: Explorer-era category surface
+   ------------------------------------------------------------------------- */
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] {
+  background: #fff !important;
+  color: #1f1f1f !important;
+  font: 12px "Segoe UI", Tahoma, sans-serif !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] > div:first-child {
+  width: 184px !important;
+  padding: 13px 9px !important;
+  border-right: 1px solid #d6dee6 !important;
+  background: linear-gradient(to right, #f8fbfd, #f1f6fa) !important;
+  color: #1e395b !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] > div:first-child h2 {
+  margin: 0 5px 9px !important;
+  color: #1e395b !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] > div:first-child button,
+[data-settings-surface='control-panel'][data-os-theme='win7'] > div:first-child [class*='cursor-pointer'] {
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+  background: transparent !important;
+  color: #2c4e6b !important;
+  font-size: 11px !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] > div:first-child button:hover,
+[data-settings-surface='control-panel'][data-os-theme='win7'] > div:first-child [class*='cursor-pointer']:hover {
+  border-color: #c5d7e7 !important;
+  background: #eaf4fb !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] > div:last-child {
+  padding: 20px 24px 30px !important;
+  background: #fff !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] h1 {
+  margin-bottom: 3px !important;
+  color: #1e395b !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] h3 {
+  color: #1e5a8a !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] .space-y-4 {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(230px, 1fr)) !important;
+  gap: 5px 26px !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] .space-y-4 > div {
+  margin: 0 !important;
+  padding: 10px 7px !important;
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] .space-y-4 > div:hover {
+  border-color: #c1d9eb !important;
+  background: linear-gradient(#f8fcff, #eaf5fc) !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] .space-y-4 > div img {
+  width: 32px !important;
+  height: 32px !important;
+  object-fit: contain !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] .space-y-4 > div .text-xs {
+  color: #26618d !important;
+  line-height: 1.55 !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] .space-y-4 > div .text-xs > div:hover {
+  text-decoration: underline !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win7'] .grid.grid-cols-2 {
+  gap: 7px !important;
+}
+
+/* Keep XP Control Panel era-appropriate and visibly distinct from Win7. */
+[data-settings-surface='control-panel'][data-os-theme='win-xp'] {
+  background: #fff !important;
+  color: #000 !important;
+  font: 11px Tahoma, Arial, sans-serif !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win-xp'] > div:first-child {
+  border-right: 1px solid #a8b8d8 !important;
+  background: linear-gradient(#7ba2e7, #6375d6) !important;
+  color: #fff !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win-xp'] > div:first-child h2 {
+  color: #fff !important;
+  text-shadow: 1px 1px rgba(0,0,0,.35) !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win-xp'] > div:last-child {
+  background: #fff !important;
+  font-family: Tahoma, Arial, sans-serif !important;
+}
+
+[data-settings-surface='control-panel'][data-os-theme='win-xp'] h1,
+[data-settings-surface='control-panel'][data-os-theme='win-xp'] h3 {
+  color: #003399 !important;
+}
+
+/* -------------------------------------------------------------------------
+   Windows 7 notification area / clock
+   ------------------------------------------------------------------------- */
+
+.os-win7 .taskbar-tray {
+  min-width: 142px !important;
+  height: 100% !important;
+  padding: 0 1px 0 3px !important;
+  border-left: 1px solid rgba(255,255,255,.20) !important;
+  background: linear-gradient(to right, rgba(17,44,73,.10), rgba(4,22,43,.24)) !important;
+}
+
+.os-win7 .taskbar-system-area {
+  height: 100% !important;
+  gap: 0 !important;
+}
+
+.os-win7 .taskbar-tray-icon {
+  width: 23px !important;
+  min-width: 23px !important;
+  height: 31px !important;
+  padding: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+  background: transparent !important;
+  color: #fff !important;
+}
+
+.os-win7 .taskbar-tray-icon:hover,
+.os-win7 .taskbar-tray-icon:focus-visible {
+  border-color: rgba(170,214,246,.48) !important;
+  background: linear-gradient(rgba(255,255,255,.18), rgba(120,184,229,.10)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12) !important;
+  outline: 0 !important;
+}
+
+.os-win7 .taskbar-tray-icon img {
+  width: 16px !important;
+  height: 16px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.72));
+}
+
+.os-win7 .taskbar-tray-time {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 56px !important;
+  height: 100% !important;
+  padding: 0 5px !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  font: 11px "Segoe UI", Tahoma, sans-serif !important;
+}
+
+.os-win7 .taskbar-tray-time:hover,
+.os-win7 .taskbar-tray-time.is-open {
+  border-color: rgba(171,215,247,.36) !important;
+  background: rgba(126,190,235,.13) !important;
+}
+
+.os-win7 .taskbar-tray-time span {
+  color: #fff !important;
+  font-family: "Segoe UI", Tahoma, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.95) !important;
+}
+
+.os-win7 .taskbar-tray::after {
+  content: '';
+  display: block;
+  align-self: stretch;
+  width: 9px;
+  margin-left: 3px;
+  border-left: 1px solid rgba(255,255,255,.32);
+  background: linear-gradient(to right, rgba(255,255,255,.06), rgba(135,190,230,.16));
+  box-shadow: inset 1px 0 rgba(0,0,0,.24);
+}
+
+.os-win7 .xp-clock-popup {
+  right: -8px !important;
+  bottom: calc(100% + 4px) !important;
+  width: 310px !important;
+  padding: 10px !important;
+  border: 1px solid #71889d !important;
+  border-radius: 3px !important;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.96), rgba(235,244,251,.96)) !important;
+  color: #1d2b36 !important;
+  box-shadow: 0 7px 22px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.85) !important;
+  font-family: "Segoe UI", Tahoma, sans-serif !important;
+}
+
+.os-win7 .xp-clock-popup__header {
+  border-bottom: 1px solid #c4d0da !important;
+}
+
+.os-win7 .xp-clock-popup__title,
+.os-win7 .xp-clock-popup__month-row {
+  color: #1e395b !important;
+}
+
+.os-win7 .xp-clock-popup__month-row button {
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+  background: transparent !important;
+  color: #1e5b8d !important;
+}
+
+.os-win7 .xp-clock-popup__month-row button:hover {
+  border-color: #a8c7df !important;
+  background: #e6f3fc !important;
+}
+
+.os-win7 .xp-clock-popup__days span.is-today {
+  border: 1px solid #4b98cf !important;
+  background: linear-gradient(#e8f6ff, #cdeafd) !important;
+  color: #123d5d !important;
+}
+
+@media (max-width: 760px) {
+  .win7-explorer__sidebar {
+    width: 152px;
+    flex-basis: 152px;
+  }
+
+  .win7-explorer__search {
+    flex-basis: 150px;
+  }
+
+  [data-settings-surface='control-panel'][data-os-theme='win7'] .space-y-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
