@@ -1,0 +1,286 @@
+/* Windows XP notification area interactions and Date and Time popup. */
+
+.os-winxp .taskbar-system-area {
+  gap: 2px !important;
+}
+
+.os-winxp .taskbar-tray-icon {
+  flex: 0 0 auto;
+}
+
+.os-winxp .taskbar-tray-expand {
+  width: 17px !important;
+  min-width: 17px !important;
+  height: 22px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.os-winxp .taskbar-tray-expand:hover {
+  filter: brightness(1.12);
+}
+
+.os-winxp .taskbar-tray-expand.is-open img {
+  transform: rotate(180deg);
+}
+
+.os-winxp .xp-tray-hidden-icons {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateX(5px);
+  transition: max-width 160ms ease, opacity 120ms ease, transform 160ms ease;
+}
+
+.os-winxp .xp-tray-hidden-icons.is-open {
+  max-width: 90px;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.os-winxp .taskbar-tray-time {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 30px !important;
+  min-width: 58px !important;
+  padding: 0 5px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+  cursor: default;
+  font-family: Tahoma, 'Segoe UI', sans-serif !important;
+  font-size: 11px !important;
+  line-height: 30px !important;
+  outline: none !important;
+}
+
+.os-winxp .taskbar-tray-time:hover,
+.os-winxp .taskbar-tray-time.is-open {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.os-winxp .taskbar-tray-time:focus-visible {
+  outline: 1px dotted rgba(255, 255, 255, 0.9) !important;
+  outline-offset: -3px !important;
+}
+
+.os-winxp .xp-clock-popup {
+  position: absolute;
+  right: 0;
+  bottom: 31px;
+  z-index: 100000;
+  width: 264px;
+  padding: 3px;
+  border: 1px solid #003c74;
+  border-radius: 3px 3px 0 0;
+  background: #ece9d8;
+  color: #000;
+  font-family: Tahoma, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  line-height: 1.25;
+  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.42);
+  cursor: default;
+}
+
+.os-winxp .xp-clock-popup__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 62px;
+  padding: 7px 8px;
+  border: 1px solid #fff;
+  border-bottom-color: #aca899;
+  background: linear-gradient(180deg, #fff 0%, #f6f4ea 100%);
+}
+
+.os-winxp .xp-clock-popup__title {
+  margin-bottom: 5px;
+  color: #003399;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.os-winxp .xp-clock-popup__date {
+  max-width: 174px;
+  color: #333;
+  font-size: 11px;
+}
+
+.os-winxp .xp-clock-popup__digital {
+  margin: 3px 0;
+  padding: 4px 8px;
+  border: 1px solid #aca899;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  background: #fff;
+  color: #000080;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.os-winxp .xp-analog-clock {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  border: 1px solid #808080;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #fff 0 56%, #f1f1f1 57% 100%);
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.18);
+}
+
+.os-winxp .xp-analog-clock::before,
+.os-winxp .xp-analog-clock::after {
+  content: '';
+  position: absolute;
+  background: #444;
+}
+
+.os-winxp .xp-analog-clock::before {
+  left: 50%;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  transform: translateX(-50%);
+  opacity: 0.15;
+}
+
+.os-winxp .xp-analog-clock::after {
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  transform: translateY(-50%);
+  opacity: 0.15;
+}
+
+.os-winxp .xp-analog-clock__center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #000080;
+  transform: translate(-50%, -50%);
+}
+
+.os-winxp .xp-analog-clock__hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  z-index: 2;
+  width: 1px;
+  transform-origin: 50% 100%;
+  background: #111;
+}
+
+.os-winxp .xp-analog-clock__hand--hour {
+  height: 12px;
+  width: 2px;
+}
+
+.os-winxp .xp-analog-clock__hand--minute {
+  height: 17px;
+}
+
+.os-winxp .xp-analog-clock__hand--second {
+  height: 18px;
+  background: #d11;
+}
+
+.os-winxp .xp-clock-popup__calendar {
+  border: 1px solid #7f9db9;
+  background: #fff;
+}
+
+.os-winxp .xp-clock-popup__month-row {
+  display: grid;
+  grid-template-columns: 24px 1fr 24px;
+  align-items: center;
+  min-height: 26px;
+  padding: 2px;
+  border-bottom: 1px solid #d6d2c2;
+  background: #ece9d8;
+}
+
+.os-winxp .xp-clock-popup__month-row > span {
+  overflow: hidden;
+  color: #000080;
+  text-align: center;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-winxp .xp-clock-popup__month-row button {
+  width: 21px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #003c74;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #fff 0%, #ece9d8 100%);
+  color: #003399;
+  font-family: Tahoma, sans-serif;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.os-winxp .xp-clock-popup__month-row button:hover {
+  background: #fff;
+}
+
+.os-winxp .xp-clock-popup__weekdays,
+.os-winxp .xp-clock-popup__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.os-winxp .xp-clock-popup__weekdays {
+  padding: 4px 4px 2px;
+  color: #555;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.os-winxp .xp-clock-popup__days {
+  gap: 1px 0;
+  padding: 1px 4px 5px;
+}
+
+.os-winxp .xp-clock-popup__days span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  border: 1px solid transparent;
+}
+
+.os-winxp .xp-clock-popup__days span.is-today {
+  border-color: #0a246a;
+  background: #316ac5;
+  color: #fff;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .os-winxp .taskbar-tray-expand,
+  .os-winxp .xp-tray-hidden-icons {
+    transition: none !important;
+  }
+}
