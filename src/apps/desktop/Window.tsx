@@ -237,18 +237,24 @@ export function Window({
             </div>
             <div className="xp-titlebar__controls os-titlebar-controls">
               <button
+                type="button"
+                onMouseDown={(event) => event.stopPropagation()}
                 onClick={handleMinimize}
-                className="xp-titlebar__button xp-titlebar__button--minimize os-button"
+                className="xp-titlebar__button xp-titlebar__button--minimize"
                 aria-label="Minimize"
               />
               <button
+                type="button"
+                onMouseDown={(event) => event.stopPropagation()}
                 onClick={handleMaximize}
-                className={`xp-titlebar__button os-button ${maximized ? 'xp-titlebar__button--restore' : 'xp-titlebar__button--maximize'}`}
+                className={`xp-titlebar__button ${maximized ? 'xp-titlebar__button--restore' : 'xp-titlebar__button--maximize'}`}
                 aria-label={maximized ? 'Restore' : 'Maximize'}
               />
               <button
+                type="button"
+                onMouseDown={(event) => event.stopPropagation()}
                 onClick={onClose}
-                className="xp-titlebar__button xp-titlebar__button--close os-button"
+                className="xp-titlebar__button xp-titlebar__button--close"
                 aria-label="Close"
               />
             </div>
@@ -259,40 +265,22 @@ export function Window({
           </div>
         </div>
 
-        {!maximized && resizable && (
+        {resizable && !maximized && (
           <>
-            <div
-              className="xp-resize xp-resize--se window-resize-handle"
-              onMouseDown={(e) => handleResizeStart(e, 'se')}
-            />
-            <div
-              className="xp-resize xp-resize--e window-resize-handle"
-              onMouseDown={(e) => handleResizeStart(e, 'e')}
-            />
-            <div
-              className="xp-resize xp-resize--s window-resize-handle"
-              onMouseDown={(e) => handleResizeStart(e, 's')}
-            />
+            <div className="window-resize-handle window-resize-handle--e" onMouseDown={(e) => handleResizeStart(e, 'e')} />
+            <div className="window-resize-handle window-resize-handle--s" onMouseDown={(e) => handleResizeStart(e, 's')} />
+            <div className="window-resize-handle window-resize-handle--se" onMouseDown={(e) => handleResizeStart(e, 'se')} />
           </>
         )}
       </div>
     );
   }
 
-  // Windows 98 styles
-  const win98Classes = [
-    'absolute win98-window os-window',
-    windowSkin.className,
-    focused ? 'win98-window--active' : 'win98-window--inactive os-window--inactive',
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
     <div
       ref={windowRef}
       {...windowSkin.dataAttributes}
-      className={win98Classes}
+      className={`absolute flex flex-col win98-window os-window ${windowSkin.className}`}
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
@@ -304,37 +292,31 @@ export function Window({
         if (onFocus) onFocus();
       }}
     >
-      <div className="win98-titlebar cursor-move select-none os-titlebar" onMouseDown={handleMouseDown}>
-        {icon && <img src={icon} alt="" className="win98-titlebar__icon" />}
-        <span className="win98-titlebar__title os-titlebar-title">{title}</span>
+      <div
+        className="win98-titlebar cursor-move select-none os-titlebar"
+        onMouseDown={handleMouseDown}
+        onDoubleClick={handleMaximize}
+      >
+        <div className="win98-titlebar__title os-titlebar-title">
+          {icon && <img src={icon} alt="" className="win98-titlebar__icon" />}
+          <span>{title}</span>
+        </div>
         <div className="win98-titlebar__controls os-titlebar-controls">
-          <button
-            onClick={handleMinimize}
-            className="win98-control-button win98-control-button--minimize os-button"
-            aria-label="Minimize"
-          />
-          <button
-            onClick={handleMaximize}
-            className={`win98-control-button os-button ${maximized ? 'win98-control-button--restore' : 'win98-control-button--maximize'}`}
-            aria-label={maximized ? 'Restore' : 'Maximize'}
-          />
-          <button
-            onClick={onClose}
-            className="win98-control-button win98-control-button--close os-button"
-            aria-label="Close"
-          />
+          <button type="button" onMouseDown={(event) => event.stopPropagation()} onClick={handleMinimize} className="win98-titlebar__button" aria-label="Minimize">_</button>
+          <button type="button" onMouseDown={(event) => event.stopPropagation()} onClick={handleMaximize} className="win98-titlebar__button" aria-label={maximized ? 'Restore' : 'Maximize'}>{maximized ? '❐' : '□'}</button>
+          <button type="button" onMouseDown={(event) => event.stopPropagation()} onClick={onClose} className="win98-titlebar__button" aria-label="Close">×</button>
         </div>
       </div>
 
-      <div className="win98-window__content win98-window__content--plain os-window-body">{children}</div>
+      <div className="win98-window__content os-window-body">{children}</div>
 
-      {!maximized && resizable && (
-        <div
-          className="win98-resize-handle"
-          onMouseDown={(e) => handleResizeStart(e, 'se')}
-        />
+      {resizable && !maximized && (
+        <>
+          <div className="window-resize-handle window-resize-handle--e" onMouseDown={(e) => handleResizeStart(e, 'e')} />
+          <div className="window-resize-handle window-resize-handle--s" onMouseDown={(e) => handleResizeStart(e, 's')} />
+          <div className="window-resize-handle window-resize-handle--se" onMouseDown={(e) => handleResizeStart(e, 'se')} />
+        </>
       )}
     </div>
   );
 }
-
