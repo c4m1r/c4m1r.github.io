@@ -11,6 +11,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   const { language } = useApp();
   const t = translations[language].xp;
   const [fadeIn, setFadeIn] = useState(false);
+  const welcomeText = language === 'ru' ? 'Приветствие' : (t.welcome ?? 'Welcome');
 
   useEffect(() => {
     setFadeIn(true);
@@ -32,7 +33,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             transition: 'opacity 300ms ease-out',
           }}
         >
-          {t.welcome ? t.welcome.toLowerCase() : 'welcome'}
+          {welcomeText}
         </span>
       </div>
       <div className="xp-welcome-banner__bottom-bar" />

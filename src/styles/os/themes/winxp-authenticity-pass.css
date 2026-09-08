@@ -1,0 +1,239 @@
+/*
+ * Windows XP authenticity corrections driven by current screenshot review.
+ * Loaded after the previous XP fidelity layers so these rules only correct
+ * remaining regressions without changing shared desktop runtime behavior.
+ */
+
+/* Localized Luna Start button. Do not use the English-only bitmap wordmark. */
+.os-winxp .start-button {
+  width: auto !important;
+  min-width: 86px !important;
+  max-width: none !important;
+  height: 30px !important;
+  padding: 0 14px 0 8px !important;
+  gap: 4px !important;
+  border: 0 !important;
+  border-radius: 0 12px 12px 0 !important;
+  background-image: none !important;
+  background: linear-gradient(
+    180deg,
+    #6fb75c 0%,
+    #56a447 8%,
+    #3b9637 42%,
+    #348d31 72%,
+    #277726 100%
+  ) !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.7),
+    inset -1px -1px 1px rgba(21, 84, 24, 0.85),
+    1px 0 2px rgba(0, 0, 0, 0.35) !important;
+  overflow: visible !important;
+}
+
+.os-winxp .start-button:hover {
+  background-image: none !important;
+  background: linear-gradient(180deg, #83c76b 0%, #60b54f 12%, #43a13e 55%, #31832f 100%) !important;
+  filter: brightness(1.03) !important;
+}
+
+.os-winxp .start-button:active,
+.os-winxp .start-button.is-active,
+.os-winxp .start-button.start-button--open {
+  background-image: none !important;
+  background: linear-gradient(180deg, #2d762b 0%, #378c33 35%, #41983b 100%) !important;
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.4),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.25) !important;
+}
+
+.os-winxp .start-button__icon,
+.os-winxp .start-button__label {
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+
+.os-winxp .start-button__icon {
+  width: 22px !important;
+  height: 22px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.45)) !important;
+}
+
+.os-winxp .start-button__label {
+  display: inline !important;
+  color: #fff !important;
+  font-family: Tahoma, 'Segoe UI', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  font-style: italic !important;
+  line-height: 30px !important;
+  white-space: nowrap !important;
+  text-shadow: 1px 1px 2px #1b5d1b !important;
+}
+
+/* Restore the original XP titlebar bitmaps and isolate them from generic buttons. */
+.os-winxp .xp-titlebar__button {
+  width: 25px !important;
+  min-width: 25px !important;
+  height: 25px !important;
+  min-height: 25px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 25px 25px !important;
+  box-shadow: none !important;
+  appearance: none !important;
+}
+
+.os-winxp .xp-titlebar__button--minimize {
+  background-image: url('../../../themes/winxp/assets/icons/minimise.png') !important;
+}
+.os-winxp .xp-titlebar__button--minimize:hover {
+  background-image: url('../../../themes/winxp/assets/icons/minimise_hover.png') !important;
+}
+.os-winxp .xp-titlebar__button--maximize {
+  background-image: url('../../../themes/winxp/assets/icons/maximise.png') !important;
+}
+.os-winxp .xp-titlebar__button--maximize:hover {
+  background-image: url('../../../themes/winxp/assets/icons/maximise_hover.png') !important;
+}
+.os-winxp .xp-titlebar__button--restore {
+  background-image: url('../../../themes/winxp/assets/icons/Restore.png') !important;
+}
+.os-winxp .xp-titlebar__button--close {
+  background-image: url('../../../themes/winxp/assets/icons/close.png') !important;
+}
+.os-winxp .xp-titlebar__button--close:hover {
+  background-image: url('../../../themes/winxp/assets/icons/close_hover.png') !important;
+}
+
+/* Classic XP selection: no Windows 10-style rounded tile around the whole icon. */
+.os-winxp .os-desktop-icon[data-selected='true'] > div {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.os-winxp .desktop-icon__glyph {
+  position: absolute !important;
+}
+
+.os-winxp .desktop-icon__glyph::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  background: rgba(49, 106, 197, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.os-winxp .os-desktop-icon[data-selected='true'] .desktop-icon__glyph::after {
+  opacity: 1;
+}
+
+.os-winxp .desktop-icon__label {
+  display: inline-block !important;
+  width: fit-content !important;
+  max-width: 80px !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  padding: 1px 2px !important;
+  overflow: visible !important;
+}
+
+.os-winxp .desktop-icon__label.is-selected {
+  background: #316ac5 !important;
+  color: #fff !important;
+  outline: 1px dotted rgba(255, 255, 255, 0.85) !important;
+  outline-offset: -1px !important;
+}
+
+/* Windows XP shell context menu. */
+.os-winxp .desktop-context-menu-anchor {
+  font-family: Tahoma, Arial, sans-serif !important;
+  font-size: 11px !important;
+  color: #000 !important;
+}
+
+.os-winxp .desktop-context-menu {
+  position: relative;
+  min-width: 196px;
+  padding: 2px;
+  background: #fff;
+  border: 1px solid #aca899;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.32);
+}
+
+.os-winxp .desktop-context-menu--submenu {
+  position: absolute;
+  left: calc(100% - 2px);
+  top: -3px;
+  z-index: 2;
+}
+
+.os-winxp .desktop-context-menu__item-wrap {
+  position: relative;
+}
+
+.os-winxp .desktop-context-menu__item {
+  display: grid;
+  grid-template-columns: 20px minmax(120px, 1fr) 14px;
+  align-items: center;
+  width: 100%;
+  height: 22px;
+  padding: 0 3px 0 1px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  text-align: left;
+  font: 11px Tahoma, Arial, sans-serif;
+  white-space: nowrap;
+}
+
+.os-winxp .desktop-context-menu__item:not(:disabled):hover,
+.os-winxp .desktop-context-menu__item:not(:disabled):focus-visible {
+  background: #316ac5;
+  color: #fff;
+  outline: none;
+}
+
+.os-winxp .desktop-context-menu__item:disabled {
+  color: #aca899;
+  text-shadow: 1px 1px #fff;
+}
+
+.os-winxp .desktop-context-menu__icon-slot {
+  display: flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.os-winxp .desktop-context-menu__icon-slot img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.os-winxp .desktop-context-menu__arrow {
+  justify-self: end;
+  font-size: 8px;
+}
+
+.os-winxp .desktop-context-menu__separator {
+  height: 1px;
+  margin: 3px 2px 3px 22px;
+  background: #aca899;
+  box-shadow: 0 1px #fff;
+}

@@ -1,9 +1,10 @@
 /**
- * Универсальное контекстное меню
- * Используется для правого клика на иконках, рабочем столе и в окнах
+ * Universal desktop context menu.
+ * XP presentation is handled by the OS-specific CSS layer.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useApp } from '../../../contexts/useApp';
 
 interface ContextMenuProps {
   x: number;
@@ -21,25 +22,100 @@ export interface ContextMenuItem {
   submenu?: ContextMenuItem[];
 }
 
+const RU_LABELS: Record<string, string> = {
+  Open: 'Открыть',
+  Cut: 'Вырезать',
+  Copy: 'Копировать',
+  'Create Shortcut': 'Создать ярлык',
+  Delete: 'Удалить',
+  Rename: 'Переименовать',
+  Properties: 'Свойства',
+  'Open With': 'Открыть с помощью',
+  'Send To': 'Отправить',
+};
+
+function ContextMenuLevel({
+  items,
+  onClose,
+  isSubmenu = false,
+}: {
+  items: ContextMenuItem[];
+  onClose: () => void;
+  isSubmenu?: boolean;
+}) {
+  const { language } = useApp();
+  const [openSubmenuIndex, setOpenSubmenuIndex] = useState<number | null>(null);
+
+  const localizedItems = useMemo(() => {
+    if (language !== 'ru') return items;
+    return items.map((item) => ({
+      ...item,
+      label: item.label ? (RU_LABELS[item.label] ?? item.label) : item.label,
+    }));
+  }, [items, language]);
+
+  return (
+    <div className={`desktop-context-menu ${isSubmenu ? 'desktop-context-menu--submenu' : ''}`} role="menu">
+      {localizedItems.map((item, index) => {
+        if (item.separator) {
+          return <div key={`separator-${index}`} className="desktop-context-menu__separator" role="separator" />;
+        }
+
+        const hasSubmenu = Boolean(item.submenu?.length);
+        return (
+          <div
+            key={`${item.label ?? 'item'}-${index}`}
+            className="desktop-context-menu__item-wrap"
+            onMouseEnter={() => setOpenSubmenuIndex(hasSubmenu ? index : null)}
+          >
+            <button
+              type="button"
+              role="menuitem"
+              className="desktop-context-menu__item"
+              disabled={item.disabled}
+              aria-haspopup={hasSubmenu ? 'menu' : undefined}
+              aria-expanded={hasSubmenu ? openSubmenuIndex === index : undefined}
+              onClick={() => {
+                if (item.disabled || hasSubmenu) return;
+                item.onClick?.();
+                onClose();
+              }}
+            >
+              <span className="desktop-context-menu__icon-slot">
+                {item.icon ? <img src={item.icon} alt="" /> : null}
+              </span>
+              <span className="desktop-context-menu__label">{item.label}</span>
+              <span className="desktop-context-menu__arrow" aria-hidden="true">
+                {hasSubmenu ? '▶' : ''}
+              </span>
+            </button>
+
+            {hasSubmenu && openSubmenuIndex === index && (
+              <ContextMenuLevel items={item.submenu!} onClose={onClose} isSubmenu />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
 
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape);
@@ -49,49 +125,12 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
   return (
     <div
       ref={menuRef}
-      className="fixed bg-white border border-gray-400 shadow-lg z-[10000] min-w-[160px] os-panel os-list"
-      style={{
-        left: `${x}px`,
-        top: `${y}px`,
-        fontFamily: '"Pixelated MS Sans Serif", Arial',
-        fontSize: '11px',
-      }}
-      onClick={(e) => e.stopPropagation()}
+      className="fixed z-[10000] desktop-context-menu-anchor"
+      style={{ left: `${x}px`, top: `${y}px` }}
+      onClick={(event) => event.stopPropagation()}
+      onContextMenu={(event) => event.preventDefault()}
     >
-      {items.map((item, index) => {
-        if (item.separator) {
-          return (
-            <div
-              key={index}
-              className="h-px bg-gray-300 my-1 mx-2"
-            />
-          );
-        }
-
-        return (
-          <button
-            key={index}
-            onClick={() => {
-              if (item.onClick && !item.disabled) {
-                item.onClick();
-                onClose();
-              }
-            }}
-            disabled={item.disabled}
-            className={`w-full text-left px-3 py-1 flex items-center gap-2 hover:bg-[#000080] hover:text-white disabled:text-gray-400 disabled:cursor-not-allowed os-list-item os-button ${
-              item.disabled ? '' : 'cursor-pointer'
-            }`}
-            style={{
-              fontFamily: '"Pixelated MS Sans Serif", Arial',
-              fontSize: '11px',
-            }}
-          >
-            {item.icon && <img src={item.icon} alt="" className="w-4 h-4" />}
-            {item.label}
-          </button>
-        );
-      })}
+      <ContextMenuLevel items={items} onClose={onClose} />
     </div>
   );
 }
-

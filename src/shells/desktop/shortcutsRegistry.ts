@@ -4,6 +4,7 @@ export const desktopShortcuts: string[] = [
   'internet-explorer',
   'outlook',
   'windows-media-player',
+  'winamp',
   'projects-grid',
   'calculator',
   'paint',

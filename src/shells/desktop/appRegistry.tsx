@@ -15,6 +15,7 @@ import { NewsApp } from './apps/news/NewsApp';
 import { InternetExplorer } from '../../apps/internetexplorer/InternetExplorer';
 import { OutlookExpress } from '../../apps/outlook/OutlookExpress';
 import { WindowsMediaPlayer } from '../../apps/mediaplayer/WindowsMediaPlayer';
+import { WinampPlayer } from '../../apps/winamp/WinampPlayer';
 import { Minesweeper } from '../../apps/minesweeper';
 import { ResumeApp } from './apps/resume/ResumeApp';
 
@@ -67,8 +68,25 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     },
     iconKey: 'mediaPlayerIcon',
     component: WindowsMediaPlayer,
-    defaultWindow: { width: 400, height: 580, resizable: false },
+    defaultWindow: { width: 640, height: 520, resizable: true },
     showInStartMenu: true,
+  },
+  'winamp': {
+    id: 'winamp',
+    title: {
+      en: 'Winamp',
+      ru: 'Winamp',
+      fr: 'Winamp',
+      es: 'Winamp',
+      zh: 'Winamp',
+      ja: 'Winamp',
+      ko: 'Winamp',
+    },
+    iconKey: 'winampIcon',
+    component: WinampPlayer,
+    defaultWindow: { width: 370, height: 540, resizable: false },
+    showInStartMenu: true,
+    showOnDesktop: true,
   },
   'projects-grid': {
     id: 'projects-grid',
@@ -95,7 +113,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
       fr: 'Calculatrice',
       es: 'Calculadora',
       zh: '计算器',
-      ja: '电卓',
+      ja: '電卓',
       ko: '계산기',
     },
     iconKey: 'calculatorIcon',
@@ -183,7 +201,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
       ja: 'ブログ',
       ko: '블로그',
     },
-    iconKey: 'richTextIcon', // textDocumentIcon in Desktop.tsx
+    iconKey: 'richTextIcon',
     component: BlogApp,
     defaultWindow: { width: 960, height: 640 },
     showInStartMenu: true,
@@ -286,7 +304,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
       ko: '작업 관리자',
     },
     iconKey: 'controlPanelIcon',
-    component: ControlPanel, // Custom launch logic in Desktop.tsx
+    component: ControlPanel,
     defaultWindow: { width: 600, height: 500 },
     showInStartMenu: true,
     showOnDesktop: true,

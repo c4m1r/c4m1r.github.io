@@ -1,0 +1,278 @@
+.winamp-shell {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 6px;
+  background: #222;
+  color: #d5d5d5;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+}
+
+.winamp-main,
+.winamp-playlist {
+  width: min(100%, 330px);
+  margin: 0 auto;
+  border: 2px outset #8a8a8a;
+  background: #353542;
+  box-shadow: 2px 2px 0 #050505;
+}
+
+.winamp-playlist {
+  margin-top: 4px;
+}
+
+.winamp-caption {
+  display: flex;
+  height: 18px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 4px;
+  border-bottom: 1px solid #0b0b0f;
+  background: repeating-linear-gradient(
+    180deg,
+    #6d6d78 0,
+    #6d6d78 1px,
+    #262630 1px,
+    #262630 2px
+  );
+  color: #f4f4f4;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px #000;
+}
+
+.winamp-caption__mark {
+  color: #ffd126;
+}
+
+.winamp-caption__dots {
+  margin-left: auto;
+  color: #d0d0d0;
+  letter-spacing: 0;
+}
+
+.winamp-caption--playlist {
+  justify-content: center;
+}
+
+.winamp-face {
+  padding: 7px;
+  background: linear-gradient(135deg, #3e3e4b, #1f1f28 55%, #474753);
+}
+
+.winamp-display {
+  position: relative;
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  grid-template-rows: 31px 25px;
+  min-height: 58px;
+  padding: 4px;
+  border: 2px inset #767680;
+  background: #050806;
+  color: #28e433;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.winamp-time {
+  font-family: 'Courier New', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 26px;
+  letter-spacing: -2px;
+  color: #20ed39;
+  text-shadow: 0 0 5px rgba(32, 237, 57, 0.45);
+}
+
+.winamp-status {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  color: #20ed39;
+  font-size: 11px;
+}
+
+.winamp-track-info {
+  min-width: 0;
+  padding-left: 5px;
+  color: #30ea46;
+  font-family: 'Courier New', monospace;
+}
+
+.winamp-marquee {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 15px;
+}
+
+.winamp-metadata {
+  color: #a3e9a7;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.winamp-spectrum {
+  grid-column: 2;
+  display: flex;
+  height: 21px;
+  align-items: end;
+  gap: 1px;
+  padding: 2px 4px;
+  border-top: 1px solid #18331c;
+}
+
+.winamp-spectrum span {
+  flex: 1;
+  min-width: 2px;
+  background: linear-gradient(to top, #27ed3a 0 55%, #ebd62a 55% 78%, #ff5c32 78% 100%);
+  transition: height 120ms linear;
+}
+
+.winamp-sliders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 7px;
+}
+
+.winamp-sliders label {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+  color: #d7d7d7;
+  font-size: 8px;
+}
+
+.winamp-sliders input {
+  width: 100%;
+  accent-color: #a5a5aa;
+}
+
+.winamp-controls {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.winamp-controls button,
+.winamp-toggles button,
+.winamp-playlist__footer span {
+  min-height: 19px;
+  border: 2px outset #777780;
+  border-radius: 0;
+  background: linear-gradient(#74747d, #3a3a44);
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-shadow: 1px 1px #9e9ea7;
+}
+
+.winamp-controls button:active,
+.winamp-toggles button:active,
+.winamp-toggles button.is-active {
+  border-style: inset;
+  background: #24242c;
+  color: #d7c834;
+  text-shadow: none;
+}
+
+.winamp-controls button:disabled {
+  color: #444;
+}
+
+.winamp-toggles {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.winamp-toggles button {
+  padding: 0 6px;
+}
+
+.winamp-toggles span {
+  margin-left: auto;
+  padding: 1px 4px;
+  border: 1px inset #85858c;
+  background: #22222b;
+  color: #61d771;
+  font-size: 8px;
+}
+
+.winamp-toggles span + span {
+  margin-left: 0;
+}
+
+.winamp-playlist__list {
+  min-height: 150px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 3px;
+  border: 2px inset #6f6f78;
+  background: #020503;
+}
+
+.winamp-playlist__list button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #36dc46;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  text-align: left;
+}
+
+.winamp-playlist__list button:hover {
+  background: #151d16;
+}
+
+.winamp-playlist__list button.is-current {
+  background: #001a73;
+  color: #fff;
+}
+
+.winamp-playlist__list button span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.winamp-playlist__footer {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: #353542;
+}
+
+.winamp-playlist__footer span {
+  display: inline-flex;
+  min-height: 17px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  font-size: 7px;
+}
+
+@media (max-width: 360px) {
+  .winamp-shell {
+    padding: 2px;
+  }
+
+  .winamp-main,
+  .winamp-playlist {
+    width: 100%;
+  }
+}

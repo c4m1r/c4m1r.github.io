@@ -10,6 +10,7 @@ import trayExpandWebos from '../winxp/assets/widgets/tray-expand.png';
 import ieIconWebos from '../winxp/assets/icons/ie.png';
 import mailIconWebos from '../winxp/assets/icons/outlook.png';
 import mediaPlayerIconWebos from '../winxp/assets/icons/mediaplayer.png';
+import winampIconWebos from '../winxp/assets/icons/winamp.png';
 import gamesIconWebos from '../winxp/assets/icons/pinball.png';
 import projectsIconWebos from '../winxp/assets/icons/folder_program.png';
 import userAvatarWebos from '../winxp/assets/user.gif';
@@ -85,6 +86,7 @@ export interface ThemeAssets {
   internetExplorerIcon?: string;
   mailIcon?: string;
   mediaPlayerIcon?: string;
+  winampIcon?: string;
   gamesIcon?: string;
   doomIcon?: string;
   gamesFolderIcon?: string;
@@ -136,6 +138,7 @@ const sharedWebosAssets: ThemeAssets = {
   internetExplorerIcon: ieIconWebos,
   mailIcon: mailIconWebos,
   mediaPlayerIcon: mediaPlayerIconWebos,
+  winampIcon: winampIconWebos,
   gamesIcon: gamesIconWebos,
   gamesFolderIcon: gamesFolderIconWebos,
   projectsIcon: projectsIconWebos,

@@ -237,18 +237,24 @@ export function Window({
             </div>
             <div className="xp-titlebar__controls os-titlebar-controls">
               <button
+                type="button"
+                onMouseDown={(event) => event.stopPropagation()}
                 onClick={handleMinimize}
-                className="xp-titlebar__button xp-titlebar__button--minimize os-button"
+                className="xp-titlebar__button xp-titlebar__button--minimize"
                 aria-label="Minimize"
               />
               <button
+                type="button"
+                onMouseDown={(event) => event.stopPropagation()}
                 onClick={handleMaximize}
-                className={`xp-titlebar__button os-button ${maximized ? 'xp-titlebar__button--restore' : 'xp-titlebar__button--maximize'}`}
+                className={`xp-titlebar__button ${maximized ? 'xp-titlebar__button--restore' : 'xp-titlebar__button--maximize'}`}
                 aria-label={maximized ? 'Restore' : 'Maximize'}
               />
               <button
+                type="button"
+                onMouseDown={(event) => event.stopPropagation()}
                 onClick={onClose}
-                className="xp-titlebar__button xp-titlebar__button--close os-button"
+                className="xp-titlebar__button xp-titlebar__button--close"
                 aria-label="Close"
               />
             </div>
