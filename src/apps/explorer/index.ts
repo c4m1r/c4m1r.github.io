@@ -1,2 +1,2 @@
-export { MyComputer } from './MyComputer';
-
+export { ExplorerSurface as MyComputer } from './ExplorerSurface';
+export type { MyComputerProps } from './MyComputer';
