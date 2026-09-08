@@ -22,7 +22,7 @@ import paintIconWebos from '../winxp/assets/icons/paint.png';
 import controlPanelIconWebos from '../winxp/assets/icons/hardware.png';
 import notepadIconWebos from '../winxp/assets/icons/Notepad.png';
 import richTextIconWebos from '../winxp/assets/icons/filetypes/rich-text.png';
-import bootLogoWebos from '../winxp/assets/boot/boot-windows-logo.png';
+import bootLogoWebos from './assets/boot/boot-windows-logo.png';
 import bootProgressWebos from '../winxp/assets/boot/boot-progress.png';
 import doomIconWebos from '../../apps/doom/assets/doom-icon-sm.webp';
 import gamesFolderIconWebos from '../winxp/assets/icons/filetypes/folder-favorites.png';
