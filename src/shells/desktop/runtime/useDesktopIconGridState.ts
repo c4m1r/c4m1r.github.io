@@ -47,6 +47,16 @@ export function useDesktopIconGridState(
   const iconsPerColumn = Math.max(1, Math.floor(availableHeight / iconSpacingY));
 
   const desktopIcons: DesktopIcon[] = initialDesktopIcons.map((icon, index) => {
+    // Windows keeps the Recycle Bin anchored to the usable desktop corner. It must
+    // not inherit a stale drag position when the viewport changes.
+    if (icon.id === 'recycle-bin') {
+      return {
+        ...icon,
+        x: Math.max(baseOffsetX, viewport.width - baseOffsetX - 72),
+        y: Math.max(baseOffsetY, viewport.height - taskbarHeight - baseOffsetY - 72),
+      };
+    }
+
     const savedPosition = iconPositions[icon.id];
     if (savedPosition) {
       return { ...icon, x: savedPosition.x, y: savedPosition.y };
@@ -60,14 +70,6 @@ export function useDesktopIconGridState(
       y: baseOffsetY + rowIndex * iconSpacingY,
     };
   });
-
-  if (!iconPositions['recycle-bin']) {
-    const recycleIcon = desktopIcons.find((icon) => icon.id === 'recycle-bin');
-    if (recycleIcon) {
-      recycleIcon.x = Math.max(baseOffsetX, viewport.width - baseOffsetX - 72);
-      recycleIcon.y = Math.max(baseOffsetY, viewport.height - taskbarHeight - baseOffsetY - 72);
-    }
-  }
 
   const updateSelectionFromBox = useCallback(
     (box: { left: number; top: number; width: number; height: number }) => {
@@ -194,6 +196,14 @@ export function useDesktopIconGridState(
         }
         return [...prev, iconId];
       });
+    }
+
+    // The Recycle Bin is a fixed desktop landmark in this shell. It can still be
+    // selected and right-clicked, but dragging must never move it away from the
+    // bottom-right usable desktop corner.
+    if (iconId === 'recycle-bin') {
+      setDraggingIcon(null);
+      return;
     }
 
     const rect = e.currentTarget.getBoundingClientRect();
