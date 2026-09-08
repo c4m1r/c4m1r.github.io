@@ -23,7 +23,8 @@ type Win7ViewMode = 'icons' | 'details';
 
 function joinWindowsPath(parent: string, child: string) {
   if (!parent || parent === 'My Computer') return child;
-  if (parent.endsWith('\\') || parent.endsWith(':')) return `${parent}${child}`;
+  if (parent.endsWith(':')) return `${parent}\\${child}`;
+  if (parent.endsWith('\\')) return `${parent}${child}`;
   return `${parent}\\${child}`;
 }
 
@@ -83,6 +84,10 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
     if (!query) return rawItems;
     return rawItems.filter((item) => item.name.toLocaleLowerCase(language).includes(query));
   }, [language, rawItems, searchQuery]);
+  const selectedFileSystemItem = useMemo(
+    () => rawItems.find((item) => item.name === selectedItem) ?? null,
+    [rawItems, selectedItem],
+  );
 
   const handleBack = () => {
     if (historyIndex <= 0) return;
@@ -210,7 +215,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
       <div className="win7-explorer__commandbar">
         <button type="button">{isRu ? 'Упорядочить' : 'Organize'} <ChevronDown size={10} /></button>
         <span className="win7-explorer__commandbar-separator" />
-        <button type="button" onClick={() => selectedItem && rawItems.find((item) => item.name === selectedItem) && handleOpen(rawItems.find((item) => item.name === selectedItem)!)}>
+        <button type="button" disabled={!selectedFileSystemItem} onClick={() => selectedFileSystemItem && handleOpen(selectedFileSystemItem)}>
           {isRu ? 'Открыть' : 'Open'}
         </button>
         <button type="button">{isRu ? 'Общий доступ' : 'Share with'} <ChevronDown size={10} /></button>
