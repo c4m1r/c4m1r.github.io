@@ -5,6 +5,7 @@ import { BootScreen } from './BootScreen';
 import { LoginScreen } from './LoginScreen';
 import { SystemTransitionScreen } from './SystemTransitionScreen';
 import './win7-shell.css';
+import './desktop-fidelity.css';
 
 type Windows7State = 'boot' | 'login' | 'desktop' | 'logoff' | 'shutdown';
 
