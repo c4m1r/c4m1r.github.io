@@ -10,48 +10,23 @@ type WebOSState = 'boot' | 'login' | 'welcome' | 'desktop' | 'logoff' | 'shutdow
 
 export function WebOS() {
   const [state, setState] = useState<WebOSState>('boot');
-  const { setMode } = useApp();
+  const { setMode, theme } = useApp();
   const exitToGrub = useCallback(() => {
     setMode('grub');
     setState('boot');
   }, [setMode]);
   const handleSystemCommand = useCallback((command: 'logoff' | 'shutdown') => {
-    if (command === 'shutdown') {
-      setState('shutdown');
-    } else {
-      setState('logoff');
-    }
+    setState(command === 'shutdown' ? 'shutdown' : 'logoff');
   }, []);
+  const completeLogin = useCallback(() => {
+    // The blue italic Welcome banner is an XP transition, not a Windows 98 screen.
+    setState(theme === 'win-98' ? 'desktop' : 'welcome');
+  }, [theme]);
 
-  if (state === 'boot') {
-    return <BootScreen onComplete={() => setState('login')} />;
-  }
-
-  if (state === 'login') {
-    return <LoginScreen onLogin={() => setState('welcome')} />;
-  }
-
-  if (state === 'welcome') {
-    return <WelcomeScreen onComplete={() => setState('desktop')} />;
-  }
-
-  if (state === 'logoff') {
-    return (
-      <SystemTransitionScreen
-        mode="logoff"
-        onComplete={() => setState('login')}
-      />
-    );
-  }
-
-  if (state === 'shutdown') {
-    return (
-      <SystemTransitionScreen
-        mode="shutdown"
-        onComplete={exitToGrub}
-      />
-    );
-  }
-
+  if (state === 'boot') return <BootScreen onComplete={() => setState('login')} />;
+  if (state === 'login') return <LoginScreen onLogin={completeLogin} />;
+  if (state === 'welcome') return <WelcomeScreen onComplete={() => setState('desktop')} />;
+  if (state === 'logoff') return <SystemTransitionScreen mode="logoff" onComplete={() => setState('login')} />;
+  if (state === 'shutdown') return <SystemTransitionScreen mode="shutdown" onComplete={exitToGrub} />;
   return <DesktopShell onSystemCommand={handleSystemCommand} />;
 }
