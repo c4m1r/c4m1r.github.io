@@ -3,6 +3,7 @@ import { DesktopAppDefinition } from './types';
 import { Notepad } from '../../apps/notepad';
 import { BlogApp } from '../../apps/BlogApp';
 import { WikiApp } from '../../apps/wiki/WikiApp';
+import { WebOSHelpApp } from '../../apps/help/WebOSHelpApp';
 import { PicturesGallery } from '../../apps/pictureview/PicturesGallery';
 import { Calculator } from '../../apps/calc/Calculator';
 import { Paint } from '../../apps/paint/Paint';
@@ -240,6 +241,23 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     defaultWindow: { width: 960, height: 640 },
     showInStartMenu: true,
     showOnDesktop: true,
+  },
+  'help': {
+    id: 'help',
+    title: {
+      en: 'Help and Support',
+      ru: 'Справка и поддержка',
+      fr: 'Aide et support',
+      es: 'Ayuda y soporte técnico',
+      zh: '帮助和支持',
+      ja: 'ヘルプとサポート',
+      ko: '도움말 및 지원',
+    },
+    iconKey: 'folderIcon',
+    component: WebOSHelpApp,
+    defaultWindow: { width: 900, height: 620 },
+    showInStartMenu: false,
+    showOnDesktop: false,
   },
   'notepad': {
     id: 'notepad',
