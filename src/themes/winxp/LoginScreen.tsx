@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
-import bootLogo from './assets/boot/boot-windows-logo.png';
 import shutdownIcon from './assets/icons/shutdown.png';
 import userAvatar from './assets/user.gif';
+import { XP_IDENTITY_LOGO } from './xpIdentityLogo';
 import './xp.css';
 
 interface LoginScreenProps {
@@ -26,16 +26,13 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
   return (
     <div className="xp-welcome-screen os-shell os-winxp">
-      {/* Top Accent Bar */}
       <div className="xp-welcome-screen__top-bar" />
 
-      {/* Main Content Area */}
       <div className="xp-welcome-screen__body">
-        {/* Left Half: XP Identity & Instructions */}
         <div className="xp-welcome-screen__left">
           <div className="xp-welcome-screen__identity">
             <img
-              src={bootLogo}
+              src={XP_IDENTITY_LOGO}
               alt="Microsoft Windows XP"
               className="xp-welcome-screen__logo-img"
             />
@@ -45,10 +42,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           </div>
         </div>
 
-        {/* Vertical Blue Separator */}
         <div className="xp-welcome-screen__divider" aria-hidden="true" />
 
-        {/* Right Half: User Card */}
         <div className="xp-welcome-screen__right">
           <button
             onClick={handleUserClick}
@@ -77,7 +72,6 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         </div>
       </div>
 
-      {/* Bottom Footer Bar */}
       <footer className="xp-welcome-screen__footer">
         <button
           onClick={handleShutdown}
