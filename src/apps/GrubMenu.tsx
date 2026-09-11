@@ -3,6 +3,11 @@ import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
 import { enabledOsBootProfiles } from '../shells/os/osProfiles';
 import { getEditionsForProfile } from '../shells/os/osEditions';
+import {
+  isWindowsBuildTextEnabled,
+  setWindowsBuildTextEnabled,
+  supportsWindowsBuildText,
+} from '../shells/os/osBootOptions';
 import { type OsBootProfile } from '../shells/os/osTypes';
 
 const EDITION_STORAGE_KEY = 'webos-grub-editions-v1';
@@ -30,6 +35,7 @@ export function GrubMenu() {
   const [editionProfileId, setEditionProfileId] = useState<string | null>(null);
   const [editionIndex, setEditionIndex] = useState(0);
   const [selectedEditions, setSelectedEditions] = useState<Record<string, string>>(loadEditionSelection);
+  const [, refreshBuildOption] = useState(0);
 
   const selectedProfile = enabledOsBootProfiles[selectedIndex];
   const selectedProfileEditions = useMemo(
@@ -40,6 +46,8 @@ export function GrubMenu() {
     () => getEditionsForProfile(editionProfileId ?? ''),
     [editionProfileId]
   );
+  const buildTextSupported = supportsWindowsBuildText(selectedProfile?.theme);
+  const buildTextEnabled = isWindowsBuildTextEnabled(selectedProfile?.theme);
 
   const getProfileLabel = useCallback(
     (profile: OsBootProfile) => {
@@ -88,6 +96,14 @@ export function GrubMenu() {
     setEditionProfileId(null);
   }, [editionIndex, editionMenuItems, editionProfileId, selectedEditions]);
 
+  const toggleBuildText = useCallback(() => {
+    const theme = selectedProfile?.theme;
+    if (!theme || !supportsWindowsBuildText(theme)) return;
+    setAutobootActive(false);
+    setWindowsBuildTextEnabled(theme, !isWindowsBuildTextEnabled(theme));
+    refreshBuildOption((current) => current + 1);
+  }, [selectedProfile]);
+
   useEffect(() => {
     if (!autobootActive || editionProfileId) return;
     const timer = window.setInterval(() => {
@@ -135,6 +151,9 @@ export function GrubMenu() {
       } else if (key === 'e' && selectedProfileEditions.length > 0) {
         e.preventDefault();
         openEditionMenu();
+      } else if (key === 'b' && buildTextSupported) {
+        e.preventDefault();
+        toggleBuildText();
       } else if (key === 'enter') {
         e.preventDefault();
         setAutobootActive(false);
@@ -149,7 +168,17 @@ export function GrubMenu() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('touchstart', handleTouchStart);
     };
-  }, [chooseEdition, editionMenuItems.length, editionProfileId, handleBoot, openEditionMenu, selectedIndex, selectedProfileEditions.length]);
+  }, [
+    buildTextSupported,
+    chooseEdition,
+    editionMenuItems.length,
+    editionProfileId,
+    handleBoot,
+    openEditionMenu,
+    selectedIndex,
+    selectedProfileEditions.length,
+    toggleBuildText,
+  ]);
 
   if (editionProfileId) {
     const profile = enabledOsBootProfiles.find((item) => String(item.id) === editionProfileId);
@@ -165,7 +194,17 @@ export function GrubMenu() {
                 type="button"
                 className={`block w-full text-left px-4 py-2 font-mono ${index === editionIndex ? 'bg-white text-black' : 'bg-black text-white hover:bg-gray-800'}`}
                 onMouseEnter={() => setEditionIndex(index)}
-                onClick={() => { setEditionIndex(index); const next = { ...selectedEditions, [editionProfileId]: edition.id }; setSelectedEditions(next); try { window.sessionStorage.setItem(EDITION_STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ } setEditionProfileId(null); }}
+                onClick={() => {
+                  setEditionIndex(index);
+                  const next = { ...selectedEditions, [editionProfileId]: edition.id };
+                  setSelectedEditions(next);
+                  try {
+                    window.sessionStorage.setItem(EDITION_STORAGE_KEY, JSON.stringify(next));
+                  } catch {
+                    // Ignore storage failures and keep the selection for this render.
+                  }
+                  setEditionProfileId(null);
+                }}
               >
                 {isRu ? `${edition.labelRu} (${edition.label})` : edition.label}
               </button>
@@ -201,6 +240,18 @@ export function GrubMenu() {
           <div className="text-amber-300 mb-4 text-sm">
             {isRu ? 'Нажмите E для выбора редакции' : 'Press E to choose an edition'}
           </div>
+        )}
+
+        {buildTextSupported && (
+          <button
+            type="button"
+            onClick={toggleBuildText}
+            className="mb-4 w-fit bg-transparent p-0 text-left font-mono text-sm text-cyan-300 hover:text-cyan-200"
+          >
+            {isRu
+              ? `B - текст сборки на рабочем столе: ${buildTextEnabled ? 'включен' : 'выключен'}`
+              : `B - desktop build text: ${buildTextEnabled ? 'on' : 'off'}`}
+          </button>
         )}
 
         {autobootActive && (
