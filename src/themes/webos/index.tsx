@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
 import { BootScreen } from './BootScreen';
 import { LoginScreen } from './LoginScreen';
-import { WelcomeScreen } from './WelcomeScreen';
 import { DesktopShell } from '../../shells/desktop/DesktopShell';
 import { SystemTransitionScreen } from './SystemTransitionScreen';
 import { useApp } from '../../contexts/useApp';
 
-type WebOSState = 'boot' | 'login' | 'welcome' | 'desktop' | 'logoff' | 'shutdown';
+type WebOSState = 'boot' | 'login' | 'desktop' | 'logoff' | 'shutdown';
 
 export function WebOS() {
   const [state, setState] = useState<WebOSState>('boot');
@@ -16,41 +15,22 @@ export function WebOS() {
     setState('boot');
   }, [setMode]);
   const handleSystemCommand = useCallback((command: 'logoff' | 'shutdown') => {
-    if (command === 'shutdown') {
-      setState('shutdown');
-    } else {
-      setState('logoff');
-    }
+    if (command === 'shutdown') setState('shutdown');
+    else setState('logoff');
   }, []);
 
-  if (state === 'boot') {
-    return <BootScreen onComplete={() => setState('login')} />;
-  }
+  if (state === 'boot') return <BootScreen onComplete={() => setState('login')} />;
 
-  if (state === 'login') {
-    return <LoginScreen onLogin={() => setState('welcome')} />;
-  }
-
-  if (state === 'welcome') {
-    return <WelcomeScreen onComplete={() => setState('desktop')} />;
-  }
+  // The blue "Welcome" interstitial is specific to Windows XP. Generic shells
+  // (including Windows 98) proceed directly from their own login surface.
+  if (state === 'login') return <LoginScreen onLogin={() => setState('desktop')} />;
 
   if (state === 'logoff') {
-    return (
-      <SystemTransitionScreen
-        mode="logoff"
-        onComplete={() => setState('login')}
-      />
-    );
+    return <SystemTransitionScreen mode="logoff" onComplete={() => setState('login')} />;
   }
 
   if (state === 'shutdown') {
-    return (
-      <SystemTransitionScreen
-        mode="shutdown"
-        onComplete={exitToGrub}
-      />
-    );
+    return <SystemTransitionScreen mode="shutdown" onComplete={exitToGrub} />;
   }
 
   return <DesktopShell onSystemCommand={handleSystemCommand} />;
