@@ -10,29 +10,24 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   const { language } = useApp();
   const t = translations[language].xp;
-  const [fadeIn, setFadeIn] = useState(false);
-  const welcomeText = language === 'ru' ? 'Приветствие' : (t.welcome ?? 'Welcome');
+  const [visible, setVisible] = useState(false);
+  const welcomeText = language === 'ru' ? 'Приветствие' : (t.welcome ?? 'welcome');
 
   useEffect(() => {
-    setFadeIn(true);
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 1800);
-
-    return () => clearTimeout(timer);
+    const frame = requestAnimationFrame(() => setVisible(true));
+    const timer = window.setTimeout(onComplete, 2400);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
   }, [onComplete]);
 
   return (
-    <div className="xp-welcome-banner os-shell os-winxp">
+    <div className="xp-welcome-banner xp-welcome-banner--authentic os-shell os-winxp" aria-live="polite">
       <div className="xp-welcome-banner__top-bar" />
       <div className="xp-welcome-banner__center">
-        <span
-          className="xp-welcome-banner__title"
-          style={{
-            opacity: fadeIn ? 1 : 0,
-            transition: 'opacity 300ms ease-out',
-          }}
-        >
+        <div className="xp-welcome-banner__glow" aria-hidden="true" />
+        <span className={`xp-welcome-banner__title ${visible ? 'is-visible' : ''}`}>
           {welcomeText}
         </span>
       </div>
