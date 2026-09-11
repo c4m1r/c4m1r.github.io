@@ -1,4 +1,5 @@
 import bootVideo from './assets/boot/win7-boot-anim.mp4';
+import welcomeLoadingVideo from './assets/boot/win7-greetings-loading.webm';
 import startupSound from './assets/audio/windows-7-startup.mp3';
 import loginBackground from './assets/images/login-background.jpg';
 import desktopWallpaper from './assets/images/desktop-wallpaper.jpg';
@@ -15,6 +16,7 @@ import folderIcon from './assets/icons/folder.png';
 
 export const WIN7_ASSETS = {
   bootVideo,
+  welcomeLoadingVideo,
   startupSound,
   loginBackground,
   desktopWallpaper,

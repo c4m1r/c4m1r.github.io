@@ -1,0 +1,40 @@
+/* Optional Windows build text enabled from GRUB. */
+.os-desktop[data-build-watermark]::after {
+  content: attr(data-build-watermark);
+  position: fixed;
+  right: 14px;
+  bottom: 42px;
+  z-index: 4;
+  max-width: min(360px, 45vw);
+  pointer-events: none;
+  white-space: pre-line;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 1px 1px 0 rgba(0, 0, 0, 0.55);
+  user-select: none;
+}
+
+.os-win-98.os-desktop[data-build-watermark]::after {
+  font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+}
+
+.os-win7.os-desktop[data-build-watermark]::after {
+  right: 18px;
+  bottom: 48px;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  font-size: 12px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 640px) {
+  .os-desktop[data-build-watermark]::after {
+    right: 9px;
+    bottom: 39px;
+    max-width: 58vw;
+    font-size: 10px;
+  }
+}

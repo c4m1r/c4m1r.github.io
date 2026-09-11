@@ -1,5 +1,6 @@
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { getOsDeviceSupportRules, getOsSkinRules, getOsVersionRules } from '../../os/osSkins';
+import { getWindowsBuildWatermark, isWindowsBuildTextEnabled } from '../../os/osBootOptions';
 
 export interface DesktopOsAttributes {
   'data-os-theme': string;
@@ -10,12 +11,15 @@ export interface DesktopOsAttributes {
   'data-representative-device'?: string;
   'data-support-cycle'?: string;
   'data-form-factor'?: string;
+  'data-build-watermark'?: string;
 }
 
 export function getDesktopOsAttributes(themeId: ThemeId): DesktopOsAttributes {
   const skinRules = getOsSkinRules(themeId);
   const versionRules = getOsVersionRules(themeId);
   const deviceRules = getOsDeviceSupportRules(themeId);
+  const buildWatermark = getWindowsBuildWatermark(themeId);
+  const showBuildText = isWindowsBuildTextEnabled(themeId);
 
   return {
     'data-os-theme': themeId,
@@ -26,5 +30,8 @@ export function getDesktopOsAttributes(themeId: ThemeId): DesktopOsAttributes {
     'data-representative-device': deviceRules?.representativeDevice,
     'data-support-cycle': deviceRules?.supportCycleLabel,
     'data-form-factor': deviceRules?.formFactor,
+    'data-build-watermark': showBuildText && buildWatermark
+      ? `${buildWatermark.productName} | Build ${buildWatermark.build}`
+      : undefined,
   };
 }

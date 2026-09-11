@@ -134,7 +134,7 @@ export function StartMenu7({
     {
       id: 'help',
       label: isRu ? 'Справка и поддержка' : 'Help and Support',
-      disabled: true,
+      appId: 'help',
     },
   ];
 
