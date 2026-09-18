@@ -104,7 +104,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
 
   useEffect(() => {
-    if (themeKey !== 'macos-26') {
+    if (theme !== 'macos-26') {
       setShowSpotlight(false);
       return;
     }
@@ -124,7 +124,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
     window.addEventListener('keydown', handleSpotlightShortcut);
     return () => window.removeEventListener('keydown', handleSpotlightShortcut);
-  }, [themeKey]);
+  }, [theme]);
 
   useEffect(() => {
     const handleWallpaperChange = (e: Event) => {
