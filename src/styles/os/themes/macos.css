@@ -1061,3 +1061,78 @@
   font-size: 10px;
   letter-spacing: 0.03em;
 }
+
+
+/* Menu bar Battery and Wi-Fi surfaces, adapted from donor status menus. */
+.os-macos .apple-macos-menu-right {
+  position: relative;
+}
+
+.os-macos .apple-status-menu {
+  position: absolute;
+  top: 27px;
+  right: 96px;
+  width: 250px;
+  padding: 6px;
+  border: 1px solid rgba(255,255,255,0.32);
+  border-radius: 12px;
+  background: rgba(246,246,248,0.92);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  backdrop-filter: blur(28px) saturate(170%);
+  box-shadow:
+    0 16px 42px rgba(0,0,0,0.24),
+    inset 0 1px rgba(255,255,255,0.74);
+  color: #1d1d1f;
+  z-index: 121;
+}
+
+.os-macos .apple-status-menu--battery {
+  right: 146px;
+}
+
+.os-macos .apple-status-menu > header,
+.os-macos .apple-status-menu__row {
+  min-height: 36px;
+  padding: 6px 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.os-macos .apple-status-menu > header {
+  border-bottom: 1px solid rgba(60,60,67,0.10);
+}
+
+.os-macos .apple-status-menu > header strong {
+  font-size: 12px;
+}
+
+.os-macos .apple-status-menu > header span,
+.os-macos .apple-status-menu__row span {
+  color: rgba(60,60,67,0.56);
+  font-size: 10px;
+}
+
+.os-macos .apple-status-menu__row strong {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.os-macos .apple-status-menu > button {
+  width: 100%;
+  min-height: 28px;
+  margin-top: 3px;
+  padding: 4px 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #1d1d1f;
+  text-align: left;
+  font: 400 11px/1.2 var(--mac-font);
+}
+
+.os-macos .apple-status-menu > button:hover {
+  background: #007aff;
+  color: #fff;
+}
