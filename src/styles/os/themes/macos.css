@@ -1741,3 +1741,112 @@
   background: #34c759;
   color: #fff;
 }
+
+
+/* Desktop View Options and safe visual icon scaling. */
+.os-macos .os-desktop-icon {
+  transform: scale(var(--mac-desktop-icon-scale, 1));
+  transform-origin: top left;
+}
+
+.os-macos .apple-desktop-view-options {
+  position: fixed;
+  top: 64px;
+  right: 22px;
+  z-index: 146;
+  width: 270px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: 16px;
+  background: rgba(246,246,248,0.94);
+  -webkit-backdrop-filter: blur(32px) saturate(175%);
+  backdrop-filter: blur(32px) saturate(175%);
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.28),
+    inset 0 1px rgba(255,255,255,0.74);
+  color: #1d1d1f;
+  font-family: var(--mac-font);
+}
+
+.os-macos .apple-desktop-view-options > header {
+  min-height: 42px;
+  padding: 2px 2px 8px 4px;
+  border-bottom: 1px solid rgba(60,60,67,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.os-macos .apple-desktop-view-options > header strong,
+.os-macos .apple-desktop-view-options > header small {
+  display: block;
+}
+
+.os-macos .apple-desktop-view-options > header strong {
+  font-size: 12px;
+}
+
+.os-macos .apple-desktop-view-options > header small {
+  margin-top: 2px;
+  color: rgba(60,60,67,0.48);
+  font-size: 9px;
+}
+
+.os-macos .apple-desktop-view-options > header > button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(118,118,128,0.12);
+  color: rgba(60,60,67,0.72);
+  font-size: 15px;
+}
+
+.os-macos .apple-desktop-view-options__row {
+  padding: 11px 4px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+.os-macos .apple-desktop-view-options__slider {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+}
+
+.os-macos .apple-desktop-view-options__slider small {
+  color: rgba(60,60,67,0.48);
+  font-size: 8px;
+}
+
+.os-macos .apple-desktop-view-options__slider input {
+  width: 100%;
+}
+
+.os-macos .apple-desktop-view-options__presets {
+  margin-top: 9px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.os-macos .apple-desktop-view-options__presets button {
+  min-height: 28px;
+  border: 1px solid rgba(60,60,67,0.10);
+  border-radius: 8px;
+  background: rgba(118,118,128,0.07);
+  color: #1d1d1f;
+  font: 500 9px/1 var(--mac-font);
+}
+
+.os-macos .apple-desktop-view-options__presets button.is-active {
+  background: #007aff;
+  border-color: #007aff;
+  color: #fff;
+}
