@@ -168,9 +168,11 @@ export function AppleSystemBar({
               <i />
               <i />
             </span>
-            {!iosAirplaneEnabled && iosWifiEnabled && (
+            {iosAirplaneEnabled ? (
+              <span className="apple-ios-airplane" aria-label="Airplane Mode">✈</span>
+            ) : iosWifiEnabled ? (
               <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="" />
-            )}
+            ) : null}
             <span
               className={`apple-ios-battery-meter ${batteryCharging ? 'is-charging' : ''}`}
               aria-label={`Battery ${batteryLevel ?? 75}%`}
