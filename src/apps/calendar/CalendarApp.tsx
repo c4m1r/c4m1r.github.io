@@ -85,6 +85,19 @@ export function CalendarApp() {
     });
   }, [currentMonth, currentYear, locale]);
 
+  const weekdayLabels = useMemo(
+    () =>
+      Array.from({ length: 7 }, (_, index) =>
+        new Date(2026, 7, 2 + index).toLocaleDateString(locale, { weekday: 'short' })
+      ),
+    [locale]
+  );
+
+  const leadingBlankDays = useMemo(
+    () => new Date(currentYear, currentMonth, 1).getDay(),
+    [currentMonth, currentYear]
+  );
+
   const previousMonth = useCallback(() => {
     setCurrentMonth((prev) => {
       if (prev === 0) {
@@ -113,53 +126,63 @@ export function CalendarApp() {
   const isCurrentDate = (date: Date) => areSameDay(date, today);
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2 bg-[#ece9d8]">
+    <div className="calendar-app flex flex-col h-full bg-white">
+      <div className="calendar-app__toolbar flex items-center justify-between border-b border-gray-200 px-4 py-2 bg-[#ece9d8]">
         <button
           onClick={previousMonth}
-          className="px-2 py-1 text-sm font-semibold text-blue-700 hover:bg-white/60 rounded"
+          className="calendar-app__nav-button px-2 py-1 text-sm font-semibold text-blue-700 hover:bg-white/60 rounded"
         >
           ‹
         </button>
-        <div className="text-base font-semibold capitalize">
+        <div className="calendar-app__month text-base font-semibold capitalize">
           {monthLabel} {currentYear}
         </div>
         <button
           onClick={nextMonth}
-          className="px-2 py-1 text-sm font-semibold text-blue-700 hover:bg-white/60 rounded"
+          className="calendar-app__nav-button px-2 py-1 text-sm font-semibold text-blue-700 hover:bg-white/60 rounded"
         >
           ›
         </button>
       </div>
 
       {loading ? (
-        <div className="flex flex-1 items-center justify-center text-sm text-gray-500">
+        <div className="calendar-app__loading flex flex-1 items-center justify-center text-sm text-gray-500">
           Loading calendar…
         </div>
       ) : (
-        <div className="flex-1 overflow-auto p-3">
-          <div className="grid grid-cols-7 gap-1 text-xs">
+        <div className="calendar-app__content flex-1 overflow-auto p-3">
+          <div className="calendar-app__weekdays grid grid-cols-7 gap-1 text-xs">
+            {weekdayLabels.map((weekday) => (
+              <div key={weekday} className="calendar-app__weekday">
+                {weekday}
+              </div>
+            ))}
+          </div>
+          <div className="calendar-app__grid grid grid-cols-7 gap-1 text-xs">
+            {Array.from({ length: leadingBlankDays }, (_, index) => (
+              <div key={`blank-${index}`} className="calendar-app__day calendar-app__day--blank" aria-hidden="true" />
+            ))}
             {days.map((day) => (
               <div
                 key={day.date.toISOString()}
-                className={`min-h-[110px] border border-gray-200 p-2 rounded ${
-                  isCurrentDate(day.date) ? 'bg-yellow-100 border-yellow-400' : 'bg-white'
-                } ${isWeekend(day.date) ? 'bg-blue-50/40' : ''}`}
+                className={`calendar-app__day min-h-[110px] border border-gray-200 p-2 rounded ${
+                  isCurrentDate(day.date) ? 'is-today bg-yellow-100 border-yellow-400' : 'bg-white'
+                } ${isWeekend(day.date) ? 'is-weekend bg-blue-50/40' : ''}`}
               >
-                <div className="text-sm font-bold mb-1">{day.date.getDate()}</div>
+                <div className="calendar-app__day-number text-sm font-bold mb-1">{day.date.getDate()}</div>
                 <div className="space-y-2">
                   {day.events.map((event) => (
                     <div key={`${event.summary}-${event.startDate.toISOString()}`}>
-                      <div className="text-[11px] font-semibold bg-blue-900 text-white px-1 rounded mb-1">
+                      <div className="calendar-app__event text-[11px] font-semibold bg-blue-900 text-white px-1 rounded mb-1">
                         {event.summary}
                       </div>
                       {event.location && (
-                        <div className="text-[10px] text-gray-600 truncate">{event.location}</div>
+                        <div className="calendar-app__event-location text-[10px] text-gray-600 truncate">{event.location}</div>
                       )}
                     </div>
                   ))}
                   {day.events.length === 0 && (
-                    <div className="text-[10px] text-gray-400 italic">
+                    <div className="calendar-app__empty text-[10px] text-gray-400 italic">
                       {isWeekend(day.date) ? 'Weekend' : 'No events'}
                     </div>
                   )}
