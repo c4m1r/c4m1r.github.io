@@ -1647,21 +1647,3 @@
   text-align: center;
   font-size: 12px;
 }
-
-
-/* Native-style top-right swipe target for iOS Control Center. */
-.os-ios .ios-control-center-swipe-zone {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 50vw;
-  height: 46px;
-  z-index: 79;
-  background: transparent;
-  touch-action: pan-y;
-  pointer-events: auto;
-}
-
-.os-ios-5 .ios-control-center-swipe-zone {
-  display: none;
-}
