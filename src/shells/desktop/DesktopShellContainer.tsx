@@ -56,6 +56,7 @@ import { AppleDesktopWidgets } from './components/AppleDesktopWidgets';
 import { AppleLockScreen } from './components/AppleLockScreen';
 import { AppleWidgetGallery } from './components/AppleWidgetGallery';
 import { IosAssistiveTouch } from './components/IosAssistiveTouch';
+import { AppleDesktopViewOptions } from './components/AppleDesktopViewOptions';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -100,6 +101,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [showAppleLockScreen, setShowAppleLockScreen] = useState(false);
   const [showAppleWidgetGallery, setShowAppleWidgetGallery] = useState(false);
+  const [showAppleViewOptions, setShowAppleViewOptions] = useState(false);
+  const [macDesktopIconScale, setMacDesktopIconScale] = useState(() => {
+    if (typeof window === 'undefined') return 1;
+    const saved = Number(localStorage.getItem('mac-desktop-icon-scale'));
+    return Number.isFinite(saved) && saved >= 0.82 && saved <= 1.18 ? saved : 1;
+  });
   const [assistiveTouchEnabled, setAssistiveTouchEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-assistive-touch-enabled') !== 'false';
@@ -1020,6 +1027,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           ? String(Math.max(0, Math.min(0.55, ((100 - brightnessLevel) / 100) * 0.55)))
           : '0',
         '--ios-night-shift': themeKey.startsWith('ios-') && nightModeEnabled ? '0.14' : '0',
+        '--mac-desktop-icon-scale': themeKey === 'macos-26' ? String(macDesktopIconScale) : '1',
       } as CSSProperties}
       onMouseDown={handleDesktopMouseDown}
       onClick={(event) => {
@@ -1057,7 +1065,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 ],
               },
               { label: 'Clean Up', disabled: true },
-              { label: 'Show View Options', disabled: true },
+              {
+                label: 'Show View Options',
+                onClick: () => setShowAppleViewOptions(true),
+              },
               {
                 label: 'Edit Widgets…',
                 onClick: () => setShowAppleWidgetGallery(true),
@@ -1189,6 +1200,19 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               ...current,
               [key]: !current[key],
             }));
+          }}
+        />
+      )}
+
+      {themeKey === 'macos-26' && (
+        <AppleDesktopViewOptions
+          open={showAppleViewOptions}
+          iconScale={macDesktopIconScale}
+          onClose={() => setShowAppleViewOptions(false)}
+          onIconScaleChange={(value) => {
+            const next = Math.max(0.82, Math.min(1.18, value));
+            setMacDesktopIconScale(next);
+            localStorage.setItem('mac-desktop-icon-scale', String(next));
           }}
         />
       )}
