@@ -57,9 +57,9 @@ export function WinampPlayer() {
     setTrackIndex((current) => chooseNextIndex(current));
   }, [chooseNextIndex]);
 
-  const previous = () => {
+  const previous = useCallback(() => {
     setTrackIndex((current) => (current - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length);
-  };
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -148,7 +148,7 @@ export function WinampPlayer() {
 
     window.addEventListener('webos-media-command', handleMediaCommand);
     return () => window.removeEventListener('webos-media-command', handleMediaCommand);
-  }, [isPlaying, next, play]);
+  }, [isPlaying, next, play, previous]);
 
   useEffect(() => {
     return () => {
