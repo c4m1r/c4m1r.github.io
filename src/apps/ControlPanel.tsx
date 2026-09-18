@@ -9,7 +9,7 @@ import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
 
-type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network';
+type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus';
 type CPDisplayMode = 'category' | 'classic';
 
 export function ControlPanel() {
@@ -43,6 +43,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-bluetooth-enabled') !== 'false';
   });
+  const [focusEnabled, setFocusEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('ios-focus-enabled') === 'true';
+  });
 
   useEffect(() => {
     const handleConnectivityChange = (event: Event) => {
@@ -55,6 +59,16 @@ export function ControlPanel() {
     return () => window.removeEventListener('ios-connectivity-changed', handleConnectivityChange);
   }, []);
 
+  useEffect(() => {
+    const handleFocusChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') setFocusEnabled(customEvent.detail);
+    };
+
+    window.addEventListener('ios-focus-changed', handleFocusChange);
+    return () => window.removeEventListener('ios-focus-changed', handleFocusChange);
+  }, []);
+
   const setConnectivity = (key: 'wifi' | 'bluetooth', value: boolean) => {
     if (key === 'wifi') setWifiEnabled(value);
     else setBluetoothEnabled(value);
@@ -63,6 +77,12 @@ export function ControlPanel() {
     window.dispatchEvent(new CustomEvent('ios-connectivity-changed', {
       detail: { [key]: value },
     }));
+  };
+
+  const setFocusMode = (value: boolean) => {
+    setFocusEnabled(value);
+    localStorage.setItem('ios-focus-enabled', String(value));
+    window.dispatchEvent(new CustomEvent('ios-focus-changed', { detail: value }));
   };
 
   const { wallpapers, loading: wallpapersLoading } = useGallery();
@@ -114,6 +134,14 @@ export function ControlPanel() {
           items: isRu
             ? ['Вывод', 'Ввод', 'Звуковые эффекты']
             : ['Output', 'Input', 'Sound Effects'],
+        },
+        {
+          id: 'focus',
+          title: isRu ? 'Фокусирование' : 'Focus',
+          emoji: '🌙',
+          items: isRu
+            ? ['Не беспокоить', 'Режим фокусирования']
+            : ['Do Not Disturb', 'Focus Mode'],
         },
         {
           id: 'maintenance',
@@ -531,6 +559,7 @@ export function ControlPanel() {
                     else if (category.id === 'maintenance') setView('systemInfo');
                     else if (category.id === 'accessibility' && isIos) setView('accessibility');
                     else if (category.id === 'network' && isIos) setView('network');
+                    else if (category.id === 'focus' && isIos) setView('focus');
                   }}
                 >
                   <div className="flex items-start gap-3 mb-2">
@@ -642,6 +671,52 @@ export function ControlPanel() {
                   </button>
                 </div>
               ))}
+            </section>
+          </div>
+        )}
+
+        {/* ── Apple Focus view ── */}
+        {view === 'focus' && isIos && (
+          <div className="space-y-5">
+            <div>
+              <button
+                type="button"
+                className="text-xs opacity-70 hover:opacity-100 mb-3"
+                onClick={() => setView('categories')}
+              >
+                ← {isRu ? 'Настройки' : 'Settings'}
+              </button>
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] opacity-60 mb-1">
+                NervaWEB WebOS
+              </div>
+              <h1 className={`text-2xl font-bold mb-1 ${titleClass}`}>
+                {isRu ? 'Фокусирование' : 'Focus'}
+              </h1>
+              <p className="text-xs opacity-70">
+                {isRu ? 'Управление режимом «Не беспокоить»' : 'Manage Do Not Disturb mode'}
+              </p>
+            </div>
+
+            <section className={`${cardClass} overflow-hidden`}>
+              <div className="flex items-center justify-between gap-4 p-4 min-h-[64px]">
+                <div>
+                  <strong className="block text-sm">
+                    {isRu ? 'Не беспокоить' : 'Do Not Disturb'}
+                  </strong>
+                  <span className="block mt-1 text-[11px] opacity-60">
+                    {isRu ? 'Скрывает отвлекающие уведомления' : 'Reduce distracting notifications'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={focusEnabled}
+                  className={`ios-settings-switch ${focusEnabled ? 'is-on' : ''}`}
+                  onClick={() => setFocusMode(!focusEnabled)}
+                >
+                  <span />
+                </button>
+              </div>
             </section>
           </div>
         )}
