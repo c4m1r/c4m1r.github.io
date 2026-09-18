@@ -6,10 +6,12 @@ interface AppleControlCenterProps {
   open: boolean;
   volumeLevel: number;
   brightnessLevel: number;
+  nightModeEnabled: boolean;
   isFullscreen: boolean;
   onClose: () => void;
   onVolumeLevelChange: (value: number) => void;
   onBrightnessLevelChange: (value: number) => void;
+  onNightModeChange: (value: boolean) => void;
   onFullscreenToggle: () => void;
   onOpenSettings: () => void;
   onOpenAbout: () => void;
@@ -21,10 +23,12 @@ export function AppleControlCenter({
   open,
   volumeLevel,
   brightnessLevel,
+  nightModeEnabled,
   isFullscreen,
   onClose,
   onVolumeLevelChange,
   onBrightnessLevelChange,
+  onNightModeChange,
   onFullscreenToggle,
   onOpenSettings,
   onOpenAbout,
@@ -34,7 +38,6 @@ export function AppleControlCenter({
   const [bluetooth, setBluetooth] = useState(true);
   const [airplane, setAirplane] = useState(false);
   const [cellular, setCellular] = useState(true);
-  const [nightMode, setNightMode] = useState(false);
   const [silentMode, setSilentMode] = useState(false);
   const previousVolumeRef = useRef(volumeLevel || 50);
 
@@ -97,8 +100,9 @@ export function AppleControlCenter({
               </button>
               <button
                 type="button"
-                className={nightMode ? 'is-active' : ''}
-                onClick={() => setNightMode((value) => !value)}
+                className={nightModeEnabled ? 'is-active' : ''}
+                aria-pressed={nightModeEnabled}
+                onClick={() => onNightModeChange(!nightModeEnabled)}
               >
                 <span>☾</span>
                 <small>Night Mode</small>
