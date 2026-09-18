@@ -47,6 +47,7 @@ import {
 } from '../os/osSkins';
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
 import { AppleSystemBar } from './components/AppleSystemBar';
+import { AppleDock } from './components/AppleDock';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
 
@@ -970,6 +971,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         className={`taskbar fixed bottom-0 left-0 right-0 flex items-center justify-start shadow-lg z-50 os-statusbar ${themeStyles.taskbar.join(' ')}`}
       >
         <div className="taskbar__inner">
+          <AppleDock
+            theme={themeKey}
+            launcherOpen={showStartMenu}
+            onLauncherToggle={() => {
+              if (showStartMenu) closeStartMenu();
+              else openStartMenu();
+            }}
+            onLaunchApp={launchApp}
+            openWindowCount={windows.length}
+          />
           {/* Start Button */}
           <button
             onClick={(e) => {
