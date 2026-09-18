@@ -8,6 +8,7 @@ interface AppleSystemBarProps {
   theme: ThemeId;
   language: Language;
   time: Date;
+  activeAppTitle?: string;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
 }
@@ -20,6 +21,7 @@ export function AppleSystemBar({
   theme,
   language,
   time,
+  activeAppTitle,
   onAppleMenuToggle,
   onControlCenterToggle,
 }: AppleSystemBarProps) {
@@ -69,7 +71,7 @@ export function AppleSystemBar({
         >
           
         </button>
-        <span className="apple-macos-menu-item apple-macos-app-title">Finder</span>
+        <span className="apple-macos-menu-item apple-macos-app-title">{activeAppTitle || 'Finder'}</span>
         <span className="apple-macos-menu-item">File</span>
         <span className="apple-macos-menu-item">Edit</span>
         <span className="apple-macos-menu-item">View</span>
