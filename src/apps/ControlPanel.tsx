@@ -435,7 +435,7 @@ export function ControlPanel() {
           <>
             <div className="mb-6">
               <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
-                Control Panel
+                {isMac ? 'System Settings' : isIos ? 'Settings' : 'Control Panel'}
               </h1>
               <p className="text-sm opacity-75">Classic View</p>
             </div>
