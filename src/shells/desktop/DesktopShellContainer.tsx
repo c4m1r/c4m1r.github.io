@@ -55,6 +55,7 @@ import { AppleSpotlight } from './components/AppleSpotlight';
 import { AppleDesktopWidgets } from './components/AppleDesktopWidgets';
 import { AppleLockScreen } from './components/AppleLockScreen';
 import { AppleWidgetGallery } from './components/AppleWidgetGallery';
+import { IosAssistiveTouch } from './components/IosAssistiveTouch';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -1180,6 +1181,30 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           time={time}
           language={language}
           onUnlock={() => setShowAppleLockScreen(false)}
+        />
+      )}
+
+      {themeKey.startsWith('ios-') && themeKey !== 'ios-5' && (
+        <IosAssistiveTouch
+          enabled
+          onHome={() => {
+            windows.forEach((window) => handleCloseWindow(window.id));
+            setShowSystemActionMenu(false);
+            setShowNotificationPanel(false);
+            closeStartMenu();
+          }}
+          onOpenSettings={() => launchApp('control-panel')}
+          onOpenControlCenter={() => {
+            setShowSystemActionMenu(true);
+            setShowNotificationPanel(false);
+            closeStartMenu();
+          }}
+          onOpenNotifications={() => {
+            setShowNotificationPanel(true);
+            setShowSystemActionMenu(false);
+            closeStartMenu();
+          }}
+          onToggleFullscreen={toggleFullscreen}
         />
       )}
 
