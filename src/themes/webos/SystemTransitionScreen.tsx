@@ -36,7 +36,21 @@ const WIN98_MESSAGES: Record<TransitionMode, { title: string; subtitle: string }
 export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTransitionScreenProps) {
   const { theme } = useApp();
   const osClassName = getOsClassName(theme);
-  if (isAppleTheme(theme)) {
+  const appleTheme = isAppleTheme(theme);
+  const timeout = duration ?? (mode === 'shutdown' ? 3500 : 2200);
+
+  useEffect(() => {
+    if (appleTheme) return;
+    const timer = window.setTimeout(onComplete, timeout);
+    return () => window.clearTimeout(timer);
+  }, [appleTheme, onComplete, timeout]);
+
+  const messages = useMemo(() => {
+    if (theme === 'win-98') return WIN98_MESSAGES[mode];
+    return XP_MESSAGES[mode];
+  }, [theme, mode]);
+
+  if (appleTheme) {
     return (
       <AppleSystemTransitionScreen
         theme={theme}
@@ -46,20 +60,6 @@ export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTra
       />
     );
   }
-
-  const timeout = duration ?? (mode === 'shutdown' ? 3500 : 2200);
-
-  useEffect(() => {
-    const timer = window.setTimeout(onComplete, timeout);
-    return () => window.clearTimeout(timer);
-  }, [onComplete, timeout]);
-
-  const messages = useMemo(() => {
-    if (theme === 'win-98') {
-      return WIN98_MESSAGES[mode];
-    }
-    return XP_MESSAGES[mode];
-  }, [theme, mode]);
 
   if (theme === 'win-98') {
     return (
