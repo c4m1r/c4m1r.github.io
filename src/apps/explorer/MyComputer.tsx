@@ -35,6 +35,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   );
   const [showSidebar, setShowSidebar] = useState(true);
   const [quickLookOpen, setQuickLookOpen] = useState(false);
+  const [appleSearchQuery, setAppleSearchQuery] = useState('');
   const isWindowsXp = theme === 'win-xp';
   const isAppleExplorer = theme === 'macos-26' || theme.startsWith('ios-');
   const isIosExplorer = theme.startsWith('ios-');
@@ -56,6 +57,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     setHistoryIndex(0);
     setAddressInput(currentPath);
     setSelectedItem(null);
+    setAppleSearchQuery('');
     if (currentPath.toLowerCase().includes('picture')) {
       setViewMode('thumbnails');
     }
@@ -73,6 +75,12 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     () => items.find((item) => item.name === selectedItem) ?? null,
     [items, selectedItem]
   );
+
+  const appleVisibleItems = useMemo(() => {
+    const needle = appleSearchQuery.trim().toLowerCase();
+    if (!needle) return items;
+    return items.filter((item) => item.name.toLowerCase().includes(needle));
+  }, [appleSearchQuery, items]);
 
   useEffect(() => {
     if (theme !== 'macos-26') {
@@ -370,13 +378,28 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               </div>
               <label className="apple-file-browser__search">
                 <Search size={13} />
-                <input placeholder={isRu ? 'Поиск' : 'Search'} aria-label={isRu ? 'Поиск' : 'Search'} />
+                <input
+                  value={appleSearchQuery}
+                  onChange={(event) => setAppleSearchQuery(event.target.value)}
+                  placeholder={isRu ? 'Поиск' : 'Search'}
+                  aria-label={isRu ? 'Поиск' : 'Search'}
+                />
+                {appleSearchQuery && (
+                  <button
+                    type="button"
+                    className="apple-file-browser__search-clear"
+                    onClick={() => setAppleSearchQuery('')}
+                    aria-label={isRu ? 'Очистить поиск' : 'Clear search'}
+                  >
+                    ×
+                  </button>
+                )}
               </label>
             </div>
 
             {appleListView ? (
               <div className="apple-file-browser__list">
-                {items.map((item) => (
+                {appleVisibleItems.map((item) => (
                   <button
                     key={item.id}
                     type="button"
@@ -397,7 +420,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               </div>
             ) : (
               <div className="apple-file-browser__grid">
-                {items.map((item) => (
+                {appleVisibleItems.map((item) => (
                   <button
                     key={item.id}
                     type="button"
@@ -463,7 +486,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         )}
 
         <footer className="apple-file-browser__status">
-          <span>{items.length} {isRu ? 'объектов' : 'items'}</span>
+          <span>{appleVisibleItems.length} {isRu ? 'объектов' : 'items'}{appleSearchQuery ? ` · ${isRu ? 'поиск' : 'search'}` : ''}</span>
           {selectedItem && <span>{selectedItem}</span>}
         </footer>
       </div>
