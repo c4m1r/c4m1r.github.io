@@ -1,6 +1,9 @@
 import { type MouseEvent } from 'react';
 import iosWifiIcon from '../../../../eat/homescreen-main/public/icons/wifi.svg';
 import iosBatteryIcon from '../../../../eat/homescreen-main/public/icons/battery-75.svg';
+import macWifiIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/wifi.svg';
+import macBatteryIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/battery.100.svg';
+import macControlCenterIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/control-center.svg';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type Language } from '../../../i18n/translations';
 
@@ -102,15 +105,24 @@ export function AppleSystemBar({
         <span className="apple-macos-menu-item">Help</span>
       </div>
       <div className="apple-macos-menu-right">
-        <span className="apple-macos-menu-item apple-macos-status">100%</span>
-        <span className="apple-macos-menu-item apple-macos-status">⌁</span>
+        <span className="apple-macos-menu-item apple-macos-status apple-macos-battery-status">
+          <span>100%</span>
+          <img src={macBatteryIcon} alt="Battery" />
+        </span>
+        <span className="apple-macos-menu-item apple-macos-status">
+          <img className="apple-macos-status-icon apple-macos-wifi-icon" src={macWifiIcon} alt="Wi-Fi" />
+        </span>
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-control-center"
           onClick={onControlCenterToggle}
           aria-label="Open Control Center"
         >
-          ◐
+          <img
+            className="apple-macos-status-icon apple-macos-control-center-icon"
+            src={macControlCenterIcon}
+            alt=""
+          />
         </button>
         <span className="apple-macos-menu-item apple-macos-date">{dateLabel}</span>
         <span className="apple-macos-menu-item apple-macos-time">{timeLabel}</span>
