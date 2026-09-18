@@ -1,0 +1,237 @@
+/* Apple boot, lock/login, welcome and transition surfaces. */
+
+.apple-session {
+  position: fixed;
+  inset: 0;
+  z-index: 200000;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.apple-boot-session,
+.apple-welcome-session,
+.apple-transition-session {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+}
+
+.apple-boot-session__mark,
+.apple-welcome-session__mark,
+.apple-transition-session__mark {
+  font-size: clamp(64px, 10vw, 108px);
+  line-height: 1;
+  font-weight: 400;
+  text-rendering: geometricPrecision;
+}
+
+.apple-boot-session__progress {
+  width: min(220px, 44vw);
+  height: 5px;
+  margin-top: 46px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.22);
+}
+
+.apple-boot-session__progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #fff;
+  transition: width 90ms linear;
+}
+
+.apple-login-session,
+.apple-lock-session {
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.apple-login-session__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(12,15,22,0.18);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+}
+
+.apple-login-session__card {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
+
+.apple-login-session__avatar {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 28%, rgba(255,255,255,0.42), transparent 34%),
+    linear-gradient(145deg, #78a8ee, #315f9d);
+  border: 2px solid rgba(255,255,255,0.72);
+  box-shadow: 0 12px 38px rgba(0,0,0,0.3);
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.apple-login-session__card > strong {
+  font-size: 20px;
+}
+
+.apple-login-session__login {
+  min-width: 118px;
+  height: 34px;
+  padding: 0 18px;
+  border: 1px solid rgba(255,255,255,0.38);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.22);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  color: #fff;
+  font-weight: 600;
+}
+
+.apple-login-session__power {
+  position: absolute;
+  right: 28px;
+  bottom: 26px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(40,40,44,0.5);
+  color: #fff;
+  font-size: 20px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.apple-lock-session {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(54px, env(safe-area-inset-top)) 18px max(28px, env(safe-area-inset-bottom));
+}
+
+.apple-lock-session::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(8,12,20,0.08), rgba(8,12,20,0.24));
+}
+
+.apple-lock-session__clock,
+.apple-lock-session__open {
+  position: relative;
+  z-index: 1;
+}
+
+.apple-lock-session__clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.34);
+}
+
+.apple-lock-session__clock > span {
+  font-size: clamp(64px, 14vw, 110px);
+  font-weight: 200;
+  letter-spacing: -0.06em;
+}
+
+.apple-lock-session__clock > small {
+  margin-top: 4px;
+  font-size: clamp(15px, 2.6vw, 22px);
+  font-weight: 500;
+}
+
+.apple-lock-session__open {
+  border: 0;
+  background: transparent;
+  color: rgba(255,255,255,0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.4);
+}
+
+.apple-lock-session__chevron {
+  font-size: 28px;
+  animation: apple-lock-hint 1.6s ease-in-out infinite;
+}
+
+.apple-welcome-session {
+  gap: 16px;
+  animation: apple-session-fade 720ms ease both;
+}
+
+.apple-welcome-session > span {
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0.82;
+}
+
+.apple-transition-session {
+  gap: 18px;
+}
+
+.apple-transition-session__mark {
+  font-size: 72px;
+}
+
+.apple-transition-session > span {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.apple-transition-session__spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255,255,255,0.28);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: apple-session-spin 700ms linear infinite;
+}
+
+@keyframes apple-lock-hint {
+  0%, 100% { transform: translateY(2px); opacity: 0.55; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+
+@keyframes apple-session-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes apple-session-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 520px) {
+  .apple-login-session__avatar {
+    width: 78px;
+    height: 78px;
+    font-size: 34px;
+  }
+
+  .apple-login-session__power {
+    right: 18px;
+    bottom: 18px;
+  }
+}
