@@ -1,4 +1,4 @@
-import { useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import iosWifiIcon from '../../../../eat/homescreen-main/public/icons/wifi.svg';
 import iosBatteryIcon from '../../../../eat/homescreen-main/public/icons/battery-75.svg';
 import macWifiIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/wifi.svg';
@@ -69,7 +69,38 @@ export function AppleSystemBar({
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
   const [systemMenu, setSystemMenu] = useState<'file' | 'view' | 'go' | 'window' | 'help' | null>(null);
+  const [iosWifiEnabled, setIosWifiEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-wifi-enabled') !== 'false';
+  });
+  const [iosAirplaneEnabled, setIosAirplaneEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('ios-airplane-enabled') === 'true';
+  });
+  const [macWifiEnabled, setMacWifiEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-wifi-enabled') !== 'false';
+  });
   const iosSwipeStart = useRef<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const handleIosConnectivity = (event: Event) => {
+      const customEvent = event as CustomEvent<{ wifi?: boolean; airplane?: boolean }>;
+      if (typeof customEvent.detail?.wifi === 'boolean') setIosWifiEnabled(customEvent.detail.wifi);
+      if (typeof customEvent.detail?.airplane === 'boolean') setIosAirplaneEnabled(customEvent.detail.airplane);
+    };
+    const handleMacConnectivity = (event: Event) => {
+      const customEvent = event as CustomEvent<{ wifi?: boolean }>;
+      if (typeof customEvent.detail?.wifi === 'boolean') setMacWifiEnabled(customEvent.detail.wifi);
+    };
+
+    window.addEventListener('ios-connectivity-changed', handleIosConnectivity);
+    window.addEventListener('macos-connectivity-changed', handleMacConnectivity);
+    return () => {
+      window.removeEventListener('ios-connectivity-changed', handleIosConnectivity);
+      window.removeEventListener('macos-connectivity-changed', handleMacConnectivity);
+    };
+  }, []);
 
   if (!isMac && !isIos) return null;
 
@@ -137,7 +168,9 @@ export function AppleSystemBar({
               <i />
               <i />
             </span>
-            <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="" />
+            {!iosAirplaneEnabled && iosWifiEnabled && (
+              <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="" />
+            )}
             <span
               className={`apple-ios-battery-meter ${batteryCharging ? 'is-charging' : ''}`}
               aria-label={`Battery ${batteryLevel ?? 75}%`}
@@ -462,7 +495,11 @@ export function AppleSystemBar({
           aria-expanded={statusMenu === 'wifi'}
           aria-label="Wi-Fi status"
         >
-          <img className="apple-macos-status-icon apple-macos-wifi-icon" src={macWifiIcon} alt="" />
+          <img
+            className={`apple-macos-status-icon apple-macos-wifi-icon ${macWifiEnabled ? '' : 'is-off'}`}
+            src={macWifiIcon}
+            alt=""
+          />
         </button>
         {statusMenu && (
           <div className={`apple-status-menu apple-status-menu--${statusMenu}`} role="menu">
@@ -491,11 +528,11 @@ export function AppleSystemBar({
               <>
                 <header>
                   <strong>Wi-Fi</strong>
-                  <span>On</span>
+                  <span>{macWifiEnabled ? 'On' : 'Off'}</span>
                 </header>
                 <div className="apple-status-menu__row">
                   <span>Connection</span>
-                  <strong>Browser network</strong>
+                  <strong>{macWifiEnabled ? 'Browser network' : 'Not Connected'}</strong>
                 </div>
                 <button
                   type="button"
