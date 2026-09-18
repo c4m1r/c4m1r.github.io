@@ -1111,6 +1111,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           closeStartMenu();
         }}
         onOpenSettings={() => launchApp('control-panel')}
+        onOpenAbout={() => launchApp('about')}
+        onHideActiveApp={() => {
+          if (focusedWindow) handleMinimizeWindow(focusedWindow.id);
+        }}
+        onHideOtherApps={() => {
+          if (!focusedWindow) return;
+          windows
+            .filter((window) => window.id !== focusedWindow.id && !window.minimized)
+            .forEach((window) => handleMinimizeWindow(window.id));
+        }}
         canQuitActiveApp={Boolean(focusedWindow)}
         onQuitActiveApp={() => {
           if (focusedWindow) handleCloseWindow(focusedWindow.id);
