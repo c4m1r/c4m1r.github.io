@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { getOsClassName } from '../../shells/os/osClassNames';
 import { THEME_ASSETS, ThemeAssetId } from './themeAssets';
+import { AppleBootScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 
 interface BootScreenProps {
   onComplete: () => void;
@@ -34,6 +35,10 @@ export function BootScreen({ onComplete }: BootScreenProps) {
 
     return () => clearInterval(interval);
   }, [onComplete]);
+
+  if (isAppleTheme(theme)) {
+    return <AppleBootScreen theme={theme} onComplete={onComplete} />;
+  }
 
   if (theme === 'win-98') {
     return (
