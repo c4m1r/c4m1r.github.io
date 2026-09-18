@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Grid, List, Search } from 'lucide-react';
 import folderIcon from '../../themes/winxp/assets/icons/folder_plain.png';
 import computerIcon from '../../themes/winxp/assets/icons/mycomputer.png';
 import searchIconXp from '../../themes/winxp/assets/toolbar/search.png';
@@ -11,6 +11,10 @@ import forwardIcon from '../../themes/winxp/assets/toolbar/forward.png';
 import upIcon from '../../themes/winxp/assets/toolbar/folder.png';
 import goIcon from '../../themes/winxp/assets/toolbar/go.png';
 import { getItemsFromPath, getFileIcon, FileSystemItem, initialFileSystem } from '../../utils/FileSystem';
+import appleFolderIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/folder-generic.png';
+import appleDocumentIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/document.svg';
+import appleImageIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/image.svg';
+import appleDriveIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/hard-drive.svg';
 
 export interface MyComputerProps {
   currentPath?: string;
@@ -31,6 +35,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   );
   const [showSidebar, setShowSidebar] = useState(true);
   const isWindowsXp = theme === 'win-xp';
+  const isAppleExplorer = theme === 'macos-26' || theme.startsWith('ios-');
+  const isIosExplorer = theme.startsWith('ios-');
 
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     tasks: true,
@@ -225,6 +231,161 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   const menuItems = isRu
     ? ['Файл', 'Правка', 'Вид', 'Избранное', 'Сервис', 'Справка']
     : ['File', 'Edit', 'View', 'Favorites', 'Tools', 'Help'];
+
+  const getAppleItemIcon = (item: FileSystemItem) => {
+    if (item.type === 'drive') return appleDriveIcon;
+    if (item.type === 'folder') return appleFolderIcon;
+    if (/\.(png|jpe?g|gif|webp)$/i.test(item.name)) return appleImageIcon;
+    return appleDocumentIcon;
+  };
+
+  if (isAppleExplorer) {
+    const appleListView = viewMode === 'list' || viewMode === 'details';
+
+    return (
+      <div className="apple-file-browser">
+        <header className="apple-file-browser__toolbar">
+          <div className="apple-file-browser__nav">
+            <button type="button" onClick={handleBack} disabled={historyIndex === 0} aria-label="Back">
+              <ChevronLeft size={17} />
+            </button>
+            <button
+              type="button"
+              onClick={handleForward}
+              disabled={historyIndex >= history.length - 1}
+              aria-label="Forward"
+            >
+              <ChevronRight size={17} />
+            </button>
+          </div>
+
+          <div className="apple-file-browser__location">
+            <input
+              value={addressInput}
+              onChange={(event) => setAddressInput(event.target.value)}
+              onKeyDown={handleAddressSubmit}
+              aria-label={isRu ? 'Путь' : 'Location'}
+            />
+          </div>
+
+          <div className="apple-file-browser__tools">
+            <button
+              type="button"
+              className={!appleListView ? 'is-active' : ''}
+              onClick={() => setViewMode('icons')}
+              aria-label="Grid view"
+            >
+              <Grid size={15} />
+            </button>
+            <button
+              type="button"
+              className={appleListView ? 'is-active' : ''}
+              onClick={() => setViewMode('list')}
+              aria-label="List view"
+            >
+              <List size={15} />
+            </button>
+          </div>
+        </header>
+
+        <div className="apple-file-browser__body">
+          {!isIosExplorer && (
+            <aside className="apple-file-browser__sidebar">
+              <small>{isRu ? 'Избранное' : 'Favorites'}</small>
+              <button type="button" onClick={() => navigateToPath('My Computer')}>
+                <img src={appleDriveIcon} alt="" />
+                <span>Macintosh HD</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop')}
+              >
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Рабочий стол' : 'Desktop'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents')}
+              >
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Документы' : 'Documents'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures')}
+              >
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Изображения' : 'Pictures'}</span>
+              </button>
+            </aside>
+          )}
+
+          <main className="apple-file-browser__content">
+            <div className="apple-file-browser__content-head">
+              <div>
+                <small>{isIosExplorer ? (isRu ? 'Файлы' : 'Files') : 'Finder'}</small>
+                <strong>{path === 'My Computer' ? (isIosExplorer ? (isRu ? 'Обзор' : 'Browse') : 'Macintosh HD') : path.split('\\').filter(Boolean).pop() || path}</strong>
+              </div>
+              <label className="apple-file-browser__search">
+                <Search size={13} />
+                <input placeholder={isRu ? 'Поиск' : 'Search'} aria-label={isRu ? 'Поиск' : 'Search'} />
+              </label>
+            </div>
+
+            {appleListView ? (
+              <div className="apple-file-browser__list">
+                {items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={selectedItem === item.name ? 'is-selected' : ''}
+                    onClick={() => {
+                      setSelectedItem(item.name);
+                      if (isIosExplorer) handleNavigate(item);
+                    }}
+                    onDoubleClick={() => {
+                      if (!isIosExplorer) handleNavigate(item);
+                    }}
+                  >
+                    <img src={getAppleItemIcon(item)} alt="" />
+                    <span>{item.name}</span>
+                    <small>{item.size || (item.type === 'folder' ? (isRu ? 'Папка' : 'Folder') : '')}</small>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="apple-file-browser__grid">
+                {items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={selectedItem === item.name ? 'is-selected' : ''}
+                    onClick={() => {
+                      setSelectedItem(item.name);
+                      if (isIosExplorer) handleNavigate(item);
+                    }}
+                    onDoubleClick={() => {
+                      if (!isIosExplorer) handleNavigate(item);
+                    }}
+                  >
+                    <span className="apple-file-browser__item-icon">
+                      <img src={getAppleItemIcon(item)} alt="" />
+                    </span>
+                    <span>{item.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </main>
+        </div>
+
+        <footer className="apple-file-browser__status">
+          <span>{items.length} {isRu ? 'объектов' : 'items'}</span>
+          {selectedItem && <span>{selectedItem}</span>}
+        </footer>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full bg-white font-tahoma text-xs select-none">
