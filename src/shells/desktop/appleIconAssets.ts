@@ -7,6 +7,8 @@ import macSettingsIcon from '../../../eat/macos-portfolio-main/public/icons/sett
 import macPhotosIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/photos.png';
 import macMailIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/mail.png';
 import macFolderGenericIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/folder-generic.png';
+import macFinderIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/finder.png';
+import macTrashIcon from '../../../eat/macos-portfolio-main/public/images/trash.webp';
 import macNotesIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/notes.png';
 import macCalendarIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/calendar.png';
 import macCalculatorIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/calculator.png';
@@ -48,6 +50,7 @@ const MODERN_IOS_ICON_BY_ID: Readonly<Record<string, string>> = {
   blog: iosNewsIcon,
   news: iosNewsIcon,
   notepad: iosNotesIcon,
+  'my-computer': iosFilesIcon,
 };
 
 const IOS9_ICON_BY_ID: Readonly<Record<string, string>> = {
@@ -57,6 +60,11 @@ const IOS9_ICON_BY_ID: Readonly<Record<string, string>> = {
   'control-panel': ios9SettingsIcon,
   pictures: ios9PhotosIcon,
   calendar: ios9CalendarIcon,
+};
+
+export const MACOS_SYSTEM_ICON_BY_ID: Readonly<Record<string, string>> = {
+  'my-computer': macFinderIcon,
+  'recycle-bin': macTrashIcon,
 };
 
 export const MACOS_APP_ICON_BY_ID: Readonly<Record<string, string>> = {
