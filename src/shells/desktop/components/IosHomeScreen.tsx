@@ -127,6 +127,29 @@ export function IosHomeScreen({
     return desktopIcons.filter((icon) => icon.label.toLowerCase().includes(normalized));
   }, [desktopIcons, query]);
 
+  const appLibraryGroups = useMemo(() => {
+    const definitions = [
+      { name: 'Social', ids: new Set(['outlook']) },
+      { name: 'Productivity', ids: new Set(['notepad', 'calculator', 'calendar', 'terminal', 'projects-grid', 'wiki', 'blog']) },
+      { name: 'Entertainment', ids: new Set(['windows-media-player', 'winamp', 'pictures', 'minesweeper']) },
+      { name: 'Utilities', ids: new Set(['control-panel', 'internet-explorer', 'task-manager', 'about', 'help']) },
+    ];
+
+    const assigned = new Set<string>();
+    const result = definitions
+      .map((definition) => {
+        const apps = desktopIcons.filter((icon) => definition.ids.has(icon.id));
+        apps.forEach((icon) => assigned.add(icon.id));
+        return { name: definition.name, apps };
+      })
+      .filter((group) => group.apps.length > 0);
+
+    const other = desktopIcons.filter((icon) => !assigned.has(icon.id));
+    if (other.length > 0) result.push({ name: 'Other', apps: other });
+
+    return result;
+  }, [desktopIcons]);
+
   const spotlightApps = useMemo(() => {
     const normalized = searchQuery.trim().toLowerCase();
     if (!normalized) return desktopIcons.slice(0, 8);
@@ -348,9 +371,22 @@ export function IosHomeScreen({
                     aria-label="Search App Library"
                   />
                 </label>
-                <div className="ios-app-library__grid">
-                  {filteredApps.map((icon) => renderIcon(icon, true))}
-                </div>
+                {query.trim() ? (
+                  <div className="ios-app-library__grid">
+                    {filteredApps.map((icon) => renderIcon(icon, true))}
+                  </div>
+                ) : (
+                  <div className="ios-app-library__groups">
+                    {appLibraryGroups.map((group) => (
+                      <section key={group.name} className="ios-app-library__group">
+                        <small>{group.name}</small>
+                        <div className="ios-app-library__grid">
+                          {group.apps.map((icon) => renderIcon(icon, true))}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
