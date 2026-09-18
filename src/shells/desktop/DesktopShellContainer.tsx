@@ -890,35 +890,60 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           setContextMenu(null);
           return;
         }
+        const desktopMenuItems: ContextMenuItem[] = themeKey === 'macos-26'
+          ? [
+              { label: 'New Folder', disabled: true },
+              { separator: true },
+              { label: 'Get Info', disabled: true },
+              {
+                label: 'Change Desktop Background…',
+                onClick: () => launchApp('control-panel'),
+              },
+              { separator: true },
+              { label: 'Use Stacks', disabled: true },
+              {
+                label: 'Sort By',
+                submenu: [
+                  { label: 'Name' },
+                  { label: 'Kind' },
+                  { label: 'Date Modified' },
+                  { label: 'Size' },
+                ],
+              },
+              { label: 'Clean Up', disabled: true },
+              { label: 'Show View Options', disabled: true },
+            ]
+          : [
+              {
+                label: 'Arrange Icons By', submenu: [
+                  { label: 'Name' },
+                  { label: 'Size' },
+                  { label: 'Type' },
+                  { label: 'Modified' },
+                  { separator: true },
+                  { label: 'Auto Arrange' },
+                  { label: 'Align to Grid' },
+                ]
+              },
+              { label: 'Refresh', onClick: () => { } },
+              { separator: true },
+              { label: 'Paste', disabled: true },
+              { separator: true },
+              {
+                label: 'New', submenu: [
+                  { label: 'Folder' },
+                  { label: 'Shortcut' },
+                  { separator: true },
+                  { label: 'Text Document' },
+                ]
+              },
+              { label: 'Properties' },
+            ];
+
         setContextMenu({
           x: e.clientX,
           y: e.clientY,
-          items: [
-            {
-              label: 'Arrange Icons By', submenu: [
-                { label: 'Name' },
-                { label: 'Size' },
-                { label: 'Type' },
-                { label: 'Modified' },
-                { separator: true },
-                { label: 'Auto Arrange' },
-                { label: 'Align to Grid' },
-              ]
-            },
-            { label: 'Refresh', onClick: () => { } },
-            { separator: true },
-            { label: 'Paste', disabled: true },
-            { separator: true },
-            {
-              label: 'New', submenu: [
-                { label: 'Folder' },
-                { label: 'Shortcut' },
-                { separator: true },
-                { label: 'Text Document' },
-              ]
-            },
-            { label: 'Properties' },
-          ],
+          items: desktopMenuItems,
         });
       }}
     >
