@@ -53,6 +53,7 @@ import { AppleMenuSurface } from './components/AppleMenuSurface';
 import { AppleNotificationCenter } from './components/AppleNotificationCenter';
 import { AppleSpotlight } from './components/AppleSpotlight';
 import { AppleDesktopWidgets } from './components/AppleDesktopWidgets';
+import { AppleLockScreen } from './components/AppleLockScreen';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -93,6 +94,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
   const [showAppleMenu, setShowAppleMenu] = useState(false);
   const [showSpotlight, setShowSpotlight] = useState(false);
+  const [showAppleLockScreen, setShowAppleLockScreen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
@@ -1067,8 +1069,24 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           onForceQuit={() => {
             if (focusedWindow) handleCloseWindow(focusedWindow.id);
           }}
+          onLockScreen={() => {
+            setShowAppleLockScreen(true);
+            setShowAppleMenu(false);
+            setShowSpotlight(false);
+            setShowNotificationPanel(false);
+            setShowSystemActionMenu(false);
+          }}
           onLogOut={() => handleSystemCommand('logoff')}
           onShutdown={() => handleSystemCommand('shutdown')}
+        />
+      )}
+
+      {themeKey === 'macos-26' && (
+        <AppleLockScreen
+          open={showAppleLockScreen}
+          time={time}
+          language={language}
+          onUnlock={() => setShowAppleLockScreen(false)}
         />
       )}
 
