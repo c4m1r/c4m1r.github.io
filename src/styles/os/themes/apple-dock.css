@@ -96,24 +96,20 @@
   background: rgba(20,20,22,0.8);
 }
 
+.os-macos .apple-dock__item {
+  --dock-scale: 1;
+  transform: translateY(calc((var(--dock-scale) - 1) * -18px)) scale(var(--dock-scale));
+  z-index: calc(1 + (var(--dock-scale) - 1) * 10);
+  transition: transform 85ms ease-out, filter 120ms ease;
+}
+
 .os-macos .apple-dock__item:hover {
-  transform: translateY(-8px) scale(1.28);
-  z-index: 4;
-}
-
-.os-macos .apple-dock__item:hover + .apple-dock__item,
-.os-macos .apple-dock__item:has(+ .apple-dock__item:hover) {
-  transform: translateY(-4px) scale(1.10);
-}
-
-.os-macos .apple-dock__item:hover + .apple-dock__item + .apple-dock__item,
-.os-macos .apple-dock__item:has(+ .apple-dock__item + .apple-dock__item:hover) {
-  transform: translateY(-1px) scale(1.035);
+  z-index: 8;
 }
 
 .os-macos .apple-dock__item:hover .apple-dock__tooltip {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-50%) translateY(calc((var(--dock-scale) - 1) * -6px));
 }
 
 .os-macos .apple-dock__item.is-active .apple-dock__icon {
@@ -167,7 +163,7 @@
     height: 40px;
   }
 
-  .os-macos .apple-dock__item:hover {
+  .os-macos .apple-dock__item {
     transform: none;
   }
 }
