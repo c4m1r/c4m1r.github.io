@@ -1,5 +1,6 @@
 import { useApp } from '../../../contexts/useApp';
 import { StartMenu } from './start-menu/StartMenu';
+import { AppleLauncherSurface } from './AppleLauncherSurface';
 import { getStartMenuSurface } from '../runtime/startMenuSurface';
 
 export interface DesktopStartMenuSurfaceProps {
@@ -23,6 +24,15 @@ export function DesktopStartMenuSurface({
 
   if (!isOpen) {
     return null;
+  }
+
+  if (theme === 'macos-26' || theme.startsWith('ios-')) {
+    return (
+      <AppleLauncherSurface
+        onClose={onClose}
+        onLaunchApp={onLaunchApp}
+      />
+    );
   }
 
   const surfaceInfo = getStartMenuSurface(theme, language);
