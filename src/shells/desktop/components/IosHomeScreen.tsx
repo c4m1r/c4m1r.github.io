@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEve
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type DesktopIcon } from '../desktopTypes';
 import { getIosIconMap } from '../appleIconAssets';
+import { useDeviceBattery } from '../hooks/useDeviceBattery';
 
 interface IosHomeScreenProps {
   theme: ThemeId;
@@ -39,8 +40,6 @@ export function IosHomeScreen({
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState('');
   const [now, setNow] = useState(() => new Date());
-  const [batteryLevel, setBatteryLevel] = useState<number | null>(null);
-  const [batteryCharging, setBatteryCharging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef<number | null>(null);
@@ -54,43 +53,7 @@ export function IosHomeScreen({
     return () => window.clearInterval(timer);
   }, [modernHome]);
 
-  useEffect(() => {
-    if (!modernHome || typeof navigator === 'undefined') return;
-
-    let battery:
-      | {
-          level: number;
-          charging: boolean;
-          addEventListener: (type: string, listener: () => void) => void;
-          removeEventListener: (type: string, listener: () => void) => void;
-        }
-      | undefined;
-
-    const batteryNavigator = navigator as Navigator & {
-      getBattery?: () => Promise<typeof battery>;
-    };
-
-    if (!batteryNavigator.getBattery) return;
-
-    const syncBattery = () => {
-      if (!battery) return;
-      setBatteryLevel(Math.round(battery.level * 100));
-      setBatteryCharging(battery.charging);
-    };
-
-    void batteryNavigator.getBattery().then((manager) => {
-      if (!manager) return;
-      battery = manager;
-      syncBattery();
-      battery.addEventListener('levelchange', syncBattery);
-      battery.addEventListener('chargingchange', syncBattery);
-    });
-
-    return () => {
-      battery?.removeEventListener('levelchange', syncBattery);
-      battery?.removeEventListener('chargingchange', syncBattery);
-    };
-  }, [modernHome]);
+  const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(modernHome);
 
   const calendarIcon = desktopIcons.find((icon) => icon.id === 'calendar');
 
