@@ -63,6 +63,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('ios-focus-enabled') === 'true';
   });
+  const [macFocusEnabled, setMacFocusEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-focus-enabled') === 'true';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -103,6 +107,16 @@ export function ControlPanel() {
     return () => window.removeEventListener('ios-focus-changed', handleFocusChange);
   }, []);
 
+  useEffect(() => {
+    const handleMacFocusChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') setMacFocusEnabled(customEvent.detail);
+    };
+
+    window.addEventListener('macos-focus-changed', handleMacFocusChange);
+    return () => window.removeEventListener('macos-focus-changed', handleMacFocusChange);
+  }, []);
+
   const setConnectivity = (
     key: 'wifi' | 'bluetooth' | 'cellular' | 'airplane',
     value: boolean
@@ -132,6 +146,12 @@ export function ControlPanel() {
     setFocusEnabled(value);
     localStorage.setItem('ios-focus-enabled', String(value));
     window.dispatchEvent(new CustomEvent('ios-focus-changed', { detail: value }));
+  };
+
+  const setMacFocusMode = (value: boolean) => {
+    setMacFocusEnabled(value);
+    localStorage.setItem('macos-focus-enabled', String(value));
+    window.dispatchEvent(new CustomEvent('macos-focus-changed', { detail: value }));
   };
 
   const { wallpapers, loading: wallpapersLoading } = useGallery();
@@ -188,7 +208,7 @@ export function ControlPanel() {
             ? ['Вывод', 'Ввод', 'Звуковые эффекты']
             : ['Output', 'Input', 'Sound Effects'],
         },
-        ...(isIos ? [{
+        ...((isIos || isMac) ? [{
           id: 'focus',
           title: isRu ? 'Фокусирование' : 'Focus',
           emoji: '🌙',
@@ -612,7 +632,7 @@ export function ControlPanel() {
                     else if (category.id === 'maintenance') setView('systemInfo');
                     else if (category.id === 'accessibility' && isIos) setView('accessibility');
                     else if (category.id === 'network' && (isIos || isMac)) setView('network');
-                    else if (category.id === 'focus' && isIos) setView('focus');
+                    else if (category.id === 'focus' && (isIos || isMac)) setView('focus');
                   }}
                 >
                   <div className="flex items-start gap-3 mb-2">
@@ -768,7 +788,7 @@ export function ControlPanel() {
         )}
 
         {/* ── Apple Focus view ── */}
-        {view === 'focus' && isIos && (
+        {view === 'focus' && (isIos || isMac) && (
           <div className="space-y-5">
             <div>
               <button
@@ -802,9 +822,12 @@ export function ControlPanel() {
                 <button
                   type="button"
                   role="switch"
-                  aria-checked={focusEnabled}
-                  className={`ios-settings-switch ${focusEnabled ? 'is-on' : ''}`}
-                  onClick={() => setFocusMode(!focusEnabled)}
+                  aria-checked={isMac ? macFocusEnabled : focusEnabled}
+                  className={`ios-settings-switch ${(isMac ? macFocusEnabled : focusEnabled) ? 'is-on' : ''}`}
+                  onClick={() => {
+                    if (isMac) setMacFocusMode(!macFocusEnabled);
+                    else setFocusMode(!focusEnabled);
+                  }}
                 >
                   <span />
                 </button>
