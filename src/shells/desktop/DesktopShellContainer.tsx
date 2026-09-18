@@ -50,6 +50,7 @@ import { AppleSystemBar } from './components/AppleSystemBar';
 import { AppleDock } from './components/AppleDock';
 import { AppleControlCenter } from './components/AppleControlCenter';
 import { AppleMenuSurface } from './components/AppleMenuSurface';
+import { AppleNotificationCenter } from './components/AppleNotificationCenter';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -913,7 +914,24 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           setShowVolumePanel(false);
           setShowNotificationPanel(false);
         }}
+        onNotificationCenterToggle={() => {
+          if (themeKey !== 'macos-26') return;
+          setShowNotificationPanel((prev) => !prev);
+          setShowSystemActionMenu(false);
+          setShowAppleMenu(false);
+          closeStartMenu();
+          setShowVolumePanel(false);
+        }}
       />
+
+      {themeKey === 'macos-26' && (
+        <AppleNotificationCenter
+          open={showNotificationPanel}
+          time={time}
+          language={language}
+          onClose={() => setShowNotificationPanel(false)}
+        />
+      )}
 
       {themeKey === 'macos-26' && (
         <AppleMenuSurface
