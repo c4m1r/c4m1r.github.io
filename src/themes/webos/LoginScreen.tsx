@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { getOsClassName } from '../../shells/os/osClassNames';
 import { translations } from '../../i18n/translations';
 import { Power } from 'lucide-react';
 import userAvatar from '../winxp/assets/user.gif';
@@ -12,17 +13,7 @@ interface LoginScreenProps {
 export function LoginScreen({ onLogin }: LoginScreenProps) {
   const { language, theme, setMode } = useApp();
   const t = translations[language].xp;
-  const OS_CLASS_MAP: Record<string, string> = {
-    'win-xp': 'winxp',
-    'webos':  'winxp',
-    'win-98': 'classic',
-    'win7':   'win7',
-    'win10':  'win7',
-    'win11':  'win7',
-    'ubuntu': 'ubuntu',
-    'arch':   'ubuntu',
-  };
-  const osClassName = OS_CLASS_MAP[theme] ?? 'classic';
+  const osClassName = getOsClassName(theme);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   if (theme === 'win-98') {
