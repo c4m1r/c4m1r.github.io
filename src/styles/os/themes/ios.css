@@ -641,3 +641,100 @@
 .os-ios:has(.window-skin-ios)::after {
   background: rgba(25,25,28,0.78);
 }
+
+
+/* App Library is the terminal home-screen page on modern iOS generations. */
+.os-ios .ios-app-library {
+  display: block;
+  padding: 18px clamp(16px, 4vw, 42px) 12px;
+  overflow: hidden;
+}
+
+.os-ios .ios-app-library__content {
+  height: 100%;
+  overflow: auto;
+  padding: 0 2px 18px;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.os-ios .ios-app-library__content > h2 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 9px rgba(0,0,0,0.36);
+}
+
+.os-ios .ios-app-library__search {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  margin-bottom: 18px;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.20);
+  -webkit-backdrop-filter: saturate(150%) blur(18px);
+  backdrop-filter: saturate(150%) blur(18px);
+  color: rgba(255,255,255,0.82);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+
+.os-ios .ios-app-library__search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+}
+
+.os-ios .ios-app-library__search input::placeholder {
+  color: rgba(255,255,255,0.68);
+}
+
+.os-ios .ios-app-library__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 2.4vh, 24px) clamp(8px, 3vw, 22px);
+  align-items: start;
+}
+
+.os-ios .ios-app-library__app .ios-home-icon__glyph {
+  width: clamp(50px, 6vw, 68px);
+  height: clamp(50px, 6vw, 68px);
+}
+
+.os-ios .ios-home-screen__dot.is-library {
+  width: 12px;
+  border-radius: 4px;
+}
+
+.os-ios .ios-home-screen[data-app-library="true"] .ios-home-screen__pager {
+  opacity: 0.82;
+}
+
+@media (min-width: 860px) {
+  .os-ios .ios-app-library__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .os-ios .ios-app-library {
+    padding: 16px 12px 8px;
+  }
+
+  .os-ios .ios-app-library__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px 8px;
+  }
+
+  .os-ios .ios-app-library__app .ios-home-icon__glyph {
+    width: 52px;
+    height: 52px;
+  }
+}
