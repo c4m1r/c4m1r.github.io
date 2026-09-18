@@ -104,6 +104,11 @@
 /* ── 4. iOS 5.1.1 Skeuomorphic ─────────────────────────────── */
 .os-ios-5 {
   background-color: #3b5998 !important;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+    url('../../../content/pictures/wallpapers/ios/ios6-background-3.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
 }
 
 .os-ios-5 .taskbar {
@@ -138,4 +143,42 @@
 
 .os-ios-5 .ios-settings-item {
   border-bottom: 1px solid #e0e0e0;
+}
+
+
+/* Shared iPad home-screen refinements inspired by the /eat iOS references. */
+.os-ios .desktop-icon__label,
+.os-ios .desktop-icon span,
+.os-ios [class*="desktop-icon"] span {
+  color: #fff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72) !important;
+}
+
+.os-ios .desktop-icon img,
+.os-ios [class*="desktop-icon"] img {
+  border-radius: 22% !important;
+}
+
+.os-ios .taskbar {
+  left: 50% !important;
+  right: auto !important;
+  width: auto !important;
+  min-width: min(520px, calc(100% - 28px)) !important;
+  transform: translateX(-50%);
+  bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25) !important;
+}
+
+@media (max-width: 760px) {
+  .os-ios .taskbar {
+    min-width: calc(100% - 16px) !important;
+    margin: 0 !important;
+  }
+
+  .os-ios .desktop-icon img,
+  .os-ios [class*="desktop-icon"] img {
+    max-width: 64px;
+    max-height: 64px;
+  }
 }
