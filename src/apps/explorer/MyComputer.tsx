@@ -358,12 +358,9 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           {!isIosExplorer && (
             <aside className="apple-file-browser__sidebar">
               <small>{isRu ? 'Избранное' : 'Favorites'}</small>
-              <button type="button" onClick={() => navigateToPath('My Computer')}>
-                <img src={appleDriveIcon} alt="" />
-                <span>Macintosh HD</span>
-              </button>
               <button
                 type="button"
+                className={path === 'C:\\Documents and Settings\\C4m1r\\Desktop' ? 'is-active' : ''}
                 onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop')}
               >
                 <img src={appleFolderIcon} alt="" />
@@ -371,6 +368,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               </button>
               <button
                 type="button"
+                className={path === 'C:\\Documents and Settings\\C4m1r\\My Documents' ? 'is-active' : ''}
                 onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents')}
               >
                 <img src={appleFolderIcon} alt="" />
@@ -378,10 +376,37 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               </button>
               <button
                 type="button"
-                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures')}
+                className={path === 'C:\\Documents and Settings\\C4m1r\\Desktop\\My Projects' ? 'is-active' : ''}
+                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop\\My Projects')}
               >
                 <img src={appleFolderIcon} alt="" />
-                <span>{isRu ? 'Изображения' : 'Pictures'}</span>
+                <span>{isRu ? 'Проекты' : 'Projects'}</span>
+              </button>
+              <button
+                type="button"
+                className={path === 'C:\\Documents and Settings\\C4m1r\\Desktop\\My Blog' ? 'is-active' : ''}
+                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop\\My Blog')}
+              >
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Блог' : 'Blog'}</span>
+              </button>
+
+              <small>{isRu ? 'Расположения' : 'Locations'}</small>
+              <button
+                type="button"
+                className={path === 'My Computer' || path === 'C:' ? 'is-active' : ''}
+                onClick={() => navigateToPath('My Computer')}
+              >
+                <img src={appleDriveIcon} alt="" />
+                <span>Macintosh HD</span>
+              </button>
+              <button
+                type="button"
+                className={path === 'C:\\Program Files' ? 'is-active' : ''}
+                onClick={() => navigateToPath('C:\\Program Files')}
+              >
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Приложения' : 'Applications'}</span>
               </button>
             </aside>
           )}
