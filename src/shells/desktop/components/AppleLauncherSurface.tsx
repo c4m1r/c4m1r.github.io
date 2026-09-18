@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useApp } from '../../../contexts/useApp';
 import { getOsAppTitle } from '../../os/osSkins';
+import { type Language } from '../../../i18n/translations';
 
 interface AppleLauncherSurfaceProps {
   onClose: () => void;
@@ -20,17 +21,27 @@ const APP_IDS = [
   'about',
 ] as const;
 
-const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], { en: string; ru: string }> = {
-  'internet-explorer': { en: 'Safari', ru: 'Safari' },
-  pictures: { en: 'Photos', ru: 'Фото' },
-  'control-panel': { en: 'Settings', ru: 'Настройки' },
-  notepad: { en: 'Notes', ru: 'Заметки' },
-  terminal: { en: 'Terminal', ru: 'Терминал' },
-  'my-cv': { en: 'My CV', ru: 'Моё резюме' },
-  'projects-grid': { en: 'Projects', ru: 'Проекты' },
-  blog: { en: 'Blog', ru: 'Блог' },
-  wiki: { en: 'Wiki', ru: 'Wiki' },
-  about: { en: 'About', ru: 'Обо мне' },
+const localizedTitle = (en: string, ru: string): Record<Language, string> => ({
+  en,
+  ru,
+  fr: en,
+  es: en,
+  zh: en,
+  ja: en,
+  ko: en,
+});
+
+const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], Record<Language, string>> = {
+  'internet-explorer': localizedTitle('Safari', 'Safari'),
+  pictures: localizedTitle('Photos', 'Фото'),
+  'control-panel': localizedTitle('Settings', 'Настройки'),
+  notepad: localizedTitle('Notes', 'Заметки'),
+  terminal: localizedTitle('Terminal', 'Терминал'),
+  'my-cv': localizedTitle('My CV', 'Моё резюме'),
+  'projects-grid': localizedTitle('Projects', 'Проекты'),
+  blog: localizedTitle('Blog', 'Блог'),
+  wiki: localizedTitle('Wiki', 'Wiki'),
+  about: localizedTitle('About', 'Обо мне'),
 };
 
 const GLYPHS: Record<string, string> = {
