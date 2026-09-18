@@ -98,6 +98,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [showAppleLockScreen, setShowAppleLockScreen] = useState(false);
   const [showAppleWidgetGallery, setShowAppleWidgetGallery] = useState(false);
+  const [assistiveTouchEnabled, setAssistiveTouchEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-assistive-touch-enabled') !== 'false';
+  });
   const [appleWidgetVisibility, setAppleWidgetVisibility] = useState({
     clock: true,
     battery: true,
@@ -136,6 +140,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     window.addEventListener('keydown', handleSpotlightShortcut);
     return () => window.removeEventListener('keydown', handleSpotlightShortcut);
   }, [theme]);
+
+  useEffect(() => {
+    const handleAssistiveTouchChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail !== 'boolean') return;
+      setAssistiveTouchEnabled(customEvent.detail);
+    };
+
+    window.addEventListener('ios-assistive-touch-changed', handleAssistiveTouchChange);
+    return () => window.removeEventListener('ios-assistive-touch-changed', handleAssistiveTouchChange);
+  }, []);
 
   useEffect(() => {
     const handleWallpaperChange = (e: Event) => {
@@ -1186,7 +1201,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
       {themeKey.startsWith('ios-') && themeKey !== 'ios-5' && (
         <IosAssistiveTouch
-          enabled
+          enabled={assistiveTouchEnabled}
           onHome={() => {
             windows.forEach((window) => handleCloseWindow(window.id));
             setShowSystemActionMenu(false);
