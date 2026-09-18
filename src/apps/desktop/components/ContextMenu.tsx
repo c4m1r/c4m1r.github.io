@@ -67,6 +67,9 @@ const CONTEXT_MENU_LABELS: Record<Language, ContextMenuDictionary> = {
     'Clean Up': 'Упорядочить',
     'Show View Options': 'Показать параметры вида',
     'Edit Widgets…': 'Изменить виджеты…',
+    'Remove App': 'Удалить приложение',
+    'Edit Home Screen': 'Изменить экран «Домой»',
+    'App Info': 'Информация',
   },
   fr: {
     Open: 'Ouvrir',
