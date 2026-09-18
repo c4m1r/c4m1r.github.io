@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight, House, RotateCw, Search, ShieldCheck } from 'lucide-react';
+import { useApp } from '../../contexts/useApp';
 
 interface AllowedSite {
   label: string;
@@ -30,6 +32,8 @@ const allowedSites: AllowedSite[] = [
 ];
 
 export function InternetExplorer() {
+  const { theme } = useApp();
+  const isAppleBrowser = theme === 'macos-26' || theme.startsWith('ios-');
   const defaultUrl = allowedSites[0]?.url ?? 'https://www.msn.com/en-us';
   const [currentUrl, setCurrentUrl] = useState(defaultUrl);
   const [addressBarValue, setAddressBarValue] = useState(defaultUrl);
@@ -91,8 +95,84 @@ export function InternetExplorer() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-white text-xs font-tahoma select-none">
-      <header className="flex flex-col border-b border-[#9eb7d3] bg-[#d6e5f6]">
+    <div className="browser-app flex h-full w-full flex-col bg-white text-xs font-tahoma select-none">
+      {isAppleBrowser ? (
+        <header className="browser-app__apple-chrome">
+          <div className="browser-app__apple-toolbar">
+            <div className="browser-app__apple-nav">
+              <button
+                type="button"
+                className="browser-app__apple-button"
+                onClick={goBack}
+                disabled={!canGoBack}
+                aria-label="Back"
+                title="Back"
+              >
+                <ChevronLeft size={17} strokeWidth={2.2} />
+              </button>
+              <button
+                type="button"
+                className="browser-app__apple-button"
+                onClick={goForward}
+                disabled={!canGoForward}
+                aria-label="Forward"
+                title="Forward"
+              >
+                <ChevronRight size={17} strokeWidth={2.2} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="browser-app__apple-address">
+              <ShieldCheck size={13} strokeWidth={2} aria-hidden="true" />
+              <input
+                value={addressBarValue}
+                onChange={(event) => setAddressBarValue(event.target.value)}
+                aria-label="Address"
+              />
+              {isLoading ? (
+                <span className="browser-app__apple-loading" aria-label="Loading" />
+              ) : (
+                <button type="submit" aria-label="Search or go" title="Search or go">
+                  <Search size={13} strokeWidth={2.2} />
+                </button>
+              )}
+            </form>
+
+            <div className="browser-app__apple-actions">
+              <button
+                type="button"
+                className="browser-app__apple-button"
+                onClick={() => navigateTo(defaultUrl)}
+                aria-label="Home"
+                title="Home"
+              >
+                <House size={15} strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                className="browser-app__apple-button"
+                onClick={() => navigateTo(currentUrl, false)}
+                aria-label="Reload"
+                title="Reload"
+              >
+                <RotateCw size={15} strokeWidth={2} />
+              </button>
+            </div>
+          </div>
+
+          <div className="browser-app__apple-favorites">
+            <span>{currentSite?.label ?? 'Browsing the web'}</span>
+            <div>
+              {allowedSites.map((site) => (
+                <button key={site.url} type="button" onClick={() => navigateTo(site.url)}>
+                  {site.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </header>
+      ) : (
+      <header className="browser-app__legacy-chrome flex flex-col border-b border-[#9eb7d3] bg-[#d6e5f6]">
         <div className="flex items-center gap-1 px-2 py-1 border-b border-[#b9cde3]">
           <button
             className="px-2 py-1 text-[11px] bg-white border border-[#7f9db9] rounded disabled:opacity-40"
@@ -146,8 +226,10 @@ export function InternetExplorer() {
           </button>
         </form>
       </header>
+      )}
 
-      <div className="flex border-b border-[#d3dae6] bg-[#f3f6fb] px-3 py-2 text-[11px] text-[#1a4fa3] items-center gap-4">
+      {!isAppleBrowser && (
+      <div className="browser-app__legacy-info flex border-b border-[#d3dae6] bg-[#f3f6fb] px-3 py-2 text-[11px] text-[#1a4fa3] items-center gap-4">
         <div className="flex flex-col">
           <span className="font-semibold">{currentSite?.label ?? 'Browsing the web'}</span>
           <span className="text-[#4f6d9b]">{currentSite?.description ?? currentUrl}</span>
@@ -172,8 +254,9 @@ export function InternetExplorer() {
           </select>
         </div>
       </div>
+      )}
 
-      <div className="flex-1 bg-white relative">
+      <div className="browser-app__viewport flex-1 bg-white relative">
         <iframe
           key={currentUrl}
           src={currentUrl}
@@ -183,17 +266,19 @@ export function InternetExplorer() {
           sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-pointer-lock allow-downloads"
         />
         {!isLoading ? null : (
-          <div className="absolute inset-0 bg-white/70 flex flex-col items-center justify-center text-[#1a4fa3] gap-2 text-sm">
+          <div className="browser-app__loading-overlay absolute inset-0 bg-white/70 flex flex-col items-center justify-center text-[#1a4fa3] gap-2 text-sm">
             <div className="w-10 h-10 border-4 border-[#1a4fa3] border-t-transparent rounded-full animate-spin" />
             Opening page...
           </div>
         )}
       </div>
 
-      <footer className="flex items-center justify-between border-t border-[#9eb7d3] bg-[#e4ecf6] px-3 py-1 text-[11px] text-[#1a4fa3]">
-        <span>Done</span>
-        <span>{currentUrl}</span>
-      </footer>
+      {!isAppleBrowser && (
+        <footer className="browser-app__legacy-footer flex items-center justify-between border-t border-[#9eb7d3] bg-[#e4ecf6] px-3 py-1 text-[11px] text-[#1a4fa3]">
+          <span>Done</span>
+          <span>{currentUrl}</span>
+        </footer>
+      )}
     </div>
   );
 }
