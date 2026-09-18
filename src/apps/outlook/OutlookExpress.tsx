@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { useApp } from '../../contexts/useApp';
+
 const folders = [
   { name: 'Inbox', count: 2, active: true },
   { name: 'Drafts', count: 1 },
@@ -37,13 +40,16 @@ You have new GitHub notifications waiting for you. Stay productive and keep your
 ];
 
 export function OutlookExpress() {
-  const activeMessage = sampleMessages[0];
+  const { theme } = useApp();
+  const isAppleMail = theme === 'macos-26' || theme.startsWith('ios-');
+  const [activeMessageId, setActiveMessageId] = useState(sampleMessages[0].id);
+  const activeMessage = sampleMessages.find((message) => message.id === activeMessageId) ?? sampleMessages[0];
 
   return (
-    <div className="flex h-full w-full bg-[#f3f3f3] text-xs font-tahoma text-[#1f1f1f] select-none">
-      <aside className="w-48 bg-[#d7e4f7] border-r border-[#9cb2cf] flex flex-col">
+    <div className="mail-app flex h-full w-full bg-[#f3f3f3] text-xs font-tahoma text-[#1f1f1f] select-none">
+      <aside className="mail-app__sidebar w-48 bg-[#d7e4f7] border-r border-[#9cb2cf] flex flex-col">
         <header className="px-3 py-2 border-b border-[#9cb2cf] bg-gradient-to-r from-[#1b4fa3] to-[#3c73d8] text-white text-[12px] font-semibold">
-          Outlook Shortcuts
+          {isAppleMail ? 'Mailboxes' : 'Outlook Shortcuts'}
         </header>
         <div className="flex-1 overflow-auto py-2">
           <div className="px-3 pb-2 text-[11px] text-[#1b4fa3] font-semibold uppercase">
@@ -75,11 +81,11 @@ export function OutlookExpress() {
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col">
-        <header className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-white to-[#e9f1ff] border-b border-[#c2d3e8] text-[11px] text-[#1b4fa3]">
+      <main className="mail-app__main flex-1 flex flex-col">
+        <header className="mail-app__toolbar flex items-center justify-between px-3 py-2 bg-gradient-to-r from-white to-[#e9f1ff] border-b border-[#c2d3e8] text-[11px] text-[#1b4fa3]">
           <div className="flex items-center gap-2">
             <span className="font-semibold">Inbox</span>
-            <span>(Local Folders)</span>
+            <span>{isAppleMail ? 'iCloud' : '(Local Folders)'}</span>
           </div>
           <div className="flex items-center gap-2 text-[#0f3469]">
             <button className="px-2 py-1 bg-white border border-[#9cb2cf] rounded hover:bg-[#dfe9ff]">
@@ -94,20 +100,21 @@ export function OutlookExpress() {
           </div>
         </header>
 
-        <section className="border-b border-[#c2d3e8] bg-white flex items-center px-3 py-1 text-[11px] text-[#1b4fa3] uppercase tracking-wide">
+        <section className="mail-app__columns border-b border-[#c2d3e8] bg-white flex items-center px-3 py-1 text-[11px] text-[#1b4fa3] uppercase tracking-wide">
           <span className="w-6">!</span>
           <span className="flex-1">From</span>
           <span className="flex-1">Subject</span>
           <span className="w-24 text-right">Received</span>
         </section>
 
-        <section className="bg-white border-b border-[#c2d3e8] h-32 overflow-auto">
+        <section className="mail-app__message-list bg-white border-b border-[#c2d3e8] h-32 overflow-auto">
           {sampleMessages.map((message) => (
             <article
               key={message.id}
-              className={`flex items-center px-3 py-2 text-[11px] border-b border-[#edf3ff] ${
-                message.id === activeMessage.id ? 'bg-[#dfe9ff]' : 'hover:bg-[#f6f9ff]'
+              className={`mail-app__message flex items-center px-3 py-2 text-[11px] border-b border-[#edf3ff] ${
+                message.id === activeMessage.id ? 'is-active bg-[#dfe9ff]' : 'hover:bg-[#f6f9ff]'
               }`}
+              onClick={() => setActiveMessageId(message.id)}
             >
               <span className="w-6 text-[#1b4fa3]">{message.id === 1 ? '•' : ''}</span>
               <span className="flex-1 font-semibold">{message.from}</span>
@@ -117,7 +124,7 @@ export function OutlookExpress() {
           ))}
         </section>
 
-        <section className="flex-1 bg-white px-4 py-3 overflow-auto text-[11px] leading-5 text-[#1f1f1f]">
+        <section className="mail-app__reader flex-1 bg-white px-4 py-3 overflow-auto text-[11px] leading-5 text-[#1f1f1f]">
           <header className="border-b border-[#c2d3e8] pb-2 mb-3">
             <div className="flex items-center gap-2 text-[#1b4fa3]">
               <span className="font-semibold uppercase">From:</span>
@@ -132,12 +139,12 @@ export function OutlookExpress() {
               <span>{activeMessage.date}</span>
             </div>
           </header>
-          <pre className="whitespace-pre-wrap font-sans text-[#1f1f1f] bg-[#f6f9ff] border border-[#c2d3e8] px-3 py-2 rounded">
+          <pre className="mail-app__body whitespace-pre-wrap font-sans text-[#1f1f1f] bg-[#f6f9ff] border border-[#c2d3e8] px-3 py-2 rounded">
             {activeMessage.body}
           </pre>
         </section>
 
-        <footer className="px-3 py-2 bg-[#d7e4f7] border-t border-[#9cb2cf] text-[10px] text-[#1b4fa3] flex items-center justify-between">
+        <footer className="mail-app__status px-3 py-2 bg-[#d7e4f7] border-t border-[#9cb2cf] text-[10px] text-[#1b4fa3] flex items-center justify-between">
           <span>Folder size: 1.3 MB</span>
           <span>Last checked: just now (simulated)</span>
         </footer>
