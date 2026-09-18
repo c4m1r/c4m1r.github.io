@@ -604,3 +604,428 @@
 .os-ios-26 .settings-category-symbol--accessibility {
   background: linear-gradient(145deg, #0a84ff, #0066cc);
 }
+
+
+/* Finder / Files presentation over the shared virtual filesystem. */
+.os-macos .apple-file-browser,
+.os-ios .apple-file-browser {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.os-macos .apple-file-browser__toolbar,
+.os-ios .apple-file-browser__toolbar {
+  min-height: 46px;
+  flex: none;
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(60,60,67,0.12);
+  background: rgba(246,246,248,0.86);
+  -webkit-backdrop-filter: saturate(165%) blur(22px);
+  backdrop-filter: saturate(165%) blur(22px);
+  display: grid;
+  grid-template-columns: auto minmax(140px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.os-macos .apple-file-browser__nav,
+.os-macos .apple-file-browser__tools,
+.os-ios .apple-file-browser__nav,
+.os-ios .apple-file-browser__tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.os-macos .apple-file-browser__nav button,
+.os-macos .apple-file-browser__tools button,
+.os-ios .apple-file-browser__nav button,
+.os-ios .apple-file-browser__tools button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3a3a3c;
+  display: grid;
+  place-items: center;
+}
+
+.os-macos .apple-file-browser__nav button:hover,
+.os-macos .apple-file-browser__tools button:hover {
+  background: rgba(118,118,128,0.10);
+}
+
+.os-macos .apple-file-browser__nav button:disabled,
+.os-ios .apple-file-browser__nav button:disabled {
+  opacity: 0.28;
+}
+
+.os-macos .apple-file-browser__tools button.is-active,
+.os-ios .apple-file-browser__tools button.is-active {
+  background: rgba(118,118,128,0.14);
+}
+
+.os-macos .apple-file-browser__location,
+.os-ios .apple-file-browser__location {
+  min-width: 0;
+  justify-self: center;
+  width: min(420px, 100%);
+}
+
+.os-macos .apple-file-browser__location input,
+.os-ios .apple-file-browser__location input {
+  width: 100%;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(60,60,67,0.10);
+  border-radius: 9px;
+  outline: none;
+  background: rgba(118,118,128,0.09);
+  color: #1d1d1f;
+  font: 500 11px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  text-align: center;
+}
+
+.os-macos .apple-file-browser__location input:focus,
+.os-ios .apple-file-browser__location input:focus {
+  border-color: rgba(0,122,255,0.42);
+  box-shadow: 0 0 0 2px rgba(0,122,255,0.09);
+}
+
+.os-macos .apple-file-browser__body,
+.os-ios .apple-file-browser__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.os-macos .apple-file-browser__sidebar {
+  width: 185px;
+  flex: none;
+  padding: 12px 9px;
+  border-right: 1px solid rgba(60,60,67,0.10);
+  background: rgba(235,235,239,0.78);
+  -webkit-backdrop-filter: saturate(155%) blur(20px);
+  backdrop-filter: saturate(155%) blur(20px);
+  overflow-y: auto;
+}
+
+.os-macos .apple-file-browser__sidebar > small {
+  display: block;
+  padding: 2px 8px 6px;
+  color: rgba(60,60,67,0.54);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.os-macos .apple-file-browser__sidebar button {
+  width: 100%;
+  min-height: 32px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #1d1d1f;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  font-size: 11px;
+}
+
+.os-macos .apple-file-browser__sidebar button:hover {
+  background: rgba(118,118,128,0.12);
+}
+
+.os-macos .apple-file-browser__sidebar img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.os-macos .apple-file-browser__sidebar button:first-of-type img {
+  filter: brightness(0) saturate(100%) invert(44%) sepia(89%) saturate(2248%) hue-rotate(196deg) brightness(103%) contrast(104%);
+}
+
+.os-macos .apple-file-browser__content,
+.os-ios .apple-file-browser__content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  overflow: auto;
+  background: rgba(255,255,255,0.58);
+}
+
+.os-macos .apple-file-browser__content-head,
+.os-ios .apple-file-browser__content-head {
+  min-height: 46px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.os-macos .apple-file-browser__content-head > div,
+.os-ios .apple-file-browser__content-head > div {
+  min-width: 0;
+}
+
+.os-macos .apple-file-browser__content-head small,
+.os-ios .apple-file-browser__content-head small {
+  display: block;
+  color: rgba(60,60,67,0.48);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.os-macos .apple-file-browser__content-head strong,
+.os-ios .apple-file-browser__content-head strong {
+  display: block;
+  max-width: 420px;
+  overflow: hidden;
+  font-size: 18px;
+  letter-spacing: -0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .apple-file-browser__search,
+.os-ios .apple-file-browser__search {
+  width: min(190px, 40%);
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: rgba(118,118,128,0.09);
+  color: rgba(60,60,67,0.54);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.os-macos .apple-file-browser__search input,
+.os-ios .apple-file-browser__search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1d1d1f;
+  font: inherit;
+}
+
+.os-macos .apple-file-browser__grid,
+.os-ios .apple-file-browser__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 18px 14px;
+  align-items: start;
+}
+
+.os-macos .apple-file-browser__grid > button,
+.os-ios .apple-file-browser__grid > button {
+  min-width: 0;
+  padding: 6px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #1d1d1f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.os-macos .apple-file-browser__grid > button:hover {
+  background: rgba(118,118,128,0.07);
+}
+
+.os-macos .apple-file-browser__grid > button.is-selected,
+.os-ios .apple-file-browser__grid > button.is-selected {
+  border-color: rgba(0,122,255,0.58);
+  background: rgba(0,122,255,0.08);
+}
+
+.os-macos .apple-file-browser__item-icon,
+.os-ios .apple-file-browser__item-icon {
+  width: 62px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+}
+
+.os-macos .apple-file-browser__item-icon img,
+.os-ios .apple-file-browser__item-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.12));
+}
+
+.os-macos .apple-file-browser__grid > button > span:last-child,
+.os-ios .apple-file-browser__grid > button > span:last-child {
+  width: 100%;
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .apple-file-browser__list,
+.os-ios .apple-file-browser__list {
+  overflow: hidden;
+  border: 1px solid rgba(60,60,67,0.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.64);
+}
+
+.os-macos .apple-file-browser__list > button,
+.os-ios .apple-file-browser__list > button {
+  width: 100%;
+  min-height: 38px;
+  padding: 5px 9px;
+  border: 0;
+  border-top: 1px solid rgba(60,60,67,0.07);
+  background: transparent;
+  color: #1d1d1f;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.os-macos .apple-file-browser__list > button:first-child,
+.os-ios .apple-file-browser__list > button:first-child {
+  border-top: 0;
+}
+
+.os-macos .apple-file-browser__list > button:hover {
+  background: rgba(118,118,128,0.07);
+}
+
+.os-macos .apple-file-browser__list > button.is-selected,
+.os-ios .apple-file-browser__list > button.is-selected {
+  background: #007aff;
+  color: #fff;
+}
+
+.os-macos .apple-file-browser__list img,
+.os-ios .apple-file-browser__list img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.os-macos .apple-file-browser__list small,
+.os-ios .apple-file-browser__list small {
+  opacity: 0.55;
+  font-size: 9px;
+}
+
+.os-macos .apple-file-browser__status,
+.os-ios .apple-file-browser__status {
+  min-height: 24px;
+  flex: none;
+  padding: 4px 10px;
+  border-top: 1px solid rgba(60,60,67,0.10);
+  background: rgba(246,246,248,0.88);
+  color: rgba(60,60,67,0.54);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 9px;
+}
+
+.os-ios .apple-file-browser__toolbar {
+  min-height: 48px;
+  padding: 7px 8px;
+}
+
+.os-ios .apple-file-browser__nav button,
+.os-ios .apple-file-browser__tools button {
+  width: 34px;
+  height: 34px;
+  color: #007aff;
+}
+
+.os-ios .apple-file-browser__location {
+  width: 100%;
+}
+
+.os-ios .apple-file-browser__location input {
+  height: 34px;
+  border-radius: 11px;
+  background: rgba(118,118,128,0.12);
+}
+
+.os-ios .apple-file-browser__content {
+  padding: 12px;
+  background: #f2f2f7;
+}
+
+.os-ios .apple-file-browser__content-head {
+  margin-bottom: 10px;
+}
+
+.os-ios .apple-file-browser__content-head strong {
+  font-size: 22px;
+}
+
+.os-ios .apple-file-browser__search {
+  display: none;
+}
+
+.os-ios .apple-file-browser__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 15px 8px;
+}
+
+.os-ios .apple-file-browser__item-icon {
+  width: 58px;
+  height: 50px;
+}
+
+.os-ios .apple-file-browser__grid > button > span:last-child {
+  font-size: 9px;
+}
+
+.os-ios .apple-file-browser__status {
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
+}
+
+.os-ios-5 .apple-file-browser__toolbar,
+.os-ios-9 .apple-file-browser__toolbar {
+  background: rgba(232,236,242,0.96);
+}
+
+@media (max-width: 520px) {
+  .os-ios .apple-file-browser__toolbar {
+    grid-template-columns: auto minmax(80px, 1fr) auto;
+    gap: 4px;
+  }
+
+  .os-ios .apple-file-browser__content-head strong {
+    font-size: 20px;
+  }
+
+  .os-ios .apple-file-browser__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
