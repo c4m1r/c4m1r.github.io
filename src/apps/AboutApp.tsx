@@ -1,4 +1,5 @@
 import { MarkdownViewer, MarkdownCategory } from './MarkdownViewer';
+import { useState } from 'react';
 import { useApp } from '../contexts/useApp';
 
 const aboutCategories: MarkdownCategory[] = [
@@ -56,6 +57,7 @@ function MacDeviceGlyph() {
 
 export function AboutApp() {
   const { theme } = useApp();
+  const [showDetails, setShowDetails] = useState(false);
 
   if (theme === 'macos-26') {
     const runtime = typeof navigator !== 'undefined' ? navigator.userAgent : 'Browser runtime';
@@ -83,10 +85,19 @@ export function AboutApp() {
         <button
           type="button"
           className="about-mac__more"
-          onClick={() => window.dispatchEvent(new CustomEvent('webos:open-settings'))}
+          onClick={() => setShowDetails((value) => !value)}
+          aria-expanded={showDetails}
         >
-          More Info…
+          {showDetails ? 'Less Info' : 'More Info…'}
         </button>
+
+        {showDetails && (
+          <div className="about-mac__details">
+            <div><span>Language</span><strong>{navigator.language || 'Unknown'}</strong></div>
+            <div><span>Viewport</span><strong>{window.innerWidth} × {window.innerHeight}</strong></div>
+            <div><span>Platform</span><strong>{navigator.platform || 'Web'}</strong></div>
+          </div>
+        )}
 
         <footer>
           Pseudo-emulation interface for development and compatibility testing.
