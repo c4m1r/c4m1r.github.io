@@ -946,3 +946,16 @@
     grid-template-columns: minmax(0, 1.5fr) minmax(180px, 0.7fr);
   }
 }
+
+
+.os-ios .ios-home-screen__page--modern {
+  display: block;
+  overflow: auto;
+  align-content: initial;
+  grid-template-columns: none;
+  grid-auto-rows: initial;
+}
+
+.os-ios .ios-home-screen__page--modern .ios-home-icons {
+  width: 100%;
+}
