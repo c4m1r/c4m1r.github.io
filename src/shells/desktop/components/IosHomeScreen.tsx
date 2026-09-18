@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type DesktopIcon } from '../desktopTypes';
 import { getIosIconMap } from '../appleIconAssets';
@@ -207,7 +207,7 @@ export function IosHomeScreen({
 
                   <div className="ios-home-widget ios-home-widget--battery">
                     <div className="ios-home-widget__eyebrow">Batteries</div>
-                    <div className="ios-home-widget__battery-ring" style={{ '--battery-level': batteryLevel ?? 88 } as React.CSSProperties}>
+                    <div className="ios-home-widget__battery-ring" style={{ '--battery-level': batteryLevel ?? 88 } as CSSProperties}>
                       <span>{batteryLevel ?? 88}%</span>
                     </div>
                     <small>{batteryCharging ? 'Charging' : batteryLevel === null ? 'Estimated' : 'This device'}</small>
