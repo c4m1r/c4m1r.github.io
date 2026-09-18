@@ -1023,6 +1023,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         language={language}
         time={time}
         activeAppTitle={focusedWindow?.title}
+        activeWindowId={focusedWindow?.id}
         onAppleMenuToggle={() => {
           setShowAppleMenu((prev) => !prev);
           setShowSystemActionMenu(false);
@@ -1072,6 +1073,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           else handleMaximizeWindow(focusedWindow.id);
         }}
         onOpenFinderPath={(path) => openExplorerWindow(path)}
+        onFinderViewMode={(mode) => {
+          if (!focusedWindow?.id.startsWith('explorer:')) return;
+          window.dispatchEvent(new CustomEvent('webos:finder-view', {
+            detail: { windowId: focusedWindow.id, mode },
+          }));
+        }}
       />
 
       {themeKey === 'macos-26' && (
