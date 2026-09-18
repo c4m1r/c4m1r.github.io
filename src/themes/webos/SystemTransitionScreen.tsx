@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { AppleSystemTransitionScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { getOsClassName } from '../../shells/os/osClassNames';
 
 type TransitionMode = 'logoff' | 'shutdown';
@@ -35,6 +36,17 @@ const WIN98_MESSAGES: Record<TransitionMode, { title: string; subtitle: string }
 export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTransitionScreenProps) {
   const { theme } = useApp();
   const osClassName = getOsClassName(theme);
+  if (isAppleTheme(theme)) {
+    return (
+      <AppleSystemTransitionScreen
+        theme={theme}
+        mode={mode}
+        onComplete={onComplete}
+        duration={duration}
+      />
+    );
+  }
+
   const timeout = duration ?? (mode === 'shutdown' ? 3500 : 2200);
 
   useEffect(() => {
