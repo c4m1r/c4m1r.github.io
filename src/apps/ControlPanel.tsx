@@ -47,8 +47,85 @@ export function ControlPanel() {
 
   const isRu = language === 'ru';
 
-  const categories = useMemo(
-    () => [
+  const categories = useMemo(() => {
+    if (isMac || isIos) {
+      return [
+        {
+          id: 'appearance',
+          title: isRu ? 'Оформление' : 'Appearance',
+          emoji: '🎨',
+          items: isRu
+            ? ['Экран и яркость', 'Обои', 'Рабочий стол и Dock']
+            : ['Display & Brightness', 'Wallpaper', 'Desktop & Dock'],
+        },
+        {
+          id: 'network',
+          title: isRu ? 'Сеть' : 'Network',
+          emoji: '🌐',
+          items: isRu
+            ? ['Wi-Fi', 'VPN', 'Сетевые службы']
+            : ['Wi-Fi', 'VPN', 'Network Services'],
+        },
+        {
+          id: 'programs',
+          title: isRu ? 'Приложения' : 'Apps',
+          emoji: '💿',
+          items: isRu
+            ? ['Установленные приложения', 'Приложения по умолчанию', 'Расширения']
+            : ['Installed Apps', 'Default Apps', 'Extensions'],
+        },
+        {
+          id: 'sounds',
+          title: isRu ? 'Звук' : 'Sound',
+          emoji: '🔊',
+          items: isRu
+            ? ['Вывод', 'Ввод', 'Звуковые эффекты']
+            : ['Output', 'Input', 'Sound Effects'],
+        },
+        {
+          id: 'maintenance',
+          title: isRu ? 'Основные' : 'General',
+          emoji: '🛡️',
+          items: isRu
+            ? ['Обновление ПО', 'Хранилище', 'Энергосбережение']
+            : ['Software Update', 'Storage', 'Energy'],
+        },
+        {
+          id: 'hardware',
+          title: isRu ? 'Устройства' : 'Devices',
+          emoji: '🖨️',
+          items: isRu
+            ? ['Bluetooth', 'Дисплеи', 'Принтеры и сканеры']
+            : ['Bluetooth', 'Displays', 'Printers & Scanners'],
+        },
+        {
+          id: 'user-accounts',
+          title: isRu ? 'Пользователи и учётные записи' : 'Users & Accounts',
+          emoji: '👤',
+          items: isRu
+            ? ['Пользователи и группы', 'Пароли', 'Учётная запись']
+            : ['Users & Groups', 'Passwords', 'Account'],
+        },
+        {
+          id: 'date-time',
+          title: isRu ? 'Дата, время и язык' : 'Date, Time & Language',
+          emoji: '🕒',
+          items: isRu
+            ? ['Дата и время', 'Язык и регион', 'Часовой пояс']
+            : ['Date & Time', 'Language & Region', 'Time Zone'],
+        },
+        {
+          id: 'accessibility',
+          title: isRu ? 'Универсальный доступ' : 'Accessibility',
+          emoji: '♿',
+          items: isRu
+            ? ['Зрение', 'Слух', 'Моторика']
+            : ['Vision', 'Hearing', 'Motor'],
+        },
+      ];
+    }
+
+    return [
       {
         id: 'appearance',
         title: isRu ? 'Оформление и темы' : 'Appearance and Themes',
@@ -121,9 +198,8 @@ export function ControlPanel() {
           ? ['Специальные возможности', 'Диктор', 'Экранная лупа', 'Экранная клавиатура']
           : ['Accessibility Options', 'Narrator', 'Magnifier', 'On-Screen Keyboard'],
       },
-    ],
-    [isRu]
-  );
+    ];
+  }, [isIos, isMac, isRu]);
 
   const classicApplets = useMemo(
     () => [
