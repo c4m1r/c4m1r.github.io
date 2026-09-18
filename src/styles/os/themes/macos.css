@@ -288,3 +288,154 @@
     transform: translateY(0) scale(1);
   }
 }
+
+
+/* macOS Control Center, adapted from /eat/playground-macos-main ControlCenterMenu. */
+.os-macos .apple-control-center {
+  position: fixed;
+  inset: 30px 0 0;
+  z-index: 96;
+  pointer-events: none;
+}
+
+.os-macos .apple-control-center__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.os-macos .apple-control-center__panel {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: min(330px, calc(100vw - 20px));
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.42);
+  border-radius: 18px;
+  background: rgba(235,238,244,0.68);
+  -webkit-backdrop-filter: saturate(180%) blur(26px);
+  backdrop-filter: saturate(180%) blur(26px);
+  box-shadow: 0 18px 52px rgba(0,0,0,0.28);
+  color: #17181b;
+  pointer-events: auto;
+  animation: mac-control-center-open 150ms cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+
+.os-macos .apple-control-center__connectivity {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.os-macos .apple-control-center__tile {
+  min-height: 66px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 13px;
+  background: rgba(255,255,255,0.52);
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-align: left;
+}
+
+.os-macos .apple-control-center__tile.is-active .apple-control-center__tile-icon {
+  color: #fff;
+  background: #087cff;
+}
+
+.os-macos .apple-control-center__tile-icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(60,60,67,0.14);
+  font-size: 17px;
+}
+
+.os-macos .apple-control-center__tile strong,
+.os-macos .apple-control-center__tile small {
+  display: block;
+}
+
+.os-macos .apple-control-center__tile strong {
+  font-size: 12px;
+}
+
+.os-macos .apple-control-center__tile small {
+  margin-top: 2px;
+  color: rgba(30,30,34,0.62);
+  font-size: 10px;
+}
+
+.os-macos .apple-control-center__slider-card {
+  margin-top: 8px;
+  padding: 10px 12px 12px;
+  border-radius: 13px;
+  background: rgba(255,255,255,0.52);
+}
+
+.os-macos .apple-control-center__slider-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.os-macos .apple-control-center__slider-card input[type="range"] {
+  width: 100%;
+  accent-color: #fff;
+}
+
+.os-macos .apple-control-center__actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.os-macos .apple-control-center__actions button {
+  min-width: 0;
+  min-height: 70px;
+  border: 0;
+  border-radius: 13px;
+  background: rgba(255,255,255,0.52);
+  color: #17181b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.os-macos .apple-control-center__actions button > span {
+  font-size: 20px;
+}
+
+.os-macos .apple-control-center__actions small {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+}
+
+@keyframes mac-control-center-open {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
