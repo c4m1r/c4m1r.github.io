@@ -102,6 +102,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const menuHoverCooldownRef = useRef<number>(0);
 
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
+  const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
 
   useEffect(() => {
     if (theme !== 'macos-26') {
@@ -951,7 +952,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         theme={themeKey}
         language={language}
         time={time}
-        activeAppTitle={windows.find((window) => window.focused && !window.minimized)?.title}
+        activeAppTitle={focusedWindow?.title}
         onAppleMenuToggle={() => {
           setShowAppleMenu((prev) => !prev);
           setShowSystemActionMenu(false);
@@ -1006,6 +1007,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           onClose={() => setShowAppleMenu(false)}
           onOpenAbout={() => launchApp('about')}
           onOpenSettings={() => launchApp('control-panel')}
+          canForceQuit={Boolean(focusedWindow)}
+          onForceQuit={() => {
+            if (focusedWindow) handleCloseWindow(focusedWindow.id);
+          }}
           onLogOut={() => handleSystemCommand('logoff')}
           onShutdown={() => handleSystemCommand('shutdown')}
         />
