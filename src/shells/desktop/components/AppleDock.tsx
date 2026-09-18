@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import {
   MACOS_DOCK_ITEMS,
@@ -12,6 +12,7 @@ interface AppleDockProps {
   onLauncherToggle: () => void;
   onLaunchApp: (appId: string) => void;
   openWindowIds: string[];
+  onQuitApp?: (appId: string) => void;
 }
 
 
@@ -21,11 +22,24 @@ export function AppleDock({
   onLauncherToggle,
   onLaunchApp,
   openWindowIds,
+  onQuitApp,
 }: AppleDockProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
   const dockRef = useRef<HTMLDivElement | null>(null);
   const [pointerX, setPointerX] = useState<number | null>(null);
+  const [contextItem, setContextItem] = useState<{ item: AppleDockAsset; x: number } | null>(null);
+
+  useEffect(() => {
+    if (!contextItem) return;
+    const close = () => setContextItem(null);
+    window.addEventListener('pointerdown', close);
+    window.addEventListener('blur', close);
+    return () => {
+      window.removeEventListener('pointerdown', close);
+      window.removeEventListener('blur', close);
+    };
+  }, [contextItem]);
 
   const items: readonly AppleDockAsset[] = isMac ? MACOS_DOCK_ITEMS : getIosDockItems(theme);
   const magnification = new Map<string, number>();
@@ -73,11 +87,19 @@ export function AppleDock({
             aria-label={item.title}
             onClick={(event) => {
               event.stopPropagation();
+              setContextItem(null);
               if (item.launcher) {
                 onLauncherToggle();
                 return;
               }
               if (item.appId) onLaunchApp(item.appId);
+            }}
+            onContextMenu={(event) => {
+              if (!isMac) return;
+              event.preventDefault();
+              event.stopPropagation();
+              setPointerX(null);
+              setContextItem({ item, x: event.clientX });
             }}
           >
             <span className="apple-dock__tooltip">{item.title}</span>
@@ -90,6 +112,46 @@ export function AppleDock({
           </button>
         );
       })}
+
+      {isMac && contextItem && (
+        <div
+          className="apple-dock-context-menu"
+          role="menu"
+          style={{ left: contextItem.x }}
+          onPointerDown={(event) => event.stopPropagation()}
+          onContextMenu={(event) => event.preventDefault()}
+        >
+          <strong>{contextItem.item.title}</strong>
+          <div className="apple-dock-context-menu__separator" />
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setContextItem(null);
+              if (contextItem.item.launcher) onLauncherToggle();
+              else if (contextItem.item.appId) onLaunchApp(contextItem.item.appId);
+            }}
+          >
+            Open
+          </button>
+          {contextItem.item.appId && openWindowIds.some((id) => {
+            if (contextItem.item.appId === 'my-computer') return id === 'explorer:My Computer';
+            return id === `app:${contextItem.item.appId}` || id.startsWith(`app:${contextItem.item.appId}-`);
+          }) && (
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                const appId = contextItem.item.appId;
+                setContextItem(null);
+                if (appId) onQuitApp?.(appId);
+              }}
+            >
+              Quit
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
