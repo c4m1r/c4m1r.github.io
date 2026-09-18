@@ -1,0 +1,167 @@
+/* Shared Apple Dock. Behavior is adapted from /eat/playground-macos-main dock. */
+
+.os-macos .taskbar__inner,
+.os-ios .taskbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.os-macos .taskbar__inner > .start-button,
+.os-macos .taskbar__inner > .taskbar-windows,
+.os-macos .taskbar__inner > .taskbar-divider,
+.os-macos .taskbar__inner > .taskbar-lang,
+.os-macos .taskbar__inner > .taskbar-tray,
+.os-ios .taskbar__inner > .start-button,
+.os-ios .taskbar__inner > .taskbar-windows,
+.os-ios .taskbar__inner > .taskbar-divider,
+.os-ios .taskbar__inner > .taskbar-lang,
+.os-ios .taskbar__inner > .taskbar-tray {
+  display: none !important;
+}
+
+.apple-dock {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 7px;
+  max-width: 100%;
+  padding: 4px 6px 2px;
+}
+
+.apple-dock__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 48px;
+  min-width: 48px;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transform-origin: center bottom;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.apple-dock__icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 5px 14px rgba(0,0,0,0.2);
+  color: #20252d;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.apple-dock__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.apple-dock__tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(28, 28, 32, 0.76);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: #fff;
+  font-size: 11px;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.22);
+  transition: opacity 100ms ease, transform 100ms ease;
+}
+
+.apple-dock__running-dot {
+  width: 4px;
+  height: 4px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: rgba(20,20,22,0.8);
+}
+
+.os-macos .apple-dock__item:hover {
+  transform: translateY(-8px) scale(1.28);
+  z-index: 4;
+}
+
+.os-macos .apple-dock__item:hover + .apple-dock__item {
+  transform: translateY(-3px) scale(1.08);
+}
+
+.os-macos .apple-dock__item:hover .apple-dock__tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.os-macos .apple-dock__item.is-active .apple-dock__icon {
+  filter: brightness(1.08);
+}
+
+.os-ios .apple-dock {
+  gap: 12px;
+  width: min(430px, calc(100vw - 28px));
+  justify-content: space-evenly;
+}
+
+.os-ios .apple-dock__item {
+  width: 54px;
+  min-width: 54px;
+  height: 56px;
+}
+
+.os-ios .apple-dock__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 22%;
+}
+
+.os-ios .apple-dock__tooltip,
+.os-ios .apple-dock__running-dot {
+  display: none;
+}
+
+.os-ios-5 .apple-dock__icon {
+  border-radius: 11px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    inset 0 -2px 5px rgba(0,0,0,0.18),
+    0 4px 10px rgba(0,0,0,0.28);
+}
+
+@media (max-width: 520px) {
+  .apple-dock {
+    gap: 5px;
+    padding-inline: 2px;
+  }
+
+  .os-macos .apple-dock__item {
+    width: 42px;
+    min-width: 42px;
+  }
+
+  .os-macos .apple-dock__icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .os-macos .apple-dock__item:hover {
+    transform: none;
+  }
+}
