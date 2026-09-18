@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { type Language } from '../../../i18n/translations';
 import { useNews } from '../../../domain/news/useNews';
 import { useArticles } from '../../../domain/articles/useArticles';
@@ -16,9 +16,28 @@ export function AppleNotificationCenter({
   language,
   onClose,
 }: AppleNotificationCenterProps) {
-  const [focusMode, setFocusMode] = useState(false);
+  const [focusMode, setFocusMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('ios-focus-enabled') === 'true';
+  });
   const { news } = useNews();
   const { articles } = useArticles();
+  useEffect(() => {
+    const handleFocusChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') setFocusMode(customEvent.detail);
+    };
+
+    window.addEventListener('ios-focus-changed', handleFocusChange);
+    return () => window.removeEventListener('ios-focus-changed', handleFocusChange);
+  }, []);
+
+  const updateFocusMode = (value: boolean) => {
+    setFocusMode(value);
+    localStorage.setItem('ios-focus-enabled', String(value));
+    window.dispatchEvent(new CustomEvent('ios-focus-changed', { detail: value }));
+  };
+
 
   const updates = useMemo(() => {
     const items = [
@@ -98,7 +117,7 @@ export function AppleNotificationCenter({
           <button
             type="button"
             className={focusMode ? 'is-active' : ''}
-            onClick={() => setFocusMode((value) => !value)}
+            onClick={() => updateFocusMode(!focusMode)}
             aria-pressed={focusMode}
           >
             {focusMode ? 'Focus On' : 'Focus'}
