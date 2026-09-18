@@ -298,7 +298,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   useEffect(() => {
     if (themeKey !== 'macos-26') return;
 
-    const handleMacQuitShortcut = (event: KeyboardEvent) => {
+    const handleMacWindowShortcut = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       const isTypingTarget =
         target instanceof HTMLInputElement ||
@@ -307,50 +307,49 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
       if (isTypingTarget) return;
       if (!event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
-      if (event.key.toLowerCase() !== 'q') return;
-      if (!focusedWindow) return;
 
-      event.preventDefault();
-      handleCloseWindow(focusedWindow.id);
+      const key = event.key.toLowerCase();
+
+      if (key === 'q' && focusedWindow) {
+        event.preventDefault();
+        handleCloseWindow(focusedWindow.id);
+        return;
+      }
+
+      if (key === 'w' && focusedWindow) {
+        event.preventDefault();
+        handleCloseWindow(focusedWindow.id);
+        return;
+      }
+
+      if (key === 'm' && focusedWindow) {
+        event.preventDefault();
+        handleMinimizeWindow(focusedWindow.id);
+        return;
+      }
+
+      if (key === ',' ) {
+        event.preventDefault();
+        launchApp('control-panel');
+        return;
+      }
+
+      if (key === 'n' && (!focusedWindow || focusedWindow.id.startsWith('explorer:'))) {
+        event.preventDefault();
+        openExplorerWindow('My Computer');
+      }
     };
 
-    window.addEventListener('keydown', handleMacQuitShortcut);
-    return () => window.removeEventListener('keydown', handleMacQuitShortcut);
-  }, [focusedWindow, handleCloseWindow, themeKey]);
-  const handleMenuHoverSound = useCallback(() => {
-    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-    if (now - menuHoverCooldownRef.current < 110) {
-      return;
-    }
-    menuHoverCooldownRef.current = now;
-    playSystemSound(menuHoverSound, 0.35, { frequency: 820, duration: 0.08, gain: 0.05 });
-  }, [menuHoverSound, playSystemSound]);
-  const openStartMenu = useCallback(() => {
-    let didOpen = false;
-    setShowStartMenu((prev) => {
-      if (!prev) {
-        didOpen = true;
-        return true;
-      }
-      return prev;
-    });
-    if (didOpen) {
-      playSystemSound(menuOpenSound, 0.42, { frequency: 700, duration: 0.11, gain: 0.07 });
-    }
-  }, [menuOpenSound, playSystemSound]);
-  const closeStartMenu = useCallback(() => {
-    let didClose = false;
-    setShowStartMenu((prev) => {
-      if (prev) {
-        didClose = true;
-        return false;
-      }
-      return prev;
-    });
-    if (didClose) {
-      playSystemSound(menuCloseSound, 0.42, { frequency: 520, duration: 0.1, gain: 0.07 });
-    }
-  }, [menuCloseSound, playSystemSound]);
+    window.addEventListener('keydown', handleMacWindowShortcut);
+    return () => window.removeEventListener('keydown', handleMacWindowShortcut);
+  }, [
+    focusedWindow,
+    handleCloseWindow,
+    handleMinimizeWindow,
+    launchApp,
+    openExplorerWindow,
+    themeKey,
+  ]);
 
   useEffect(() => {
     if (!startupSound) {
