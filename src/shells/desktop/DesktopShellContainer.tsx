@@ -998,7 +998,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           setShowNotificationPanel(false);
         }}
         onNotificationCenterToggle={() => {
-          if (themeKey !== 'macos-26') return;
+          const supportsAppleNotifications =
+            themeKey === 'macos-26' || (themeKey.startsWith('ios-') && themeKey !== 'ios-5');
+          if (!supportsAppleNotifications) return;
           setShowNotificationPanel((prev) => !prev);
           setShowSystemActionMenu(false);
           setShowAppleMenu(false);
@@ -1046,7 +1048,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         />
       )}
 
-      {themeKey === 'macos-26' && (
+      {(themeKey === 'macos-26' || (themeKey.startsWith('ios-') && themeKey !== 'ios-5')) && (
         <AppleNotificationCenter
           open={showNotificationPanel}
           time={time}
