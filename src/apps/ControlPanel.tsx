@@ -7,6 +7,7 @@ import { getOsVersionRules } from '../shells/os/osSkins';
 import { getSystemSettingsSections } from '../system/settings/settingsSections';
 import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
+import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
 
 type CPView = 'categories' | 'wallpaper' | 'systemInfo';
 type CPDisplayMode = 'category' | 'classic';
@@ -36,6 +37,7 @@ export function ControlPanel() {
   // OS-specific visual theme map
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios');
+  const useModernAppleSettingsIcons = isMac || theme === 'ios-16' || theme === 'ios-26';
   const isWin98 = theme === 'win-98';
   const isWinXp = theme === 'win-xp';
   const isWin7 = theme === 'win7';
@@ -146,13 +148,16 @@ export function ControlPanel() {
   );
 
   const renderCategoryIcon = (categoryId: string, fallback: string) => {
-    const iconPath = controlPanelIcons[categoryId];
+    const appleIconPath = useModernAppleSettingsIcons
+      ? APPLE_SETTINGS_CATEGORY_ICONS[categoryId]
+      : undefined;
+    const iconPath = appleIconPath ?? controlPanelIcons[categoryId];
     if (iconPath) {
       return (
         <img
           src={iconPath}
           alt=""
-          className="w-10 h-10 object-contain"
+          className={`settings-category-icon w-10 h-10 object-contain ${appleIconPath ? 'is-apple-symbol' : ''}`}
           onError={(e) => {
             e.currentTarget.style.display = 'none';
           }}
