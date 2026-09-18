@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 
 interface AppleControlCenterProps {
@@ -34,12 +34,39 @@ export function AppleControlCenter({
   onOpenAbout,
   onLaunchApp,
 }: AppleControlCenterProps) {
-  const [wifi, setWifi] = useState(true);
-  const [bluetooth, setBluetooth] = useState(true);
+  const [wifi, setWifi] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-wifi-enabled') !== 'false';
+  });
+  const [bluetooth, setBluetooth] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-bluetooth-enabled') !== 'false';
+  });
   const [airplane, setAirplane] = useState(false);
   const [cellular, setCellular] = useState(true);
   const [silentMode, setSilentMode] = useState(false);
   const previousVolumeRef = useRef(volumeLevel || 50);
+  useEffect(() => {
+    const handleConnectivityChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ wifi?: boolean; bluetooth?: boolean }>;
+      if (typeof customEvent.detail?.wifi === 'boolean') setWifi(customEvent.detail.wifi);
+      if (typeof customEvent.detail?.bluetooth === 'boolean') setBluetooth(customEvent.detail.bluetooth);
+    };
+
+    window.addEventListener('ios-connectivity-changed', handleConnectivityChange);
+    return () => window.removeEventListener('ios-connectivity-changed', handleConnectivityChange);
+  }, []);
+
+  const setConnectivity = (key: 'wifi' | 'bluetooth', value: boolean) => {
+    if (key === 'wifi') setWifi(value);
+    else setBluetooth(value);
+
+    localStorage.setItem(`ios-${key}-enabled`, String(value));
+    window.dispatchEvent(new CustomEvent('ios-connectivity-changed', {
+      detail: { [key]: value },
+    }));
+  };
+
 
   if (!open) return null;
 
@@ -64,10 +91,10 @@ export function AppleControlCenter({
         <div className="apple-ios-control-center__panel">
           <div className="apple-ios-control-center__connectivity">
             {[
-              { key: 'wifi', label: 'Wi-Fi', active: wifi, toggle: () => setWifi((value) => !value), glyph: '⌁' },
+              { key: 'wifi', label: 'Wi-Fi', active: wifi, toggle: () => setConnectivity('wifi', !wifi), glyph: '⌁' },
               { key: 'airplane', label: 'Airplane', active: airplane, toggle: () => setAirplane((value) => !value), glyph: '✈' },
               { key: 'cellular', label: 'Cellular', active: cellular, toggle: () => setCellular((value) => !value), glyph: '◒' },
-              { key: 'bluetooth', label: 'Bluetooth', active: bluetooth, toggle: () => setBluetooth((value) => !value), glyph: 'ᛒ' },
+              { key: 'bluetooth', label: 'Bluetooth', active: bluetooth, toggle: () => setConnectivity('bluetooth', !bluetooth), glyph: 'ᛒ' },
             ].map((item) => (
               <button
                 key={item.key}
