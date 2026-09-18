@@ -6,7 +6,7 @@ interface AppleSystemBarProps {
   theme: ThemeId;
   language: Language;
   time: Date;
-  onLauncherToggle: () => void;
+  onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
 }
 
@@ -18,7 +18,7 @@ export function AppleSystemBar({
   theme,
   language,
   time,
-  onLauncherToggle,
+  onAppleMenuToggle,
   onControlCenterToggle,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
@@ -57,8 +57,8 @@ export function AppleSystemBar({
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-logo"
-          onClick={onLauncherToggle}
-          aria-label="Open Launchpad"
+          onClick={onAppleMenuToggle}
+          aria-label="Open Apple menu"
         >
           
         </button>
