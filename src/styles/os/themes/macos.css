@@ -1856,3 +1856,15 @@
   opacity: 0.34;
   filter: grayscale(1);
 }
+
+
+/* Display brightness overlay driven by macOS Control Center. */
+.os-macos::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,var(--mac-screen-dim, 0));
+  pointer-events: none;
+  transition: background 120ms ease-out;
+}
