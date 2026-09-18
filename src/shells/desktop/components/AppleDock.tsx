@@ -37,9 +37,10 @@ export function AppleDock({
       {items.map((item) => {
         const active = item.launcher
           ? launcherOpen
-          : Boolean(item.appId && openWindowIds.some((id) =>
-              id === `app:${item.appId}` || id.startsWith(`app:${item.appId}-`)
-            ));
+          : Boolean(item.appId && openWindowIds.some((id) => {
+              if (item.appId === 'my-computer') return id === 'explorer:My Computer';
+              return id === `app:${item.appId}` || id.startsWith(`app:${item.appId}-`);
+            }));
         return (
           <button
             key={item.id}
