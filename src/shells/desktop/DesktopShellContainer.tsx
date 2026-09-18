@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, type CSSProperties } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { type ThemeId } from '../../contexts/appContextTypes';
 import { translations } from '../../i18n/translations';
@@ -91,6 +91,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showTaskManager, setShowTaskManager] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; items: ContextMenuItem[] } | null>(null);
   const [volumeLevel, setVolumeLevel] = useState(70);
+  const [brightnessLevel, setBrightnessLevel] = useState(78);
   const [showVolumePanel, setShowVolumePanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
@@ -988,8 +989,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         backgroundColor: isXpFamily ? 'transparent' : '#008080',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        paddingBottom: '30px'
-      }}
+        paddingBottom: '30px',
+        '--ios-screen-dim': themeKey.startsWith('ios-')
+          ? String(Math.max(0, Math.min(0.55, ((100 - brightnessLevel) / 100) * 0.55)))
+          : '0',
+      } as CSSProperties}
       onMouseDown={handleDesktopMouseDown}
       onClick={(event) => {
         closeStartMenu();
@@ -1228,9 +1232,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           theme={themeKey}
           open={showSystemActionMenu}
           volumeLevel={volumeLevel}
+          brightnessLevel={brightnessLevel}
           isFullscreen={isFullscreen}
           onClose={() => setShowSystemActionMenu(false)}
           onVolumeLevelChange={setVolumeLevel}
+          onBrightnessLevelChange={setBrightnessLevel}
           onFullscreenToggle={toggleFullscreen}
           onOpenSettings={() => {
             setShowSystemActionMenu(false);
