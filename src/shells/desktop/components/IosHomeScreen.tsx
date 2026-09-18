@@ -123,6 +123,15 @@ export function IosHomeScreen({
                     onClick={(event) => {
                       event.stopPropagation();
                       if (suppressClickRef.current) return;
+
+                      const rect = event.currentTarget.getBoundingClientRect();
+                      const shell = event.currentTarget.closest('.os-ios') as HTMLElement | null;
+                      if (shell) {
+                        shell.style.setProperty('--ios-launch-x', `${rect.left + rect.width / 2}px`);
+                        shell.style.setProperty('--ios-launch-y', `${rect.top + rect.height / 2}px`);
+                        shell.style.setProperty('--ios-launch-size', `${Math.max(rect.width, rect.height)}px`);
+                      }
+
                       onIconDoubleClick(icon);
                     }}
                     onContextMenu={(event) => onIconContextMenu(event, icon)}
