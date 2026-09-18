@@ -9,7 +9,7 @@ import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
 
-type CPView = 'categories' | 'wallpaper' | 'systemInfo';
+type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility';
 type CPDisplayMode = 'category' | 'classic';
 
 export function ControlPanel() {
@@ -30,6 +30,10 @@ export function ControlPanel() {
       return !!localStorage.getItem('desktop-custom-wallpaper');
     }
     return false;
+  });
+  const [assistiveTouchEnabled, setAssistiveTouchEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-assistive-touch-enabled') !== 'false';
   });
 
   const { wallpapers, loading: wallpapersLoading } = useGallery();
@@ -493,6 +497,11 @@ export function ControlPanel() {
                 <div
                   key={index}
                   className={`${cardClass} p-4 cursor-pointer transition-colors`}
+                  onClick={() => {
+                    if (category.id === 'appearance') setView('wallpaper');
+                    else if (category.id === 'maintenance') setView('systemInfo');
+                    else if (category.id === 'accessibility' && isIos) setView('accessibility');
+                  }}
                 >
                   <div className="flex items-start gap-3 mb-2">
                     <div className="flex-shrink-0">
@@ -545,6 +554,57 @@ export function ControlPanel() {
               ))}
             </div>
           </>
+        )}
+
+        {/* ── Apple Accessibility view ── */}
+        {view === 'accessibility' && isIos && (
+          <div className="space-y-5">
+            <div>
+              <button
+                type="button"
+                className="text-xs opacity-70 hover:opacity-100 mb-3"
+                onClick={() => setView('categories')}
+              >
+                ← {isRu ? 'Настройки' : 'Settings'}
+              </button>
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] opacity-60 mb-1">
+                NervaWEB WebOS
+              </div>
+              <h1 className={`text-2xl font-bold mb-1 ${titleClass}`}>
+                {isRu ? 'Универсальный доступ' : 'Accessibility'}
+              </h1>
+              <p className="text-xs opacity-70">
+                {isRu ? 'Настройки управления и взаимодействия' : 'Interaction and accessibility controls'}
+              </p>
+            </div>
+
+            <section className={`${cardClass} overflow-hidden`}>
+              <div className="flex items-center justify-between gap-4 p-4 min-h-[64px]">
+                <div>
+                  <strong className="block text-sm">AssistiveTouch</strong>
+                  <span className="block mt-1 text-[11px] opacity-60">
+                    {isRu
+                      ? 'Плавающая кнопка с быстрым доступом к системным действиям'
+                      : 'Floating control for quick access to system actions'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={assistiveTouchEnabled}
+                  className={`ios-settings-switch ${assistiveTouchEnabled ? 'is-on' : ''}`}
+                  onClick={() => {
+                    const next = !assistiveTouchEnabled;
+                    setAssistiveTouchEnabled(next);
+                    localStorage.setItem('ios-assistive-touch-enabled', String(next));
+                    window.dispatchEvent(new CustomEvent('ios-assistive-touch-changed', { detail: next }));
+                  }}
+                >
+                  <span />
+                </button>
+              </div>
+            </section>
+          </div>
         )}
 
         {/* ── Wallpaper view ── */}
