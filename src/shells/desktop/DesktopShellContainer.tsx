@@ -1229,6 +1229,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       {(themeKey === 'macos-26' || (themeKey.startsWith('ios-') && themeKey !== 'ios-5')) && (
         <AppleNotificationCenter
           open={showNotificationPanel}
+          theme={themeKey}
           time={time}
           language={language}
           onClose={() => setShowNotificationPanel(false)}
