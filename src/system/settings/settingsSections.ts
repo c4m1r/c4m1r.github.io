@@ -137,7 +137,6 @@ export function getSystemSettingsSections(themeId: ThemeId): SettingSection[] {
     'ios-26': [
       { id: 'ios-wifi', label: { en: 'Wi-Fi & Cellular', ru: 'Wi-Fi и сотовая связь' }, frozen: true },
       { id: 'ios-bt', label: { en: 'Bluetooth & AirDrop', ru: 'Bluetooth и AirDrop' }, frozen: true },
-      { id: 'ios-acc', label: { en: 'Accessibility & Touch', ru: 'Универсальный доступ' }, frozen: true },
       { id: 'ios-stage', label: { en: 'Stage Manager Layout', ru: 'Режим Stage Manager' }, frozen: true },
     ],
     'ios-16': [
