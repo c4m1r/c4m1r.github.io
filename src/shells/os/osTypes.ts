@@ -10,6 +10,7 @@ export type OsProfileId =
   | 'win7'
   | 'ubuntu'
   | 'webos'
+  | 'macos-26'
   | 'ios-26'
   | 'ios-16'
   | 'ios-9'
