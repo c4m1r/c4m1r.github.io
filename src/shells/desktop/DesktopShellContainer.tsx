@@ -295,6 +295,43 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   });
   const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
 
+  const handleMenuHoverSound = useCallback(() => {
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    if (now - menuHoverCooldownRef.current < 110) {
+      return;
+    }
+    menuHoverCooldownRef.current = now;
+    playSystemSound(menuHoverSound, 0.35, { frequency: 820, duration: 0.08, gain: 0.05 });
+  }, [menuHoverSound, playSystemSound]);
+
+  const openStartMenu = useCallback(() => {
+    let didOpen = false;
+    setShowStartMenu((prev) => {
+      if (!prev) {
+        didOpen = true;
+        return true;
+      }
+      return prev;
+    });
+    if (didOpen) {
+      playSystemSound(menuOpenSound, 0.42, { frequency: 700, duration: 0.11, gain: 0.07 });
+    }
+  }, [menuOpenSound, playSystemSound]);
+
+  const closeStartMenu = useCallback(() => {
+    let didClose = false;
+    setShowStartMenu((prev) => {
+      if (prev) {
+        didClose = true;
+        return false;
+      }
+      return prev;
+    });
+    if (didClose) {
+      playSystemSound(menuCloseSound, 0.42, { frequency: 520, duration: 0.1, gain: 0.07 });
+    }
+  }, [menuCloseSound, playSystemSound]);
+
   useEffect(() => {
     if (!startupSound) {
       return;
