@@ -557,3 +557,66 @@
 .os-ios .ios-home-screen[data-dragging="true"] .ios-home-screen__track {
   transition: none;
 }
+
+
+/* Status indicators reused from /eat/homescreen-main Device chrome. */
+.os-ios .apple-ios-signal {
+  height: 12px;
+  display: flex;
+  align-items: end;
+  gap: 1.5px;
+  transform: none;
+}
+
+.os-ios .apple-ios-signal > i {
+  display: block;
+  width: 2.5px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.os-ios .apple-ios-signal > i:nth-child(1) { height: 4px; }
+.os-ios .apple-ios-signal > i:nth-child(2) { height: 6px; }
+.os-ios .apple-ios-signal > i:nth-child(3) { height: 8px; }
+.os-ios .apple-ios-signal > i:nth-child(4) { height: 10px; }
+
+.os-ios .apple-ios-wifi-icon,
+.os-ios .apple-ios-battery-icon {
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.os-ios .apple-ios-wifi-icon {
+  width: 17px;
+  height: 13px;
+}
+
+.os-ios .apple-ios-battery-icon {
+  width: 25px;
+  height: 13px;
+}
+
+.os-ios .apple-ios-wifi,
+.os-ios .apple-ios-battery {
+  display: none;
+}
+
+.os-ios:not(.os-ios-5):not(.os-ios-9)::after {
+  content: '';
+  position: fixed;
+  left: 50%;
+  bottom: max(3px, env(safe-area-inset-bottom));
+  z-index: 100;
+  width: 118px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.82);
+  transform: translateX(-50%);
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+.os-ios:has(.window-skin-ios)::after {
+  background: rgba(25,25,28,0.78);
+}
