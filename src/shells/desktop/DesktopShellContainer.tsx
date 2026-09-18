@@ -892,6 +892,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         theme={themeKey}
         language={language}
         time={time}
+        activeAppTitle={windows.find((window) => window.focused && !window.minimized)?.title}
         onAppleMenuToggle={() => {
           setShowAppleMenu((prev) => !prev);
           setShowSystemActionMenu(false);
