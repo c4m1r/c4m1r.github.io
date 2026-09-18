@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useApp } from '../../contexts/useApp';
 import {
   ZoomIn,
   ZoomOut,
@@ -27,6 +28,9 @@ export interface PictureViewerProps {
 }
 
 export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: PictureViewerProps) {
+  const { theme } = useApp();
+  const isAppleViewer = theme === 'macos-26' || theme.startsWith('ios-');
+  const isIosViewer = theme.startsWith('ios-');
   const imageList: PictureViewerImage[] =
     images.length > 0
       ? images
@@ -84,6 +88,66 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
     a.download = imageList[currentIndex]?.name || 'picture.jpg';
     a.click();
   };
+
+  if (isAppleViewer) {
+    return (
+      <div className={`picture-viewer picture-viewer--apple ${isIosViewer ? 'picture-viewer--ios' : 'picture-viewer--mac'}`}>
+        <header className="picture-viewer__toolbar">
+          <div className="picture-viewer__toolbar-group">
+            <button type="button" onClick={handlePrev} disabled={imageList.length <= 1} aria-label="Previous image">
+              <ChevronLeft size={17} />
+            </button>
+            <button type="button" onClick={handleNext} disabled={imageList.length <= 1} aria-label="Next image">
+              <ChevronRight size={17} />
+            </button>
+          </div>
+
+          <div className="picture-viewer__title">
+            <strong>{imageList[currentIndex]?.name || (isIosViewer ? 'Photo' : 'Preview')}</strong>
+            <small>{Math.round(zoom * 100)}%</small>
+          </div>
+
+          <div className="picture-viewer__toolbar-group">
+            <button type="button" onClick={handleZoomOut} aria-label="Zoom out"><ZoomOut size={16} /></button>
+            <button type="button" onClick={handleFit} aria-label="Fit image"><Maximize2 size={16} /></button>
+            <button type="button" onClick={handleZoomIn} aria-label="Zoom in"><ZoomIn size={16} /></button>
+            <button type="button" onClick={handleRotateCcw} aria-label="Rotate counter-clockwise"><RotateCcw size={16} /></button>
+            <button type="button" onClick={handleRotateCw} aria-label="Rotate clockwise"><RotateCw size={16} /></button>
+            <button type="button" onClick={handleDownload} aria-label="Download"><Download size={16} /></button>
+          </div>
+        </header>
+
+        <main className="picture-viewer__canvas">
+          {currentImage ? (
+            <img
+              src={currentImage}
+              alt={imageList[currentIndex]?.name || 'Picture'}
+              style={{
+                transform: `scale(${zoom}) rotate(${rotation}deg)`,
+                transition: 'transform 150ms ease-out',
+              }}
+            />
+          ) : (
+            <div className="picture-viewer__empty">No image to display</div>
+          )}
+        </main>
+
+        {imageList.length > 1 && (
+          <footer className="picture-viewer__footer">
+            <button
+              type="button"
+              className={isPlayingSlideshow ? 'is-active' : ''}
+              onClick={() => setIsPlayingSlideshow((prev) => !prev)}
+            >
+              {isPlayingSlideshow ? <Pause size={15} /> : <Play size={15} />}
+              <span>{isPlayingSlideshow ? 'Pause' : 'Slideshow'}</span>
+            </button>
+            <span>{currentIndex + 1} / {imageList.length}</span>
+          </footer>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full bg-[#ece9d8] select-none os-panel">
