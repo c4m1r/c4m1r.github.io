@@ -512,3 +512,34 @@
     transform: translateY(0) scale(1);
   }
 }
+
+
+/* SF-style status icons sourced from /eat/macOS-Portfolio-main 2. */
+.os-macos .apple-macos-status-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.os-macos .apple-macos-wifi-icon {
+  width: 17px;
+  height: 14px;
+}
+
+.os-macos .apple-macos-control-center-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.os-macos .apple-macos-battery-status {
+  gap: 5px;
+}
+
+.os-macos .apple-macos-battery-status > img {
+  width: 23px;
+  height: 13px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
