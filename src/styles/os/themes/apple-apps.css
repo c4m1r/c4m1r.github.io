@@ -1650,3 +1650,230 @@
 .os-ios .mail-app__status {
   display: none;
 }
+
+
+/* Music presentation over the shared media player runtime. */
+.os-macos .media-player-app--apple,
+.os-ios .media-player-app--apple {
+  background: #f5f5f7 !important;
+  color: #1d1d1f !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__header,
+.os-ios .media-player-app--apple .media-player-app__header {
+  min-height: 52px;
+  border-color: rgba(60,60,67,0.10) !important;
+  background: rgba(246,246,248,0.88) !important;
+  color: #1d1d1f !important;
+  -webkit-backdrop-filter: saturate(165%) blur(22px);
+  backdrop-filter: saturate(165%) blur(22px);
+}
+
+.os-macos .media-player-app--apple .media-player-app__title,
+.os-ios .media-player-app--apple .media-player-app__title {
+  font-size: 18px !important;
+  letter-spacing: -0.025em !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__header span,
+.os-ios .media-player-app--apple .media-player-app__header span {
+  color: inherit !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__main,
+.os-ios .media-player-app--apple .media-player-app__main {
+  gap: 18px !important;
+  padding: 18px !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,55,95,0.10), transparent 26%),
+    radial-gradient(circle at 84% 18%, rgba(94,92,230,0.09), transparent 24%),
+    #f5f5f7;
+}
+
+.os-macos .media-player-app--apple .media-player-app__art-panel {
+  width: min(280px, 34%) !important;
+  gap: 12px !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__art,
+.os-ios .media-player-app--apple .media-player-app__art {
+  border: 0 !important;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.20), transparent 24%),
+    linear-gradient(145deg, #ff375f, #5e5ce6) !important;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.18) !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__art > div:first-child,
+.os-ios .media-player-app--apple .media-player-app__art > div:first-child {
+  opacity: 0.18 !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__art span,
+.os-ios .media-player-app--apple .media-player-app__art span {
+  width: 3px !important;
+  border-radius: 999px;
+  background: linear-gradient(to top, rgba(255,255,255,0.55), #fff) !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__track-card,
+.os-ios .media-player-app--apple .media-player-app__track-card {
+  padding: 10px 2px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__track-card h2,
+.os-ios .media-player-app--apple .media-player-app__track-card h2 {
+  color: #1d1d1f !important;
+  font-size: 17px !important;
+  letter-spacing: -0.02em;
+}
+
+.os-macos .media-player-app--apple .media-player-app__track-card p,
+.os-ios .media-player-app--apple .media-player-app__track-card p {
+  color: rgba(60,60,67,0.62) !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__controls,
+.os-ios .media-player-app--apple .media-player-app__controls {
+  padding: 14px 16px !important;
+  border: 1px solid rgba(60,60,67,0.08) !important;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.78) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.045) !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__controls > div:first-child,
+.os-ios .media-player-app--apple .media-player-app__controls > div:first-child {
+  color: rgba(60,60,67,0.64) !important;
+}
+
+.os-macos .media-player-app--apple input[type="range"],
+.os-ios .media-player-app--apple input[type="range"] {
+  accent-color: #ff375f;
+}
+
+.os-macos .media-player-app--apple .media-player-app__transport,
+.os-ios .media-player-app--apple .media-player-app__transport {
+  color: #1d1d1f !important;
+  gap: 12px !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__transport > button,
+.os-ios .media-player-app--apple .media-player-app__transport > button {
+  width: 38px;
+  height: 38px;
+  min-width: 38px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50%;
+  background: rgba(118,118,128,0.10) !important;
+  color: #1d1d1f !important;
+  display: grid;
+  place-items: center;
+  box-shadow: none !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__transport > button:nth-child(2),
+.os-ios .media-player-app--apple .media-player-app__transport > button:nth-child(2) {
+  width: 48px;
+  height: 48px;
+  min-width: 48px !important;
+  background: #1d1d1f !important;
+  color: #fff !important;
+  font-size: 17px;
+}
+
+.os-macos .media-player-app--apple .media-player-app__transport > button:hover {
+  filter: brightness(0.94);
+}
+
+.os-macos .media-player-app--apple .media-player-app__playlist,
+.os-ios .media-player-app--apple .media-player-app__playlist {
+  border: 1px solid rgba(60,60,67,0.08) !important;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.80) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.035) !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__playlist-header,
+.os-ios .media-player-app--apple .media-player-app__playlist-header {
+  padding: 9px 12px !important;
+  border-color: rgba(60,60,67,0.08) !important;
+  background: rgba(118,118,128,0.055) !important;
+  color: rgba(60,60,67,0.58) !important;
+  font-size: 9px !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__playlist-list,
+.os-ios .media-player-app--apple .media-player-app__playlist-list {
+  border-color: rgba(60,60,67,0.06) !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__playlist-list button,
+.os-ios .media-player-app--apple .media-player-app__playlist-list button {
+  min-height: 48px;
+  color: #1d1d1f !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__playlist-list button:hover {
+  background: rgba(118,118,128,0.06) !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__playlist-list button[class*="bg-gradient"],
+.os-ios .media-player-app--apple .media-player-app__playlist-list button[class*="bg-gradient"] {
+  background: rgba(255,55,95,0.12) !important;
+  color: #1d1d1f !important;
+}
+
+.os-macos .media-player-app--apple .media-player-app__footer,
+.os-ios .media-player-app--apple .media-player-app__footer {
+  min-height: 26px;
+  border-color: rgba(60,60,67,0.08) !important;
+  background: rgba(246,246,248,0.88) !important;
+  color: rgba(60,60,67,0.52) !important;
+}
+
+.os-ios .media-player-app--apple .media-player-app__header {
+  min-height: 48px;
+  padding: 8px 10px !important;
+}
+
+.os-ios .media-player-app--apple .media-player-app__header > div:last-child {
+  display: none !important;
+}
+
+.os-ios .media-player-app--apple .media-player-app__main {
+  padding: 12px !important;
+  gap: 12px !important;
+}
+
+.os-ios .media-player-app--apple .media-player-app__art-panel {
+  width: 100% !important;
+  align-items: center;
+}
+
+.os-ios .media-player-app--apple .media-player-app__art {
+  width: min(68vw, 260px);
+}
+
+.os-ios .media-player-app--apple .media-player-app__track-card {
+  width: 100%;
+  text-align: center;
+}
+
+.os-ios .media-player-app--apple .media-player-app__content {
+  width: 100%;
+}
+
+.os-ios .media-player-app--apple .media-player-app__playlist {
+  min-height: 160px;
+}
+
+.os-ios .media-player-app--apple .media-player-app__footer {
+  display: none !important;
+}
