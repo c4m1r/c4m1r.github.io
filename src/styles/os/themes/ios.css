@@ -443,7 +443,8 @@
   overflow: hidden;
   background: rgba(242,242,247,0.98) !important;
   box-shadow: none !important;
-  animation: ios-app-open 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: var(--ios-launch-x, 50vw) var(--ios-launch-y, 50vh);
+  animation: ios-app-open 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .os-ios-5 .xp-window.window-skin-ios {
@@ -534,21 +535,41 @@
   display: none !important;
 }
 
-.os-ios .window-skin-ios + .ios-home-screen,
-.os-ios:has(.window-skin-ios) .ios-home-screen,
+.os-ios .ios-home-screen,
+.os-ios .taskbar {
+  transition:
+    opacity 180ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 220ms ease;
+}
+
+.os-ios:has(.window-skin-ios) .ios-home-screen {
+  opacity: 0;
+  transform: scale(0.92);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
 .os-ios:has(.window-skin-ios) .taskbar {
+  opacity: 0;
+  transform: translateX(-50%) translateY(34px) scale(0.92) !important;
   pointer-events: none;
 }
 
 @keyframes ios-app-open {
   from {
-    opacity: 0;
-    transform: translateY(22px) scale(0.965);
-    border-radius: 22px;
+    opacity: 0.58;
+    transform:
+      translate(
+        calc(var(--ios-launch-x, 50vw) - 50vw),
+        calc(var(--ios-launch-y, 50vh) - 50vh)
+      )
+      scale(0.16);
+    border-radius: 28px;
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate(0, 0) scale(1);
     border-radius: 0;
   }
 }
