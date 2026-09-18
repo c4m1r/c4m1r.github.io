@@ -1,12 +1,9 @@
 import { type ThemeId } from '../../../contexts/appContextTypes';
-import macLaunchpadIcon from '../../../../eat/playground-macos-main/public/img/icons/launchpad.png';
-import macSafariIcon from '../../../../eat/playground-macos-main/public/img/icons/safari.png';
-import macTerminalIcon from '../../../../eat/playground-macos-main/public/img/icons/terminal.png';
-import macSettingsIcon from '../../../../eat/macos-portfolio-main/public/icons/settings.svg';
-import iosSafariIcon from '../../../../eat/homescreen-main/public/images/Icon=Safari.png';
-import iosPhotosIcon from '../../../../eat/homescreen-main/public/images/Icon=Photos.png';
-import iosNotesIcon from '../../../../eat/homescreen-main/public/images/Icon=Notes.png';
-import iosSettingsIcon from '../../../../eat/homescreen-main/public/images/Icon=Settings.png';
+import {
+  MACOS_DOCK_ITEMS,
+  getIosDockItems,
+  type AppleDockAsset,
+} from '../appleIconAssets';
 
 interface AppleDockProps {
   theme: ThemeId;
@@ -16,29 +13,6 @@ interface AppleDockProps {
   openWindowIds: string[];
 }
 
-interface DockItem {
-  id: string;
-  title: string;
-  appId?: string;
-  src?: string;
-  glyph?: string;
-  launcher?: boolean;
-}
-
-const MAC_ITEMS: DockItem[] = [
-  { id: 'launchpad', title: 'Launchpad', src: macLaunchpadIcon, launcher: true },
-  { id: 'safari', title: 'Safari', appId: 'internet-explorer', src: macSafariIcon },
-  { id: 'photos', title: 'Photos', appId: 'pictures', glyph: '✿' },
-  { id: 'settings', title: 'System Settings', appId: 'control-panel', src: macSettingsIcon },
-  { id: 'terminal', title: 'Terminal', appId: 'terminal', src: macTerminalIcon },
-];
-
-const IOS_ITEMS: DockItem[] = [
-  { id: 'safari', title: 'Safari', appId: 'internet-explorer', src: iosSafariIcon },
-  { id: 'photos', title: 'Photos', appId: 'pictures', src: iosPhotosIcon },
-  { id: 'notes', title: 'Notes', appId: 'notepad', src: iosNotesIcon },
-  { id: 'settings', title: 'Settings', appId: 'control-panel', src: iosSettingsIcon },
-];
 
 export function AppleDock({
   theme,
@@ -52,7 +26,7 @@ export function AppleDock({
 
   if (!isMac && !isIos) return null;
 
-  const items = isMac ? MAC_ITEMS : IOS_ITEMS;
+  const items: readonly AppleDockAsset[] = isMac ? MACOS_DOCK_ITEMS : getIosDockItems(theme);
 
   return (
     <div
