@@ -1338,3 +1338,57 @@
     display: none;
   }
 }
+
+
+/* File / Go / Window menu bar dropdowns adapted from donor desktop menus. */
+.os-macos .apple-system-menu {
+  position: absolute;
+  top: 27px;
+  min-width: 220px;
+  padding: 5px;
+  border: 1px solid rgba(255,255,255,0.32);
+  border-radius: 10px;
+  background: rgba(246,246,248,0.92);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
+  backdrop-filter: blur(26px) saturate(170%);
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.24),
+    inset 0 1px rgba(255,255,255,0.72);
+  color: #1d1d1f;
+  z-index: 120;
+}
+
+.os-macos .apple-system-menu--file { left: 108px; }
+.os-macos .apple-system-menu--go { left: 212px; }
+.os-macos .apple-system-menu--window { left: 249px; }
+
+.os-macos .apple-system-menu > button {
+  width: 100%;
+  min-height: 27px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+  font: 400 11px/1.25 var(--mac-font);
+}
+
+.os-macos .apple-system-menu > button:hover:not(:disabled) {
+  background: #007aff;
+  color: #fff;
+}
+
+.os-macos .apple-system-menu > button:disabled {
+  color: rgba(60,60,67,0.34);
+}
+
+@media (max-width: 800px) {
+  .os-macos .apple-system-menu {
+    display: none;
+  }
+}
