@@ -94,6 +94,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [volumeLevel, setVolumeLevel] = useState(70);
   const [brightnessLevel, setBrightnessLevel] = useState(78);
   const [nightModeEnabled, setNightModeEnabled] = useState(false);
+  const [macNightShiftEnabled, setMacNightShiftEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-night-shift-enabled') === 'true';
+  });
   const [showVolumePanel, setShowVolumePanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
@@ -1032,6 +1036,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         '--mac-screen-dim': themeKey === 'macos-26'
           ? String(Math.max(0, Math.min(0.48, ((100 - brightnessLevel) / 100) * 0.48)))
           : '0',
+        '--mac-night-shift': themeKey === 'macos-26' && macNightShiftEnabled ? '0.13' : '0',
       } as CSSProperties}
       onMouseDown={handleDesktopMouseDown}
       onClick={(event) => {
@@ -1308,11 +1313,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           volumeLevel={volumeLevel}
           brightnessLevel={brightnessLevel}
           nightModeEnabled={nightModeEnabled}
+          macNightShiftEnabled={macNightShiftEnabled}
           isFullscreen={isFullscreen}
           onClose={() => setShowSystemActionMenu(false)}
           onVolumeLevelChange={setVolumeLevel}
           onBrightnessLevelChange={setBrightnessLevel}
           onNightModeChange={setNightModeEnabled}
+          onMacNightShiftChange={(value) => {
+            setMacNightShiftEnabled(value);
+            localStorage.setItem('macos-night-shift-enabled', String(value));
+          }}
           onFullscreenToggle={toggleFullscreen}
           onOpenSettings={() => {
             setShowSystemActionMenu(false);
