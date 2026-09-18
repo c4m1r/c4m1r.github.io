@@ -1491,3 +1491,95 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* WebOS update cards inside Notification Center. */
+.os-macos 
+
+.os-macos .apple-notification-center__updates {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 8px 8px;
+}
+
+.os-macos .apple-notification-center__update {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  color: inherit;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+}
+
+.os-macos .apple-notification-center__update:hover {
+  background: rgba(255,255,255,0.10);
+}
+
+.os-macos .apple-notification-center__update-icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #0a84ff, #5e5ce6);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.os-macos .apple-notification-center__update-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.os-macos .apple-notification-center__update-copy > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.os-macos .apple-notification-center__update-copy strong,
+.os-macos .apple-notification-center__update-copy small,
+.os-macos .apple-notification-center__update-copy b,
+.os-macos .apple-notification-center__update-copy p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.os-macos .apple-notification-center__update-copy strong {
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.os-macos .apple-notification-center__update-copy small {
+  color: rgba(255,255,255,0.46);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+
+.os-macos .apple-notification-center__update-copy b {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.os-macos .apple-notification-center__update-copy p {
+  margin: 3px 0 0;
+  display: -webkit-box;
+  color: rgba(255,255,255,0.52);
+  font-size: 9px;
+  line-height: 1.35;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
