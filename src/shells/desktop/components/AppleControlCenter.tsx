@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 
 interface AppleControlCenterProps {
@@ -36,6 +36,7 @@ export function AppleControlCenter({
   const [cellular, setCellular] = useState(true);
   const [nightMode, setNightMode] = useState(false);
   const [silentMode, setSilentMode] = useState(false);
+  const previousVolumeRef = useRef(volumeLevel || 50);
 
   if (!open) return null;
 
@@ -140,7 +141,17 @@ export function AppleControlCenter({
               type="button"
               title="Silent Mode"
               className={silentMode ? 'is-active is-danger' : ''}
-              onClick={() => setSilentMode((value) => !value)}
+              aria-pressed={silentMode}
+              onClick={() => {
+                if (silentMode) {
+                  setSilentMode(false);
+                  onVolumeLevelChange(Math.max(1, previousVolumeRef.current));
+                  return;
+                }
+                if (volumeLevel > 0) previousVolumeRef.current = volumeLevel;
+                setSilentMode(true);
+                onVolumeLevelChange(0);
+              }}
             >
               {silentMode ? '⌁' : '◒'}
             </button>
