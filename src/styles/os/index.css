@@ -12,6 +12,7 @@
 @import './themes/ubuntu.css';
 @import './themes/macos.css';
 @import './themes/apple-launcher.css';
+@import './themes/apple-dock.css';
 @import './themes/ios.css';
 @import './components/system-actions.css';
 @import './components/desktop-workspace.css';
