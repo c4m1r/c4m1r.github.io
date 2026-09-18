@@ -43,6 +43,14 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-bluetooth-enabled') !== 'false';
   });
+  const [macWifiEnabled, setMacWifiEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-wifi-enabled') !== 'false';
+  });
+  const [macBluetoothEnabled, setMacBluetoothEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-bluetooth-enabled') !== 'false';
+  });
   const [cellularEnabled, setCellularEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-cellular-enabled') !== 'false';
@@ -55,6 +63,17 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('ios-focus-enabled') === 'true';
   });
+
+  useEffect(() => {
+    const handleMacConnectivityChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ wifi?: boolean; bluetooth?: boolean }>;
+      if (typeof customEvent.detail?.wifi === 'boolean') setMacWifiEnabled(customEvent.detail.wifi);
+      if (typeof customEvent.detail?.bluetooth === 'boolean') setMacBluetoothEnabled(customEvent.detail.bluetooth);
+    };
+
+    window.addEventListener('macos-connectivity-changed', handleMacConnectivityChange);
+    return () => window.removeEventListener('macos-connectivity-changed', handleMacConnectivityChange);
+  }, []);
 
   useEffect(() => {
     const handleConnectivityChange = (event: Event) => {
@@ -95,6 +114,16 @@ export function ControlPanel() {
 
     localStorage.setItem(`ios-${key}-enabled`, String(value));
     window.dispatchEvent(new CustomEvent('ios-connectivity-changed', {
+      detail: { [key]: value },
+    }));
+  };
+
+  const setMacConnectivity = (key: 'wifi' | 'bluetooth', value: boolean) => {
+    if (key === 'wifi') setMacWifiEnabled(value);
+    else setMacBluetoothEnabled(value);
+
+    localStorage.setItem(`macos-${key}-enabled`, String(value));
+    window.dispatchEvent(new CustomEvent('macos-connectivity-changed', {
       detail: { [key]: value },
     }));
   };
@@ -582,7 +611,7 @@ export function ControlPanel() {
                     if (category.id === 'appearance') setView('wallpaper');
                     else if (category.id === 'maintenance') setView('systemInfo');
                     else if (category.id === 'accessibility' && isIos) setView('accessibility');
-                    else if (category.id === 'network' && isIos) setView('network');
+                    else if (category.id === 'network' && (isIos || isMac)) setView('network');
                     else if (category.id === 'focus' && isIos) setView('focus');
                   }}
                 >
@@ -640,7 +669,7 @@ export function ControlPanel() {
         )}
 
         {/* ── Apple Network view ── */}
-        {view === 'network' && isIos && (
+        {view === 'network' && (isIos || isMac) && (
           <div className="space-y-5">
             <div>
               <button
@@ -662,32 +691,48 @@ export function ControlPanel() {
             </div>
 
             <section className={`${cardClass} overflow-hidden`}>
-              {[
-                {
-                  key: 'airplane' as const,
-                  label: isRu ? 'Авиарежим' : 'Airplane Mode',
-                  enabled: airplaneEnabled,
-                  description: isRu ? 'Отключает Wi-Fi и сотовую связь' : 'Turns off Wi-Fi and cellular',
-                },
-                {
-                  key: 'wifi' as const,
-                  label: 'Wi-Fi',
-                  enabled: wifiEnabled,
-                  description: isRu ? 'Беспроводная сеть' : 'Wireless networking',
-                },
-                {
-                  key: 'bluetooth' as const,
-                  label: 'Bluetooth',
-                  enabled: bluetoothEnabled,
-                  description: isRu ? 'Беспроводные аксессуары' : 'Wireless accessories',
-                },
-                {
-                  key: 'cellular' as const,
-                  label: isRu ? 'Сотовая связь' : 'Cellular',
-                  enabled: cellularEnabled,
-                  description: isRu ? 'Мобильная передача данных' : 'Mobile data connectivity',
-                },
-              ].map((item, index) => (
+              {(isIos
+                ? [
+                    {
+                      key: 'airplane' as const,
+                      label: isRu ? 'Авиарежим' : 'Airplane Mode',
+                      enabled: airplaneEnabled,
+                      description: isRu ? 'Отключает Wi-Fi и сотовую связь' : 'Turns off Wi-Fi and cellular',
+                    },
+                    {
+                      key: 'wifi' as const,
+                      label: 'Wi-Fi',
+                      enabled: wifiEnabled,
+                      description: isRu ? 'Беспроводная сеть' : 'Wireless networking',
+                    },
+                    {
+                      key: 'bluetooth' as const,
+                      label: 'Bluetooth',
+                      enabled: bluetoothEnabled,
+                      description: isRu ? 'Беспроводные аксессуары' : 'Wireless accessories',
+                    },
+                    {
+                      key: 'cellular' as const,
+                      label: isRu ? 'Сотовая связь' : 'Cellular',
+                      enabled: cellularEnabled,
+                      description: isRu ? 'Мобильная передача данных' : 'Mobile data connectivity',
+                    },
+                  ]
+                : [
+                    {
+                      key: 'wifi' as const,
+                      label: 'Wi-Fi',
+                      enabled: macWifiEnabled,
+                      description: isRu ? 'Беспроводная сеть' : 'Wireless networking',
+                    },
+                    {
+                      key: 'bluetooth' as const,
+                      label: 'Bluetooth',
+                      enabled: macBluetoothEnabled,
+                      description: isRu ? 'Беспроводные аксессуары' : 'Wireless accessories',
+                    },
+                  ]
+              ).map((item, index) => (
                 <div
                   key={item.key}
                   className={`flex items-center justify-between gap-4 p-4 min-h-[64px] ${index > 0 ? 'border-t border-white/10' : ''}`}
@@ -703,10 +748,14 @@ export function ControlPanel() {
                     className={`ios-settings-switch ${item.enabled ? 'is-on' : ''}`}
                     onClick={() => {
                       const next = !item.enabled;
-                      setConnectivity(item.key, next);
-                      if (item.key === 'airplane' && next) {
-                        setConnectivity('wifi', false);
-                        setConnectivity('cellular', false);
+                      if (isIos) {
+                        setConnectivity(item.key, next);
+                        if (item.key === 'airplane' && next) {
+                          setConnectivity('wifi', false);
+                          setConnectivity('cellular', false);
+                        }
+                      } else {
+                        setMacConnectivity(item.key as 'wifi' | 'bluetooth', next);
                       }
                     }}
                   >
