@@ -298,6 +298,21 @@ export function AppleControlCenter({
 
         <div className="apple-control-center__slider-card">
           <div className="apple-control-center__slider-label">
+            <span>Display</span>
+            <strong>{brightnessLevel}%</strong>
+          </div>
+          <input
+            type="range"
+            min="20"
+            max="100"
+            value={brightnessLevel}
+            aria-label="Display brightness"
+            onChange={(event) => onBrightnessLevelChange(Number(event.target.value))}
+          />
+        </div>
+
+        <div className="apple-control-center__slider-card">
+          <div className="apple-control-center__slider-label">
             <span>Volume</span>
             <strong>{volumeLevel}%</strong>
           </div>
