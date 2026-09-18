@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Grid, List, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Eye, Grid, List, Search } from 'lucide-react';
 import folderIcon from '../../themes/winxp/assets/icons/folder_plain.png';
 import computerIcon from '../../themes/winxp/assets/icons/mycomputer.png';
 import searchIconXp from '../../themes/winxp/assets/toolbar/search.png';
@@ -316,6 +316,17 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
             >
               <List size={15} />
             </button>
+            {theme === 'macos-26' && (
+              <button
+                type="button"
+                disabled={selectedFile?.type !== 'file'}
+                onClick={() => setQuickLookOpen(true)}
+                aria-label={isRu ? 'Быстрый просмотр' : 'Quick Look'}
+                title={isRu ? 'Быстрый просмотр (Пробел)' : 'Quick Look (Space)'}
+              >
+                <Eye size={15} />
+              </button>
+            )}
           </div>
         </header>
 
