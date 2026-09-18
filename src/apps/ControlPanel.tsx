@@ -603,6 +603,23 @@ export function ControlPanel() {
                   <span />
                 </button>
               </div>
+              <div className="border-t border-white/10 p-4">
+                <button
+                  type="button"
+                  className="w-full text-left text-xs font-semibold text-[#0a84ff] hover:opacity-80"
+                  onClick={() => {
+                    localStorage.removeItem('ios-hidden-home-icons');
+                    window.dispatchEvent(new CustomEvent('ios-home-layout-reset'));
+                  }}
+                >
+                  {isRu ? 'Сбросить расположение экрана «Домой»' : 'Reset Home Screen Layout'}
+                </button>
+                <span className="block mt-1 text-[10px] opacity-55">
+                  {isRu
+                    ? 'Возвращает скрытые приложения на экран «Домой»'
+                    : 'Restores apps hidden from the Home Screen'}
+                </span>
+              </div>
             </section>
           </div>
         )}
