@@ -6,6 +6,10 @@ import macTerminalIcon from '../../../eat/playground-macos-main/public/img/icons
 import macSettingsIcon from '../../../eat/macos-portfolio-main/public/icons/settings.svg';
 import macPhotosIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/photos.png';
 import macMailIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/mail.png';
+import macFinderIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/finder.png';
+import macNotesIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/notes.png';
+import macCalendarIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/calendar.png';
+import macCalculatorIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/calculator.png';
 
 import iosSafariIcon from '../../../eat/homescreen-main/public/images/Icon=Safari.png';
 import iosMailIcon from '../../../eat/homescreen-main/public/images/Icon=Mail.png';
@@ -53,6 +57,18 @@ const IOS9_ICON_BY_ID: Readonly<Record<string, string>> = {
   'control-panel': ios9SettingsIcon,
   pictures: ios9PhotosIcon,
   calendar: ios9CalendarIcon,
+};
+
+export const MACOS_APP_ICON_BY_ID: Readonly<Record<string, string>> = {
+  'internet-explorer': macSafariIcon,
+  outlook: macMailIcon,
+  pictures: macPhotosIcon,
+  'control-panel': macSettingsIcon,
+  notepad: macNotesIcon,
+  terminal: macTerminalIcon,
+  calculator: macCalculatorIcon,
+  calendar: macCalendarIcon,
+  'projects-grid': macFinderIcon,
 };
 
 export const MACOS_DOCK_ITEMS: readonly AppleDockAsset[] = [
