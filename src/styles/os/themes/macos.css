@@ -1934,3 +1934,57 @@
 .os-macos .apple-control-center__now-playing-controls button:disabled {
   opacity: 0.28;
 }
+
+
+.os-macos .apple-control-center__focus-card {
+  width: 100%;
+  min-height: 54px;
+  padding: 9px 11px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.os-macos .apple-control-center__focus-card:hover {
+  background: rgba(255,255,255,0.11);
+}
+
+.os-macos .apple-control-center__focus-card.is-active {
+  background: rgba(255,204,0,0.14);
+}
+
+.os-macos .apple-control-center__focus-icon {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+}
+
+.os-macos .apple-control-center__focus-card.is-active .apple-control-center__focus-icon {
+  background: #ffcc00;
+  color: #111;
+}
+
+.os-macos .apple-control-center__focus-card strong,
+.os-macos .apple-control-center__focus-card small {
+  display: block;
+}
+
+.os-macos .apple-control-center__focus-card strong {
+  font-size: 10px;
+}
+
+.os-macos .apple-control-center__focus-card small {
+  margin-top: 2px;
+  color: rgba(255,255,255,0.48);
+  font-size: 9px;
+}
