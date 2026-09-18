@@ -51,6 +51,7 @@ import { AppleDock } from './components/AppleDock';
 import { AppleControlCenter } from './components/AppleControlCenter';
 import { AppleMenuSurface } from './components/AppleMenuSurface';
 import { AppleNotificationCenter } from './components/AppleNotificationCenter';
+import { AppleSpotlight } from './components/AppleSpotlight';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -90,6 +91,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
   const [showAppleMenu, setShowAppleMenu] = useState(false);
+  const [showSpotlight, setShowSpotlight] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
@@ -100,6 +102,29 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const menuHoverCooldownRef = useRef<number>(0);
 
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
+
+  useEffect(() => {
+    if (themeKey !== 'macos-26') {
+      setShowSpotlight(false);
+      return;
+    }
+
+    const handleSpotlightShortcut = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.code === 'Space') {
+        event.preventDefault();
+        setShowSpotlight((current) => !current);
+        setShowAppleMenu(false);
+        setShowSystemActionMenu(false);
+        setShowNotificationPanel(false);
+      }
+      if (event.key === 'Escape') {
+        setShowSpotlight(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleSpotlightShortcut);
+    return () => window.removeEventListener('keydown', handleSpotlightShortcut);
+  }, [themeKey]);
 
   useEffect(() => {
     const handleWallpaperChange = (e: Event) => {
@@ -919,10 +944,27 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           setShowNotificationPanel((prev) => !prev);
           setShowSystemActionMenu(false);
           setShowAppleMenu(false);
+          setShowSpotlight(false);
           closeStartMenu();
           setShowVolumePanel(false);
         }}
+        onSpotlightToggle={() => {
+          if (themeKey !== 'macos-26') return;
+          setShowSpotlight((prev) => !prev);
+          setShowSystemActionMenu(false);
+          setShowAppleMenu(false);
+          setShowNotificationPanel(false);
+          closeStartMenu();
+        }}
       />
+
+      {themeKey === 'macos-26' && (
+        <AppleSpotlight
+          open={showSpotlight}
+          onClose={() => setShowSpotlight(false)}
+          onLaunchApp={(appId) => launchApp(appId)}
+        />
+      )}
 
       {themeKey === 'macos-26' && (
         <AppleNotificationCenter
