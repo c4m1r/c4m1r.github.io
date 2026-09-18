@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../contexts/useApp';
 import type { ThemeAssetId } from '../themes/webos/themeAssets';
 import { THEME_ASSETS } from '../themes/webos/themeAssets';
@@ -9,7 +9,7 @@ import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
 
-type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility';
+type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network';
 type CPDisplayMode = 'category' | 'classic';
 
 export function ControlPanel() {
@@ -35,6 +35,35 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-assistive-touch-enabled') !== 'false';
   });
+  const [wifiEnabled, setWifiEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-wifi-enabled') !== 'false';
+  });
+  const [bluetoothEnabled, setBluetoothEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-bluetooth-enabled') !== 'false';
+  });
+
+  useEffect(() => {
+    const handleConnectivityChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ wifi?: boolean; bluetooth?: boolean }>;
+      if (typeof customEvent.detail?.wifi === 'boolean') setWifiEnabled(customEvent.detail.wifi);
+      if (typeof customEvent.detail?.bluetooth === 'boolean') setBluetoothEnabled(customEvent.detail.bluetooth);
+    };
+
+    window.addEventListener('ios-connectivity-changed', handleConnectivityChange);
+    return () => window.removeEventListener('ios-connectivity-changed', handleConnectivityChange);
+  }, []);
+
+  const setConnectivity = (key: 'wifi' | 'bluetooth', value: boolean) => {
+    if (key === 'wifi') setWifiEnabled(value);
+    else setBluetoothEnabled(value);
+
+    localStorage.setItem(`ios-${key}-enabled`, String(value));
+    window.dispatchEvent(new CustomEvent('ios-connectivity-changed', {
+      detail: { [key]: value },
+    }));
+  };
 
   const { wallpapers, loading: wallpapersLoading } = useGallery();
 
@@ -501,6 +530,7 @@ export function ControlPanel() {
                     if (category.id === 'appearance') setView('wallpaper');
                     else if (category.id === 'maintenance') setView('systemInfo');
                     else if (category.id === 'accessibility' && isIos) setView('accessibility');
+                    else if (category.id === 'network' && isIos) setView('network');
                   }}
                 >
                   <div className="flex items-start gap-3 mb-2">
@@ -554,6 +584,66 @@ export function ControlPanel() {
               ))}
             </div>
           </>
+        )}
+
+        {/* ── Apple Network view ── */}
+        {view === 'network' && isIos && (
+          <div className="space-y-5">
+            <div>
+              <button
+                type="button"
+                className="text-xs opacity-70 hover:opacity-100 mb-3"
+                onClick={() => setView('categories')}
+              >
+                ← {isRu ? 'Настройки' : 'Settings'}
+              </button>
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] opacity-60 mb-1">
+                NervaWEB WebOS
+              </div>
+              <h1 className={`text-2xl font-bold mb-1 ${titleClass}`}>
+                {isRu ? 'Сеть' : 'Network'}
+              </h1>
+              <p className="text-xs opacity-70">
+                {isRu ? 'Беспроводные подключения устройства' : 'Wireless device connectivity'}
+              </p>
+            </div>
+
+            <section className={`${cardClass} overflow-hidden`}>
+              {[
+                {
+                  key: 'wifi' as const,
+                  label: 'Wi-Fi',
+                  enabled: wifiEnabled,
+                  description: isRu ? 'Беспроводная сеть' : 'Wireless networking',
+                },
+                {
+                  key: 'bluetooth' as const,
+                  label: 'Bluetooth',
+                  enabled: bluetoothEnabled,
+                  description: isRu ? 'Беспроводные аксессуары' : 'Wireless accessories',
+                },
+              ].map((item, index) => (
+                <div
+                  key={item.key}
+                  className={`flex items-center justify-between gap-4 p-4 min-h-[64px] ${index > 0 ? 'border-t border-white/10' : ''}`}
+                >
+                  <div>
+                    <strong className="block text-sm">{item.label}</strong>
+                    <span className="block mt-1 text-[11px] opacity-60">{item.description}</span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={item.enabled}
+                    className={`ios-settings-switch ${item.enabled ? 'is-on' : ''}`}
+                    onClick={() => setConnectivity(item.key, !item.enabled)}
+                  >
+                    <span />
+                  </button>
+                </div>
+              ))}
+            </section>
+          </div>
         )}
 
         {/* ── Apple Accessibility view ── */}
