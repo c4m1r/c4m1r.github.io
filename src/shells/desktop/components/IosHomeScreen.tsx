@@ -96,6 +96,19 @@ export function IosHomeScreen({
     return () => window.removeEventListener('ios-home-remove', removeFromHome);
   }, []);
 
+  useEffect(() => {
+    const resetHomeLayout = () => {
+      setHiddenHomeIconIds([]);
+      setPage(0);
+      setEditMode(false);
+    };
+
+    window.addEventListener('ios-home-layout-reset', resetHomeLayout);
+    return () => window.removeEventListener('ios-home-layout-reset', resetHomeLayout);
+  }, []);
+
+
+
 
 
   useEffect(() => {
