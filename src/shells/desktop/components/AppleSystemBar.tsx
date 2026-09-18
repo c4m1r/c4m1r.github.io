@@ -7,6 +7,7 @@ interface AppleSystemBarProps {
   language: Language;
   time: Date;
   onLauncherToggle: () => void;
+  onControlCenterToggle: () => void;
 }
 
 function stop(event: MouseEvent) {
@@ -18,6 +19,7 @@ export function AppleSystemBar({
   language,
   time,
   onLauncherToggle,
+  onControlCenterToggle,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -74,8 +76,8 @@ export function AppleSystemBar({
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-control-center"
-          onClick={onLauncherToggle}
-          aria-label="Open system menu"
+          onClick={onControlCenterToggle}
+          aria-label="Open Control Center"
         >
           ◐
         </button>
