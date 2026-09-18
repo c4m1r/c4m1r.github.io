@@ -20,6 +20,7 @@ export interface UseDesktopIconGridStateReturn {
   handleDesktopMouseDown: (event: React.MouseEvent<HTMLDivElement>) => void;
   handleIconMouseDown: (e: React.MouseEvent, iconId: string) => void;
   clearSelection: () => void;
+  cleanUpIcons: () => void;
 }
 
 export function useDesktopIconGridState(
@@ -218,6 +219,12 @@ export function useDesktopIconGridState(
     setSelectedIcons([]);
   }, []);
 
+  const cleanUpIcons = useCallback(() => {
+    setIconPositions({});
+    setDraggingIcon(null);
+    setSelectedIcons([]);
+  }, []);
+
   return {
     desktopIcons,
     selectedIcons,
@@ -227,5 +234,6 @@ export function useDesktopIconGridState(
     handleDesktopMouseDown,
     handleIconMouseDown,
     clearSelection,
+    cleanUpIcons,
   };
 }
