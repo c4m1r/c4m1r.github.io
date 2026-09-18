@@ -1,0 +1,229 @@
+/* Shared Apple application presentation. Runtime behavior remains in app components. */
+
+.os-macos .browser-app,
+.os-ios .browser-app {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: #f5f5f7;
+  color: #1d1d1f;
+}
+
+.os-macos .browser-app__apple-chrome,
+.os-ios .browser-app__apple-chrome {
+  flex: none;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.14);
+  background: rgba(246, 246, 248, 0.86);
+  -webkit-backdrop-filter: saturate(170%) blur(22px);
+  backdrop-filter: saturate(170%) blur(22px);
+}
+
+.os-macos .browser-app__apple-toolbar,
+.os-ios .browser-app__apple-toolbar {
+  min-height: 44px;
+  padding: 6px 10px;
+  display: grid;
+  grid-template-columns: auto minmax(160px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.os-macos .browser-app__apple-nav,
+.os-macos .browser-app__apple-actions,
+.os-ios .browser-app__apple-nav,
+.os-ios .browser-app__apple-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.os-macos .browser-app__apple-button,
+.os-ios .browser-app__apple-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3a3a3c;
+  display: grid;
+  place-items: center;
+  transition: background 100ms ease, transform 80ms ease, opacity 100ms ease;
+}
+
+.os-macos .browser-app__apple-button:hover {
+  background: rgba(60, 60, 67, 0.10);
+}
+
+.os-macos .browser-app__apple-button:active,
+.os-ios .browser-app__apple-button:active {
+  transform: scale(0.92);
+}
+
+.os-macos .browser-app__apple-button:disabled,
+.os-ios .browser-app__apple-button:disabled {
+  opacity: 0.30;
+}
+
+.os-macos .browser-app__apple-address,
+.os-ios .browser-app__apple-address {
+  height: 30px;
+  min-width: 0;
+  padding: 0 8px;
+  border: 1px solid rgba(60, 60, 67, 0.10);
+  border-radius: 9px;
+  background: rgba(118, 118, 128, 0.10);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(60, 60, 67, 0.70);
+}
+
+.os-macos .browser-app__apple-address:focus-within,
+.os-ios .browser-app__apple-address:focus-within {
+  border-color: rgba(0, 122, 255, 0.46);
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.10);
+}
+
+.os-macos .browser-app__apple-address input,
+.os-ios .browser-app__apple-address input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1d1d1f;
+  font: 500 11px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  text-align: center;
+}
+
+.os-macos .browser-app__apple-address > button,
+.os-ios .browser-app__apple-address > button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: grid;
+  place-items: center;
+}
+
+.os-macos .browser-app__apple-loading,
+.os-ios .browser-app__apple-loading {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(60,60,67,0.20);
+  border-top-color: #007aff;
+  border-radius: 50%;
+  animation: apple-browser-spin 650ms linear infinite;
+}
+
+.os-macos .browser-app__apple-favorites,
+.os-ios .browser-app__apple-favorites {
+  min-height: 28px;
+  padding: 3px 12px 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(60, 60, 67, 0.64);
+  font-size: 10px;
+}
+
+.os-macos .browser-app__apple-favorites > span,
+.os-ios .browser-app__apple-favorites > span {
+  flex: none;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.os-macos .browser-app__apple-favorites > div,
+.os-ios .browser-app__apple-favorites > div {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.os-macos .browser-app__apple-favorites > div::-webkit-scrollbar,
+.os-ios .browser-app__apple-favorites > div::-webkit-scrollbar {
+  display: none;
+}
+
+.os-macos .browser-app__apple-favorites button,
+.os-ios .browser-app__apple-favorites button {
+  flex: none;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: rgba(118, 118, 128, 0.08);
+  color: #3a3a3c;
+  font: inherit;
+}
+
+.os-macos .browser-app__apple-favorites button:hover {
+  background: rgba(118, 118, 128, 0.15);
+}
+
+.os-macos .browser-app__viewport,
+.os-ios .browser-app__viewport {
+  min-height: 0;
+}
+
+.os-macos .browser-app__loading-overlay,
+.os-ios .browser-app__loading-overlay {
+  background: rgba(245, 245, 247, 0.84) !important;
+  color: #007aff !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.os-ios .browser-app__apple-toolbar {
+  min-height: 46px;
+  padding: 7px 8px;
+  grid-template-columns: auto minmax(120px, 1fr) auto;
+  gap: 6px;
+}
+
+.os-ios .browser-app__apple-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  color: #007aff;
+}
+
+.os-ios .browser-app__apple-address {
+  height: 34px;
+  border-radius: 11px;
+  background: rgba(118,118,128,0.12);
+}
+
+.os-ios .browser-app__apple-address input {
+  font-size: 12px;
+}
+
+.os-ios .browser-app__apple-favorites {
+  min-height: 32px;
+  padding-inline: 9px;
+}
+
+.os-ios .browser-app__apple-favorites > span {
+  display: none;
+}
+
+.os-ios-5 .browser-app__apple-chrome,
+.os-ios-9 .browser-app__apple-chrome {
+  background: rgba(235, 239, 244, 0.94);
+  -webkit-backdrop-filter: saturate(130%) blur(12px);
+  backdrop-filter: saturate(130%) blur(12px);
+}
+
+.os-ios-5 .browser-app__apple-button,
+.os-ios-9 .browser-app__apple-button {
+  color: #007aff;
+}
+
+@keyframes apple-browser-spin {
+  to { transform: rotate(360deg); }
+}
