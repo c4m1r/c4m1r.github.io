@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type MouseEvent, type TouchEvent } from 'react';
+import { useMemo, useRef, useState, type MouseEvent } from 'react';
 import { type DesktopIcon } from '../desktopTypes';
 
 interface IosHomeScreenProps {
