@@ -21,6 +21,9 @@ interface AppleSystemBarProps {
   onNotificationCenterToggle: () => void;
   onSpotlightToggle: () => void;
   onOpenSettings: () => void;
+  onOpenAbout: () => void;
+  onHideActiveApp: () => void;
+  onHideOtherApps: () => void;
   onQuitActiveApp: () => void;
   canQuitActiveApp: boolean;
   onNewFinderWindow: () => void;
@@ -46,6 +49,9 @@ export function AppleSystemBar({
   onNotificationCenterToggle,
   onSpotlightToggle,
   onOpenSettings,
+  onOpenAbout,
+  onHideActiveApp,
+  onHideOtherApps,
   onQuitActiveApp,
   canQuitActiveApp,
   onNewFinderWindow,
@@ -337,7 +343,14 @@ export function AppleSystemBar({
 
         {appMenuOpen && (
           <div className="apple-app-menu" role="menu">
-            <button type="button" role="menuitem" disabled>
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setAppMenuOpen(false);
+                onOpenAbout();
+              }}
+            >
               <span>About {activeAppTitle || 'Finder'}</span>
             </button>
             <div className="apple-app-menu__separator" />
@@ -357,11 +370,29 @@ export function AppleSystemBar({
               <span className="apple-app-menu__hint">›</span>
             </button>
             <div className="apple-app-menu__separator" />
-            <button type="button" role="menuitem" disabled>
+            <button
+              type="button"
+              role="menuitem"
+              disabled={!canQuitActiveApp}
+              onClick={() => {
+                if (!canQuitActiveApp) return;
+                setAppMenuOpen(false);
+                onHideActiveApp();
+              }}
+            >
               <span>Hide {activeAppTitle || 'Finder'}</span>
               <span className="apple-app-menu__hint">⌘H</span>
             </button>
-            <button type="button" role="menuitem" disabled>
+            <button
+              type="button"
+              role="menuitem"
+              disabled={!canQuitActiveApp}
+              onClick={() => {
+                if (!canQuitActiveApp) return;
+                setAppMenuOpen(false);
+                onHideOtherApps();
+              }}
+            >
               <span>Hide Others</span>
               <span className="apple-app-menu__hint">⌥⌘H</span>
             </button>
