@@ -48,6 +48,7 @@ import {
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
 import { AppleSystemBar } from './components/AppleSystemBar';
 import { AppleDock } from './components/AppleDock';
+import { AppleControlCenter } from './components/AppleControlCenter';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -890,7 +891,32 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         language={language}
         time={time}
         onLauncherToggle={openStartMenu}
+        onControlCenterToggle={() => {
+          setShowSystemActionMenu((prev) => !prev);
+          closeStartMenu();
+          setShowVolumePanel(false);
+          setShowNotificationPanel(false);
+        }}
       />
+
+      {themeKey === 'macos-26' && (
+        <AppleControlCenter
+          open={showSystemActionMenu}
+          volumeLevel={volumeLevel}
+          isFullscreen={isFullscreen}
+          onClose={() => setShowSystemActionMenu(false)}
+          onVolumeLevelChange={setVolumeLevel}
+          onFullscreenToggle={toggleFullscreen}
+          onOpenSettings={() => {
+            setShowSystemActionMenu(false);
+            launchApp('control-panel');
+          }}
+          onOpenAbout={() => {
+            setShowSystemActionMenu(false);
+            launchApp('about');
+          }}
+        />
+      )}
 
       {theme === 'ubuntu' && (
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
