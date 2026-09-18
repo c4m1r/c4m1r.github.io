@@ -49,6 +49,8 @@ export function IosHomeScreen({
   const startXRef = useRef<number | null>(null);
   const pointerIdRef = useRef<number | null>(null);
   const suppressClickRef = useRef(false);
+  const editLongPressRef = useRef<number | null>(null);
+  const editPressStartRef = useRef<{ x: number; y: number } | null>(null);
 
 
   useEffect(() => {
@@ -168,16 +170,55 @@ export function IosHomeScreen({
           pointerIdRef.current = event.pointerId;
           setIsDragging(true);
           event.currentTarget.setPointerCapture?.(event.pointerId);
+
+          const target = event.target as HTMLElement;
+          const interactive = target.closest(
+            '.ios-home-icon, .ios-home-widget, .ios-home-search-pill, .ios-app-library__search, .ios-home-edit-done, input, button'
+          );
+          if (!interactive && !editMode) {
+            editPressStartRef.current = { x: event.clientX, y: event.clientY };
+            editLongPressRef.current = window.setTimeout(() => {
+              editLongPressRef.current = null;
+              suppressClickRef.current = true;
+              setIsSearchOpen(false);
+              setEditMode(true);
+              window.setTimeout(() => {
+                suppressClickRef.current = false;
+              }, 90);
+            }, 650);
+          }
         }}
         onPointerMove={(event) => {
           if (startXRef.current === null || pointerIdRef.current !== event.pointerId) return;
           setDragOffset(event.clientX - startXRef.current);
+
+          const pressStart = editPressStartRef.current;
+          if (
+            pressStart &&
+            (Math.abs(event.clientX - pressStart.x) > 8 || Math.abs(event.clientY - pressStart.y) > 8)
+          ) {
+            if (editLongPressRef.current !== null) {
+              window.clearTimeout(editLongPressRef.current);
+              editLongPressRef.current = null;
+            }
+            editPressStartRef.current = null;
+          }
         }}
         onPointerUp={(event) => {
+          if (editLongPressRef.current !== null) {
+            window.clearTimeout(editLongPressRef.current);
+            editLongPressRef.current = null;
+          }
+          editPressStartRef.current = null;
           if (startXRef.current === null || pointerIdRef.current !== event.pointerId) return;
           finishSwipe(event.clientX - startXRef.current);
         }}
         onPointerCancel={() => {
+          if (editLongPressRef.current !== null) {
+            window.clearTimeout(editLongPressRef.current);
+            editLongPressRef.current = null;
+          }
+          editPressStartRef.current = null;
           startXRef.current = null;
           pointerIdRef.current = null;
           setDragOffset(0);
