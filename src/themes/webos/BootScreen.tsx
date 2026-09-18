@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { getOsClassName } from '../../shells/os/osClassNames';
 import { THEME_ASSETS, ThemeAssetId } from './themeAssets';
 
 interface BootScreenProps {
@@ -9,17 +10,7 @@ interface BootScreenProps {
 export function BootScreen({ onComplete }: BootScreenProps) {
   const { theme } = useApp();
   const themeAssets = THEME_ASSETS[(theme as ThemeAssetId) ?? 'webos'] ?? THEME_ASSETS.webos;
-  const OS_CLASS_MAP: Record<string, string> = {
-    'win-xp': 'winxp',
-    'webos':  'winxp',
-    'win-98': 'classic',
-    'win7':   'win7',
-    'win10':  'win7',
-    'win11':  'win7',
-    'ubuntu': 'ubuntu',
-    'arch':   'ubuntu',
-  };
-  const osClassName = OS_CLASS_MAP[theme] ?? 'classic';
+  const osClassName = getOsClassName(theme);
   const bootLogo = themeAssets.bootLogo;
   const [progress, setProgress] = useState(0);
   const [fadeIn, setFadeIn] = useState(false);
