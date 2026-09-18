@@ -10,6 +10,7 @@ interface BootScreenProps {
 
 export function BootScreen({ onComplete }: BootScreenProps) {
   const { theme } = useApp();
+  const appleTheme = isAppleTheme(theme);
   const themeAssets = THEME_ASSETS[(theme as ThemeAssetId) ?? 'webos'] ?? THEME_ASSETS.webos;
   const osClassName = getOsClassName(theme);
   const bootLogo = themeAssets.bootLogo;
@@ -18,10 +19,12 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   const [logoFailed, setLogoFailed] = useState(false);
 
   useEffect(() => {
+    if (appleTheme) return;
     setFadeIn(true);
-  }, []);
+  }, [appleTheme]);
 
   useEffect(() => {
+    if (appleTheme) return;
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -34,9 +37,9 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [onComplete]);
+  }, [appleTheme, onComplete]);
 
-  if (isAppleTheme(theme)) {
+  if (appleTheme) {
     return <AppleBootScreen theme={theme} onComplete={onComplete} />;
   }
 
