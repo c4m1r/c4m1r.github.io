@@ -43,6 +43,14 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-bluetooth-enabled') !== 'false';
   });
+  const [cellularEnabled, setCellularEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-cellular-enabled') !== 'false';
+  });
+  const [airplaneEnabled, setAirplaneEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('ios-airplane-enabled') === 'true';
+  });
   const [focusEnabled, setFocusEnabled] = useState(() => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('ios-focus-enabled') === 'true';
@@ -50,9 +58,16 @@ export function ControlPanel() {
 
   useEffect(() => {
     const handleConnectivityChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{ wifi?: boolean; bluetooth?: boolean }>;
+      const customEvent = event as CustomEvent<{
+        wifi?: boolean;
+        bluetooth?: boolean;
+        cellular?: boolean;
+        airplane?: boolean;
+      }>;
       if (typeof customEvent.detail?.wifi === 'boolean') setWifiEnabled(customEvent.detail.wifi);
       if (typeof customEvent.detail?.bluetooth === 'boolean') setBluetoothEnabled(customEvent.detail.bluetooth);
+      if (typeof customEvent.detail?.cellular === 'boolean') setCellularEnabled(customEvent.detail.cellular);
+      if (typeof customEvent.detail?.airplane === 'boolean') setAirplaneEnabled(customEvent.detail.airplane);
     };
 
     window.addEventListener('ios-connectivity-changed', handleConnectivityChange);
@@ -69,9 +84,14 @@ export function ControlPanel() {
     return () => window.removeEventListener('ios-focus-changed', handleFocusChange);
   }, []);
 
-  const setConnectivity = (key: 'wifi' | 'bluetooth', value: boolean) => {
+  const setConnectivity = (
+    key: 'wifi' | 'bluetooth' | 'cellular' | 'airplane',
+    value: boolean
+  ) => {
     if (key === 'wifi') setWifiEnabled(value);
-    else setBluetoothEnabled(value);
+    else if (key === 'bluetooth') setBluetoothEnabled(value);
+    else if (key === 'cellular') setCellularEnabled(value);
+    else setAirplaneEnabled(value);
 
     localStorage.setItem(`ios-${key}-enabled`, String(value));
     window.dispatchEvent(new CustomEvent('ios-connectivity-changed', {
@@ -640,6 +660,12 @@ export function ControlPanel() {
             <section className={`${cardClass} overflow-hidden`}>
               {[
                 {
+                  key: 'airplane' as const,
+                  label: isRu ? 'Авиарежим' : 'Airplane Mode',
+                  enabled: airplaneEnabled,
+                  description: isRu ? 'Отключает Wi-Fi и сотовую связь' : 'Turns off Wi-Fi and cellular',
+                },
+                {
                   key: 'wifi' as const,
                   label: 'Wi-Fi',
                   enabled: wifiEnabled,
@@ -650,6 +676,12 @@ export function ControlPanel() {
                   label: 'Bluetooth',
                   enabled: bluetoothEnabled,
                   description: isRu ? 'Беспроводные аксессуары' : 'Wireless accessories',
+                },
+                {
+                  key: 'cellular' as const,
+                  label: isRu ? 'Сотовая связь' : 'Cellular',
+                  enabled: cellularEnabled,
+                  description: isRu ? 'Мобильная передача данных' : 'Mobile data connectivity',
                 },
               ].map((item, index) => (
                 <div
@@ -665,7 +697,14 @@ export function ControlPanel() {
                     role="switch"
                     aria-checked={item.enabled}
                     className={`ios-settings-switch ${item.enabled ? 'is-on' : ''}`}
-                    onClick={() => setConnectivity(item.key, !item.enabled)}
+                    onClick={() => {
+                      const next = !item.enabled;
+                      setConnectivity(item.key, next);
+                      if (item.key === 'airplane' && next) {
+                        setConnectivity('wifi', false);
+                        setConnectivity('cellular', false);
+                      }
+                    }}
                   >
                     <span />
                   </button>
