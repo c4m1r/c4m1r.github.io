@@ -929,3 +929,47 @@
     transform: translateX(-50%) scale(1);
   }
 }
+
+
+/* macOS desktop context menu over the shared context-menu runtime. */
+.os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu {
+  min-width: 220px;
+  padding: 5px;
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: 10px;
+  background: rgba(246,246,248,0.91);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
+  backdrop-filter: blur(26px) saturate(170%);
+  box-shadow:
+    0 16px 38px rgba(0,0,0,0.22),
+    inset 0 1px rgba(255,255,255,0.74);
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu__item {
+  min-height: 25px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu__item:hover:not(.is-disabled),
+.os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu__item.is-open:not(.is-disabled) {
+  background: #007aff;
+  color: #fff;
+}
+
+.os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu__separator {
+  height: 1px;
+  margin: 4px 6px;
+  background: rgba(60,60,67,0.13);
+}
+
+.os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu__item.is-disabled {
+  color: rgba(60,60,67,0.34);
+}
+
+.os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu--submenu {
+  margin-left: 3px;
+}
