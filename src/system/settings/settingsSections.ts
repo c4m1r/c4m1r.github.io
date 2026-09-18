@@ -135,13 +135,10 @@ export function getSystemSettingsSections(themeId: ThemeId): SettingSection[] {
       { id: 'webos-cards', label: { en: 'Card View Animations', ru: 'Анимация карточек' }, frozen: true },
     ],
     'ios-26': [
-      { id: 'ios-wifi', label: { en: 'Wi-Fi & Cellular', ru: 'Wi-Fi и сотовая связь' }, frozen: true },
-      { id: 'ios-bt', label: { en: 'Bluetooth & AirDrop', ru: 'Bluetooth и AirDrop' }, frozen: true },
+      { id: 'ios-cellular', label: { en: 'Cellular', ru: 'Сотовая связь' }, frozen: true },
       { id: 'ios-stage', label: { en: 'Stage Manager Layout', ru: 'Режим Stage Manager' }, frozen: true },
     ],
     'ios-16': [
-      { id: 'ios-wifi', label: { en: 'Wi-Fi', ru: 'Wi-Fi' }, frozen: true },
-      { id: 'ios-bt', label: { en: 'Bluetooth', ru: 'Bluetooth' }, frozen: true },
       { id: 'ios-focus', label: { en: 'Focus Modes', ru: 'Фокусирование' }, frozen: true },
     ],
     'ios-9': [
