@@ -32,6 +32,7 @@ interface AppleSystemBarProps {
   onZoomActiveWindow: () => void;
   onOpenFinderPath: (path: string) => void;
   onFinderViewMode: (mode: 'icons' | 'list') => void;
+  onOpenHelp: () => void;
 }
 
 function stop(event: MouseEvent) {
@@ -60,13 +61,14 @@ export function AppleSystemBar({
   onZoomActiveWindow,
   onOpenFinderPath,
   onFinderViewMode,
+  onOpenHelp,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
   const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(isMac || isIos);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
-  const [systemMenu, setSystemMenu] = useState<'file' | 'view' | 'go' | 'window' | null>(null);
+  const [systemMenu, setSystemMenu] = useState<'file' | 'view' | 'go' | 'window' | 'help' | null>(null);
   const iosSwipeStart = useRef<{ x: number; y: number } | null>(null);
 
   if (!isMac && !isIos) return null;
@@ -235,7 +237,18 @@ export function AppleSystemBar({
         >
           Window
         </button>
-        <span className="apple-macos-menu-item">Help</span>
+        <button
+          type="button"
+          className="apple-macos-menu-item"
+          aria-expanded={systemMenu === 'help'}
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu(null);
+            setSystemMenu((value) => value === 'help' ? null : 'help');
+          }}
+        >
+          Help
+        </button>
         {systemMenu && (
           <div className={`apple-system-menu apple-system-menu--${systemMenu}`} role="menu">
             {systemMenu === 'file' && (
@@ -308,6 +321,18 @@ export function AppleSystemBar({
                   Applications
                 </button>
               </>
+            )}
+            {systemMenu === 'help' && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setSystemMenu(null);
+                  onOpenHelp();
+                }}
+              >
+                NervaWEB WebOS Help
+              </button>
             )}
             {systemMenu === 'window' && (
               <>
