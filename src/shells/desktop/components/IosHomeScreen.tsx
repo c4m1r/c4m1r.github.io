@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { Search } from 'lucide-react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type DesktopIcon } from '../desktopTypes';
 import { getIosIconMap } from '../appleIconAssets';
@@ -39,6 +40,8 @@ export function IosHomeScreen({
   const appLibraryPage = showAppLibrary ? totalPages - 1 : -1;
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [now, setNow] = useState(() => new Date());
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -62,6 +65,14 @@ export function IosHomeScreen({
     if (!normalized) return desktopIcons;
     return desktopIcons.filter((icon) => icon.label.toLowerCase().includes(normalized));
   }, [desktopIcons, query]);
+
+  const spotlightApps = useMemo(() => {
+    const normalized = searchQuery.trim().toLowerCase();
+    if (!normalized) return desktopIcons.slice(0, 8);
+    return desktopIcons
+      .filter((icon) => icon.label.toLowerCase().includes(normalized))
+      .slice(0, 20);
+  }, [desktopIcons, searchQuery]);
 
   const clampPage = (value: number) => Math.max(0, Math.min(totalPages - 1, value));
 
@@ -230,6 +241,72 @@ export function IosHomeScreen({
           )}
         </div>
       </div>
+
+      {modernHome && page !== appLibraryPage && (
+        <button
+          type="button"
+          className="ios-home-search-pill"
+          onClick={(event) => {
+            event.stopPropagation();
+            setIsSearchOpen(true);
+          }}
+        >
+          <Search size={12} strokeWidth={2.6} aria-hidden="true" />
+          <span>Search</span>
+        </button>
+      )}
+
+      {modernHome && isSearchOpen && (
+        <div
+          className="ios-spotlight"
+          onPointerDown={(event) => event.stopPropagation()}
+          onPointerMove={(event) => event.stopPropagation()}
+          onPointerUp={(event) => event.stopPropagation()}
+        >
+          <div className="ios-spotlight__header">
+            <label className="ios-spotlight__field">
+              <Search size={16} aria-hidden="true" />
+              <input
+                autoFocus
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search"
+                aria-label="Search apps"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  className="ios-spotlight__clear"
+                  onClick={() => setSearchQuery('')}
+                  aria-label="Clear search"
+                >
+                  ×
+                </button>
+              )}
+            </label>
+            <button
+              type="button"
+              className="ios-spotlight__cancel"
+              onClick={() => {
+                setIsSearchOpen(false);
+                setSearchQuery('');
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+
+          <div className="ios-spotlight__results">
+            <small>{searchQuery.trim() ? 'Applications' : 'Suggestions'}</small>
+            <div className="ios-spotlight__grid">
+              {spotlightApps.map((icon) => renderIcon(icon, true))}
+            </div>
+            {searchQuery.trim() && spotlightApps.length === 0 && (
+              <div className="ios-spotlight__empty">No Results</div>
+            )}
+          </div>
+        </div>
+      )}
 
       {totalPages > 1 && (
         <div className="ios-home-screen__pager" aria-label="Home screen pages">
