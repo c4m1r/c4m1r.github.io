@@ -42,6 +42,7 @@ export function IosHomeScreen({
   const [query, setQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [editMode, setEditMode] = useState(false);
   const [now, setNow] = useState(() => new Date());
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -49,6 +50,16 @@ export function IosHomeScreen({
   const pointerIdRef = useRef<number | null>(null);
   const suppressClickRef = useRef(false);
 
+
+  useEffect(() => {
+    const enterEditMode = () => {
+      setIsSearchOpen(false);
+      setEditMode(true);
+    };
+
+    window.addEventListener('ios-home-edit', enterEditMode);
+    return () => window.removeEventListener('ios-home-edit', enterEditMode);
+  }, []);
 
   useEffect(() => {
     if (!modernHome) return;
@@ -94,7 +105,7 @@ export function IosHomeScreen({
 
   const launchIcon = (event: MouseEvent<HTMLButtonElement>, icon: DesktopIcon) => {
     event.stopPropagation();
-    if (suppressClickRef.current) return;
+    if (suppressClickRef.current || editMode) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
     const shell = event.currentTarget.closest('.os-ios') as HTMLElement | null;
@@ -113,10 +124,13 @@ export function IosHomeScreen({
       <button
         key={icon.id}
         type="button"
-        className={`ios-home-icon ${compact ? 'ios-app-library__app' : ''} ${selected ? 'is-selected' : ''}`}
+        className={`ios-home-icon ${compact ? 'ios-app-library__app' : ''} ${selected ? 'is-selected' : ''} ${editMode && !compact ? 'is-editing' : ''}`}
         onClick={(event) => launchIcon(event, icon)}
         onContextMenu={(event) => onIconContextMenu(event, icon)}
       >
+        {editMode && !compact && (
+          <span className="ios-home-icon__remove" aria-hidden="true">−</span>
+        )}
         <span className="ios-home-icon__glyph">
           {iconMap[icon.id]
             ? <img src={iconMap[icon.id]} alt="" draggable={false} />
@@ -129,11 +143,23 @@ export function IosHomeScreen({
 
   return (
     <div
-      className="ios-home-screen"
+      className={`ios-home-screen ${editMode ? 'is-editing' : ''}`}
       data-page={page}
       data-app-library={page === appLibraryPage ? 'true' : 'false'}
       data-dragging={isDragging ? 'true' : 'false'}
     >
+      {editMode && (
+        <button
+          type="button"
+          className="ios-home-edit-done"
+          onClick={(event) => {
+            event.stopPropagation();
+            setEditMode(false);
+          }}
+        >
+          Done
+        </button>
+      )}
       <div
         className="ios-home-screen__viewport"
         onPointerDown={(event) => {
