@@ -6,7 +6,6 @@ import macTerminalIcon from '../../../eat/playground-macos-main/public/img/icons
 import macSettingsIcon from '../../../eat/macos-portfolio-main/public/icons/settings.svg';
 import macPhotosIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/photos.png';
 import macMailIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/mail.png';
-import macFinderIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/finder.png';
 import macFolderGenericIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/folder-generic.png';
 import macNotesIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/notes.png';
 import macCalendarIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/calendar.png';
