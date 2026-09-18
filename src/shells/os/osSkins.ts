@@ -182,6 +182,46 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     },
   },
 
+  'macos-26': {
+    theme: 'macos-26',
+    osClassName: 'os-macos os-macos-26',
+    displayName: 'macOS Tahoe 26',
+    appNames: {
+      pictures: { title: { en: 'Photos', ru: 'Фото' } },
+      'control-panel': { title: { en: 'System Settings', ru: 'Системные настройки' } },
+      'internet-explorer': { title: { en: 'Safari', ru: 'Safari' } },
+      notepad: { title: { en: 'TextEdit', ru: 'TextEdit' } },
+      terminal: { title: { en: 'Terminal', ru: 'Терминал' } },
+    },
+    systemLabels: {
+      startButton: { en: 'Launchpad', ru: 'Launchpad' },
+      myComputer: { en: 'Finder', ru: 'Finder' },
+      recycleBin: { en: 'Trash', ru: 'Корзина' },
+    },
+    boot: {
+      splashTitle: { en: 'macOS', ru: 'macOS' },
+      bootAnimation: 'instant',
+    },
+    login: {
+      welcomeText: { en: 'macOS', ru: 'macOS' },
+      loginStyle: 'modern',
+      showUserTile: true,
+    },
+    startMenu: {
+      menuStyle: 'modern-yaru',
+      showUserTile: false,
+      pinnedAppIds: ['internet-explorer', 'pictures', 'control-panel', 'terminal'],
+    },
+    taskbar: {
+      startButtonMode: 'menu',
+      density: 'glass',
+    },
+    desktop: {
+      iconLabelStyle: 'glass',
+      systemIconStyle: 'glass',
+    },
+  },
+
   'ios-26': {
     theme: 'ios-26',
     osClassName: 'os-ios os-ios-modern os-ios-26',
