@@ -1217,6 +1217,14 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             }}
             onLaunchApp={launchApp}
             openWindowIds={windows.map((window) => window.id)}
+            onQuitApp={(appId) => {
+              windows
+                .filter((window) => {
+                  if (appId === 'my-computer') return window.id === 'explorer:My Computer';
+                  return window.id === `app:${appId}` || window.id.startsWith(`app:${appId}-`);
+                })
+                .forEach((window) => handleCloseWindow(window.id));
+            }}
           />
           {/* Start Button */}
           <button
