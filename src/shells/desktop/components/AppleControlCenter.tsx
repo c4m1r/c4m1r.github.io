@@ -42,6 +42,14 @@ export function AppleControlCenter({
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-bluetooth-enabled') !== 'false';
   });
+  const [macWifi, setMacWifi] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-wifi-enabled') !== 'false';
+  });
+  const [macBluetooth, setMacBluetooth] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-bluetooth-enabled') !== 'false';
+  });
   const [airplane, setAirplane] = useState(() => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('ios-airplane-enabled') === 'true';
@@ -52,6 +60,17 @@ export function AppleControlCenter({
   });
   const [silentMode, setSilentMode] = useState(false);
   const previousVolumeRef = useRef(volumeLevel || 50);
+  useEffect(() => {
+    const handleMacConnectivityChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ wifi?: boolean; bluetooth?: boolean }>;
+      if (typeof customEvent.detail?.wifi === 'boolean') setMacWifi(customEvent.detail.wifi);
+      if (typeof customEvent.detail?.bluetooth === 'boolean') setMacBluetooth(customEvent.detail.bluetooth);
+    };
+
+    window.addEventListener('macos-connectivity-changed', handleMacConnectivityChange);
+    return () => window.removeEventListener('macos-connectivity-changed', handleMacConnectivityChange);
+  }, []);
+
   useEffect(() => {
     const handleConnectivityChange = (event: Event) => {
       const customEvent = event as CustomEvent<{
@@ -69,6 +88,16 @@ export function AppleControlCenter({
     window.addEventListener('ios-connectivity-changed', handleConnectivityChange);
     return () => window.removeEventListener('ios-connectivity-changed', handleConnectivityChange);
   }, []);
+
+  const setMacConnectivity = (key: 'wifi' | 'bluetooth', value: boolean) => {
+    if (key === 'wifi') setMacWifi(value);
+    else setMacBluetooth(value);
+
+    localStorage.setItem(`macos-${key}-enabled`, String(value));
+    window.dispatchEvent(new CustomEvent('macos-connectivity-changed', {
+      detail: { [key]: value },
+    }));
+  };
 
   const setConnectivity = (
     key: 'wifi' | 'bluetooth' | 'cellular' | 'airplane',
@@ -241,18 +270,28 @@ export function AppleControlCenter({
       />
       <div className="apple-control-center__panel">
         <div className="apple-control-center__connectivity">
-          <button type="button" className="apple-control-center__tile is-active">
+          <button
+            type="button"
+            className={`apple-control-center__tile ${macWifi ? 'is-active' : ''}`}
+            aria-pressed={macWifi}
+            onClick={() => setMacConnectivity('wifi', !macWifi)}
+          >
             <span className="apple-control-center__tile-icon">⌁</span>
             <span>
               <strong>Wi-Fi</strong>
-              <small>Connected</small>
+              <small>{macWifi ? 'Connected' : 'Off'}</small>
             </span>
           </button>
-          <button type="button" className="apple-control-center__tile is-active">
+          <button
+            type="button"
+            className={`apple-control-center__tile ${macBluetooth ? 'is-active' : ''}`}
+            aria-pressed={macBluetooth}
+            onClick={() => setMacConnectivity('bluetooth', !macBluetooth)}
+          >
             <span className="apple-control-center__tile-icon">ᛒ</span>
             <span>
               <strong>Bluetooth</strong>
-              <small>On</small>
+              <small>{macBluetooth ? 'On' : 'Off'}</small>
             </span>
           </button>
         </div>
