@@ -1221,7 +1221,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 58%;
+  height: var(--control-level, 58%);
   background: rgba(255,255,255,0.17);
   pointer-events: none;
 }
