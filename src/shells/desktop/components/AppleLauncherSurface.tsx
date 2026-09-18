@@ -20,6 +20,19 @@ const APP_IDS = [
   'about',
 ] as const;
 
+const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], { en: string; ru: string }> = {
+  'internet-explorer': { en: 'Safari', ru: 'Safari' },
+  pictures: { en: 'Photos', ru: 'Фото' },
+  'control-panel': { en: 'Settings', ru: 'Настройки' },
+  notepad: { en: 'Notes', ru: 'Заметки' },
+  terminal: { en: 'Terminal', ru: 'Терминал' },
+  'my-cv': { en: 'My CV', ru: 'Моё резюме' },
+  'projects-grid': { en: 'Projects', ru: 'Проекты' },
+  blog: { en: 'Blog', ru: 'Блог' },
+  wiki: { en: 'Wiki', ru: 'Wiki' },
+  about: { en: 'About', ru: 'Обо мне' },
+};
+
 const GLYPHS: Record<string, string> = {
   'internet-explorer': '◉',
   pictures: '✿',
@@ -41,7 +54,7 @@ export function AppleLauncherSurface({ onClose, onLaunchApp }: AppleLauncherSurf
   const apps = useMemo(() => {
     return APP_IDS.map((id) => ({
       id,
-      title: getOsAppTitle(id, id, theme, language),
+      title: getOsAppTitle(id, DEFAULT_TITLES[id], theme, language),
       glyph: GLYPHS[id] ?? '•',
     })).filter((app) => app.title.toLowerCase().includes(query.trim().toLowerCase()));
   }, [language, query, theme]);
