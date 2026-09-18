@@ -439,3 +439,76 @@
     transform: translateY(0) scale(1);
   }
 }
+
+
+/* Apple menu from the macOS menu bar. */
+.os-macos .apple-menu-surface {
+  position: fixed;
+  inset: 30px 0 0;
+  z-index: 97;
+  pointer-events: none;
+}
+
+.os-macos .apple-menu-surface__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.os-macos .apple-menu-surface__panel {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  width: 245px;
+  padding: 6px;
+  border: 1px solid rgba(255,255,255,0.42);
+  border-radius: 11px;
+  background: rgba(236,238,243,0.75);
+  -webkit-backdrop-filter: saturate(175%) blur(24px);
+  backdrop-filter: saturate(175%) blur(24px);
+  box-shadow: 0 16px 44px rgba(0,0,0,0.28);
+  pointer-events: auto;
+  animation: mac-apple-menu-open 120ms ease-out;
+}
+
+.os-macos .apple-menu-surface__panel > button {
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #17181b;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font: 500 12px/1 var(--mac-font);
+  text-align: left;
+}
+
+.os-macos .apple-menu-surface__panel > button:hover {
+  background: #0a84ff;
+  color: #fff;
+}
+
+.os-macos .apple-menu-surface__separator {
+  height: 1px;
+  margin: 4px 7px;
+  background: rgba(60,60,67,0.18);
+}
+
+@keyframes mac-apple-menu-open {
+  from {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
