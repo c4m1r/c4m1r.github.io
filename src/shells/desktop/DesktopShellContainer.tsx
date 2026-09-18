@@ -49,6 +49,7 @@ import { TaskbarSystemArea } from './components/TaskbarSystemArea';
 import { AppleSystemBar } from './components/AppleSystemBar';
 import { AppleDock } from './components/AppleDock';
 import { AppleControlCenter } from './components/AppleControlCenter';
+import { AppleMenuSurface } from './components/AppleMenuSurface';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -86,6 +87,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showVolumePanel, setShowVolumePanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
+  const [showAppleMenu, setShowAppleMenu] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
@@ -890,14 +892,30 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         theme={themeKey}
         language={language}
         time={time}
-        onLauncherToggle={openStartMenu}
+        onAppleMenuToggle={() => {
+          setShowAppleMenu((prev) => !prev);
+          setShowSystemActionMenu(false);
+          closeStartMenu();
+        }}
         onControlCenterToggle={() => {
           setShowSystemActionMenu((prev) => !prev);
+          setShowAppleMenu(false);
           closeStartMenu();
           setShowVolumePanel(false);
           setShowNotificationPanel(false);
         }}
       />
+
+      {themeKey === 'macos-26' && (
+        <AppleMenuSurface
+          open={showAppleMenu}
+          onClose={() => setShowAppleMenu(false)}
+          onOpenAbout={() => launchApp('about')}
+          onOpenSettings={() => launchApp('control-panel')}
+          onLogOut={() => handleSystemCommand('logoff')}
+          onShutdown={() => handleSystemCommand('shutdown')}
+        />
+      )}
 
       {themeKey === 'macos-26' && (
         <AppleControlCenter
