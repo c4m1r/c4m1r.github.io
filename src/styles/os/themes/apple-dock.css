@@ -101,8 +101,14 @@
   z-index: 4;
 }
 
-.os-macos .apple-dock__item:hover + .apple-dock__item {
-  transform: translateY(-3px) scale(1.08);
+.os-macos .apple-dock__item:hover + .apple-dock__item,
+.os-macos .apple-dock__item:has(+ .apple-dock__item:hover) {
+  transform: translateY(-4px) scale(1.10);
+}
+
+.os-macos .apple-dock__item:hover + .apple-dock__item + .apple-dock__item,
+.os-macos .apple-dock__item:has(+ .apple-dock__item + .apple-dock__item:hover) {
+  transform: translateY(-1px) scale(1.035);
 }
 
 .os-macos .apple-dock__item:hover .apple-dock__tooltip {
