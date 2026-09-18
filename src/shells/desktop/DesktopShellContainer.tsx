@@ -822,9 +822,19 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         Boolean(target?.isContentEditable);
 
       if (isTypingTarget) return;
-      if (!event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
+      if (!event.metaKey || event.ctrlKey || event.shiftKey) return;
 
       const key = event.key.toLowerCase();
+
+      if (event.altKey) {
+        if (key === 'h' && focusedWindow) {
+          event.preventDefault();
+          windows
+            .filter((window) => window.id !== focusedWindow.id && !window.minimized)
+            .forEach((window) => handleMinimizeWindow(window.id));
+        }
+        return;
+      }
 
       if (key === 'q' && focusedWindow) {
         event.preventDefault();
@@ -839,6 +849,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       }
 
       if (key === 'm' && focusedWindow) {
+        event.preventDefault();
+        handleMinimizeWindow(focusedWindow.id);
+        return;
+      }
+
+      if (key === 'h' && focusedWindow) {
         event.preventDefault();
         handleMinimizeWindow(focusedWindow.id);
         return;
@@ -876,6 +892,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     launchApp,
     openExplorerWindow,
     themeKey,
+    windows,
   ]);
 
   const handleRunCommand = useCallback((command: string) => {
