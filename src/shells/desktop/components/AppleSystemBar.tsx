@@ -6,6 +6,7 @@ import macBatteryIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/ic
 import macControlCenterIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/control-center.svg';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type Language } from '../../../i18n/translations';
+import { useDeviceBattery } from '../hooks/useDeviceBattery';
 
 interface AppleSystemBarProps {
   theme: ThemeId;
@@ -30,6 +31,7 @@ export function AppleSystemBar({
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
+  const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(isMac || isIos);
 
   if (!isMac && !isIos) return null;
 
@@ -72,7 +74,12 @@ export function AppleSystemBar({
               <i />
             </span>
             <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="" />
-            <img className="apple-ios-battery-icon" src={iosBatteryIcon} alt="" />
+            <span
+              className={`apple-ios-battery-meter ${batteryCharging ? 'is-charging' : ''}`}
+              aria-label={`Battery ${batteryLevel ?? 75}%`}
+            >
+              <span style={{ width: `${batteryLevel ?? 75}%` }} />
+            </span>
           </button>
         )}
       </div>
@@ -106,8 +113,8 @@ export function AppleSystemBar({
       </div>
       <div className="apple-macos-menu-right">
         <span className="apple-macos-menu-item apple-macos-status apple-macos-battery-status">
-          <span>100%</span>
-          <img src={macBatteryIcon} alt="Battery" />
+          <span>{batteryLevel ?? 100}%</span>
+          <img src={macBatteryIcon} alt={batteryCharging ? 'Battery charging' : 'Battery'} />
         </span>
         <span className="apple-macos-menu-item apple-macos-status">
           <img className="apple-macos-status-icon apple-macos-wifi-icon" src={macWifiIcon} alt="Wi-Fi" />
