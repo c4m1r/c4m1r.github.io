@@ -19,6 +19,7 @@ export const OS_CLASS_MAP: Record<string, string> = {
   ubuntu: 'ubuntu',
   arch: 'arch',
   halloween: 'spooky',
+  'macos-26': 'macos os-macos-26',
   'ios-26': 'ios os-ios-modern os-ios-26',
   'ios-16': 'ios os-ios-16',
   'ios-9': 'ios os-ios-9',
