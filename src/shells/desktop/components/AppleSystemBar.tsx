@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from 'react';
+import { useRef, useState, type MouseEvent } from 'react';
 import iosWifiIcon from '../../../../eat/homescreen-main/public/icons/wifi.svg';
 import iosBatteryIcon from '../../../../eat/homescreen-main/public/icons/battery-75.svg';
 import macWifiIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/wifi.svg';
@@ -57,6 +57,7 @@ export function AppleSystemBar({
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
   const [systemMenu, setSystemMenu] = useState<'file' | 'go' | 'window' | null>(null);
+  const iosSwipeStartY = useRef<number | null>(null);
 
   if (!isMac && !isIos) return null;
 
@@ -67,7 +68,22 @@ export function AppleSystemBar({
 
   if (isIos) {
     return (
-      <div className="apple-system-bar apple-ios-statusbar" aria-label="iOS status bar">
+      <div
+        className="apple-system-bar apple-ios-statusbar"
+        aria-label="iOS status bar"
+        onTouchStart={(event) => {
+          if (theme === 'ios-5') return;
+          iosSwipeStartY.current = event.touches[0]?.clientY ?? null;
+        }}
+        onTouchEnd={(event) => {
+          if (theme === 'ios-5') return;
+          const startY = iosSwipeStartY.current;
+          iosSwipeStartY.current = null;
+          const endY = event.changedTouches[0]?.clientY;
+          if (startY === null || endY === undefined) return;
+          if (endY - startY >= 34) onControlCenterToggle();
+        }}
+      >
         <span className="apple-ios-time">{timeLabel}</span>
         {theme === 'ios-16' || theme === 'ios-26' ? (
           <IosDynamicIsland
