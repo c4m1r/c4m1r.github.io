@@ -106,6 +106,58 @@ export function WinampPlayer() {
     };
   }, [chooseNextIndex, repeat]);
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('webos-now-playing', {
+      detail: {
+        source: 'winamp',
+        active: true,
+        title: track.title,
+        artist: track.artist,
+        playing: isPlaying,
+      },
+    }));
+  }, [isPlaying, track.artist, track.title]);
+
+  useEffect(() => {
+    const handleMediaCommand = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        source?: string;
+        command?: 'play-pause' | 'previous' | 'next';
+      }>;
+      if (customEvent.detail?.source && customEvent.detail.source !== 'winamp') return;
+
+      if (customEvent.detail?.command === 'previous') {
+        previous();
+        return;
+      }
+      if (customEvent.detail?.command === 'next') {
+        next();
+        return;
+      }
+      if (customEvent.detail?.command === 'play-pause') {
+        const audio = audioRef.current;
+        if (!audio) return;
+        if (isPlaying) {
+          audio.pause();
+          setIsPlaying(false);
+        } else {
+          void play();
+        }
+      }
+    };
+
+    window.addEventListener('webos-media-command', handleMediaCommand);
+    return () => window.removeEventListener('webos-media-command', handleMediaCommand);
+  }, [isPlaying, next, play]);
+
+  useEffect(() => {
+    return () => {
+      window.dispatchEvent(new CustomEvent('webos-now-playing', {
+        detail: { source: 'winamp', active: false },
+      }));
+    };
+  }, []);
+
   const seek = (value: number) => {
     const audio = audioRef.current;
     if (!audio || !duration) return;
