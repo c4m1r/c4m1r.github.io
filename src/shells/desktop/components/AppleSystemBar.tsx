@@ -122,6 +122,7 @@ export function AppleSystemBar({
           className="apple-macos-menu-item apple-macos-logo"
           onClick={() => {
             setAppMenuOpen(false);
+            setStatusMenu(null);
             onAppleMenuToggle();
           }}
           aria-label="Open Apple menu"
@@ -131,7 +132,10 @@ export function AppleSystemBar({
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-app-title"
-          onClick={() => setAppMenuOpen((value) => !value)}
+          onClick={() => {
+            setStatusMenu(null);
+            setAppMenuOpen((value) => !value);
+          }}
           aria-expanded={appMenuOpen}
         >
           {activeAppTitle || 'Finder'}
@@ -265,7 +269,11 @@ export function AppleSystemBar({
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-spotlight"
-          onClick={onSpotlightToggle}
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu(null);
+            onSpotlightToggle();
+          }}
           aria-label="Open Spotlight Search"
         >
           <img
@@ -277,7 +285,11 @@ export function AppleSystemBar({
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-control-center"
-          onClick={onControlCenterToggle}
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu(null);
+            onControlCenterToggle();
+          }}
           aria-label="Open Control Center"
         >
           <img
@@ -289,7 +301,11 @@ export function AppleSystemBar({
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-date-time"
-          onClick={onNotificationCenterToggle}
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu(null);
+            onNotificationCenterToggle();
+          }}
           aria-label="Open Notification Center"
         >
           <span className="apple-macos-date">{dateLabel}</span>
