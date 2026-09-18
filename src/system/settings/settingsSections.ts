@@ -139,7 +139,6 @@ export function getSystemSettingsSections(themeId: ThemeId): SettingSection[] {
       { id: 'ios-stage', label: { en: 'Stage Manager Layout', ru: 'Режим Stage Manager' }, frozen: true },
     ],
     'ios-16': [
-      { id: 'ios-focus', label: { en: 'Focus Modes', ru: 'Фокусирование' }, frozen: true },
     ],
     'ios-9': [
       { id: 'ios-wifi', label: { en: 'Wi-Fi', ru: 'Wi-Fi' }, frozen: true },
