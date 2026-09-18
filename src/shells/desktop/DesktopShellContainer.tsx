@@ -1013,6 +1013,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           setShowNotificationPanel(false);
           closeStartMenu();
         }}
+        onOpenSettings={() => launchApp('control-panel')}
+        canQuitActiveApp={Boolean(focusedWindow)}
+        onQuitActiveApp={() => {
+          if (focusedWindow) handleCloseWindow(focusedWindow.id);
+        }}
       />
 
       {themeKey === 'macos-26' && (
