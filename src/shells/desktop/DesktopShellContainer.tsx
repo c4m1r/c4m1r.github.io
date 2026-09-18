@@ -53,7 +53,7 @@ import { AppleMenuSurface } from './components/AppleMenuSurface';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
-import { MACOS_APP_ICON_BY_ID, MACOS_SYSTEM_ICON_BY_ID } from './appleIconAssets';
+import { MACOS_APP_ICON_BY_ID } from './appleIconAssets';
 
 /**
  * Unified DesktopShellContainer component owned by src/shells/desktop.
@@ -447,41 +447,41 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   }).filter(Boolean) as DesktopIcon[];
 
   const initialDesktopIcons: DesktopIcon[] = [
-    {
-      id: 'my-computer',
-      icon: themeKey === 'macos-26'
-        ? renderShortcutIcon(MACOS_SYSTEM_ICON_BY_ID['my-computer'])
-        : getIconElement('computer'),
-      label: getOsSystemLabel('myComputer', t.myComputer, themeKey, language),
-      type: 'system'
-    },
-    {
-      id: 'recycle-bin',
-      icon: themeKey === 'macos-26'
-        ? renderShortcutIcon(MACOS_SYSTEM_ICON_BY_ID['recycle-bin'])
-        : getIconElement('recycle'),
-      label: getOsSystemLabel('recycleBin', t.recycleBin, themeKey, language),
-      type: 'system'
-    },
-    {
-      id: 'games-folder',
-      icon: (
-        <img
-          src={resolveAssetPath(
-            themeAssets.gamesFolderIcon,
-            fallbackAssets.gamesFolderIcon ?? themeAssets.gamesIcon
-          )}
-          alt={gamesLabel}
-          className="w-12 h-12 drop-shadow"
-          onError={(e) => {
-            e.currentTarget.src = resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon);
-          }}
-        />
-      ),
-      label: gamesLabel,
-      type: 'system'
-    },
-    ...applicationShortcuts,
+    ...(themeKey === 'macos-26'
+      ? []
+      : [
+          {
+            id: 'my-computer',
+            icon: getIconElement('computer'),
+            label: getOsSystemLabel('myComputer', t.myComputer, themeKey, language),
+            type: 'system' as const,
+          },
+          {
+            id: 'recycle-bin',
+            icon: getIconElement('recycle'),
+            label: getOsSystemLabel('recycleBin', t.recycleBin, themeKey, language),
+            type: 'system' as const,
+          },
+          {
+            id: 'games-folder',
+            icon: (
+              <img
+                src={resolveAssetPath(
+                  themeAssets.gamesFolderIcon,
+                  fallbackAssets.gamesFolderIcon ?? themeAssets.gamesIcon
+                )}
+                alt={gamesLabel}
+                className="w-12 h-12 drop-shadow"
+                onError={(e) => {
+                  e.currentTarget.src = resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon);
+                }}
+              />
+            ),
+            label: gamesLabel,
+            type: 'system' as const,
+          },
+          ...applicationShortcuts,
+        ]),
     ...desktopItems.map(item => ({
       id: item.id,
       icon: item.icon && typeof item.icon === 'string' ? (
