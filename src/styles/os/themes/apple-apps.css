@@ -2179,3 +2179,26 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+
+.os-macos .apple-file-browser__search-clear,
+.os-ios .apple-file-browser__search-clear {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(118,118,128,0.16);
+  color: rgba(60,60,67,0.70);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.os-ios .apple-file-browser__search {
+  display: flex !important;
+  width: min(180px, 46%);
+  min-width: 110px;
+}
