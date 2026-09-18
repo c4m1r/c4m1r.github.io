@@ -2006,3 +2006,176 @@
   font-size: 9px;
   line-height: 1.45;
 }
+
+
+/* Finder Quick Look preview over the shared virtual file system. */
+.os-macos .apple-quick-look {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.os-macos .apple-quick-look__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(0,0,0,0.10);
+  pointer-events: auto;
+}
+
+.os-macos .apple-quick-look__panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(620px, calc(100% - 48px));
+  height: min(460px, calc(100% - 48px));
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255,255,255,0.46);
+  border-radius: 18px;
+  background: rgba(246,246,248,0.92);
+  -webkit-backdrop-filter: blur(30px) saturate(170%);
+  backdrop-filter: blur(30px) saturate(170%);
+  box-shadow:
+    0 28px 70px rgba(0,0,0,0.28),
+    inset 0 1px rgba(255,255,255,0.76);
+  color: #1d1d1f;
+  pointer-events: auto;
+  animation: mac-quick-look-open 150ms ease-out;
+}
+
+.os-macos .apple-quick-look__panel > header,
+.os-macos .apple-quick-look__panel > footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.os-macos .apple-quick-look__panel > header {
+  min-height: 48px;
+  padding: 8px 12px 8px 16px;
+  border-bottom: 1px solid rgba(60,60,67,0.10);
+  background: rgba(255,255,255,0.44);
+}
+
+.os-macos .apple-quick-look__panel > header > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.os-macos .apple-quick-look__panel > header strong,
+.os-macos .apple-quick-look__panel > header small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .apple-quick-look__panel > header strong {
+  font-size: 12px;
+}
+
+.os-macos .apple-quick-look__panel > header small {
+  margin-top: 1px;
+  color: rgba(60,60,67,0.52);
+  font-size: 9px;
+}
+
+.os-macos .apple-quick-look__panel > header button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(118,118,128,0.10);
+  color: rgba(60,60,67,0.72);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.os-macos .apple-quick-look__content {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background:
+    linear-gradient(45deg, rgba(118,118,128,0.035) 25%, transparent 25%) 0 0 / 18px 18px,
+    linear-gradient(-45deg, rgba(118,118,128,0.035) 25%, transparent 25%) 0 0 / 18px 18px,
+    #f7f7f8;
+}
+
+.os-macos .apple-quick-look__content > img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.16);
+}
+
+.os-macos .apple-quick-look__content pre {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid rgba(60,60,67,0.08);
+  border-radius: 10px;
+  background: #fff;
+  color: #1d1d1f;
+  font: 11px/1.55 ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.os-macos .apple-quick-look__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgba(60,60,67,0.52);
+  text-align: center;
+}
+
+.os-macos .apple-quick-look__empty img {
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+}
+
+.os-macos .apple-quick-look__empty strong {
+  margin-top: 10px;
+  color: #1d1d1f;
+  font-size: 14px;
+}
+
+.os-macos .apple-quick-look__empty span {
+  margin-top: 3px;
+  font-size: 10px;
+}
+
+.os-macos .apple-quick-look__panel > footer {
+  min-height: 30px;
+  padding: 0 14px;
+  border-top: 1px solid rgba(60,60,67,0.08);
+  background: rgba(255,255,255,0.54);
+  color: rgba(60,60,67,0.52);
+  font-size: 9px;
+}
+
+@keyframes mac-quick-look-open {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
