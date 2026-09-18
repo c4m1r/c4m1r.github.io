@@ -8,6 +8,7 @@ interface IosAssistiveTouchProps {
   onOpenControlCenter: () => void;
   onOpenNotifications: () => void;
   onToggleFullscreen: () => void;
+  onLock: () => void;
 }
 
 export function IosAssistiveTouch({
@@ -17,6 +18,7 @@ export function IosAssistiveTouch({
   onOpenControlCenter,
   onOpenNotifications,
   onToggleFullscreen,
+  onLock,
 }: IosAssistiveTouchProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [open, setOpen] = useState(false);
@@ -86,6 +88,7 @@ export function IosAssistiveTouch({
     { label: 'Notifications', icon: Bell, action: onOpenNotifications },
     { label: 'Settings', icon: Settings, action: onOpenSettings },
     { label: 'Fullscreen', icon: Maximize2, action: onToggleFullscreen },
+    { label: 'Lock Screen', icon: Home, action: onLock },
   ];
 
   return (
