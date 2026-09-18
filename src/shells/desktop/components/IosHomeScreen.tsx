@@ -27,29 +27,38 @@ export function IosHomeScreen({
   const pages = useMemo(() => chunkIcons(desktopIcons, PAGE_SIZE), [desktopIcons]);
   const [page, setPage] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef<number | null>(null);
   const pointerIdRef = useRef<number | null>(null);
+  const suppressClickRef = useRef(false);
 
   const clampPage = (value: number) => Math.max(0, Math.min(pages.length - 1, value));
 
   const finishSwipe = (deltaX: number) => {
     const threshold = Math.min(90, Math.max(42, window.innerWidth * 0.12));
-    if (Math.abs(deltaX) >= threshold) {
+    const didSwipe = Math.abs(deltaX) >= threshold;
+    if (didSwipe) {
+      suppressClickRef.current = true;
       setPage((current) => clampPage(current + (deltaX < 0 ? 1 : -1)));
+      window.setTimeout(() => {
+        suppressClickRef.current = false;
+      }, 80);
     }
     startXRef.current = null;
     pointerIdRef.current = null;
     setDragOffset(0);
+    setIsDragging(false);
   };
 
   return (
-    <div className="ios-home-screen" data-page={page}>
+    <div className="ios-home-screen" data-page={page} data-dragging={isDragging ? "true" : "false"}>
       <div
         className="ios-home-screen__viewport"
         onPointerDown={(event) => {
           if (event.pointerType === 'mouse' && event.button !== 0) return;
           startXRef.current = event.clientX;
           pointerIdRef.current = event.pointerId;
+          setIsDragging(true);
           event.currentTarget.setPointerCapture?.(event.pointerId);
         }}
         onPointerMove={(event) => {
@@ -64,6 +73,7 @@ export function IosHomeScreen({
           startXRef.current = null;
           pointerIdRef.current = null;
           setDragOffset(0);
+          setIsDragging(false);
         }}
       >
         <div
@@ -89,6 +99,7 @@ export function IosHomeScreen({
                     className={`ios-home-icon ${selected ? 'is-selected' : ''}`}
                     onClick={(event) => {
                       event.stopPropagation();
+                      if (suppressClickRef.current) return;
                       onIconDoubleClick(icon);
                     }}
                     onContextMenu={(event) => onIconContextMenu(event, icon)}
