@@ -605,11 +605,19 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       }
 
       content = <Notepad initialContent={fileContent} />;
-      title = `${item.name} - Notepad`;
+      title = themeKey === 'macos-26'
+        ? `${item.name} - TextEdit`
+        : themeKey.startsWith('ios-')
+          ? `${item.name} - Notes`
+          : `${item.name} - Notepad`;
     } else if (/\.(png|jpg|jpeg|gif)$/i.test(lowerName)) {
       if (typeof item.content === 'string') {
         content = <PictureViewer initialImage={item.content} />;
-        title = `${item.name} - Picture Viewer`;
+        title = themeKey === 'macos-26'
+          ? `${item.name} - Preview`
+          : themeKey.startsWith('ios-')
+            ? `${item.name} - Photos`
+            : `${item.name} - Picture Viewer`;
       }
     }
 
@@ -629,7 +637,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       height,
     });
     playLaunchSound();
-  }, [openWindow, playErrorSound, playLaunchSound]);
+  }, [openWindow, playErrorSound, playLaunchSound, themeKey]);
 
   const openExplorerWindow = useCallback((path: string) => {
     const normalizedPath = path || 'My Computer';
