@@ -5,9 +5,11 @@ interface AppleControlCenterProps {
   theme: ThemeId;
   open: boolean;
   volumeLevel: number;
+  brightnessLevel: number;
   isFullscreen: boolean;
   onClose: () => void;
   onVolumeLevelChange: (value: number) => void;
+  onBrightnessLevelChange: (value: number) => void;
   onFullscreenToggle: () => void;
   onOpenSettings: () => void;
   onOpenAbout: () => void;
@@ -18,9 +20,11 @@ export function AppleControlCenter({
   theme,
   open,
   volumeLevel,
+  brightnessLevel,
   isFullscreen,
   onClose,
   onVolumeLevelChange,
+  onBrightnessLevelChange,
   onFullscreenToggle,
   onOpenSettings,
   onOpenAbout,
@@ -30,7 +34,6 @@ export function AppleControlCenter({
   const [bluetooth, setBluetooth] = useState(true);
   const [airplane, setAirplane] = useState(false);
   const [cellular, setCellular] = useState(true);
-  const [brightness, setBrightness] = useState(78);
   const [nightMode, setNightMode] = useState(false);
   const [silentMode, setSilentMode] = useState(false);
 
@@ -102,17 +105,17 @@ export function AppleControlCenter({
             </div>
 
             <div className="apple-ios-control-center__sliders">
-              <label style={{ '--control-level': `${brightness}%` } as CSSProperties}>
+              <label style={{ '--control-level': `${brightnessLevel}%` } as CSSProperties}>
                 <input
                   type="range"
                   min="0"
                   max="100"
-                  value={brightness}
+                  value={brightnessLevel}
                   aria-label="Brightness"
-                  onChange={(event) => setBrightness(Number(event.target.value))}
+                  onChange={(event) => onBrightnessLevelChange(Number(event.target.value))}
                 />
                 <span>☀</span>
-                <small>{brightness}%</small>
+                <small>{brightnessLevel}%</small>
               </label>
               <label style={{ '--control-level': `${volumeLevel}%` } as CSSProperties}>
                 <input
