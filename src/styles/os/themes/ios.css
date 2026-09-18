@@ -1324,3 +1324,39 @@
     gap: 6px;
   }
 }
+
+
+.os-ios .apple-ios-battery-meter {
+  position: relative;
+  width: 24px;
+  height: 11px;
+  padding: 1px;
+  border: 1.4px solid currentColor;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.os-ios .apple-ios-battery-meter::after {
+  content: '';
+  position: absolute;
+  top: 2.5px;
+  right: -3.5px;
+  width: 2px;
+  height: 4px;
+  border-radius: 0 1px 1px 0;
+  background: currentColor;
+  opacity: 0.75;
+}
+
+.os-ios .apple-ios-battery-meter > span {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: 1px;
+  background: currentColor;
+  transition: width 180ms ease;
+}
+
+.os-ios .apple-ios-battery-meter.is-charging > span {
+  background: #30d158;
+}
