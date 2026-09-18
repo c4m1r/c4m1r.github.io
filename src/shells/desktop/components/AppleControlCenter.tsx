@@ -7,11 +7,13 @@ interface AppleControlCenterProps {
   volumeLevel: number;
   brightnessLevel: number;
   nightModeEnabled: boolean;
+  macNightShiftEnabled: boolean;
   isFullscreen: boolean;
   onClose: () => void;
   onVolumeLevelChange: (value: number) => void;
   onBrightnessLevelChange: (value: number) => void;
   onNightModeChange: (value: boolean) => void;
+  onMacNightShiftChange: (value: boolean) => void;
   onFullscreenToggle: () => void;
   onOpenSettings: () => void;
   onOpenAbout: () => void;
@@ -24,11 +26,13 @@ export function AppleControlCenter({
   volumeLevel,
   brightnessLevel,
   nightModeEnabled,
+  macNightShiftEnabled,
   isFullscreen,
   onClose,
   onVolumeLevelChange,
   onBrightnessLevelChange,
   onNightModeChange,
+  onMacNightShiftChange,
   onFullscreenToggle,
   onOpenSettings,
   onOpenAbout,
@@ -394,6 +398,19 @@ export function AppleControlCenter({
           <span>
             <strong>Do Not Disturb</strong>
             <small>{macFocus ? 'On' : 'Off'}</small>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          className={`apple-control-center__focus-card apple-control-center__night-shift ${macNightShiftEnabled ? 'is-active' : ''}`}
+          aria-pressed={macNightShiftEnabled}
+          onClick={() => onMacNightShiftChange(!macNightShiftEnabled)}
+        >
+          <span className="apple-control-center__focus-icon">☀</span>
+          <span>
+            <strong>Night Shift</strong>
+            <small>{macNightShiftEnabled ? 'On' : 'Off'}</small>
           </span>
         </button>
 
