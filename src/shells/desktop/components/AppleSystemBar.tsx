@@ -45,6 +45,7 @@ export function AppleSystemBar({
   const isIos = theme.startsWith('ios-');
   const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(isMac || isIos);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
+  const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
 
   if (!isMac && !isIos) return null;
 
@@ -189,13 +190,78 @@ export function AppleSystemBar({
         )}
       </div>
       <div className="apple-macos-menu-right">
-        <span className="apple-macos-menu-item apple-macos-status apple-macos-battery-status">
+        <button
+          type="button"
+          className="apple-macos-menu-item apple-macos-status apple-macos-battery-status"
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu((value) => value === 'battery' ? null : 'battery');
+          }}
+          aria-expanded={statusMenu === 'battery'}
+          aria-label="Battery status"
+        >
           <span>{batteryLevel ?? 100}%</span>
           <img src={macBatteryIcon} alt={batteryCharging ? 'Battery charging' : 'Battery'} />
-        </span>
-        <span className="apple-macos-menu-item apple-macos-status">
-          <img className="apple-macos-status-icon apple-macos-wifi-icon" src={macWifiIcon} alt="Wi-Fi" />
-        </span>
+        </button>
+        <button
+          type="button"
+          className="apple-macos-menu-item apple-macos-status"
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu((value) => value === 'wifi' ? null : 'wifi');
+          }}
+          aria-expanded={statusMenu === 'wifi'}
+          aria-label="Wi-Fi status"
+        >
+          <img className="apple-macos-status-icon apple-macos-wifi-icon" src={macWifiIcon} alt="" />
+        </button>
+        {statusMenu && (
+          <div className={`apple-status-menu apple-status-menu--${statusMenu}`} role="menu">
+            {statusMenu === 'battery' ? (
+              <>
+                <header>
+                  <strong>Battery</strong>
+                  <span>{batteryLevel ?? 100}%</span>
+                </header>
+                <div className="apple-status-menu__row">
+                  <span>Status</span>
+                  <strong>{batteryCharging ? 'Charging' : 'Using Battery'}</strong>
+                </div>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setStatusMenu(null);
+                    onOpenSettings();
+                  }}
+                >
+                  Battery Settings…
+                </button>
+              </>
+            ) : (
+              <>
+                <header>
+                  <strong>Wi-Fi</strong>
+                  <span>On</span>
+                </header>
+                <div className="apple-status-menu__row">
+                  <span>Connection</span>
+                  <strong>Browser network</strong>
+                </div>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setStatusMenu(null);
+                    onOpenSettings();
+                  }}
+                >
+                  Network Settings…
+                </button>
+              </>
+            )}
+          </div>
+        )}
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-spotlight"
