@@ -151,13 +151,25 @@ export function ControlPanel() {
     const appleIconPath = useModernAppleSettingsIcons
       ? APPLE_SETTINGS_CATEGORY_ICONS[categoryId]
       : undefined;
-    const iconPath = appleIconPath ?? controlPanelIcons[categoryId];
+    if (appleIconPath) {
+      return (
+        <span className={`settings-category-symbol settings-category-symbol--${categoryId}`}>
+          <img
+            src={appleIconPath}
+            alt=""
+            className="settings-category-symbol__glyph"
+          />
+        </span>
+      );
+    }
+
+    const iconPath = controlPanelIcons[categoryId];
     if (iconPath) {
       return (
         <img
           src={iconPath}
           alt=""
-          className={`settings-category-icon w-10 h-10 object-contain ${appleIconPath ? 'is-apple-symbol' : ''}`}
+          className="settings-category-icon w-10 h-10 object-contain"
           onError={(e) => {
             e.currentTarget.style.display = 'none';
           }}
