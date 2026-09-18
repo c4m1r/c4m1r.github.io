@@ -169,8 +169,8 @@ export function ControlPanel() {
                 ? ['Авиарежим', 'Wi-Fi', 'Bluetooth', 'Сотовая связь']
                 : ['Airplane Mode', 'Wi-Fi', 'Bluetooth', 'Cellular'])
             : (isRu
-                ? ['Wi-Fi', 'VPN', 'Сетевые службы']
-                : ['Wi-Fi', 'VPN', 'Network Services']),
+                ? ['Wi-Fi', 'Bluetooth']
+                : ['Wi-Fi', 'Bluetooth']),
         },
         {
           id: 'programs',
