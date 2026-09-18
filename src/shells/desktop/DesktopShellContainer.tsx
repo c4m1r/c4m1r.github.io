@@ -950,6 +950,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
       {themeKey.startsWith('ios-') ? (
         <IosHomeScreen
+          theme={themeKey}
           desktopIcons={desktopIcons}
           selectedIcons={selectedIcons}
           onIconDoubleClick={handleIconDoubleClick}
