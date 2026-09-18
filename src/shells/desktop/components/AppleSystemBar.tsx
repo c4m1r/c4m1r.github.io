@@ -16,6 +16,7 @@ interface AppleSystemBarProps {
   activeAppTitle?: string;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
+  onNotificationCenterToggle: () => void;
 }
 
 function stop(event: MouseEvent) {
@@ -29,6 +30,7 @@ export function AppleSystemBar({
   activeAppTitle,
   onAppleMenuToggle,
   onControlCenterToggle,
+  onNotificationCenterToggle,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -140,8 +142,15 @@ export function AppleSystemBar({
             alt=""
           />
         </button>
-        <span className="apple-macos-menu-item apple-macos-date">{dateLabel}</span>
-        <span className="apple-macos-menu-item apple-macos-time">{timeLabel}</span>
+        <button
+          type="button"
+          className="apple-macos-menu-item apple-macos-date-time"
+          onClick={onNotificationCenterToggle}
+          aria-label="Open Notification Center"
+        >
+          <span className="apple-macos-date">{dateLabel}</span>
+          <span className="apple-macos-time">{timeLabel}</span>
+        </button>
       </div>
     </div>
   );
