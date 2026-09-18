@@ -1136,3 +1136,205 @@
   background: #007aff;
   color: #fff;
 }
+
+
+/* Live desktop widgets adapted from /eat/macOS-Portfolio-main 2. */
+.os-macos .apple-desktop-widgets {
+  position: absolute;
+  top: 48px;
+  right: 18px;
+  z-index: 6;
+  width: 212px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.os-macos .apple-widget {
+  pointer-events: auto;
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 16px;
+  background: rgba(18,18,20,0.72);
+  -webkit-backdrop-filter: blur(38px) saturate(180%);
+  backdrop-filter: blur(38px) saturate(180%);
+  box-shadow:
+    0 8px 28px rgba(0,0,0,0.26),
+    inset 0 1px rgba(255,255,255,0.08);
+  color: #fff;
+  font-family: var(--mac-font);
+}
+
+.os-macos .apple-widget--clock {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.os-macos .apple-widget--clock svg {
+  width: 54px;
+  height: 54px;
+  flex: none;
+}
+
+.os-macos .apple-widget-clock__face {
+  fill: rgba(255,255,255,0.05);
+  stroke: rgba(255,255,255,0.13);
+  stroke-width: .7;
+}
+
+.os-macos .apple-widget-clock__tick {
+  stroke: rgba(255,255,255,0.38);
+  stroke-width: 1;
+}
+
+.os-macos .apple-widget-clock__hour,
+.os-macos .apple-widget-clock__minute {
+  stroke: #fff;
+  stroke-linecap: round;
+}
+
+.os-macos .apple-widget-clock__hour { stroke-width: 2.5; }
+.os-macos .apple-widget-clock__minute { stroke-width: 1.8; }
+.os-macos .apple-widget-clock__second {
+  stroke: #ff453a;
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.os-macos .apple-widget-clock__pin { fill: #fff; }
+
+.os-macos .apple-widget--clock > div,
+.os-macos .apple-widget--battery > div:last-child {
+  min-width: 0;
+}
+
+.os-macos .apple-widget--clock strong,
+.os-macos .apple-widget--battery strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.os-macos .apple-widget--clock strong small {
+  margin-left: 4px;
+  color: rgba(255,255,255,0.52);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.os-macos .apple-widget--clock span,
+.os-macos .apple-widget--battery span {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: rgba(255,255,255,0.52);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .apple-widget--battery {
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.os-macos .apple-widget-battery__icon {
+  position: relative;
+  width: 38px;
+  height: 20px;
+  flex: none;
+}
+
+.os-macos .apple-widget-battery__body {
+  position: absolute;
+  inset: 1px 5px 1px 0;
+  overflow: hidden;
+  border: 1.5px solid rgba(255,255,255,0.46);
+  border-radius: 4px;
+}
+
+.os-macos .apple-widget-battery__body > span {
+  height: 100%;
+  margin: 0;
+  background: #30d158;
+}
+
+.os-macos .apple-widget-battery__body > span.is-low { background: #ff453a; }
+.os-macos .apple-widget-battery__body > span.is-charging { background: #30d158; }
+
+.os-macos .apple-widget-battery__icon > i {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 3px;
+  height: 8px;
+  transform: translateY(-50%);
+  border-radius: 0 2px 2px 0;
+  background: rgba(255,255,255,0.46);
+}
+
+.os-macos .apple-widget--calendar {
+  padding: 12px 13px 13px;
+}
+
+.os-macos .apple-widget--calendar > header {
+  margin-bottom: 8px;
+  color: #ff453a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.os-macos .apple-widget-calendar__weekdays,
+.os-macos .apple-widget-calendar__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.os-macos .apple-widget-calendar__weekdays {
+  margin-bottom: 3px;
+  color: rgba(255,255,255,0.30);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.os-macos .apple-widget-calendar__weekdays span,
+.os-macos .apple-widget-calendar__days span {
+  display: grid;
+  place-items: center;
+}
+
+.os-macos .apple-widget-calendar__days {
+  gap: 2px;
+  font-size: 9px;
+}
+
+.os-macos .apple-widget-calendar__days span {
+  width: 22px;
+  height: 22px;
+  margin: auto;
+  border-radius: 50%;
+  color: rgba(255,255,255,0.82);
+}
+
+.os-macos .apple-widget-calendar__days span.is-outside {
+  color: rgba(255,255,255,0.20);
+}
+
+.os-macos .apple-widget-calendar__days span.is-today {
+  background: #ff453a;
+  color: #fff;
+  font-weight: 700;
+}
+
+@media (max-width: 980px), (max-height: 720px) {
+  .os-macos .apple-desktop-widgets {
+    display: none;
+  }
+}
