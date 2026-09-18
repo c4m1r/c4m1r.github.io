@@ -1,5 +1,14 @@
 import { useMemo, useRef, useState, type MouseEvent } from 'react';
 import { type DesktopIcon } from '../desktopTypes';
+import iosSafariIcon from '../../../../eat/homescreen-main/public/images/Icon=Safari.png';
+import iosMailIcon from '../../../../eat/homescreen-main/public/images/Icon=Mail.png';
+import iosMusicIcon from '../../../../eat/homescreen-main/public/images/Icon=Music.png';
+import iosFilesIcon from '../../../../eat/homescreen-main/public/images/Icon=Files.png';
+import iosCalculatorIcon from '../../../../eat/homescreen-main/public/images/Icon=Calculator.png';
+import iosSettingsIcon from '../../../../eat/homescreen-main/public/images/Icon=Settings.png';
+import iosPhotosIcon from '../../../../eat/homescreen-main/public/images/Icon=Photos.png';
+import iosNewsIcon from '../../../../eat/homescreen-main/public/images/Icon=News.png';
+import iosNotesIcon from '../../../../eat/homescreen-main/public/images/Icon=Notes.png';
 
 interface IosHomeScreenProps {
   desktopIcons: DesktopIcon[];
@@ -9,6 +18,20 @@ interface IosHomeScreenProps {
 }
 
 const PAGE_SIZE = 20;
+
+const IOS_ICON_BY_ID: Record<string, string> = {
+  'internet-explorer': iosSafariIcon,
+  outlook: iosMailIcon,
+  'windows-media-player': iosMusicIcon,
+  winamp: iosMusicIcon,
+  'projects-grid': iosFilesIcon,
+  calculator: iosCalculatorIcon,
+  'control-panel': iosSettingsIcon,
+  pictures: iosPhotosIcon,
+  blog: iosNewsIcon,
+  news: iosNewsIcon,
+  notepad: iosNotesIcon,
+};
 
 function chunkIcons(items: DesktopIcon[], size: number): DesktopIcon[][] {
   const pages: DesktopIcon[][] = [];
@@ -104,7 +127,11 @@ export function IosHomeScreen({
                     }}
                     onContextMenu={(event) => onIconContextMenu(event, icon)}
                   >
-                    <span className="ios-home-icon__glyph">{icon.icon}</span>
+                    <span className="ios-home-icon__glyph">
+                      {IOS_ICON_BY_ID[icon.id]
+                        ? <img src={IOS_ICON_BY_ID[icon.id]} alt="" draggable={false} />
+                        : icon.icon}
+                    </span>
                     <span className="ios-home-icon__label">{icon.label}</span>
                   </button>
                 );
