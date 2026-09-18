@@ -40,16 +40,38 @@ export function AppleSystemBar({
       <div className="apple-system-bar apple-ios-statusbar" aria-label="iOS status bar">
         <span className="apple-ios-time">{timeLabel}</span>
         <span className="apple-ios-device-slot" aria-hidden="true" />
-        <span className="apple-ios-indicators" aria-label="Wi-Fi and battery">
-          <span className="apple-ios-signal" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <i />
+        {theme === 'ios-5' ? (
+          <span className="apple-ios-indicators" aria-label="Wi-Fi and battery">
+            <span className="apple-ios-signal" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <i />
+            </span>
+            <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="Wi-Fi" />
+            <img className="apple-ios-battery-icon" src={iosBatteryIcon} alt="Battery" />
           </span>
-          <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="Wi-Fi" />
-          <img className="apple-ios-battery-icon" src={iosBatteryIcon} alt="Battery" />
-        </span>
+        ) : (
+          <button
+            type="button"
+            className="apple-ios-indicators apple-ios-control-center-trigger"
+            aria-label="Open Control Center"
+            onMouseDown={stop}
+            onClick={(event) => {
+              stop(event);
+              onControlCenterToggle();
+            }}
+          >
+            <span className="apple-ios-signal" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <i />
+            </span>
+            <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="" />
+            <img className="apple-ios-battery-icon" src={iosBatteryIcon} alt="" />
+          </button>
+        )}
       </div>
     );
   }
