@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { type Language } from '../../../i18n/translations';
+import { useNews } from '../../../domain/news/useNews';
+import { useArticles } from '../../../domain/articles/useArticles';
 
 interface AppleNotificationCenterProps {
   open: boolean;
@@ -15,6 +17,37 @@ export function AppleNotificationCenter({
   onClose,
 }: AppleNotificationCenterProps) {
   const [focusMode, setFocusMode] = useState(false);
+  const { news } = useNews();
+  const { articles } = useArticles();
+
+  const updates = useMemo(() => {
+    const items = [
+      ...news.map((item) => ({
+        key: `news:${item.id}`,
+        kind: language === 'ru' ? 'Новости' : 'News',
+        title: item.title,
+        summary: item.content.replace(/[#>*_`\[\]()-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 130),
+        date: item.date,
+        path: item.route?.sitePath ?? item.route?.path,
+      })),
+      ...articles.map((item) => ({
+        key: `article:${item.id}`,
+        kind: language === 'ru' ? 'Блог' : 'Blog',
+        title: item.title,
+        summary: item.summary || item.content.replace(/[#>*_`\[\]()-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 130),
+        date: item.updatedAt || item.date,
+        path: item.articlePath ?? item.route?.sitePath ?? item.route?.path,
+      })),
+    ];
+
+    return items
+      .sort((a, b) => {
+        const aTime = a.date ? Date.parse(a.date) : 0;
+        const bTime = b.date ? Date.parse(b.date) : 0;
+        return bTime - aTime;
+      })
+      .slice(0, 4);
+  }, [articles, language, news]);
 
   const calendarCells = useMemo(() => {
     const year = time.getFullYear();
@@ -75,13 +108,40 @@ export function AppleNotificationCenter({
         <section className="apple-notification-center__notifications">
           <header>
             <strong>Notification Center</strong>
-            <span>0</span>
+            <span>{updates.length}</span>
           </header>
-          <div className="apple-notification-center__empty">
-            <span aria-hidden="true">◌</span>
-            <strong>No Notifications</strong>
-            <small>New notifications will appear here.</small>
-          </div>
+          {updates.length > 0 ? (
+            <div className="apple-notification-center__updates">
+              {updates.map((update) => (
+                <button
+                  type="button"
+                  key={update.key}
+                  className="apple-notification-center__update"
+                  onClick={() => {
+                    if (!update.path) return;
+                    onClose();
+                    window.location.href = update.path;
+                  }}
+                >
+                  <span className="apple-notification-center__update-icon">N</span>
+                  <span className="apple-notification-center__update-copy">
+                    <span>
+                      <strong>NervaWEB WebOS</strong>
+                      <small>{update.kind}</small>
+                    </span>
+                    <b>{update.title}</b>
+                    <p>{update.summary}</p>
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="apple-notification-center__empty">
+              <span aria-hidden="true">◌</span>
+              <strong>No Notifications</strong>
+              <small>New notifications will appear here.</small>
+            </div>
+          )}
         </section>
 
         <section className="apple-notification-center__calendar">
