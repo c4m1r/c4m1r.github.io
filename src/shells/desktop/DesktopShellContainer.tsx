@@ -829,6 +829,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       if (key === 'n' && (!focusedWindow || focusedWindow.id.startsWith('explorer:'))) {
         event.preventDefault();
         openExplorerWindow('My Computer');
+        return;
+      }
+
+      if ((key === '1' || key === '2') && focusedWindow?.id.startsWith('explorer:')) {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent('webos:finder-view', {
+          detail: {
+            windowId: focusedWindow.id,
+            mode: key === '1' ? 'icons' : 'list',
+          },
+        }));
       }
     };
 
