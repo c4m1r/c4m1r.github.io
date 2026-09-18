@@ -135,9 +135,13 @@ export function ControlPanel() {
           id: 'network',
           title: isRu ? 'Сеть' : 'Network',
           emoji: '🌐',
-          items: isRu
-            ? ['Wi-Fi', 'VPN', 'Сетевые службы']
-            : ['Wi-Fi', 'VPN', 'Network Services'],
+          items: isIos
+            ? (isRu
+                ? ['Авиарежим', 'Wi-Fi', 'Bluetooth', 'Сотовая связь']
+                : ['Airplane Mode', 'Wi-Fi', 'Bluetooth', 'Cellular'])
+            : (isRu
+                ? ['Wi-Fi', 'VPN', 'Сетевые службы']
+                : ['Wi-Fi', 'VPN', 'Network Services']),
         },
         {
           id: 'programs',
@@ -155,14 +159,14 @@ export function ControlPanel() {
             ? ['Вывод', 'Ввод', 'Звуковые эффекты']
             : ['Output', 'Input', 'Sound Effects'],
         },
-        {
+        ...(isIos ? [{
           id: 'focus',
           title: isRu ? 'Фокусирование' : 'Focus',
           emoji: '🌙',
           items: isRu
             ? ['Не беспокоить', 'Режим фокусирования']
             : ['Do Not Disturb', 'Focus Mode'],
-        },
+        }] : []),
         {
           id: 'maintenance',
           title: isRu ? 'Основные' : 'General',
