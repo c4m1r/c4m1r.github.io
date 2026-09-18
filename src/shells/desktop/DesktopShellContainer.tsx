@@ -291,6 +291,29 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     playRestoreSound,
   });
   const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
+
+  useEffect(() => {
+    if (themeKey !== 'macos-26') return;
+
+    const handleMacQuitShortcut = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        Boolean(target?.isContentEditable);
+
+      if (isTypingTarget) return;
+      if (!event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
+      if (event.key.toLowerCase() !== 'q') return;
+      if (!focusedWindow) return;
+
+      event.preventDefault();
+      handleCloseWindow(focusedWindow.id);
+    };
+
+    window.addEventListener('keydown', handleMacQuitShortcut);
+    return () => window.removeEventListener('keydown', handleMacQuitShortcut);
+  }, [focusedWindow, handleCloseWindow, themeKey]);
   const handleMenuHoverSound = useCallback(() => {
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
     if (now - menuHoverCooldownRef.current < 110) {
