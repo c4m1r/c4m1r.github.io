@@ -1877,3 +1877,132 @@
 .os-ios .media-player-app--apple .media-player-app__footer {
   display: none !important;
 }
+
+
+/* About This Mac, adapted from donor modal without copying its app store/runtime dependencies. */
+.os-macos .about-mac {
+  height: 100%;
+  overflow: auto;
+  padding: 24px 26px 18px;
+  background:
+    radial-gradient(circle at 50% -12%, rgba(255,255,255,0.88), transparent 32%),
+    linear-gradient(180deg, #f4f4f6, #e9e9ed);
+  color: #1c1c1e;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  text-align: center;
+}
+
+.os-macos .about-mac__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.os-macos .about-mac__device {
+  width: 150px;
+  height: auto;
+  color: #8e8e93;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,0.12));
+}
+
+.os-macos .about-mac__hero h1 {
+  margin: 12px 0 0;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.os-macos .about-mac__hero p {
+  margin: 4px 0 0;
+  color: rgba(60,60,67,0.62);
+  font-size: 12px;
+}
+
+.os-macos .about-mac__specs,
+.os-macos .about-mac__details {
+  margin: 18px auto 0;
+  max-width: 420px;
+  overflow: hidden;
+  border: 1px solid rgba(60,60,67,0.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.68);
+  box-shadow: inset 0 1px rgba(255,255,255,0.65);
+}
+
+.os-macos .about-mac__specs > div,
+.os-macos .about-mac__details > div {
+  min-height: 34px;
+  padding: 7px 12px;
+  border-top: 1px solid rgba(60,60,67,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 11px;
+}
+
+.os-macos .about-mac__specs > div:first-child,
+.os-macos .about-mac__details > div:first-child {
+  border-top: 0;
+}
+
+.os-macos .about-mac__specs span,
+.os-macos .about-mac__details span {
+  color: rgba(60,60,67,0.56);
+}
+
+.os-macos .about-mac__specs strong,
+.os-macos .about-mac__details strong {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .about-mac__runtime {
+  max-width: 420px;
+  margin: 14px auto 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(118,118,128,0.07);
+  text-align: left;
+}
+
+.os-macos .about-mac__runtime small {
+  color: rgba(60,60,67,0.50);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.os-macos .about-mac__runtime p {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  color: rgba(60,60,67,0.70);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.os-macos .about-mac__more {
+  margin-top: 14px;
+  min-height: 30px;
+  padding: 0 15px;
+  border: 1px solid rgba(60,60,67,0.11);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.64);
+  color: #1c1c1e;
+  font: 500 11px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.os-macos .about-mac__more:hover {
+  background: rgba(255,255,255,0.86);
+}
+
+.os-macos .about-mac footer {
+  margin-top: 16px;
+  color: rgba(60,60,67,0.38);
+  font-size: 9px;
+  line-height: 1.45;
+}
