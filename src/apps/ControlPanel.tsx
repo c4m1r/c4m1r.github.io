@@ -34,6 +34,7 @@ export function ControlPanel() {
   const { wallpapers, loading: wallpapersLoading } = useGallery();
 
   // OS-specific visual theme map
+  const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios');
   const isWin98 = theme === 'win-98';
   const isWinXp = theme === 'win-xp';
@@ -162,7 +163,9 @@ export function ControlPanel() {
   };
 
   // Container & section style resolvers
-  const sidebarClass = isWin98
+  const sidebarClass = isMac
+    ? 'bg-white/65 text-[#1d1d1f] border-r border-black/10 backdrop-blur-xl'
+    : isWin98
     ? 'bg-[#000080] text-white'
     : isWinXp
     ? 'bg-gradient-to-b from-[#1f62d2] to-[#3886ef] text-white'
@@ -178,7 +181,9 @@ export function ControlPanel() {
     ? 'bg-[#1c1c1e] text-white'
     : 'bg-gradient-to-b from-[#003b46] to-[#07575b] text-white';
 
-  const mainClass = isWin98
+  const mainClass = isMac
+    ? 'bg-[#f5f5f7] text-[#1d1d1f]'
+    : isWin98
     ? 'bg-[#c0c0c0] text-black'
     : isWinXp
     ? 'bg-white text-black'
@@ -194,7 +199,9 @@ export function ControlPanel() {
     ? 'bg-black text-white'
     : 'bg-[#07575b] text-white';
 
-  const titleClass = isWin98
+  const titleClass = isMac
+    ? 'text-[#1d1d1f]'
+    : isWin98
     ? 'text-[#000080]'
     : isWinXp
     ? 'text-[#003399]'
@@ -210,7 +217,9 @@ export function ControlPanel() {
     ? 'text-white'
     : 'text-[#66a5ad]';
 
-  const cardClass = isWin98
+  const cardClass = isMac
+    ? 'bg-white/80 border border-black/10 shadow-sm rounded-xl hover:bg-white'
+    : isWin98
     ? 'bg-[#c0c0c0] border-2 border-t-white border-l-white border-r-[#808080] border-b-[#808080]'
     : isWinXp
     ? 'bg-gradient-to-b from-[#f0f5ff] to-[#e8f0ff] border border-[#c7d8ed] rounded-lg hover:border-[#739fcf]'
@@ -234,21 +243,25 @@ export function ControlPanel() {
     >
       {/* Sidebar */}
       <div className={`w-[200px] flex-shrink-0 ${sidebarClass} p-4`}>
-        <h2 className="text-sm font-bold mb-4">{isRu ? 'Панель управления' : 'Control Panel'}</h2>
+        <h2 className="text-sm font-bold mb-4">
+          {isMac ? (isRu ? 'Системные настройки' : 'System Settings') : isRu ? 'Панель управления' : 'Control Panel'}
+        </h2>
         <div className="space-y-2 text-xs">
-          <button
-            className="w-full text-left p-2 rounded cursor-pointer transition-colors hover:bg-white/20 font-semibold"
-            onClick={() => setDisplayMode(displayMode === 'category' ? 'classic' : 'category')}
-          >
-            {displayMode === 'category'
-              ? (isRu ? '🔄 Классический вид' : '🔄 Switch to Classic View')
-              : (isRu ? '🗂️ Вид по категориям' : '🗂️ Switch to Category View')}
-          </button>
+          {!isMac && !isIos && (
+            <button
+              className="w-full text-left p-2 rounded cursor-pointer transition-colors hover:bg-white/20 font-semibold"
+              onClick={() => setDisplayMode(displayMode === 'category' ? 'classic' : 'category')}
+            >
+              {displayMode === 'category'
+                ? (isRu ? '🔄 Классический вид' : '🔄 Switch to Classic View')
+                : (isRu ? '🗂️ Вид по категориям' : '🗂️ Switch to Category View')}
+            </button>
+          )}
           <button
             className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'categories' ? 'bg-white/30' : 'hover:bg-white/20'}`}
             onClick={() => setView('categories')}
           >
-            📋 {isRu ? 'Главная' : 'Control Panel Home'}
+            {isMac ? '⚙ ' : '📋 '}{isRu ? 'Главная' : isMac ? 'General' : 'Control Panel Home'}
           </button>
           <button
             className={`w-full text-left p-2 rounded cursor-pointer transition-colors ${view === 'wallpaper' ? 'bg-white/30' : 'hover:bg-white/20'}`}
@@ -362,10 +375,12 @@ export function ControlPanel() {
           <>
             <div className="mb-6">
               <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
-                {isRu ? 'Выберите категорию' : 'Pick a category'}
+                {isMac ? (isRu ? 'Системные настройки' : 'System Settings') : isRu ? 'Выберите категорию' : 'Pick a category'}
               </h1>
               <p className="text-sm opacity-75">
-                {isRu ? 'или выберите значок Панели управления' : 'or pick a Control Panel icon'}
+                {isMac
+                  ? (isRu ? 'Настройте основные параметры системы' : 'Choose a settings category')
+                  : isRu ? 'или выберите значок Панели управления' : 'or pick a Control Panel icon'}
               </p>
             </div>
 
