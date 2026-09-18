@@ -127,9 +127,15 @@ export function AppleNotificationCenter({
         <section className="apple-notification-center__notifications">
           <header>
             <strong>Notification Center</strong>
-            <span>{updates.length}</span>
+            <span>{focusMode ? 0 : updates.length}</span>
           </header>
-          {updates.length > 0 ? (
+          {focusMode ? (
+            <div className="apple-notification-center__empty">
+              <span aria-hidden="true">☾</span>
+              <strong>{language === 'ru' ? 'Уведомления заглушены' : 'Notifications Silenced'}</strong>
+              <small>{language === 'ru' ? 'Режим фокусирования включён.' : 'Focus mode is currently enabled.'}</small>
+            </div>
+          ) : updates.length > 0 ? (
             <div className="apple-notification-center__updates">
               {updates.map((update) => (
                 <button
