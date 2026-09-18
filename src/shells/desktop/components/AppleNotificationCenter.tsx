@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { type Language } from '../../../i18n/translations';
+import { type ThemeId } from '../../../contexts/appContextTypes';
 import { useNews } from '../../../domain/news/useNews';
 import { useArticles } from '../../../domain/articles/useArticles';
 
 interface AppleNotificationCenterProps {
   open: boolean;
+  theme: ThemeId;
   time: Date;
   language: Language;
   onClose: () => void;
@@ -12,13 +14,16 @@ interface AppleNotificationCenterProps {
 
 export function AppleNotificationCenter({
   open,
+  theme,
   time,
   language,
   onClose,
 }: AppleNotificationCenterProps) {
+  const focusStorageKey = theme === 'macos-26' ? 'macos-focus-enabled' : 'ios-focus-enabled';
+  const focusEventName = theme === 'macos-26' ? 'macos-focus-changed' : 'ios-focus-changed';
   const [focusMode, setFocusMode] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return localStorage.getItem('ios-focus-enabled') === 'true';
+    return localStorage.getItem(focusStorageKey) === 'true';
   });
   const { news } = useNews();
   const { articles } = useArticles();
@@ -28,14 +33,18 @@ export function AppleNotificationCenter({
       if (typeof customEvent.detail === 'boolean') setFocusMode(customEvent.detail);
     };
 
-    window.addEventListener('ios-focus-changed', handleFocusChange);
-    return () => window.removeEventListener('ios-focus-changed', handleFocusChange);
-  }, []);
+    window.addEventListener(focusEventName, handleFocusChange);
+    return () => window.removeEventListener(focusEventName, handleFocusChange);
+  }, [focusEventName]);
+
+  useEffect(() => {
+    setFocusMode(localStorage.getItem(focusStorageKey) === 'true');
+  }, [focusStorageKey]);
 
   const updateFocusMode = (value: boolean) => {
     setFocusMode(value);
-    localStorage.setItem('ios-focus-enabled', String(value));
-    window.dispatchEvent(new CustomEvent('ios-focus-changed', { detail: value }));
+    localStorage.setItem(focusStorageKey, String(value));
+    window.dispatchEvent(new CustomEvent(focusEventName, { detail: value }));
   };
 
 
