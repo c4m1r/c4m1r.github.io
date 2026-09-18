@@ -1493,8 +1493,6 @@
 }
 
 /* WebOS update cards inside Notification Center. */
-.os-macos 
-
 .os-macos .apple-notification-center__updates {
   display: flex;
   flex-direction: column;
