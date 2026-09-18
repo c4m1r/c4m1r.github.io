@@ -1,4 +1,4 @@
-import { type MouseEvent } from 'react';
+import { useState, type MouseEvent } from 'react';
 import iosWifiIcon from '../../../../eat/homescreen-main/public/icons/wifi.svg';
 import iosBatteryIcon from '../../../../eat/homescreen-main/public/icons/battery-75.svg';
 import macWifiIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/wifi.svg';
@@ -19,6 +19,9 @@ interface AppleSystemBarProps {
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
   onSpotlightToggle: () => void;
+  onOpenSettings: () => void;
+  onQuitActiveApp: () => void;
+  canQuitActiveApp: boolean;
 }
 
 function stop(event: MouseEvent) {
@@ -34,10 +37,14 @@ export function AppleSystemBar({
   onControlCenterToggle,
   onNotificationCenterToggle,
   onSpotlightToggle,
+  onOpenSettings,
+  onQuitActiveApp,
+  canQuitActiveApp,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
   const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(isMac || isIos);
+  const [appMenuOpen, setAppMenuOpen] = useState(false);
 
   if (!isMac && !isIos) return null;
 
@@ -112,18 +119,74 @@ export function AppleSystemBar({
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-logo"
-          onClick={onAppleMenuToggle}
+          onClick={() => {
+            setAppMenuOpen(false);
+            onAppleMenuToggle();
+          }}
           aria-label="Open Apple menu"
         >
           
         </button>
-        <span className="apple-macos-menu-item apple-macos-app-title">{activeAppTitle || 'Finder'}</span>
+        <button
+          type="button"
+          className="apple-macos-menu-item apple-macos-app-title"
+          onClick={() => setAppMenuOpen((value) => !value)}
+          aria-expanded={appMenuOpen}
+        >
+          {activeAppTitle || 'Finder'}
+        </button>
         <span className="apple-macos-menu-item">File</span>
         <span className="apple-macos-menu-item">Edit</span>
         <span className="apple-macos-menu-item">View</span>
         <span className="apple-macos-menu-item">Go</span>
         <span className="apple-macos-menu-item">Window</span>
         <span className="apple-macos-menu-item">Help</span>
+        {appMenuOpen && (
+          <div className="apple-app-menu" role="menu">
+            <button type="button" role="menuitem" disabled>
+              <span>About {activeAppTitle || 'Finder'}</span>
+            </button>
+            <div className="apple-app-menu__separator" />
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setAppMenuOpen(false);
+                onOpenSettings();
+              }}
+            >
+              <span>Settings…</span>
+              <span className="apple-app-menu__hint">⌘,</span>
+            </button>
+            <button type="button" role="menuitem" disabled>
+              <span>Services</span>
+              <span className="apple-app-menu__hint">›</span>
+            </button>
+            <div className="apple-app-menu__separator" />
+            <button type="button" role="menuitem" disabled>
+              <span>Hide {activeAppTitle || 'Finder'}</span>
+              <span className="apple-app-menu__hint">⌘H</span>
+            </button>
+            <button type="button" role="menuitem" disabled>
+              <span>Hide Others</span>
+              <span className="apple-app-menu__hint">⌥⌘H</span>
+            </button>
+            <div className="apple-app-menu__separator" />
+            <button
+              type="button"
+              role="menuitem"
+              disabled={!canQuitActiveApp}
+              onClick={() => {
+                if (!canQuitActiveApp) return;
+                setAppMenuOpen(false);
+                onQuitActiveApp();
+              }}
+            >
+              <span>Quit {activeAppTitle || 'Finder'}</span>
+              <span className="apple-app-menu__hint">⌘Q</span>
+            </button>
+          </div>
+        )}
       </div>
       <div className="apple-macos-menu-right">
         <span className="apple-macos-menu-item apple-macos-status apple-macos-battery-status">
