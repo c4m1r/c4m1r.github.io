@@ -10,6 +10,11 @@ import iosSettingsIcon from '../../../../eat/homescreen-main/public/images/Icon=
 import iosPhotosIcon from '../../../../eat/homescreen-main/public/images/Icon=Photos.png';
 import iosNewsIcon from '../../../../eat/homescreen-main/public/images/Icon=News.png';
 import iosNotesIcon from '../../../../eat/homescreen-main/public/images/Icon=Notes.png';
+import ios9SafariIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/safari.png';
+import ios9SettingsIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/settings.png';
+import ios9PhotosIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/gallery.png';
+import ios9MusicIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/itunes.png';
+import ios9CalendarIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/iconcal.png';
 
 interface IosHomeScreenProps {
   theme: ThemeId;
@@ -21,7 +26,7 @@ interface IosHomeScreenProps {
 
 const PAGE_SIZE = 20;
 
-const IOS_ICON_BY_ID: Record<string, string> = {
+const MODERN_IOS_ICON_BY_ID: Record<string, string> = {
   'internet-explorer': iosSafariIcon,
   outlook: iosMailIcon,
   'windows-media-player': iosMusicIcon,
@@ -34,6 +39,21 @@ const IOS_ICON_BY_ID: Record<string, string> = {
   news: iosNewsIcon,
   notepad: iosNotesIcon,
 };
+
+const IOS9_ICON_BY_ID: Record<string, string> = {
+  'internet-explorer': ios9SafariIcon,
+  'windows-media-player': ios9MusicIcon,
+  winamp: ios9MusicIcon,
+  'control-panel': ios9SettingsIcon,
+  pictures: ios9PhotosIcon,
+  calendar: ios9CalendarIcon,
+};
+
+function getIosIconMap(theme: ThemeId): Record<string, string> {
+  if (theme === 'ios-9') return IOS9_ICON_BY_ID;
+  if (theme === 'ios-16' || theme === 'ios-26') return MODERN_IOS_ICON_BY_ID;
+  return {};
+}
 
 function chunkIcons(items: DesktopIcon[], size: number): DesktopIcon[][] {
   const pages: DesktopIcon[][] = [];
@@ -52,6 +72,7 @@ export function IosHomeScreen({
 }: IosHomeScreenProps) {
   const homePages = useMemo(() => chunkIcons(desktopIcons, PAGE_SIZE), [desktopIcons]);
   const showAppLibrary = theme === 'ios-16' || theme === 'ios-26';
+  const iconMap = getIosIconMap(theme);
   const totalPages = homePages.length + (showAppLibrary ? 1 : 0);
   const appLibraryPage = showAppLibrary ? totalPages - 1 : -1;
   const [page, setPage] = useState(0);
@@ -112,8 +133,8 @@ export function IosHomeScreen({
         onContextMenu={(event) => onIconContextMenu(event, icon)}
       >
         <span className="ios-home-icon__glyph">
-          {IOS_ICON_BY_ID[icon.id]
-            ? <img src={IOS_ICON_BY_ID[icon.id]} alt="" draggable={false} />
+          {iconMap[icon.id]
+            ? <img src={iconMap[icon.id]} alt="" draggable={false} />
             : icon.icon}
         </span>
         <span className="ios-home-icon__label">{icon.label}</span>
