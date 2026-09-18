@@ -1,4 +1,6 @@
 import { type MouseEvent } from 'react';
+import iosWifiIcon from '../../../../eat/homescreen-main/public/icons/wifi.svg';
+import iosBatteryIcon from '../../../../eat/homescreen-main/public/icons/battery-75.svg';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type Language } from '../../../i18n/translations';
 
@@ -37,9 +39,14 @@ export function AppleSystemBar({
         <span className="apple-ios-time">{timeLabel}</span>
         <span className="apple-ios-device-slot" aria-hidden="true" />
         <span className="apple-ios-indicators" aria-label="Wi-Fi and battery">
-          <span className="apple-ios-signal">•••</span>
-          <span className="apple-ios-wifi">⌁</span>
-          <span className="apple-ios-battery">100%</span>
+          <span className="apple-ios-signal" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+          <img className="apple-ios-wifi-icon" src={iosWifiIcon} alt="Wi-Fi" />
+          <img className="apple-ios-battery-icon" src={iosBatteryIcon} alt="Battery" />
         </span>
       </div>
     );
