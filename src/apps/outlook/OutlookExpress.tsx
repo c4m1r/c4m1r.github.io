@@ -1,102 +1,154 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { useNews } from '../../domain/news/useNews';
+import { useArticles } from '../../domain/articles/useArticles';
+import { markdownToHtml } from '../../domain/content/markdown';
+
+interface MailMessage {
+  id: string;
+  from: string;
+  subject: string;
+  preview: string;
+  date: string;
+  body: string;
+  originalPath?: string;
+  unread?: boolean;
+}
 
 const folders = [
-  { name: 'Inbox', count: 2, active: true },
-  { name: 'Drafts', count: 1 },
+  { name: 'Inbox', active: true },
+  { name: 'Drafts', count: 0 },
   { name: 'Outbox', count: 0 },
-  { name: 'Sent Items', count: 12 },
-  { name: 'Deleted Items', count: 3 },
+  { name: 'Sent Items', count: 0 },
+  { name: 'Deleted Items', count: 0 },
 ];
 
-const sampleMessages = [
-  {
-    id: 1,
-    from: 'Admin <admin@c4m1r.dev>',
-    subject: 'Welcome to Outlook Express',
-    preview: 'This is a simulated inbox for demo purposes...',
-    date: 'Today',
-    body: `Hello!
+const ADMIN = 'WebOS Admin <admin@c4m1r.github.io>';
 
-This is a demo mailbox. Use it to showcase the Windows XP experience inside the browser.
-
-✔ Double-click messages to see details
-✔ Reply and forward buttons are for display only
-
-Enjoy!
-
-- The WebOS team`,
-  },
-  {
-    id: 2,
-    from: 'GitHub <noreply@github.com>',
-    subject: 'You have new notifications',
-    preview: 'A quick reminder to check your latest pull requests and issues.',
-    date: 'Yesterday',
-    body: `Hi C4m1r,
-
-You have new GitHub notifications waiting for you. Stay productive and keep your projects in sync!`,
-  },
-];
+function formatMailDate(value: string | undefined, language: string): string {
+  if (!value) return '';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return new Intl.DateTimeFormat(language, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(parsed);
+}
 
 export function OutlookExpress() {
-  const { theme } = useApp();
+  const { theme, language } = useApp();
+  const { news, loading: newsLoading } = useNews();
+  const { articles, loading: articlesLoading } = useArticles();
   const isAppleMail = theme === 'macos-26' || theme.startsWith('ios-');
-  const [activeMessageId, setActiveMessageId] = useState(sampleMessages[0].id);
-  const activeMessage = sampleMessages.find((message) => message.id === activeMessageId) ?? sampleMessages[0];
 
-  const getPresentedSubject = (message: (typeof sampleMessages)[number]) =>
-    isAppleMail && message.id === 1 ? 'Welcome to Mail' : message.subject;
+  const messages = useMemo<MailMessage[]>(() => {
+    const welcome: MailMessage = {
+      id: 'welcome',
+      from: ADMIN,
+      subject: language === 'ru' ? 'Добро пожаловать в NervaWEB WebOS' : 'Welcome to NervaWEB WebOS',
+      preview:
+        language === 'ru'
+          ? 'Добро пожаловать в WebOS. Здесь будут появляться новости и записи блога.'
+          : 'Welcome to WebOS. News and blog updates will appear here.',
+      date: language === 'ru' ? 'Сегодня' : 'Today',
+      body:
+        language === 'ru'
+          ? `# Добро пожаловать в NervaWEB WebOS
 
-  const getPresentedBody = (message: (typeof sampleMessages)[number]) => {
-    if (!isAppleMail || message.id !== 1) return message.body;
-    return message.body
-      .replace('This is a demo mailbox. Use it to showcase the Windows XP experience inside the browser.', 'This is a demo mailbox for the Apple interface test stand.')
-      .replace('✔ Double-click messages to see details', '✔ Select messages to see details')
-      .replace('- The WebOS team', '- The 7Bit team');
-  };
+Это встроенный почтовый клиент WebOS.
+
+Здесь автоматически появляются свежие новости и публикации блога с сайта. Содержимое писем берётся из тех же Markdown-источников, поэтому Mail и сайт не расходятся по контенту.
+
+Автор системных рассылок: **admin@c4m1r.github.io**.`
+          : `# Welcome to NervaWEB WebOS
+
+This is the built-in WebOS mail client.
+
+Fresh news and blog posts from the site appear here automatically. Messages use the same Markdown content sources as the website, so Mail and the site stay in sync.
+
+System newsletter author: **admin@c4m1r.github.io**.`,
+      originalPath: '/',
+      unread: true,
+    };
+
+    const newsMessages: MailMessage[] = news.map((item) => ({
+      id: `news:${item.id}`,
+      from: ADMIN,
+      subject: item.title,
+      preview: item.content.replace(/[#>*_`\[\]()-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 150),
+      date: formatMailDate(item.date, language),
+      body: item.content,
+      originalPath: item.route?.sitePath ?? item.route?.path,
+      unread: true,
+    }));
+
+    const blogMessages: MailMessage[] = articles.map((item) => ({
+      id: `blog:${item.id}`,
+      from: ADMIN,
+      subject: item.title,
+      preview:
+        item.summary ||
+        item.content.replace(/[#>*_`\[\]()-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 150),
+      date: formatMailDate(item.updatedAt || item.date, language),
+      body: item.content,
+      originalPath: item.articlePath ?? item.route?.sitePath ?? item.route?.path,
+      unread: false,
+    }));
+
+    return [welcome, ...newsMessages, ...blogMessages];
+  }, [articles, language, news]);
+
+  const [activeMessageId, setActiveMessageId] = useState('welcome');
+  const activeMessage = messages.find((message) => message.id === activeMessageId) ?? messages[0];
+  const isLoading = newsLoading || articlesLoading;
+
+  const inboxCount = messages.length;
 
   return (
     <div className="mail-app flex h-full w-full bg-[#f3f3f3] text-xs font-tahoma text-[#1f1f1f] select-none">
       <aside className="mail-app__sidebar w-48 bg-[#d7e4f7] border-r border-[#9cb2cf] flex flex-col">
         <header className="px-3 py-2 border-b border-[#9cb2cf] bg-gradient-to-r from-[#1b4fa3] to-[#3c73d8] text-white text-[12px] font-semibold">
-          {isAppleMail ? 'Mailboxes' : 'Outlook Shortcuts'}
+          {isAppleMail ? 'Mailboxes' : 'Mail'}
         </header>
         <div className="flex-1 overflow-auto py-2">
           <div className="px-3 pb-2 text-[11px] text-[#1b4fa3] font-semibold uppercase">
-            Mail
+            NervaWEB WebOS
           </div>
           <ul className="flex flex-col">
-            {folders.map((folder) => (
-              <li
-                key={folder.name}
-                className={`px-3 py-1 flex items-center justify-between ${
-                  folder.active
-                    ? 'bg-[#1b4fa3] text-white font-semibold'
-                    : 'hover:bg-[#e6efff] text-[#1b4fa3]'
-                }`}
-              >
-                <span>{folder.name}</span>
-                {folder.count !== undefined && (
-                  <span
-                    className={`px-1 text-[10px] rounded ${
-                      folder.active ? 'bg-[#335fa3]' : 'bg-white text-[#1b4fa3]'
-                    }`}
-                  >
-                    {folder.count}
-                  </span>
-                )}
-              </li>
-            ))}
+            {folders.map((folder) => {
+              const count = folder.name === 'Inbox' ? inboxCount : folder.count;
+              return (
+                <li
+                  key={folder.name}
+                  className={`px-3 py-1 flex items-center justify-between ${
+                    folder.active
+                      ? 'bg-[#1b4fa3] text-white font-semibold'
+                      : 'hover:bg-[#e6efff] text-[#1b4fa3]'
+                  }`}
+                >
+                  <span>{folder.name}</span>
+                  {count !== undefined && (
+                    <span
+                      className={`px-1 text-[10px] rounded ${
+                        folder.active ? 'bg-[#335fa3]' : 'bg-white text-[#1b4fa3]'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </aside>
 
-      <main className="mail-app__main flex-1 flex flex-col">
+      <main className="mail-app__main flex-1 flex flex-col min-w-0">
         <header className="mail-app__toolbar flex items-center justify-between px-3 py-2 bg-gradient-to-r from-white to-[#e9f1ff] border-b border-[#c2d3e8] text-[11px] text-[#1b4fa3]">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <span className="font-semibold">Inbox</span>
-            <span>{isAppleMail ? 'iCloud' : '(Local Folders)'}</span>
+            <span className="truncate">(NervaWEB WebOS)</span>
           </div>
           <div className="flex items-center gap-2 text-[#0f3469]">
             <button className="px-2 py-1 bg-white border border-[#9cb2cf] rounded hover:bg-[#dfe9ff]">
@@ -115,52 +167,70 @@ export function OutlookExpress() {
           <span className="w-6">!</span>
           <span className="flex-1">From</span>
           <span className="flex-1">Subject</span>
-          <span className="w-24 text-right">Received</span>
+          <span className="w-28 text-right">Received</span>
         </section>
 
-        <section className="mail-app__message-list bg-white border-b border-[#c2d3e8] h-32 overflow-auto">
-          {sampleMessages.map((message) => (
+        <section className="mail-app__message-list bg-white border-b border-[#c2d3e8] h-44 overflow-auto">
+          {isLoading && messages.length <= 1 && (
+            <div className="px-3 py-3 text-[11px] opacity-60">Loading WebOS updates…</div>
+          )}
+
+          {messages.map((message) => (
             <article
               key={message.id}
               className={`mail-app__message flex items-center px-3 py-2 text-[11px] border-b border-[#edf3ff] ${
-                message.id === activeMessage.id ? 'is-active bg-[#dfe9ff]' : 'hover:bg-[#f6f9ff]'
+                message.id === activeMessage?.id ? 'is-active bg-[#dfe9ff]' : 'hover:bg-[#f6f9ff]'
               }`}
               onClick={() => setActiveMessageId(message.id)}
             >
-              <span className="w-6 text-[#1b4fa3]">{message.id === 1 ? '•' : ''}</span>
-              <span className="flex-1 font-semibold">{message.from}</span>
-              <span className="flex-1 text-[#305ca8]">{getPresentedSubject(message)}</span>
-              <span className="w-24 text-right text-[#305ca8]">{message.date}</span>
+              <span className="w-6 text-[#1b4fa3]">{message.unread ? '•' : ''}</span>
+              <span className="flex-1 font-semibold truncate">{message.from}</span>
+              <span className="flex-1 text-[#305ca8] truncate">{message.subject}</span>
+              <span className="w-28 text-right text-[#305ca8] truncate">{message.date}</span>
             </article>
           ))}
         </section>
 
-        <section className="mail-app__reader flex-1 bg-white px-4 py-3 overflow-auto text-[11px] leading-5 text-[#1f1f1f]">
-          <header className="border-b border-[#c2d3e8] pb-2 mb-3">
-            <div className="flex items-center gap-2 text-[#1b4fa3]">
-              <span className="font-semibold uppercase">From:</span>
-              <span>{activeMessage.from}</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#1b4fa3]">
-              <span className="font-semibold uppercase">Subject:</span>
-              <span>{getPresentedSubject(activeMessage)}</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#1b4fa3]">
-              <span className="font-semibold uppercase">Sent:</span>
-              <span>{activeMessage.date}</span>
-            </div>
-          </header>
-          <pre className="mail-app__body whitespace-pre-wrap font-sans text-[#1f1f1f] bg-[#f6f9ff] border border-[#c2d3e8] px-3 py-2 rounded">
-            {getPresentedBody(activeMessage)}
-          </pre>
-        </section>
+        {activeMessage && (
+          <section className="mail-app__reader flex-1 bg-white px-4 py-3 overflow-auto text-[11px] leading-5 text-[#1f1f1f]">
+            <header className="border-b border-[#c2d3e8] pb-2 mb-3">
+              <div className="flex items-center gap-2 text-[#1b4fa3]">
+                <span className="font-semibold uppercase">From:</span>
+                <span>{activeMessage.from}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#1b4fa3]">
+                <span className="font-semibold uppercase">Subject:</span>
+                <span>{activeMessage.subject}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#1b4fa3]">
+                <span className="font-semibold uppercase">Sent:</span>
+                <span>{activeMessage.date}</span>
+              </div>
+            </header>
+
+            <article
+              className="mail-app__body markdown-body"
+              dangerouslySetInnerHTML={{ __html: markdownToHtml(activeMessage.body) }}
+            />
+
+            {activeMessage.originalPath && (
+              <div className="mail-app__original-link-wrap">
+                <a
+                  className="mail-app__original-link"
+                  href={activeMessage.originalPath}
+                >
+                  {language === 'ru' ? 'Открыть оригинал на сайте' : 'Open original on site'}
+                </a>
+              </div>
+            )}
+          </section>
+        )}
 
         <footer className="mail-app__status px-3 py-2 bg-[#d7e4f7] border-t border-[#9cb2cf] text-[10px] text-[#1b4fa3] flex items-center justify-between">
-          <span>Folder size: 1.3 MB</span>
-          <span>Last checked: just now (simulated)</span>
+          <span>{inboxCount} messages</span>
+          <span>{isLoading ? 'Checking updates…' : 'Content synced with site'}</span>
         </footer>
       </main>
     </div>
   );
 }
-
