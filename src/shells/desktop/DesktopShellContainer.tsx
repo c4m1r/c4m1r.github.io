@@ -921,24 +921,34 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         setSelectedIcons([icon.id]);
       }
       closeStartMenu();
+      const items: ContextMenuItem[] = themeKey.startsWith('ios-')
+        ? [
+            { label: 'Open', onClick: () => handleIconDoubleClick(icon) },
+            { separator: true },
+            { label: 'App Info', onClick: () => launchApp('control-panel') },
+            { label: 'Edit Home Screen', disabled: true },
+            { label: 'Remove App', disabled: true },
+          ]
+        : [
+            { label: 'Open', onClick: () => handleIconDoubleClick(icon) },
+            { separator: true },
+            { label: 'Cut', disabled: true },
+            { label: 'Copy', disabled: true },
+            { separator: true },
+            { label: 'Create Shortcut', disabled: true },
+            { label: 'Delete', disabled: true },
+            { label: 'Rename', disabled: true },
+            { separator: true },
+            { label: 'Properties', disabled: true },
+          ];
+
       setContextMenu({
         x: e.clientX,
         y: e.clientY,
-        items: [
-          { label: 'Open', onClick: () => handleIconDoubleClick(icon) },
-          { separator: true },
-          { label: 'Cut', disabled: true },
-          { label: 'Copy', disabled: true },
-          { separator: true },
-          { label: 'Create Shortcut', disabled: true },
-          { label: 'Delete', disabled: true },
-          { label: 'Rename', disabled: true },
-          { separator: true },
-          { label: 'Properties', disabled: true },
-        ],
+        items,
       });
     },
-    [selectedIcons, closeStartMenu, handleIconDoubleClick, setSelectedIcons]
+    [selectedIcons, closeStartMenu, handleIconDoubleClick, launchApp, setSelectedIcons, themeKey]
   );
 
   const osAttributes = getDesktopOsAttributes(themeKey);
