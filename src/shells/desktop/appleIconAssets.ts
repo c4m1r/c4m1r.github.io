@@ -6,6 +6,7 @@ import macTerminalIcon from '../../../eat/playground-macos-main/public/img/icons
 import macSettingsIcon from '../../../eat/macos-portfolio-main/public/icons/settings.svg';
 import macPhotosIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/photos.png';
 import macMailIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/mail.png';
+import macMusicIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/music.png';
 import macFolderGenericIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/folder-generic.png';
 import macFinderIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/finder.png';
 import macTrashIcon from '../../../eat/macos-portfolio-main/public/images/trash.webp';
@@ -70,6 +71,7 @@ export const MACOS_SYSTEM_ICON_BY_ID: Readonly<Record<string, string>> = {
 export const MACOS_APP_ICON_BY_ID: Readonly<Record<string, string>> = {
   'internet-explorer': macSafariIcon,
   outlook: macMailIcon,
+  'windows-media-player': macMusicIcon,
   pictures: macPhotosIcon,
   'control-panel': macSettingsIcon,
   notepad: macNotesIcon,
@@ -84,6 +86,7 @@ export const MACOS_DOCK_ITEMS: readonly AppleDockAsset[] = [
   { id: 'launchpad', title: 'Launchpad', src: macLaunchpadIcon, launcher: true },
   { id: 'safari', title: 'Safari', appId: 'internet-explorer', src: macSafariIcon },
   { id: 'mail', title: 'Mail', appId: 'outlook', src: macMailIcon },
+  { id: 'music', title: 'Music', appId: 'windows-media-player', src: macMusicIcon },
   { id: 'photos', title: 'Photos', appId: 'pictures', src: macPhotosIcon },
   { id: 'settings', title: 'System Settings', appId: 'control-panel', src: macSettingsIcon },
   { id: 'terminal', title: 'Terminal', appId: 'terminal', src: macTerminalIcon },
