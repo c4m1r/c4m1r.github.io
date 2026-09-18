@@ -52,6 +52,7 @@ import { AppleControlCenter } from './components/AppleControlCenter';
 import { AppleMenuSurface } from './components/AppleMenuSurface';
 import { AppleNotificationCenter } from './components/AppleNotificationCenter';
 import { AppleSpotlight } from './components/AppleSpotlight';
+import { AppleDesktopWidgets } from './components/AppleDesktopWidgets';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -1019,6 +1020,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           if (focusedWindow) handleCloseWindow(focusedWindow.id);
         }}
       />
+
+      {themeKey === 'macos-26' && (
+        <AppleDesktopWidgets time={time} language={language} />
+      )}
 
       {themeKey === 'macos-26' && (
         <AppleSpotlight
