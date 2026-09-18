@@ -1168,6 +1168,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             detail: { windowId: focusedWindow.id, mode },
           }));
         }}
+        onOpenHelp={() => launchApp('help')}
       />
 
       {themeKey === 'macos-26' && (
