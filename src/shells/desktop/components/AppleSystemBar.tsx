@@ -7,6 +7,7 @@ import macControlCenterIcon from '../../../../eat/macOS-Portfolio-main 2/public/
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type Language } from '../../../i18n/translations';
 import { useDeviceBattery } from '../hooks/useDeviceBattery';
+import { IosDynamicIsland } from './IosDynamicIsland';
 
 interface AppleSystemBarProps {
   theme: ThemeId;
@@ -44,7 +45,15 @@ export function AppleSystemBar({
     return (
       <div className="apple-system-bar apple-ios-statusbar" aria-label="iOS status bar">
         <span className="apple-ios-time">{timeLabel}</span>
-        <span className="apple-ios-device-slot" aria-hidden="true" />
+        {theme === 'ios-16' || theme === 'ios-26' ? (
+          <IosDynamicIsland
+            activeAppTitle={activeAppTitle}
+            batteryLevel={batteryLevel}
+            batteryCharging={batteryCharging}
+          />
+        ) : (
+          <span className="apple-ios-device-slot" aria-hidden="true" />
+        )}
         {theme === 'ios-5' ? (
           <span className="apple-ios-indicators" aria-label="Wi-Fi and battery">
             <span className="apple-ios-signal" aria-hidden="true">
