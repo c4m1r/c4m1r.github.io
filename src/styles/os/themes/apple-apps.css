@@ -227,3 +227,161 @@
 @keyframes apple-browser-spin {
   to { transform: rotate(360deg); }
 }
+
+
+/* Photos presentation on Apple themes. */
+.os-macos .gallery-app,
+.os-ios .gallery-app {
+  background: #f5f5f7 !important;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.os-macos .gallery-app__toolbar,
+.os-ios .gallery-app__toolbar {
+  min-height: 44px;
+  padding: 7px 12px !important;
+  border-color: rgba(60,60,67,0.12) !important;
+  background: rgba(248,248,250,0.86);
+  -webkit-backdrop-filter: saturate(165%) blur(20px);
+  backdrop-filter: saturate(165%) blur(20px);
+}
+
+.os-macos .gallery-app__view-btn,
+.os-ios .gallery-app__view-btn {
+  width: 32px;
+  height: 28px;
+  padding: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: #3a3a3c;
+  display: grid;
+  place-items: center;
+}
+
+.os-macos .gallery-app__view-btn:hover,
+.os-ios .gallery-app__view-btn:hover {
+  background: rgba(118,118,128,0.10) !important;
+}
+
+.os-macos .gallery-app__view-btn.bg-white,
+.os-ios .gallery-app__view-btn.bg-white {
+  border-color: rgba(60,60,67,0.12) !important;
+  background: rgba(255,255,255,0.88) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.os-macos .gallery-app__count,
+.os-ios .gallery-app__count {
+  color: rgba(60,60,67,0.62) !important;
+  font-size: 11px;
+}
+
+.os-macos .gallery-app__content,
+.os-ios .gallery-app__content {
+  padding: 18px !important;
+  background: #f5f5f7;
+}
+
+.os-macos .gallery-app__grid,
+.os-ios .gallery-app__grid {
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.os-macos .gallery-app__item,
+.os-ios .gallery-app__item {
+  padding: 5px !important;
+  border: 2px solid transparent !important;
+  border-radius: 13px !important;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.os-macos .gallery-app__item:hover {
+  background: rgba(118,118,128,0.07) !important;
+  border-color: transparent !important;
+  transform: translateY(-1px);
+}
+
+.os-macos .gallery-app__item.border-\[\#316ac5\],
+.os-ios .gallery-app__item.border-\[\#316ac5\] {
+  border-color: rgba(0,122,255,0.72) !important;
+  background: rgba(0,122,255,0.08) !important;
+}
+
+.os-macos .gallery-app__thumb,
+.os-ios .gallery-app__thumb {
+  margin-bottom: 7px !important;
+  border-radius: 11px !important;
+  background: rgba(118,118,128,0.08) !important;
+  box-shadow: inset 0 0 0 1px rgba(60,60,67,0.06);
+}
+
+.os-macos .gallery-app__thumb img,
+.os-ios .gallery-app__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important;
+}
+
+.os-macos .gallery-app__item-label,
+.os-ios .gallery-app__item-label {
+  color: #1d1d1f;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.os-macos .gallery-app__item-label.bg-\[\#316ac5\],
+.os-ios .gallery-app__item-label.bg-\[\#316ac5\] {
+  background: #007aff !important;
+  color: #fff !important;
+}
+
+.os-macos .gallery-app__list-table,
+.os-ios .gallery-app__list-table {
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.72);
+  box-shadow: inset 0 0 0 1px rgba(60,60,67,0.08);
+}
+
+.os-macos .gallery-app__list-head,
+.os-ios .gallery-app__list-head {
+  color: rgba(60,60,67,0.62);
+  background: rgba(118,118,128,0.07);
+}
+
+.os-macos .gallery-app__list-row,
+.os-ios .gallery-app__list-row {
+  border-top: 1px solid rgba(60,60,67,0.08);
+}
+
+.os-ios .gallery-app__content {
+  padding: 12px !important;
+}
+
+.os-ios .gallery-app__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+}
+
+.os-ios .gallery-app__item {
+  padding: 2px !important;
+  border-radius: 10px !important;
+}
+
+.os-ios .gallery-app__thumb {
+  margin-bottom: 4px !important;
+  border-radius: 9px !important;
+}
+
+.os-ios .gallery-app__item-label {
+  font-size: 10px;
+}
+
+@media (max-width: 520px) {
+  .os-ios .gallery-app__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
