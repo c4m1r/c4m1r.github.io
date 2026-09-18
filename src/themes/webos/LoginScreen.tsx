@@ -5,6 +5,7 @@ import { translations } from '../../i18n/translations';
 import { Power } from 'lucide-react';
 import userAvatar from '../winxp/assets/user.gif';
 import '../winxp/xp.css';
+import { AppleLoginScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -15,6 +16,16 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const t = translations[language].xp;
   const osClassName = getOsClassName(theme);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  if (isAppleTheme(theme)) {
+    return (
+      <AppleLoginScreen
+        theme={theme}
+        onLogin={onLogin}
+        onShutdown={() => setMode('grub')}
+      />
+    );
+  }
 
   if (theme === 'win-98') {
     return (
