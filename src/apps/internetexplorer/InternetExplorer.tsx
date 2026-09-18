@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, House, RotateCw, Search, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, RotateCw, Search, ShieldCheck } from 'lucide-react';
 import { useApp } from '../../contexts/useApp';
 
 interface AllowedSite {
@@ -146,7 +146,7 @@ export function InternetExplorer() {
                 aria-label="Home"
                 title="Home"
               >
-                <House size={15} strokeWidth={2} />
+                <Home size={15} strokeWidth={2} />
               </button>
               <button
                 type="button"
