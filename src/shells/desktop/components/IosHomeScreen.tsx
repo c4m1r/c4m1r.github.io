@@ -194,7 +194,7 @@ export function IosHomeScreen({
           {homePages.map((icons, pageIndex) => (
             <div
               key={pageIndex}
-              className="ios-home-screen__page"
+              className={`ios-home-screen__page ${modernHome ? 'ios-home-screen__page--modern' : ''}`}
               style={{ width: `${100 / totalPages}%` }}
               aria-hidden={pageIndex !== page}
             >
