@@ -34,6 +34,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     isMyPictures ? 'thumbnails' : 'icons'
   );
   const [showSidebar, setShowSidebar] = useState(true);
+  const [quickLookOpen, setQuickLookOpen] = useState(false);
   const isWindowsXp = theme === 'win-xp';
   const isAppleExplorer = theme === 'macos-26' || theme.startsWith('ios-');
   const isIosExplorer = theme.startsWith('ios-');
@@ -68,6 +69,36 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   }, [path]);
 
   const items = useMemo(() => getItemsFromPath(path), [path]);
+  const selectedFile = useMemo(
+    () => items.find((item) => item.name === selectedItem) ?? null,
+    [items, selectedItem]
+  );
+
+  useEffect(() => {
+    if (theme !== 'macos-26') {
+      setQuickLookOpen(false);
+      return;
+    }
+
+    const handleQuickLookKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        Boolean(target?.isContentEditable);
+      if (isTypingTarget) return;
+
+      if (event.code === 'Space' && selectedFile?.type === 'file') {
+        event.preventDefault();
+        setQuickLookOpen((value) => !value);
+      } else if (event.key === 'Escape') {
+        setQuickLookOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleQuickLookKey);
+    return () => window.removeEventListener('keydown', handleQuickLookKey);
+  }, [selectedFile, theme]);
 
   const navigateToPath = useCallback(
     (targetPath: string, recordHistory: boolean = true) => {
@@ -378,6 +409,47 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
             )}
           </main>
         </div>
+
+        {theme === 'macos-26' && quickLookOpen && selectedFile?.type === 'file' && (
+          <div className="apple-quick-look" role="dialog" aria-label={`Quick Look: ${selectedFile.name}`}>
+            <button
+              type="button"
+              className="apple-quick-look__backdrop"
+              aria-label="Close Quick Look"
+              onClick={() => setQuickLookOpen(false)}
+            />
+            <section className="apple-quick-look__panel" onClick={(event) => event.stopPropagation()}>
+              <header>
+                <div>
+                  <strong>{selectedFile.name}</strong>
+                  <small>Quick Look</small>
+                </div>
+                <button type="button" onClick={() => setQuickLookOpen(false)} aria-label="Close Quick Look">
+                  ×
+                </button>
+              </header>
+
+              <div className="apple-quick-look__content">
+                {/\.(png|jpe?g|gif|webp)$/i.test(selectedFile.name) && selectedFile.content ? (
+                  <img src={selectedFile.content} alt={selectedFile.name} />
+                ) : selectedFile.content ? (
+                  <pre>{selectedFile.content}</pre>
+                ) : (
+                  <div className="apple-quick-look__empty">
+                    <img src={getAppleItemIcon(selectedFile)} alt="" />
+                    <strong>{selectedFile.name}</strong>
+                    <span>{selectedFile.size || (isRu ? 'Предпросмотр недоступен' : 'Preview unavailable')}</span>
+                  </div>
+                )}
+              </div>
+
+              <footer>
+                <span>{selectedFile.size || (isRu ? 'Файл' : 'File')}</span>
+                <span>{isRu ? 'Пробел закрывает просмотр' : 'Press Space to close'}</span>
+              </footer>
+            </section>
+          </div>
+        )}
 
         <footer className="apple-file-browser__status">
           <span>{items.length} {isRu ? 'объектов' : 'items'}</span>
