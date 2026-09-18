@@ -92,7 +92,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showTaskManager, setShowTaskManager] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; items: ContextMenuItem[] } | null>(null);
   const [volumeLevel, setVolumeLevel] = useState(70);
-  const [brightnessLevel, setBrightnessLevel] = useState(78);
+  const [iosBrightnessLevel, setIosBrightnessLevel] = useState(() => {
+    if (typeof window === 'undefined') return 78;
+    const saved = Number(localStorage.getItem('ios-brightness-level'));
+    return Number.isFinite(saved) && saved >= 0 && saved <= 100 ? saved : 78;
+  });
+  const [macBrightnessLevel, setMacBrightnessLevel] = useState(() => {
+    if (typeof window === 'undefined') return 78;
+    const saved = Number(localStorage.getItem('macos-brightness-level'));
+    return Number.isFinite(saved) && saved >= 20 && saved <= 100 ? saved : 78;
+  });
   const [nightModeEnabled, setNightModeEnabled] = useState(false);
   const [macNightShiftEnabled, setMacNightShiftEnabled] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -1029,12 +1038,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         backgroundPosition: 'center',
         paddingBottom: '30px',
         '--ios-screen-dim': themeKey.startsWith('ios-')
-          ? String(Math.max(0, Math.min(0.55, ((100 - brightnessLevel) / 100) * 0.55)))
+          ? String(Math.max(0, Math.min(0.55, ((100 - iosBrightnessLevel) / 100) * 0.55)))
           : '0',
         '--ios-night-shift': themeKey.startsWith('ios-') && nightModeEnabled ? '0.14' : '0',
         '--mac-desktop-icon-scale': themeKey === 'macos-26' ? String(macDesktopIconScale) : '1',
         '--mac-screen-dim': themeKey === 'macos-26'
-          ? String(Math.max(0, Math.min(0.48, ((100 - brightnessLevel) / 100) * 0.48)))
+          ? String(Math.max(0, Math.min(0.48, ((100 - macBrightnessLevel) / 100) * 0.48)))
           : '0',
         '--mac-night-shift': themeKey === 'macos-26' && macNightShiftEnabled ? '0.13' : '0',
       } as CSSProperties}
@@ -1311,13 +1320,23 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           theme={themeKey}
           open={showSystemActionMenu}
           volumeLevel={volumeLevel}
-          brightnessLevel={brightnessLevel}
+          brightnessLevel={themeKey === 'macos-26' ? macBrightnessLevel : iosBrightnessLevel}
           nightModeEnabled={nightModeEnabled}
           macNightShiftEnabled={macNightShiftEnabled}
           isFullscreen={isFullscreen}
           onClose={() => setShowSystemActionMenu(false)}
           onVolumeLevelChange={setVolumeLevel}
-          onBrightnessLevelChange={setBrightnessLevel}
+          onBrightnessLevelChange={(value) => {
+            if (themeKey === 'macos-26') {
+              setMacBrightnessLevel(value);
+              localStorage.setItem('macos-brightness-level', String(value));
+              window.dispatchEvent(new CustomEvent('macos-brightness-changed', { detail: value }));
+            } else {
+              setIosBrightnessLevel(value);
+              localStorage.setItem('ios-brightness-level', String(value));
+              window.dispatchEvent(new CustomEvent('ios-brightness-changed', { detail: value }));
+            }
+          }}
           onNightModeChange={setNightModeEnabled}
           onMacNightShiftChange={(value) => {
             setMacNightShiftEnabled(value);
