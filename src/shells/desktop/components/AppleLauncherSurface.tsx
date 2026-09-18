@@ -12,6 +12,7 @@ interface AppleLauncherSurfaceProps {
 const APP_IDS = [
   'internet-explorer',
   'outlook',
+  'windows-media-player',
   'pictures',
   'calendar',
   'calculator',
@@ -38,6 +39,7 @@ const localizedTitle = (en: string, ru: string): Record<Language, string> => ({
 const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], Record<Language, string>> = {
   'internet-explorer': localizedTitle('Safari', 'Safari'),
   outlook: localizedTitle('Mail', 'Почта'),
+  'windows-media-player': localizedTitle('Music', 'Музыка'),
   pictures: localizedTitle('Photos', 'Фото'),
   calendar: localizedTitle('Calendar', 'Календарь'),
   calculator: localizedTitle('Calculator', 'Калькулятор'),
@@ -54,6 +56,7 @@ const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], Record<Language, string>>
 const GLYPHS: Record<string, string> = {
   'internet-explorer': '◉',
   outlook: '✉',
+  'windows-media-player': '♪',
   pictures: '✿',
   calendar: '17',
   calculator: '＋',
