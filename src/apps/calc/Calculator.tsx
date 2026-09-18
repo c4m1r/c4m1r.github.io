@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useApp } from '../../contexts/useApp';
 import './Calculator.css';
 
 export function Calculator() {
+  const { theme } = useApp();
+  const isAppleCalculator = theme === 'macos-26' || theme.startsWith('ios-');
   const [display, setDisplay] = useState('0');
   const [previousValue, setPreviousValue] = useState<number | null>(null);
   const [operation, setOperation] = useState<string | null>(null);
@@ -79,6 +82,55 @@ export function Calculator() {
       setNewNumber(true);
     }
   };
+
+  const handleToggleSign = () => {
+    const current = parseFloat(display);
+    if (Number.isNaN(current) || current === 0) return;
+    setDisplay(String(current * -1));
+  };
+
+  const handlePercent = () => {
+    const current = parseFloat(display);
+    if (Number.isNaN(current)) return;
+    setDisplay(String(current / 100));
+    setNewNumber(true);
+  };
+
+  if (isAppleCalculator) {
+    return (
+      <div className="calc-app calc-app--apple">
+        <div className="calc-app__display">
+          <div className="calc-app__display-val">{display}</div>
+        </div>
+
+        <div className="calc-app__grid calc-app__grid--apple">
+          <CalcButton onClick={handleClear} text="AC" className="calc-app__btn--utility" />
+          <CalcButton onClick={handleToggleSign} text="±" className="calc-app__btn--utility" />
+          <CalcButton onClick={handlePercent} text="%" className="calc-app__btn--utility" />
+          <CalcButton onClick={() => handleOperation('/')} text="÷" className="calc-app__btn--action" />
+
+          <CalcButton onClick={() => handleNumber('7')} text="7" />
+          <CalcButton onClick={() => handleNumber('8')} text="8" />
+          <CalcButton onClick={() => handleNumber('9')} text="9" />
+          <CalcButton onClick={() => handleOperation('*')} text="×" className="calc-app__btn--action" />
+
+          <CalcButton onClick={() => handleNumber('4')} text="4" />
+          <CalcButton onClick={() => handleNumber('5')} text="5" />
+          <CalcButton onClick={() => handleNumber('6')} text="6" />
+          <CalcButton onClick={() => handleOperation('-')} text="−" className="calc-app__btn--action" />
+
+          <CalcButton onClick={() => handleNumber('1')} text="1" />
+          <CalcButton onClick={() => handleNumber('2')} text="2" />
+          <CalcButton onClick={() => handleNumber('3')} text="3" />
+          <CalcButton onClick={() => handleOperation('+')} text="+" className="calc-app__btn--action" />
+
+          <CalcButton onClick={() => handleNumber('0')} text="0" colSpan={2} />
+          <CalcButton onClick={handleDecimal} text="." />
+          <CalcButton onClick={handleEquals} text="=" className="calc-app__btn--action" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="calc-app">
