@@ -91,6 +91,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showVolumePanel, setShowVolumePanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
+  const iosControlSwipeStartY = useRef<number | null>(null);
   const [showAppleMenu, setShowAppleMenu] = useState(false);
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
@@ -980,6 +981,28 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         });
       }}
     >
+      {themeKey.startsWith('ios-') && themeKey !== 'ios-5' && (
+        <div
+          className="ios-control-center-swipe-zone"
+          aria-hidden="true"
+          onTouchStart={(event) => {
+            iosControlSwipeStartY.current = event.touches[0]?.clientY ?? null;
+          }}
+          onTouchEnd={(event) => {
+            const startY = iosControlSwipeStartY.current;
+            iosControlSwipeStartY.current = null;
+            const endY = event.changedTouches[0]?.clientY;
+            if (startY === null || endY === undefined) return;
+            if (endY - startY < 34) return;
+            setShowSystemActionMenu(true);
+            setShowAppleMenu(false);
+            setShowNotificationPanel(false);
+            setShowVolumePanel(false);
+            closeStartMenu();
+          }}
+        />
+      )}
+
       <AppleSystemBar
         theme={themeKey}
         language={language}
