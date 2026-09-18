@@ -15,6 +15,7 @@ interface AppleSystemBarProps {
   language: Language;
   time: Date;
   activeAppTitle?: string;
+  activeWindowId?: string;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
@@ -27,6 +28,7 @@ interface AppleSystemBarProps {
   onMinimizeActiveWindow: () => void;
   onZoomActiveWindow: () => void;
   onOpenFinderPath: (path: string) => void;
+  onFinderViewMode: (mode: 'icons' | 'list') => void;
 }
 
 function stop(event: MouseEvent) {
@@ -38,6 +40,7 @@ export function AppleSystemBar({
   language,
   time,
   activeAppTitle,
+  activeWindowId,
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
@@ -50,13 +53,14 @@ export function AppleSystemBar({
   onMinimizeActiveWindow,
   onZoomActiveWindow,
   onOpenFinderPath,
+  onFinderViewMode,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
   const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(isMac || isIos);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
-  const [systemMenu, setSystemMenu] = useState<'file' | 'go' | 'window' | null>(null);
+  const [systemMenu, setSystemMenu] = useState<'file' | 'view' | 'go' | 'window' | null>(null);
   const iosSwipeStart = useRef<{ x: number; y: number } | null>(null);
 
   if (!isMac && !isIos) return null;
@@ -185,7 +189,22 @@ export function AppleSystemBar({
           File
         </button>
         <span className="apple-macos-menu-item">Edit</span>
-        <span className="apple-macos-menu-item">View</span>
+        {activeWindowId?.startsWith('explorer:') ? (
+          <button
+            type="button"
+            className="apple-macos-menu-item"
+            aria-expanded={systemMenu === 'view'}
+            onClick={() => {
+              setAppMenuOpen(false);
+              setStatusMenu(null);
+              setSystemMenu((value) => value === 'view' ? null : 'view');
+            }}
+          >
+            View
+          </button>
+        ) : (
+          <span className="apple-macos-menu-item">View</span>
+        )}
         <button
           type="button"
           className="apple-macos-menu-item"
@@ -239,6 +258,32 @@ export function AppleSystemBar({
                 >
                   <span>Close Window</span>
                   <span className="apple-app-menu__hint">⌘W</span>
+                </button>
+              </>
+            )}
+            {systemMenu === 'view' && (
+              <>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setSystemMenu(null);
+                    onFinderViewMode('icons');
+                  }}
+                >
+                  <span>as Icons</span>
+                  <span className="apple-app-menu__hint">⌘1</span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setSystemMenu(null);
+                    onFinderViewMode('list');
+                  }}
+                >
+                  <span>as List</span>
+                  <span className="apple-app-menu__hint">⌘2</span>
                 </button>
               </>
             )}
