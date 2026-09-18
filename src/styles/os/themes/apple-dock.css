@@ -167,3 +167,57 @@
     transform: none;
   }
 }
+
+
+/* macOS Dock context menu over the existing Dock runtime. */
+.os-macos .apple-dock-context-menu {
+  position: fixed;
+  bottom: 86px;
+  z-index: 140;
+  width: 190px;
+  padding: 6px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: 11px;
+  background: rgba(246,246,248,0.93);
+  -webkit-backdrop-filter: blur(28px) saturate(175%);
+  backdrop-filter: blur(28px) saturate(175%);
+  box-shadow:
+    0 18px 42px rgba(0,0,0,0.26),
+    inset 0 1px rgba(255,255,255,0.72);
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.os-macos .apple-dock-context-menu > strong {
+  display: block;
+  padding: 5px 8px 6px;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .apple-dock-context-menu__separator {
+  height: 1px;
+  margin: 3px 5px 4px;
+  background: rgba(60,60,67,0.12);
+}
+
+.os-macos .apple-dock-context-menu > button {
+  width: 100%;
+  min-height: 27px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: 400 11px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.os-macos .apple-dock-context-menu > button:hover {
+  background: #007aff;
+  color: #fff;
+}
