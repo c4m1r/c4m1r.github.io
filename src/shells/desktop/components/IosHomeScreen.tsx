@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, type MouseEvent } from 'react';
+import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type DesktopIcon } from '../desktopTypes';
 import iosSafariIcon from '../../../../eat/homescreen-main/public/images/Icon=Safari.png';
 import iosMailIcon from '../../../../eat/homescreen-main/public/images/Icon=Mail.png';
@@ -11,6 +12,7 @@ import iosNewsIcon from '../../../../eat/homescreen-main/public/images/Icon=News
 import iosNotesIcon from '../../../../eat/homescreen-main/public/images/Icon=Notes.png';
 
 interface IosHomeScreenProps {
+  theme: ThemeId;
   desktopIcons: DesktopIcon[];
   selectedIcons: string[];
   onIconDoubleClick: (icon: DesktopIcon) => void;
@@ -42,20 +44,31 @@ function chunkIcons(items: DesktopIcon[], size: number): DesktopIcon[][] {
 }
 
 export function IosHomeScreen({
+  theme,
   desktopIcons,
   selectedIcons,
   onIconDoubleClick,
   onIconContextMenu,
 }: IosHomeScreenProps) {
-  const pages = useMemo(() => chunkIcons(desktopIcons, PAGE_SIZE), [desktopIcons]);
+  const homePages = useMemo(() => chunkIcons(desktopIcons, PAGE_SIZE), [desktopIcons]);
+  const showAppLibrary = theme === 'ios-16' || theme === 'ios-26';
+  const totalPages = homePages.length + (showAppLibrary ? 1 : 0);
+  const appLibraryPage = showAppLibrary ? totalPages - 1 : -1;
   const [page, setPage] = useState(0);
+  const [query, setQuery] = useState('');
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef<number | null>(null);
   const pointerIdRef = useRef<number | null>(null);
   const suppressClickRef = useRef(false);
 
-  const clampPage = (value: number) => Math.max(0, Math.min(pages.length - 1, value));
+  const filteredApps = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return desktopIcons;
+    return desktopIcons.filter((icon) => icon.label.toLowerCase().includes(normalized));
+  }, [desktopIcons, query]);
+
+  const clampPage = (value: number) => Math.max(0, Math.min(totalPages - 1, value));
 
   const finishSwipe = (deltaX: number) => {
     const threshold = Math.min(90, Math.max(42, window.innerWidth * 0.12));
@@ -73,8 +86,48 @@ export function IosHomeScreen({
     setIsDragging(false);
   };
 
+  const launchIcon = (event: MouseEvent<HTMLButtonElement>, icon: DesktopIcon) => {
+    event.stopPropagation();
+    if (suppressClickRef.current) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const shell = event.currentTarget.closest('.os-ios') as HTMLElement | null;
+    if (shell) {
+      shell.style.setProperty('--ios-launch-x', `${rect.left + rect.width / 2}px`);
+      shell.style.setProperty('--ios-launch-y', `${rect.top + rect.height / 2}px`);
+      shell.style.setProperty('--ios-launch-size', `${Math.max(rect.width, rect.height)}px`);
+    }
+
+    onIconDoubleClick(icon);
+  };
+
+  const renderIcon = (icon: DesktopIcon, compact = false) => {
+    const selected = selectedIcons.includes(icon.id);
+    return (
+      <button
+        key={icon.id}
+        type="button"
+        className={`ios-home-icon ${compact ? 'ios-app-library__app' : ''} ${selected ? 'is-selected' : ''}`}
+        onClick={(event) => launchIcon(event, icon)}
+        onContextMenu={(event) => onIconContextMenu(event, icon)}
+      >
+        <span className="ios-home-icon__glyph">
+          {IOS_ICON_BY_ID[icon.id]
+            ? <img src={IOS_ICON_BY_ID[icon.id]} alt="" draggable={false} />
+            : icon.icon}
+        </span>
+        <span className="ios-home-icon__label">{icon.label}</span>
+      </button>
+    );
+  };
+
   return (
-    <div className="ios-home-screen" data-page={page} data-dragging={isDragging ? "true" : "false"}>
+    <div
+      className="ios-home-screen"
+      data-page={page}
+      data-app-library={page === appLibraryPage ? 'true' : 'false'}
+      data-dragging={isDragging ? 'true' : 'false'}
+    >
       <div
         className="ios-home-screen__viewport"
         onPointerDown={(event) => {
@@ -102,62 +155,60 @@ export function IosHomeScreen({
         <div
           className="ios-home-screen__track"
           style={{
-            width: `${pages.length * 100}%`,
-            transform: `translateX(calc(${(-page * 100) / pages.length}% + ${dragOffset}px))`,
+            width: `${totalPages * 100}%`,
+            transform: `translateX(calc(${(-page * 100) / totalPages}% + ${dragOffset}px))`,
           }}
         >
-          {pages.map((icons, pageIndex) => (
+          {homePages.map((icons, pageIndex) => (
             <div
               key={pageIndex}
               className="ios-home-screen__page"
-              style={{ width: `${100 / pages.length}%` }}
+              style={{ width: `${100 / totalPages}%` }}
               aria-hidden={pageIndex !== page}
             >
-              {icons.map((icon) => {
-                const selected = selectedIcons.includes(icon.id);
-                return (
-                  <button
-                    key={icon.id}
-                    type="button"
-                    className={`ios-home-icon ${selected ? 'is-selected' : ''}`}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      if (suppressClickRef.current) return;
-
-                      const rect = event.currentTarget.getBoundingClientRect();
-                      const shell = event.currentTarget.closest('.os-ios') as HTMLElement | null;
-                      if (shell) {
-                        shell.style.setProperty('--ios-launch-x', `${rect.left + rect.width / 2}px`);
-                        shell.style.setProperty('--ios-launch-y', `${rect.top + rect.height / 2}px`);
-                        shell.style.setProperty('--ios-launch-size', `${Math.max(rect.width, rect.height)}px`);
-                      }
-
-                      onIconDoubleClick(icon);
-                    }}
-                    onContextMenu={(event) => onIconContextMenu(event, icon)}
-                  >
-                    <span className="ios-home-icon__glyph">
-                      {IOS_ICON_BY_ID[icon.id]
-                        ? <img src={IOS_ICON_BY_ID[icon.id]} alt="" draggable={false} />
-                        : icon.icon}
-                    </span>
-                    <span className="ios-home-icon__label">{icon.label}</span>
-                  </button>
-                );
-              })}
+              {icons.map((icon) => renderIcon(icon))}
             </div>
           ))}
+
+          {showAppLibrary && (
+            <div
+              className="ios-home-screen__page ios-app-library"
+              style={{ width: `${100 / totalPages}%` }}
+              aria-hidden={page !== appLibraryPage}
+            >
+              <div
+                className="ios-app-library__content"
+                onPointerDown={(event) => event.stopPropagation()}
+                onPointerMove={(event) => event.stopPropagation()}
+                onPointerUp={(event) => event.stopPropagation()}
+              >
+                <h2>App Library</h2>
+                <label className="ios-app-library__search">
+                  <span aria-hidden="true">⌕</span>
+                  <input
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="App Library"
+                    aria-label="Search App Library"
+                  />
+                </label>
+                <div className="ios-app-library__grid">
+                  {filteredApps.map((icon) => renderIcon(icon, true))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {pages.length > 1 && (
+      {totalPages > 1 && (
         <div className="ios-home-screen__pager" aria-label="Home screen pages">
-          {pages.map((_, index) => (
+          {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
               type="button"
-              className={`ios-home-screen__dot ${index === page ? 'is-active' : ''}`}
-              aria-label={`Page ${index + 1}`}
+              className={`ios-home-screen__dot ${index === page ? 'is-active' : ''} ${index === appLibraryPage ? 'is-library' : ''}`}
+              aria-label={index === appLibraryPage ? 'App Library' : `Page ${index + 1}`}
               onClick={(event) => {
                 event.stopPropagation();
                 setPage(index);
