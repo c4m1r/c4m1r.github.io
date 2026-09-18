@@ -973,3 +973,29 @@
 .os-context-menu-surface[data-os-theme='macos-26'] .desktop-context-menu--submenu {
   margin-left: 3px;
 }
+
+
+.os-macos .apple-menu-surface__panel > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.os-macos .apple-menu-surface__panel > button:disabled {
+  color: rgba(60,60,67,0.36);
+  cursor: default;
+}
+
+.os-macos .apple-menu-surface__panel > button:disabled:hover {
+  background: transparent;
+  color: rgba(60,60,67,0.36);
+}
+
+.os-macos .apple-menu-surface__hint {
+  margin-left: auto;
+  color: inherit;
+  opacity: 0.62;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
