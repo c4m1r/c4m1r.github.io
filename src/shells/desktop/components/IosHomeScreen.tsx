@@ -32,8 +32,22 @@ export function IosHomeScreen({
   onIconContextMenu,
 }: IosHomeScreenProps) {
   const modernHome = theme === 'ios-16' || theme === 'ios-26';
+  const [hiddenHomeIconIds, setHiddenHomeIconIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem('ios-hidden-home-icons');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((value) => typeof value === 'string') : [];
+    } catch {
+      return [];
+    }
+  });
+  const homeDesktopIcons = useMemo(
+    () => desktopIcons.filter((icon) => !hiddenHomeIconIds.includes(icon.id)),
+    [desktopIcons, hiddenHomeIconIds]
+  );
   const pageSize = modernHome ? MODERN_PAGE_SIZE : LEGACY_PAGE_SIZE;
-  const homePages = useMemo(() => chunkIcons(desktopIcons, pageSize), [desktopIcons, pageSize]);
+  const homePages = useMemo(() => chunkIcons(homeDesktopIcons, pageSize), [homeDesktopIcons, pageSize]);
   const showAppLibrary = modernHome;
   const iconMap = getIosIconMap(theme);
   const totalPages = homePages.length + (showAppLibrary ? 1 : 0);
@@ -62,6 +76,27 @@ export function IosHomeScreen({
     window.addEventListener('ios-home-edit', enterEditMode);
     return () => window.removeEventListener('ios-home-edit', enterEditMode);
   }, []);
+
+  useEffect(() => {
+    const removeFromHome = (event: Event) => {
+      const customEvent = event as CustomEvent<{ iconId?: string }>;
+      const iconId = customEvent.detail?.iconId;
+      if (!iconId) return;
+
+      setHiddenHomeIconIds((current) => {
+        if (current.includes(iconId)) return current;
+        const next = [...current, iconId];
+        localStorage.setItem('ios-hidden-home-icons', JSON.stringify(next));
+        return next;
+      });
+      setEditMode(false);
+    };
+
+    window.addEventListener('ios-home-remove', removeFromHome);
+    return () => window.removeEventListener('ios-home-remove', removeFromHome);
+  }, []);
+
+
 
   useEffect(() => {
     if (!modernHome) return;
