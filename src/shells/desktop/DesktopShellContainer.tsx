@@ -53,6 +53,7 @@ import { AppleMenuSurface } from './components/AppleMenuSurface';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
+import { MACOS_APP_ICON_BY_ID, MACOS_SYSTEM_ICON_BY_ID } from './appleIconAssets';
 
 /**
  * Unified DesktopShellContainer component owned by src/shells/desktop.
@@ -421,7 +422,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (!app) return null;
 
     let iconSrc = '';
-    if (app.iconKey) {
+    if (themeKey === 'macos-26') {
+      iconSrc = MACOS_APP_ICON_BY_ID[appId] ?? '';
+    }
+    if (!iconSrc && app.iconKey) {
       iconSrc = themeAssets[app.iconKey as keyof typeof themeAssets] as string;
     }
     if (!iconSrc && app.iconKey === 'richTextIcon') {
@@ -445,13 +449,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const initialDesktopIcons: DesktopIcon[] = [
     {
       id: 'my-computer',
-      icon: getIconElement('computer'),
+      icon: themeKey === 'macos-26'
+        ? renderShortcutIcon(MACOS_SYSTEM_ICON_BY_ID['my-computer'])
+        : getIconElement('computer'),
       label: getOsSystemLabel('myComputer', t.myComputer, themeKey, language),
       type: 'system'
     },
     {
       id: 'recycle-bin',
-      icon: getIconElement('recycle'),
+      icon: themeKey === 'macos-26'
+        ? renderShortcutIcon(MACOS_SYSTEM_ICON_BY_ID['recycle-bin'])
+        : getIconElement('recycle'),
       label: getOsSystemLabel('recycleBin', t.recycleBin, themeKey, language),
       type: 'system'
     },
