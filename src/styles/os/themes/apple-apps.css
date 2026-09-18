@@ -2375,7 +2375,7 @@
 
 
 /* iOS Accessibility toggle used by NervaWEB WebOS Settings. */
-.os-ios .ios-settings-switch {
+:is(.os-ios, .os-macos) .ios-settings-switch {
   position: relative;
   width: 42px;
   height: 26px;
@@ -2387,7 +2387,7 @@
   transition: background 160ms ease;
 }
 
-.os-ios .ios-settings-switch > span {
+:is(.os-ios, .os-macos) .ios-settings-switch > span {
   position: absolute;
   top: 2px;
   left: 2px;
@@ -2399,11 +2399,11 @@
   transition: transform 160ms ease;
 }
 
-.os-ios .ios-settings-switch.is-on {
+:is(.os-ios, .os-macos) .ios-settings-switch.is-on {
   background: #34c759;
 }
 
-.os-ios .ios-settings-switch.is-on > span {
+:is(.os-ios, .os-macos) .ios-settings-switch.is-on > span {
   transform: translateX(16px);
 }
 
