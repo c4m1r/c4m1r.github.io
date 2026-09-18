@@ -102,7 +102,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     const saved = Number(localStorage.getItem('macos-brightness-level'));
     return Number.isFinite(saved) && saved >= 20 && saved <= 100 ? saved : 78;
   });
-  const [nightModeEnabled, setNightModeEnabled] = useState(false);
+  const [nightModeEnabled, setNightModeEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('ios-night-mode-enabled') === 'true';
+  });
   const [macNightShiftEnabled, setMacNightShiftEnabled] = useState(() => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('macos-night-shift-enabled') === 'true';
@@ -1337,10 +1340,15 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               window.dispatchEvent(new CustomEvent('ios-brightness-changed', { detail: value }));
             }
           }}
-          onNightModeChange={setNightModeEnabled}
+          onNightModeChange={(value) => {
+            setNightModeEnabled(value);
+            localStorage.setItem('ios-night-mode-enabled', String(value));
+            window.dispatchEvent(new CustomEvent('ios-night-mode-changed', { detail: value }));
+          }}
           onMacNightShiftChange={(value) => {
             setMacNightShiftEnabled(value);
             localStorage.setItem('macos-night-shift-enabled', String(value));
+            window.dispatchEvent(new CustomEvent('macos-night-shift-changed', { detail: value }));
           }}
           onFullscreenToggle={toggleFullscreen}
           onOpenSettings={() => {
