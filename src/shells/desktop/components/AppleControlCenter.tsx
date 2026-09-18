@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 
 interface AppleControlCenterProps {
@@ -102,7 +102,7 @@ export function AppleControlCenter({
             </div>
 
             <div className="apple-ios-control-center__sliders">
-              <label>
+              <label style={{ '--control-level': `${brightness}%` } as CSSProperties}>
                 <input
                   type="range"
                   min="0"
@@ -114,7 +114,7 @@ export function AppleControlCenter({
                 <span>☀</span>
                 <small>{brightness}%</small>
               </label>
-              <label>
+              <label style={{ '--control-level': `${volumeLevel}%` } as CSSProperties}>
                 <input
                   type="range"
                   min="0"
