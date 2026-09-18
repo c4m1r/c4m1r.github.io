@@ -391,7 +391,7 @@
 }
 
 .os-ios-5 .ios-home-screen {
-  inset-top: 24px;
+  top: 24px;
 }
 
 .os-ios-5 .ios-home-icon__glyph {
