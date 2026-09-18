@@ -1,0 +1,91 @@
+/* macOS Tahoe-inspired shell.
+   Donor wallpaper is reused from /eat/playground-macos-main and bundled by Vite. */
+
+.os-macos {
+  --mac-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --mac-glass: rgba(246, 246, 248, 0.58);
+  --mac-glass-strong: rgba(245, 245, 247, 0.78);
+  --mac-border: rgba(255, 255, 255, 0.42);
+  --mac-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  font-family: var(--mac-font);
+}
+
+.os-macos-26 {
+  background-image:
+    linear-gradient(rgba(14, 19, 29, 0.08), rgba(14, 19, 29, 0.12)),
+    url('../../../../eat/playground-macos-main/public/img/ui/wallpaper.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+.os-macos .taskbar {
+  left: 50% !important;
+  right: auto !important;
+  bottom: 10px !important;
+  width: auto !important;
+  max-width: calc(100% - 28px) !important;
+  min-height: 58px !important;
+  padding: 7px 10px !important;
+  transform: translateX(-50%);
+  border: 1px solid var(--mac-border) !important;
+  border-radius: 18px !important;
+  background: var(--mac-glass) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
+  backdrop-filter: saturate(180%) blur(22px) !important;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28) !important;
+}
+
+.os-macos .start-button {
+  min-width: 42px !important;
+  height: 42px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.42) !important;
+  color: #111 !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.38) !important;
+}
+
+.os-macos .start-button:hover,
+.os-macos .taskbar button:hover {
+  background-color: rgba(255, 255, 255, 0.62) !important;
+}
+
+.os-macos .desktop-icon__label,
+.os-macos .desktop-icon span,
+.os-macos [class*="desktop-icon"] span {
+  color: #fff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.78) !important;
+}
+
+.os-macos [class*="window"] {
+  border-color: rgba(255, 255, 255, 0.36);
+}
+
+.os-macos .window,
+.os-macos [class*="window-shell"] {
+  border-radius: 14px !important;
+  background: var(--mac-glass-strong);
+  -webkit-backdrop-filter: saturate(150%) blur(20px);
+  backdrop-filter: saturate(150%) blur(20px);
+  box-shadow: var(--mac-shadow);
+}
+
+.os-macos .title-bar,
+.os-macos [class*="titlebar"],
+.os-macos [class*="title-bar"] {
+  min-height: 34px;
+  border-radius: 14px 14px 0 0 !important;
+  background: rgba(245, 245, 247, 0.72) !important;
+  color: #151515 !important;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+@media (max-width: 760px) {
+  .os-macos .taskbar {
+    bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    min-height: 54px !important;
+    max-width: calc(100% - 16px) !important;
+  }
+}
