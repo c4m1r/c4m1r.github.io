@@ -22,6 +22,11 @@ interface AppleSystemBarProps {
   onOpenSettings: () => void;
   onQuitActiveApp: () => void;
   canQuitActiveApp: boolean;
+  onNewFinderWindow: () => void;
+  onCloseActiveWindow: () => void;
+  onMinimizeActiveWindow: () => void;
+  onZoomActiveWindow: () => void;
+  onOpenFinderPath: (path: string) => void;
 }
 
 function stop(event: MouseEvent) {
@@ -40,12 +45,18 @@ export function AppleSystemBar({
   onOpenSettings,
   onQuitActiveApp,
   canQuitActiveApp,
+  onNewFinderWindow,
+  onCloseActiveWindow,
+  onMinimizeActiveWindow,
+  onZoomActiveWindow,
+  onOpenFinderPath,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
   const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(isMac || isIos);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
+  const [systemMenu, setSystemMenu] = useState<'file' | 'go' | 'window' | null>(null);
 
   if (!isMac && !isIos) return null;
 
@@ -123,6 +134,7 @@ export function AppleSystemBar({
           onClick={() => {
             setAppMenuOpen(false);
             setStatusMenu(null);
+            setSystemMenu(null);
             onAppleMenuToggle();
           }}
           aria-label="Open Apple menu"
@@ -134,18 +146,131 @@ export function AppleSystemBar({
           className="apple-macos-menu-item apple-macos-app-title"
           onClick={() => {
             setStatusMenu(null);
+            setSystemMenu(null);
             setAppMenuOpen((value) => !value);
           }}
           aria-expanded={appMenuOpen}
         >
           {activeAppTitle || 'Finder'}
         </button>
-        <span className="apple-macos-menu-item">File</span>
+        <button
+          type="button"
+          className="apple-macos-menu-item"
+          aria-expanded={systemMenu === 'file'}
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu(null);
+            setSystemMenu((value) => value === 'file' ? null : 'file');
+          }}
+        >
+          File
+        </button>
         <span className="apple-macos-menu-item">Edit</span>
         <span className="apple-macos-menu-item">View</span>
-        <span className="apple-macos-menu-item">Go</span>
-        <span className="apple-macos-menu-item">Window</span>
+        <button
+          type="button"
+          className="apple-macos-menu-item"
+          aria-expanded={systemMenu === 'go'}
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu(null);
+            setSystemMenu((value) => value === 'go' ? null : 'go');
+          }}
+        >
+          Go
+        </button>
+        <button
+          type="button"
+          className="apple-macos-menu-item"
+          aria-expanded={systemMenu === 'window'}
+          onClick={() => {
+            setAppMenuOpen(false);
+            setStatusMenu(null);
+            setSystemMenu((value) => value === 'window' ? null : 'window');
+          }}
+        >
+          Window
+        </button>
         <span className="apple-macos-menu-item">Help</span>
+        {systemMenu && (
+          <div className={`apple-system-menu apple-system-menu--${systemMenu}`} role="menu">
+            {systemMenu === 'file' && (
+              <>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setSystemMenu(null);
+                    onNewFinderWindow();
+                  }}
+                >
+                  <span>New Finder Window</span>
+                  <span className="apple-app-menu__hint">⌘N</span>
+                </button>
+                <div className="apple-app-menu__separator" />
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={!canQuitActiveApp}
+                  onClick={() => {
+                    if (!canQuitActiveApp) return;
+                    setSystemMenu(null);
+                    onCloseActiveWindow();
+                  }}
+                >
+                  <span>Close Window</span>
+                  <span className="apple-app-menu__hint">⌘W</span>
+                </button>
+              </>
+            )}
+            {systemMenu === 'go' && (
+              <>
+                <button type="button" role="menuitem" onClick={() => { setSystemMenu(null); onOpenFinderPath('My Computer'); }}>
+                  Computer
+                </button>
+                <button type="button" role="menuitem" onClick={() => { setSystemMenu(null); onOpenFinderPath('C:\\Documents and Settings\\C4m1r\\Desktop'); }}>
+                  Desktop
+                </button>
+                <button type="button" role="menuitem" onClick={() => { setSystemMenu(null); onOpenFinderPath('C:\\Documents and Settings\\C4m1r\\My Documents'); }}>
+                  Documents
+                </button>
+                <button type="button" role="menuitem" onClick={() => { setSystemMenu(null); onOpenFinderPath('C:\\Program Files'); }}>
+                  Applications
+                </button>
+              </>
+            )}
+            {systemMenu === 'window' && (
+              <>
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={!canQuitActiveApp}
+                  onClick={() => {
+                    if (!canQuitActiveApp) return;
+                    setSystemMenu(null);
+                    onMinimizeActiveWindow();
+                  }}
+                >
+                  <span>Minimize</span>
+                  <span className="apple-app-menu__hint">⌘M</span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={!canQuitActiveApp}
+                  onClick={() => {
+                    if (!canQuitActiveApp) return;
+                    setSystemMenu(null);
+                    onZoomActiveWindow();
+                  }}
+                >
+                  Zoom
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
         {appMenuOpen && (
           <div className="apple-app-menu" role="menu">
             <button type="button" role="menuitem" disabled>
@@ -272,6 +397,7 @@ export function AppleSystemBar({
           onClick={() => {
             setAppMenuOpen(false);
             setStatusMenu(null);
+            setSystemMenu(null);
             onSpotlightToggle();
           }}
           aria-label="Open Spotlight Search"
@@ -288,6 +414,7 @@ export function AppleSystemBar({
           onClick={() => {
             setAppMenuOpen(false);
             setStatusMenu(null);
+            setSystemMenu(null);
             onControlCenterToggle();
           }}
           aria-label="Open Control Center"
@@ -304,6 +431,7 @@ export function AppleSystemBar({
           onClick={() => {
             setAppMenuOpen(false);
             setStatusMenu(null);
+            setSystemMenu(null);
             onNotificationCenterToggle();
           }}
           aria-label="Open Notification Center"
