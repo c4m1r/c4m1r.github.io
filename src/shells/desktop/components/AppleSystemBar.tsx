@@ -4,6 +4,7 @@ import iosBatteryIcon from '../../../../eat/homescreen-main/public/icons/battery
 import macWifiIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/wifi.svg';
 import macBatteryIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/battery.100.svg';
 import macControlCenterIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/control-center.svg';
+import macSearchIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/search.svg';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type Language } from '../../../i18n/translations';
 import { useDeviceBattery } from '../hooks/useDeviceBattery';
@@ -17,6 +18,7 @@ interface AppleSystemBarProps {
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
+  onSpotlightToggle: () => void;
 }
 
 function stop(event: MouseEvent) {
@@ -31,6 +33,7 @@ export function AppleSystemBar({
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
+  onSpotlightToggle,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -130,6 +133,18 @@ export function AppleSystemBar({
         <span className="apple-macos-menu-item apple-macos-status">
           <img className="apple-macos-status-icon apple-macos-wifi-icon" src={macWifiIcon} alt="Wi-Fi" />
         </span>
+        <button
+          type="button"
+          className="apple-macos-menu-item apple-macos-spotlight"
+          onClick={onSpotlightToggle}
+          aria-label="Open Spotlight Search"
+        >
+          <img
+            className="apple-macos-status-icon apple-macos-spotlight-icon"
+            src={macSearchIcon}
+            alt=""
+          />
+        </button>
         <button
           type="button"
           className="apple-macos-menu-item apple-macos-control-center"
