@@ -1232,9 +1232,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         />
       )}
 
-      {themeKey === 'macos-26' && (
+      {(themeKey === 'macos-26' || (themeKey.startsWith('ios-') && themeKey !== 'ios-5')) && (
         <AppleLockScreen
           open={showAppleLockScreen}
+          theme={themeKey}
           time={time}
           language={language}
           onUnlock={() => setShowAppleLockScreen(false)}
@@ -1262,6 +1263,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             closeStartMenu();
           }}
           onToggleFullscreen={toggleFullscreen}
+          onLock={() => {
+            setShowAppleLockScreen(true);
+            setShowSystemActionMenu(false);
+            setShowNotificationPanel(false);
+            closeStartMenu();
+          }}
         />
       )}
 
