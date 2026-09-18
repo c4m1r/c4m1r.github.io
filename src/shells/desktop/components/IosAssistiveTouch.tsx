@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Bell, Home, Maximize2, Settings, SlidersHorizontal } from 'lucide-react';
+import { Bell, Home, Lock, Maximize2, Settings, SlidersHorizontal } from 'lucide-react';
 
 interface IosAssistiveTouchProps {
   enabled: boolean;
@@ -88,7 +88,7 @@ export function IosAssistiveTouch({
     { label: 'Notifications', icon: Bell, action: onOpenNotifications },
     { label: 'Settings', icon: Settings, action: onOpenSettings },
     { label: 'Fullscreen', icon: Maximize2, action: onToggleFullscreen },
-    { label: 'Lock Screen', icon: Home, action: onLock },
+    { label: 'Lock Screen', icon: Lock, action: onLock },
   ];
 
   return (
