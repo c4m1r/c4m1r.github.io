@@ -10,13 +10,11 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   const { theme } = useApp();
   const [fadeIn, setFadeIn] = useState(false);
+  const appleTheme = isAppleTheme(theme);
   const osClassName = getOsClassName(theme);
 
-  if (isAppleTheme(theme)) {
-    return <AppleWelcomeScreen theme={theme} onComplete={onComplete} />;
-  }
-
   useEffect(() => {
+    if (appleTheme) return;
     setFadeIn(true);
     // Auto-complete after 3 seconds
     const timer = setTimeout(() => {
@@ -24,7 +22,11 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, [appleTheme, onComplete]);
+
+  if (appleTheme) {
+    return <AppleWelcomeScreen theme={theme} onComplete={onComplete} />;
+  }
 
   return (
     <div 
