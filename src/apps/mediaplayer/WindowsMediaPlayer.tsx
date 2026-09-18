@@ -126,6 +126,58 @@ export function WindowsMediaPlayer() {
     void playCurrent();
   };
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('webos-now-playing', {
+      detail: {
+        source: 'windows-media-player',
+        active: true,
+        title: currentTrack.title,
+        artist: currentTrack.artist,
+        playing: isPlaying,
+      },
+    }));
+  }, [currentTrack.artist, currentTrack.title, isPlaying]);
+
+  useEffect(() => {
+    const handleMediaCommand = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        source?: string;
+        command?: 'play-pause' | 'previous' | 'next';
+      }>;
+      if (customEvent.detail?.source && customEvent.detail.source !== 'windows-media-player') return;
+
+      if (customEvent.detail?.command === 'previous') {
+        handlePrevious();
+        return;
+      }
+      if (customEvent.detail?.command === 'next') {
+        handleNext();
+        return;
+      }
+      if (customEvent.detail?.command === 'play-pause') {
+        const audio = audioRef.current;
+        if (!audio) return;
+        if (isPlaying) {
+          audio.pause();
+          setIsPlaying(false);
+        } else {
+          void playCurrent();
+        }
+      }
+    };
+
+    window.addEventListener('webos-media-command', handleMediaCommand);
+    return () => window.removeEventListener('webos-media-command', handleMediaCommand);
+  }, [handleNext, handlePrevious, isPlaying, playCurrent]);
+
+  useEffect(() => {
+    return () => {
+      window.dispatchEvent(new CustomEvent('webos-now-playing', {
+        detail: { source: 'windows-media-player', active: false },
+      }));
+    };
+  }, []);
+
   const handleSeek = (value: number) => {
     const audio = audioRef.current;
     if (!audio || !duration) return;
