@@ -46,6 +46,7 @@ import {
   getOsSystemLabel,
 } from '../os/osSkins';
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
+import { AppleSystemBar } from './components/AppleSystemBar';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
 
@@ -878,6 +879,13 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         });
       }}
     >
+      <AppleSystemBar
+        theme={themeKey}
+        language={language}
+        time={time}
+        onLauncherToggle={openStartMenu}
+      />
+
       {theme === 'ubuntu' && (
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
           <AsciiAurora variant="ubuntu" opacity={0.18} columns={110} rows={36} frameInterval={110} speed={0.52} />
