@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { type Language } from '../../../i18n/translations';
+import macWallpaper from '../../../../eat/playground-macos-main/public/img/ui/wallpaper.jpg';
 
 interface AppleLockScreenProps {
   open: boolean;
@@ -19,7 +20,13 @@ export function AppleLockScreen({ open, time, language, onUnlock }: AppleLockScr
   if (!open) return null;
 
   return (
-    <div className="apple-lock-screen" role="dialog" aria-label="Lock Screen" onClick={onUnlock}>
+    <div
+      className="apple-lock-screen"
+      role="dialog"
+      aria-label="Lock Screen"
+      onClick={onUnlock}
+      style={{ backgroundImage: `linear-gradient(rgba(10,14,22,0.08), rgba(10,14,22,0.24)), url(${macWallpaper})` }}
+    >
       <div className="apple-lock-screen__shade" />
       <div className="apple-lock-screen__time">
         <span>
