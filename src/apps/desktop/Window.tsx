@@ -192,6 +192,7 @@ export function Window({
   };
 
   const windowSkin = getWindowChromeSkin(theme);
+  const isModernIosWindow = theme.startsWith('ios-') && theme !== 'ios-5';
   const isXpFamily = theme !== 'win-98';
 
   if (minimized) {
@@ -262,6 +263,17 @@ export function Window({
 
           <div className="xp-window__content xp-window__content--plain os-window-body">
             <div className="xp-window__surface">{children}</div>
+            {isModernIosWindow && (
+              <button
+                type="button"
+                className="ios-window-home-indicator"
+                aria-label="Return to Home Screen"
+                onMouseDown={(event) => event.stopPropagation()}
+                onClick={onClose}
+              >
+                <span />
+              </button>
+            )}
           </div>
         </div>
 
