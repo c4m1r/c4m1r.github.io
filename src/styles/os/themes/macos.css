@@ -1850,3 +1850,9 @@
   border-color: #007aff;
   color: #fff;
 }
+
+
+.os-macos .apple-macos-wifi-icon.is-off {
+  opacity: 0.34;
+  filter: grayscale(1);
+}
