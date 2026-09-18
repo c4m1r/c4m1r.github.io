@@ -5,6 +5,8 @@ interface AppleMenuSurfaceProps {
   onOpenSettings: () => void;
   onLogOut: () => void;
   onShutdown: () => void;
+  onForceQuit?: () => void;
+  canForceQuit?: boolean;
 }
 
 export function AppleMenuSurface({
@@ -14,6 +16,8 @@ export function AppleMenuSurface({
   onOpenSettings,
   onLogOut,
   onShutdown,
+  onForceQuit,
+  canForceQuit = false,
 }: AppleMenuSurfaceProps) {
   if (!open) return null;
 
@@ -43,6 +47,20 @@ export function AppleMenuSurface({
         <div className="apple-menu-surface__separator" />
         <button type="button" role="menuitem" onClick={() => run(onOpenSettings)}>
           System Settings…
+        </button>
+        <div className="apple-menu-surface__separator" />
+        <button type="button" role="menuitem" disabled>
+          <span>Recent Items</span>
+          <span className="apple-menu-surface__hint">›</span>
+        </button>
+        <button
+          type="button"
+          role="menuitem"
+          disabled={!canForceQuit || !onForceQuit}
+          onClick={() => onForceQuit && run(onForceQuit)}
+        >
+          <span>Force Quit…</span>
+          <span className="apple-menu-surface__hint">⌥⌘⎋</span>
         </button>
         <div className="apple-menu-surface__separator" />
         <button type="button" role="menuitem" onClick={() => run(onLogOut)}>
