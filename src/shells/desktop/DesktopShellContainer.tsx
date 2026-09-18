@@ -1029,6 +1029,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           : '0',
         '--ios-night-shift': themeKey.startsWith('ios-') && nightModeEnabled ? '0.14' : '0',
         '--mac-desktop-icon-scale': themeKey === 'macos-26' ? String(macDesktopIconScale) : '1',
+        '--mac-screen-dim': themeKey === 'macos-26'
+          ? String(Math.max(0, Math.min(0.48, ((100 - brightnessLevel) / 100) * 0.48)))
+          : '0',
       } as CSSProperties}
       onMouseDown={handleDesktopMouseDown}
       onClick={(event) => {
