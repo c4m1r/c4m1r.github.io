@@ -296,62 +296,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
 
   useEffect(() => {
-    if (themeKey !== 'macos-26') return;
-
-    const handleMacWindowShortcut = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const isTypingTarget =
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement ||
-        Boolean(target?.isContentEditable);
-
-      if (isTypingTarget) return;
-      if (!event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
-
-      const key = event.key.toLowerCase();
-
-      if (key === 'q' && focusedWindow) {
-        event.preventDefault();
-        handleCloseWindow(focusedWindow.id);
-        return;
-      }
-
-      if (key === 'w' && focusedWindow) {
-        event.preventDefault();
-        handleCloseWindow(focusedWindow.id);
-        return;
-      }
-
-      if (key === 'm' && focusedWindow) {
-        event.preventDefault();
-        handleMinimizeWindow(focusedWindow.id);
-        return;
-      }
-
-      if (key === ',' ) {
-        event.preventDefault();
-        launchApp('control-panel');
-        return;
-      }
-
-      if (key === 'n' && (!focusedWindow || focusedWindow.id.startsWith('explorer:'))) {
-        event.preventDefault();
-        openExplorerWindow('My Computer');
-      }
-    };
-
-    window.addEventListener('keydown', handleMacWindowShortcut);
-    return () => window.removeEventListener('keydown', handleMacWindowShortcut);
-  }, [
-    focusedWindow,
-    handleCloseWindow,
-    handleMinimizeWindow,
-    launchApp,
-    openExplorerWindow,
-    themeKey,
-  ]);
-
-  useEffect(() => {
     if (!startupSound) {
       return;
     }
@@ -804,6 +748,62 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     openExplorerWindow,
     openGamesFolder,
     openDoomVariant,
+  ]);
+
+  useEffect(() => {
+    if (themeKey !== 'macos-26') return;
+
+    const handleMacWindowShortcut = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        Boolean(target?.isContentEditable);
+
+      if (isTypingTarget) return;
+      if (!event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
+
+      const key = event.key.toLowerCase();
+
+      if (key === 'q' && focusedWindow) {
+        event.preventDefault();
+        handleCloseWindow(focusedWindow.id);
+        return;
+      }
+
+      if (key === 'w' && focusedWindow) {
+        event.preventDefault();
+        handleCloseWindow(focusedWindow.id);
+        return;
+      }
+
+      if (key === 'm' && focusedWindow) {
+        event.preventDefault();
+        handleMinimizeWindow(focusedWindow.id);
+        return;
+      }
+
+      if (key === ',' ) {
+        event.preventDefault();
+        launchApp('control-panel');
+        return;
+      }
+
+      if (key === 'n' && (!focusedWindow || focusedWindow.id.startsWith('explorer:'))) {
+        event.preventDefault();
+        openExplorerWindow('My Computer');
+      }
+    };
+
+    window.addEventListener('keydown', handleMacWindowShortcut);
+    return () => window.removeEventListener('keydown', handleMacWindowShortcut);
+  }, [
+    focusedWindow,
+    handleCloseWindow,
+    handleMinimizeWindow,
+    launchApp,
+    openExplorerWindow,
+    themeKey,
   ]);
 
   const handleRunCommand = useCallback((command: string) => {
