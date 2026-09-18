@@ -1647,3 +1647,202 @@
   text-align: center;
   font-size: 12px;
 }
+
+
+/* iOS Notification Center using the shared Apple notification surface. */
+.os-ios .apple-notification-center {
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  pointer-events: none;
+}
+
+.os-ios .apple-notification-center__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(8,8,10,0.34);
+  -webkit-backdrop-filter: blur(34px) saturate(150%);
+  backdrop-filter: blur(34px) saturate(150%);
+  pointer-events: auto;
+}
+
+.os-ios .apple-notification-center__column {
+  position: absolute;
+  inset: 48px 10px 12px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #fff;
+  pointer-events: auto;
+  animation: ios-notification-center-open 220ms cubic-bezier(0.2,0.9,0.25,1);
+}
+
+.os-ios .apple-notification-center__header-card,
+.os-ios .apple-notification-center__notifications,
+.os-ios .apple-notification-center__calendar {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 22px;
+  background: rgba(28,28,30,0.72);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  backdrop-filter: blur(26px) saturate(180%);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,0.06),
+    0 12px 32px rgba(0,0,0,0.20);
+}
+
+.os-ios .apple-notification-center__header-card {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.os-ios .apple-notification-center__header-card > div {
+  min-width: 0;
+}
+
+.os-ios .apple-notification-center__header-card strong,
+.os-ios .apple-notification-center__header-card small {
+  display: block;
+}
+
+.os-ios .apple-notification-center__header-card strong {
+  font-size: 15px;
+  text-transform: capitalize;
+}
+
+.os-ios .apple-notification-center__header-card small {
+  margin-top: 3px;
+  color: rgba(255,255,255,0.48);
+  font-size: 11px;
+}
+
+.os-ios .apple-notification-center__header-card button {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+  font: 600 11px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.os-ios .apple-notification-center__header-card button.is-active {
+  background: #bf5af2;
+}
+
+.os-ios .apple-notification-center__notifications > header,
+.os-ios .apple-notification-center__calendar > header {
+  min-height: 42px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.os-ios .apple-notification-center__notifications > header strong,
+.os-ios .apple-notification-center__calendar > header strong {
+  font-size: 13px;
+}
+
+.os-ios .apple-notification-center__notifications > header span {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.09);
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,0.56);
+  font-size: 9px;
+}
+
+.os-ios .apple-notification-center__empty {
+  min-height: 132px;
+  padding: 18px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.38);
+  text-align: center;
+}
+
+.os-ios .apple-notification-center__empty > span {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+
+.os-ios .apple-notification-center__empty strong {
+  color: rgba(255,255,255,0.62);
+  font-size: 12px;
+}
+
+.os-ios .apple-notification-center__empty small {
+  margin-top: 4px;
+  font-size: 10px;
+}
+
+.os-ios .apple-notification-center__calendar {
+  padding-bottom: 12px;
+}
+
+.os-ios .apple-notification-center__weekdays,
+.os-ios .apple-notification-center__days {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  padding: 0 12px;
+}
+
+.os-ios .apple-notification-center__weekdays {
+  color: rgba(255,255,255,0.34);
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.os-ios .apple-notification-center__weekdays span,
+.os-ios .apple-notification-center__days span {
+  height: 32px;
+  display: grid;
+  place-items: center;
+}
+
+.os-ios .apple-notification-center__days {
+  color: rgba(255,255,255,0.82);
+  font-size: 10px;
+}
+
+.os-ios .apple-notification-center__days span.is-today {
+  width: 26px;
+  height: 26px;
+  margin: auto;
+  border-radius: 50%;
+  background: #ff453a;
+  color: #fff;
+  font-weight: 700;
+}
+
+@keyframes ios-notification-center-open {
+  from {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
