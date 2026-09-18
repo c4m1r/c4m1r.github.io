@@ -2184,10 +2184,7 @@
   height: 5px;
   margin-bottom: 4px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.88);
+  background: rgba(255,255,255,0.92);
   box-shadow: 0 1px 4px rgba(0,0,0,0.22);
-}
-
-.os-ios .window-skin-ios[data-window-tone='light'] .ios-window-home-indicator > span {
-  background: rgba(0,0,0,0.78);
+  mix-blend-mode: difference;
 }
