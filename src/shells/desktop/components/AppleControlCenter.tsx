@@ -59,7 +59,50 @@ export function AppleControlCenter({
     return localStorage.getItem('ios-cellular-enabled') !== 'false';
   });
   const [silentMode, setSilentMode] = useState(false);
+  const [nowPlaying, setNowPlaying] = useState<{
+    source: string;
+    title: string;
+    artist: string;
+    playing: boolean;
+  } | null>(null);
   const previousVolumeRef = useRef(volumeLevel || 50);
+  useEffect(() => {
+    const handleNowPlaying = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        source?: string;
+        active?: boolean;
+        title?: string;
+        artist?: string;
+        playing?: boolean;
+      }>;
+      const detail = customEvent.detail;
+      if (!detail?.source) return;
+
+      if (detail.active === false) {
+        setNowPlaying((current) => current?.source === detail.source ? null : current);
+        return;
+      }
+
+      if (!detail.title || !detail.artist || typeof detail.playing !== 'boolean') return;
+      setNowPlaying({
+        source: detail.source,
+        title: detail.title,
+        artist: detail.artist,
+        playing: detail.playing,
+      });
+    };
+
+    window.addEventListener('webos-now-playing', handleNowPlaying);
+    return () => window.removeEventListener('webos-now-playing', handleNowPlaying);
+  }, []);
+
+  const sendMediaCommand = (command: 'play-pause' | 'previous' | 'next') => {
+    if (!nowPlaying) return;
+    window.dispatchEvent(new CustomEvent('webos-media-command', {
+      detail: { source: nowPlaying.source, command },
+    }));
+  };
+
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
       const customEvent = event as CustomEvent<{ wifi?: boolean; bluetooth?: boolean }>;
@@ -173,10 +216,35 @@ export function AppleControlCenter({
           <div className="apple-ios-control-center__now-playing">
             <div className="apple-ios-control-center__art">♪</div>
             <div className="apple-ios-control-center__track">
-              <strong>Not Playing</strong>
-              <small>Media controls</small>
+              <strong>{nowPlaying?.title ?? 'Not Playing'}</strong>
+              <small>{nowPlaying?.artist ?? 'Media controls'}</small>
             </div>
-            <div className="apple-ios-control-center__transport" aria-hidden="true">◀︎  ▶︎</div>
+            <div className="apple-ios-control-center__transport">
+              <button
+                type="button"
+                aria-label="Previous track"
+                disabled={!nowPlaying}
+                onClick={() => sendMediaCommand('previous')}
+              >
+                ◀︎
+              </button>
+              <button
+                type="button"
+                aria-label={nowPlaying?.playing ? 'Pause' : 'Play'}
+                disabled={!nowPlaying}
+                onClick={() => sendMediaCommand('play-pause')}
+              >
+                {nowPlaying?.playing ? 'Ⅱ' : '▶'}
+              </button>
+              <button
+                type="button"
+                aria-label="Next track"
+                disabled={!nowPlaying}
+                onClick={() => sendMediaCommand('next')}
+              >
+                ▶︎
+              </button>
+            </div>
           </div>
 
           <div className="apple-ios-control-center__middle">
@@ -324,6 +392,21 @@ export function AppleControlCenter({
             aria-label="Volume"
             onChange={(event) => onVolumeLevelChange(Number(event.target.value))}
           />
+        </div>
+
+        <div className="apple-control-center__now-playing">
+          <div className="apple-control-center__now-playing-copy">
+            <span>Now Playing</span>
+            <strong>{nowPlaying?.title ?? 'Not Playing'}</strong>
+            <small>{nowPlaying?.artist ?? 'Open Music or Winamp to start playback'}</small>
+          </div>
+          <div className="apple-control-center__now-playing-controls">
+            <button type="button" disabled={!nowPlaying} onClick={() => sendMediaCommand('previous')} aria-label="Previous track">◀︎</button>
+            <button type="button" disabled={!nowPlaying} onClick={() => sendMediaCommand('play-pause')} aria-label={nowPlaying?.playing ? 'Pause' : 'Play'}>
+              {nowPlaying?.playing ? 'Ⅱ' : '▶'}
+            </button>
+            <button type="button" disabled={!nowPlaying} onClick={() => sendMediaCommand('next')} aria-label="Next track">▶︎</button>
+          </div>
         </div>
 
         <div className="apple-control-center__actions">
