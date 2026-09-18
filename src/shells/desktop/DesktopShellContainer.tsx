@@ -1019,6 +1019,19 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         onQuitActiveApp={() => {
           if (focusedWindow) handleCloseWindow(focusedWindow.id);
         }}
+        onNewFinderWindow={() => openExplorerWindow('My Computer')}
+        onCloseActiveWindow={() => {
+          if (focusedWindow) handleCloseWindow(focusedWindow.id);
+        }}
+        onMinimizeActiveWindow={() => {
+          if (focusedWindow) handleMinimizeWindow(focusedWindow.id);
+        }}
+        onZoomActiveWindow={() => {
+          if (!focusedWindow) return;
+          if (focusedWindow.maximized) handleRestoreWindow(focusedWindow.id);
+          else handleMaximizeWindow(focusedWindow.id);
+        }}
+        onOpenFinderPath={(path) => openExplorerWindow(path)}
       />
 
       {themeKey === 'macos-26' && (
