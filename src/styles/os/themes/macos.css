@@ -1988,3 +1988,25 @@
   color: rgba(255,255,255,0.48);
   font-size: 9px;
 }
+
+
+/* Night Shift warm tint driven independently from iOS Night Mode. */
+.os-macos::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(255, 132, 46, var(--mac-night-shift, 0));
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: background 160ms ease-out;
+}
+
+.os-macos .apple-control-center__night-shift.is-active {
+  background: rgba(255,149,0,0.14);
+}
+
+.os-macos .apple-control-center__night-shift.is-active .apple-control-center__focus-icon {
+  background: #ff9500;
+  color: #fff;
+}
