@@ -156,3 +156,69 @@
     font-size: 20px;
   }
 }
+
+
+/* macOS Launchpad uses the desktop as a blurred full-screen canvas rather than a dialog card. */
+.os-macos .apple-launchpad .apple-launcher__scrim {
+  background: rgba(10, 14, 22, 0.34);
+  -webkit-backdrop-filter: saturate(135%) blur(26px);
+  backdrop-filter: saturate(135%) blur(26px);
+}
+
+.os-macos .apple-launchpad .apple-launcher__content {
+  width: min(1040px, calc(100vw - 48px));
+  max-height: calc(100vh - 78px);
+  padding: 34px 34px 42px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.os-macos .apple-launchpad .apple-launcher__search {
+  height: 34px;
+  width: min(300px, 100%);
+  margin-bottom: 34px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(30,34,42,0.36);
+  box-shadow: inset 0 1px rgba(255,255,255,0.08);
+}
+
+.os-macos .apple-launchpad .apple-launcher__grid {
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 30px 24px;
+}
+
+.os-macos .apple-launchpad .apple-launcher__icon:has(img) {
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.os-macos .apple-launchpad .apple-launcher__icon > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,0.24));
+  user-select: none;
+}
+
+.os-macos .apple-launchpad .apple-launcher__app:hover .apple-launcher__icon > img {
+  filter: brightness(1.04) drop-shadow(0 13px 20px rgba(0,0,0,0.28));
+}
+
+@media (max-width: 600px) {
+  .os-macos .apple-launchpad .apple-launcher__content {
+    width: 100%;
+    max-height: calc(100vh - 34px);
+    padding: 28px 18px 38px;
+  }
+
+  .os-macos .apple-launchpad .apple-launcher__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px 12px;
+  }
+}
