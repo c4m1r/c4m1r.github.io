@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import {
   MACOS_DOCK_ITEMS,
@@ -27,13 +27,10 @@ export function AppleDock({
   const dockRef = useRef<HTMLDivElement | null>(null);
   const [pointerX, setPointerX] = useState<number | null>(null);
 
-  if (!isMac && !isIos) return null;
-
   const items: readonly AppleDockAsset[] = isMac ? MACOS_DOCK_ITEMS : getIosDockItems(theme);
+  const magnification = new Map<string, number>();
 
-  const magnification = useMemo(() => {
-    if (!isMac || pointerX === null || !dockRef.current) return new Map<string, number>();
-    const map = new Map<string, number>();
+  if (isMac && pointerX !== null && dockRef.current) {
     const buttons = Array.from(dockRef.current.querySelectorAll<HTMLButtonElement>('.apple-dock__item'));
     buttons.forEach((button, index) => {
       const rect = button.getBoundingClientRect();
@@ -42,10 +39,11 @@ export function AppleDock({
       const radius = 92;
       const t = Math.max(0, 1 - distance / radius);
       const eased = t * t * (3 - 2 * t);
-      map.set(items[index]?.id ?? String(index), 1 + eased * 0.48);
+      magnification.set(items[index]?.id ?? String(index), 1 + eased * 0.48);
     });
-    return map;
-  }, [isMac, items, pointerX]);
+  }
+
+  if (!isMac && !isIos) return null;
 
   return (
     <div
@@ -70,7 +68,7 @@ export function AppleDock({
             key={item.id}
             type="button"
             className={`apple-dock__item ${active ? 'is-active' : ''}`}
-            style={isMac ? { '--dock-scale': magnification.get(item.id) ?? 1 } as React.CSSProperties : undefined}
+            style={isMac ? { '--dock-scale': magnification.get(item.id) ?? 1 } as CSSProperties : undefined}
             title={item.title}
             aria-label={item.title}
             onClick={(event) => {
