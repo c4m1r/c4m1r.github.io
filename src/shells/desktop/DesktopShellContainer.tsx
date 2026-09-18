@@ -918,8 +918,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         />
       )}
 
-      {themeKey === 'macos-26' && (
+      {(themeKey === 'macos-26' || (themeKey.startsWith('ios-') && themeKey !== 'ios-5')) && (
         <AppleControlCenter
+          theme={themeKey}
           open={showSystemActionMenu}
           volumeLevel={volumeLevel}
           isFullscreen={isFullscreen}
@@ -933,6 +934,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           onOpenAbout={() => {
             setShowSystemActionMenu(false);
             launchApp('about');
+          }}
+          onLaunchApp={(appId) => {
+            setShowSystemActionMenu(false);
+            launchApp(appId);
           }}
         />
       )}
