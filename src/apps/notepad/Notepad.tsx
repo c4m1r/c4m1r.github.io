@@ -32,7 +32,10 @@ export function Notepad({ initialContent = '', onClose }: NotepadProps) {
   const [showEditMenu, setShowEditMenu] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isXpFamily = theme === 'win-xp' || theme === 'webos';
-  const editorFont = theme === 'win7'
+  const isAppleEditor = theme === 'macos-26' || theme.startsWith('ios-');
+  const editorFont = isAppleEditor
+    ? '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif'
+    : theme === 'win7'
     ? 'Consolas, "Lucida Console", monospace'
     : isXpFamily
       ? '"Lucida Console", monospace'
