@@ -13,7 +13,12 @@ export interface WindowChromeSkinInfo {
 export function getWindowChromeSkin(themeId: ThemeId): WindowChromeSkinInfo {
   const skinRules = getOsSkinRules(themeId);
   const osClass = skinRules.osClassName || 'os-winxp';
-  const skinName = osClass.startsWith('os-') ? osClass.slice(3) : osClass;
+  const skinName =
+    themeId === 'macos-26'
+      ? 'macos'
+      : themeId.startsWith('ios-')
+        ? 'ios'
+        : (osClass.split(/\s+/).find((token) => token.startsWith('os-')) ?? 'os-winxp').slice(3);
 
   return {
     skinName,
