@@ -57,7 +57,7 @@ export function AppleSystemBar({
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
   const [systemMenu, setSystemMenu] = useState<'file' | 'go' | 'window' | null>(null);
-  const iosSwipeStartY = useRef<number | null>(null);
+  const iosSwipeStart = useRef<{ x: number; y: number } | null>(null);
 
   if (!isMac && !isIos) return null;
 
@@ -73,15 +73,18 @@ export function AppleSystemBar({
         aria-label="iOS status bar"
         onTouchStart={(event) => {
           if (theme === 'ios-5') return;
-          iosSwipeStartY.current = event.touches[0]?.clientY ?? null;
+          const touch = event.touches[0];
+          iosSwipeStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
         }}
         onTouchEnd={(event) => {
           if (theme === 'ios-5') return;
-          const startY = iosSwipeStartY.current;
-          iosSwipeStartY.current = null;
-          const endY = event.changedTouches[0]?.clientY;
-          if (startY === null || endY === undefined) return;
-          if (endY - startY >= 34) onControlCenterToggle();
+          const start = iosSwipeStart.current;
+          iosSwipeStart.current = null;
+          const touch = event.changedTouches[0];
+          if (!start || !touch) return;
+          if (touch.clientY - start.y < 34) return;
+          if (start.x < window.innerWidth / 2) onNotificationCenterToggle();
+          else onControlCenterToggle();
         }}
       >
         <span className="apple-ios-time">{timeLabel}</span>
