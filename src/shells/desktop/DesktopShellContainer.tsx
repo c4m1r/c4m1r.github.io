@@ -102,7 +102,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const menuHoverCooldownRef = useRef<number>(0);
 
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
-  const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
 
   useEffect(() => {
     if (theme !== 'macos-26') {
@@ -291,6 +290,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     playMinimizeSound,
     playRestoreSound,
   });
+  const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
   const handleMenuHoverSound = useCallback(() => {
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
     if (now - menuHoverCooldownRef.current < 110) {
