@@ -50,6 +50,10 @@ export function AppleControlCenter({
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-bluetooth-enabled') !== 'false';
   });
+  const [macFocus, setMacFocus] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-focus-enabled') === 'true';
+  });
   const [airplane, setAirplane] = useState(() => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('ios-airplane-enabled') === 'true';
@@ -101,6 +105,22 @@ export function AppleControlCenter({
     window.dispatchEvent(new CustomEvent('webos-media-command', {
       detail: { source: nowPlaying.source, command },
     }));
+  };
+
+  useEffect(() => {
+    const handleMacFocusChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') setMacFocus(customEvent.detail);
+    };
+
+    window.addEventListener('macos-focus-changed', handleMacFocusChange);
+    return () => window.removeEventListener('macos-focus-changed', handleMacFocusChange);
+  }, []);
+
+  const setMacFocusMode = (value: boolean) => {
+    setMacFocus(value);
+    localStorage.setItem('macos-focus-enabled', String(value));
+    window.dispatchEvent(new CustomEvent('macos-focus-changed', { detail: value }));
   };
 
   useEffect(() => {
@@ -363,6 +383,19 @@ export function AppleControlCenter({
             </span>
           </button>
         </div>
+
+        <button
+          type="button"
+          className={`apple-control-center__focus-card ${macFocus ? 'is-active' : ''}`}
+          aria-pressed={macFocus}
+          onClick={() => setMacFocusMode(!macFocus)}
+        >
+          <span className="apple-control-center__focus-icon">☾</span>
+          <span>
+            <strong>Do Not Disturb</strong>
+            <small>{macFocus ? 'On' : 'Off'}</small>
+          </span>
+        </button>
 
         <div className="apple-control-center__slider-card">
           <div className="apple-control-center__slider-label">
