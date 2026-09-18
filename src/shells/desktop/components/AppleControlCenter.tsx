@@ -42,24 +42,42 @@ export function AppleControlCenter({
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-bluetooth-enabled') !== 'false';
   });
-  const [airplane, setAirplane] = useState(false);
-  const [cellular, setCellular] = useState(true);
+  const [airplane, setAirplane] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('ios-airplane-enabled') === 'true';
+  });
+  const [cellular, setCellular] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('ios-cellular-enabled') !== 'false';
+  });
   const [silentMode, setSilentMode] = useState(false);
   const previousVolumeRef = useRef(volumeLevel || 50);
   useEffect(() => {
     const handleConnectivityChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{ wifi?: boolean; bluetooth?: boolean }>;
+      const customEvent = event as CustomEvent<{
+        wifi?: boolean;
+        bluetooth?: boolean;
+        cellular?: boolean;
+        airplane?: boolean;
+      }>;
       if (typeof customEvent.detail?.wifi === 'boolean') setWifi(customEvent.detail.wifi);
       if (typeof customEvent.detail?.bluetooth === 'boolean') setBluetooth(customEvent.detail.bluetooth);
+      if (typeof customEvent.detail?.cellular === 'boolean') setCellular(customEvent.detail.cellular);
+      if (typeof customEvent.detail?.airplane === 'boolean') setAirplane(customEvent.detail.airplane);
     };
 
     window.addEventListener('ios-connectivity-changed', handleConnectivityChange);
     return () => window.removeEventListener('ios-connectivity-changed', handleConnectivityChange);
   }, []);
 
-  const setConnectivity = (key: 'wifi' | 'bluetooth', value: boolean) => {
+  const setConnectivity = (
+    key: 'wifi' | 'bluetooth' | 'cellular' | 'airplane',
+    value: boolean
+  ) => {
     if (key === 'wifi') setWifi(value);
-    else setBluetooth(value);
+    else if (key === 'bluetooth') setBluetooth(value);
+    else if (key === 'cellular') setCellular(value);
+    else setAirplane(value);
 
     localStorage.setItem(`ios-${key}-enabled`, String(value));
     window.dispatchEvent(new CustomEvent('ios-connectivity-changed', {
@@ -92,8 +110,21 @@ export function AppleControlCenter({
           <div className="apple-ios-control-center__connectivity">
             {[
               { key: 'wifi', label: 'Wi-Fi', active: wifi, toggle: () => setConnectivity('wifi', !wifi), glyph: '⌁' },
-              { key: 'airplane', label: 'Airplane', active: airplane, toggle: () => setAirplane((value) => !value), glyph: '✈' },
-              { key: 'cellular', label: 'Cellular', active: cellular, toggle: () => setCellular((value) => !value), glyph: '◒' },
+              {
+                key: 'airplane',
+                label: 'Airplane',
+                active: airplane,
+                toggle: () => {
+                  const next = !airplane;
+                  setConnectivity('airplane', next);
+                  if (next) {
+                    setConnectivity('wifi', false);
+                    setConnectivity('cellular', false);
+                  }
+                },
+                glyph: '✈',
+              },
+              { key: 'cellular', label: 'Cellular', active: cellular, toggle: () => setConnectivity('cellular', !cellular), glyph: '◒' },
               { key: 'bluetooth', label: 'Bluetooth', active: bluetooth, toggle: () => setConnectivity('bluetooth', !bluetooth), glyph: 'ᛒ' },
             ].map((item) => (
               <button
