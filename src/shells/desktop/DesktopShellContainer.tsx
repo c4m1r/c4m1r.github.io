@@ -979,7 +979,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               else openStartMenu();
             }}
             onLaunchApp={launchApp}
-            openWindowCount={windows.length}
+            openWindowIds={windows.map((window) => window.id)}
           />
           {/* Start Button */}
           <button
