@@ -216,7 +216,7 @@ System newsletter author: **admin@c4m1r.github.io**.`,
             {activeMessage.originalPath && (
               <div className="mail-app__original-link-wrap">
                 <a
-                  className="mail-app__original-link"
+                  className="mail-app__original-link inline-flex items-center justify-center mt-4 px-4 py-2 rounded-md bg-[#316ac5] text-white font-semibold no-underline hover:bg-[#255199] transition-colors"
                   href={activeMessage.originalPath}
                 >
                   {language === 'ru' ? 'Открыть оригинал на сайте' : 'Open original on site'}
