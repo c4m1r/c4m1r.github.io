@@ -1362,6 +1362,7 @@
 .os-macos .apple-system-menu--view { left: 179px; }
 .os-macos .apple-system-menu--go { left: 212px; }
 .os-macos .apple-system-menu--window { left: 249px; }
+.os-macos .apple-system-menu--help { left: 310px; }
 
 .os-macos .apple-system-menu > button {
   width: 100%;
