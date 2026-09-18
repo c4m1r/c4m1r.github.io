@@ -1207,3 +1207,264 @@
   font-size: 11px;
   background: #0b0b0d !important;
 }
+
+
+/* Apple Calendar */
+.os-macos .calendar-app,
+.os-ios .calendar-app {
+  background: #f5f5f7 !important;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.os-macos .calendar-app__toolbar,
+.os-ios .calendar-app__toolbar {
+  min-height: 48px;
+  padding: 7px 12px !important;
+  border-color: rgba(60,60,67,0.12) !important;
+  background: rgba(246,246,248,0.88) !important;
+  -webkit-backdrop-filter: saturate(165%) blur(20px);
+  backdrop-filter: saturate(165%) blur(20px);
+}
+
+.os-macos .calendar-app__nav-button,
+.os-ios .calendar-app__nav-button {
+  width: 32px;
+  height: 30px;
+  padding: 0 !important;
+  border: 0;
+  border-radius: 8px !important;
+  background: rgba(118,118,128,0.08);
+  color: #007aff !important;
+  font-size: 20px !important;
+  line-height: 1;
+}
+
+.os-macos .calendar-app__nav-button:hover {
+  background: rgba(118,118,128,0.14) !important;
+}
+
+.os-macos .calendar-app__month,
+.os-ios .calendar-app__month {
+  font-size: 15px !important;
+  letter-spacing: -0.02em;
+}
+
+.os-macos .calendar-app__content,
+.os-ios .calendar-app__content {
+  padding: 12px !important;
+  background: #f5f5f7;
+}
+
+.os-macos .calendar-app__weekdays,
+.os-ios .calendar-app__weekdays {
+  margin-bottom: 5px;
+  gap: 0 !important;
+}
+
+.os-macos .calendar-app__weekday,
+.os-ios .calendar-app__weekday {
+  padding: 5px 8px;
+  color: rgba(60,60,67,0.55);
+  font-size: 9px;
+  font-weight: 700;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.os-macos .calendar-app__grid,
+.os-ios .calendar-app__grid {
+  gap: 0 !important;
+  overflow: hidden;
+  border: 1px solid rgba(60,60,67,0.10);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.os-macos .calendar-app__day,
+.os-ios .calendar-app__day {
+  min-height: 96px !important;
+  padding: 7px !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(60,60,67,0.08) !important;
+  border-bottom: 1px solid rgba(60,60,67,0.08) !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+}
+
+.os-macos .calendar-app__day--blank,
+.os-ios .calendar-app__day--blank {
+  background: rgba(118,118,128,0.035) !important;
+}
+
+.os-macos .calendar-app__day.is-weekend,
+.os-ios .calendar-app__day.is-weekend {
+  background: rgba(118,118,128,0.025) !important;
+}
+
+.os-macos .calendar-app__day.is-today,
+.os-ios .calendar-app__day.is-today {
+  background: rgba(0,122,255,0.035) !important;
+}
+
+.os-macos .calendar-app__day-number,
+.os-ios .calendar-app__day-number {
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #1d1d1f;
+  font-size: 11px !important;
+}
+
+.os-macos .calendar-app__day.is-today .calendar-app__day-number,
+.os-ios .calendar-app__day.is-today .calendar-app__day-number {
+  background: #ff3b30;
+  color: #fff;
+}
+
+.os-macos .calendar-app__event,
+.os-ios .calendar-app__event {
+  padding: 3px 5px !important;
+  border-radius: 5px !important;
+  background: #0a84ff !important;
+  color: #fff;
+  font-size: 9px !important;
+  line-height: 1.25;
+}
+
+.os-macos .calendar-app__event-location,
+.os-ios .calendar-app__event-location {
+  color: rgba(60,60,67,0.58) !important;
+  font-size: 8px !important;
+}
+
+.os-macos .calendar-app__empty,
+.os-ios .calendar-app__empty {
+  display: none;
+}
+
+.os-ios .calendar-app__content {
+  padding: 8px !important;
+}
+
+.os-ios .calendar-app__day {
+  min-height: 70px !important;
+  padding: 4px !important;
+}
+
+.os-ios .calendar-app__weekday {
+  padding: 4px 2px;
+  font-size: 8px;
+  text-align: center;
+}
+
+.os-ios .calendar-app__day-number {
+  width: 21px;
+  height: 21px;
+  font-size: 10px !important;
+}
+
+.os-ios .calendar-app__event {
+  padding: 2px 3px !important;
+  font-size: 7px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Apple Calculator */
+.os-macos .calc-app--apple,
+.os-ios .calc-app--apple {
+  padding: 12px !important;
+  background: #1c1c1e !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+}
+
+.os-macos .calc-app--apple .calc-app__display,
+.os-ios .calc-app--apple .calc-app__display {
+  min-height: 84px;
+  margin-bottom: 10px;
+  padding: 8px 4px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #fff !important;
+}
+
+.os-macos .calc-app--apple .calc-app__display-val,
+.os-ios .calc-app--apple .calc-app__display-val {
+  width: 100%;
+  overflow: hidden;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+  font-size: clamp(38px, 7vw, 58px);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .calc-app__grid--apple,
+.os-ios .calc-app__grid--apple {
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.os-macos .calc-app--apple .calc-app__btn,
+.os-ios .calc-app--apple .calc-app__btn {
+  aspect-ratio: 1;
+  min-height: 0;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 50%;
+  background: #333336 !important;
+  color: #fff !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 400;
+  box-shadow: none !important;
+  transition: filter 80ms ease, transform 80ms ease;
+}
+
+.os-macos .calc-app--apple .calc-app__btn:hover {
+  filter: brightness(1.18);
+}
+
+.os-macos .calc-app--apple .calc-app__btn:active,
+.os-ios .calc-app--apple .calc-app__btn:active {
+  transform: scale(0.94);
+}
+
+.os-macos .calc-app--apple .calc-app__btn--utility,
+.os-ios .calc-app--apple .calc-app__btn--utility {
+  background: #a5a5a5 !important;
+  color: #111 !important;
+}
+
+.os-macos .calc-app--apple .calc-app__btn--action,
+.os-ios .calc-app--apple .calc-app__btn--action {
+  background: #ff9f0a !important;
+  color: #fff !important;
+  font-size: clamp(21px, 3.2vw, 29px);
+}
+
+.os-macos .calc-app--apple .calc-app__btn--col2,
+.os-ios .calc-app--apple .calc-app__btn--col2 {
+  aspect-ratio: auto;
+  grid-column: span 2;
+  border-radius: 999px;
+  justify-content: flex-start;
+  padding-left: 25% !important;
+}
+
+.os-ios .calc-app--apple {
+  padding: 14px 10px max(18px, env(safe-area-inset-bottom)) !important;
+}
+
+.os-ios .calc-app--apple .calc-app__display {
+  min-height: 96px;
+}
