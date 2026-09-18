@@ -54,6 +54,7 @@ import { AppleNotificationCenter } from './components/AppleNotificationCenter';
 import { AppleSpotlight } from './components/AppleSpotlight';
 import { AppleDesktopWidgets } from './components/AppleDesktopWidgets';
 import { AppleLockScreen } from './components/AppleLockScreen';
+import { AppleWidgetGallery } from './components/AppleWidgetGallery';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
@@ -95,6 +96,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showAppleMenu, setShowAppleMenu] = useState(false);
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [showAppleLockScreen, setShowAppleLockScreen] = useState(false);
+  const [showAppleWidgetGallery, setShowAppleWidgetGallery] = useState(false);
+  const [appleWidgetVisibility, setAppleWidgetVisibility] = useState({
+    clock: true,
+    battery: true,
+    calendar: true,
+  });
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
@@ -994,6 +1001,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               },
               { label: 'Clean Up', disabled: true },
               { label: 'Show View Options', disabled: true },
+              {
+                label: 'Edit Widgets…',
+                onClick: () => setShowAppleWidgetGallery(true),
+              },
             ]
           : [
               {
@@ -1093,7 +1104,25 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       />
 
       {themeKey === 'macos-26' && (
-        <AppleDesktopWidgets time={time} language={language} />
+        <AppleDesktopWidgets
+          time={time}
+          language={language}
+          visibility={appleWidgetVisibility}
+        />
+      )}
+
+      {themeKey === 'macos-26' && (
+        <AppleWidgetGallery
+          open={showAppleWidgetGallery}
+          visibility={appleWidgetVisibility}
+          onClose={() => setShowAppleWidgetGallery(false)}
+          onToggle={(key) => {
+            setAppleWidgetVisibility((current) => ({
+              ...current,
+              [key]: !current[key],
+            }));
+          }}
+        />
       )}
 
       {themeKey === 'macos-26' && (
