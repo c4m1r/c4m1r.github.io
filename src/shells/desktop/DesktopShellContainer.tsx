@@ -92,6 +92,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; items: ContextMenuItem[] } | null>(null);
   const [volumeLevel, setVolumeLevel] = useState(70);
   const [brightnessLevel, setBrightnessLevel] = useState(78);
+  const [nightModeEnabled, setNightModeEnabled] = useState(false);
   const [showVolumePanel, setShowVolumePanel] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
@@ -1018,6 +1019,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         '--ios-screen-dim': themeKey.startsWith('ios-')
           ? String(Math.max(0, Math.min(0.55, ((100 - brightnessLevel) / 100) * 0.55)))
           : '0',
+        '--ios-night-shift': themeKey.startsWith('ios-') && nightModeEnabled ? '0.14' : '0',
       } as CSSProperties}
       onMouseDown={handleDesktopMouseDown}
       onClick={(event) => {
@@ -1268,10 +1270,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           open={showSystemActionMenu}
           volumeLevel={volumeLevel}
           brightnessLevel={brightnessLevel}
+          nightModeEnabled={nightModeEnabled}
           isFullscreen={isFullscreen}
           onClose={() => setShowSystemActionMenu(false)}
           onVolumeLevelChange={setVolumeLevel}
           onBrightnessLevelChange={setBrightnessLevel}
+          onNightModeChange={setNightModeEnabled}
           onFullscreenToggle={toggleFullscreen}
           onOpenSettings={() => {
             setShowSystemActionMenu(false);
