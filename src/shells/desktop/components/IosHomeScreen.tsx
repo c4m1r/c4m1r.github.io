@@ -155,14 +155,14 @@ export function IosHomeScreen({
               style={{ width: `${100 / totalPages}%` }}
               aria-hidden={page !== appLibraryPage}
             >
-              <div
-                className="ios-app-library__content"
-                onPointerDown={(event) => event.stopPropagation()}
-                onPointerMove={(event) => event.stopPropagation()}
-                onPointerUp={(event) => event.stopPropagation()}
-              >
+              <div className="ios-app-library__content">
                 <h2>App Library</h2>
-                <label className="ios-app-library__search">
+                <label
+                  className="ios-app-library__search"
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onPointerMove={(event) => event.stopPropagation()}
+                  onPointerUp={(event) => event.stopPropagation()}
+                >
                   <span aria-hidden="true">⌕</span>
                   <input
                     value={query}
