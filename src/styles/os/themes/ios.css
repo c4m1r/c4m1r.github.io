@@ -2188,3 +2188,16 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.22);
   mix-blend-mode: difference;
 }
+
+
+/* Night Mode warm tint driven by Control Center. */
+.os-ios::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(255, 120, 42, var(--ios-night-shift, 0));
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: background 160ms ease-out;
+}
