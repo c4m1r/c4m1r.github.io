@@ -1868,3 +1868,69 @@
   pointer-events: none;
   transition: background 120ms ease-out;
 }
+
+
+.os-macos .apple-control-center__now-playing {
+  padding: 10px 11px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.os-macos .apple-control-center__now-playing-copy {
+  min-width: 0;
+}
+
+.os-macos .apple-control-center__now-playing-copy > span,
+.os-macos .apple-control-center__now-playing-copy > strong,
+.os-macos .apple-control-center__now-playing-copy > small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .apple-control-center__now-playing-copy > span {
+  color: rgba(255,255,255,0.48);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.os-macos .apple-control-center__now-playing-copy > strong {
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+.os-macos .apple-control-center__now-playing-copy > small {
+  margin-top: 2px;
+  color: rgba(255,255,255,0.48);
+  font-size: 9px;
+}
+
+.os-macos .apple-control-center__now-playing-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+
+.os-macos .apple-control-center__now-playing-controls button {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.09);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font: 600 10px/1 var(--mac-font);
+}
+
+.os-macos .apple-control-center__now-playing-controls button:disabled {
+  opacity: 0.28;
+}
