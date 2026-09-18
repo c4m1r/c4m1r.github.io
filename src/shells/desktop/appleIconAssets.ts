@@ -4,6 +4,8 @@ import macLaunchpadIcon from '../../../eat/playground-macos-main/public/img/icon
 import macSafariIcon from '../../../eat/playground-macos-main/public/img/icons/safari.png';
 import macTerminalIcon from '../../../eat/playground-macos-main/public/img/icons/terminal.png';
 import macSettingsIcon from '../../../eat/macos-portfolio-main/public/icons/settings.svg';
+import macPhotosIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/photos.png';
+import macMailIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/mail.png';
 
 import iosSafariIcon from '../../../eat/homescreen-main/public/images/Icon=Safari.png';
 import iosMailIcon from '../../../eat/homescreen-main/public/images/Icon=Mail.png';
@@ -56,7 +58,8 @@ const IOS9_ICON_BY_ID: Readonly<Record<string, string>> = {
 export const MACOS_DOCK_ITEMS: readonly AppleDockAsset[] = [
   { id: 'launchpad', title: 'Launchpad', src: macLaunchpadIcon, launcher: true },
   { id: 'safari', title: 'Safari', appId: 'internet-explorer', src: macSafariIcon },
-  { id: 'photos', title: 'Photos', appId: 'pictures', glyph: '✿' },
+  { id: 'mail', title: 'Mail', appId: 'outlook', src: macMailIcon },
+  { id: 'photos', title: 'Photos', appId: 'pictures', src: macPhotosIcon },
   { id: 'settings', title: 'System Settings', appId: 'control-panel', src: macSettingsIcon },
   { id: 'terminal', title: 'Terminal', appId: 'terminal', src: macTerminalIcon },
 ];
