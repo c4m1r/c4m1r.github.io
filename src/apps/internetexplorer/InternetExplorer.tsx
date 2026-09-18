@@ -260,7 +260,7 @@ export function InternetExplorer() {
         <iframe
           key={currentUrl}
           src={currentUrl}
-          title="Internet Explorer"
+          title={isAppleBrowser ? 'Safari' : 'Internet Explorer'}
           className="w-full h-full border-0"
           onLoad={() => setIsLoading(false)}
           sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-pointer-lock allow-downloads"
