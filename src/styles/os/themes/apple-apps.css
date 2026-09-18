@@ -525,3 +525,82 @@
 .os-ios-9 [data-settings-surface="control-panel"] > div:first-child {
   background: rgba(232,236,242,0.96) !important;
 }
+
+
+.os-macos .settings-category-symbol,
+.os-ios-16 .settings-category-symbol,
+.os-ios-26 .settings-category-symbol {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #8e8e93;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,0.28),
+    0 1px 3px rgba(0,0,0,0.12);
+}
+
+.os-macos .settings-category-symbol__glyph,
+.os-ios-16 .settings-category-symbol__glyph,
+.os-ios-26 .settings-category-symbol__glyph {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.os-macos .settings-category-symbol--appearance,
+.os-ios-16 .settings-category-symbol--appearance,
+.os-ios-26 .settings-category-symbol--appearance {
+  background: linear-gradient(145deg, #30b0c7, #0a84ff);
+}
+
+.os-macos .settings-category-symbol--network,
+.os-ios-16 .settings-category-symbol--network,
+.os-ios-26 .settings-category-symbol--network {
+  background: linear-gradient(145deg, #64d2ff, #007aff);
+}
+
+.os-macos .settings-category-symbol--programs,
+.os-ios-16 .settings-category-symbol--programs,
+.os-ios-26 .settings-category-symbol--programs {
+  background: linear-gradient(145deg, #5e5ce6, #bf5af2);
+}
+
+.os-macos .settings-category-symbol--sounds,
+.os-ios-16 .settings-category-symbol--sounds,
+.os-ios-26 .settings-category-symbol--sounds {
+  background: linear-gradient(145deg, #ff375f, #ff2d55);
+}
+
+.os-macos .settings-category-symbol--maintenance,
+.os-ios-16 .settings-category-symbol--maintenance,
+.os-ios-26 .settings-category-symbol--maintenance {
+  background: linear-gradient(145deg, #8e8e93, #636366);
+}
+
+.os-macos .settings-category-symbol--hardware,
+.os-ios-16 .settings-category-symbol--hardware,
+.os-ios-26 .settings-category-symbol--hardware {
+  background: linear-gradient(145deg, #ff9f0a, #ff6b00);
+}
+
+.os-macos .settings-category-symbol--user-accounts,
+.os-ios-16 .settings-category-symbol--user-accounts,
+.os-ios-26 .settings-category-symbol--user-accounts {
+  background: linear-gradient(145deg, #30d158, #00a848);
+}
+
+.os-macos .settings-category-symbol--date-time,
+.os-ios-16 .settings-category-symbol--date-time,
+.os-ios-26 .settings-category-symbol--date-time {
+  background: linear-gradient(145deg, #5856d6, #3634a3);
+}
+
+.os-macos .settings-category-symbol--accessibility,
+.os-ios-16 .settings-category-symbol--accessibility,
+.os-ios-26 .settings-category-symbol--accessibility {
+  background: linear-gradient(145deg, #0a84ff, #0066cc);
+}
