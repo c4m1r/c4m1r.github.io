@@ -964,7 +964,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               label: 'Edit Home Screen',
               onClick: () => window.dispatchEvent(new CustomEvent('ios-home-edit')),
             },
-            { label: 'Remove App', disabled: true },
+            {
+              label: 'Remove from Home Screen',
+              onClick: () => window.dispatchEvent(new CustomEvent('ios-home-remove', {
+                detail: { iconId: icon.id },
+              })),
+            },
           ]
         : [
             { label: 'Open', onClick: () => handleIconDoubleClick(icon) },
