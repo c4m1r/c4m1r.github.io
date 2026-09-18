@@ -2414,3 +2414,28 @@
 .os-ios-9 .ios-settings-switch.is-on {
   background: #4cd964;
 }
+
+
+/* Finder sidebar groups aligned with real virtual filesystem targets. */
+.os-macos .apple-file-browser__sidebar small {
+  display: block;
+  margin: 12px 8px 4px;
+  color: rgba(60,60,67,0.48);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.os-macos .apple-file-browser__sidebar small:first-child {
+  margin-top: 4px;
+}
+
+.os-macos .apple-file-browser__sidebar button.is-active {
+  background: rgba(0,122,255,0.13);
+  color: #0a5fbd;
+}
+
+.os-macos .apple-file-browser__sidebar button.is-active img {
+  filter: saturate(1.08);
+}
