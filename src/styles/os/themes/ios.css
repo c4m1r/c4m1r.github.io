@@ -959,3 +959,358 @@
 .os-ios .ios-home-screen__page--modern .ios-home-icons {
   width: 100%;
 }
+
+
+/* iOS Control Center adapted from /eat/macos-portfolio-main mobile implementation. */
+.os-ios .apple-ios-control-center-trigger {
+  appearance: none;
+  min-width: 0;
+  padding: 4px 2px 4px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  pointer-events: auto;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.os-ios .apple-ios-control-center {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  pointer-events: none;
+}
+
+.os-ios .apple-ios-control-center .apple-control-center__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(4, 7, 13, 0.24);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  backdrop-filter: blur(10px) saturate(120%);
+  pointer-events: auto;
+}
+
+.os-ios .apple-ios-control-center__panel {
+  position: absolute;
+  top: max(34px, env(safe-area-inset-top));
+  right: max(8px, env(safe-area-inset-right));
+  width: min(360px, calc(100vw - 16px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(53,102,255,0.18), transparent 34%),
+    radial-gradient(circle at 88% 22%, rgba(192,75,255,0.13), transparent 30%),
+    rgba(17,19,26,0.78);
+  -webkit-backdrop-filter: saturate(180%) blur(34px);
+  backdrop-filter: saturate(180%) blur(34px);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,0.08),
+    0 22px 70px rgba(0,0,0,0.42);
+  color: #fff;
+  pointer-events: auto;
+  animation: ios-control-center-open 230ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.os-ios .apple-ios-control-center__connectivity {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.045);
+}
+
+.os-ios .apple-ios-control-center__round {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.os-ios .apple-ios-control-center__round > span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  font-size: 18px;
+  transition: transform 120ms ease, background 150ms ease;
+}
+
+.os-ios .apple-ios-control-center__round:active > span {
+  transform: scale(0.9);
+}
+
+.os-ios .apple-ios-control-center__round.is-active:nth-child(1) > span,
+.os-ios .apple-ios-control-center__round.is-active:nth-child(4) > span {
+  background: #0a84ff;
+}
+
+.os-ios .apple-ios-control-center__round.is-active:nth-child(2) > span {
+  background: #ff9f0a;
+}
+
+.os-ios .apple-ios-control-center__round.is-active:nth-child(3) > span {
+  background: #30d158;
+}
+
+.os-ios .apple-ios-control-center__round small {
+  max-width: 64px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 8px;
+  white-space: nowrap;
+  opacity: 0.6;
+}
+
+.os-ios .apple-ios-control-center__now-playing {
+  margin-top: 10px;
+  min-height: 76px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 22px;
+  background: rgba(255,255,255,0.055);
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.os-ios .apple-ios-control-center__art {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #ff375f, #5e5ce6);
+  font-size: 24px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.os-ios .apple-ios-control-center__track {
+  min-width: 0;
+}
+
+.os-ios .apple-ios-control-center__track strong,
+.os-ios .apple-ios-control-center__track small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-ios .apple-ios-control-center__track strong {
+  font-size: 12px;
+}
+
+.os-ios .apple-ios-control-center__track small {
+  margin-top: 3px;
+  font-size: 9px;
+  opacity: 0.48;
+}
+
+.os-ios .apple-ios-control-center__transport {
+  font-size: 12px;
+  opacity: 0.72;
+  white-space: nowrap;
+}
+
+.os-ios .apple-ios-control-center__middle {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.os-ios .apple-ios-control-center__utilities {
+  display: grid;
+  gap: 10px;
+}
+
+.os-ios .apple-ios-control-center__utilities > button {
+  min-height: 78px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 21px;
+  background: rgba(255,255,255,0.055);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.os-ios .apple-ios-control-center__utilities > button.is-active {
+  background: rgba(255,159,10,0.28);
+}
+
+.os-ios .apple-ios-control-center__utilities > button > span {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.09);
+  font-size: 17px;
+}
+
+.os-ios .apple-ios-control-center__utilities small {
+  font-size: 9px;
+  font-weight: 600;
+  opacity: 0.76;
+}
+
+.os-ios .apple-ios-control-center__sliders {
+  min-height: 166px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.045);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.os-ios .apple-ios-control-center__sliders label {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 26px;
+  background: rgba(255,255,255,0.065);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 9px 7px;
+}
+
+.os-ios .apple-ios-control-center__sliders input[type="range"] {
+  position: absolute;
+  inset: 8px;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  margin: 0;
+  opacity: 0.001;
+  cursor: ns-resize;
+  writing-mode: vertical-lr;
+  direction: rtl;
+}
+
+.os-ios .apple-ios-control-center__sliders label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 58%;
+  background: rgba(255,255,255,0.17);
+  pointer-events: none;
+}
+
+.os-ios .apple-ios-control-center__sliders label > span,
+.os-ios .apple-ios-control-center__sliders label > small {
+  position: relative;
+  z-index: 1;
+}
+
+.os-ios .apple-ios-control-center__sliders label > span {
+  font-size: 17px;
+}
+
+.os-ios .apple-ios-control-center__sliders label > small {
+  margin-top: 3px;
+  font-size: 8px;
+  opacity: 0.65;
+}
+
+.os-ios .apple-ios-control-center__quick-actions {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.045);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 9px;
+}
+
+.os-ios .apple-ios-control-center__quick-actions button {
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  font-size: 16px;
+}
+
+.os-ios .apple-ios-control-center__quick-actions button.is-active {
+  background: #30d158;
+}
+
+.os-ios .apple-ios-control-center__quick-actions button.is-danger {
+  background: #ff453a;
+}
+
+.os-ios-9 .apple-ios-control-center__panel {
+  border-radius: 20px;
+  background: rgba(235,239,244,0.82);
+  color: #111;
+  -webkit-backdrop-filter: saturate(140%) blur(22px);
+  backdrop-filter: saturate(140%) blur(22px);
+}
+
+.os-ios-9 .apple-ios-control-center__panel button,
+.os-ios-9 .apple-ios-control-center__panel label {
+  color: inherit;
+}
+
+@keyframes ios-control-center-open {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.94);
+    transform-origin: top right;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 420px) {
+  .os-ios .apple-ios-control-center__panel {
+    top: max(30px, env(safe-area-inset-top));
+    right: 6px;
+    width: calc(100vw - 12px);
+    padding: 10px;
+    border-radius: 25px;
+  }
+
+  .os-ios .apple-ios-control-center__middle {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+
+  .os-ios .apple-ios-control-center__quick-actions {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+  }
+}
