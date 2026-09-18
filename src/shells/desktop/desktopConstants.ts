@@ -1,4 +1,5 @@
 import { type ThemeId } from '../../contexts/appContextTypes';
+import { OS_CLASS_MAP } from '../os/osClassNames';
 
 export const DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
 export const MINESWEEPER_WINDOW_ID = 'app:minesweeper';
@@ -8,20 +9,5 @@ export const DESKTOP_DRAG_Z_INDEX = 1000;
 
 export const XP_FAMILY_THEMES: readonly ThemeId[] = ['win-xp', 'webos'];
 
-// Map ThemeId values to os-* CSS class suffixes defined in src/styles/os/.
-export const OS_CLASS_MAP: Record<string, string> = {
-  'win-xp': 'winxp',
-  webos: 'winxp',
-  'win-98': 'classic',
-  win7: 'win7',
-  win10: 'win7',
-  win11: 'win7',
-  ubuntu: 'ubuntu',
-  arch: 'arch',
-  halloween: 'spooky',
-  'macos-26': 'macos os-macos-26',
-  'ios-26': 'ios os-ios-modern os-ios-26',
-  'ios-16': 'ios os-ios-16',
-  'ios-9': 'ios os-ios-9',
-  'ios-5': 'ios os-ios-5',
-};
+// Canonical OS class mapping is owned by shells/os.
+export { OS_CLASS_MAP };
