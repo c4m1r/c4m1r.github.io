@@ -1582,3 +1582,161 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
+
+/* Edit Widgets gallery adapted from donor WidgetGallery. */
+.os-macos .apple-widget-gallery {
+  position: fixed;
+  inset: 30px 0 0;
+  z-index: 145;
+  pointer-events: none;
+}
+
+.os-macos .apple-widget-gallery__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(0,0,0,0.14);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+.os-macos .apple-widget-gallery__panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(420px, calc(100vw - 32px));
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: 18px;
+  background: rgba(246,246,248,0.93);
+  -webkit-backdrop-filter: blur(34px) saturate(170%);
+  backdrop-filter: blur(34px) saturate(170%);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.30),
+    inset 0 1px rgba(255,255,255,0.74);
+  color: #1d1d1f;
+  pointer-events: auto;
+}
+
+.os-macos .apple-widget-gallery__panel > header {
+  min-height: 58px;
+  padding: 10px 12px 10px 16px;
+  border-bottom: 1px solid rgba(60,60,67,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.os-macos .apple-widget-gallery__panel > header > div {
+  min-width: 0;
+}
+
+.os-macos .apple-widget-gallery__panel > header strong,
+.os-macos .apple-widget-gallery__panel > header small {
+  display: block;
+}
+
+.os-macos .apple-widget-gallery__panel > header strong {
+  font-size: 14px;
+}
+
+.os-macos .apple-widget-gallery__panel > header small {
+  margin-top: 2px;
+  color: rgba(60,60,67,0.50);
+  font-size: 9px;
+}
+
+.os-macos .apple-widget-gallery__panel > header > button {
+  min-height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #007aff;
+  color: #fff;
+  font: 600 10px/1 var(--mac-font);
+}
+
+.os-macos .apple-widget-gallery__list {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.os-macos .apple-widget-gallery__list > button {
+  width: 100%;
+  min-height: 58px;
+  padding: 8px 10px;
+  border: 1px solid rgba(60,60,67,0.08);
+  border-radius: 12px;
+  background: rgba(118,118,128,0.06);
+  color: #1d1d1f;
+  display: grid;
+  grid-template-columns: 38px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.os-macos .apple-widget-gallery__list > button:hover {
+  background: rgba(118,118,128,0.10);
+}
+
+.os-macos .apple-widget-gallery__list > button.is-enabled {
+  border-color: rgba(0,122,255,0.22);
+  background: rgba(0,122,255,0.08);
+}
+
+.os-macos .apple-widget-gallery__glyph {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #2c2c2e, #5c5c60);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.os-macos .apple-widget-gallery__list > button > span:nth-child(2) {
+  min-width: 0;
+}
+
+.os-macos .apple-widget-gallery__list strong,
+.os-macos .apple-widget-gallery__list small {
+  display: block;
+}
+
+.os-macos .apple-widget-gallery__list strong {
+  font-size: 11px;
+}
+
+.os-macos .apple-widget-gallery__list small {
+  margin-top: 2px;
+  color: rgba(60,60,67,0.50);
+  font-size: 9px;
+}
+
+.os-macos .apple-widget-gallery__list i {
+  min-width: 34px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: rgba(118,118,128,0.10);
+  color: rgba(60,60,67,0.58);
+  font-size: 9px;
+  font-style: normal;
+  text-align: center;
+}
+
+.os-macos .apple-widget-gallery__list > button.is-enabled i {
+  background: #34c759;
+  color: #fff;
+}
