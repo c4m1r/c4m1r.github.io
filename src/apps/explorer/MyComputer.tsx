@@ -83,6 +83,22 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   }, [appleSearchQuery, items]);
 
   useEffect(() => {
+    if (theme !== 'macos-26') return;
+
+    const handleFinderViewCommand = (event: Event) => {
+      const customEvent = event as CustomEvent<{ windowId?: string; mode?: 'icons' | 'list' }>;
+      const expectedWindowId = `explorer:${currentPath}`;
+      if (customEvent.detail?.windowId !== expectedWindowId) return;
+      if (customEvent.detail.mode === 'icons' || customEvent.detail.mode === 'list') {
+        setViewMode(customEvent.detail.mode);
+      }
+    };
+
+    window.addEventListener('webos:finder-view', handleFinderViewCommand);
+    return () => window.removeEventListener('webos:finder-view', handleFinderViewCommand);
+  }, [currentPath, theme]);
+
+  useEffect(() => {
     if (theme !== 'macos-26') {
       setQuickLookOpen(false);
       return;
