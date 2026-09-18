@@ -2202,3 +2202,173 @@
   width: min(180px, 46%);
   min-width: 110px;
 }
+
+
+/* Preview / Photos presentation over the shared PictureViewer runtime. */
+.os-macos .picture-viewer--apple,
+.os-ios .picture-viewer--apple {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #1c1c1e;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.os-macos .picture-viewer__toolbar,
+.os-ios .picture-viewer__toolbar {
+  min-height: 48px;
+  flex: none;
+  padding: 7px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(38,38,42,0.90);
+  -webkit-backdrop-filter: saturate(160%) blur(20px);
+  backdrop-filter: saturate(160%) blur(20px);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.os-macos .picture-viewer__toolbar-group,
+.os-ios .picture-viewer__toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.os-macos .picture-viewer__toolbar button,
+.os-ios .picture-viewer__toolbar button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255,255,255,0.90);
+  display: grid;
+  place-items: center;
+}
+
+.os-macos .picture-viewer__toolbar button:hover {
+  background: rgba(255,255,255,0.09);
+}
+
+.os-macos .picture-viewer__toolbar button:disabled,
+.os-ios .picture-viewer__toolbar button:disabled {
+  opacity: 0.28;
+}
+
+.os-macos .picture-viewer__title,
+.os-ios .picture-viewer__title {
+  min-width: 0;
+  text-align: center;
+}
+
+.os-macos .picture-viewer__title strong,
+.os-macos .picture-viewer__title small,
+.os-ios .picture-viewer__title strong,
+.os-ios .picture-viewer__title small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .picture-viewer__title strong,
+.os-ios .picture-viewer__title strong {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.os-macos .picture-viewer__title small,
+.os-ios .picture-viewer__title small {
+  margin-top: 1px;
+  color: rgba(255,255,255,0.44);
+  font-size: 9px;
+}
+
+.os-macos .picture-viewer__canvas,
+.os-ios .picture-viewer__canvas {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.035), transparent 42%),
+    #1c1c1e;
+}
+
+.os-macos .picture-viewer__canvas img,
+.os-ios .picture-viewer__canvas img {
+  max-width: 92%;
+  max-height: 92%;
+  object-fit: contain;
+  border-radius: 5px;
+  box-shadow: 0 14px 44px rgba(0,0,0,0.36);
+}
+
+.os-macos .picture-viewer__empty,
+.os-ios .picture-viewer__empty {
+  color: rgba(255,255,255,0.42);
+  font-size: 12px;
+}
+
+.os-macos .picture-viewer__footer,
+.os-ios .picture-viewer__footer {
+  min-height: 36px;
+  flex: none;
+  padding: 5px 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: rgba(38,38,42,0.90);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(255,255,255,0.54);
+  font-size: 9px;
+}
+
+.os-macos .picture-viewer__footer button,
+.os-ios .picture-viewer__footer button {
+  min-height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.os-macos .picture-viewer__footer button.is-active,
+.os-ios .picture-viewer__footer button.is-active {
+  background: #0a84ff;
+}
+
+.os-ios .picture-viewer__toolbar {
+  min-height: 50px;
+  padding-inline: 8px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.os-ios .picture-viewer__toolbar-group:last-child button:nth-child(n+4) {
+  display: none;
+}
+
+.os-ios .picture-viewer__canvas {
+  padding: 8px;
+  background: #000;
+}
+
+.os-ios .picture-viewer__canvas img {
+  max-width: 100%;
+  max-height: 100%;
+  box-shadow: none;
+}
