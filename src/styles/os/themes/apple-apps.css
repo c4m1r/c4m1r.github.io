@@ -2372,3 +2372,45 @@
   max-height: 100%;
   box-shadow: none;
 }
+
+
+/* iOS Accessibility toggle used by NervaWEB WebOS Settings. */
+.os-ios .ios-settings-switch {
+  position: relative;
+  width: 42px;
+  height: 26px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(120,120,128,0.32);
+  transition: background 160ms ease;
+}
+
+.os-ios .ios-settings-switch > span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.24);
+  transition: transform 160ms ease;
+}
+
+.os-ios .ios-settings-switch.is-on {
+  background: #34c759;
+}
+
+.os-ios .ios-settings-switch.is-on > span {
+  transform: translateX(16px);
+}
+
+.os-ios-9 .ios-settings-switch {
+  background: rgba(142,142,147,0.38);
+}
+
+.os-ios-9 .ios-settings-switch.is-on {
+  background: #4cd964;
+}
