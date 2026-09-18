@@ -56,12 +56,21 @@ export const osBootProfiles: OsBootProfile[] = [
     enabled: true,
   },
   {
+    id: 'macos-26' as OsProfileId,
+    label: 'macOS Tahoe 26',
+    kind: 'desktop' as const,
+    mode: 'webos' as const,
+    theme: 'macos-26' as const,
+    order: 42,
+    enabled: true,
+  },
+  {
     id: 'ios-26' as OsProfileId,
     label: 'iOS 26.6.1',
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'ios-26' as const,
-    order: 42,
+    order: 43,
     enabled: true,
   },
   {
