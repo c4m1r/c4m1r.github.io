@@ -272,3 +272,160 @@
     display: none;
   }
 }
+
+
+/* Paged iOS home screen. Interaction model adapted from /eat/homescreen-main ScreenScroller. */
+.os-ios .ios-home-screen {
+  position: absolute;
+  inset: 30px 0 74px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.os-ios .ios-home-screen__viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.os-ios .ios-home-screen__track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.os-ios .ios-home-screen__page {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: minmax(82px, 1fr);
+  align-content: start;
+  gap: clamp(10px, 2.2vh, 22px) clamp(8px, 3vw, 24px);
+  padding: clamp(20px, 4vh, 42px) clamp(18px, 5vw, 54px) 12px;
+  overflow: hidden;
+}
+
+.os-ios .ios-home-icon {
+  appearance: none;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.os-ios .ios-home-icon__glyph {
+  width: clamp(54px, 7vw, 76px);
+  height: clamp(54px, 7vw, 76px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 22%;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 5px 16px rgba(0,0,0,0.24);
+  transition: transform 90ms ease, filter 90ms ease;
+}
+
+.os-ios .ios-home-icon__glyph > img,
+.os-ios .ios-home-icon__glyph > svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.os-ios .ios-home-icon:active .ios-home-icon__glyph {
+  transform: scale(0.93);
+  filter: brightness(0.88);
+}
+
+.os-ios .ios-home-icon__label {
+  width: min(96px, 100%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff;
+  font-size: clamp(11px, 1.6vw, 13px);
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.72);
+}
+
+.os-ios .ios-home-icon.is-selected .ios-home-icon__glyph {
+  outline: 2px solid rgba(255,255,255,0.75);
+  outline-offset: 2px;
+}
+
+.os-ios .ios-home-screen__pager {
+  flex: none;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+}
+
+.os-ios .ios-home-screen__dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.42);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+
+.os-ios .ios-home-screen__dot.is-active {
+  background: rgba(255,255,255,0.96);
+}
+
+.os-ios-5 .ios-home-screen {
+  inset-top: 24px;
+}
+
+.os-ios-5 .ios-home-icon__glyph {
+  border-radius: 11px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -2px 5px rgba(0,0,0,0.18),
+    0 4px 10px rgba(0,0,0,0.34);
+}
+
+.os-ios-5 .ios-home-screen__dot {
+  background: rgba(255,255,255,0.48);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.26);
+}
+
+@media (max-width: 520px) {
+  .os-ios .ios-home-screen {
+    inset: 30px 0 70px;
+  }
+
+  .os-ios .ios-home-screen__page {
+    grid-auto-rows: minmax(74px, 1fr);
+    gap: 10px 10px;
+    padding: 20px 12px 8px;
+  }
+
+  .os-ios .ios-home-icon__glyph {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+@media (min-width: 860px) {
+  .os-ios .ios-home-screen__page {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
