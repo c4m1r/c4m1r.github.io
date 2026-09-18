@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { AppleWelcomeScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { getOsClassName } from '../../shells/os/osClassNames';
 
 interface WelcomeScreenProps {
@@ -10,6 +11,10 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   const { theme } = useApp();
   const [fadeIn, setFadeIn] = useState(false);
   const osClassName = getOsClassName(theme);
+
+  if (isAppleTheme(theme)) {
+    return <AppleWelcomeScreen theme={theme} onComplete={onComplete} />;
+  }
 
   useEffect(() => {
     setFadeIn(true);
