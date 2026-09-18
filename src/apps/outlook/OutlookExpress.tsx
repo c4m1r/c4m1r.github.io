@@ -45,6 +45,17 @@ export function OutlookExpress() {
   const [activeMessageId, setActiveMessageId] = useState(sampleMessages[0].id);
   const activeMessage = sampleMessages.find((message) => message.id === activeMessageId) ?? sampleMessages[0];
 
+  const getPresentedSubject = (message: (typeof sampleMessages)[number]) =>
+    isAppleMail && message.id === 1 ? 'Welcome to Mail' : message.subject;
+
+  const getPresentedBody = (message: (typeof sampleMessages)[number]) => {
+    if (!isAppleMail || message.id !== 1) return message.body;
+    return message.body
+      .replace('This is a demo mailbox. Use it to showcase the Windows XP experience inside the browser.', 'This is a demo mailbox for the Apple interface test stand.')
+      .replace('✔ Double-click messages to see details', '✔ Select messages to see details')
+      .replace('- The WebOS team', '- The 7Bit team');
+  };
+
   return (
     <div className="mail-app flex h-full w-full bg-[#f3f3f3] text-xs font-tahoma text-[#1f1f1f] select-none">
       <aside className="mail-app__sidebar w-48 bg-[#d7e4f7] border-r border-[#9cb2cf] flex flex-col">
@@ -118,7 +129,7 @@ export function OutlookExpress() {
             >
               <span className="w-6 text-[#1b4fa3]">{message.id === 1 ? '•' : ''}</span>
               <span className="flex-1 font-semibold">{message.from}</span>
-              <span className="flex-1 text-[#305ca8]">{message.subject}</span>
+              <span className="flex-1 text-[#305ca8]">{getPresentedSubject(message)}</span>
               <span className="w-24 text-right text-[#305ca8]">{message.date}</span>
             </article>
           ))}
@@ -132,7 +143,7 @@ export function OutlookExpress() {
             </div>
             <div className="flex items-center gap-2 text-[#1b4fa3]">
               <span className="font-semibold uppercase">Subject:</span>
-              <span>{activeMessage.subject}</span>
+              <span>{getPresentedSubject(activeMessage)}</span>
             </div>
             <div className="flex items-center gap-2 text-[#1b4fa3]">
               <span className="font-semibold uppercase">Sent:</span>
@@ -140,7 +151,7 @@ export function OutlookExpress() {
             </div>
           </header>
           <pre className="mail-app__body whitespace-pre-wrap font-sans text-[#1f1f1f] bg-[#f6f9ff] border border-[#c2d3e8] px-3 py-2 rounded">
-            {activeMessage.body}
+            {getPresentedBody(activeMessage)}
           </pre>
         </section>
 
