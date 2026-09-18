@@ -1029,3 +1029,134 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+
+/* TextEdit / Notes presentation over the shared Notepad editor. */
+.os-macos .notepad-app,
+.os-ios .notepad-app {
+  background: #fff !important;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+.os-macos .notepad-app__menubar {
+  min-height: 36px !important;
+  height: auto !important;
+  padding: 4px 8px !important;
+  border-color: rgba(60,60,67,0.12) !important;
+  background: rgba(246,246,248,0.88) !important;
+  -webkit-backdrop-filter: saturate(165%) blur(20px);
+  backdrop-filter: saturate(165%) blur(20px);
+}
+
+.os-macos .notepad-app__menu-button {
+  min-height: 28px;
+  padding: 0 9px !important;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #1d1d1f;
+  font: 500 11px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.os-macos .notepad-app__menu-button:hover,
+.os-macos .notepad-app__menu-button.is-open {
+  background: rgba(118,118,128,0.12);
+}
+
+.os-macos .notepad-app__popup {
+  padding: 5px !important;
+  border: 1px solid rgba(60,60,67,0.12) !important;
+  border-radius: 10px !important;
+  background: rgba(246,246,248,0.94) !important;
+  -webkit-backdrop-filter: saturate(160%) blur(20px);
+  backdrop-filter: saturate(160%) blur(20px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.18) !important;
+}
+
+.os-macos .notepad-app__popup button {
+  min-height: 26px;
+  border-radius: 6px;
+  background: transparent;
+  color: #1d1d1f;
+}
+
+.os-macos .notepad-app__popup button:hover:not(:disabled) {
+  background: #007aff;
+  color: #fff;
+}
+
+.os-macos .notepad-app__popup-separator {
+  background: rgba(60,60,67,0.14) !important;
+}
+
+.os-macos .notepad-app__editor {
+  background: #fff;
+}
+
+.os-macos .notepad-app__editor textarea,
+.os-macos .notepad-app__editor > div {
+  padding: 18px 20px !important;
+  color: #1d1d1f;
+  font-size: 13px !important;
+  line-height: 1.55;
+}
+
+.os-ios .notepad-app__menubar {
+  min-height: 44px !important;
+  height: auto !important;
+  padding: 6px 8px !important;
+  border-color: rgba(60,60,67,0.12) !important;
+  background: rgba(248,248,250,0.90) !important;
+  -webkit-backdrop-filter: saturate(165%) blur(20px);
+  backdrop-filter: saturate(165%) blur(20px);
+}
+
+.os-ios .notepad-app__menu-button {
+  min-height: 32px;
+  padding: 0 10px !important;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #007aff;
+  font: 600 12px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.os-ios .notepad-app__menu-button.is-open {
+  background: rgba(0,122,255,0.10);
+}
+
+.os-ios .notepad-app__menubar > .notepad-app__menu-button:nth-last-child(-n+3) {
+  display: none;
+}
+
+.os-ios .notepad-app__popup {
+  padding: 5px !important;
+  border: 1px solid rgba(60,60,67,0.12) !important;
+  border-radius: 13px !important;
+  background: rgba(248,248,250,0.96) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.18) !important;
+}
+
+.os-ios .notepad-app__popup button {
+  min-height: 36px;
+  border-radius: 8px;
+  color: #1d1d1f;
+}
+
+.os-ios .notepad-app__editor {
+  background: #fff;
+}
+
+.os-ios .notepad-app__editor textarea,
+.os-ios .notepad-app__editor > div {
+  padding: 18px 16px 30px !important;
+  color: #1d1d1f;
+  font-size: 15px !important;
+  line-height: 1.55;
+}
+
+.os-ios-5 .notepad-app__menubar,
+.os-ios-9 .notepad-app__menubar {
+  background: rgba(232,236,242,0.96) !important;
+}
