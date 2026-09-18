@@ -1360,3 +1360,139 @@
 .os-ios .apple-ios-battery-meter.is-charging > span {
   background: #30d158;
 }
+
+
+/* Lightweight Dynamic Island presentation adapted from donor MobileNotch/DynamicIsland sources. */
+.os-ios .ios-dynamic-island {
+  justify-self: center;
+  width: 96px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,0.035);
+  border-radius: 999px;
+  background: #050506;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 4px 14px rgba(0,0,0,0.22);
+  overflow: hidden;
+  pointer-events: auto;
+  cursor: pointer;
+  transition:
+    width 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.os-ios .ios-dynamic-island:active {
+  transform: scale(0.97);
+}
+
+.os-ios .ios-dynamic-island.is-expanded {
+  width: min(230px, 46vw);
+  height: 52px;
+  border-radius: 20px;
+}
+
+.os-ios .ios-dynamic-island__compact {
+  width: 100%;
+  height: 100%;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.os-ios .ios-dynamic-island__sensor {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #09090a;
+  box-shadow: inset 0 0 0 1px #111;
+}
+
+.os-ios .ios-dynamic-island__camera {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #020206;
+  box-shadow: inset 0 0 0 1px #191922;
+}
+
+.os-ios .ios-dynamic-island__camera > i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #17658f, #071729 58%, #020307);
+  box-shadow: inset 0 1px rgba(255,255,255,0.16);
+}
+
+.os-ios .ios-dynamic-island__expanded {
+  height: 100%;
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+}
+
+.os-ios .ios-dynamic-island__app {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.os-ios .ios-dynamic-island__app small {
+  color: #30d158;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.os-ios .ios-dynamic-island__app strong {
+  max-width: 130px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-ios .ios-dynamic-island__battery {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.os-ios .ios-dynamic-island__battery > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8e8e93;
+}
+
+.os-ios .ios-dynamic-island__battery > span.is-charging {
+  background: #30d158;
+  box-shadow: 0 0 9px rgba(48,209,88,0.42);
+}
+
+.os-ios .ios-dynamic-island__battery strong {
+  font-size: 10px;
+}
+
+@media (max-width: 520px) {
+  .os-ios .ios-dynamic-island {
+    width: 76px;
+    height: 21px;
+  }
+
+  .os-ios .ios-dynamic-island.is-expanded {
+    width: 190px;
+    height: 48px;
+  }
+}
