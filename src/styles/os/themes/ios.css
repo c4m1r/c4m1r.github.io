@@ -1848,8 +1848,6 @@
 }
 
 /* WebOS update cards inside iOS Notification Center. */
-.os-ios 
-
 .os-ios .apple-notification-center__updates {
   display: flex;
   flex-direction: column;
