@@ -80,6 +80,7 @@ export const MACOS_APP_ICON_BY_ID: Readonly<Record<string, string>> = {
 };
 
 export const MACOS_DOCK_ITEMS: readonly AppleDockAsset[] = [
+  { id: 'finder', title: 'Finder', appId: 'my-computer', src: macFinderIcon },
   { id: 'launchpad', title: 'Launchpad', src: macLaunchpadIcon, launcher: true },
   { id: 'safari', title: 'Safari', appId: 'internet-explorer', src: macSafariIcon },
   { id: 'mail', title: 'Mail', appId: 'outlook', src: macMailIcon },
