@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { getOsClassName } from '../../shells/os/osClassNames';
 
 type TransitionMode = 'logoff' | 'shutdown';
 
@@ -33,17 +34,7 @@ const WIN98_MESSAGES: Record<TransitionMode, { title: string; subtitle: string }
 
 export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTransitionScreenProps) {
   const { theme } = useApp();
-  const OS_CLASS_MAP: Record<string, string> = {
-    'win-xp': 'winxp',
-    'webos':  'winxp',
-    'win-98': 'classic',
-    'win7':   'win7',
-    'win10':  'win7',
-    'win11':  'win7',
-    'ubuntu': 'ubuntu',
-    'arch':   'ubuntu',
-  };
-  const osClassName = OS_CLASS_MAP[theme] ?? 'classic';
+  const osClassName = getOsClassName(theme);
   const timeout = duration ?? (mode === 'shutdown' ? 3500 : 2200);
 
   useEffect(() => {
