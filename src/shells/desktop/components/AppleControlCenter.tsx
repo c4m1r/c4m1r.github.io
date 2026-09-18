@@ -82,7 +82,7 @@ export function AppleControlCenter({
               <strong>Not Playing</strong>
               <small>Media controls</small>
             </div>
-            <div className="apple-ios-control-center__transport" aria-hidden="true">◀︎　▶︎</div>
+            <div className="apple-ios-control-center__transport" aria-hidden="true">◀︎  ▶︎</div>
           </div>
 
           <div className="apple-ios-control-center__middle">
