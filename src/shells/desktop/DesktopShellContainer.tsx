@@ -849,6 +849,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       onContextMenu={(e) => {
         e.preventDefault();
         closeStartMenu();
+        if (themeKey.startsWith('ios-')) {
+          setContextMenu(null);
+          return;
+        }
         setContextMenu({
           x: e.clientX,
           y: e.clientY,
