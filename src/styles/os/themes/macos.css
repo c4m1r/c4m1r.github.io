@@ -1359,6 +1359,7 @@
 }
 
 .os-macos .apple-system-menu--file { left: 108px; }
+.os-macos .apple-system-menu--view { left: 179px; }
 .os-macos .apple-system-menu--go { left: 212px; }
 .os-macos .apple-system-menu--window { left: 249px; }
 
