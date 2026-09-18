@@ -66,6 +66,7 @@ const CONTEXT_MENU_LABELS: Record<Language, ContextMenuDictionary> = {
     'Date Modified': 'Дата изменения',
     'Clean Up': 'Упорядочить',
     'Show View Options': 'Показать параметры вида',
+    'Edit Widgets…': 'Изменить виджеты…',
   },
   fr: {
     Open: 'Ouvrir',
