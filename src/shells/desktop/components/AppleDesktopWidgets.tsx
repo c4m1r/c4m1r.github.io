@@ -2,12 +2,19 @@ import { useMemo } from 'react';
 import { useDeviceBattery } from '../hooks/useDeviceBattery';
 import { type Language } from '../../../i18n/translations';
 
+export interface AppleWidgetVisibility {
+  clock: boolean;
+  battery: boolean;
+  calendar: boolean;
+}
+
 interface AppleDesktopWidgetsProps {
   time: Date;
   language: Language;
+  visibility: AppleWidgetVisibility;
 }
 
-export function AppleDesktopWidgets({ time, language }: AppleDesktopWidgetsProps) {
+export function AppleDesktopWidgets({ time, language, visibility }: AppleDesktopWidgetsProps) {
   const { level, charging } = useDeviceBattery(true);
 
   const calendarDays = useMemo(() => {
@@ -49,7 +56,7 @@ export function AppleDesktopWidgets({ time, language }: AppleDesktopWidgetsProps
 
   return (
     <aside className="apple-desktop-widgets" aria-label="Desktop widgets">
-      <section className="apple-widget apple-widget--clock">
+      {visibility.clock && <section className="apple-widget apple-widget--clock">
         <svg viewBox="0 0 54 54" aria-hidden="true">
           <circle cx="27" cy="27" r="26" className="apple-widget-clock__face" />
           {Array.from({ length: 12 }, (_, index) => {
@@ -87,9 +94,9 @@ export function AppleDesktopWidgets({ time, language }: AppleDesktopWidgetsProps
           </strong>
           <span>{time.toLocaleDateString(language, { weekday: 'long', month: 'long', day: 'numeric' })}</span>
         </div>
-      </section>
+      </section>}
 
-      <section className="apple-widget apple-widget--battery">
+      {visibility.battery && <section className="apple-widget apple-widget--battery">
         <div className="apple-widget-battery__icon" aria-hidden="true">
           <div className="apple-widget-battery__body">
             <span style={{ width: `${pct}%` }} className={pct <= 20 ? 'is-low' : charging ? 'is-charging' : ''} />
@@ -100,9 +107,9 @@ export function AppleDesktopWidgets({ time, language }: AppleDesktopWidgetsProps
           <strong>{pct}%{charging ? ' ⚡' : ''}</strong>
           <span>{charging ? 'Charging' : level === null ? 'Estimated' : pct <= 20 ? 'Low Battery' : 'Normal'}</span>
         </div>
-      </section>
+      </section>}
 
-      <section className="apple-widget apple-widget--calendar">
+      {visibility.calendar && <section className="apple-widget apple-widget--calendar">
         <header>
           {time.toLocaleDateString(language, { month: 'long' })}
         </header>
@@ -126,7 +133,7 @@ export function AppleDesktopWidgets({ time, language }: AppleDesktopWidgetsProps
             );
           })}
         </div>
-      </section>
+      </section>}
     </aside>
   );
 }
