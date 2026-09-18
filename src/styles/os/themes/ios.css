@@ -552,3 +552,8 @@
     border-radius: 0;
   }
 }
+
+
+.os-ios .ios-home-screen[data-dragging="true"] .ios-home-screen__track {
+  transition: none;
+}
