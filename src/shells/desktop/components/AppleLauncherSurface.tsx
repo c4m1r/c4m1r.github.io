@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useApp } from '../../../contexts/useApp';
 import { getOsAppTitle } from '../../os/osSkins';
 import { type Language } from '../../../i18n/translations';
+import { MACOS_APP_ICON_BY_ID } from '../appleIconAssets';
 
 interface AppleLauncherSurfaceProps {
   onClose: () => void;
@@ -10,7 +11,10 @@ interface AppleLauncherSurfaceProps {
 
 const APP_IDS = [
   'internet-explorer',
+  'outlook',
   'pictures',
+  'calendar',
+  'calculator',
   'control-panel',
   'notepad',
   'terminal',
@@ -33,7 +37,10 @@ const localizedTitle = (en: string, ru: string): Record<Language, string> => ({
 
 const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], Record<Language, string>> = {
   'internet-explorer': localizedTitle('Safari', 'Safari'),
+  outlook: localizedTitle('Mail', 'Почта'),
   pictures: localizedTitle('Photos', 'Фото'),
+  calendar: localizedTitle('Calendar', 'Календарь'),
+  calculator: localizedTitle('Calculator', 'Калькулятор'),
   'control-panel': localizedTitle('Settings', 'Настройки'),
   notepad: localizedTitle('Notes', 'Заметки'),
   terminal: localizedTitle('Terminal', 'Терминал'),
@@ -46,7 +53,10 @@ const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], Record<Language, string>>
 
 const GLYPHS: Record<string, string> = {
   'internet-explorer': '◉',
+  outlook: '✉',
   pictures: '✿',
+  calendar: '17',
+  calculator: '＋',
   'control-panel': '⚙',
   notepad: '▤',
   terminal: '>_',
@@ -67,8 +77,9 @@ export function AppleLauncherSurface({ onClose, onLaunchApp }: AppleLauncherSurf
       id,
       title: getOsAppTitle(id, DEFAULT_TITLES[id], theme, language),
       glyph: GLYPHS[id] ?? '•',
+      icon: isMac ? MACOS_APP_ICON_BY_ID[id] : undefined,
     })).filter((app) => app.title.toLowerCase().includes(query.trim().toLowerCase()));
-  }, [language, query, theme]);
+  }, [isMac, language, query, theme]);
 
   const launch = (id: string) => {
     onLaunchApp?.(id);
@@ -104,7 +115,9 @@ export function AppleLauncherSurface({ onClose, onLaunchApp }: AppleLauncherSurf
               className="apple-launcher__app"
               onClick={() => launch(app.id)}
             >
-              <span className="apple-launcher__icon" aria-hidden="true">{app.glyph}</span>
+              <span className="apple-launcher__icon" aria-hidden="true">
+                {app.icon ? <img src={app.icon} alt="" draggable={false} /> : app.glyph}
+              </span>
               <span className="apple-launcher__label">{app.title}</span>
             </button>
           ))}
