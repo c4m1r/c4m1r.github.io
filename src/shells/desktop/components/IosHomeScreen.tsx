@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type DesktopIcon } from '../desktopTypes';
 import { getIosIconMap } from '../appleIconAssets';
@@ -11,7 +11,8 @@ interface IosHomeScreenProps {
   onIconContextMenu: (e: MouseEvent, icon: DesktopIcon) => void;
 }
 
-const PAGE_SIZE = 20;
+const LEGACY_PAGE_SIZE = 20;
+const MODERN_PAGE_SIZE = 12;
 
 function chunkIcons(items: DesktopIcon[], size: number): DesktopIcon[][] {
   const pages: DesktopIcon[][] = [];
@@ -28,18 +29,70 @@ export function IosHomeScreen({
   onIconDoubleClick,
   onIconContextMenu,
 }: IosHomeScreenProps) {
-  const homePages = useMemo(() => chunkIcons(desktopIcons, PAGE_SIZE), [desktopIcons]);
-  const showAppLibrary = theme === 'ios-16' || theme === 'ios-26';
+  const modernHome = theme === 'ios-16' || theme === 'ios-26';
+  const pageSize = modernHome ? MODERN_PAGE_SIZE : LEGACY_PAGE_SIZE;
+  const homePages = useMemo(() => chunkIcons(desktopIcons, pageSize), [desktopIcons, pageSize]);
+  const showAppLibrary = modernHome;
   const iconMap = getIosIconMap(theme);
   const totalPages = homePages.length + (showAppLibrary ? 1 : 0);
   const appLibraryPage = showAppLibrary ? totalPages - 1 : -1;
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState('');
+  const [now, setNow] = useState(() => new Date());
+  const [batteryLevel, setBatteryLevel] = useState<number | null>(null);
+  const [batteryCharging, setBatteryCharging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef<number | null>(null);
   const pointerIdRef = useRef<number | null>(null);
   const suppressClickRef = useRef(false);
+
+
+  useEffect(() => {
+    if (!modernHome) return;
+    const timer = window.setInterval(() => setNow(new Date()), 30_000);
+    return () => window.clearInterval(timer);
+  }, [modernHome]);
+
+  useEffect(() => {
+    if (!modernHome || typeof navigator === 'undefined') return;
+
+    let battery:
+      | {
+          level: number;
+          charging: boolean;
+          addEventListener: (type: string, listener: () => void) => void;
+          removeEventListener: (type: string, listener: () => void) => void;
+        }
+      | undefined;
+
+    const batteryNavigator = navigator as Navigator & {
+      getBattery?: () => Promise<typeof battery>;
+    };
+
+    if (!batteryNavigator.getBattery) return;
+
+    const syncBattery = () => {
+      if (!battery) return;
+      setBatteryLevel(Math.round(battery.level * 100));
+      setBatteryCharging(battery.charging);
+    };
+
+    void batteryNavigator.getBattery().then((manager) => {
+      if (!manager) return;
+      battery = manager;
+      syncBattery();
+      battery.addEventListener('levelchange', syncBattery);
+      battery.addEventListener('chargingchange', syncBattery);
+    });
+
+    return () => {
+      battery?.removeEventListener('levelchange', syncBattery);
+      battery?.removeEventListener('chargingchange', syncBattery);
+    };
+  }, [modernHome]);
+
+  const calendarIcon = desktopIcons.find((icon) => icon.id === 'calendar');
 
   const filteredApps = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -145,7 +198,42 @@ export function IosHomeScreen({
               style={{ width: `${100 / totalPages}%` }}
               aria-hidden={pageIndex !== page}
             >
-              {icons.map((icon) => renderIcon(icon))}
+              {modernHome && pageIndex === 0 && (
+                <div className="ios-home-widgets">
+                  <div className="ios-home-widget ios-home-widget--clock">
+                    <small>{now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}</small>
+                    <strong>{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong>
+                  </div>
+
+                  <div className="ios-home-widget ios-home-widget--battery">
+                    <div className="ios-home-widget__eyebrow">Batteries</div>
+                    <div className="ios-home-widget__battery-ring" style={{ '--battery-level': batteryLevel ?? 88 } as React.CSSProperties}>
+                      <span>{batteryLevel ?? 88}%</span>
+                    </div>
+                    <small>{batteryCharging ? 'Charging' : batteryLevel === null ? 'Estimated' : 'This device'}</small>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="ios-home-widget ios-home-widget--calendar"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      if (calendarIcon) launchIcon(event, calendarIcon);
+                    }}
+                    disabled={!calendarIcon}
+                  >
+                    <span className="ios-home-widget__calendar-day">
+                      {now.toLocaleDateString([], { weekday: 'short' }).toUpperCase()}
+                    </span>
+                    <strong>{now.getDate()}</strong>
+                    <small>Calendar</small>
+                  </button>
+                </div>
+              )}
+
+              <div className={modernHome && pageIndex === 0 ? 'ios-home-icons ios-home-icons--with-widgets' : 'ios-home-icons'}>
+                {icons.map((icon) => renderIcon(icon))}
+              </div>
             </div>
           ))}
 
