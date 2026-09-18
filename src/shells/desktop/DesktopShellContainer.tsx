@@ -48,6 +48,7 @@ import {
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
 import { AppleSystemBar } from './components/AppleSystemBar';
 import { AppleDock } from './components/AppleDock';
+import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
 
@@ -898,17 +899,26 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         </div>
       )}
 
-      <DesktopIconGrid
-        desktopIcons={desktopIcons}
-        selectedIcons={selectedIcons}
-        draggingIcon={draggingIcon}
-        iconRefs={iconRefs}
-        isXpFamily={isXpFamily}
-        themeKey={themeKey}
-        onIconMouseDown={handleIconMouseDown}
-        onIconDoubleClick={handleIconDoubleClick}
-        onIconContextMenu={handleIconContextMenu}
-      />
+      {themeKey.startsWith('ios-') ? (
+        <IosHomeScreen
+          desktopIcons={desktopIcons}
+          selectedIcons={selectedIcons}
+          onIconDoubleClick={handleIconDoubleClick}
+          onIconContextMenu={handleIconContextMenu}
+        />
+      ) : (
+        <DesktopIconGrid
+          desktopIcons={desktopIcons}
+          selectedIcons={selectedIcons}
+          draggingIcon={draggingIcon}
+          iconRefs={iconRefs}
+          isXpFamily={isXpFamily}
+          themeKey={themeKey}
+          onIconMouseDown={handleIconMouseDown}
+          onIconDoubleClick={handleIconDoubleClick}
+          onIconContextMenu={handleIconContextMenu}
+        />
+      )}
 
       <DesktopSelectionBox
         selectionBox={selectionBox}
