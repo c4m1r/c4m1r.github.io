@@ -2333,3 +2333,32 @@
   transform: translateY(-1px);
   text-shadow: 0 1px 4px rgba(0,0,0,0.32);
 }
+
+
+.os-ios .apple-ios-control-center__transport {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.os-ios .apple-ios-control-center__transport button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font: 600 11px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.os-ios .apple-ios-control-center__transport button:disabled {
+  opacity: 0.28;
+}
+
+.os-ios .apple-ios-control-center__transport button:not(:disabled):active {
+  background: rgba(255,255,255,0.16);
+  transform: scale(0.94);
+}
