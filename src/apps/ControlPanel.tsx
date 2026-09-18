@@ -260,9 +260,14 @@ export function ControlPanel() {
     >
       {/* Sidebar */}
       <div className={`w-[200px] flex-shrink-0 ${sidebarClass} p-4`}>
-        <h2 className="text-sm font-bold mb-4">
-          {isMac ? (isRu ? 'Системные настройки' : 'System Settings') : isRu ? 'Панель управления' : 'Control Panel'}
-        </h2>
+        <div className="mb-4">
+          <div className="text-[10px] font-bold uppercase tracking-[0.12em] opacity-65">
+            NervaWEB WebOS
+          </div>
+          <h2 className="text-sm font-bold mt-1">
+            {isMac ? (isRu ? 'Системные настройки' : 'System Settings') : isIos ? (isRu ? 'Настройки' : 'Settings') : isRu ? 'Панель управления' : 'Control Panel'}
+          </h2>
+        </div>
         <div className="space-y-2 text-xs">
           {!isMac && !isIos && (
             <button
@@ -316,11 +321,14 @@ export function ControlPanel() {
         {view === 'systemInfo' && (
           <div className="space-y-6">
             <div className="mb-4">
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] opacity-60 mb-1">
+                NervaWEB WebOS
+              </div>
               <h1 className={`text-2xl font-bold mb-1 ${titleClass}`}>
                 System & Device Information
               </h1>
               <p className="text-xs opacity-75">
-                Global System Services & OS Affordance Settings
+                NervaWEB WebOS system services, device metadata and OS affordance settings
               </p>
             </div>
 
@@ -391,6 +399,9 @@ export function ControlPanel() {
         {view === 'categories' && displayMode === 'category' && (
           <>
             <div className="mb-6">
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] opacity-60 mb-1">
+                NervaWEB WebOS
+              </div>
               <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
                 {isMac ? (isRu ? 'Системные настройки' : 'System Settings') : isRu ? 'Выберите категорию' : 'Pick a category'}
               </h1>
