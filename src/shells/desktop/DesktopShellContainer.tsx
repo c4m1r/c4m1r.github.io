@@ -583,6 +583,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     handleDesktopMouseDown,
     handleIconMouseDown,
     clearSelection,
+    cleanUpIcons,
   } = useDesktopIconGridState({
     initialDesktopIcons,
     viewport,
@@ -1064,7 +1065,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                   { label: 'Size' },
                 ],
               },
-              { label: 'Clean Up', disabled: true },
+              { label: 'Clean Up', onClick: cleanUpIcons },
               {
                 label: 'Show View Options',
                 onClick: () => setShowAppleViewOptions(true),
