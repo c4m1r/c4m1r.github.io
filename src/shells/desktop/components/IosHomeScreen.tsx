@@ -1,20 +1,7 @@
 import { useMemo, useRef, useState, type MouseEvent } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type DesktopIcon } from '../desktopTypes';
-import iosSafariIcon from '../../../../eat/homescreen-main/public/images/Icon=Safari.png';
-import iosMailIcon from '../../../../eat/homescreen-main/public/images/Icon=Mail.png';
-import iosMusicIcon from '../../../../eat/homescreen-main/public/images/Icon=Music.png';
-import iosFilesIcon from '../../../../eat/homescreen-main/public/images/Icon=Files.png';
-import iosCalculatorIcon from '../../../../eat/homescreen-main/public/images/Icon=Calculator.png';
-import iosSettingsIcon from '../../../../eat/homescreen-main/public/images/Icon=Settings.png';
-import iosPhotosIcon from '../../../../eat/homescreen-main/public/images/Icon=Photos.png';
-import iosNewsIcon from '../../../../eat/homescreen-main/public/images/Icon=News.png';
-import iosNotesIcon from '../../../../eat/homescreen-main/public/images/Icon=Notes.png';
-import ios9SafariIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/safari.png';
-import ios9SettingsIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/settings.png';
-import ios9PhotosIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/gallery.png';
-import ios9MusicIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/itunes.png';
-import ios9CalendarIcon from '../../../../eat/Iphone-7-Html-Css-Js-main/assets/images/iconcal.png';
+import { getIosIconMap } from '../appleIconAssets';
 
 interface IosHomeScreenProps {
   theme: ThemeId;
@@ -25,35 +12,6 @@ interface IosHomeScreenProps {
 }
 
 const PAGE_SIZE = 20;
-
-const MODERN_IOS_ICON_BY_ID: Record<string, string> = {
-  'internet-explorer': iosSafariIcon,
-  outlook: iosMailIcon,
-  'windows-media-player': iosMusicIcon,
-  winamp: iosMusicIcon,
-  'projects-grid': iosFilesIcon,
-  calculator: iosCalculatorIcon,
-  'control-panel': iosSettingsIcon,
-  pictures: iosPhotosIcon,
-  blog: iosNewsIcon,
-  news: iosNewsIcon,
-  notepad: iosNotesIcon,
-};
-
-const IOS9_ICON_BY_ID: Record<string, string> = {
-  'internet-explorer': ios9SafariIcon,
-  'windows-media-player': ios9MusicIcon,
-  winamp: ios9MusicIcon,
-  'control-panel': ios9SettingsIcon,
-  pictures: ios9PhotosIcon,
-  calendar: ios9CalendarIcon,
-};
-
-function getIosIconMap(theme: ThemeId): Record<string, string> {
-  if (theme === 'ios-9') return IOS9_ICON_BY_ID;
-  if (theme === 'ios-16' || theme === 'ios-26') return MODERN_IOS_ICON_BY_ID;
-  return {};
-}
 
 function chunkIcons(items: DesktopIcon[], size: number): DesktopIcon[][] {
   const pages: DesktopIcon[][] = [];
