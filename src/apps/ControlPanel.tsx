@@ -9,7 +9,7 @@ import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
 
-type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus';
+type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus' | 'display';
 type CPDisplayMode = 'category' | 'classic';
 
 export function ControlPanel() {
@@ -67,6 +67,17 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('macos-focus-enabled') === 'true';
   });
+  const [appleBrightness, setAppleBrightness] = useState(() => {
+    if (typeof window === 'undefined') return 78;
+    const key = theme === 'macos-26' ? 'macos-brightness-level' : 'ios-brightness-level';
+    const saved = Number(localStorage.getItem(key));
+    return Number.isFinite(saved) && saved >= 0 && saved <= 100 ? saved : 78;
+  });
+  const [appleNightMode, setAppleNightMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const key = theme === 'macos-26' ? 'macos-night-shift-enabled' : 'ios-night-mode-enabled';
+    return localStorage.getItem(key) === 'true';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -117,6 +128,36 @@ export function ControlPanel() {
     return () => window.removeEventListener('macos-focus-changed', handleMacFocusChange);
   }, []);
 
+  useEffect(() => {
+    const brightnessEvent = theme === 'macos-26' ? 'macos-brightness-changed' : 'ios-brightness-changed';
+    const nightEvent = theme === 'macos-26' ? 'macos-night-shift-changed' : 'ios-night-mode-changed';
+
+    const handleBrightnessChange = (event: Event) => {
+      const customEvent = event as CustomEvent<number>;
+      if (typeof customEvent.detail === 'number') setAppleBrightness(customEvent.detail);
+    };
+    const handleNightModeChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') setAppleNightMode(customEvent.detail);
+    };
+
+    window.addEventListener(brightnessEvent, handleBrightnessChange);
+    window.addEventListener(nightEvent, handleNightModeChange);
+    return () => {
+      window.removeEventListener(brightnessEvent, handleBrightnessChange);
+      window.removeEventListener(nightEvent, handleNightModeChange);
+    };
+  }, [theme]);
+
+  useEffect(() => {
+    if (!isMac && !isIos) return;
+    const brightnessKey = isMac ? 'macos-brightness-level' : 'ios-brightness-level';
+    const nightKey = isMac ? 'macos-night-shift-enabled' : 'ios-night-mode-enabled';
+    const savedBrightness = Number(localStorage.getItem(brightnessKey));
+    setAppleBrightness(Number.isFinite(savedBrightness) ? savedBrightness : 78);
+    setAppleNightMode(localStorage.getItem(nightKey) === 'true');
+  }, [isIos, isMac]);
+
   const setConnectivity = (
     key: 'wifi' | 'bluetooth' | 'cellular' | 'airplane',
     value: boolean
@@ -152,6 +193,23 @@ export function ControlPanel() {
     setMacFocusEnabled(value);
     localStorage.setItem('macos-focus-enabled', String(value));
     window.dispatchEvent(new CustomEvent('macos-focus-changed', { detail: value }));
+  };
+
+  const setAppleBrightnessLevel = (value: number) => {
+    const normalized = Math.max(isMac ? 20 : 0, Math.min(100, value));
+    setAppleBrightness(normalized);
+    const key = isMac ? 'macos-brightness-level' : 'ios-brightness-level';
+    const eventName = isMac ? 'macos-brightness-changed' : 'ios-brightness-changed';
+    localStorage.setItem(key, String(normalized));
+    window.dispatchEvent(new CustomEvent(eventName, { detail: normalized }));
+  };
+
+  const setAppleNightModeEnabled = (value: boolean) => {
+    setAppleNightMode(value);
+    const key = isMac ? 'macos-night-shift-enabled' : 'ios-night-mode-enabled';
+    const eventName = isMac ? 'macos-night-shift-changed' : 'ios-night-mode-changed';
+    localStorage.setItem(key, String(value));
+    window.dispatchEvent(new CustomEvent(eventName, { detail: value }));
   };
 
   const { wallpapers, loading: wallpapersLoading } = useGallery();
@@ -527,6 +585,75 @@ export function ControlPanel() {
       {/* Main Content */}
       <div className="flex-1 p-6 overflow-auto">
 
+        {/* ── Apple Display & Brightness view ── */}
+        {view === 'display' && (isMac || isIos) && (
+          <div className="space-y-5">
+            <div>
+              <button
+                type="button"
+                className="text-xs opacity-70 hover:opacity-100 mb-3"
+                onClick={() => setView('categories')}
+              >
+                ← {isRu ? 'Настройки' : 'Settings'}
+              </button>
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] opacity-60 mb-1">
+                NervaWEB WebOS
+              </div>
+              <h1 className={`text-2xl font-bold mb-1 ${titleClass}`}>
+                {isRu ? 'Экран и яркость' : 'Display & Brightness'}
+              </h1>
+            </div>
+
+            <section className={`${cardClass} overflow-hidden`}>
+              <div className="p-4">
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <strong>{isRu ? 'Яркость' : 'Brightness'}</strong>
+                  <span className="opacity-60">{Math.round(appleBrightness)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min={isMac ? 20 : 0}
+                  max="100"
+                  value={appleBrightness}
+                  onChange={(event) => setAppleBrightnessLevel(Number(event.target.value))}
+                  className="w-full"
+                  aria-label={isRu ? 'Яркость экрана' : 'Display brightness'}
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                <div>
+                  <strong className="block text-sm">
+                    {isMac ? 'Night Shift' : (isRu ? 'Ночной режим' : 'Night Mode')}
+                  </strong>
+                  <span className="block mt-1 text-[11px] opacity-60">
+                    {isRu ? 'Снижает холодный оттенок экрана' : 'Applies a warmer display tint'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={appleNightMode}
+                  className={`ios-settings-switch ${appleNightMode ? 'is-on' : ''}`}
+                  onClick={() => setAppleNightModeEnabled(!appleNightMode)}
+                >
+                  <span />
+                </button>
+              </div>
+
+              <div className="p-4 border-t border-white/10">
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-[#0a84ff] hover:opacity-80"
+                  onClick={() => setView('wallpaper')}
+                >
+                  {isRu ? 'Обои…' : 'Wallpaper…'}
+                </button>
+              </div>
+            </section>
+          </div>
+        )}
+
         {/* ── System & Device Info View ── */}
         {view === 'systemInfo' && (
           <div className="space-y-6">
@@ -628,7 +755,8 @@ export function ControlPanel() {
                   key={index}
                   className={`${cardClass} p-4 cursor-pointer transition-colors`}
                   onClick={() => {
-                    if (category.id === 'appearance') setView('wallpaper');
+                    if (category.id === 'appearance' && (isMac || isIos)) setView('display');
+                    else if (category.id === 'appearance') setView('wallpaper');
                     else if (category.id === 'maintenance') setView('systemInfo');
                     else if (category.id === 'accessibility' && isIos) setView('accessibility');
                     else if (category.id === 'network' && (isIos || isMac)) setView('network');
