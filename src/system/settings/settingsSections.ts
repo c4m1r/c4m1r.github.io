@@ -135,7 +135,6 @@ export function getSystemSettingsSections(themeId: ThemeId): SettingSection[] {
       { id: 'webos-cards', label: { en: 'Card View Animations', ru: 'Анимация карточек' }, frozen: true },
     ],
     'ios-26': [
-      { id: 'ios-cellular', label: { en: 'Cellular', ru: 'Сотовая связь' }, frozen: true },
       { id: 'ios-stage', label: { en: 'Stage Manager Layout', ru: 'Режим Stage Manager' }, frozen: true },
     ],
     'ios-16': [
