@@ -9,7 +9,7 @@ interface AppleDockProps {
   launcherOpen: boolean;
   onLauncherToggle: () => void;
   onLaunchApp: (appId: string) => void;
-  openWindowCount: number;
+  openWindowIds: string[];
 }
 
 interface DockItem {
@@ -41,7 +41,7 @@ export function AppleDock({
   launcherOpen,
   onLauncherToggle,
   onLaunchApp,
-  openWindowCount,
+  openWindowIds,
 }: AppleDockProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -57,7 +57,11 @@ export function AppleDock({
       aria-label={isMac ? 'Dock' : 'iOS Dock'}
     >
       {items.map((item) => {
-        const active = item.launcher ? launcherOpen : false;
+        const active = item.launcher
+          ? launcherOpen
+          : Boolean(item.appId && openWindowIds.some((id) =>
+              id === `app:${item.appId}` || id.startsWith(`app:${item.appId}-`)
+            ));
         return (
           <button
             key={item.id}
@@ -78,7 +82,7 @@ export function AppleDock({
             <span className="apple-dock__icon">
               {item.src ? <img src={item.src} alt="" draggable={false} /> : <span>{item.glyph}</span>}
             </span>
-            {isMac && item.appId && openWindowCount > 0 && (
+            {isMac && item.appId && active && (
               <span className="apple-dock__running-dot" aria-hidden="true" />
             )}
           </button>
