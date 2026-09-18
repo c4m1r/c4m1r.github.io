@@ -1160,3 +1160,50 @@
 .os-ios-9 .notepad-app__menubar {
   background: rgba(232,236,242,0.96) !important;
 }
+
+
+/* Terminal.app style over the shared pseudo-terminal runtime. */
+.os-macos .terminal-app--apple,
+.os-ios .terminal-app--apple {
+  padding: 16px 18px !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,255,255,0.035), transparent 28%),
+    rgba(18,18,20,0.97) !important;
+  color: #f2f2f7;
+  font-family: "SFMono-Regular", "SF Mono", Menlo, Monaco, Consolas, monospace !important;
+  font-size: 12px;
+  line-height: 1.48;
+}
+
+.os-macos .terminal-app--apple::before,
+.os-ios .terminal-app--apple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 1px rgba(255,255,255,0.035);
+}
+
+.os-macos .terminal-app--apple .terminal-app__line,
+.os-ios .terminal-app--apple .terminal-app__line {
+  color: rgba(242,242,247,0.92);
+}
+
+.os-macos .terminal-app--apple .terminal-app__prompt,
+.os-ios .terminal-app--apple .terminal-app__prompt {
+  margin-top: 1px;
+  color: #7dd3fc;
+}
+
+.os-macos .terminal-app--apple .terminal-app__input,
+.os-ios .terminal-app--apple .terminal-app__input {
+  color: #f2f2f7;
+  caret-color: #f2f2f7;
+  font: inherit;
+}
+
+.os-ios .terminal-app--apple {
+  padding: 14px 12px max(28px, env(safe-area-inset-bottom)) !important;
+  font-size: 11px;
+  background: #0b0b0d !important;
+}
