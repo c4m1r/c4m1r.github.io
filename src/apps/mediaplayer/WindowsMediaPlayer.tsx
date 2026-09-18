@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PROJECT_PLAYLIST } from './playlist';
+import { useApp } from '../../contexts/useApp';
 
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
@@ -9,6 +10,8 @@ function formatTime(seconds: number): string {
 }
 
 export function WindowsMediaPlayer() {
+  const { theme } = useApp();
+  const isAppleMusic = theme === 'macos-26' || theme.startsWith('ios-');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -132,12 +135,12 @@ export function WindowsMediaPlayer() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-[#dfe7f6] font-tahoma text-xs text-[#15396b]">
-      <header className="flex items-center justify-between border-b border-[#0b2146] bg-gradient-to-r from-[#0b2d66] to-[#15498d] px-4 py-3 text-white">
+    <div className={`media-player-app flex h-full w-full flex-col overflow-hidden bg-[#dfe7f6] font-tahoma text-xs text-[#15396b] ${isAppleMusic ? 'media-player-app--apple' : ''}`}>
+      <header className="media-player-app__header flex items-center justify-between border-b border-[#0b2146] bg-gradient-to-r from-[#0b2d66] to-[#15498d] px-4 py-3 text-white">
         <div className="flex min-w-0 flex-col">
-          <span className="text-lg font-semibold tracking-wide">Windows Media Player</span>
+          <span className="media-player-app__title text-lg font-semibold tracking-wide">{isAppleMusic ? 'Music' : 'Windows Media Player'}</span>
           <span className="truncate text-[11px] text-[#bcd1f2]">
-            Now Playing: {currentTrack.artist} - {currentTrack.title}
+            {isAppleMusic ? 'Now Playing' : 'Now Playing:'} {currentTrack.artist} - {currentTrack.title}
           </span>
         </div>
         <div className="hidden items-center gap-2 text-[11px] sm:flex">
@@ -146,9 +149,9 @@ export function WindowsMediaPlayer() {
         </div>
       </header>
 
-      <main className="flex min-h-0 flex-1 flex-col gap-3 p-4 md:flex-row">
-        <section className="flex w-full flex-shrink-0 flex-col gap-3 md:w-60">
-          <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden border border-[#0b2146] bg-[#020817] shadow-inner md:aspect-square">
+      <main className="media-player-app__main flex min-h-0 flex-1 flex-col gap-3 p-4 md:flex-row">
+        <section className="media-player-app__art-panel flex w-full flex-shrink-0 flex-col gap-3 md:w-60">
+          <div className="media-player-app__art relative flex aspect-video w-full items-center justify-center overflow-hidden border border-[#0b2146] bg-[#020817] shadow-inner md:aspect-square">
             <div className="absolute inset-0 opacity-70" aria-hidden="true">
               <div className="h-full w-full bg-[radial-gradient(circle_at_center,#235b9f_0%,#07172f_48%,#01040a_100%)]" />
             </div>
@@ -163,15 +166,15 @@ export function WindowsMediaPlayer() {
             </div>
           </div>
 
-          <div className="border border-white/80 bg-white/65 px-3 py-2 shadow-sm">
+          <div className="media-player-app__track-card border border-white/80 bg-white/65 px-3 py-2 shadow-sm">
             <h2 className="text-sm font-semibold text-[#0b2d66]">{currentTrack.title}</h2>
             <p className="text-[11px] text-[#305ca8]">{currentTrack.artist}</p>
             <p className="mt-1 text-[10px] uppercase tracking-wide text-[#4e7fd4]">Project music library</p>
           </div>
         </section>
 
-        <section className="flex min-h-0 flex-1 flex-col gap-3">
-          <div className="border border-[#c5d4f2] bg-white px-3 py-2 shadow-inner">
+        <section className="media-player-app__content flex min-h-0 flex-1 flex-col gap-3">
+          <div className="media-player-app__controls border border-[#c5d4f2] bg-white px-3 py-2 shadow-inner">
             <div className="mb-2 flex items-center justify-between text-[11px] text-[#0b2d66]">
               <span>Now Playing</span>
               <span>{formatTime(currentTime)} / {duration ? formatTime(duration) : currentTrack.durationLabel}</span>
@@ -188,7 +191,7 @@ export function WindowsMediaPlayer() {
               aria-label="Seek"
             />
 
-            <div className="flex flex-wrap items-center justify-center gap-3 text-[13px] text-[#0b2d66]">
+            <div className="media-player-app__transport flex flex-wrap items-center justify-center gap-3 text-[13px] text-[#0b2d66]">
               <button type="button" onClick={handlePrevious} className="border border-[#0b2d66] bg-white px-3 py-1 hover:bg-[#dfe7f6]" aria-label="Previous track">⏮</button>
               <button type="button" onClick={handlePlayPause} className="min-w-14 border border-[#0b2d66] bg-[#0b2d66] px-4 py-2 text-white shadow hover:bg-[#15498d]" aria-label={isPlaying ? 'Pause' : 'Play'}>
                 {isPlaying ? '⏸' : '▶'}
@@ -215,11 +218,11 @@ export function WindowsMediaPlayer() {
             )}
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[#c5d4f2] bg-white shadow-inner">
-            <header className="border-b border-[#c5d4f2] bg-[#eef3fb] px-3 py-2 text-[11px] uppercase tracking-wide text-[#0b2d66]">
+          <div className="media-player-app__playlist flex min-h-0 flex-1 flex-col overflow-hidden border border-[#c5d4f2] bg-white shadow-inner">
+            <header className="media-player-app__playlist-header border-b border-[#c5d4f2] bg-[#eef3fb] px-3 py-2 text-[11px] uppercase tracking-wide text-[#0b2d66]">
               Playlist - {PROJECT_PLAYLIST.length} tracks
             </header>
-            <ul className="min-h-0 flex-1 overflow-auto divide-y divide-[#e6ecf7]">
+            <ul className="media-player-app__playlist-list min-h-0 flex-1 overflow-auto divide-y divide-[#e6ecf7]">
               {PROJECT_PLAYLIST.map((track, index) => (
                 <li key={track.id}>
                   <button
@@ -248,8 +251,8 @@ export function WindowsMediaPlayer() {
         </section>
       </main>
 
-      <footer className="flex items-center justify-between border-t border-[#0b2146] bg-[#0b2d66] px-4 py-2 text-[10px] text-white">
-        <span>Local project media - no network fallback</span>
+      <footer className="media-player-app__footer flex items-center justify-between border-t border-[#0b2146] bg-[#0b2d66] px-4 py-2 text-[10px] text-white">
+        <span>{isAppleMusic ? 'Local Music Library' : 'Local project media - no network fallback'}</span>
         <span>{PROJECT_PLAYLIST.length} / {PROJECT_PLAYLIST.length}</span>
       </footer>
 
