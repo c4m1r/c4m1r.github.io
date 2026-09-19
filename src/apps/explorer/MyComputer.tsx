@@ -36,6 +36,14 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   const [showSidebar, setShowSidebar] = useState(true);
   const [quickLookOpen, setQuickLookOpen] = useState(false);
   const [appleSearchQuery, setAppleSearchQuery] = useState('');
+  const [showApplePathBar, setShowApplePathBar] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-finder-path-bar') === 'true';
+  });
+  const [showAppleStatusBar, setShowAppleStatusBar] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-finder-status-bar') !== 'false';
+  });
   const isWindowsXp = theme === 'win-xp';
   const isAppleExplorer = theme === 'macos-26' || theme.startsWith('ios-');
   const isIosExplorer = theme.startsWith('ios-');
@@ -81,6 +89,41 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     if (!needle) return items;
     return items.filter((item) => item.name.toLowerCase().includes(needle));
   }, [appleSearchQuery, items]);
+
+  useEffect(() => {
+    if (theme !== 'macos-26') return;
+
+    const handleFinderBarToggle = (event: Event) => {
+      const customEvent = event as CustomEvent<{ windowId?: string; bar?: 'path' | 'status' }>;
+      const expectedWindowId = `explorer:${currentPath}`;
+      if (customEvent.detail?.windowId !== expectedWindowId) return;
+
+      if (customEvent.detail.bar === 'path') {
+        setShowApplePathBar((current) => {
+          const next = !current;
+          localStorage.setItem('macos-finder-path-bar', String(next));
+          window.dispatchEvent(new CustomEvent('webos:finder-bar-state', {
+            detail: { pathBar: next },
+          }));
+          return next;
+        });
+      }
+
+      if (customEvent.detail.bar === 'status') {
+        setShowAppleStatusBar((current) => {
+          const next = !current;
+          localStorage.setItem('macos-finder-status-bar', String(next));
+          window.dispatchEvent(new CustomEvent('webos:finder-bar-state', {
+            detail: { statusBar: next },
+          }));
+          return next;
+        });
+      }
+    };
+
+    window.addEventListener('webos:finder-bar-toggle', handleFinderBarToggle);
+    return () => window.removeEventListener('webos:finder-bar-toggle', handleFinderBarToggle);
+  }, [currentPath, theme]);
 
   useEffect(() => {
     if (theme !== 'macos-26') return;
@@ -485,6 +528,25 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           </main>
         </div>
 
+        {theme === 'macos-26' && showApplePathBar && (
+          <nav className="apple-file-browser__pathbar" aria-label="Finder path">
+            <button type="button" onClick={() => navigateToPath('My Computer')}>
+              Macintosh HD
+            </button>
+            {path !== 'My Computer' && path.split('\\').filter(Boolean).map((segment, index, segments) => {
+              const fullPath = segments.slice(0, index + 1).join('\\');
+              return (
+                <span key={fullPath}>
+                  <i aria-hidden="true">›</i>
+                  <button type="button" onClick={() => navigateToPath(fullPath)}>
+                    {segment === 'C:' ? 'Macintosh HD' : segment}
+                  </button>
+                </span>
+              );
+            })}
+          </nav>
+        )}
+
         {theme === 'macos-26' && quickLookOpen && selectedFile?.type === 'file' && (
           <div className="apple-quick-look" role="dialog" aria-label={`Quick Look: ${selectedFile.name}`}>
             <button
@@ -526,10 +588,12 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           </div>
         )}
 
-        <footer className="apple-file-browser__status">
-          <span>{appleVisibleItems.length} {isRu ? 'объектов' : 'items'}{appleSearchQuery ? ` · ${isRu ? 'поиск' : 'search'}` : ''}</span>
-          {selectedItem && <span>{selectedItem}</span>}
-        </footer>
+        {showAppleStatusBar && (
+          <footer className="apple-file-browser__status">
+            <span>{appleVisibleItems.length} {isRu ? 'объектов' : 'items'}{appleSearchQuery ? ` · ${isRu ? 'поиск' : 'search'}` : ''}</span>
+            {selectedItem && <span>{selectedItem}</span>}
+          </footer>
+        )}
       </div>
     );
   }
