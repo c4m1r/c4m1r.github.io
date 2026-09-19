@@ -117,6 +117,14 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [showAppleLockScreen, setShowAppleLockScreen] = useState(false);
   const [showAppleWidgetGallery, setShowAppleWidgetGallery] = useState(false);
+  const [macDockMagnificationEnabled, setMacDockMagnificationEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-dock-magnification-enabled') !== 'false';
+  });
+  const [macDesktopWidgetsEnabled, setMacDesktopWidgetsEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-desktop-widgets-enabled') !== 'false';
+  });
   const [showAppleViewOptions, setShowAppleViewOptions] = useState(false);
   const [macDesktopIconScale, setMacDesktopIconScale] = useState(() => {
     if (typeof window === 'undefined') return 1;
@@ -165,6 +173,28 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     window.addEventListener('keydown', handleSpotlightShortcut);
     return () => window.removeEventListener('keydown', handleSpotlightShortcut);
   }, [theme]);
+
+  useEffect(() => {
+    const handleDockMagnificationChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') {
+        setMacDockMagnificationEnabled(customEvent.detail);
+      }
+    };
+    const handleDesktopWidgetsChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') {
+        setMacDesktopWidgetsEnabled(customEvent.detail);
+      }
+    };
+
+    window.addEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
+    window.addEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
+    return () => {
+      window.removeEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
+      window.removeEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
+    };
+  }, []);
 
   useEffect(() => {
     const handleAssistiveTouchChange = (event: Event) => {
@@ -1203,7 +1233,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         onOpenHelp={() => launchApp('help')}
       />
 
-      {themeKey === 'macos-26' && (
+      {themeKey === 'macos-26' && macDesktopWidgetsEnabled && (
         <AppleDesktopWidgets
           time={time}
           language={language}
@@ -1469,6 +1499,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             }}
             onLaunchApp={launchApp}
             openWindowIds={windows.map((window) => window.id)}
+            magnificationEnabled={macDockMagnificationEnabled}
             onQuitApp={(appId) => {
               windows
                 .filter((window) => {
