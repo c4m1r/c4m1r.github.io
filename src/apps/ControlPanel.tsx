@@ -109,6 +109,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-dock-open-indicators-enabled') !== 'false';
   });
+  const [macShowTransientDockApps, setMacShowTransientDockApps] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-dock-transient-apps-enabled') !== 'false';
+  });
   const [macClockShowDate, setMacClockShowDate] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-menu-bar-clock-show-date') !== 'false';
@@ -803,6 +807,33 @@ export function ControlPanel() {
                         setMacClockShowSeconds(next);
                         localStorage.setItem('macos-menu-bar-clock-show-seconds', String(next));
                         window.dispatchEvent(new CustomEvent('macos-clock-seconds-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Недавние и открытые приложения в Dock' : 'Recent and Open Apps in Dock'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu
+                          ? 'Показывает открытые приложения, которые не закреплены в Dock'
+                          : 'Shows open applications that are not pinned in the Dock'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macShowTransientDockApps}
+                      className={`ios-settings-switch ${macShowTransientDockApps ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macShowTransientDockApps;
+                        setMacShowTransientDockApps(next);
+                        localStorage.setItem('macos-dock-transient-apps-enabled', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-dock-transient-apps-changed', { detail: next }));
                       }}
                     >
                       <span />
