@@ -133,6 +133,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('macos-menu-bar-clock-flash-separators') === 'true';
   });
+  const [macReduceMotion, setMacReduceMotion] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-reduce-motion-enabled') === 'true';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -1097,7 +1101,7 @@ export function ControlPanel() {
                     if (category.id === 'appearance' && (isMac || isIos)) setView('display');
                     else if (category.id === 'appearance') setView('wallpaper');
                     else if (category.id === 'maintenance') setView('systemInfo');
-                    else if (category.id === 'accessibility' && isIos) setView('accessibility');
+                    else if (category.id === 'accessibility' && (isIos || isMac)) setView('accessibility');
                     else if (category.id === 'network' && (isIos || isMac)) setView('network');
                     else if (category.id === 'focus' && (isIos || isMac)) setView('focus');
                   }}
@@ -1299,12 +1303,13 @@ export function ControlPanel() {
                   <span />
                 </button>
               </div>
+              )}
             </section>
           </div>
         )}
 
         {/* ── Apple Accessibility view ── */}
-        {view === 'accessibility' && isIos && (
+        {view === 'accessibility' && (isIos || isMac) && (
           <div className="space-y-5">
             <div>
               <button
@@ -1326,6 +1331,7 @@ export function ControlPanel() {
             </div>
 
             <section className={`${cardClass} overflow-hidden`}>
+              {isIos && (
               <div className="flex items-center justify-between gap-4 p-4 min-h-[64px]">
                 <div>
                   <strong className="block text-sm">AssistiveTouch</strong>
@@ -1350,6 +1356,36 @@ export function ControlPanel() {
                   <span />
                 </button>
               </div>
+              )}
+              {isMac && (
+                <div className="flex items-center justify-between gap-4 p-4 min-h-[64px]">
+                  <div>
+                    <strong className="block text-sm">
+                      {isRu ? 'Уменьшение движения' : 'Reduce Motion'}
+                    </strong>
+                    <span className="block mt-1 text-[11px] opacity-60">
+                      {isRu
+                        ? 'Уменьшает анимации Dock и эффекты увеличения'
+                        : 'Reduces Dock launch animation and magnification effects'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={macReduceMotion}
+                    className={`ios-settings-switch ${macReduceMotion ? 'is-on' : ''}`}
+                    onClick={() => {
+                      const next = !macReduceMotion;
+                      setMacReduceMotion(next);
+                      localStorage.setItem('macos-reduce-motion-enabled', String(next));
+                      window.dispatchEvent(new CustomEvent('macos-reduce-motion-changed', { detail: next }));
+                    }}
+                  >
+                    <span />
+                  </button>
+                </div>
+              )}
+              {isIos && (
               <div className="border-t border-white/10 p-4">
                 <button
                   type="button"
