@@ -432,7 +432,7 @@ export function AppleSystemBar({
                     onFinderToggleBar('path');
                   }}
                 >
-                  <span>${finderPathBarVisible ? 'Hide Path Bar' : 'Show Path Bar'}</span>
+                  <span>{finderPathBarVisible ? 'Hide Path Bar' : 'Show Path Bar'}</span>
                 </button>
                 <button
                   type="button"
@@ -442,7 +442,7 @@ export function AppleSystemBar({
                     onFinderToggleBar('status');
                   }}
                 >
-                  <span>${finderStatusBarVisible ? 'Hide Status Bar' : 'Show Status Bar'}</span>
+                  <span>{finderStatusBarVisible ? 'Hide Status Bar' : 'Show Status Bar'}</span>
                 </button>
               </>
             )}
