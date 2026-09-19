@@ -2099,3 +2099,40 @@
   background: #007aff;
   color: #fff;
 }
+
+
+.os-macos .apple-macos-analog-clock {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.os-macos .apple-macos-analog-clock__face {
+  fill: rgba(255,255,255,0.08);
+  stroke: rgba(255,255,255,0.65);
+  stroke-width: .9;
+}
+
+.os-macos .apple-macos-analog-clock__hour,
+.os-macos .apple-macos-analog-clock__minute {
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.os-macos .apple-macos-analog-clock__hour {
+  stroke-width: 1.6;
+}
+
+.os-macos .apple-macos-analog-clock__minute {
+  stroke-width: 1.2;
+}
+
+.os-macos .apple-macos-analog-clock__second {
+  stroke: #ff453a;
+  stroke-width: .8;
+  stroke-linecap: round;
+}
+
+.os-macos .apple-macos-analog-clock__pin {
+  fill: currentColor;
+}
