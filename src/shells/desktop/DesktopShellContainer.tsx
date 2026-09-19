@@ -60,7 +60,7 @@ import { AppleDesktopViewOptions } from './components/AppleDesktopViewOptions';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
-import { MACOS_APP_ICON_BY_ID } from './appleIconAssets';
+import { MACOS_APP_ICON_BY_ID, MACOS_DOCK_ITEMS, type AppleDockAsset } from './appleIconAssets';
 
 /**
  * Unified DesktopShellContainer component owned by src/shells/desktop.
@@ -480,6 +480,33 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     playRestoreSound,
   });
   const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
+  const macPinnedDockAppIds = new Set(
+    MACOS_DOCK_ITEMS.map((item) => item.appId).filter((appId): appId is string => Boolean(appId))
+  );
+  const macTransientDockItems: AppleDockAsset[] = [];
+  const macTransientSeen = new Set<string>();
+
+  if (themeKey === 'macos-26') {
+    for (const managedWindow of windows) {
+      const appId = Object.keys(appRegistry).find((candidate) =>
+        managedWindow.id === `app:${candidate}` ||
+        managedWindow.id.startsWith(`app:${candidate}-`)
+      );
+      if (!appId || macPinnedDockAppIds.has(appId) || macTransientSeen.has(appId)) continue;
+
+      const definition = appRegistry[appId];
+      if (!definition) continue;
+
+      macTransientSeen.add(appId);
+      macTransientDockItems.push({
+        id: `transient-${appId}`,
+        appId,
+        title: getOsAppTitle(appId, definition.title, themeKey, language),
+        src: MACOS_APP_ICON_BY_ID[appId],
+        glyph: MACOS_APP_ICON_BY_ID[appId] ? undefined : definition.title[language].slice(0, 1).toUpperCase(),
+      });
+    }
+  }
 
   const handleMenuHoverSound = useCallback(() => {
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -1652,6 +1679,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             openWindowIds={windows.map((window) => window.id)}
             magnificationEnabled={macDockMagnificationEnabled}
             showRunningIndicators={macDockShowIndicators}
+            transientItems={macTransientDockItems}
             onQuitApp={(appId) => {
               windows
                 .filter((window) => {
