@@ -2439,3 +2439,57 @@
 .os-macos .apple-file-browser__sidebar button.is-active img {
   filter: saturate(1.08);
 }
+
+
+/* Finder Path Bar and Status Bar controls. */
+.os-macos .apple-file-browser__pathbar {
+  min-height: 28px;
+  flex: none;
+  padding: 4px 10px;
+  border-top: 1px solid rgba(60,60,67,0.08);
+  border-bottom: 1px solid rgba(60,60,67,0.08);
+  background: rgba(248,248,250,0.78);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.os-macos .apple-file-browser__pathbar::-webkit-scrollbar {
+  display: none;
+}
+
+.os-macos .apple-file-browser__pathbar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.os-macos .apple-file-browser__pathbar i {
+  color: rgba(60,60,67,0.30);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.os-macos .apple-file-browser__pathbar button {
+  min-height: 20px;
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: rgba(29,29,31,0.72);
+  font: 500 9px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.os-macos .apple-file-browser__pathbar button:hover {
+  background: rgba(118,118,128,0.10);
+  color: #1d1d1f;
+}
+
+.os-macos .apple-file-browser__status {
+  min-height: 27px;
+}
