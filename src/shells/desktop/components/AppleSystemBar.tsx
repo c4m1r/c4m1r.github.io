@@ -19,6 +19,7 @@ interface AppleSystemBarProps {
   clockShowSeconds?: boolean;
   clockShowDate?: boolean;
   clockShowDay?: boolean;
+  menuBarBackground?: boolean;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
@@ -51,6 +52,7 @@ export function AppleSystemBar({
   clockShowSeconds = false,
   clockShowDate = true,
   clockShowDay = true,
+  menuBarBackground = true,
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
@@ -200,7 +202,11 @@ export function AppleSystemBar({
     : '';
 
   return (
-    <div className="apple-system-bar apple-macos-menubar" onMouseDown={stop} onClick={stop}>
+    <div
+      className={`apple-system-bar apple-macos-menubar ${menuBarBackground ? '' : 'is-background-hidden'}`}
+      onMouseDown={stop}
+      onClick={stop}
+    >
       <div className="apple-macos-menu-left">
         <button
           type="button"
