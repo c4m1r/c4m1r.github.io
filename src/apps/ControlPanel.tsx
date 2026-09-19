@@ -22,6 +22,16 @@ export function ControlPanel() {
   const versionRules = getOsVersionRules(theme);
   const settingsSections = getSystemSettingsSections(theme);
 
+  const isMac = theme === 'macos-26';
+  const isIos = theme.startsWith('ios');
+  const useModernAppleSettingsIcons = isMac || theme === 'ios-16' || theme === 'ios-26';
+  const isWin98 = theme === 'win-98';
+  const isWinXp = theme === 'win-xp';
+  const isWin7 = theme === 'win7';
+  const isUbuntu = theme === 'ubuntu';
+  const isArch = theme === 'arch';
+  const isHalloween = theme === 'halloween';
+
   const [view, setView] = useState<CPView>('categories');
   const [displayMode, setDisplayMode] = useState<CPDisplayMode>('category');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
@@ -215,16 +225,6 @@ export function ControlPanel() {
   const { wallpapers, loading: wallpapersLoading } = useGallery();
 
   // OS-specific visual theme map
-  const isMac = theme === 'macos-26';
-  const isIos = theme.startsWith('ios');
-  const useModernAppleSettingsIcons = isMac || theme === 'ios-16' || theme === 'ios-26';
-  const isWin98 = theme === 'win-98';
-  const isWinXp = theme === 'win-xp';
-  const isWin7 = theme === 'win7';
-  const isUbuntu = theme === 'ubuntu';
-  const isArch = theme === 'arch';
-  const isHalloween = theme === 'halloween';
-
   const isRu = language === 'ru';
 
   const categories = useMemo(() => {
