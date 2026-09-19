@@ -1388,6 +1388,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             detail: { windowId: focusedWindow.id, mode },
           }));
         }}
+        onFinderToggleBar={(bar) => {
+          if (!focusedWindow?.id.startsWith('explorer:')) return;
+          window.dispatchEvent(new CustomEvent('webos:finder-bar-toggle', {
+            detail: { windowId: focusedWindow.id, bar },
+          }));
+        }}
         onOpenHelp={() => launchApp('help')}
       />
 
