@@ -112,6 +112,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-menu-bar-clock-show-day') !== 'false';
   });
+  const [macMenuBarBackground, setMacMenuBarBackground] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-menu-bar-background-enabled') !== 'false';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -825,6 +829,31 @@ export function ControlPanel() {
                         setMacClockShowDay(next);
                         localStorage.setItem('macos-menu-bar-clock-show-day', String(next));
                         window.dispatchEvent(new CustomEvent('macos-clock-day-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Фон строки меню' : 'Menu Bar Background'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Показывает стеклянную подложку строки меню' : 'Shows the translucent menu bar background'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macMenuBarBackground}
+                      className={`ios-settings-switch ${macMenuBarBackground ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macMenuBarBackground;
+                        setMacMenuBarBackground(next);
+                        localStorage.setItem('macos-menu-bar-background-enabled', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-menu-bar-background-changed', { detail: next }));
                       }}
                     >
                       <span />
