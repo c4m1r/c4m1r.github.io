@@ -39,6 +39,7 @@ interface AppleSystemBarProps {
   onZoomActiveWindow: () => void;
   onOpenFinderPath: (path: string) => void;
   onFinderViewMode: (mode: 'icons' | 'list') => void;
+  onFinderToggleBar: (bar: 'path' | 'status') => void;
   onOpenHelp: () => void;
 }
 
@@ -75,6 +76,7 @@ export function AppleSystemBar({
   onZoomActiveWindow,
   onOpenFinderPath,
   onFinderViewMode,
+  onFinderToggleBar,
   onOpenHelp,
 }: AppleSystemBarProps) {
   const isMac = theme === 'macos-26';
@@ -82,6 +84,14 @@ export function AppleSystemBar({
   const { level: batteryLevel, charging: batteryCharging } = useDeviceBattery(isMac || isIos);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [statusMenu, setStatusMenu] = useState<'battery' | 'wifi' | null>(null);
+  const [finderPathBarVisible, setFinderPathBarVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-finder-path-bar') === 'true';
+  });
+  const [finderStatusBarVisible, setFinderStatusBarVisible] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-finder-status-bar') !== 'false';
+  });
   const [systemMenu, setSystemMenu] = useState<'file' | 'view' | 'go' | 'window' | 'help' | null>(null);
   const [iosWifiEnabled, setIosWifiEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
@@ -96,6 +106,21 @@ export function AppleSystemBar({
     return localStorage.getItem('macos-wifi-enabled') !== 'false';
   });
   const iosSwipeStart = useRef<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const handleFinderBarState = (event: Event) => {
+      const customEvent = event as CustomEvent<{ pathBar?: boolean; statusBar?: boolean }>;
+      if (typeof customEvent.detail?.pathBar === 'boolean') {
+        setFinderPathBarVisible(customEvent.detail.pathBar);
+      }
+      if (typeof customEvent.detail?.statusBar === 'boolean') {
+        setFinderStatusBarVisible(customEvent.detail.statusBar);
+      }
+    };
+
+    window.addEventListener('webos:finder-bar-state', handleFinderBarState);
+    return () => window.removeEventListener('webos:finder-bar-state', handleFinderBarState);
+  }, []);
 
   useEffect(() => {
     const handleIosConnectivity = (event: Event) => {
@@ -397,6 +422,27 @@ export function AppleSystemBar({
                 >
                   <span>as List</span>
                   <span className="apple-app-menu__hint">⌘2</span>
+                </button>
+                <div className="apple-app-menu__separator" />
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setSystemMenu(null);
+                    onFinderToggleBar('path');
+                  }}
+                >
+                  <span>${finderPathBarVisible ? 'Hide Path Bar' : 'Show Path Bar'}</span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setSystemMenu(null);
+                    onFinderToggleBar('status');
+                  }}
+                >
+                  <span>${finderStatusBarVisible ? 'Hide Status Bar' : 'Show Status Bar'}</span>
                 </button>
               </>
             )}
