@@ -116,6 +116,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-menu-bar-background-enabled') !== 'false';
   });
+  const [macClockShowAmPm, setMacClockShowAmPm] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-menu-bar-clock-show-am-pm') !== 'false';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -854,6 +858,31 @@ export function ControlPanel() {
                         setMacMenuBarBackground(next);
                         localStorage.setItem('macos-menu-bar-background-enabled', String(next));
                         window.dispatchEvent(new CustomEvent('macos-menu-bar-background-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Показывать AM/PM' : 'Show AM/PM'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Использует 12-часовой формат для английской локали' : 'Uses the 12-hour clock suffix in English'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macClockShowAmPm}
+                      className={`ios-settings-switch ${macClockShowAmPm ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macClockShowAmPm;
+                        setMacClockShowAmPm(next);
+                        localStorage.setItem('macos-menu-bar-clock-show-am-pm', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-clock-am-pm-changed', { detail: next }));
                       }}
                     >
                       <span />
