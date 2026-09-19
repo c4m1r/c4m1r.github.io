@@ -8,6 +8,8 @@ interface AppleMenuSurfaceProps {
   onLockScreen: () => void;
   onForceQuit?: () => void;
   canForceQuit?: boolean;
+  recentItems?: Array<{ id: string; title: string }>;
+  onOpenRecent?: (appId: string) => void;
 }
 
 export function AppleMenuSurface({
@@ -20,6 +22,8 @@ export function AppleMenuSurface({
   onLockScreen,
   onForceQuit,
   canForceQuit = false,
+  recentItems = [],
+  onOpenRecent,
 }: AppleMenuSurfaceProps) {
   if (!open) return null;
 
@@ -51,10 +55,29 @@ export function AppleMenuSurface({
           System Settings…
         </button>
         <div className="apple-menu-surface__separator" />
-        <button type="button" role="menuitem" disabled>
-          <span>Recent Items</span>
-          <span className="apple-menu-surface__hint">›</span>
-        </button>
+        <div className="apple-menu-surface__recent-wrap">
+          <button type="button" role="menuitem" disabled={recentItems.length === 0}>
+            <span>Recent Items</span>
+            <span className="apple-menu-surface__hint">›</span>
+          </button>
+          {recentItems.length > 0 && (
+            <div className="apple-menu-surface__recent-submenu" role="menu">
+              {recentItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    if (!onOpenRecent) return;
+                    run(() => onOpenRecent(item.id));
+                  }}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <button
           type="button"
           role="menuitem"
