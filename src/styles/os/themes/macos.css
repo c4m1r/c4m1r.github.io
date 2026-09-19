@@ -2019,3 +2019,83 @@
   backdrop-filter: none;
   box-shadow: none;
 }
+
+
+/* Recent Items submenu inside the Apple menu. */
+.os-macos .apple-menu-surface__recent-wrap {
+  position: relative;
+}
+
+.os-macos .apple-menu-surface__recent-wrap > button {
+  width: 100%;
+  min-height: 27px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: left;
+  font: 400 11px/1.25 var(--mac-font);
+}
+
+.os-macos .apple-menu-surface__recent-wrap > button:hover:not(:disabled) {
+  background: #007aff;
+  color: #fff;
+}
+
+.os-macos .apple-menu-surface__recent-wrap > button:disabled {
+  color: rgba(60,60,67,0.34);
+}
+
+.os-macos .apple-menu-surface__recent-submenu {
+  position: absolute;
+  top: -6px;
+  left: calc(100% + 5px);
+  width: 220px;
+  padding: 5px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-4px);
+  border: 1px solid rgba(255,255,255,0.32);
+  border-radius: 10px;
+  background: rgba(246,246,248,0.94);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
+  backdrop-filter: blur(26px) saturate(170%);
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.24),
+    inset 0 1px rgba(255,255,255,0.72);
+  transition: opacity 90ms ease, transform 90ms ease, visibility 90ms ease;
+  pointer-events: none;
+}
+
+.os-macos .apple-menu-surface__recent-wrap:hover .apple-menu-surface__recent-submenu,
+.os-macos .apple-menu-surface__recent-wrap:focus-within .apple-menu-surface__recent-submenu {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.os-macos .apple-menu-surface__recent-submenu > button {
+  width: 100%;
+  min-height: 27px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #1d1d1f;
+  text-align: left;
+  font: 400 11px/1.25 var(--mac-font);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-macos .apple-menu-surface__recent-submenu > button:hover {
+  background: #007aff;
+  color: #fff;
+}
