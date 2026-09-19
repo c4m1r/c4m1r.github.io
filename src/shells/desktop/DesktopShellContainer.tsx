@@ -765,6 +765,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     handleIconMouseDown,
     clearSelection,
     cleanUpIcons,
+    sortDesktopIcons,
   } = useDesktopIconGridState({
     initialDesktopIcons,
     viewport,
@@ -1260,10 +1261,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               {
                 label: 'Sort By',
                 submenu: [
-                  { label: 'Name' },
-                  { label: 'Kind' },
-                  { label: 'Date Modified' },
-                  { label: 'Size' },
+                  { label: 'Name', onClick: () => sortDesktopIcons('name') },
+                  { label: 'Kind', onClick: () => sortDesktopIcons('kind') },
+                  { label: 'Date Modified', disabled: true },
+                  { label: 'Size', disabled: true },
                 ],
               },
               { label: 'Clean Up', onClick: cleanUpIcons },
