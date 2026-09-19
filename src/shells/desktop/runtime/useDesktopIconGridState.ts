@@ -21,6 +21,7 @@ export interface UseDesktopIconGridStateReturn {
   handleIconMouseDown: (e: React.MouseEvent, iconId: string) => void;
   clearSelection: () => void;
   cleanUpIcons: () => void;
+  sortDesktopIcons: (mode: 'name' | 'kind') => void;
 }
 
 export function useDesktopIconGridState(
@@ -34,6 +35,7 @@ export function useDesktopIconGridState(
   const [selectedIcons, setSelectedIcons] = useState<string[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectionBox, setSelectionBox] = useState<DesktopSelectionBoxData | null>(null);
+  const [sortMode, setSortMode] = useState<'name' | 'kind' | null>(null);
   const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const taskbarHeight = 30;
@@ -47,7 +49,17 @@ export function useDesktopIconGridState(
   );
   const iconsPerColumn = Math.max(1, Math.floor(availableHeight / iconSpacingY));
 
-  const desktopIcons: DesktopIcon[] = initialDesktopIcons.map((icon, index) => {
+  const orderedDesktopIcons =
+    sortMode === 'name'
+      ? [...initialDesktopIcons].sort((a, b) => a.label.localeCompare(b.label))
+      : sortMode === 'kind'
+        ? [...initialDesktopIcons].sort((a, b) => {
+            const kindOrder = a.type.localeCompare(b.type);
+            return kindOrder !== 0 ? kindOrder : a.label.localeCompare(b.label);
+          })
+        : initialDesktopIcons;
+
+  const desktopIcons: DesktopIcon[] = orderedDesktopIcons.map((icon, index) => {
     // Windows keeps the Recycle Bin anchored to the usable desktop corner. It must
     // not inherit a stale drag position when the viewport changes.
     if (icon.id === 'recycle-bin') {
@@ -225,6 +237,13 @@ export function useDesktopIconGridState(
     setSelectedIcons([]);
   }, []);
 
+  const sortDesktopIcons = useCallback((mode: 'name' | 'kind') => {
+    setSortMode(mode);
+    setIconPositions({});
+    setDraggingIcon(null);
+    setSelectedIcons([]);
+  }, []);
+
   return {
     desktopIcons,
     selectedIcons,
@@ -235,5 +254,6 @@ export function useDesktopIconGridState(
     handleIconMouseDown,
     clearSelection,
     cleanUpIcons,
+    sortDesktopIcons,
   };
 }
