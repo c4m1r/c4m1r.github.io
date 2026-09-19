@@ -125,6 +125,14 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-desktop-widgets-enabled') !== 'false';
   });
+  const [macClockShowSeconds, setMacClockShowSeconds] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-menu-bar-clock-show-seconds') === 'true';
+  });
+  const [macDockShowIndicators, setMacDockShowIndicators] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-dock-open-indicators-enabled') !== 'false';
+  });
   const [showAppleViewOptions, setShowAppleViewOptions] = useState(false);
   const [macDesktopIconScale, setMacDesktopIconScale] = useState(() => {
     if (typeof window === 'undefined') return 1;
@@ -187,12 +195,28 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         setMacDesktopWidgetsEnabled(customEvent.detail);
       }
     };
+    const handleClockSecondsChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') {
+        setMacClockShowSeconds(customEvent.detail);
+      }
+    };
+    const handleDockIndicatorsChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') {
+        setMacDockShowIndicators(customEvent.detail);
+      }
+    };
 
     window.addEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
     window.addEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
+    window.addEventListener('macos-clock-seconds-changed', handleClockSecondsChange);
+    window.addEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
     return () => {
       window.removeEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
       window.removeEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
+      window.removeEventListener('macos-clock-seconds-changed', handleClockSecondsChange);
+      window.removeEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
     };
   }, []);
 
@@ -1165,6 +1189,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         time={time}
         activeAppTitle={focusedWindow?.title}
         activeWindowId={focusedWindow?.id}
+        clockShowSeconds={macClockShowSeconds}
         onAppleMenuToggle={() => {
           setShowAppleMenu((prev) => !prev);
           setShowSystemActionMenu(false);
@@ -1500,6 +1525,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             onLaunchApp={launchApp}
             openWindowIds={windows.map((window) => window.id)}
             magnificationEnabled={macDockMagnificationEnabled}
+            showRunningIndicators={macDockShowIndicators}
             onQuitApp={(appId) => {
               windows
                 .filter((window) => {
