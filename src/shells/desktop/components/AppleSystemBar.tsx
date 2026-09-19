@@ -16,6 +16,7 @@ interface AppleSystemBarProps {
   time: Date;
   activeAppTitle?: string;
   activeWindowId?: string;
+  clockShowSeconds?: boolean;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
@@ -45,6 +46,7 @@ export function AppleSystemBar({
   time,
   activeAppTitle,
   activeWindowId,
+  clockShowSeconds = false,
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
@@ -107,6 +109,7 @@ export function AppleSystemBar({
   const timeLabel = time.toLocaleTimeString(language === 'ru' ? 'ru-RU' : 'en-US', {
     hour: '2-digit',
     minute: '2-digit',
+    ...(isMac && clockShowSeconds ? { second: '2-digit' as const } : {}),
   });
 
   if (isIos) {
