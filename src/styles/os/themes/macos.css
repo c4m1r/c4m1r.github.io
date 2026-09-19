@@ -2010,3 +2010,12 @@
   background: #ff9500;
   color: #fff;
 }
+
+
+.os-macos .apple-macos-menubar.is-background-hidden {
+  background: transparent;
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
