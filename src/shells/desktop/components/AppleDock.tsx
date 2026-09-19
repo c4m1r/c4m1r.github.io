@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import {
   MACOS_DOCK_ITEMS,
@@ -86,7 +86,7 @@ export function AppleDock({
               return id === `app:${item.appId}` || id.startsWith(`app:${item.appId}-`);
             }));
         return (
-          <>
+          <Fragment key={item.id}>
             {isMac && transientItems.length > 0 && itemIndex === MACOS_DOCK_ITEMS.length && (
               <span className="apple-dock__separator" aria-hidden="true" />
             )}
@@ -122,7 +122,7 @@ export function AppleDock({
               <span className="apple-dock__running-dot" aria-hidden="true" />
             )}
             </button>
-          </>
+          </Fragment>
         );
       })}
 
