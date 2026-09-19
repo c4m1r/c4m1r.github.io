@@ -25,6 +25,18 @@ export function AppleNotificationCenter({
     if (typeof window === 'undefined') return false;
     return localStorage.getItem(focusStorageKey) === 'true';
   });
+  const dismissedStorageKey =
+    theme === 'macos-26' ? 'macos-dismissed-notifications' : 'ios-dismissed-notifications';
+  const [dismissedKeys, setDismissedKeys] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem(dismissedStorageKey);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((value) => typeof value === 'string') : [];
+    } catch {
+      return [];
+    }
+  });
   const { news } = useNews();
   const { articles } = useArticles();
   useEffect(() => {
@@ -76,6 +88,26 @@ export function AppleNotificationCenter({
       })
       .slice(0, 4);
   }, [articles, language, news]);
+
+  const visibleUpdates = useMemo(
+    () => updates.filter((update) => !dismissedKeys.includes(update.key)),
+    [dismissedKeys, updates]
+  );
+
+  const dismissUpdate = (key: string) => {
+    setDismissedKeys((current) => {
+      if (current.includes(key)) return current;
+      const next = [...current, key];
+      localStorage.setItem(dismissedStorageKey, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const clearAllUpdates = () => {
+    const next = Array.from(new Set([...dismissedKeys, ...updates.map((update) => update.key)]));
+    setDismissedKeys(next);
+    localStorage.setItem(dismissedStorageKey, JSON.stringify(next));
+  };
 
   const calendarCells = useMemo(() => {
     const year = time.getFullYear();
@@ -136,7 +168,14 @@ export function AppleNotificationCenter({
         <section className="apple-notification-center__notifications">
           <header>
             <strong>Notification Center</strong>
-            <span>{focusMode ? 0 : updates.length}</span>
+            <div className="apple-notification-center__header-actions">
+              {!focusMode && visibleUpdates.length > 0 && (
+                <button type="button" onClick={clearAllUpdates}>
+                  {language === 'ru' ? 'Очистить' : 'Clear All'}
+                </button>
+              )}
+              <span>{focusMode ? 0 : visibleUpdates.length}</span>
+            </div>
           </header>
           {focusMode ? (
             <div className="apple-notification-center__empty">
@@ -144,29 +183,38 @@ export function AppleNotificationCenter({
               <strong>{language === 'ru' ? 'Уведомления заглушены' : 'Notifications Silenced'}</strong>
               <small>{language === 'ru' ? 'Режим фокусирования включён.' : 'Focus mode is currently enabled.'}</small>
             </div>
-          ) : updates.length > 0 ? (
+          ) : visibleUpdates.length > 0 ? (
             <div className="apple-notification-center__updates">
-              {updates.map((update) => (
-                <button
-                  type="button"
-                  key={update.key}
-                  className="apple-notification-center__update"
-                  onClick={() => {
-                    if (!update.path) return;
-                    onClose();
-                    window.location.href = update.path;
-                  }}
-                >
-                  <span className="apple-notification-center__update-icon">N</span>
-                  <span className="apple-notification-center__update-copy">
-                    <span>
-                      <strong>NervaWEB WebOS</strong>
-                      <small>{update.kind}</small>
+              {visibleUpdates.map((update) => (
+                <article key={update.key} className="apple-notification-center__update">
+                  <button
+                    type="button"
+                    className="apple-notification-center__update-open"
+                    onClick={() => {
+                      if (!update.path) return;
+                      onClose();
+                      window.location.href = update.path;
+                    }}
+                  >
+                    <span className="apple-notification-center__update-icon">N</span>
+                    <span className="apple-notification-center__update-copy">
+                      <span>
+                        <strong>NervaWEB WebOS</strong>
+                        <small>{update.kind}</small>
+                      </span>
+                      <b>{update.title}</b>
+                      <p>{update.summary}</p>
                     </span>
-                    <b>{update.title}</b>
-                    <p>{update.summary}</p>
-                  </span>
-                </button>
+                  </button>
+                  <button
+                    type="button"
+                    className="apple-notification-center__dismiss"
+                    aria-label={language === 'ru' ? 'Скрыть уведомление' : 'Dismiss notification'}
+                    onClick={() => dismissUpdate(update.key)}
+                  >
+                    ×
+                  </button>
+                </article>
               ))}
             </div>
           ) : (
