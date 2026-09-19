@@ -149,6 +149,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-dock-open-indicators-enabled') !== 'false';
   });
+  const [macShowTransientDockApps, setMacShowTransientDockApps] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-dock-transient-apps-enabled') !== 'false';
+  });
   const [macClockShowDate, setMacClockShowDate] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-menu-bar-clock-show-date') !== 'false';
@@ -253,6 +257,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         setMacDockShowIndicators(customEvent.detail);
       }
     };
+    const handleTransientDockAppsChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') {
+        setMacShowTransientDockApps(customEvent.detail);
+      }
+    };
     const handleClockDateChange = (event: Event) => {
       const customEvent = event as CustomEvent<boolean>;
       if (typeof customEvent.detail === 'boolean') {
@@ -295,6 +305,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     window.addEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
     window.addEventListener('macos-clock-seconds-changed', handleClockSecondsChange);
     window.addEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
+    window.addEventListener('macos-dock-transient-apps-changed', handleTransientDockAppsChange);
     window.addEventListener('macos-clock-date-changed', handleClockDateChange);
     window.addEventListener('macos-clock-day-changed', handleClockDayChange);
     window.addEventListener('macos-menu-bar-background-changed', handleMenuBarBackgroundChange);
@@ -307,6 +318,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       window.removeEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
       window.removeEventListener('macos-clock-seconds-changed', handleClockSecondsChange);
       window.removeEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
+      window.removeEventListener('macos-dock-transient-apps-changed', handleTransientDockAppsChange);
       window.removeEventListener('macos-clock-date-changed', handleClockDateChange);
       window.removeEventListener('macos-clock-day-changed', handleClockDayChange);
       window.removeEventListener('macos-menu-bar-background-changed', handleMenuBarBackgroundChange);
@@ -1699,7 +1711,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             magnificationEnabled={macDockMagnificationEnabled && !macReduceMotionEnabled}
             bounceEnabled={!macReduceMotionEnabled}
             showRunningIndicators={macDockShowIndicators}
-            transientItems={macTransientDockItems}
+            transientItems={macShowTransientDockApps ? macTransientDockItems : []}
             onQuitApp={(appId) => {
               windows
                 .filter((window) => {
