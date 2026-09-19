@@ -1389,7 +1389,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             if (definition) {
               return {
                 id: appId,
-                title: getOsAppTitle(appId, definition.title[language], themeKey),
+                title: getOsAppTitle(appId, definition.title, themeKey, language),
               };
             }
             const specialTitles: Record<string, string> = {
