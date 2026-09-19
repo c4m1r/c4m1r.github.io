@@ -35,6 +35,8 @@ export function AppleDock({
   const dockRef = useRef<HTMLDivElement | null>(null);
   const [pointerX, setPointerX] = useState<number | null>(null);
   const [contextItem, setContextItem] = useState<{ item: AppleDockAsset; x: number } | null>(null);
+  const [bouncingItemId, setBouncingItemId] = useState<string | null>(null);
+  const bounceTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!contextItem) return;
@@ -46,6 +48,16 @@ export function AppleDock({
       window.removeEventListener('blur', close);
     };
   }, [contextItem]);
+
+  useEffect(() => {
+    return () => {
+      if (bounceTimeoutRef.current !== null) {
+        window.clearTimeout(bounceTimeoutRef.current);
+      }
+    };
+  }, []);
+
+
 
   const items: readonly AppleDockAsset[] = isMac
     ? [...MACOS_DOCK_ITEMS, ...transientItems]
@@ -93,13 +105,23 @@ export function AppleDock({
             <button
             key={item.id}
             type="button"
-            className={`apple-dock__item ${active ? 'is-active' : ''}`}
+            className={`apple-dock__item ${active ? 'is-active' : ''} ${bouncingItemId === item.id ? 'is-bouncing' : ''}`}
             style={isMac ? { '--dock-scale': magnification.get(item.id) ?? 1 } as CSSProperties : undefined}
             title={item.title}
             aria-label={item.title}
             onClick={(event) => {
               event.stopPropagation();
               setContextItem(null);
+              if (isMac) {
+                if (bounceTimeoutRef.current !== null) {
+                  window.clearTimeout(bounceTimeoutRef.current);
+                }
+                setBouncingItemId(item.id);
+                bounceTimeoutRef.current = window.setTimeout(() => {
+                  setBouncingItemId(null);
+                  bounceTimeoutRef.current = null;
+                }, 360);
+              }
               if (item.launcher) {
                 onLauncherToggle();
                 return;
