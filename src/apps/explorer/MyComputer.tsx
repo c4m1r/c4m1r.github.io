@@ -534,12 +534,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               Macintosh HD
             </button>
             {path !== 'My Computer' && path.split('\\').filter(Boolean).map((segment, index, segments) => {
+              if (index === 0 && segment === 'C:') return null;
               const fullPath = segments.slice(0, index + 1).join('\\');
               return (
                 <span key={fullPath}>
                   <i aria-hidden="true">›</i>
                   <button type="button" onClick={() => navigateToPath(fullPath)}>
-                    {segment === 'C:' ? 'Macintosh HD' : segment}
+                    {segment}
                   </button>
                 </span>
               );
