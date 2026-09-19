@@ -40,6 +40,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('macos-finder-path-bar') === 'true';
   });
+  const [finderSidebarSize, setFinderSidebarSize] = useState<'small' | 'medium' | 'large'>(() => {
+    if (typeof window === 'undefined') return 'medium';
+    const saved = localStorage.getItem('macos-finder-sidebar-size');
+    return saved === 'small' || saved === 'large' ? saved : 'medium';
+  });
   const [showAppleStatusBar, setShowAppleStatusBar] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-finder-status-bar') !== 'false';
@@ -89,6 +94,24 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     if (!needle) return items;
     return items.filter((item) => item.name.toLowerCase().includes(needle));
   }, [appleSearchQuery, items]);
+
+  useEffect(() => {
+    if (theme !== 'macos-26') return;
+
+    const handleFinderSidebarSize = (event: Event) => {
+      const customEvent = event as CustomEvent<'small' | 'medium' | 'large'>;
+      if (
+        customEvent.detail === 'small' ||
+        customEvent.detail === 'medium' ||
+        customEvent.detail === 'large'
+      ) {
+        setFinderSidebarSize(customEvent.detail);
+      }
+    };
+
+    window.addEventListener('macos-finder-sidebar-size-changed', handleFinderSidebarSize);
+    return () => window.removeEventListener('macos-finder-sidebar-size-changed', handleFinderSidebarSize);
+  }, [theme]);
 
   useEffect(() => {
     if (theme !== 'macos-26') return;
@@ -341,7 +364,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     const appleListView = viewMode === 'list' || viewMode === 'details';
 
     return (
-      <div className="apple-file-browser">
+      <div
+        className="apple-file-browser"
+        data-sidebar-size={theme === 'macos-26' ? finderSidebarSize : undefined}
+      >
         <header className="apple-file-browser__toolbar">
           <div className="apple-file-browser__nav">
             <button type="button" onClick={handleBack} disabled={historyIndex === 0} aria-label="Back">
