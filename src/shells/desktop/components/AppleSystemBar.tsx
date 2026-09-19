@@ -21,6 +21,7 @@ interface AppleSystemBarProps {
   clockShowDay?: boolean;
   menuBarBackground?: boolean;
   clockShowAmPm?: boolean;
+  clockStyle?: 'digital' | 'analog';
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
@@ -55,6 +56,7 @@ export function AppleSystemBar({
   clockShowDay = true,
   menuBarBackground = true,
   clockShowAmPm = true,
+  clockStyle = 'digital',
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
@@ -203,6 +205,39 @@ export function AppleSystemBar({
         ...(clockShowDate ? { month: 'short' as const, day: 'numeric' as const } : {}),
       })
     : '';
+
+  const analogClock = (() => {
+    const seconds = time.getSeconds();
+    const minutes = time.getMinutes();
+    const hours = time.getHours() % 12;
+    const secondDeg = seconds * 6;
+    const minuteDeg = minutes * 6 + seconds * 0.1;
+    const hourDeg = hours * 30 + minutes * 0.5;
+
+    const point = (length: number, degrees: number) => {
+      const radians = (degrees * Math.PI) / 180;
+      return {
+        x: 10 + length * Math.sin(radians),
+        y: 10 - length * Math.cos(radians),
+      };
+    };
+
+    const hourPoint = point(4.6, hourDeg);
+    const minutePoint = point(6.4, minuteDeg);
+    const secondPoint = point(7.2, secondDeg);
+
+    return (
+      <svg className="apple-macos-analog-clock" viewBox="0 0 20 20" aria-label={timeLabel}>
+        <circle cx="10" cy="10" r="8.7" className="apple-macos-analog-clock__face" />
+        <line x1="10" y1="10" x2={hourPoint.x} y2={hourPoint.y} className="apple-macos-analog-clock__hour" />
+        <line x1="10" y1="10" x2={minutePoint.x} y2={minutePoint.y} className="apple-macos-analog-clock__minute" />
+        {clockShowSeconds && (
+          <line x1="10" y1="10" x2={secondPoint.x} y2={secondPoint.y} className="apple-macos-analog-clock__second" />
+        )}
+        <circle cx="10" cy="10" r="1" className="apple-macos-analog-clock__pin" />
+      </svg>
+    );
+  })();
 
   return (
     <div
@@ -613,7 +648,9 @@ export function AppleSystemBar({
           aria-label="Open Notification Center"
         >
           {dateLabel && <span className="apple-macos-date">{dateLabel}</span>}
-          <span className="apple-macos-time">{timeLabel}</span>
+          {clockStyle === 'analog'
+            ? analogClock
+            : <span className="apple-macos-time">{timeLabel}</span>}
         </button>
       </div>
     </div>
