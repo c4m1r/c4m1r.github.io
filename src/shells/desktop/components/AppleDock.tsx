@@ -16,6 +16,7 @@ interface AppleDockProps {
   magnificationEnabled?: boolean;
   showRunningIndicators?: boolean;
   transientItems?: readonly AppleDockAsset[];
+  bounceEnabled?: boolean;
 }
 
 
@@ -29,6 +30,7 @@ export function AppleDock({
   magnificationEnabled = true,
   showRunningIndicators = true,
   transientItems = [],
+  bounceEnabled = true,
 }: AppleDockProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -112,7 +114,7 @@ export function AppleDock({
             onClick={(event) => {
               event.stopPropagation();
               setContextItem(null);
-              if (isMac) {
+              if (isMac && bounceEnabled) {
                 if (bounceTimeoutRef.current !== null) {
                   window.clearTimeout(bounceTimeoutRef.current);
                 }
