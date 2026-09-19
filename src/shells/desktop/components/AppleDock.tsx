@@ -14,6 +14,7 @@ interface AppleDockProps {
   openWindowIds: string[];
   onQuitApp?: (appId: string) => void;
   magnificationEnabled?: boolean;
+  showRunningIndicators?: boolean;
 }
 
 
@@ -25,6 +26,7 @@ export function AppleDock({
   openWindowIds,
   onQuitApp,
   magnificationEnabled = true,
+  showRunningIndicators = true,
 }: AppleDockProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -108,7 +110,7 @@ export function AppleDock({
             <span className="apple-dock__icon">
               {item.src ? <img src={item.src} alt="" draggable={false} /> : <span>{item.glyph}</span>}
             </span>
-            {isMac && item.appId && active && (
+            {isMac && showRunningIndicators && item.appId && active && (
               <span className="apple-dock__running-dot" aria-hidden="true" />
             )}
           </button>
