@@ -96,6 +96,14 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-desktop-widgets-enabled') !== 'false';
   });
+  const [macClockShowSeconds, setMacClockShowSeconds] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-menu-bar-clock-show-seconds') === 'true';
+  });
+  const [macDockShowIndicators, setMacDockShowIndicators] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-dock-open-indicators-enabled') !== 'false';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -709,6 +717,56 @@ export function ControlPanel() {
                         setMacDesktopWidgetsEnabled(next);
                         localStorage.setItem('macos-desktop-widgets-enabled', String(next));
                         window.dispatchEvent(new CustomEvent('macos-desktop-widgets-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Показывать секунды' : 'Show Seconds in Clock'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Добавляет секунды к часам строки меню' : 'Adds seconds to the menu bar clock'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macClockShowSeconds}
+                      className={`ios-settings-switch ${macClockShowSeconds ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macClockShowSeconds;
+                        setMacClockShowSeconds(next);
+                        localStorage.setItem('macos-menu-bar-clock-show-seconds', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-clock-seconds-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Индикаторы открытых приложений' : 'Open App Indicators'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Показывает точки под открытыми приложениями в Dock' : 'Shows dots under open apps in the Dock'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macDockShowIndicators}
+                      className={`ios-settings-switch ${macDockShowIndicators ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macDockShowIndicators;
+                        setMacDockShowIndicators(next);
+                        localStorage.setItem('macos-dock-open-indicators-enabled', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-dock-indicators-changed', { detail: next }));
                       }}
                     >
                       <span />
