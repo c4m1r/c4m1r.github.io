@@ -88,6 +88,14 @@ export function ControlPanel() {
     const key = theme === 'macos-26' ? 'macos-night-shift-enabled' : 'ios-night-mode-enabled';
     return localStorage.getItem(key) === 'true';
   });
+  const [macDockMagnification, setMacDockMagnification] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-dock-magnification-enabled') !== 'false';
+  });
+  const [macDesktopWidgetsEnabled, setMacDesktopWidgetsEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-desktop-widgets-enabled') !== 'false';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -650,6 +658,64 @@ export function ControlPanel() {
                   {isRu ? 'Обои…' : 'Wallpaper…'}
                 </button>
               </div>
+
+              {isMac && (
+                <>
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Увеличение Dock' : 'Dock Magnification'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu
+                          ? 'Увеличивает значки Dock при наведении'
+                          : 'Magnifies Dock icons around the pointer'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macDockMagnification}
+                      className={`ios-settings-switch ${macDockMagnification ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macDockMagnification;
+                        setMacDockMagnification(next);
+                        localStorage.setItem('macos-dock-magnification-enabled', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-dock-magnification-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Виджеты рабочего стола' : 'Desktop Widgets'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu
+                          ? 'Показывает часы, календарь и аккумулятор на рабочем столе'
+                          : 'Shows Clock, Calendar, and Battery widgets on the desktop'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macDesktopWidgetsEnabled}
+                      className={`ios-settings-switch ${macDesktopWidgetsEnabled ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macDesktopWidgetsEnabled;
+                        setMacDesktopWidgetsEnabled(next);
+                        localStorage.setItem('macos-desktop-widgets-enabled', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-desktop-widgets-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+                </>
+              )}
             </section>
           </div>
         )}
