@@ -104,6 +104,14 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-dock-open-indicators-enabled') !== 'false';
   });
+  const [macClockShowDate, setMacClockShowDate] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-menu-bar-clock-show-date') !== 'false';
+  });
+  const [macClockShowDay, setMacClockShowDay] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-menu-bar-clock-show-day') !== 'false';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -767,6 +775,56 @@ export function ControlPanel() {
                         setMacDockShowIndicators(next);
                         localStorage.setItem('macos-dock-open-indicators-enabled', String(next));
                         window.dispatchEvent(new CustomEvent('macos-dock-indicators-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Показывать дату' : 'Show Date'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Показывает месяц и число в строке меню' : 'Shows month and day in the menu bar'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macClockShowDate}
+                      className={`ios-settings-switch ${macClockShowDate ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macClockShowDate;
+                        setMacClockShowDate(next);
+                        localStorage.setItem('macos-menu-bar-clock-show-date', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-clock-date-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Показывать день недели' : 'Show Day of Week'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Добавляет день недели к дате строки меню' : 'Adds the weekday to the menu bar date'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macClockShowDay}
+                      className={`ios-settings-switch ${macClockShowDay ? 'is-on' : ''}`}
+                      onClick={() => {
+                        const next = !macClockShowDay;
+                        setMacClockShowDay(next);
+                        localStorage.setItem('macos-menu-bar-clock-show-day', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-clock-day-changed', { detail: next }));
                       }}
                     >
                       <span />
