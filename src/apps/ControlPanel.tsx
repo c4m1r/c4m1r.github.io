@@ -120,6 +120,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-menu-bar-clock-show-am-pm') !== 'false';
   });
+  const [macClockStyle, setMacClockStyle] = useState<'digital' | 'analog'>(() => {
+    if (typeof window === 'undefined') return 'digital';
+    return localStorage.getItem('macos-menu-bar-clock-style') === 'analog' ? 'analog' : 'digital';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -887,6 +891,38 @@ export function ControlPanel() {
                     >
                       <span />
                     </button>
+                  </div>
+
+                  <div className="p-4 border-t border-white/10">
+                    <div className="flex items-center justify-between gap-4 mb-3">
+                      <div>
+                        <strong className="block text-sm">
+                          {isRu ? 'Стиль часов' : 'Clock Style'}
+                        </strong>
+                        <span className="block mt-1 text-[11px] opacity-60">
+                          {isRu ? 'Цифровые или аналоговые часы в строке меню' : 'Digital or analog clock in the menu bar'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {(['digital', 'analog'] as const).map((style) => (
+                        <button
+                          key={style}
+                          type="button"
+                          className={`rounded-lg px-3 py-2 text-xs font-semibold border transition-colors ${macClockStyle === style ? 'bg-[#0a84ff] text-white border-[#0a84ff]' : 'border-white/10 hover:bg-white/10'}`}
+                          aria-pressed={macClockStyle === style}
+                          onClick={() => {
+                            setMacClockStyle(style);
+                            localStorage.setItem('macos-menu-bar-clock-style', style);
+                            window.dispatchEvent(new CustomEvent('macos-clock-style-changed', { detail: style }));
+                          }}
+                        >
+                          {style === 'digital'
+                            ? (isRu ? 'Цифровые' : 'Digital')
+                            : (isRu ? 'Аналоговые' : 'Analog')}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </>
               )}
