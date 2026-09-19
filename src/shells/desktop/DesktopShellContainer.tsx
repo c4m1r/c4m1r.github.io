@@ -114,6 +114,18 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showSystemActionMenu, setShowSystemActionMenu] = useState(false);
   const [showAppleMenu, setShowAppleMenu] = useState(false);
+  const [recentAppIds, setRecentAppIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem('macos-recent-apps');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed)
+        ? parsed.filter((value) => typeof value === 'string').slice(0, 6)
+        : [];
+    } catch {
+      return [];
+    }
+  });
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [showAppleLockScreen, setShowAppleLockScreen] = useState(false);
   const [showAppleWidgetGallery, setShowAppleWidgetGallery] = useState(false);
@@ -825,6 +837,14 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     themeAssets.gamesIcon,
   ]);
 
+  const recordRecentApp = useCallback((appId: string) => {
+    setRecentAppIds((current) => {
+      const next = [appId, ...current.filter((id) => id !== appId)].slice(0, 6);
+      localStorage.setItem('macos-recent-apps', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
   const handleOpenPictureFromGallery = useCallback((imagePath: string) => {
     openWindow({
       id: `picture:${imagePath}`,
@@ -850,20 +870,25 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         case 'run':
           setShowRunDialog(true);
           playLaunchSound();
+          recordRecentApp('run');
           break;
         case 'my-computer':
           openExplorerWindow('My Computer');
+          recordRecentApp('my-computer');
           break;
         case 'games-folder':
           openGamesFolder();
+          recordRecentApp('games-folder');
           break;
         case 'all-programs':
           openExplorerWindow('C:\\Program Files');
+          recordRecentApp('all-programs');
           break;
         case 'doom1':
         case 'doom2':
         case 'doom3':
           openDoomVariant(appId as DoomVariantId);
+          recordRecentApp(appId);
           break;
         default:
           playErrorSound();
@@ -875,6 +900,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       }
       return;
     }
+
+    recordRecentApp(appId);
 
     const Component = config.app.component;
     let content: React.ReactNode = null;
@@ -924,6 +951,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     openExplorerWindow,
     openGamesFolder,
     openDoomVariant,
+    recordRecentApp,
   ]);
 
   useEffect(() => {
@@ -1356,6 +1384,26 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           onClose={() => setShowAppleMenu(false)}
           onOpenAbout={() => launchApp('about')}
           onOpenSettings={() => launchApp('control-panel')}
+          recentItems={recentAppIds.map((appId) => {
+            const definition = appRegistry[appId];
+            if (definition) {
+              return {
+                id: appId,
+                title: getOsAppTitle(appId, definition.title[language], themeKey),
+              };
+            }
+            const specialTitles: Record<string, string> = {
+              run: 'Run',
+              'my-computer': 'Finder',
+              'games-folder': 'Games',
+              'all-programs': 'Applications',
+              doom1: 'DOOM',
+              doom2: 'DOOM II',
+              doom3: 'DOOM 3',
+            };
+            return { id: appId, title: specialTitles[appId] ?? appId };
+          })}
+          onOpenRecent={(appId) => launchApp(appId)}
           canForceQuit={Boolean(focusedWindow)}
           onForceQuit={() => {
             if (focusedWindow) handleCloseWindow(focusedWindow.id);
