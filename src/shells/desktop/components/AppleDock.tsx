@@ -78,7 +78,7 @@ export function AppleDock({
       }}
       onPointerLeave={() => setPointerX(null)}
     >
-      {items.map((item) => {
+      {items.map((item, itemIndex) => {
         const active = item.launcher
           ? launcherOpen
           : Boolean(item.appId && openWindowIds.some((id) => {
@@ -86,7 +86,11 @@ export function AppleDock({
               return id === `app:${item.appId}` || id.startsWith(`app:${item.appId}-`);
             }));
         return (
-          <button
+          <>
+            {isMac && transientItems.length > 0 && itemIndex === MACOS_DOCK_ITEMS.length && (
+              <span className="apple-dock__separator" aria-hidden="true" />
+            )}
+            <button
             key={item.id}
             type="button"
             className={`apple-dock__item ${active ? 'is-active' : ''}`}
@@ -117,7 +121,8 @@ export function AppleDock({
             {isMac && showRunningIndicators && item.appId && active && (
               <span className="apple-dock__running-dot" aria-hidden="true" />
             )}
-          </button>
+            </button>
+          </>
         );
       })}
 
