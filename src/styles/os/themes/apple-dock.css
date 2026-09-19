@@ -232,3 +232,27 @@
   background: rgba(60,60,67,0.24);
   box-shadow: 1px 0 rgba(255,255,255,0.34);
 }
+
+
+/* Short launch feedback adapted from donor DockItem dock-bounce. */
+.os-macos .apple-dock__item.is-bouncing {
+  animation: mac-dock-bounce 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mac-dock-bounce {
+  0% {
+    transform: translateY(calc((var(--dock-scale) - 1) * -18px)) scale(var(--dock-scale));
+  }
+  35% {
+    transform: translateY(calc((var(--dock-scale) - 1) * -18px - 13px)) scale(var(--dock-scale));
+  }
+  62% {
+    transform: translateY(calc((var(--dock-scale) - 1) * -18px - 3px)) scale(var(--dock-scale));
+  }
+  82% {
+    transform: translateY(calc((var(--dock-scale) - 1) * -18px - 7px)) scale(var(--dock-scale));
+  }
+  100% {
+    transform: translateY(calc((var(--dock-scale) - 1) * -18px)) scale(var(--dock-scale));
+  }
+}
