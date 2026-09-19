@@ -133,6 +133,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-dock-magnification-enabled') !== 'false';
   });
+  const [macReduceMotionEnabled, setMacReduceMotionEnabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-reduce-motion-enabled') === 'true';
+  });
   const [macDesktopWidgetsEnabled, setMacDesktopWidgetsEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-desktop-widgets-enabled') !== 'false';
@@ -225,6 +229,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         setMacDockMagnificationEnabled(customEvent.detail);
       }
     };
+    const handleReduceMotionChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') {
+        setMacReduceMotionEnabled(customEvent.detail);
+      }
+    };
     const handleDesktopWidgetsChange = (event: Event) => {
       const customEvent = event as CustomEvent<boolean>;
       if (typeof customEvent.detail === 'boolean') {
@@ -281,6 +291,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     };
 
     window.addEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
+    window.addEventListener('macos-reduce-motion-changed', handleReduceMotionChange);
     window.addEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
     window.addEventListener('macos-clock-seconds-changed', handleClockSecondsChange);
     window.addEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
@@ -292,6 +303,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     window.addEventListener('macos-clock-flash-separators-changed', handleClockFlashSeparatorsChange);
     return () => {
       window.removeEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
+      window.removeEventListener('macos-reduce-motion-changed', handleReduceMotionChange);
       window.removeEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
       window.removeEventListener('macos-clock-seconds-changed', handleClockSecondsChange);
       window.removeEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
@@ -1684,7 +1696,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             }}
             onLaunchApp={launchApp}
             openWindowIds={windows.map((window) => window.id)}
-            magnificationEnabled={macDockMagnificationEnabled}
+            magnificationEnabled={macDockMagnificationEnabled && !macReduceMotionEnabled}
+            bounceEnabled={!macReduceMotionEnabled}
             showRunningIndicators={macDockShowIndicators}
             transientItems={macTransientDockItems}
             onQuitApp={(appId) => {
