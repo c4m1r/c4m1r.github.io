@@ -13,6 +13,7 @@ interface AppleDockProps {
   onLaunchApp: (appId: string) => void;
   openWindowIds: string[];
   onQuitApp?: (appId: string) => void;
+  magnificationEnabled?: boolean;
 }
 
 
@@ -23,6 +24,7 @@ export function AppleDock({
   onLaunchApp,
   openWindowIds,
   onQuitApp,
+  magnificationEnabled = true,
 }: AppleDockProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -44,7 +46,7 @@ export function AppleDock({
   const items: readonly AppleDockAsset[] = isMac ? MACOS_DOCK_ITEMS : getIosDockItems(theme);
   const magnification = new Map<string, number>();
 
-  if (isMac && pointerX !== null && dockRef.current) {
+  if (isMac && magnificationEnabled && pointerX !== null && dockRef.current) {
     const buttons = Array.from(dockRef.current.querySelectorAll<HTMLButtonElement>('.apple-dock__item'));
     buttons.forEach((button, index) => {
       const rect = button.getBoundingClientRect();
@@ -66,7 +68,7 @@ export function AppleDock({
       role="toolbar"
       aria-label={isMac ? 'Dock' : 'iOS Dock'}
       onPointerMove={(event) => {
-        if (isMac) setPointerX(event.clientX);
+        if (isMac && magnificationEnabled) setPointerX(event.clientX);
       }}
       onPointerLeave={() => setPointerX(null)}
     >
