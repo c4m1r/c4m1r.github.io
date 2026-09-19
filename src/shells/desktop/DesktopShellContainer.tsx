@@ -141,6 +141,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-menu-bar-clock-show-day') !== 'false';
   });
+  const [macMenuBarBackground, setMacMenuBarBackground] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('macos-menu-bar-background-enabled') !== 'false';
+  });
   const [showAppleViewOptions, setShowAppleViewOptions] = useState(false);
   const [macDesktopIconScale, setMacDesktopIconScale] = useState(() => {
     if (typeof window === 'undefined') return 1;
@@ -227,6 +231,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         setMacClockShowDay(customEvent.detail);
       }
     };
+    const handleMenuBarBackgroundChange = (event: Event) => {
+      const customEvent = event as CustomEvent<boolean>;
+      if (typeof customEvent.detail === 'boolean') {
+        setMacMenuBarBackground(customEvent.detail);
+      }
+    };
 
     window.addEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
     window.addEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
@@ -234,6 +244,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     window.addEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
     window.addEventListener('macos-clock-date-changed', handleClockDateChange);
     window.addEventListener('macos-clock-day-changed', handleClockDayChange);
+    window.addEventListener('macos-menu-bar-background-changed', handleMenuBarBackgroundChange);
     return () => {
       window.removeEventListener('macos-dock-magnification-changed', handleDockMagnificationChange);
       window.removeEventListener('macos-desktop-widgets-changed', handleDesktopWidgetsChange);
@@ -241,6 +252,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       window.removeEventListener('macos-dock-indicators-changed', handleDockIndicatorsChange);
       window.removeEventListener('macos-clock-date-changed', handleClockDateChange);
       window.removeEventListener('macos-clock-day-changed', handleClockDayChange);
+      window.removeEventListener('macos-menu-bar-background-changed', handleMenuBarBackgroundChange);
     };
   }, []);
 
@@ -1216,6 +1228,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         clockShowSeconds={macClockShowSeconds}
         clockShowDate={macClockShowDate}
         clockShowDay={macClockShowDay}
+        menuBarBackground={macMenuBarBackground}
         onAppleMenuToggle={() => {
           setShowAppleMenu((prev) => !prev);
           setShowSystemActionMenu(false);
