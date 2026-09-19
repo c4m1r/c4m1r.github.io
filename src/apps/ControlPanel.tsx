@@ -124,6 +124,10 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return 'digital';
     return localStorage.getItem('macos-menu-bar-clock-style') === 'analog' ? 'analog' : 'digital';
   });
+  const [macClockFlashSeparators, setMacClockFlashSeparators] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('macos-menu-bar-clock-flash-separators') === 'true';
+  });
 
   useEffect(() => {
     const handleMacConnectivityChange = (event: Event) => {
@@ -923,6 +927,32 @@ export function ControlPanel() {
                         </button>
                       ))}
                     </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Мигающие разделители' : 'Flash Time Separators'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Мигает двоеточием в цифровых часах каждую секунду' : 'Flashes the digital clock separators each second'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={macClockFlashSeparators}
+                      className={`ios-settings-switch ${macClockFlashSeparators ? 'is-on' : ''}`}
+                      disabled={macClockStyle !== 'digital'}
+                      onClick={() => {
+                        const next = !macClockFlashSeparators;
+                        setMacClockFlashSeparators(next);
+                        localStorage.setItem('macos-menu-bar-clock-flash-separators', String(next));
+                        window.dispatchEvent(new CustomEvent('macos-clock-flash-separators-changed', { detail: next }));
+                      }}
+                    >
+                      <span />
+                    </button>
                   </div>
                 </>
               )}
