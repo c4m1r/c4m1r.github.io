@@ -22,6 +22,7 @@ interface AppleSystemBarProps {
   menuBarBackground?: boolean;
   clockShowAmPm?: boolean;
   clockStyle?: 'digital' | 'analog';
+  clockFlashSeparators?: boolean;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
@@ -57,6 +58,7 @@ export function AppleSystemBar({
   menuBarBackground = true,
   clockShowAmPm = true,
   clockStyle = 'digital',
+  clockFlashSeparators = false,
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
@@ -198,6 +200,11 @@ export function AppleSystemBar({
       </div>
     );
   }
+
+  const digitalTimeLabel =
+    clockFlashSeparators && time.getSeconds() % 2 === 1
+      ? timeLabel.replace(/:/g, ' ')
+      : timeLabel;
 
   const dateLabel = (clockShowDate || clockShowDay)
     ? time.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
@@ -650,7 +657,7 @@ export function AppleSystemBar({
           {dateLabel && <span className="apple-macos-date">{dateLabel}</span>}
           {clockStyle === 'analog'
             ? analogClock
-            : <span className="apple-macos-time">{timeLabel}</span>}
+            : <span className="apple-macos-time">{digitalTimeLabel}</span>}
         </button>
       </div>
     </div>
