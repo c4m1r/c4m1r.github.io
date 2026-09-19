@@ -2493,3 +2493,30 @@
 .os-macos .apple-file-browser__status {
   min-height: 27px;
 }
+
+
+/* Finder sidebar icon sizing driven by System Settings. */
+.os-macos .apple-file-browser[data-sidebar-size='small'] .apple-file-browser__sidebar img {
+  width: 14px;
+  height: 14px;
+}
+
+.os-macos .apple-file-browser[data-sidebar-size='small'] .apple-file-browser__sidebar button {
+  min-height: 24px;
+  font-size: 10px;
+}
+
+.os-macos .apple-file-browser[data-sidebar-size='medium'] .apple-file-browser__sidebar img {
+  width: 18px;
+  height: 18px;
+}
+
+.os-macos .apple-file-browser[data-sidebar-size='large'] .apple-file-browser__sidebar img {
+  width: 22px;
+  height: 22px;
+}
+
+.os-macos .apple-file-browser[data-sidebar-size='large'] .apple-file-browser__sidebar button {
+  min-height: 32px;
+  font-size: 11px;
+}
