@@ -1303,7 +1303,6 @@ export function ControlPanel() {
                   <span />
                 </button>
               </div>
-              )}
             </section>
           </div>
         )}
@@ -1403,6 +1402,7 @@ export function ControlPanel() {
                     : 'Restores apps hidden from the Home Screen'}
                 </span>
               </div>
+              )}
             </section>
           </div>
         )}
