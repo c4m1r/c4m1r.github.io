@@ -17,6 +17,8 @@ interface AppleSystemBarProps {
   activeAppTitle?: string;
   activeWindowId?: string;
   clockShowSeconds?: boolean;
+  clockShowDate?: boolean;
+  clockShowDay?: boolean;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
@@ -47,6 +49,8 @@ export function AppleSystemBar({
   activeAppTitle,
   activeWindowId,
   clockShowSeconds = false,
+  clockShowDate = true,
+  clockShowDay = true,
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
@@ -188,11 +192,12 @@ export function AppleSystemBar({
     );
   }
 
-  const dateLabel = time.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  });
+  const dateLabel = (clockShowDate || clockShowDay)
+    ? time.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
+        ...(clockShowDay ? { weekday: 'short' as const } : {}),
+        ...(clockShowDate ? { month: 'short' as const, day: 'numeric' as const } : {}),
+      })
+    : '';
 
   return (
     <div className="apple-system-bar apple-macos-menubar" onMouseDown={stop} onClick={stop}>
@@ -598,7 +603,7 @@ export function AppleSystemBar({
           }}
           aria-label="Open Notification Center"
         >
-          <span className="apple-macos-date">{dateLabel}</span>
+          {dateLabel && <span className="apple-macos-date">{dateLabel}</span>}
           <span className="apple-macos-time">{timeLabel}</span>
         </button>
       </div>
