@@ -20,6 +20,7 @@ interface AppleSystemBarProps {
   clockShowDate?: boolean;
   clockShowDay?: boolean;
   menuBarBackground?: boolean;
+  clockShowAmPm?: boolean;
   onAppleMenuToggle: () => void;
   onControlCenterToggle: () => void;
   onNotificationCenterToggle: () => void;
@@ -53,6 +54,7 @@ export function AppleSystemBar({
   clockShowDate = true,
   clockShowDay = true,
   menuBarBackground = true,
+  clockShowAmPm = true,
   onAppleMenuToggle,
   onControlCenterToggle,
   onNotificationCenterToggle,
@@ -116,6 +118,7 @@ export function AppleSystemBar({
     hour: '2-digit',
     minute: '2-digit',
     ...(isMac && clockShowSeconds ? { second: '2-digit' as const } : {}),
+    ...(isMac && language !== 'ru' ? { hour12: clockShowAmPm } : {}),
   });
 
   if (isIos) {
