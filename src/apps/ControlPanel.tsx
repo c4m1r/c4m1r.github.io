@@ -92,6 +92,11 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-dock-magnification-enabled') !== 'false';
   });
+  const [macFinderSidebarSize, setMacFinderSidebarSize] = useState<'small' | 'medium' | 'large'>(() => {
+    if (typeof window === 'undefined') return 'medium';
+    const saved = localStorage.getItem('macos-finder-sidebar-size');
+    return saved === 'small' || saved === 'large' ? saved : 'medium';
+  });
   const [macDesktopWidgetsEnabled, setMacDesktopWidgetsEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-desktop-widgets-enabled') !== 'false';
@@ -718,6 +723,34 @@ export function ControlPanel() {
                     >
                       <span />
                     </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
+                    <div>
+                      <strong className="block text-sm">
+                        {isRu ? 'Размер значков Finder' : 'Finder Sidebar Icon Size'}
+                      </strong>
+                      <span className="block mt-1 text-[11px] opacity-60">
+                        {isRu ? 'Изменяет размер значков в боковой панели Finder' : 'Changes icon size in the Finder sidebar'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 rounded-lg bg-black/10 p-1">
+                      {(['small', 'medium', 'large'] as const).map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          className={`min-w-[30px] rounded-md px-2 py-1 text-[10px] font-semibold transition ${macFinderSidebarSize === size ? 'bg-[#0a84ff] text-white' : 'hover:bg-white/20'}`}
+                          aria-pressed={macFinderSidebarSize === size}
+                          onClick={() => {
+                            setMacFinderSidebarSize(size);
+                            localStorage.setItem('macos-finder-sidebar-size', size);
+                            window.dispatchEvent(new CustomEvent('macos-finder-sidebar-size-changed', { detail: size }));
+                          }}
+                        >
+                          {size === 'small' ? 'S' : size === 'medium' ? 'M' : 'L'}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between gap-4 p-4 min-h-[64px] border-t border-white/10">
