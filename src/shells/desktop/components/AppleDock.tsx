@@ -15,6 +15,7 @@ interface AppleDockProps {
   onQuitApp?: (appId: string) => void;
   magnificationEnabled?: boolean;
   showRunningIndicators?: boolean;
+  transientItems?: readonly AppleDockAsset[];
 }
 
 
@@ -27,6 +28,7 @@ export function AppleDock({
   onQuitApp,
   magnificationEnabled = true,
   showRunningIndicators = true,
+  transientItems = [],
 }: AppleDockProps) {
   const isMac = theme === 'macos-26';
   const isIos = theme.startsWith('ios-');
@@ -45,7 +47,9 @@ export function AppleDock({
     };
   }, [contextItem]);
 
-  const items: readonly AppleDockAsset[] = isMac ? MACOS_DOCK_ITEMS : getIosDockItems(theme);
+  const items: readonly AppleDockAsset[] = isMac
+    ? [...MACOS_DOCK_ITEMS, ...transientItems]
+    : getIosDockItems(theme);
   const magnification = new Map<string, number>();
 
   if (isMac && magnificationEnabled && pointerX !== null && dockRef.current) {
