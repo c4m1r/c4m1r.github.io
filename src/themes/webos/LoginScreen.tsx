@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { getOsClassName } from '../../shells/os/osClassNames';
 import { translations } from '../../i18n/translations';
-import { Power } from 'lucide-react';
+import { Power, ArrowRight } from 'lucide-react';
 import userAvatar from '../winxp/assets/user.gif';
 import '../winxp/xp.css';
 import { AppleLoginScreen, isAppleTheme } from '../apple/AppleSessionScreens';
+import { verifyAccountPassword } from '../../domain/auth/credentials';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -15,7 +16,44 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const { language, theme, setMode } = useApp();
   const t = translations[language].xp;
   const osClassName = getOsClassName(theme);
+  const isRu = language === 'ru';
+
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [shake, setShake] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const triggerError = () => {
+    setErrorMessage(isRu ? 'Неверный пароль. Повторите попытку.' : 'Incorrect password. Please try again.');
+    setShake(true);
+    setPassword('');
+    setTimeout(() => setShake(false), 500);
+    inputRef.current?.focus();
+  };
+
+  const handlePasswordSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (verifyAccountPassword('c4m1r', password)) {
+      setErrorMessage('');
+      setIsLoggingIn(true);
+      setTimeout(onLogin, 1500);
+    } else {
+      triggerError();
+    }
+  };
+
+  const handleUserClick = () => {
+    if (!isPasswordPromptOpen) {
+      setIsPasswordPromptOpen(true);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  };
+
+  const handleShutdown = () => {
+    setMode('grub');
+  };
 
   if (isAppleTheme(theme)) {
     return (
@@ -30,11 +68,25 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   if (theme === 'win-98') {
     return (
       <div className="min-h-screen bg-[#008080] flex items-center justify-center font-sans os-shell os-classic">
-        <div className="w-96 bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-1 shadow-xl os-window">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (verifyAccountPassword('c4m1r', password)) {
+              onLogin();
+            } else {
+              triggerError();
+            }
+          }}
+          className="w-96 bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-1 shadow-xl os-window"
+        >
           <div className="bg-gradient-to-r from-[#000080] to-[#1084d0] px-2 py-1 flex justify-between items-center mb-4 os-titlebar">
             <span className="text-white font-bold text-sm os-titlebar-title">Welcome to Windows</span>
             <div className="os-titlebar-controls">
-              <button className="w-4 h-4 bg-[#c0c0c0] border border-white border-b-black border-r-black flex items-center justify-center text-[10px] font-bold leading-none os-button">
+              <button
+                type="button"
+                onClick={() => setMode('grub')}
+                className="w-4 h-4 bg-[#c0c0c0] border border-white border-b-black border-r-black flex items-center justify-center text-[10px] font-bold leading-none os-button"
+              >
                 ✕
               </button>
             </div>
@@ -54,44 +106,61 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
               <div className="grid grid-cols-[80px_1fr] gap-2 items-center mb-2">
                 <label className="text-sm">User name:</label>
-                <input type="text" value="C4m1r" readOnly className="border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input" />
+                <input
+                  type="text"
+                  value="C4m1r"
+                  readOnly
+                  className="border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input bg-gray-100 text-gray-800"
+                />
 
                 <label className="text-sm">Password:</label>
-                <input type="password" className="border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input" />
+                <input
+                  ref={inputRef}
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errorMessage) setErrorMessage('');
+                  }}
+                  autoFocus
+                  className={`border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input ${shake ? 'border-red-600 bg-red-50' : ''}`}
+                />
               </div>
+              {errorMessage && (
+                <div className="text-red-700 text-xs mt-1 font-semibold">{errorMessage}</div>
+              )}
             </div>
           </div>
 
           <div className="flex justify-end gap-2 px-4 pb-2">
             <button
-              onClick={onLogin}
+              type="submit"
               className="px-6 py-1 border-2 border-white border-b-black border-r-black active:border-black active:border-b-white active:border-r-white focus:outline-dashed focus:outline-1 os-button"
             >
               OK
             </button>
-            <button className="px-6 py-1 border-2 border-white border-b-black border-r-black active:border-black active:border-b-white active:border-r-white os-button">
+            <button
+              type="button"
+              onClick={() => {
+                setPassword('');
+                setErrorMessage('');
+              }}
+              className="px-6 py-1 border-2 border-white border-b-black border-r-black active:border-black active:border-b-white active:border-r-white os-button"
+            >
               Cancel
             </button>
             <button
+              type="button"
               onClick={() => setMode('grub')}
               className="px-6 py-1 border-2 border-white border-b-black border-r-black active:border-black active:border-b-white active:border-r-white os-button"
             >
               Shut Down
             </button>
           </div>
-        </div>
+        </form>
       </div>
     );
   }
-
-  const handleUserClick = () => {
-    setIsLoggingIn(true);
-    setTimeout(onLogin, 2000);
-  };
-
-  const handleShutdown = () => {
-    setMode('grub');
-  };
 
   if (isLoggingIn) {
     return (
@@ -114,18 +183,65 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         </div>
 
         <div className="login-screen__users">
-          <button onClick={handleUserClick} className="login-screen__user-card os-button">
-            <div className="login-screen__user-avatar">
-              <img
-                src={userAvatar}
-                alt="C4m1r"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-            <div className="login-screen__user-name">C4m1r</div>
-          </button>
+          <div
+            className={`login-screen__user-card os-button p-4 rounded-xl flex flex-col items-center gap-3 transition-all ${
+              isPasswordPromptOpen ? 'bg-white/20 ring-2 ring-white/50' : 'hover:bg-white/10'
+            }`}
+          >
+            <button
+              type="button"
+              onClick={handleUserClick}
+              className="flex flex-col items-center gap-2 cursor-pointer focus:outline-none"
+            >
+              <div className="login-screen__user-avatar w-20 h-20 rounded-lg overflow-hidden border-2 border-amber-300 shadow-md">
+                <img
+                  src={userAvatar}
+                  alt="C4m1r"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="login-screen__user-name text-white font-bold text-lg drop-shadow">C4m1r</div>
+            </button>
+
+            {isPasswordPromptOpen && (
+              <form onSubmit={handlePasswordSubmit} className="flex flex-col items-center gap-2 w-full max-w-[200px] mt-1">
+                <span className="text-xs text-blue-100 font-medium">
+                  {isRu ? 'Введите пароль' : 'Type your password'}
+                </span>
+                <div className="flex items-center gap-1.5 w-full">
+                  <input
+                    ref={inputRef}
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errorMessage) setErrorMessage('');
+                    }}
+                    placeholder={isRu ? 'Пароль' : 'Password'}
+                    autoFocus
+                    className={`flex-1 px-2.5 py-1 text-sm bg-white text-gray-900 rounded border outline-none shadow-inner transition-colors ${
+                      errorMessage ? 'border-red-500 bg-red-50' : 'border-blue-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-400'
+                    } ${shake ? 'border-red-600 animate-shake' : ''}`}
+                  />
+                  <button
+                    type="submit"
+                    aria-label={isRu ? 'Войти' : 'Log on'}
+                    className="w-7 h-7 bg-green-600 hover:bg-green-500 active:bg-green-700 text-white rounded flex items-center justify-center shadow transition-colors cursor-pointer"
+                  >
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+                {errorMessage && (
+                  <span className="text-xs text-red-200 bg-red-900/70 px-2 py-0.5 rounded text-center">
+                    {errorMessage}
+                  </span>
+                )}
+              </form>
+            )}
+          </div>
         </div>
 
         <div className="login-screen__footer">

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
 import shutdownIcon from './assets/icons/shutdown.png';
 import userAvatar from './assets/user.gif';
 import { XP_IDENTITY_LOGO } from './xpIdentityLogo';
+import { verifyAccountPassword } from '../../domain/auth/credentials';
 import './xp.css';
 
 interface LoginScreenProps {
@@ -13,11 +14,35 @@ interface LoginScreenProps {
 export function LoginScreen({ onLogin }: LoginScreenProps) {
   const { language, setMode } = useApp();
   const t = translations[language].xp;
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const isRu = language === 'ru';
 
-  const handleUserClick = () => {
-    setIsLoggingIn(true);
-    setTimeout(onLogin, 1500);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isPasswordOpen, setIsPasswordOpen] = useState(false);
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [shake, setShake] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleTileClick = () => {
+    if (!isPasswordOpen) {
+      setIsPasswordOpen(true);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  };
+
+  const handlePasswordSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (verifyAccountPassword('c4m1r', password)) {
+      setErrorMessage('');
+      setIsLoggingIn(true);
+      setTimeout(onLogin, 1500);
+    } else {
+      setErrorMessage(isRu ? 'Неверный пароль. Повторите ввод.' : 'Incorrect password. Please try again.');
+      setShake(true);
+      setPassword('');
+      setTimeout(() => setShake(false), 500);
+      inputRef.current?.focus();
+    }
   };
 
   const handleShutdown = () => {
@@ -45,9 +70,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         <div className="xp-welcome-screen__divider" aria-hidden="true" />
 
         <div className="xp-welcome-screen__right">
-          <button
-            onClick={handleUserClick}
-            disabled={isLoggingIn}
+          <div
+            onClick={handleTileClick}
             className={`xp-welcome-screen__user-tile ${
               isLoggingIn ? 'xp-welcome-screen__user-tile--logging-in' : ''
             }`}
@@ -64,11 +88,47 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             </div>
             <div className="xp-welcome-screen__user-details">
               <span className="xp-welcome-screen__username">{t.user || 'C4m1r'}</span>
-              <span className="xp-welcome-screen__user-status">
-                {isLoggingIn ? t.loggingIn : t.loginHint}
-              </span>
+
+              {isLoggingIn ? (
+                <span className="xp-welcome-screen__user-status">{t.loggingIn}</span>
+              ) : !isPasswordOpen ? (
+                <span className="xp-welcome-screen__user-status">{t.loginHint}</span>
+              ) : (
+                <form
+                  onSubmit={handlePasswordSubmit}
+                  className="xp-welcome-screen__password-box"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <label className="xp-welcome-screen__password-label">
+                    {isRu ? 'Введите пароль' : 'Type your password'}
+                  </label>
+                  <div className="xp-welcome-screen__password-row">
+                    <input
+                      ref={inputRef}
+                      type="password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (errorMessage) setErrorMessage('');
+                      }}
+                      autoFocus
+                      className={`xp-welcome-screen__password-input ${shake ? 'border-red-500' : ''}`}
+                    />
+                    <button
+                      type="submit"
+                      className="xp-welcome-screen__password-submit"
+                      aria-label={isRu ? 'Войти' : 'Log on'}
+                    >
+                      <span style={{ fontSize: '12px', fontWeight: 'bold' }}>➔</span>
+                    </button>
+                  </div>
+                  {errorMessage && (
+                    <div className="xp-welcome-screen__password-error">{errorMessage}</div>
+                  )}
+                </form>
+              )}
             </div>
-          </button>
+          </div>
         </div>
       </div>
 

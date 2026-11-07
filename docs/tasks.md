@@ -125,6 +125,34 @@
 - **Status**: COMPLETED
 - **Files**: `src/shells/desktop/DesktopShell.tsx`, `src/shells/desktop/DesktopShellContainer.tsx`.
 
+### TASK-AUTH-01: WebOS & Multi-OS Encrypted Credential Verification
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: Login screens lacked password verification on user `c4m1r`, allowing unrestricted one-click entry. Plaintext storage of passwords was prohibited.
+- **Expected result**: Secure, obfuscated credential verification (`src/domain/auth/credentials.ts`) using XOR token (`0x65` mask) and salted SHA-256 digest (`ac0d0deae2a1d4e30a799234e867fc1d6f3f371d587924d8f327c4b74e82383b`) for account `c4m1r` with password `123123`. Authentic password entry UI across WebOS, Windows XP, Windows 98, and Windows 7 login screens.
+- **Acceptance criteria**: Password `123123` unlocks the session; wrong passwords show error feedback and prevent login; no cleartext `123123` exists in the bundle.
+- **Files**: `src/domain/auth/credentials.ts`, `src/themes/webos/LoginScreen.tsx`, `src/themes/winxp/LoginScreen.tsx`, `src/themes/winxp/xp.css`, `src/themes/win7/LoginScreen.tsx`, `src/themes/webos/index.tsx`.
+- **Verification method**: Attempt login with wrong password (rejected); attempt with `123123` (accepted); `grep -rn "123123" src/` returns 0 plaintext password occurrences.
+
+### TASK-DOCS-01: Agent Engineering Guide & System Architecture Documentation
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: Lack of standardized onboarding and operational rules for AI agents and automated assistants working across multiple retro OS themes in `docs/`.
+- **Expected result**: Comprehensive operational documentation in `docs/`:
+  1. `docs/agents.md`: Agent rules of engagement, architecture map, verification gates, Vite asset resolution rules, and traps to avoid.
+  2. `docs/architecture.md`: Full architectural reference of state management, windowing subsystem, audio pipeline, and theme adaptation engine.
+  3. `docs/donor-absorption-audit.md`: Verifiable inventory and consolidation matrix of all donor repos in `/eat/`.
+- **Acceptance criteria**: Documents present in `docs/`, fully linked and updated.
+- **Files**: `docs/agents.md`, `docs/architecture.md`, `docs/donor-absorption-audit.md`, `docs/tasks.md`.
+
+### TASK-CONSOL-03: 0chan Instant Loop Repository Absorption & Removal
+- **Priority**: P1
+- **Status**: COMPLETED
+- **Problem**: `eat/instant-0chan-master` remained on disk despite all required features (`loops` visualizer, `chpok.mp3`, `favicon.ico`) being natively integrated into `src/apps/loops/`.
+- **Expected result**: Verify 100% absorption, remove `eat/instant-0chan-master`, and update audit matrix.
+- **Acceptance criteria**: `eat/instant-0chan-master` removed, zero broken imports, build passes.
+- **Files**: `src/apps/loops/*`, `docs/donor-absorption-audit.md`.
+
 ---
 
 ## 5. Quality Verification Pipeline

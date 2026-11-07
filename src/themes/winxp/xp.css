@@ -1447,6 +1447,73 @@
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
 }
 
+.xp-welcome-screen__password-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.xp-welcome-screen__password-label {
+  font-size: 11px;
+  color: #ffffff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.xp-welcome-screen__password-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.xp-welcome-screen__password-input {
+  width: 140px;
+  height: 22px;
+  padding: 0 6px;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #7f9db9;
+  border-radius: 2px;
+  font-size: 13px;
+  outline: none;
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+.xp-welcome-screen__password-input:focus {
+  border-color: #0055ea;
+}
+
+.xp-welcome-screen__password-submit {
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(to bottom, #4cb848 0%, #298a26 100%);
+  border: 1px solid #1e631c;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  padding: 0;
+}
+
+.xp-welcome-screen__password-submit:hover {
+  background: linear-gradient(to bottom, #5fd65b 0%, #32aa2e 100%);
+}
+
+.xp-welcome-screen__password-submit:active {
+  background: #237420;
+}
+
+.xp-welcome-screen__password-error {
+  font-size: 11px;
+  color: #ffd27f;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+  max-width: 170px;
+  margin-top: 2px;
+}
+
 .xp-welcome-screen__footer {
   height: 80px;
   width: 100%;
