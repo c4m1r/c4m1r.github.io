@@ -22,7 +22,7 @@ export const getInitialLanguage = (): Language => {
 
 export const getInitialMode = (): AppMode => {
   if (typeof window === 'undefined') {
-    return 'grub';
+    return 'bios';
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -36,5 +36,5 @@ export const getInitialMode = (): AppMode => {
     return 'blog';
   }
 
-  return 'grub';
+  return 'bios';
 };

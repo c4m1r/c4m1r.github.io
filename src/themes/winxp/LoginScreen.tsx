@@ -51,7 +51,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   };
 
   const handleShutdown = () => {
-    setMode('grub');
+    setMode('poweroff');
   };
 
   return (

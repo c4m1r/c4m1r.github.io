@@ -14,8 +14,8 @@ export function Windows7() {
   const [state, setState] = useState<Windows7State>('boot');
   const { setMode } = useApp();
 
-  const exitToGrub = useCallback(() => {
-    setMode('grub');
+  const exitToPowerOff = useCallback(() => {
+    setMode('poweroff');
     setState('boot');
   }, [setMode]);
 
@@ -29,8 +29,8 @@ export function Windows7() {
     return (
       <LoginScreen
         onLogin={() => setState('welcome')}
-        onRestart={() => setState('boot')}
-        onShutdown={() => setState('shutdown')}
+        onRestart={() => setMode('bios')}
+        onShutdown={() => setMode('poweroff')}
       />
     );
   }
@@ -42,7 +42,7 @@ export function Windows7() {
   }
 
   if (state === 'shutdown') {
-    return <SystemTransitionScreen mode="shutdown" onComplete={exitToGrub} />;
+    return <SystemTransitionScreen mode="shutdown" onComplete={exitToPowerOff} />;
   }
 
   return <DesktopShell onSystemCommand={handleSystemCommand} />;

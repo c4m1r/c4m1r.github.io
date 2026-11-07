@@ -12,8 +12,8 @@ export function WebOS() {
   const [state, setState] = useState<WebOSState>('boot');
   const { setMode } = useApp();
 
-  const exitToGrub = useCallback(() => {
-    setMode('grub');
+  const exitToPowerOff = useCallback(() => {
+    setMode('poweroff');
     setState('boot');
   }, [setMode]);
 
@@ -43,7 +43,7 @@ export function WebOS() {
   }
 
   if (state === 'shutdown') {
-    return <SystemTransitionScreen mode="shutdown" onComplete={exitToGrub} />;
+    return <SystemTransitionScreen mode="shutdown" onComplete={exitToPowerOff} />;
   }
 
   return <DesktopShell onSystemCommand={handleSystemCommand} />;

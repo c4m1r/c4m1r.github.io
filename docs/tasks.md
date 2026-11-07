@@ -153,6 +153,33 @@
 - **Acceptance criteria**: `eat/instant-0chan-master` removed, zero broken imports, build passes.
 - **Files**: `src/apps/loops/*`, `docs/donor-absorption-audit.md`.
 
+### TASK-BIOS-POST-01: Award BIOS POST Hardware & Driver Initialization
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: The system lacked authentic cold-boot hardware self-test (POST) and driver probing before launching GRUB/OS shells.
+- **Expected result**: Realistic `BiosPostScreen` component featuring Energy Star badge, Award Modular BIOS v4.51PG header, dynamic RAM counter (131072K OK), Web Audio 850Hz square-wave POST beep, vintage hard drive spin-up/seek audio (`vintage-hard-drive.mp3`), IDE/PCI device discovery, and real DOS/ACPI driver probing sequence. Hotkeys DEL/ESC/Space immediately skip to GRUB.
+- **Acceptance criteria**: Initial page visit starts in BIOS POST; memory tests and beeps; drivers stream; transitions to GRUB cleanly.
+- **Files**: `src/apps/bios/BiosPostScreen.tsx`, `src/assets/audio/vintage-hard-drive.mp3`, `src/App.tsx`, `src/contexts/appContextDefaults.ts`.
+
+### TASK-POWER-01: Full-Loop Shutdown & Restart Power State System
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: Shutting down from OS themes simply dropped back to GRUB without a realistic power-down state, and restart lacked a path back to hardware cold boot.
+- **Expected result**: Complete machine power lifecycle with `PowerOffScreen` ("It's now safe to turn off your computer", clickable power button to reboot) and reboot transitions routing back to `BiosPostScreen`.
+- **Acceptance criteria**: Shutdown in all shells reaches PowerOffScreen; restarting re-runs POST; power button restarts PC.
+- **Files**: `src/apps/bios/PowerOffScreen.tsx`, `src/themes/winxp/index.tsx`, `src/themes/win7/index.tsx`, `src/themes/webos/index.tsx`.
+
+### TASK-TERM-02: Terminal Shutdown Command, Timers & Auto-Scroll Engine
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: Terminal lacked `shutdown` command capabilities (including countdown timer), suffered from missing auto-scroll when typing and pressing Enter, and lacked pure full-screen background isolation when booted from GRUB.
+- **Expected result**: Comprehensive terminal enhancements:
+  1. Full `shutdown` suite (`shutdown -h/-s`, `shutdown -r`, `shutdown -t <sec>`, `shutdown -a` abort).
+  2. Automatic scrolling to bottom on every keystroke, input change, command execution, and countdown tick.
+  3. Solid `#000000` background isolation preventing portfolio site bleeding.
+- **Acceptance criteria**: `shutdown -s -t 5` counts down and powers off; `shutdown -a` cancels; typing and pressing Enter auto-scrolls down.
+- **Files**: `src/apps/Terminal.tsx`.
+
 ---
 
 ## 5. Quality Verification Pipeline

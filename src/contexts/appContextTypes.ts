@@ -1,6 +1,6 @@
 import { type Language } from '../i18n/translations';
 
-export type AppMode = 'grub' | 'blog' | 'webos' | 'terminal';
+export type AppMode = 'bios' | 'grub' | 'blog' | 'webos' | 'terminal' | 'poweroff';
 export type ThemeId =
   | 'win-98'
   | 'win-xp'

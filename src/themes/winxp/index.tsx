@@ -12,8 +12,8 @@ export function WindowsXP() {
   const [state, setState] = useState<WindowsXPState>('boot');
   const { setMode } = useApp();
 
-  const exitToGrub = useCallback(() => {
-    setMode('grub');
+  const exitToPowerOff = useCallback(() => {
+    setMode('poweroff');
     setState('boot');
   }, [setMode]);
 
@@ -50,7 +50,7 @@ export function WindowsXP() {
     return (
       <SystemTransitionScreen
         mode="shutdown"
-        onComplete={exitToGrub}
+        onComplete={exitToPowerOff}
       />
     );
   }

@@ -1,6 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { useApp } from './contexts/useApp';
 import { GrubMenu } from './apps/GrubMenu';
+import { BiosPostScreen } from './apps/bios/BiosPostScreen';
+import { PowerOffScreen } from './apps/bios/PowerOffScreen';
 import { WeatherProvider } from './contexts/WeatherContext';
 import { WeatherEffects } from './components/WeatherEffects';
 
@@ -15,7 +17,15 @@ function LazyFallback() {
 }
 
 function App() {
-  const { mode, theme } = useApp();
+  const { mode, theme, setMode } = useApp();
+
+  if (mode === 'bios') {
+    return <BiosPostScreen onComplete={() => setMode('grub')} />;
+  }
+
+  if (mode === 'poweroff') {
+    return <PowerOffScreen onPowerOn={() => setMode('bios')} />;
+  }
 
   if (mode === 'grub') {
     return <GrubMenu />;

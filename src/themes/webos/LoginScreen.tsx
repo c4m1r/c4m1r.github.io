@@ -53,7 +53,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   };
 
   const handleShutdown = () => {
-    setMode('grub');
+    setMode('poweroff');
   };
 
   if (isAppleTheme(theme)) {
@@ -61,7 +61,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       <AppleLoginScreen
         theme={theme}
         onLogin={onLogin}
-        onShutdown={() => setMode('grub')}
+        onShutdown={() => setMode('poweroff')}
       />
     );
   }
@@ -87,7 +87,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             <div className="os-titlebar-controls">
               <button
                 type="button"
-                onClick={() => setMode('grub')}
+                onClick={() => setMode('poweroff')}
                 className="w-4 h-4 bg-[#c0c0c0] border border-white border-b-black border-r-black flex items-center justify-center text-[10px] font-bold leading-none os-button"
               >
                 ✕
@@ -163,7 +163,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             </button>
             <button
               type="button"
-              onClick={() => setMode('grub')}
+              onClick={() => setMode('poweroff')}
               className="px-6 py-1 border-2 border-white border-b-black border-r-black active:border-black active:border-b-white active:border-r-white os-button"
             >
               Shut Down
