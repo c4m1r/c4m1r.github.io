@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
+import { winampController } from '../../system/audio/winampController';
 import './winamp.css';
 
 // 10 standard Winamp EQ bands in Hz
@@ -29,22 +30,32 @@ function generateAlbumArt(track: MediaTrack): { bg: string; accent: string; icon
 }
 
 export function WinampPlayer() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const filtersRef = useRef<BiquadFilterNode[]>([]);
   const pannerRef = useRef<StereoPannerNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
 
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.85);
+  const [trackIndex, setTrackIndex] = useState(() => winampController.getState().trackIndex);
+  const [isPlaying, setIsPlaying] = useState(() => winampController.getState().isPlaying);
+  const [currentTime, setCurrentTime] = useState(() => winampController.getState().currentTime);
+  const [duration, setDuration] = useState(() => winampController.getState().duration || 0);
+  const [volume, setVolume] = useState(() => winampController.getState().volume);
   const [balance, setBalance] = useState(0);
   const [shuffle, setShuffle] = useState(false);
-  const [repeat, setRepeat] = useState(false);
+  const [repeat, setRepeat] = useState(() => winampController.isRepeat());
   const [timeRemainingMode, setTimeRemainingMode] = useState(false);
+
+  // Sync with global winampController
+  useEffect(() => {
+    return winampController.subscribe((st) => {
+      setTrackIndex(st.trackIndex);
+      setIsPlaying(st.isPlaying);
+      setCurrentTime(st.currentTime);
+      if (st.duration > 0) setDuration(st.duration);
+      setVolume(st.volume);
+    });
+  }, []);
 
   // Module visibility & shade states
   const [showEq, setShowEq] = useState(true);
@@ -77,58 +88,9 @@ export function WinampPlayer() {
 
   // Web Audio setup
   const initWebAudio = useCallback(() => {
-    if (audioCtxRef.current || !audioRef.current) return;
-    try {
-      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!AudioCtxClass) return;
-      const ctx = new AudioCtxClass();
-      audioCtxRef.current = ctx;
-
-      const source = ctx.createMediaElementSource(audioRef.current);
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 64;
-      analyserRef.current = analyser;
-
-      // Create 10 EQ BiquadFilters
-      const filters = EQ_FREQUENCIES.map((freq) => {
-        const f = ctx.createBiquadFilter();
-        f.type = 'peaking';
-        f.frequency.value = freq;
-        f.Q.value = 1.4;
-        f.gain.value = 0;
-        return f;
-      });
-      filtersRef.current = filters;
-
-      // Preamp gain
-      const preampGain = ctx.createGain();
-      gainNodeRef.current = preampGain;
-
-      // Stereo panner if supported
-      let panner: StereoPannerNode | null = null;
-      if (ctx.createStereoPanner) {
-        panner = ctx.createStereoPanner();
-        pannerRef.current = panner;
-      }
-
-      // Chain: source -> filters[0]..filters[9] -> preampGain -> (panner) -> analyser -> destination
-      let lastNode: AudioNode = source;
-      for (const filter of filters) {
-        lastNode.connect(filter);
-        lastNode = filter;
-      }
-      lastNode.connect(preampGain);
-      lastNode = preampGain;
-
-      if (panner) {
-        lastNode.connect(panner);
-        lastNode = panner;
-      }
-      lastNode.connect(analyser);
-      analyser.connect(ctx.destination);
-    } catch (e) {
-      console.warn('Web Audio init skipped:', e);
-    }
+    const wa = winampController.getWebAudio();
+    if (wa?.ctx) audioCtxRef.current = wa.ctx;
+    if (wa?.analyser) analyserRef.current = wa.analyser;
   }, []);
 
   // Visualizer loop with real frequency data or dynamic simulation
@@ -183,33 +145,17 @@ export function WinampPlayer() {
 
   const play = useCallback(async () => {
     initWebAudio();
-    if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
-      void audioCtxRef.current.resume();
-    }
-    const audio = audioRef.current;
-    if (!audio) return;
-    try {
-      await audio.play();
-      setIsPlaying(true);
-    } catch {
-      setIsPlaying(false);
-    }
+    await winampController.play();
   }, [initWebAudio]);
 
   const pause = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    setIsPlaying(false);
+    winampController.pause();
   }, []);
 
   const stop = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    audio.currentTime = 0;
+    winampController.pause();
+    winampController.seek(0);
     setCurrentTime(0);
-    setIsPlaying(false);
   }, []);
 
   const historyRef = useRef<number[]>([]);
@@ -235,35 +181,34 @@ export function WinampPlayer() {
   }, [shuffle, regenerateShuffleOrder]);
 
   const next = useCallback(() => {
-    setTrackIndex((current) => {
-      historyRef.current.push(current);
-      if (shuffle && PROJECT_PLAYLIST.length > 1) {
-        if (shufflePointerRef.current >= shuffleOrderRef.current.length) {
-          regenerateShuffleOrder();
-        }
-        let nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
-        if (nextIdx === current && shufflePointerRef.current < shuffleOrderRef.current.length) {
-          nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
-        }
-        return nextIdx ?? (current + 1) % PROJECT_PLAYLIST.length;
+    if (shuffle && PROJECT_PLAYLIST.length > 1) {
+      if (shufflePointerRef.current >= shuffleOrderRef.current.length) {
+        regenerateShuffleOrder();
       }
-      return (current + 1) % PROJECT_PLAYLIST.length;
-    });
-  }, [regenerateShuffleOrder, shuffle]);
+      let nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
+      if (nextIdx === trackIndex && shufflePointerRef.current < shuffleOrderRef.current.length) {
+        nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
+      }
+      historyRef.current.push(trackIndex);
+      winampController.setTrack(nextIdx ?? (trackIndex + 1) % PROJECT_PLAYLIST.length);
+      return;
+    }
+    historyRef.current.push(trackIndex);
+    winampController.next();
+  }, [regenerateShuffleOrder, shuffle, trackIndex]);
 
   const previous = useCallback(() => {
-    setTrackIndex((current) => {
-      if (historyRef.current.length > 0) {
-        return historyRef.current.pop() ?? (current - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length;
-      }
-      return (current - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length;
-    });
+    if (historyRef.current.length > 0) {
+      const prevIdx = historyRef.current.pop()!;
+      winampController.setTrack(prevIdx);
+      return;
+    }
+    winampController.prev();
   }, []);
 
   const seek = (pct: number) => {
-    const audio = audioRef.current;
-    if (!audio || !duration) return;
-    audio.currentTime = (pct / 100) * duration;
+    if (!duration) return;
+    winampController.seek((pct / 100) * duration);
   };
 
   // Sync EQ slider changes to Web Audio filters
@@ -286,53 +231,10 @@ export function WinampPlayer() {
     }
   };
 
-  // Sync volume & balance
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-  }, [volume]);
-
+  // Sync balance
   useEffect(() => {
     if (pannerRef.current) pannerRef.current.pan.value = balance;
   }, [balance]);
-
-  // Track change handling
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const continuePlaying = isPlaying;
-    audio.load();
-    setCurrentTime(0);
-    setDuration(0);
-    if (continuePlaying) void play();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackIndex]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const onTimeUpdate = () => setCurrentTime(audio.currentTime || 0);
-    const onMetadata = () => setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
-    const onEnded = () => {
-      if (repeat) {
-        audio.currentTime = 0;
-        void play();
-      } else {
-        next();
-      }
-    };
-
-    audio.addEventListener('timeupdate', onTimeUpdate);
-    audio.addEventListener('loadedmetadata', onMetadata);
-    audio.addEventListener('durationchange', onMetadata);
-    audio.addEventListener('ended', onEnded);
-    return () => {
-      audio.removeEventListener('timeupdate', onTimeUpdate);
-      audio.removeEventListener('loadedmetadata', onMetadata);
-      audio.removeEventListener('durationchange', onMetadata);
-      audio.removeEventListener('ended', onEnded);
-    };
-  }, [next, play, repeat]);
 
   const displayTime = useMemo(() => {
     if (timeRemainingMode) {
@@ -450,7 +352,11 @@ export function WinampPlayer() {
                       max={1}
                       step={0.01}
                       value={volume}
-                      onChange={(e) => setVolume(Number(e.currentTarget.value))}
+                      onChange={(e) => {
+                        const nextVol = Number(e.currentTarget.value);
+                        setVolume(nextVol);
+                        winampController.setVolume(nextVol);
+                      }}
                       className="wa-slider-input"
                       aria-label="Volume"
                     />
@@ -532,7 +438,11 @@ export function WinampPlayer() {
                 <button
                   type="button"
                   className={`wa-btn-mode ${repeat ? 'is-active' : ''}`}
-                  onClick={() => setRepeat((v) => !v)}
+                  onClick={() => {
+                    const nextVal = !repeat;
+                    setRepeat(nextVal);
+                    winampController.setRepeat(nextVal);
+                  }}
                   title="Repeat"
                 >
                   <span className="wa-led-dot" />
@@ -724,10 +634,10 @@ export function WinampPlayer() {
                       role="option"
                       aria-selected={isCurrent}
                       className={`wa-pl__item ${isCurrent ? 'is-selected' : ''}`}
-                      onClick={() => setTrackIndex(index)}
+                      onClick={() => winampController.setTrack(index)}
                       onDoubleClick={() => {
-                        setTrackIndex(index);
-                        void play();
+                        winampController.setTrack(index);
+                        void winampController.play();
                       }}
                     >
                       <span className="wa-pl__title">
@@ -742,7 +652,7 @@ export function WinampPlayer() {
               {/* Playlist Bottom Bar */}
               <div className="wa-pl__footer">
                 <div className="wa-pl__actions">
-                  <button type="button" className="wa-btn-pl" onClick={() => setTrackIndex(0)}>+ ADD</button>
+                  <button type="button" className="wa-btn-pl" onClick={() => winampController.setTrack(0)}>+ ADD</button>
                   <button type="button" className="wa-btn-pl" onClick={() => next()}>- REM</button>
                   <button type="button" className="wa-btn-pl">SEL</button>
                   <button type="button" className="wa-btn-pl">MISC</button>
@@ -770,9 +680,6 @@ export function WinampPlayer() {
           )}
         </div>
       )}
-
-      {/* Hidden audio element */}
-      <audio ref={audioRef} src={track.src} preload="metadata" crossOrigin="anonymous" />
     </div>
   );
 }

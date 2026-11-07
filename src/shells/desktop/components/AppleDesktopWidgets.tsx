@@ -1,20 +1,42 @@
 import { useMemo } from 'react';
 import { useDeviceBattery } from '../hooks/useDeviceBattery';
 import { type Language } from '../../../i18n/translations';
+import { WeatherWidget } from '../../../system/widgets/components/WeatherWidget';
+import { WinampWidget } from '../../../system/widgets/components/WinampWidget';
+import { QuotesWidget } from '../../../system/widgets/components/QuotesWidget';
+import { CurrencyWidget } from '../../../system/widgets/components/CurrencyWidget';
+import { SystemMonitorWidget } from '../../../system/widgets/components/SystemMonitorWidget';
+import { NewsWidget } from '../../../system/widgets/components/NewsWidget';
+import { GalleryWidget } from '../../../system/widgets/components/GalleryWidget';
 
 export interface AppleWidgetVisibility {
   clock: boolean;
   battery: boolean;
   calendar: boolean;
+  weather?: boolean;
+  winamp?: boolean;
+  quotes?: boolean;
+  currency?: boolean;
+  monitor?: boolean;
+  news?: boolean;
+  gallery?: boolean;
 }
 
 interface AppleDesktopWidgetsProps {
   time: Date;
   language: Language;
   visibility: AppleWidgetVisibility;
+  onOpenNews?: () => void;
+  onOpenGalleryImage?: () => void;
 }
 
-export function AppleDesktopWidgets({ time, language, visibility }: AppleDesktopWidgetsProps) {
+export function AppleDesktopWidgets({
+  time,
+  language,
+  visibility,
+  onOpenNews,
+  onOpenGalleryImage,
+}: AppleDesktopWidgetsProps) {
   const { level, charging } = useDeviceBattery(true);
 
   const calendarDays = useMemo(() => {
@@ -134,6 +156,48 @@ export function AppleDesktopWidgets({ time, language, visibility }: AppleDesktop
           })}
         </div>
       </section>}
+
+      {visibility.weather && (
+        <div className="pointer-events-auto">
+          <WeatherWidget />
+        </div>
+      )}
+
+      {visibility.winamp && (
+        <div className="pointer-events-auto">
+          <WinampWidget />
+        </div>
+      )}
+
+      {visibility.quotes && (
+        <div className="pointer-events-auto">
+          <QuotesWidget />
+        </div>
+      )}
+
+      {visibility.currency && (
+        <div className="pointer-events-auto">
+          <CurrencyWidget />
+        </div>
+      )}
+
+      {visibility.monitor && (
+        <div className="pointer-events-auto">
+          <SystemMonitorWidget />
+        </div>
+      )}
+
+      {visibility.news && (
+        <div className="pointer-events-auto">
+          <NewsWidget onOpenFeed={onOpenNews} />
+        </div>
+      )}
+
+      {visibility.gallery && (
+        <div className="pointer-events-auto">
+          <GalleryWidget onOpenOriginal={onOpenGalleryImage} />
+        </div>
+      )}
     </aside>
   );
 }

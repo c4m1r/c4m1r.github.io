@@ -1,0 +1,142 @@
+export interface QuoteItem {
+  id: string;
+  textRu: string;
+  textEn: string;
+  authorRu: string;
+  authorEn: string;
+  category: 'wisdom' | 'games';
+  source?: string;
+}
+
+export const LOCAL_QUOTES: QuoteItem[] = [
+  {
+    id: '1',
+    textRu: 'Простота — это высшая форма утончённости.',
+    textEn: 'Simplicity is the ultimate sophistication.',
+    authorRu: 'Леонардо да Винчи',
+    authorEn: 'Leonardo da Vinci',
+    category: 'wisdom',
+  },
+  {
+    id: '2',
+    textRu: 'Нужный человек не в том месте может перевернуть мир.',
+    textEn: 'The right man in the wrong place can make all the difference in the world.',
+    authorRu: 'G-Man',
+    authorEn: 'G-Man',
+    category: 'games',
+    source: 'Half-Life 2',
+  },
+  {
+    id: '3',
+    textRu: 'Война. Война никогда не меняется.',
+    textEn: 'War. War never changes.',
+    authorRu: 'Рассказчик',
+    authorEn: 'Narrator',
+    category: 'games',
+    source: 'Fallout',
+  },
+  {
+    id: '4',
+    textRu: 'Торт — это ложь.',
+    textEn: 'The cake is a lie.',
+    authorRu: 'Даг Раттманн',
+    authorEn: 'Doug Rattmann',
+    category: 'games',
+    source: 'Portal',
+  },
+  {
+    id: '5',
+    textRu: 'Зло — это зло. Меньшее, большее, среднее — всё едино, пропорции условны.',
+    textEn: 'Evil is evil. Lesser, greater, middling, makes no difference.',
+    authorRu: 'Геральт из Ривии',
+    authorEn: 'Geralt of Rivia',
+    category: 'games',
+    source: 'The Witcher 3',
+  },
+  {
+    id: '6',
+    textRu: 'У нас есть две жизни, и вторая начинается, когда мы понимаем, что жизнь всего одна.',
+    textEn: 'We have two lives, and the second begins when we realize we only have one.',
+    authorRu: 'Конфуций',
+    authorEn: 'Confucius',
+    category: 'wisdom',
+  },
+  {
+    id: '7',
+    textRu: 'Восславь Солнце!',
+    textEn: 'Praise the Sun!',
+    authorRu: 'Солер из Асторы',
+    authorEn: 'Solaire of Astora',
+    category: 'games',
+    source: 'Dark Souls',
+  },
+  {
+    id: '8',
+    textRu: 'Проснись уже, самурай. Нам пора сжечь этот город.',
+    textEn: 'Wake the fuck up, Samurai. We have a city to burn.',
+    authorRu: 'Джонни Сильверхэнд',
+    authorEn: 'Johnny Silverhand',
+    category: 'games',
+    source: 'Cyberpunk 2077',
+  },
+  {
+    id: '9',
+    textRu: 'Человек выбирает. Раб повинуется.',
+    textEn: 'A man chooses, a slave obeys.',
+    authorRu: 'Эндрю Райан',
+    authorEn: 'Andrew Ryan',
+    category: 'games',
+    source: 'BioShock',
+  },
+  {
+    id: '10',
+    textRu: 'Тот, у кого есть «Зачем» жить, может вынести почти любое «Как».',
+    textEn: 'He who has a why to live can bear almost any how.',
+    authorRu: 'Фридрих Ницше',
+    authorEn: 'Friedrich Nietzsche',
+    category: 'wisdom',
+  },
+  {
+    id: '11',
+    textRu: 'Ничто не истинно, всё дозволено.',
+    textEn: 'Nothing is true, everything is permitted.',
+    authorRu: 'Кредо Ассасинов',
+    authorEn: "Assassin's Creed",
+    category: 'games',
+    source: "Assassin's Creed",
+  },
+  {
+    id: '12',
+    textRu: 'Спокойствие ума — высшая добродетель.',
+    textEn: 'Tranquility of mind is the greatest virtue.',
+    authorRu: 'Марк Аврелий',
+    authorEn: 'Marcus Aurelius',
+    category: 'wisdom',
+  },
+  {
+    id: '13',
+    textRu: 'Оставайся решительным.',
+    textEn: 'Stay determined.',
+    authorRu: 'Undertale',
+    authorEn: 'Undertale',
+    category: 'games',
+    source: 'Undertale',
+  },
+  {
+    id: '14',
+    textRu: 'Вся жизнь — игра, и люди в ней актёры.',
+    textEn: "All the world's a stage, and all the men and women merely players.",
+    authorRu: 'Уильям Шекспир',
+    authorEn: 'William Shakespeare',
+    category: 'wisdom',
+  },
+  {
+    id: '15',
+    textRu: 'Протокол 3: Защитить пилота.',
+    textEn: 'Protocol 3: Protect the Pilot.',
+    authorRu: 'BT-7274',
+    authorEn: 'BT-7274',
+    category: 'games',
+    source: 'Titanfall 2',
+  },
+];

@@ -214,6 +214,21 @@
 - **Acceptance criteria**: GRUB allows selecting editions for all Windows systems via `E` key; changing editions updates wallpaper, watermark, and Start Menu immediately; Control Panel allows live edition switching; `winver` command opens About Windows; donors removed.
 - **Files**: `src/shells/os/osEditions.ts`, `src/shells/os/osBootOptions.ts`, `src/shells/desktop/runtime/desktopOsAttributes.ts`, `src/shells/desktop/DesktopShellContainer.tsx`, `src/shells/desktop/components/start-menu/StartMenu98.tsx`, `src/shells/desktop/components/start-menu/StartMenuXP.tsx`, `src/shells/desktop/components/start-menu/StartMenu7.tsx`, `src/apps/ControlPanel.tsx`, `src/apps/AboutApp.tsx`, `src/apps/GrubMenu.tsx`, `docs/donor-absorption-audit.md`.
 
+### TASK-WIDGETS-01: WebOS & macOS Glassmorphism Desktop Widget Suite
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: WebOS lacked interactive desktop glassmorphic widgets. Winamp required a unified audio controller so desktop widgets and the full player could coexist without duplicate audio or out-of-sync playback. Real market data, Open-Meteo weather forecasts, and dynamic RSS feeds with IndexedDB caching and customizable sources were missing.
+- **Expected result**:
+  1. **Winamp Audio Controller**: Created `src/system/audio/winampController.ts` singleton event bridge and unified playback manager (`play`, `pause`, `stop`, `next`, `prev`, `seek`, `setTrack`, `setVolume`, `setRepeat`, `getWebAudio`), ensuring zero duplicate audio between `WinampWidget` and `WinampPlayer`.
+  2. **News RSS Feed System & Window**: Built `src/system/widgets/services/rssService.ts` with IndexedDB persistent cache (`webos_rss_db_v1`), automated 14-day record pruning, multi-category support (`#Игры`, `#Ивенты`, `#Железо`, `#Разработка`, `#Аниме`, `#Экономика`, `#Конкуренты`), CORS proxy fallback, and full-featured `NewsRssFeedWindow.tsx` modal viewer with settings management.
+  3. **Weather Widget**: Built `src/system/widgets/services/weatherService.ts` using Open-Meteo live API for Moscow, Astana, Almaty, St. Petersburg, Tokyo, and London, rendering WMO weather codes, dynamic icons, humidity, wind speed, precipitation, and hourly forecasts.
+  4. **Crypto & Currency Rates**: Created `src/system/widgets/services/cryptoCurrencyService.ts` fetching live BTC/USDT (Binance), USD/KZT, RUB/KZT, and Gold in KZT per gram (fawazahmed0 currency API converted via 31.1034768g troy ounce) with 24h delta percentages and SVG sparkline charts.
+  5. **Quotes & Gallery Widgets**: Implemented local bundle of 15 iconic gaming and philosophical quotes with smooth fade transitions, and dynamic art frame widget drawing from `useGallery`.
+  6. **System Monitor & Clock/Calendar**: Live CPU, waveform, RAM, and Disk C monitor, alongside analog ticking clock and interactive mini calendar.
+  7. **macOS & Generic OS Integration**: Expanded `AppleWidgetGallery.tsx` and `AppleDesktopWidgets.tsx` with toggleable visibility for all widgets, desktop context menu integration, and responsive layout matching the reference design.
+- **Acceptance criteria**: WebOS desktop displays glassmorphic widgets arranged per layout reference; Weather widget displays live Open-Meteo data for chosen cities; Winamp widget synchronizes seamlessly with full Winamp player with zero duplicate audio; Currency widget shows live KZT rates for BTC, USD, RUB, and Gold/g; News RSS feed window allows viewing and configuring feeds; widget gallery enables toggling widgets in macOS and other OSes; build and typecheck pass cleanly.
+- **Files**: `src/system/audio/winampController.ts`, `src/system/widgets/*`, `src/apps/news/NewsRssFeedWindow.tsx`, `src/apps/winamp/WinampPlayer.tsx`, `src/shells/desktop/DesktopShellContainer.tsx`, `src/shells/desktop/components/AppleDesktopWidgets.tsx`, `src/shells/desktop/components/AppleWidgetGallery.tsx`, `src/shells/desktop/appRegistry.tsx`.
+
 ---
 
 ## 5. Quality Verification Pipeline

@@ -12,7 +12,7 @@ import { AboutApp } from '../../apps/AboutApp';
 import { CalendarApp } from '../../apps/calendar';
 import { Terminal } from '../../apps/Terminal';
 import { ProjectsGrid } from '../../apps/ProjectsGrid';
-import { NewsApp } from './apps/news/NewsApp';
+import { NewsRssFeedWindow } from '../../apps/news/NewsRssFeedWindow';
 import { InternetExplorer } from '../../apps/internetexplorer/InternetExplorer';
 import { OutlookExpress } from '../../apps/outlook/OutlookExpress';
 import { WindowsMediaPlayer } from '../../apps/mediaplayer/WindowsMediaPlayer';
@@ -20,8 +20,6 @@ import { WinampPlayer } from '../../apps/winamp/WinampPlayer';
 import { LoopsApp } from '../../apps/loops/LoopsApp';
 import { Minesweeper } from '../../apps/minesweeper';
 import { ResumeApp } from './apps/resume/ResumeApp';
-
-import { isFeatureEnabled } from '../../config/features';
 
 // Default app identity. OS-specific labels/icons are resolved through src/shells/os/osSkins.ts.
 export const appRegistry: Record<string, DesktopAppDefinition> = {
@@ -229,19 +227,19 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
   'news': {
     id: 'news',
     title: {
-      en: 'News',
-      ru: 'Новости',
-      fr: 'Actualités',
-      es: 'Noticias',
-      zh: '新闻',
-      ja: 'ニュース',
-      ko: '뉴스',
+      en: 'News RSS Feed',
+      ru: 'Лента новостей RSS',
+      fr: 'Fil RSS Actualités',
+      es: 'Noticias RSS',
+      zh: '新闻 RSS',
+      ja: 'ニュース RSS',
+      ko: '뉴스 RSS',
     },
     iconKey: 'newsIcon',
-    component: NewsApp,
-    defaultWindow: { width: 900, height: 600 },
-    showInStartMenu: isFeatureEnabled('news'),
-    showOnDesktop: isFeatureEnabled('news'),
+    component: NewsRssFeedWindow,
+    defaultWindow: { width: 920, height: 620 },
+    showInStartMenu: true,
+    showOnDesktop: true,
   },
   'wiki': {
     id: 'wiki',

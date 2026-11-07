@@ -1,0 +1,68 @@
+/* Glassmorphic Desktop Widgets Styling */
+
+.webos-widgets-container {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  bottom: 60px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 620px;
+  pointer-events: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  padding-bottom: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.webos-widgets-container > * {
+  pointer-events: auto;
+}
+
+.glass-widget {
+  background: rgba(16, 22, 34, 0.68);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  color: #f1f5f9;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-widget:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.glass-widget__ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.08), transparent 60%);
+}
+
+/* Row alignments */
+.widgets-row {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .webos-widgets-container {
+    right: 12px;
+    top: 16px;
+    max-width: calc(100vw - 24px);
+  }
+  .widgets-row {
+    flex-direction: column;
+  }
+}

@@ -56,7 +56,8 @@ import { AppleControlCenter } from './components/AppleControlCenter';
 import { AppleMenuSurface } from './components/AppleMenuSurface';
 import { AppleNotificationCenter } from './components/AppleNotificationCenter';
 import { AppleSpotlight } from './components/AppleSpotlight';
-import { AppleDesktopWidgets } from './components/AppleDesktopWidgets';
+import { AppleDesktopWidgets, type AppleWidgetVisibility } from './components/AppleDesktopWidgets';
+import { WebosDesktopWidgets } from '../../system/widgets/components/WebosDesktopWidgets';
 import { AppleLockScreen } from './components/AppleLockScreen';
 import { AppleWidgetGallery } from './components/AppleWidgetGallery';
 import { IosAssistiveTouch } from './components/IosAssistiveTouch';
@@ -191,7 +192,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-assistive-touch-enabled') !== 'false';
   });
-  const [appleWidgetVisibility, setAppleWidgetVisibility] = useState({
+  const [appleWidgetVisibility, setAppleWidgetVisibility] = useState<AppleWidgetVisibility>({
     clock: true,
     battery: true,
     calendar: true,
@@ -1371,6 +1372,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                   { label: 'Text Document' },
                 ]
               },
+              { separator: true },
+              {
+                label: language === 'ru' ? 'Виджеты рабочего стола…' : 'Desktop Widgets…',
+                onClick: () => setShowAppleWidgetGallery(true),
+              },
               { label: 'Properties' },
             ];
 
@@ -1468,27 +1474,34 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         onOpenHelp={() => launchApp('help')}
       />
 
-      {themeKey === 'macos-26' && macDesktopWidgetsEnabled && (
+      {(themeKey === 'macos-26' || (themeKey !== 'webos' && Object.values(appleWidgetVisibility).some(Boolean))) && macDesktopWidgetsEnabled && (
         <AppleDesktopWidgets
           time={time}
           language={language}
           visibility={appleWidgetVisibility}
+          onOpenNews={() => launchApp('news')}
+          onOpenGalleryImage={() => launchApp('pictures')}
         />
       )}
 
-      {themeKey === 'macos-26' && (
-        <AppleWidgetGallery
-          open={showAppleWidgetGallery}
-          visibility={appleWidgetVisibility}
-          onClose={() => setShowAppleWidgetGallery(false)}
-          onToggle={(key) => {
-            setAppleWidgetVisibility((current) => ({
-              ...current,
-              [key]: !current[key],
-            }));
-          }}
+      {themeKey === 'webos' && (
+        <WebosDesktopWidgets
+          onOpenFeed={() => launchApp('news')}
+          onOpenGalleryImage={() => launchApp('pictures')}
         />
       )}
+
+      <AppleWidgetGallery
+        open={showAppleWidgetGallery}
+        visibility={appleWidgetVisibility}
+        onClose={() => setShowAppleWidgetGallery(false)}
+        onToggle={(key) => {
+          setAppleWidgetVisibility((current) => ({
+            ...current,
+            [key]: !current[key],
+          }));
+        }}
+      />
 
       {themeKey === 'macos-26' && (
         <AppleDesktopViewOptions
