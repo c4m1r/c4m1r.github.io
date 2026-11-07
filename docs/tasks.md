@@ -242,6 +242,19 @@
 - **Acceptance criteria**: News and Currency applications appear on desktops, start menus, launchers, and dock in all OS themes with RSS and $ icons; opening them renders within native OS window frames; WebOS plays `Ascii_Blossom.mp4` in background; quotes widget cycles through 50 quotes; all verification tests pass.
 - **Files**: `src/apps/currency/CurrencyWindow.tsx`, `src/assets/icons/rss-icon.svg`, `src/assets/icons/currency-dollar-icon.svg`, `src/system/widgets/services/quotesData.ts`, `src/system/widgets/services/cryptoCurrencyService.ts`, `src/system/widgets/components/CurrencyWidget.tsx`, `src/shells/desktop/DesktopShellContainer.tsx`, `src/shells/desktop/appRegistry.tsx`, `src/shells/desktop/appleIconAssets.ts`, `src/shells/desktop/components/AppleLauncherSurface.tsx`, `src/shells/desktop/components/start-menu/StartMenu7.tsx`, `src/shells/desktop/components/start-menu/StartMenuXP.tsx`, `src/shells/desktop/runtime/desktopAppLauncher.ts`, `src/shells/desktop/shortcutsRegistry.ts`, `src/themes/webos/themeAssets.ts`.
 
+### TASK-CONSOL-03: Complete 100% Absorption and Elimination of the /eat/ Store
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: 18 donor repositories remained in `/eat/` containing classic Windows 98/95 audio/cursors/icons, Windows 10 Hero wallpapers, Apple iOS/macOS sounds and assets, and portfolio artifacts.
+- **Expected result**:
+  1. **Windows 98/95 Suite**: Extracted authentic startup sound `windows-98-startup.mp3` into `src/themes/win98/assets/audio/`, retro cursors (`w98-arrow.cur`, `w98-hourglass.cur`, `w98-ibeam.cur`, `w98-pointer.cur`), Clippy animations, Windows 95 branding sidebar (`sidebar95.png`), and classic start buttons. Removed `98.portfolio-main`, `windows-98-portfolio-main`, `wins95Portfolio-main`.
+  2. **Windows 10 Suite**: Extracted official Windows 10 Hero wallpaper (`win10-hero.jpg`), Spotlight lock screen (`win10-lockscreen.jpg`), and nature wallpaper (`win10-nature.jpg`) into `src/content/pictures/wallpapers/windows/`. Removed `windows10-portfolio-main` and `kenMaina-windows10-portfolio-main`.
+  3. **Apple iOS/macOS Suite**: Canonicalized iOS lock sound (`ios-lock.mp3`), Siri chime (`siri.mp3`), and dock assets. Removed `Iphone-7-Html-Css-Js-main`, `iPhone-12-Clone-main`, `iphone-simulator-main`, `homescreen-main`, `macOS-Portfolio-main 2`, `macos-portfolio-main`, and `playground-macos-main`.
+  4. **Portfolio & Typography Suite**: Extracted authentic `MS_Sans.ttf` font into `src/assets/fonts/`, chess sound effects into `src/assets/audio/chess/`, and wave video wallpaper into `src/content/pictures/wallpapers/wave.mp4`. Removed `portfolio-main`, `portfolio-main 2`, `Personal-Portfolio-main`, `alanagoyal-main`, `portfolio2025-master`, and `vovacodes-master`.
+  5. **Total Clean**: Zero donor repositories remain in `/eat/`. All 24 donor codebases are 100% absorbed into `c4m1r.github.io`.
+- **Acceptance criteria**: `/eat/` is completely cleared from disk; zero external file imports; `npm run typecheck`, `npm run lint`, and `npm run build` pass cleanly; 100% absorption confirmed in `docs/donor-absorption-audit.md`.
+- **Files**: `src/themes/win98/assets/*`, `src/content/pictures/wallpapers/*`, `src/assets/fonts/*`, `src/assets/audio/*`, `src/themes/webos/themeAssets.ts`, `docs/donor-absorption-audit.md`.
+
 ---
 
 ## 5. Quality Verification Pipeline
