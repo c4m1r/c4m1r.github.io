@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
 import { enabledOsBootProfiles } from '../shells/os/osProfiles';
-import { getEditionsForProfile } from '../shells/os/osEditions';
+import { getEditionsForProfile, setSelectedEditionId, EDITION_STORAGE_KEY } from '../shells/os/osEditions';
 import {
   isWindowsBuildTextEnabled,
   setWindowsBuildTextEnabled,
@@ -10,7 +10,6 @@ import {
 } from '../shells/os/osBootOptions';
 import { type OsBootProfile } from '../shells/os/osTypes';
 
-const EDITION_STORAGE_KEY = 'webos-grub-editions-v1';
 const FAKE_COUNTDOWN_TICK_MS = 330;
 
 function loadEditionSelection(): Record<string, string> {
@@ -68,10 +67,16 @@ export function GrubMenu() {
 
   const handleBoot = useCallback(
     (profile: OsBootProfile) => {
-      if (profile.theme) setTheme(profile.theme);
+      if (profile.theme) {
+        setTheme(profile.theme);
+        const selectedId = selectedEditions[String(profile.id)] ?? selectedEditions[String(profile.theme)];
+        if (selectedId) {
+          setSelectedEditionId(profile.theme, selectedId);
+        }
+      }
       setMode(profile.mode);
     },
-    [setMode, setTheme]
+    [selectedEditions, setMode, setTheme]
   );
 
   const openEditionMenu = useCallback(() => {
@@ -88,11 +93,7 @@ export function GrubMenu() {
     const edition = editionMenuItems[editionIndex];
     const next = { ...selectedEditions, [editionProfileId]: edition.id };
     setSelectedEditions(next);
-    try {
-      window.sessionStorage.setItem(EDITION_STORAGE_KEY, JSON.stringify(next));
-    } catch {
-      // Session storage may be unavailable in hardened/private browser modes.
-    }
+    setSelectedEditionId(editionProfileId, edition.id);
     setEditionProfileId(null);
   }, [editionIndex, editionMenuItems, editionProfileId, selectedEditions]);
 

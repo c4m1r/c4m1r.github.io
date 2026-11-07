@@ -1,5 +1,6 @@
 import { Folder, Star, FileText, Settings, Search, HelpCircle, Play, LogOut, Power } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
+import { getActiveEdition } from '../../../os/osEditions';
 
 export interface StartMenu98Props {
   onClose: () => void;
@@ -12,6 +13,7 @@ export interface StartMenu98Props {
 export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Props) {
   const { theme } = useApp();
   const isWin2000 = theme === 'win2000';
+  const activeEdition = getActiveEdition(theme);
   const menuItems = [
     { label: 'Programs', icon: <Folder size={16} /> },
     { label: 'Favorites', icon: <Star size={16} /> },
@@ -48,7 +50,9 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
           }}
         >
           {isWin2000 ? (
-            <>Windows<span className="font-normal text-sm ml-1">2000</span></>
+            <>Windows<span className="font-normal text-xs ml-1">{activeEdition?.label ?? '2000'}</span></>
+          ) : activeEdition?.id === 'second-edition' ? (
+            <>Windows<span className="font-normal">98</span><span className="font-bold text-xs ml-1 text-yellow-300">SE</span></>
           ) : (
             <>Windows<span className="font-normal">98</span></>
           )}

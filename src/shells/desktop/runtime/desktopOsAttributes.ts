@@ -1,6 +1,7 @@
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { getOsDeviceSupportRules, getOsSkinRules, getOsVersionRules } from '../../os/osSkins';
 import { getWindowsBuildWatermark, isWindowsBuildTextEnabled } from '../../os/osBootOptions';
+import { getActiveEdition } from '../../os/osEditions';
 
 export interface DesktopOsAttributes {
   'data-os-theme': string;
@@ -20,6 +21,14 @@ export function getDesktopOsAttributes(themeId: ThemeId): DesktopOsAttributes {
   const deviceRules = getOsDeviceSupportRules(themeId);
   const buildWatermark = getWindowsBuildWatermark(themeId);
   const showBuildText = isWindowsBuildTextEnabled(themeId);
+  const activeEdition = getActiveEdition(themeId);
+
+  let watermarkText: string | undefined;
+  if (showBuildText && buildWatermark) {
+    const editionSuffix = activeEdition ? ` ${activeEdition.label}` : '';
+    const buildInfo = activeEdition?.buildNumber ?? `Build ${buildWatermark.build}`;
+    watermarkText = `${buildWatermark.productName}${editionSuffix}\n${buildInfo}`;
+  }
 
   return {
     'data-os-theme': themeId,
@@ -30,8 +39,6 @@ export function getDesktopOsAttributes(themeId: ThemeId): DesktopOsAttributes {
     'data-representative-device': deviceRules?.representativeDevice,
     'data-support-cycle': deviceRules?.supportCycleLabel,
     'data-form-factor': deviceRules?.formFactor,
-    'data-build-watermark': showBuildText && buildWatermark
-      ? `${buildWatermark.productName} | Build ${buildWatermark.build}`
-      : undefined,
+    'data-build-watermark': watermarkText,
   };
 }

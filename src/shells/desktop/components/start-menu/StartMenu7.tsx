@@ -3,6 +3,7 @@ import { ChevronRight, Search } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
 import { appRegistry } from '../../appRegistry';
 import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
+import { getActiveEdition } from '../../../os/osEditions';
 
 export interface StartMenu7Props {
   onClose: () => void;
@@ -35,9 +36,10 @@ export function StartMenu7({
   onSystemCommand,
   onHover,
 }: StartMenu7Props) {
-  const { language } = useApp();
+  const { language, theme } = useApp();
   const isRu = language === 'ru';
   const assets = THEME_ASSETS.win7;
+  const activeEdition = getActiveEdition(theme);
   const [query, setQuery] = useState('');
 
   const programs: Win7MenuEntry[] = useMemo(() => [
@@ -202,7 +204,14 @@ export function StartMenu7({
           <div className="win7-start-menu__user-frame">
             {assets.userAvatar ? <img src={assets.userAvatar} alt="" /> : null}
           </div>
-          <div className="win7-start-menu__username">C4m1r</div>
+          <div className="win7-start-menu__username">
+            C4m1r
+            {activeEdition && (
+              <span className="block text-[10px] font-normal text-blue-200/90 leading-tight">
+                Windows 7 {activeEdition.label}
+              </span>
+            )}
+          </div>
 
           <div className="win7-start-menu__places" role="menu">
             {places.map((entry, index) => (

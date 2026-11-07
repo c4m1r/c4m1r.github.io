@@ -8,6 +8,7 @@ export interface WindowsBuildWatermark {
 /** Optional Windows desktop build text controlled from GRUB. */
 export const WINDOWS_BUILD_WATERMARKS: Partial<Record<ThemeId, WindowsBuildWatermark>> = {
   'win-98': { productName: 'Microsoft Windows 98', build: '4.10.1998' },
+  win2000: { productName: 'Microsoft Windows 2000', build: '5.00.2195' },
   'win-xp': { productName: 'Microsoft Windows XP', build: '2600' },
   win7: { productName: 'Windows 7', build: '7601' },
   win10: { productName: 'Windows 10', build: '19045' },

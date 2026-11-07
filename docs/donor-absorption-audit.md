@@ -14,8 +14,8 @@ Below is the verified audit of all related donor repositories in `/eat/`. The ab
 | :--- | :--- | :---: | :--- | :---: | :--- |
 | **`winxpsite-main`** | Windows XP Luna | **100%** | Full shell, Luna taskbar, Start Menu, XP identity logos, boot screen, user card, sounds. | **0** | **Fully Absorbed & Removed**. |
 | **`instant-0chan-master`** | WebOS / Media | **100%** | Dancing cell grid engine, Web Audio spectrum analysis, `chpok.mp3`, `favicon.ico`, `LoopsApp.tsx`. | **0** | **Fully Absorbed & Removed**. |
-| **`windows7-ui-portfolio-main`** | Windows 7 Aero | **95%** | Glowing 4-color orb boot screen, login screen, Aero glass taskbar, window frames, wallpaper. | None | **Absorbed**. Ready for archival. |
-| **`Eshwar-win7-master`** | Windows 7 Aero | **90%** | Windows 7 start menu hierarchies, desktop icon positioning, Aero shake/peek cues. | None | **Absorbed**. Ready for archival. |
+| **`windows7-ui-portfolio-main`** | Windows 7 Aero | **100%** | Glowing 4-color orb boot screen, login screen, Aero glass taskbar, window frames, wallpaper, video assets. | **0** | **Fully Absorbed & Removed**. |
+| **`Eshwar-win7-master`** | Windows 7 Aero | **100%** | Windows 7 Start Menu hierarchies, desktop icon positioning, Aero shake/peek cues, startup sound, 4K Home wallpaper `win7-home.jpg`. | **0** | **Fully Absorbed & Removed**. |
 | **`98.portfolio-main`** | Windows 98 / Classic | **85%** | Classic 3D beveled windows, `#008080` teal desktop, retro icons, classic login dialog. | None | **Retain in /eat/** for reference until 98 pass. |
 | **`windows-98-portfolio-main`** | Windows 98 / Classic | **80%** | Windows 98 Start Menu items, classic taskbar clock, system tray beveling. | None | **Retain in /eat/** for reference. |
 | **`wins95Portfolio-main`** | Windows 95 / Retro | **75%** | Retro font metrics (MS Sans Serif), classic dialog button bevels, retro window frames. | None | **Retain in /eat/** for reference. |
@@ -58,8 +58,9 @@ Below is the verified audit of all related donor repositories in `/eat/`. The ab
    - `eat/technometer.github.io-master`: 100% absorbed into Vista wallpapers and icon assets. Removed.
    - `eat/windows2000-main`: 100% absorbed into Windows 2000 shell, boot & logon screens. Removed.
    - `eat/windows2000-portfolio-website-main`: 100% absorbed into classic UI engine. Removed.
-2. **Scheduled for Removal upon theme pass completion**:
-   - `eat/windows7-ui-portfolio-main`, `eat/Eshwar-win7-master`: To be cleaned up after Windows 7 fidelity pass is finalized.
-3. **Retained for Future Theme Passes**:
-   - Windows 98/95 repos (`98.portfolio-main`, `windows-98-portfolio-main`, `wins95Portfolio-main`) will serve as references during upcoming classic shell passes.
-   - macOS / iOS repos will serve as references during Apple theme fidelity passes.
+   - `eat/windows7-ui-portfolio-main`: 100% absorbed into Windows 7 Aero shell, boot video, logon. Removed.
+   - `eat/Eshwar-win7-master`: 100% absorbed into Windows 7 audio, start menu, and 4K wallpapers. Removed.
+2. **Scheduled for Removal upon upcoming theme passes**:
+   - Windows 98/95 repos (`98.portfolio-main`, `windows-98-portfolio-main`, `wins95Portfolio-main`): To be cleaned up after 98/95 pass.
+   - macOS / iOS repos: To be cleaned up after Apple theme fidelity passes.
+   - Portfolio / general repos: To be cleaned up after portfolio section consolidation.

@@ -61,6 +61,8 @@ export const RUN_COMMAND_ALIASES: Record<string, string> = {
   taskmgr: 'task-manager',
   taskmanager: 'task-manager',
   control: 'control-panel',
+  winver: 'about',
+  about: 'about',
   iexplore: 'internet-explorer',
   winmine: 'minesweeper',
   minesweeper: 'minesweeper',

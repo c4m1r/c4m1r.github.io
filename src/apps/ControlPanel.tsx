@@ -8,6 +8,7 @@ import { getSystemSettingsSections } from '../system/settings/settingsSections';
 import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
+import { getEditionsForProfile, getActiveEdition, setSelectedEditionId } from '../shells/os/osEditions';
 
 type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus' | 'display';
 type CPDisplayMode = 'category' | 'classic';
@@ -65,6 +66,24 @@ export function ControlPanel() {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-cellular-enabled') !== 'false';
   });
+
+  const editions = useMemo(() => getEditionsForProfile(theme), [theme]);
+  const [currentEdition, setCurrentEdition] = useState(() => getActiveEdition(theme));
+
+  useEffect(() => {
+    setCurrentEdition(getActiveEdition(theme));
+  }, [theme]);
+
+  useEffect(() => {
+    const handleEditionChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ profileOrThemeId: string; editionId: string }>;
+      if (customEvent.detail?.profileOrThemeId === theme) {
+        setCurrentEdition(getActiveEdition(theme));
+      }
+    };
+    window.addEventListener('os-edition-changed', handleEditionChange);
+    return () => window.removeEventListener('os-edition-changed', handleEditionChange);
+  }, [theme]);
   const [airplaneEnabled, setAirplaneEnabled] = useState(() => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('ios-airplane-enabled') === 'true';
@@ -1443,12 +1462,65 @@ export function ControlPanel() {
           <>
             <div className="mb-6">
               <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
-                Desktop Wallpaper
+                {isRu ? 'Фон рабочего стола и редакции' : 'Desktop Wallpaper & Editions'}
               </h1>
               <p className="text-sm opacity-75">
-                Choose a background picture from the gallery or custom uploads
+                {isRu
+                  ? 'Настройка редакции системы, оригинальных фонов и изображений галереи'
+                  : 'Configure system edition, authentic default backgrounds, and gallery wallpapers'}
               </p>
             </div>
+
+            {editions.length > 0 && (
+              <div className={`p-4 ${cardClass} mb-6`}>
+                <h2 className={`text-base font-bold mb-1 ${titleClass}`}>
+                  {isRu ? 'Редакция операционной системы' : 'Operating System Edition'}
+                </h2>
+                <p className="text-xs opacity-75 mb-3">
+                  {isRu
+                    ? 'Выберите редакцию для переключения параметров системы, водяного знака сборки и оригинального фона рабочего стола'
+                    : 'Choose an edition to switch system parameters, build watermark, and authentic desktop wallpaper'}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {editions.map((ed) => {
+                    const isSelected = currentEdition?.id === ed.id;
+                    return (
+                      <button
+                        key={ed.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedEditionId(theme, ed.id);
+                          setCurrentEdition(ed);
+                          localStorage.removeItem('desktop-custom-wallpaper');
+                          window.dispatchEvent(new CustomEvent('wallpaper-changed', { detail: null }));
+                          setCustomActive(false);
+                          setSelectedWallpaper(null);
+                        }}
+                        className={`text-left p-3 rounded border transition-all cursor-pointer ${
+                          isSelected
+                            ? 'border-[#316ac5] bg-[#316ac5]/15 ring-2 ring-[#316ac5]/40 font-medium'
+                            : 'border-gray-500/30 hover:border-gray-500/60 bg-black/10'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="font-semibold text-sm">
+                            {isRu ? ed.labelRu : ed.label}
+                          </span>
+                          {ed.buildNumber && (
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gray-500/20 opacity-80">
+                              {ed.buildNumber}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] opacity-75 leading-tight">
+                          {ed.descriptionRu}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {wallpapersLoading ? (
               <div className="text-center py-8 opacity-60">Loading gallery wallpapers...</div>

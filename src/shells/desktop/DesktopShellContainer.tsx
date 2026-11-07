@@ -48,6 +48,7 @@ import {
   getOsSystemLabel,
   getOsAppVisibility,
 } from '../os/osSkins';
+import { getActiveEdition } from '../os/osEditions';
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
 import { AppleSystemBar } from './components/AppleSystemBar';
 import { AppleDock } from './components/AppleDock';
@@ -205,6 +206,22 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const menuHoverCooldownRef = useRef<number>(0);
 
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
+  const [activeEdition, setActiveEdition] = useState(() => getActiveEdition(theme));
+
+  useEffect(() => {
+    setActiveEdition(getActiveEdition(theme));
+  }, [theme]);
+
+  useEffect(() => {
+    const handleEditionChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ profileOrThemeId: string; editionId: string }>;
+      if (customEvent.detail?.profileOrThemeId === theme) {
+        setActiveEdition(getActiveEdition(theme));
+      }
+    };
+    window.addEventListener('os-edition-changed', handleEditionChange);
+    return () => window.removeEventListener('os-edition-changed', handleEditionChange);
+  }, [theme]);
 
   useEffect(() => {
     if (theme !== 'macos-26') {
@@ -1248,10 +1265,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       style={{
         backgroundImage: customWallpaper
           ? `url(${customWallpaper})`
+          : activeEdition?.wallpaper
+          ? `url(${activeEdition.wallpaper})`
           : isXpFamily && themeAssets.wallpaper
           ? `url(${themeAssets.wallpaper})`
           : undefined,
-        backgroundColor: isXpFamily
+        backgroundColor: customWallpaper
+          ? 'transparent'
+          : activeEdition?.backgroundColor
+          ? activeEdition.backgroundColor
+          : isXpFamily
           ? 'transparent'
           : themeKey === 'win-98'
           ? '#008080'

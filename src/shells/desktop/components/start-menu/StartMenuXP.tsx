@@ -3,6 +3,7 @@ import { translations } from '../../../../i18n/translations';
 import { ChevronsRight } from 'lucide-react';
 import { THEME_ASSETS, ThemeAssetId } from '../../../../themes/webos/themeAssets';
 import { appRegistry } from '../../appRegistry';
+import { getActiveEdition } from '../../../os/osEditions';
 
 import logoffIcon from '../../../../themes/winxp/assets/icons/logoff.png';
 import shutdownIcon from '../../../../themes/winxp/assets/icons/shutdown.png';
@@ -48,6 +49,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const t = translations[language].xp;
   const isRu = language === 'ru';
   const currentTheme = theme as ThemeAssetId;
+  const activeEdition = getActiveEdition(theme);
   const themeAssets = THEME_ASSETS[currentTheme] ?? THEME_ASSETS.webos;
   const startMenuIcons = themeAssets.startMenuIcons;
   const placeIcons = themeAssets.placesIcons ?? {};
@@ -286,14 +288,26 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             }}
           />
         )}
-        <span
-          className="text-[14px] font-bold"
-          style={{
-            textShadow: '1px 1px rgba(0, 0, 0, 0.7)',
-          }}
-        >
-          {t.user}
-        </span>
+        <div className="flex items-baseline gap-1.5 flex-1 min-w-0">
+          <span
+            className="text-[14px] font-bold truncate"
+            style={{
+              textShadow: '1px 1px rgba(0, 0, 0, 0.7)',
+            }}
+          >
+            {t.user}
+          </span>
+          {activeEdition && (
+            <span
+              className="text-[11px] font-normal opacity-85 text-blue-100 truncate"
+              style={{
+                textShadow: '1px 1px rgba(0, 0, 0, 0.6)',
+              }}
+            >
+              • {activeEdition.label}
+            </span>
+          )}
+        </div>
       </header>
 
       {/* Body */}

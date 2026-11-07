@@ -201,6 +201,19 @@
 - **Acceptance criteria**: Pressing Spacebar instantly fast-forwards through BIOS POST to GRUB, and through any OS boot animation directly to login or desktop.
 - **Files**: `src/apps/bios/BiosPostScreen.tsx`, `src/themes/winxp/BootScreen.tsx`, `src/themes/win7/BootScreen.tsx`, `src/themes/apple/AppleSessionScreens.tsx`, `src/themes/webos/BootScreen.tsx`.
 
+### TASK-WIN-EDITIONS-01: Windows Multi-Edition Suite, Dynamic Wallpapers & Build Badges
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: Windows operating systems lacked multi-edition parameter selection, authentic edition-specific wallpapers, and dynamic display of editions and build watermarks across the desktop, Start Menu, Control Panel, and About dialogs. Donors `eat/windows7-ui-portfolio-main` and `eat/Eshwar-win7-master` remained unconsolidated on disk.
+- **Expected result**:
+  1. Define full edition matrices with labels, descriptions, build numbers, and associated wallpapers in `src/shells/os/osEditions.ts` for all Windows systems (`win-98`, `win2000`, `win-xp`, `win7`, `win8`, `win81`).
+  2. Implement reactive edition selection engine with `getActiveEdition`, `setSelectedEditionId`, and `os-edition-changed` event bus.
+  3. Dynamic desktop background switching: automatically binds edition wallpapers (`win98-clouds.jpg`, `win7-home.jpg`, `winxp-bliss.jpg`, `desktop-wallpaper.jpg`) or background colors (`#008080`, `#3a6ea5`, `#1c3f6e`, `#152238`, `#1b58b8`).
+  4. Display of active edition across system UI: Start Menu headers (XP / 7 / 2000 / 98 SE), Desktop build watermark (`data-build-watermark`), Control Panel interactive edition switcher, and authentic About Windows (`winver`) dialog.
+  5. 100% absorption and removal of `eat/windows7-ui-portfolio-main/` and `eat/Eshwar-win7-master/`.
+- **Acceptance criteria**: GRUB allows selecting editions for all Windows systems via `E` key; changing editions updates wallpaper, watermark, and Start Menu immediately; Control Panel allows live edition switching; `winver` command opens About Windows; donors removed.
+- **Files**: `src/shells/os/osEditions.ts`, `src/shells/os/osBootOptions.ts`, `src/shells/desktop/runtime/desktopOsAttributes.ts`, `src/shells/desktop/DesktopShellContainer.tsx`, `src/shells/desktop/components/start-menu/StartMenu98.tsx`, `src/shells/desktop/components/start-menu/StartMenuXP.tsx`, `src/shells/desktop/components/start-menu/StartMenu7.tsx`, `src/apps/ControlPanel.tsx`, `src/apps/AboutApp.tsx`, `src/apps/GrubMenu.tsx`, `docs/donor-absorption-audit.md`.
+
 ---
 
 ## 5. Quality Verification Pipeline

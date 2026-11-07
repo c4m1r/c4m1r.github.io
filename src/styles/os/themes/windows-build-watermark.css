@@ -18,7 +18,8 @@
   user-select: none;
 }
 
-.os-win-98.os-desktop[data-build-watermark]::after {
+.os-win-98.os-desktop[data-build-watermark]::after,
+.os-win2000.os-desktop[data-build-watermark]::after {
   font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
 }
 
