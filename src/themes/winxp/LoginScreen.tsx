@@ -16,25 +16,30 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const t = translations[language].xp;
   const isRu = language === 'ru';
 
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loggingInUser, setLoggingInUser] = useState<'c4m1r' | 'user' | null>(null);
   const [isPasswordOpen, setIsPasswordOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [shake, setShake] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleTileClick = () => {
+  const handleC4m1rClick = () => {
     if (!isPasswordOpen) {
       setIsPasswordOpen(true);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   };
 
+  const handleUserClick = () => {
+    setLoggingInUser('user');
+    setTimeout(onLogin, 1200);
+  };
+
   const handlePasswordSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (verifyAccountPassword('c4m1r', password)) {
       setErrorMessage('');
-      setIsLoggingIn(true);
+      setLoggingInUser('c4m1r');
       setTimeout(onLogin, 1500);
     } else {
       setErrorMessage(isRu ? 'Неверный пароль. Повторите ввод.' : 'Incorrect password. Please try again.');
@@ -71,9 +76,9 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
         <div className="xp-welcome-screen__right">
           <div
-            onClick={handleTileClick}
+            onClick={handleC4m1rClick}
             className={`xp-welcome-screen__user-tile ${
-              isLoggingIn ? 'xp-welcome-screen__user-tile--logging-in' : ''
+              loggingInUser === 'c4m1r' ? 'xp-welcome-screen__user-tile--logging-in' : ''
             }`}
           >
             <div className="xp-welcome-screen__avatar-frame">
@@ -89,7 +94,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             <div className="xp-welcome-screen__user-details">
               <span className="xp-welcome-screen__username">{t.user || 'C4m1r'}</span>
 
-              {isLoggingIn ? (
+              {loggingInUser === 'c4m1r' ? (
                 <span className="xp-welcome-screen__user-status">{t.loggingIn}</span>
               ) : !isPasswordOpen ? (
                 <span className="xp-welcome-screen__user-status">{t.loginHint}</span>
@@ -127,6 +132,30 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                   )}
                 </form>
               )}
+            </div>
+          </div>
+
+          <div
+            onClick={handleUserClick}
+            className={`xp-welcome-screen__user-tile ${
+              loggingInUser === 'user' ? 'xp-welcome-screen__user-tile--logging-in' : ''
+            }`}
+          >
+            <div className="xp-welcome-screen__avatar-frame">
+              <img
+                src={userAvatar}
+                alt="User"
+                className="xp-welcome-screen__avatar"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+            <div className="xp-welcome-screen__user-details">
+              <span className="xp-welcome-screen__username">User</span>
+              <span className="xp-welcome-screen__user-status">
+                {loggingInUser === 'user' ? t.loggingIn : t.loginHint}
+              </span>
             </div>
           </div>
         </div>

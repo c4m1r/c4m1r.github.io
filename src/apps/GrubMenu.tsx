@@ -223,17 +223,31 @@ export function GrubMenu() {
       <div className="mb-8"><div className="text-gray-400">{t.title || 'GRUB Boot Loader'}</div></div>
       <div className="flex-1 flex flex-col justify-center max-w-2xl">
         <div className="space-y-1 mb-8">
-          {enabledOsBootProfiles.map((profile, index) => (
-            <div
-              key={profile.id}
-              className={`px-4 py-2 cursor-pointer select-none ${index === selectedIndex ? 'bg-white text-black' : 'bg-black text-white hover:bg-gray-800'}`}
-              onClick={() => { setSelectedIndex(index); setAutobootActive(false); handleBoot(profile); }}
-              onTouchStart={(e) => { e.preventDefault(); setSelectedIndex(index); setAutobootActive(false); handleBoot(profile); }}
-              style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
-            >
-              {getProfileLabel(profile)}
-            </div>
-          ))}
+          {enabledOsBootProfiles.map((profile, index) => {
+            const isWebos = profile.id === 'webos';
+            const isSelected = index === selectedIndex;
+            return (
+              <div
+                key={profile.id}
+                className={`px-4 py-2 cursor-pointer select-none ${
+                  isSelected
+                    ? 'bg-white text-black'
+                    : isWebos
+                      ? 'bg-black text-black hover:bg-gray-900'
+                      : 'bg-black text-white hover:bg-gray-800'
+                }`}
+                onClick={() => { setSelectedIndex(index); setAutobootActive(false); handleBoot(profile); }}
+                onTouchStart={(e) => { e.preventDefault(); setSelectedIndex(index); setAutobootActive(false); handleBoot(profile); }}
+                style={{
+                  touchAction: 'manipulation',
+                  WebkitTapHighlightColor: 'transparent',
+                  color: isWebos && !isSelected ? '#000000' : undefined,
+                }}
+              >
+                {getProfileLabel(profile)}
+              </div>
+            );
+          })}
         </div>
 
         {selectedProfileEditions.length > 0 && (

@@ -129,10 +129,10 @@
 - **Priority**: P0
 - **Status**: COMPLETED
 - **Problem**: Login screens lacked password verification on user `c4m1r`, allowing unrestricted one-click entry. Plaintext storage of passwords was prohibited.
-- **Expected result**: Secure, obfuscated credential verification (`src/domain/auth/credentials.ts`) using XOR token (`0x65` mask) and salted SHA-256 digest (`ac0d0deae2a1d4e30a799234e867fc1d6f3f371d587924d8f327c4b74e82383b`) for account `c4m1r` with password `123123`. Authentic password entry UI across WebOS, Windows XP, Windows 98, and Windows 7 login screens.
-- **Acceptance criteria**: Password `123123` unlocks the session; wrong passwords show error feedback and prevent login; no cleartext `123123` exists in the bundle.
+- **Expected result**: Secure, obfuscated credential verification (`src/domain/auth/credentials.ts`) using XOR token (`0x65` mask) and salted SHA-256 digest (`ac0d0deae2a1d4e30a799234e867fc1d6f3f371d587924d8f327c4b74e82383b`) for account `c4m1r`. Authentic password entry UI across WebOS, Windows XP, Windows 98, and Windows 7 login screens.
+- **Acceptance criteria**: Valid secret master password unlocks the session; wrong passwords show error feedback and prevent login; no cleartext password string exists in repository or bundle.
 - **Files**: `src/domain/auth/credentials.ts`, `src/themes/webos/LoginScreen.tsx`, `src/themes/winxp/LoginScreen.tsx`, `src/themes/winxp/xp.css`, `src/themes/win7/LoginScreen.tsx`, `src/themes/webos/index.tsx`.
-- **Verification method**: Attempt login with wrong password (rejected); attempt with `123123` (accepted); `grep -rn "123123" src/` returns 0 plaintext password occurrences.
+- **Verification method**: Attempt login with wrong password (rejected); attempt with valid master password (accepted); `grep -rn` confirms zero plaintext password strings in repository.
 
 ### TASK-DOCS-01: Agent Engineering Guide & System Architecture Documentation
 - **Priority**: P0

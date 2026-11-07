@@ -76,7 +76,7 @@ Every full desktop OS in `src/themes/` operates via a multi-phase state machine:
                                                                 ▼
                                                           [LoginScreen]
                                                                 │
-                                                     (User types password: 123123)
+                                                   (User authenticates account)
                                                                 ▼
                                                          [WelcomeScreen]
                                                                 │
@@ -107,8 +107,8 @@ Every full desktop OS in `src/themes/` operates via a multi-phase state machine:
 
 Credentials and account authorization are managed by `src/domain/auth/credentials.ts`:
 - **Primary account**: `c4m1r` (case-insensitive normalized).
-- **Password**: `123123`.
-- **Storage policy**: Passwords are **never** stored in plain text anywhere in source files or bundle outputs.
+- **Password**: Obfuscated secret master password (verified strictly via XOR token cipher & SHA-256 digest in `credentials.ts`).
+- **Storage policy**: Passwords are **never** stored in plain text anywhere in source files, docs, or bundle outputs.
   - **Obfuscation**: XOR cipher token with key `0x65` (`[0x54, 0x57, 0x56, 0x54, 0x57, 0x56]`).
   - **Digest**: Salted SHA-256 hash (`ac0d0deae2a1d4e30a799234e867fc1d6f3f371d587924d8f327c4b74e82383b`).
 - **Validation**:

@@ -21,6 +21,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
+  const [selectedUser98, setSelectedUser98] = useState<'c4m1r' | 'user'>('c4m1r');
   const [errorMessage, setErrorMessage] = useState('');
   const [shake, setShake] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +72,9 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (verifyAccountPassword('c4m1r', password)) {
+            if (selectedUser98 === 'user') {
+              onLogin();
+            } else if (verifyAccountPassword('c4m1r', password)) {
               onLogin();
             } else {
               triggerError();
@@ -106,24 +109,33 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
               <div className="grid grid-cols-[80px_1fr] gap-2 items-center mb-2">
                 <label className="text-sm">User name:</label>
-                <input
-                  type="text"
-                  value="C4m1r"
-                  readOnly
-                  className="border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input bg-gray-100 text-gray-800"
-                />
+                <select
+                  value={selectedUser98}
+                  onChange={(e) => {
+                    setSelectedUser98(e.target.value as 'c4m1r' | 'user');
+                    setErrorMessage('');
+                  }}
+                  className="border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input bg-white text-gray-800"
+                >
+                  <option value="c4m1r">C4m1r</option>
+                  <option value="user">User</option>
+                </select>
 
                 <label className="text-sm">Password:</label>
                 <input
                   ref={inputRef}
                   type="password"
-                  value={password}
+                  disabled={selectedUser98 === 'user'}
+                  placeholder={selectedUser98 === 'user' ? (isRu ? 'Без пароля' : 'No password') : ''}
+                  value={selectedUser98 === 'user' ? '' : password}
                   onChange={(e) => {
                     setPassword(e.target.value);
                     if (errorMessage) setErrorMessage('');
                   }}
-                  autoFocus
-                  className={`border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input ${shake ? 'border-red-600 bg-red-50' : ''}`}
+                  autoFocus={selectedUser98 === 'c4m1r'}
+                  className={`border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input ${
+                    selectedUser98 === 'user' ? 'bg-gray-100 text-gray-400' : ''
+                  } ${shake ? 'border-red-600 bg-red-50' : ''}`}
                 />
               </div>
               {errorMessage && (
@@ -175,6 +187,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     );
   }
 
+  // WebOS theme: Strictly account C4m1r protected by password (as specified: "но не в последнюю WebOS ОС-тему")
   return (
     <div className={`min-h-screen w-full login-screen-xp os-shell os-${osClassName}`}>
       <div className="login-screen__container">

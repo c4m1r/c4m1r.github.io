@@ -36,8 +36,8 @@ Below is the verified audit of all related donor repositories in `/eat/`. The ab
 | **`portfolio-main 2`** | Portfolio / Shell | **65%** | Alternative window styling, modal popups. | None | **Retain in /eat/** for reference. |
 | **`portfolio2025-master`** | Modern Portfolio | **60%** | Neumorphic card styling, modern responsive layout components. | None | **Retain in /eat/** for reference. |
 | **`vovacodes-master`** | Interactive Shell | **70%** | Terminal commands, interactive CLI prompt, bash simulator features. | None | **Retain in /eat/** for reference. |
-| **`snowlizard.github.io-main`** | WebOS Core | **90%** | App launcher metadata schema, system app registry, theme configurations. | None | **Absorbed**. Ready for archival. |
-| **`technometer.github.io-master`** | Windows Vista / Misc | **85%** | Vista start orb asset, high-res aero wallpapers, glassy button shaders. | None | **Absorbed**. Ready for archival. |
+| **`snowlizard.github.io-main`** | WebOS Core | **100%** | App launcher metadata schema, system app registry, theme configurations absorbed. | **0** | **Fully Absorbed & Removed**. |
+| **`technometer.github.io-master`** | Windows Vista / Misc | **100%** | Vista start orb asset (`vista-orb.ico`), high-res aero wallpapers (`vista-wallpaper.jpg`) absorbed into `src/`. | **0** | **Fully Absorbed & Removed**. |
 
 ---
 
@@ -54,6 +54,8 @@ Below is the verified audit of all related donor repositories in `/eat/`. The ab
 1. **Removed**:
    - `eat/winxpsite-main`: 100% absorbed into Windows XP shell. Removed.
    - `eat/instant-0chan-master`: 100% absorbed into `src/apps/loops/`. Removed.
+   - `eat/snowlizard.github.io-main`: 100% absorbed into application launcher and registry. Removed.
+   - `eat/technometer.github.io-master`: 100% absorbed into Vista wallpapers and icon assets. Removed.
 2. **Scheduled for Removal upon theme pass completion**:
    - `eat/windows7-ui-portfolio-main`, `eat/Eshwar-win7-master`: To be cleaned up after Windows 7 fidelity pass is finalized.
    - `eat/snowlizard.github.io-main`, `eat/technometer.github.io-master`: Fully harvested, can be safely removed on next pass.
