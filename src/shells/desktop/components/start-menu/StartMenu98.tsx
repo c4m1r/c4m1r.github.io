@@ -1,4 +1,5 @@
 import { Folder, Star, FileText, Settings, Search, HelpCircle, Play, LogOut, Power } from 'lucide-react';
+import { useApp } from '../../../../contexts/useApp';
 
 export interface StartMenu98Props {
   onClose: () => void;
@@ -9,6 +10,8 @@ export interface StartMenu98Props {
 }
 
 export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Props) {
+  const { theme } = useApp();
+  const isWin2000 = theme === 'win2000';
   const menuItems = [
     { label: 'Programs', icon: <Folder size={16} /> },
     { label: 'Favorites', icon: <Star size={16} /> },
@@ -23,7 +26,7 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
 
   return (
     <div 
-      className="absolute bottom-[32px] left-1 w-48 flex z-50 os-panel"
+      className="absolute bottom-[32px] left-1 w-52 flex z-50 os-panel"
       style={{
         background: '#c0c0c0',
         border: '2px solid',
@@ -31,20 +34,24 @@ export function StartMenu98({ onClose, onSystemCommand, onHover }: StartMenu98Pr
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
       }}
     >
-      {/* Windows 98 Sidebar */}
+      {/* Windows Classic Sidebar */}
       <div 
-        className="w-8 flex items-end justify-center pb-2 os-sidebar"
+        className="w-8 flex items-end justify-center pb-2 os-sidebar select-none"
         style={{
-          background: '#000080',
+          background: isWin2000 ? 'linear-gradient(to top, #000080, #1084d0)' : '#000080',
         }}
       >
         <span 
-          className="text-white font-bold text-lg transform -rotate-90 whitespace-nowrap tracking-widest"
+          className="text-white font-bold text-lg transform -rotate-90 whitespace-nowrap tracking-widest origin-bottom-center"
           style={{
             fontFamily: 'MS Sans Serif, sans-serif',
           }}
         >
-          Windows<span className="font-normal">98</span>
+          {isWin2000 ? (
+            <>Windows<span className="font-normal text-sm ml-1">2000</span></>
+          ) : (
+            <>Windows<span className="font-normal">98</span></>
+          )}
         </span>
       </div>
 

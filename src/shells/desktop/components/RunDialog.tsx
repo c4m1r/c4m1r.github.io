@@ -12,7 +12,7 @@ export function RunDialog({ onClose, onRun }: RunDialogProps) {
   const [command, setCommand] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const isWindowsXp = theme === 'win-xp';
-  const isXpFamily = theme !== 'win-98';
+  const isXpFamily = theme !== 'win-98' && theme !== 'win2000';
   const isRu = language === 'ru';
 
   useEffect(() => {

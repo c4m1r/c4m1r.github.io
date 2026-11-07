@@ -5,7 +5,7 @@ export interface OsEdition {
   descriptionRu: string;
 }
 
-export type EditionProfileId = 'win7' | 'win8' | 'win81';
+export type EditionProfileId = 'win7' | 'win8' | 'win81' | 'win2000';
 
 export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
   win7: [
@@ -150,6 +150,26 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
       label: '8.1 with Bing',
       labelRu: 'Windows 8.1 with Bing',
       descriptionRu: 'OEM-вариация Windows 8.1 для недорогих устройств с Bing как поиском по умолчанию.',
+    },
+  ],
+  win2000: [
+    {
+      id: 'professional',
+      label: 'Professional',
+      labelRu: 'Профессиональная',
+      descriptionRu: 'Настольная операционная система для корпоративных рабочих станций, объединившая стабильность NT и поддержку аппаратных средств.',
+    },
+    {
+      id: 'server',
+      label: 'Server',
+      labelRu: 'Серверная',
+      descriptionRu: 'Многоцелевая сетевая операционная система для файловых и веб-серверов с поддержкой Active Directory.',
+    },
+    {
+      id: 'advanced-server',
+      label: 'Advanced Server',
+      labelRu: 'Расширенная серверная',
+      descriptionRu: 'Серверная редакция высокой производительности для кластеризации и поддержки до 8 процессоров и 8 ГБ ОЗУ.',
     },
   ],
 };

@@ -4,6 +4,7 @@ export type AppMode = 'bios' | 'grub' | 'blog' | 'webos' | 'terminal' | 'powerof
 export type ThemeId =
   | 'win-98'
   | 'win-xp'
+  | 'win2000'
   | 'webos'
   | 'win7'
   | 'win10'

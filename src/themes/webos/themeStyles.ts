@@ -1,4 +1,4 @@
-export type ThemeId = 'webos' | 'win-xp' | 'win-98' | 'win7';
+export type ThemeId = 'webos' | 'win-xp' | 'win-98' | 'win7' | 'win2000';
 
 export interface ThemeStyleConfig {
   body: string[];
@@ -37,6 +37,13 @@ export const THEME_STYLES: Record<ThemeId, ThemeStyleConfig> = {
     startButton: ['start-button-98'],
     startButtonOpen: ['start-button-98'],
     taskbar: ['theme-98', 'taskbar-98', 'text-black'],
+    systemTray: ['system-tray-98'],
+  },
+  win2000: {
+    body: ['theme-win2000', 'theme-98'],
+    startButton: ['start-button-98', 'start-button-2000'],
+    startButtonOpen: ['start-button-98', 'start-button-2000'],
+    taskbar: ['theme-win2000', 'theme-98', 'taskbar-98', 'text-black'],
     systemTray: ['system-tray-98'],
   },
 };

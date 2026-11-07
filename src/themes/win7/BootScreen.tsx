@@ -24,8 +24,23 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     return () => window.clearTimeout(fallback);
   }, [complete]);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.code === 'Space' || e.key === 'Enter' || e.key === 'Escape') {
+        complete();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [complete]);
+
   return (
-    <div className="win7-boot-screen os-shell os-win7" role="status" aria-live="polite">
+    <div
+      onClick={complete}
+      className="win7-boot-screen os-shell os-win7 cursor-pointer select-none"
+      role="status"
+      aria-live="polite"
+    >
       <div className="win7-boot-screen__content">
         {!videoFailed ? (
           <video

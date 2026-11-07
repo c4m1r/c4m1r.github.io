@@ -4,6 +4,7 @@ export const OS_CLASS_MAP: Record<ThemeId, string> = {
   'win-xp': 'winxp',
   webos: 'webos',
   'win-98': 'classic',
+  win2000: 'classic os-win2000',
   win7: 'win7',
   win10: 'win7',
   win11: 'win7',

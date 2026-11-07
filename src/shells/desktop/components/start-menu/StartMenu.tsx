@@ -14,7 +14,7 @@ export interface StartMenuProps {
 export function StartMenu({ onClose, onLaunchApp, onOpenPath, onSystemCommand, onHover }: StartMenuProps) {
   const { theme } = useApp();
 
-  if (theme === 'win-98') {
+  if (theme === 'win-98' || theme === 'win2000') {
     return (
       <StartMenu98
         onClose={onClose}

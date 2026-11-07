@@ -15,9 +15,20 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     return () => clearTimeout(timer);
   }, [onComplete]);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.code === 'Space' || e.key === 'Enter' || e.key === 'Escape') {
+        onComplete();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onComplete]);
+
   return (
     <div
-      className="xp-boot-screen os-shell os-winxp"
+      onClick={onComplete}
+      className="xp-boot-screen os-shell os-winxp cursor-pointer select-none"
       style={{ opacity: fadeIn ? 1 : 0 }}
     >
       <div className="xp-boot-screen__center">

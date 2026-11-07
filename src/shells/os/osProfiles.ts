@@ -29,6 +29,15 @@ export const osBootProfiles: OsBootProfile[] = [
     enabled: true,
   },
   {
+    id: 'win2000' as OsProfileId,
+    label: 'Windows 2000',
+    kind: 'desktop' as const,
+    mode: 'webos' as const,
+    theme: 'win2000' as const,
+    order: 25,
+    enabled: true,
+  },
+  {
     id: 'win7' as OsProfileId,
     label: 'Windows 7',
     kind: 'desktop' as const,

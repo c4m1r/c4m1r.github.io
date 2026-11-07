@@ -353,7 +353,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const trayRef = useRef<HTMLDivElement | null>(null);
 
   const themeKey: ThemeId = theme;
-  const themeAssets = THEME_ASSETS[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_ASSETS.webos;
+  const themeAssets = (THEME_ASSETS as Record<string, typeof THEME_ASSETS.webos>)[themeKey] ?? THEME_ASSETS.webos;
   const fallbackAssets = THEME_ASSETS.webos;
   const resolveAssetPath = (primary?: string, secondary?: string) => primary ?? secondary ?? '';
   const volumeIconSrc = resolveAssetPath(themeAssets.volumeIcon, fallbackAssets.volumeIcon);
@@ -364,7 +364,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     themeAssets.richTextIcon ?? themeAssets.notepadIcon,
     fallbackAssets.richTextIcon ?? fallbackAssets.notepadIcon ?? fallbackAssets.folderIcon
   );
-  const themeStyles = THEME_STYLES[themeKey as unknown as 'webos' | 'win-xp' | 'win-98'] ?? THEME_STYLES.webos;
+  const themeStyles = (THEME_STYLES as Record<string, (typeof THEME_STYLES)['webos']>)[themeKey] ?? THEME_STYLES.webos;
   const isXpFamily = isThemeInFamily(themeKey, XP_FAMILY_THEMES);
   const osClassName = getDesktopOsClassName(themeKey);
   const startLabel = getOsSystemLabel('startButton', t.start ?? 'Start', themeKey, language);
@@ -1255,6 +1255,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           ? 'transparent'
           : themeKey === 'win-98'
           ? '#008080'
+          : themeKey === 'win2000'
+          ? '#3a6ea5'
           : themeKey === 'ubuntu'
           ? '#2c001e'
           : themeKey === 'arch'

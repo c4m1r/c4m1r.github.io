@@ -65,7 +65,7 @@ export function BiosPostScreen({ onComplete }: BiosPostScreenProps) {
   // Keyboard shortcut to skip
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Delete' || e.key === ' ' || e.key === 'Enter') {
+      if (e.key === 'Escape' || e.key === 'Delete' || e.key === ' ' || e.code === 'Space' || e.key === 'Enter') {
         finish();
       }
     };

@@ -7,6 +7,7 @@ export type OsProfileId =
   | 'terminal'
   | 'win-xp'
   | 'win-98'
+  | 'win2000'
   | 'win7'
   | 'ubuntu'
   | 'webos'

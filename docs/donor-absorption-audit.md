@@ -19,8 +19,8 @@ Below is the verified audit of all related donor repositories in `/eat/`. The ab
 | **`98.portfolio-main`** | Windows 98 / Classic | **85%** | Classic 3D beveled windows, `#008080` teal desktop, retro icons, classic login dialog. | None | **Retain in /eat/** for reference until 98 pass. |
 | **`windows-98-portfolio-main`** | Windows 98 / Classic | **80%** | Windows 98 Start Menu items, classic taskbar clock, system tray beveling. | None | **Retain in /eat/** for reference. |
 | **`wins95Portfolio-main`** | Windows 95 / Retro | **75%** | Retro font metrics (MS Sans Serif), classic dialog button bevels, retro window frames. | None | **Retain in /eat/** for reference. |
-| **`windows2000-main`** | Windows 2000 | **70%** | Win2k blue/gray color palette, classic desktop layouts, system dialog layouts. | None | **Retain in /eat/** for reference. |
-| **`windows2000-portfolio-website-main`**| Windows 2000 | **70%** | Win2k Explorer toolbar structure, icon set, status bar typography. | None | **Retain in /eat/** for reference. |
+| **`windows2000-main`** | Windows 2000 | **100%** | Win2000 Professional boot screen with segmented progress bar, classic "Log On to Windows" dialog, start menu, desktop background `#3a6ea5`, start button & sidebar assets. | **0** | **Fully Absorbed & Removed**. |
+| **`windows2000-portfolio-website-main`**| Windows 2000 | **100%** | Explorer classic window chrome, toolbar layout, MS Sans Serif typography conventions absorbed. | **0** | **Fully Absorbed & Removed**. |
 | **`windows10-portfolio-main`** | Windows 10 | **75%** | Windows 10 flat modern taskbar, action center tray icon, start menu tile layouts. | None | **Retain in /eat/** for reference. |
 | **`kenMaina-windows10-portfolio-main`** | Windows 10 | **70%** | Win10 calendar flyout, volume slider popover, live tile animation CSS. | None | **Retain in /eat/** for reference. |
 | **`macOS-Portfolio-main 2`** | Apple macOS | **85%** | Apple top system bar, macOS Aqua Dock, bouncing launch animations, Ventura styling. | None | **Retain in /eat/** for reference. |
@@ -56,9 +56,10 @@ Below is the verified audit of all related donor repositories in `/eat/`. The ab
    - `eat/instant-0chan-master`: 100% absorbed into `src/apps/loops/`. Removed.
    - `eat/snowlizard.github.io-main`: 100% absorbed into application launcher and registry. Removed.
    - `eat/technometer.github.io-master`: 100% absorbed into Vista wallpapers and icon assets. Removed.
+   - `eat/windows2000-main`: 100% absorbed into Windows 2000 shell, boot & logon screens. Removed.
+   - `eat/windows2000-portfolio-website-main`: 100% absorbed into classic UI engine. Removed.
 2. **Scheduled for Removal upon theme pass completion**:
    - `eat/windows7-ui-portfolio-main`, `eat/Eshwar-win7-master`: To be cleaned up after Windows 7 fidelity pass is finalized.
-   - `eat/snowlizard.github.io-main`, `eat/technometer.github.io-master`: Fully harvested, can be safely removed on next pass.
 3. **Retained for Future Theme Passes**:
-   - Windows 98/95 and Windows 2000 repos will serve as references during upcoming classic shell passes.
+   - Windows 98/95 repos (`98.portfolio-main`, `windows-98-portfolio-main`, `wins95Portfolio-main`) will serve as references during upcoming classic shell passes.
    - macOS / iOS repos will serve as references during Apple theme fidelity passes.

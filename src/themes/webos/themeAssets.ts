@@ -74,7 +74,7 @@ type PlaceIconSet = {
   run?: string;
 };
 
-export type ThemeAssetId = 'webos' | 'win-xp' | 'win-98' | 'win7';
+export type ThemeAssetId = 'webos' | 'win-xp' | 'win-98' | 'win7' | 'win2000';
 
 export interface ThemeAssets {
   folderIcon?: string;
@@ -248,6 +248,21 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   'win-98': {
     startupSound: '/sounds/system/win98-startup.mp3',
     shutdownSound: '/sounds/system/win98-shutdown.mp3',
+    logoffSound: '/sounds/system/win98-logoff.mp3',
+    uiSounds: {
+      menuOpen: '/sounds/ui/win98-menu-open.mp3',
+      menuClose: '/sounds/ui/win98-menu-close.mp3',
+      launchApp: '/sounds/ui/win98-launch.mp3',
+      minimize: '/sounds/ui/win98-minimize.mp3',
+      restore: '/sounds/ui/win98-restore.mp3',
+      error: '/sounds/ui/win98-error.mp3',
+    },
+    startMenuIcons: {},
+    placesIcons: {},
+  },
+  win2000: {
+    startupSound: '/sounds/system/win2000-startup.mp3',
+    shutdownSound: '/sounds/system/win2000-shutdown.mp3',
     logoffSound: '/sounds/system/win98-logoff.mp3',
     uiSounds: {
       menuOpen: '/sounds/ui/win98-menu-open.mp3',

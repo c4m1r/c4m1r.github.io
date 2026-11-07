@@ -24,6 +24,17 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   }, [appleTheme]);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.key === ' ' || e.code === 'Enter' || e.code === 'Escape') {
+        e.preventDefault();
+        onComplete();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onComplete]);
+
+  useEffect(() => {
     if (appleTheme) return;
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -43,9 +54,57 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     return <AppleBootScreen theme={theme} onComplete={onComplete} />;
   }
 
+  if (theme === 'win2000') {
+    return (
+      <div
+        onClick={onComplete}
+        className="min-h-screen bg-white text-black flex flex-col items-center justify-center font-sans select-none cursor-pointer os-shell os-classic relative overflow-hidden"
+      >
+        <div className="flex flex-col items-center max-w-lg w-full px-6">
+          {/* Windows 2000 Banner */}
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-16 h-16 grid grid-cols-2 gap-1 p-1">
+              <div className="bg-[#e03f19] rounded-tl-sm shadow-sm" />
+              <div className="bg-[#7fb900] rounded-tr-sm shadow-sm" />
+              <div className="bg-[#00a4ef] rounded-bl-sm shadow-sm" />
+              <div className="bg-[#ffba08] rounded-br-sm shadow-sm" />
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold tracking-wide text-gray-500 uppercase">Microsoft®</div>
+              <div className="text-4xl font-black tracking-tight text-gray-900 leading-none">
+                Windows<span className="font-normal text-3xl"> 2000</span>
+              </div>
+              <div className="text-lg font-bold text-gray-700 tracking-wider">Professional</div>
+              <div className="text-[11px] text-gray-500 tracking-wide mt-1">Built on NT® Technology</div>
+            </div>
+          </div>
+
+          {/* Windows 2000 Segmented Progress Bar */}
+          <div className="w-80 h-5 border-2 border-[#7f9db9] bg-white p-0.5 shadow-inner">
+            <div
+              className="h-full bg-gradient-to-r from-[#1952a5] via-[#2c6fd1] to-[#1952a5] transition-all duration-75"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <div className="text-xs text-gray-400 mt-6 tracking-wide">
+            Press <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-gray-600 font-mono text-[10px]">Space</kbd> or click to skip
+          </div>
+        </div>
+
+        <div className="absolute bottom-6 text-[11px] text-gray-500 font-sans">
+          Copyright © 1985-1999 Microsoft Corporation
+        </div>
+      </div>
+    );
+  }
+
   if (theme === 'win-98') {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center font-mono os-shell os-classic">
+      <div
+        onClick={onComplete}
+        className="min-h-screen bg-black flex flex-col items-center justify-center font-mono os-shell os-classic cursor-pointer select-none"
+      >
         <div className="text-center">
           <h1 className="text-white text-6xl font-bold mb-4">Windows<span className="text-teal-500">98</span></h1>
           <div className="w-64 h-4 border-2 border-gray-500 p-0.5">
@@ -54,6 +113,9 @@ export function BootScreen({ onComplete }: BootScreenProps) {
               style={{ width: `${progress}%` }}
             ></div>
           </div>
+          <div className="text-xs text-gray-500 mt-4">
+            Press Space or click to skip
+          </div>
         </div>
       </div>
     );
@@ -61,7 +123,8 @@ export function BootScreen({ onComplete }: BootScreenProps) {
 
   return (
     <div
-      className={`boot-screen boot-screen--xp os-shell os-${osClassName}`}
+      onClick={onComplete}
+      className={`boot-screen boot-screen--xp os-shell os-${osClassName} cursor-pointer`}
       style={{ opacity: fadeIn ? 1 : 0 }}
     >
       <div className="boot-screen__center">

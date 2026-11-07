@@ -19,6 +19,10 @@
   background-color: var(--win98-teal);
 }
 
+.os-win2000 {
+  background-color: #3a6ea5 !important;
+}
+
 /* ── 1. Window Chrome ───────────────────────────────────────── */
 
 .os-classic .os-window,

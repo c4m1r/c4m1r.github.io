@@ -103,6 +103,45 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     },
   },
 
+  win2000: {
+    theme: 'win2000',
+    osClassName: 'os-classic os-win2000',
+    displayName: 'Windows 2000',
+    appNames: {
+      pictures: { title: { en: 'My Pictures', ru: 'Мои рисунки' } },
+      'control-panel': { title: { en: 'Control Panel', ru: 'Панель управления' } },
+      'internet-explorer': { title: { en: 'Internet Explorer', ru: 'Internet Explorer' } },
+      notepad: { title: { en: 'Notepad', ru: 'Блокнот' } },
+    },
+    systemLabels: {
+      startButton: { en: 'Start', ru: 'Пуск' },
+      myComputer: { en: 'My Computer', ru: 'Мой компьютер' },
+      recycleBin: { en: 'Recycle Bin', ru: 'Корзина' },
+    },
+    boot: {
+      splashTitle: { en: 'Windows 2000 Professional', ru: 'Windows 2000 Professional' },
+      bootAnimation: 'splash',
+    },
+    login: {
+      welcomeText: { en: 'Log On to Windows', ru: 'Вход в Windows' },
+      loginStyle: 'classic',
+      showUserTile: false,
+    },
+    startMenu: {
+      menuStyle: 'classic',
+      showUserTile: false,
+      pinnedAppIds: ['internet-explorer', 'notepad', 'calculator', 'paint'],
+    },
+    taskbar: {
+      startButtonMode: 'text',
+      density: 'classic',
+    },
+    desktop: {
+      iconLabelStyle: 'classic',
+      systemIconStyle: 'classic',
+    },
+  },
+
   win7: {
     theme: 'win7',
     osClassName: 'os-win7',

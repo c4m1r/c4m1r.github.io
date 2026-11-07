@@ -32,8 +32,21 @@ export function AppleBootScreen({
     return () => window.clearInterval(timer);
   }, [onComplete]);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.code === 'Space' || e.key === 'Enter' || e.key === 'Escape') {
+        onComplete();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onComplete]);
+
   return (
-    <div className={`apple-session apple-boot-session ${isMac ? 'is-macos' : 'is-ios'}`}>
+    <div
+      onClick={onComplete}
+      className={`apple-session apple-boot-session cursor-pointer select-none ${isMac ? 'is-macos' : 'is-ios'}`}
+    >
       <div className="apple-boot-session__mark" aria-label="Apple"></div>
       <div className="apple-boot-session__progress" aria-label="Boot progress">
         <span style={{ width: `${progress}%` }} />

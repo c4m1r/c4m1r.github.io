@@ -180,6 +180,27 @@
 - **Acceptance criteria**: `shutdown -s -t 5` counts down and powers off; `shutdown -a` cancels; typing and pressing Enter auto-scrolls down.
 - **Files**: `src/apps/Terminal.tsx`.
 
+### TASK-WIN2000-01: Windows 2000 Theme & Complete Donor Consolidation
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: Windows 2000 was absent from OS profiles, GRUB boot choices, and theme registries. Donors `eat/windows2000-main` and `eat/windows2000-portfolio-website-main` remained unconsolidated on disk.
+- **Expected result**:
+  1. Add `win2000` to `ThemeId`, `OsProfileId`, `osProfiles.ts`, `osEditions.ts`, `osClassNames.ts`, `themeConfig.ts`, and `themeStyles.ts`.
+  2. Implement authentic Windows 2000 boot screen (white background, Windows 2000 Professional logo banner, segmented loading progress bar, "Built on NT Technology").
+  3. Implement authentic Windows 2000 logon dialog ("Log On to Windows", user selection `C4m1r` / `User`, password validation, classic 3D beveled chrome, solid `#3a6ea5` desktop backdrop).
+  4. Integrate classic Windows 2000 Start Menu sidebar and taskbar styling.
+  5. 100% absorption and removal of `eat/windows2000-main/` and `eat/windows2000-portfolio-website-main/`.
+- **Acceptance criteria**: Windows 2000 boots cleanly from GRUB; Space key skips boot screen; logon validates `c4m1r` password; desktop runs with `#3a6ea5` background and classic Start Menu; donor directories removed from disk.
+- **Files**: `src/contexts/appContextTypes.ts`, `src/shells/os/osProfiles.ts`, `src/shells/os/osEditions.ts`, `src/shells/os/osClassNames.ts`, `src/themes/themeConfig.ts`, `src/themes/webos/BootScreen.tsx`, `src/themes/webos/LoginScreen.tsx`, `src/shells/desktop/DesktopShellContainer.tsx`, `src/shells/desktop/components/start-menu/StartMenu98.tsx`, `src/styles/os/themes/classic.css`, `docs/donor-absorption-audit.md`.
+
+### TASK-BOOT-SKIP-01: Global Spacebar Boot Sequence Fast-Forward
+- **Priority**: P1
+- **Status**: COMPLETED
+- **Problem**: Cold boot (BIOS POST) and OS theme boot screens required waiting through timers without a quick keyboard skip mechanism.
+- **Expected result**: Enable `Space` key (in addition to Enter, Escape, and mouse click) across all boot screens (BIOS POST, Windows XP, Windows 7, Apple macOS/iOS, Windows 98, Windows 2000, WebOS) to skip immediately to desktop/logon.
+- **Acceptance criteria**: Pressing Spacebar instantly fast-forwards through BIOS POST to GRUB, and through any OS boot animation directly to login or desktop.
+- **Files**: `src/apps/bios/BiosPostScreen.tsx`, `src/themes/winxp/BootScreen.tsx`, `src/themes/win7/BootScreen.tsx`, `src/themes/apple/AppleSessionScreens.tsx`, `src/themes/webos/BootScreen.tsx`.
+
 ---
 
 ## 5. Quality Verification Pipeline

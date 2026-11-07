@@ -34,7 +34,7 @@ export function getStartMenuSurface(themeId: ThemeId, language: Language = 'en')
   let variant: StartMenuVariant = 'webos';
   let osFamily: OsFamily = 'windows';
 
-  if (themeId === 'win-98') {
+  if (themeId === 'win-98' || themeId === 'win2000') {
     variant = 'classic';
     osFamily = 'windows';
   } else if (themeId === 'win-xp') {
