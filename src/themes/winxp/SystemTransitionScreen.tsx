@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { playXpLogoff, playXpShutdown } from './xpSoundService';
 import './xp.css';
 
 type TransitionMode = 'logoff' | 'shutdown';
@@ -15,9 +16,14 @@ export function SystemTransitionScreen({ mode, onComplete, duration }: SystemTra
   const timeout = duration ?? (mode === 'shutdown' ? 2800 : 1800);
 
   useEffect(() => {
+    if (mode === 'shutdown') {
+      playXpShutdown();
+    } else {
+      playXpLogoff();
+    }
     const timer = window.setTimeout(onComplete, timeout);
     return () => window.clearTimeout(timer);
-  }, [onComplete, timeout]);
+  }, [mode, onComplete, timeout]);
 
   const title =
     mode === 'shutdown'

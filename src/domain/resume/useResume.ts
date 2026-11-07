@@ -18,7 +18,7 @@ import type { ResumeSlice } from './resume.types';
 export const RESUME_PROFILE = {
   name: 'C4m1r',
   role: 'IT Engineer / Indie Game Architect',
-  tagline: 'WebOS by C4m1r · XP Experience Pack',
+  tagline: 'WebOS · XP Experience Pack',
 } as const;
 
 /**

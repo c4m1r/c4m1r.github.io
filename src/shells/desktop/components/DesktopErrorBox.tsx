@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useApp } from '../../../contexts/useApp';
-import errorSoundSrc from '../../../themes/winxp/assets/sounds/error.wav';
+import { playXpError } from '../../../themes/winxp/xpSoundService';
 import legacyErrorIcon from '../../../themes/winxp/assets/icons/897(32x32).png';
 import xpErrorIcon from '../../../themes/winxp/assets/dialog/error.png';
 
@@ -22,14 +22,7 @@ export function DesktopErrorBox({ onClose, message = "Something's wrong!" }: Des
   const isWindowsXp = theme === 'win-xp';
 
   useEffect(() => {
-    try {
-      const audio = new Audio(errorSoundSrc);
-      audio.play().catch((e) => {
-        console.log('Error playing sound:', e);
-      });
-    } catch (e) {
-      console.log('Error initializing audio:', e);
-    }
+    playXpError();
   }, []);
 
   if (isWindowsXp) {

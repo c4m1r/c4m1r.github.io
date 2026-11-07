@@ -411,7 +411,12 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     theme: 'webos',
     osClassName: 'os-shell',
     displayName: 'WebOS',
-    appNames: {},
+    appNames: {
+      'loop': {
+        showOnDesktop: true,
+        showInStartMenu: true,
+      },
+    },
     systemLabels: {
       startButton: { en: 'Menu', ru: 'Меню' },
     },

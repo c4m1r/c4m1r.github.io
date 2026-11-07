@@ -1,28 +1,191 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { PROJECT_PLAYLIST } from '../mediaplayer/playlist';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import './winamp.css';
 
-function formatClock(seconds: number): string {
+// 10 standard Winamp EQ bands in Hz
+const EQ_FREQUENCIES = [70, 180, 320, 600, 1000, 3000, 6000, 12000, 14000, 16000];
+
+function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
-  const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
-  const remainder = Math.floor(seconds % 60).toString().padStart(2, '0');
-  return `${minutes}:${remainder}`;
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+function generateAlbumArt(track: MediaTrack): { bg: string; accent: string; icon: string } {
+  let hash = 0;
+  const str = track.artist + track.title;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const hue = Math.abs(hash) % 360;
+  const hue2 = (hue + 45) % 360;
+  return {
+    bg: `linear-gradient(135deg, hsl(${hue}, 65%, 22%) 0%, hsl(${hue2}, 75%, 10%) 100%)`,
+    accent: `hsl(${hue}, 90%, 65%)`,
+    icon: ['🎵', '⚡', '🎧', '💿', '🎸', '🎹', '✨'][Math.abs(hash) % 7],
+  };
 }
 
 export function WinampPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const filtersRef = useRef<BiquadFilterNode[]>([]);
+  const pannerRef = useRef<StereoPannerNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.75);
+  const [volume, setVolume] = useState(0.85);
+  const [balance, setBalance] = useState(0);
   const [shuffle, setShuffle] = useState(false);
   const [repeat, setRepeat] = useState(false);
+  const [timeRemainingMode, setTimeRemainingMode] = useState(false);
+
+  // Module visibility & shade states
+  const [showEq, setShowEq] = useState(true);
+  const [showPl, setShowPl] = useState(true);
+  const [mainShade, setMainShade] = useState(false);
+  const [eqShade, setEqShade] = useState(false);
+  const [plShade, setPlShade] = useState(false);
+
+  // Equalizer states
+  const [eqOn, setEqOn] = useState(true);
+  const [eqAuto, setEqAuto] = useState(false);
+  const [preamp, setPreamp] = useState(0);
+  const [eqBands, setEqBands] = useState<number[]>(() => Array(10).fill(0));
+
+  // Visualizer bar heights and peak dots
+  const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
+  const [peaks, setPeaks] = useState<number[]>(() => Array(19).fill(2));
+  const rafRef = useRef<number | null>(null);
 
   const track = PROJECT_PLAYLIST[trackIndex] ?? PROJECT_PLAYLIST[0];
-  const progress = duration ? (currentTime / duration) * 100 : 0;
+  const albumArt = useMemo(() => generateAlbumArt(track), [track]);
+
+  // Total playlist duration calculation
+  const totalPlaylistSeconds = useMemo(() => {
+    return PROJECT_PLAYLIST.reduce((acc, t) => {
+      const parts = t.durationLabel.split(':').map(Number);
+      return acc + (parts[0] * 60 + (parts[1] || 0));
+    }, 0);
+  }, []);
+
+  // Web Audio setup
+  const initWebAudio = useCallback(() => {
+    if (audioCtxRef.current || !audioRef.current) return;
+    try {
+      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtxClass) return;
+      const ctx = new AudioCtxClass();
+      audioCtxRef.current = ctx;
+
+      const source = ctx.createMediaElementSource(audioRef.current);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 64;
+      analyserRef.current = analyser;
+
+      // Create 10 EQ BiquadFilters
+      const filters = EQ_FREQUENCIES.map((freq) => {
+        const f = ctx.createBiquadFilter();
+        f.type = 'peaking';
+        f.frequency.value = freq;
+        f.Q.value = 1.4;
+        f.gain.value = 0;
+        return f;
+      });
+      filtersRef.current = filters;
+
+      // Preamp gain
+      const preampGain = ctx.createGain();
+      gainNodeRef.current = preampGain;
+
+      // Stereo panner if supported
+      let panner: StereoPannerNode | null = null;
+      if (ctx.createStereoPanner) {
+        panner = ctx.createStereoPanner();
+        pannerRef.current = panner;
+      }
+
+      // Chain: source -> filters[0]..filters[9] -> preampGain -> (panner) -> analyser -> destination
+      let lastNode: AudioNode = source;
+      for (const filter of filters) {
+        lastNode.connect(filter);
+        lastNode = filter;
+      }
+      lastNode.connect(preampGain);
+      lastNode = preampGain;
+
+      if (panner) {
+        lastNode.connect(panner);
+        lastNode = panner;
+      }
+      lastNode.connect(analyser);
+      analyser.connect(ctx.destination);
+    } catch (e) {
+      console.warn('Web Audio init skipped:', e);
+    }
+  }, []);
+
+  // Visualizer loop with real frequency data or dynamic simulation
+  useEffect(() => {
+    let active = true;
+    const freqData = new Uint8Array(32);
+
+    const updateVisualizer = () => {
+      if (!active) return;
+      const analyser = analyserRef.current;
+      if (isPlaying) {
+        if (analyser && audioCtxRef.current?.state === 'running') {
+          analyser.getByteFrequencyData(freqData);
+          setBars(() => {
+            const nextBars = Array(19).fill(0).map((_, i) => {
+              const val = freqData[i] ?? 0;
+              return Math.min(100, Math.max(4, Math.round((val / 255) * 100)));
+            });
+            setPeaks((prevPeaks) =>
+              nextBars.map((nb, i) => Math.max(nb, (prevPeaks[i] ?? 0) - 1.5))
+            );
+            return nextBars;
+          });
+        } else {
+          // Synthetic dynamic spectrum based on time
+          setBars((prev) => {
+            const nextBars = prev.map((_, i) => {
+              const spike = Math.random() < 0.25 ? Math.random() * 50 : 0;
+              const base = 25 + Math.sin(Date.now() / 150 + i * 0.4) * 35;
+              return Math.min(95, Math.max(6, base + spike));
+            });
+            setPeaks((prevPeaks) =>
+              nextBars.map((nb, i) => Math.max(nb, (prevPeaks[i] ?? 0) - 1.2))
+            );
+            return nextBars;
+          });
+        }
+      } else {
+        // Decay to zero when paused
+        setBars((prev) => prev.map((b) => Math.max(2, b * 0.85)));
+        setPeaks((prev) => prev.map((p) => Math.max(2, p - 2)));
+      }
+      rafRef.current = requestAnimationFrame(updateVisualizer);
+    };
+
+    rafRef.current = requestAnimationFrame(updateVisualizer);
+    return () => {
+      active = false;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [isPlaying]);
 
   const play = useCallback(async () => {
+    initWebAudio();
+    if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+      void audioCtxRef.current.resume();
+    }
     const audio = audioRef.current;
     if (!audio) return;
     try {
@@ -31,16 +194,23 @@ export function WinampPlayer() {
     } catch {
       setIsPlaying(false);
     }
+  }, [initWebAudio]);
+
+  const pause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.pause();
+    setIsPlaying(false);
   }, []);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.pause();
     audio.currentTime = 0;
     setCurrentTime(0);
     setIsPlaying(false);
-  };
+  }, []);
 
   const chooseNextIndex = useCallback((current: number) => {
     if (shuffle && PROJECT_PLAYLIST.length > 1) {
@@ -61,12 +231,42 @@ export function WinampPlayer() {
     setTrackIndex((current) => (current - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length);
   }, []);
 
-  useEffect(() => {
+  const seek = (pct: number) => {
     const audio = audioRef.current;
-    if (!audio) return;
-    audio.volume = volume;
+    if (!audio || !duration) return;
+    audio.currentTime = (pct / 100) * duration;
+  };
+
+  // Sync EQ slider changes to Web Audio filters
+  const handleEqBandChange = (index: number, value: number) => {
+    setEqBands((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+    if (filtersRef.current[index]) {
+      filtersRef.current[index].gain.value = eqOn ? value : 0;
+    }
+  };
+
+  const handlePreampChange = (value: number) => {
+    setPreamp(value);
+    if (gainNodeRef.current) {
+      const gainFactor = Math.pow(10, value / 20);
+      gainNodeRef.current.gain.value = eqOn ? gainFactor : 1;
+    }
+  };
+
+  // Sync volume & balance
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
 
+  useEffect(() => {
+    if (pannerRef.current) pannerRef.current.pan.value = balance;
+  }, [balance]);
+
+  // Track change handling
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -74,8 +274,7 @@ export function WinampPlayer() {
     audio.load();
     setCurrentTime(0);
     setDuration(0);
-    if (continuePlaying) void audio.play().catch(() => setIsPlaying(false));
-    // Source changes only when trackIndex changes.
+    if (continuePlaying) void play();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackIndex]);
 
@@ -88,9 +287,9 @@ export function WinampPlayer() {
     const onEnded = () => {
       if (repeat) {
         audio.currentTime = 0;
-        void audio.play().catch(() => setIsPlaying(false));
+        void play();
       } else {
-        setTrackIndex((current) => chooseNextIndex(current));
+        next();
       }
     };
 
@@ -104,150 +303,447 @@ export function WinampPlayer() {
       audio.removeEventListener('durationchange', onMetadata);
       audio.removeEventListener('ended', onEnded);
     };
-  }, [chooseNextIndex, repeat]);
+  }, [next, play, repeat]);
 
-  useEffect(() => {
-    window.dispatchEvent(new CustomEvent('webos-now-playing', {
-      detail: {
-        source: 'winamp',
-        active: true,
-        title: track.title,
-        artist: track.artist,
-        playing: isPlaying,
-      },
-    }));
-  }, [isPlaying, track.artist, track.title]);
+  const displayTime = useMemo(() => {
+    if (timeRemainingMode) {
+      const rem = Math.max(0, duration - currentTime);
+      return `-${formatTime(rem)}`;
+    }
+    return formatTime(currentTime);
+  }, [currentTime, duration, timeRemainingMode]);
 
-  useEffect(() => {
-    const handleMediaCommand = (event: Event) => {
-      const customEvent = event as CustomEvent<{
-        source?: string;
-        command?: 'play-pause' | 'previous' | 'next';
-      }>;
-      if (customEvent.detail?.source && customEvent.detail.source !== 'winamp') return;
-
-      if (customEvent.detail?.command === 'previous') {
-        previous();
-        return;
-      }
-      if (customEvent.detail?.command === 'next') {
-        next();
-        return;
-      }
-      if (customEvent.detail?.command === 'play-pause') {
-        const audio = audioRef.current;
-        if (!audio) return;
-        if (isPlaying) {
-          audio.pause();
-          setIsPlaying(false);
-        } else {
-          void play();
-        }
-      }
-    };
-
-    window.addEventListener('webos-media-command', handleMediaCommand);
-    return () => window.removeEventListener('webos-media-command', handleMediaCommand);
-  }, [isPlaying, next, play, previous]);
-
-  useEffect(() => {
-    return () => {
-      window.dispatchEvent(new CustomEvent('webos-now-playing', {
-        detail: { source: 'winamp', active: false },
-      }));
-    };
-  }, []);
-
-  const seek = (value: number) => {
-    const audio = audioRef.current;
-    if (!audio || !duration) return;
-    audio.currentTime = (value / 100) * duration;
-  };
+  const progressPct = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="winamp-shell">
-      <section className="winamp-main" aria-label="Winamp player">
-        <div className="winamp-caption">
-          <span className="winamp-caption__mark" aria-hidden="true">⚡</span>
-          <span>WINAMP</span>
-          <span className="winamp-caption__dots">■ □ ×</span>
-        </div>
-
-        <div className="winamp-face">
-          <div className="winamp-display">
-            <div className="winamp-time">{formatClock(currentTime)}</div>
-            <div className="winamp-status">{isPlaying ? '▶' : '■'}</div>
-            <div className="winamp-track-info">
-              <div className="winamp-marquee">{trackIndex + 1}. {track.artist} - {track.title}</div>
-              <div className="winamp-metadata">{duration ? formatClock(duration) : track.durationLabel}  44 kHz  128 kbps  stereo</div>
-            </div>
-            <div className="winamp-spectrum" aria-hidden="true">
-              {[42, 75, 58, 91, 63, 83, 35, 69, 88, 51, 72, 44, 80, 57, 67, 39].map((height, index) => (
-                <span key={`${height}-${index}`} style={{ height: `${isPlaying ? height : 12}%` }} />
-              ))}
-            </div>
+    <div className="wa-shell">
+      {/* ============================================================ */}
+      {/* 1. MAIN PLAYER WINDOW                                        */}
+      {/* ============================================================ */}
+      <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`}>
+        {/* Title Bar */}
+        <div className="wa-titlebar">
+          <div className="wa-titlebar__left">
+            <span className="wa-titlebar__bolt">⚡</span>
+            <span className="wa-titlebar__title">WINAMP</span>
           </div>
-
-          <div className="winamp-sliders">
-            <label>
-              <span>POS</span>
-              <input type="range" min={0} max={100} step={0.1} value={progress} onChange={(event) => seek(Number(event.currentTarget.value))} aria-label="Position" />
-            </label>
-            <label>
-              <span>VOL</span>
-              <input type="range" min={0} max={1} step={0.01} value={volume} onChange={(event) => setVolume(Number(event.currentTarget.value))} aria-label="Volume" />
-            </label>
-          </div>
-
-          <div className="winamp-controls">
-            <button type="button" onClick={previous} title="Previous">|◀</button>
-            <button type="button" onClick={() => void play()} title="Play">▶</button>
-            <button type="button" onClick={() => { audioRef.current?.pause(); setIsPlaying(false); }} title="Pause">❚❚</button>
-            <button type="button" onClick={stop} title="Stop">■</button>
-            <button type="button" onClick={next} title="Next">▶|</button>
-            <button type="button" title="Open file" disabled>⏏</button>
-          </div>
-
-          <div className="winamp-toggles">
-            <button type="button" className={shuffle ? 'is-active' : ''} onClick={() => setShuffle((value) => !value)}>SHUFFLE</button>
-            <button type="button" className={repeat ? 'is-active' : ''} onClick={() => setRepeat((value) => !value)}>REPEAT</button>
-            <span>EQ</span>
-            <span>PL</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="winamp-playlist" aria-label="Winamp playlist">
-        <div className="winamp-caption winamp-caption--playlist">
-          <span>WINAMP PLAYLIST</span>
-          <span className="winamp-caption__dots">□ ×</span>
-        </div>
-        <div className="winamp-playlist__list">
-          {PROJECT_PLAYLIST.map((item, index) => (
+          <div className="wa-titlebar__controls">
+            <button type="button" className="wa-titlebar__btn" title="Minimize">_</button>
             <button
               type="button"
-              key={item.id}
-              className={index === trackIndex ? 'is-current' : ''}
-              onDoubleClick={() => {
-                setTrackIndex(index);
-                window.setTimeout(() => void play(), 0);
-              }}
-              onClick={() => {
-                setTrackIndex(index);
-                setIsPlaying(false);
-              }}
+              className="wa-titlebar__btn"
+              title="Toggle Windowshade"
+              onClick={() => setMainShade((v) => !v)}
             >
-              <span>{index + 1}. {item.artist} - {item.title}</span>
-              <span>{item.durationLabel}</span>
+              ▲
             </button>
-          ))}
+            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close">×</button>
+          </div>
         </div>
-        <div className="winamp-playlist__footer">
-          <span>ADD</span><span>REM</span><span>SEL</span><span>MISC</span><span>LIST OPTS</span>
-        </div>
-      </section>
 
-      <audio ref={audioRef} src={track.src} preload="metadata" />
+        {!mainShade && (
+          <div className="wa-main__body">
+            {/* Top Display Area */}
+            <div className="wa-display">
+              {/* Left Column: Mode & Segmented Digits */}
+              <div className="wa-display__left">
+                <div className="wa-indicators">
+                  <span className={`wa-ind-dot ${isPlaying ? 'is-lit' : ''}`}>▶</span>
+                  <span className={`wa-ind-dot ${!isPlaying && currentTime > 0 ? 'is-lit' : ''}`}>❚❚</span>
+                </div>
+                <button
+                  type="button"
+                  className="wa-time-lcd"
+                  onClick={() => setTimeRemainingMode((v) => !v)}
+                  title="Click to toggle elapsed / remaining time"
+                >
+                  <span className="wa-time-lcd__digits">{displayTime}</span>
+                </button>
+              </div>
+
+              {/* Center Spectrum Analyzer */}
+              <div className="wa-visualizer" aria-hidden="true">
+                {bars.map((barHeight, idx) => (
+                  <div key={idx} className="wa-vis-col">
+                    <div className="wa-vis-bar" style={{ height: `${barHeight}%` }} />
+                    <div className="wa-vis-peak" style={{ bottom: `${peaks[idx]}%` }} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Right Column: Track Marquee & Technical Info */}
+              <div className="wa-display__right">
+                <div className="wa-marquee-box">
+                  <div className="wa-marquee-text">
+                    {trackIndex + 1}. {track.artist} - {track.title} ({duration ? formatTime(duration) : track.durationLabel})
+                  </div>
+                </div>
+                <div className="wa-tech-info">
+                  <div className="wa-bitrate">
+                    <span className="wa-digit-val">128</span> <span className="wa-unit">kbps</span>
+                  </div>
+                  <div className="wa-samplerate">
+                    <span className="wa-digit-val">44</span> <span className="wa-unit">kHz</span>
+                  </div>
+                  <div className="wa-audio-channels">
+                    <span className="wa-chan">mono</span>
+                    <span className="wa-chan is-active">stereo</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Middle Controls & Sliders */}
+            <div className="wa-controls-row">
+              {/* Position seeker */}
+              <div className="wa-slider-track wa-slider-track--pos">
+                <div className="wa-slider-progress" style={{ width: `${progressPct}%` }} />
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={0.1}
+                  value={progressPct}
+                  onChange={(e) => seek(Number(e.currentTarget.value))}
+                  className="wa-slider-input"
+                  aria-label="Seek position"
+                />
+              </div>
+
+              {/* Volume & Balance sliders */}
+              <div className="wa-vol-bal-row">
+                <div className="wa-vol-control">
+                  <span className="wa-slider-label">VOL</span>
+                  <div className="wa-slider-track wa-slider-track--vol">
+                    <input
+                      type="range"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={volume}
+                      onChange={(e) => setVolume(Number(e.currentTarget.value))}
+                      className="wa-slider-input"
+                      aria-label="Volume"
+                    />
+                  </div>
+                </div>
+
+                <div className="wa-bal-control">
+                  <span className="wa-slider-label">BAL</span>
+                  <div className="wa-slider-track wa-slider-track--bal">
+                    <input
+                      type="range"
+                      min={-1}
+                      max={1}
+                      step={0.05}
+                      value={balance}
+                      onChange={(e) => setBalance(Number(e.currentTarget.value))}
+                      className="wa-slider-input"
+                      aria-label="Balance"
+                    />
+                  </div>
+                </div>
+
+                {/* EQ & PL Toggle Buttons */}
+                <div className="wa-toggle-btns">
+                  <button
+                    type="button"
+                    className={`wa-btn-toggle ${showEq ? 'is-active' : ''}`}
+                    onClick={() => setShowEq((v) => !v)}
+                  >
+                    <span className="wa-led-dot" />
+                    EQ
+                  </button>
+                  <button
+                    type="button"
+                    className={`wa-btn-toggle ${showPl ? 'is-active' : ''}`}
+                    onClick={() => setShowPl((v) => !v)}
+                  >
+                    <span className="wa-led-dot" />
+                    PL
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Transport Buttons & Mini Album Art */}
+            <div className="wa-transport-row">
+              <div className="wa-buttons-group">
+                <button type="button" className="wa-btn-transport" onClick={previous} title="Previous">
+                  |◀◀
+                </button>
+                <button type="button" className="wa-btn-transport" onClick={() => void play()} title="Play">
+                  ▶
+                </button>
+                <button type="button" className="wa-btn-transport" onClick={pause} title="Pause">
+                  ❚❚
+                </button>
+                <button type="button" className="wa-btn-transport" onClick={stop} title="Stop">
+                  ■
+                </button>
+                <button type="button" className="wa-btn-transport" onClick={next} title="Next">
+                  ▶▶|
+                </button>
+                <button type="button" className="wa-btn-transport" onClick={() => seek(0)} title="Eject">
+                  ⏏
+                </button>
+              </div>
+
+              {/* Shuffle & Repeat */}
+              <div className="wa-toggles-group">
+                <button
+                  type="button"
+                  className={`wa-btn-mode ${shuffle ? 'is-active' : ''}`}
+                  onClick={() => setShuffle((v) => !v)}
+                  title="Shuffle"
+                >
+                  <span className="wa-led-dot" />
+                  SHUFFLE
+                </button>
+                <button
+                  type="button"
+                  className={`wa-btn-mode ${repeat ? 'is-active' : ''}`}
+                  onClick={() => setRepeat((v) => !v)}
+                  title="Repeat"
+                >
+                  <span className="wa-led-dot" />
+                  🔁
+                </button>
+              </div>
+
+              {/* Mini Album Cover Artwork */}
+              <div
+                className="wa-album-preview"
+                style={{ background: albumArt.bg }}
+                title={`${track.artist} - ${track.title}`}
+              >
+                <span className="wa-album-preview__icon">{albumArt.icon}</span>
+                <span className="wa-album-preview__badge" style={{ color: albumArt.accent }}>
+                  {track.artist.slice(0, 3).toUpperCase()}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ============================================================ */}
+      {/* 2. WINAMP EQUALIZER WINDOW                                   */}
+      {/* ============================================================ */}
+      {showEq && (
+        <div className={`wa-window wa-equalizer ${eqShade ? 'wa-window--shaded' : ''}`}>
+          <div className="wa-titlebar">
+            <span className="wa-titlebar__title">WINAMP EQUALIZER</span>
+            <div className="wa-titlebar__controls">
+              <button
+                type="button"
+                className="wa-titlebar__btn"
+                onClick={() => setEqShade((v) => !v)}
+                title="Toggle Windowshade"
+              >
+                ▲
+              </button>
+              <button
+                type="button"
+                className="wa-titlebar__btn wa-titlebar__btn--close"
+                onClick={() => setShowEq(false)}
+                title="Close Equalizer"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
+          {!eqShade && (
+            <div className="wa-eq__body">
+              {/* EQ Top Options */}
+              <div className="wa-eq__header">
+                <div className="wa-eq__toggles">
+                  <button
+                    type="button"
+                    className={`wa-btn-mode ${eqOn ? 'is-active' : ''}`}
+                    onClick={() => setEqOn((v) => !v)}
+                  >
+                    <span className="wa-led-dot" />
+                    ON
+                  </button>
+                  <button
+                    type="button"
+                    className={`wa-btn-mode ${eqAuto ? 'is-active' : ''}`}
+                    onClick={() => setEqAuto((v) => !v)}
+                  >
+                    <span className="wa-led-dot" />
+                    AUTO
+                  </button>
+                </div>
+
+                {/* Spline Curve Visualizer */}
+                <div className="wa-eq__spline">
+                  <svg viewBox="0 0 100 24" preserveAspectRatio="none" className="wa-spline-svg">
+                    <polyline
+                      fill="none"
+                      stroke="#ffff00"
+                      strokeWidth="1.6"
+                      points={eqBands
+                        .map((b, i) => `${(i / 9) * 96 + 2},${12 - (b / 12) * 10}`)
+                        .join(' ')}
+                    />
+                  </svg>
+                </div>
+
+                <button
+                  type="button"
+                  className="wa-btn-presets"
+                  onClick={() => {
+                    // Reset to flat
+                    setEqBands(Array(10).fill(0));
+                    setPreamp(0);
+                  }}
+                >
+                  PRESETS
+                </button>
+              </div>
+
+              {/* Sliders Grid */}
+              <div className="wa-eq__sliders-container">
+                <div className="wa-eq__labels-left">
+                  <span>+12db</span>
+                  <span>0db</span>
+                  <span>-12db</span>
+                </div>
+
+                {/* Preamp */}
+                <div className="wa-eq__band">
+                  <div className="wa-eq__fader">
+                    <input
+                      type="range"
+                      min={-12}
+                      max={12}
+                      step={0.5}
+                      value={preamp}
+                      onChange={(e) => handlePreampChange(Number(e.currentTarget.value))}
+                      className="wa-eq__input-vert"
+                    />
+                  </div>
+                  <span className="wa-eq__band-name">PREAMP</span>
+                </div>
+
+                <div className="wa-eq__divider" />
+
+                {/* 10 Frequency Faders */}
+                {EQ_FREQUENCIES.map((freq, i) => {
+                  const label = freq >= 1000 ? `${freq / 1000}K` : `${freq}`;
+                  return (
+                    <div key={freq} className="wa-eq__band">
+                      <div className="wa-eq__fader">
+                        <input
+                          type="range"
+                          min={-12}
+                          max={12}
+                          step={0.5}
+                          value={eqBands[i]}
+                          onChange={(e) => handleEqBandChange(i, Number(e.currentTarget.value))}
+                          className="wa-eq__input-vert"
+                        />
+                      </div>
+                      <span className="wa-eq__band-name">{label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 3. WINAMP PLAYLIST WINDOW                                    */}
+      {/* ============================================================ */}
+      {showPl && (
+        <div className={`wa-window wa-playlist ${plShade ? 'wa-window--shaded' : ''}`}>
+          <div className="wa-titlebar">
+            <span className="wa-titlebar__title">WINAMP PLAYLIST</span>
+            <div className="wa-titlebar__controls">
+              <button
+                type="button"
+                className="wa-titlebar__btn"
+                onClick={() => setPlShade((v) => !v)}
+                title="Toggle Windowshade"
+              >
+                ▲
+              </button>
+              <button
+                type="button"
+                className="wa-titlebar__btn wa-titlebar__btn--close"
+                onClick={() => setShowPl(false)}
+                title="Close Playlist"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
+          {!plShade && (
+            <div className="wa-pl__body">
+              {/* Songs List */}
+              <div className="wa-pl__list" role="listbox">
+                {PROJECT_PLAYLIST.map((item, index) => {
+                  const isCurrent = index === trackIndex;
+                  return (
+                    <div
+                      key={item.id}
+                      role="option"
+                      aria-selected={isCurrent}
+                      className={`wa-pl__item ${isCurrent ? 'is-selected' : ''}`}
+                      onClick={() => setTrackIndex(index)}
+                      onDoubleClick={() => {
+                        setTrackIndex(index);
+                        void play();
+                      }}
+                    >
+                      <span className="wa-pl__title">
+                        {index + 1}. {item.artist} - {item.title}
+                      </span>
+                      <span className="wa-pl__dur">{item.durationLabel}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Playlist Bottom Bar */}
+              <div className="wa-pl__footer">
+                <div className="wa-pl__actions">
+                  <button type="button" className="wa-btn-pl" onClick={() => setTrackIndex(0)}>+ ADD</button>
+                  <button type="button" className="wa-btn-pl" onClick={() => next()}>- REM</button>
+                  <button type="button" className="wa-btn-pl">SEL</button>
+                  <button type="button" className="wa-btn-pl">MISC</button>
+                </div>
+
+                <div className="wa-pl__status">
+                  <span className="wa-pl__status-text">
+                    {formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}
+                  </span>
+                </div>
+
+                <div className="wa-pl__mini-transport">
+                  <button type="button" className="wa-btn-pl-mini" onClick={previous} title="Prev">|◀</button>
+                  <button type="button" className="wa-btn-pl-mini" onClick={() => void play()} title="Play">▶</button>
+                  <button type="button" className="wa-btn-pl-mini" onClick={pause} title="Pause">❚❚</button>
+                  <button type="button" className="wa-btn-pl-mini" onClick={stop} title="Stop">■</button>
+                  <button type="button" className="wa-btn-pl-mini" onClick={next} title="Next">▶|</button>
+                </div>
+
+                <button type="button" className="wa-btn-pl wa-btn-pl--opts">
+                  LIST OPTS
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Hidden audio element */}
+      <audio ref={audioRef} src={track.src} preload="metadata" crossOrigin="anonymous" />
     </div>
   );
 }

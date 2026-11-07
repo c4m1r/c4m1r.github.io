@@ -5,7 +5,7 @@ export const translations = {
     grub: {
       title: 'GNU GRUB  version 2.06',
       blogSite: 'My Site',
-      webos: 'WebOS by C4m1r',
+      webos: 'WebOS',
       advanced: 'Advanced options for WebOS',
       terminal: 'Terminal',
       autoboot: 'The highlighted entry will be executed automatically in {seconds}s.',
@@ -98,7 +98,7 @@ export const translations = {
     grub: {
       title: 'GNU GRUB  версия 2.06',
       blogSite: 'Мой сайт',
-      webos: 'WebOS by C4m1r',
+      webos: 'WebOS',
       advanced: 'Дополнительные параметры для WebOS',
       terminal: 'Терминал',
       autoboot: 'Выделенная запись будет выполнена автоматически через {seconds} с.',
@@ -191,7 +191,7 @@ export const translations = {
     grub: {
       title: 'GNU GRUB  version 2.06',
       blogSite: 'Mon site',
-      webos: 'WebOS by C4m1r',
+      webos: 'WebOS',
       advanced: 'Options avancées pour WebOS',
       terminal: 'Terminal',
       autoboot: "L'entrée sélectionnée sera lancée automatiquement dans {seconds}s.",
@@ -284,7 +284,7 @@ export const translations = {
     grub: {
       title: 'GNU GRUB  versión 2.06',
       blogSite: 'Mi sitio',
-      webos: 'WebOS by C4m1r',
+      webos: 'WebOS',
       advanced: 'Opciones avanzadas para WebOS',
       terminal: 'Terminal',
       autoboot: 'La entrada resaltada se ejecutará automáticamente en {seconds}s.',
@@ -377,7 +377,7 @@ export const translations = {
     grub: {
       title: 'GNU GRUB  版本 2.06',
       blogSite: '我的网站',
-      webos: 'WebOS by C4m1r',
+      webos: 'WebOS',
       advanced: 'WebOS 的高级选项',
       terminal: '终端',
       autoboot: '高亮显示的条目将在 {seconds} 秒后自动执行。',
@@ -470,7 +470,7 @@ export const translations = {
     grub: {
       title: 'GNU GRUB  バージョン 2.06',
       blogSite: '私のサイト',
-      webos: 'WebOS by C4m1r',
+      webos: 'WebOS',
       advanced: 'WebOSの詳細オプション',
       terminal: 'ターミナル',
       autoboot: 'ハイライトされたエントリは {seconds} 秒後に自動的に実行されます。',
@@ -563,7 +563,7 @@ export const translations = {
     grub: {
       title: 'GNU GRUB  버전 2.06',
       blogSite: '내 사이트',
-      webos: 'WebOS by C4m1r',
+      webos: 'WebOS',
       advanced: 'WebOS 고급 옵션',
       terminal: '터미널',
       autoboot: '강조 표시된 항목이 {seconds}초 후에 자동으로 실행됩니다.',

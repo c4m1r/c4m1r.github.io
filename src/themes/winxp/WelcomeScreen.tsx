@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
+import { playXpStartup } from './xpSoundService';
 import './xp.css';
 
 interface WelcomeScreenProps {
@@ -14,8 +15,9 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   const welcomeText = language === 'ru' ? 'Приветствие' : (t.welcome ?? 'welcome');
 
   useEffect(() => {
+    playXpStartup();
     const frame = requestAnimationFrame(() => setVisible(true));
-    const timer = window.setTimeout(onComplete, 2400);
+    const timer = window.setTimeout(onComplete, 2600);
     return () => {
       cancelAnimationFrame(frame);
       window.clearTimeout(timer);

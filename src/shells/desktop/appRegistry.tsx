@@ -17,6 +17,7 @@ import { InternetExplorer } from '../../apps/internetexplorer/InternetExplorer';
 import { OutlookExpress } from '../../apps/outlook/OutlookExpress';
 import { WindowsMediaPlayer } from '../../apps/mediaplayer/WindowsMediaPlayer';
 import { WinampPlayer } from '../../apps/winamp/WinampPlayer';
+import { LoopApp } from '../../apps/loop/LoopApp';
 import { Minesweeper } from '../../apps/minesweeper';
 import { ResumeApp } from './apps/resume/ResumeApp';
 
@@ -85,9 +86,26 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     },
     iconKey: 'winampIcon',
     component: WinampPlayer,
-    defaultWindow: { width: 370, height: 540, resizable: false },
+    defaultWindow: { width: 380, height: 620, resizable: true },
     showInStartMenu: true,
     showOnDesktop: true,
+  },
+  'loop': {
+    id: 'loop',
+    title: {
+      en: '0chan Loop',
+      ru: '0chan Loop',
+      fr: '0chan Loop',
+      es: '0chan Loop',
+      zh: '0chan Loop',
+      ja: '0chan Loop',
+      ko: '0chan Loop',
+    },
+    iconKey: 'loopIcon',
+    component: LoopApp,
+    defaultWindow: { width: 580, height: 600, resizable: true },
+    showInStartMenu: false,
+    showOnDesktop: false,
   },
   'projects-grid': {
     id: 'projects-grid',

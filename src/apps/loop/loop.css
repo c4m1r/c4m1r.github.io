@@ -1,0 +1,279 @@
+/* ========================================================================== */
+/* 0CHAN INSTANT LOOP PLAYER & VISUALIZER (instant-0chan style)                */
+/* ========================================================================== */
+
+.loop-app-container {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 30%, #1e1e24 0%, #0a0a0d 85%, #050507 100%);
+  color: #d2d2d2;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  user-select: none;
+}
+
+/* Header & Track info */
+.loop-header {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.loop-logo-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #59c44d;
+  text-shadow: 0 0 8px rgba(89, 196, 77, 0.4);
+}
+
+.loop-logo-badge img {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.loop-track-card {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(89, 196, 77, 0.25);
+  border-radius: 6px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.loop-track-title {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 380px;
+}
+
+.loop-track-status {
+  font-size: 11px;
+  color: #59c44d;
+  font-family: monospace;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Cell Grid                                                                  */
+/* -------------------------------------------------------------------------- */
+
+.loop-grid-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.loop-nullgrid {
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #222;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), inset 0 0 12px rgba(0, 0, 0, 0.9);
+}
+
+.loop-cell {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  transition: background 0.45s ease, box-shadow 0.45s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+.loop-cell:hover {
+  transform: scale(1.15);
+  z-index: 5;
+}
+
+/* Colors from instant-0chan */
+.loop-cell--void {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.loop-cell--dim-green {
+  background: #14360e;
+}
+
+.loop-cell--lit-green {
+  background: radial-gradient(ellipse at center, #59c44d 30%, #236e10 85%);
+  box-shadow: 0 0 6px #59c44d;
+}
+
+.loop-cell--dim-yellow {
+  background: #3f400e;
+}
+
+.loop-cell--lit-yellow {
+  background: radial-gradient(ellipse at center, #cccf41 30%, #686915 85%);
+  box-shadow: 0 0 6px #cccf41;
+}
+
+.loop-cell--dim-orange {
+  background: #422d0d;
+}
+
+.loop-cell--lit-orange {
+  background: radial-gradient(ellipse at center, #d2993e 30%, #6d4b14 85%);
+  box-shadow: 0 0 6px #d2993e;
+}
+
+.loop-cell--dim-blue {
+  background: #12373f;
+}
+
+.loop-cell--lit-blue {
+  background: radial-gradient(ellipse at center, #49b6c7 30%, #1a5661 85%);
+  box-shadow: 0 0 6px #49b6c7;
+}
+
+.loop-cell--dim-crimson {
+  background: #44111d;
+}
+
+.loop-cell--lit-crimson {
+  background: radial-gradient(ellipse at center, #cc4368 30%, #5d1729 85%);
+  box-shadow: 0 0 6px #cc4368;
+}
+
+.loop-cell--dim-violet {
+  background: #2a1144;
+}
+
+.loop-cell--lit-violet {
+  background: radial-gradient(ellipse at center, #8238d8 30%, #3e166e 85%);
+  box-shadow: 0 0 6px #8238d8;
+}
+
+.loop-cell--dim-mono {
+  background: #2a2a2a;
+}
+
+.loop-cell--lit-mono {
+  background: radial-gradient(ellipse at center, #d2d2d2 30%, #555555 85%);
+  box-shadow: 0 0 6px #d2d2d2;
+}
+
+/* Flashing state triggered by audio threshold */
+.loop-cell.is-flashing {
+  transform: scale(1.1);
+  filter: brightness(1.75);
+  box-shadow: 0 0 12px #ffffff, 0 0 20px currentColor !important;
+  transition: transform 0.05s ease, filter 0.05s ease;
+}
+
+/* Waveform Canvas */
+.loop-waveform-canvas {
+  width: 100%;
+  max-width: 520px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Controls Toolbar                                                           */
+/* -------------------------------------------------------------------------- */
+
+.loop-toolbar {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.loop-buttons-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.loop-btn {
+  background: linear-gradient(180deg, #2b2b36 0%, #191922 100%);
+  border: 1px solid #444455;
+  color: #e5e5ec;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 6px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.loop-btn:hover {
+  background: linear-gradient(180deg, #383847 0%, #22222d 100%);
+  border-color: #59c44d;
+  color: #59c44d;
+}
+
+.loop-btn:active {
+  transform: translateY(1px);
+}
+
+.loop-btn--primary {
+  background: linear-gradient(180deg, #256b1e 0%, #154510 100%);
+  border-color: #59c44d;
+  color: #ffffff;
+}
+
+.loop-btn--primary:hover {
+  background: linear-gradient(180deg, #2e8225 0%, #1a5614 100%);
+  color: #ffffff;
+}
+
+.loop-presets-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10px;
+}
+
+.loop-preset-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #a8a8b8;
+  font-size: 10px;
+  border-radius: 3px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.loop-preset-btn:hover,
+.loop-preset-btn.is-active {
+  background: rgba(89, 196, 77, 0.2);
+  border-color: #59c44d;
+  color: #59c44d;
+}

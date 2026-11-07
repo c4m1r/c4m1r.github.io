@@ -40,10 +40,13 @@ import { getDesktopOsClassName, isThemeInFamily } from './runtime/shortcutFilter
 import { getViewportSize } from './runtime/windowGeometry';
 import { THEME_ASSETS } from '../../themes/webos/themeAssets';
 import { THEME_STYLES } from '../../themes/webos/themeStyles';
+import { playXpClick } from '../../themes/winxp/xpSoundService';
 import { AsciiAurora } from '../../components/effects';
+import loopIcon from '../../apps/loop/assets/loop-icon.png';
 import {
   getOsAppTitle,
   getOsSystemLabel,
+  getOsAppVisibility,
 } from '../os/osSkins';
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
 import { AppleSystemBar } from './components/AppleSystemBar';
@@ -690,6 +693,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const applicationShortcuts: DesktopIcon[] = desktopShortcuts.map((appId) => {
     const app = findAppDefinition(appRegistry, appId);
     if (!app) return null;
+    if (!getOsAppVisibility(appId, app.showOnDesktop ?? true, themeKey, 'desktop')) {
+      return null;
+    }
 
     let iconSrc = '';
     if (themeKey === 'macos-26') {
@@ -697,6 +703,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     }
     if (!iconSrc && app.iconKey) {
       iconSrc = themeAssets[app.iconKey as keyof typeof themeAssets] as string;
+    }
+    if (!iconSrc && app.iconKey === 'loopIcon') {
+      iconSrc = loopIcon;
     }
     if (!iconSrc && app.iconKey === 'richTextIcon') {
       iconSrc = textDocumentIcon;
@@ -1737,6 +1746,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           <button
             onClick={(e) => {
               e.stopPropagation();
+              if (theme === 'win-xp') {
+                playXpClick();
+              }
               if (showStartMenu) {
                 closeStartMenu();
               } else {
