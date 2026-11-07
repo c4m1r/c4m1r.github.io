@@ -1,7 +1,7 @@
 import { type DesktopAppDefinition } from '../types';
 import { findAppDefinition } from './appLaunch';
 import { type Language } from '../../../i18n/translations';
-import loopIcon from '../../../apps/loop/assets/loop-icon.png';
+import loopsIcon from '../../../apps/loops/assets/favicon.ico';
 
 export interface ResolvedAppWindowConfig {
   app: DesktopAppDefinition;
@@ -30,8 +30,8 @@ export function resolveAppWindowConfig(
   if (!iconSrc && app.iconKey === 'notepadIcon') {
     iconSrc = themeAssets.notepadIcon ?? fallbackTextIcon;
   }
-  if (!iconSrc && app.iconKey === 'loopIcon') {
-    iconSrc = loopIcon;
+  if (!iconSrc && app.iconKey === 'loopsIcon') {
+    iconSrc = loopsIcon;
   }
 
   const windowId = appId === 'notepad' ? `app:notepad-${Date.now()}` : `app:${appId}`;
@@ -72,7 +72,8 @@ export const RUN_COMMAND_ALIASES: Record<string, string> = {
   projects: 'projects-grid',
   games: 'games-folder',
   winamp: 'winamp',
-  loop: 'loop',
+  loop: 'loops',
+  loops: 'loops',
   doom1: 'doom1',
   doom2: 'doom2',
   doom3: 'doom3',

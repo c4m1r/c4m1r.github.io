@@ -1,1 +1,0 @@
-export const GUN_SPRITE_DATA = "/sprites/keyboard-gun.png";

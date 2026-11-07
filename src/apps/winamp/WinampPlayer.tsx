@@ -212,23 +212,52 @@ export function WinampPlayer() {
     setIsPlaying(false);
   }, []);
 
-  const chooseNextIndex = useCallback((current: number) => {
-    if (shuffle && PROJECT_PLAYLIST.length > 1) {
-      let next = current;
-      while (next === current) {
-        next = Math.floor(Math.random() * PROJECT_PLAYLIST.length);
-      }
-      return next;
+  const historyRef = useRef<number[]>([]);
+  const shuffleOrderRef = useRef<number[]>([]);
+  const shufflePointerRef = useRef<number>(0);
+
+  const regenerateShuffleOrder = useCallback(() => {
+    const indices = Array.from({ length: PROJECT_PLAYLIST.length }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = indices[i];
+      indices[i] = indices[j];
+      indices[j] = temp;
     }
-    return (current + 1) % PROJECT_PLAYLIST.length;
-  }, [shuffle]);
+    shuffleOrderRef.current = indices;
+    shufflePointerRef.current = 0;
+  }, []);
+
+  useEffect(() => {
+    if (shuffle) {
+      regenerateShuffleOrder();
+    }
+  }, [shuffle, regenerateShuffleOrder]);
 
   const next = useCallback(() => {
-    setTrackIndex((current) => chooseNextIndex(current));
-  }, [chooseNextIndex]);
+    setTrackIndex((current) => {
+      historyRef.current.push(current);
+      if (shuffle && PROJECT_PLAYLIST.length > 1) {
+        if (shufflePointerRef.current >= shuffleOrderRef.current.length) {
+          regenerateShuffleOrder();
+        }
+        let nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
+        if (nextIdx === current && shufflePointerRef.current < shuffleOrderRef.current.length) {
+          nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
+        }
+        return nextIdx ?? (current + 1) % PROJECT_PLAYLIST.length;
+      }
+      return (current + 1) % PROJECT_PLAYLIST.length;
+    });
+  }, [regenerateShuffleOrder, shuffle]);
 
   const previous = useCallback(() => {
-    setTrackIndex((current) => (current - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length);
+    setTrackIndex((current) => {
+      if (historyRef.current.length > 0) {
+        return historyRef.current.pop() ?? (current - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length;
+      }
+      return (current - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length;
+    });
   }, []);
 
   const seek = (pct: number) => {

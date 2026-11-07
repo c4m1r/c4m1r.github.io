@@ -73,21 +73,22 @@
 - **Verification method**: Switch to WebOS; verify Windows 7 boot screen and clean WebOS title.
 - **Source**: User Theme Request.
 
-### TASK-APP-LOOP-01: 0chan Instant Loop Visualizer App
+### TASK-APP-LOOPS-01: loops App (WebOS)
 - **Priority**: P0
 - **Status**: COMPLETED
 - **Problem**: WebOS desktop lacked the iconic interactive dancing square loop music visualizer from `eat/instant-0chan-master`.
-- **Expected result**: Dedicated `LoopApp` (`src/apps/loop/LoopApp.tsx` and `loop.css`) featuring:
+- **Expected result**: Dedicated `LoopsApp` (`src/apps/loops/LoopsApp.tsx` and `loops.css`) featuring:
   1. Matrix of dancing colored cells (`.loop-cell`) matching 0chan nullgrid, Im Blue, and Matrix patterns.
   2. Web Audio frequency/time-domain analyzer triggering real-time radiant cell flashes on beats.
   3. Oscilloscope waveform canvas.
   4. Track switching (next, prev, random loop).
   5. Interactive mouse clicks on cells triggering `chpok.mp3` acoustic feedback.
-  6. Desktop shortcut visible strictly on WebOS desktop.
-- **Acceptance criteria**: App opens on WebOS desktop, squares dance to audio, click produces chpok sound.
+  6. Authentic desktop launcher icon using `favicon.ico`.
+  7. Desktop shortcut visible strictly on WebOS desktop.
+- **Acceptance criteria**: App opens on WebOS desktop, squares dance to audio, click produces chpok sound, named "loops".
 - **Dependencies**: None.
-- **Files**: `src/apps/loop/LoopApp.tsx`, `src/apps/loop/loop.css`, `src/apps/loop/assets/loop-icon.png`, `src/shells/desktop/appRegistry.tsx`, `src/shells/desktop/shortcutsRegistry.ts`, `src/shells/os/osSkins.ts`, `src/shells/desktop/DesktopShellContainer.tsx`.
-- **Verification method**: Launch WebOS; double-click "0chan Loop" on desktop; verify audio playback and animation.
+- **Files**: `src/apps/loops/LoopsApp.tsx`, `src/apps/loops/loops.css`, `src/apps/loops/assets/favicon.ico`, `src/shells/desktop/appRegistry.tsx`, `src/shells/desktop/shortcutsRegistry.ts`, `src/shells/os/osSkins.ts`, `src/shells/desktop/DesktopShellContainer.tsx`.
+- **Verification method**: Launch WebOS; double-click "loops" on desktop; verify audio playback, icon and animation.
 - **Source**: `eat/instant-0chan-master` absorption request.
 
 ---

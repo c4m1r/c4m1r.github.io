@@ -24,6 +24,15 @@ Research and recreation of retro computer aesthetics. From Windows 98 to Mac OS 
 - **BeOS**: Unique BeOS aesthetics
 - **AmigaOS**: Workbench and its features
 
+## Sound Design in Original Windows
+
+The acoustic environment was a core pillar of the Windows experience:
+- **Windows XP Startup Chime**: Bill Brown's iconic rising E♭ major chord progression (E♭–B♭–E♭–G–B♭–E♭–B♭ chime), greeting the user on the Welcome screen.
+- **Logon & Logoff**: A 3-note ascending chime for user login and a 4-note descending motif for logging off.
+- **Shutdown**: An orchestral descending cadence signaling system shutdown.
+- **Navigation Click**: A crisp 15 ms acoustic click giving tactile feedback across Explorer and the Start menu.
+- **Error Chord**: The resonant error chord alerting users to system issues.
+
 ## Application
 
 Using retro aesthetics in modern projects to create a nostalgic atmosphere.
@@ -51,6 +60,15 @@ A library of components in the style of various retro systems, ready for use in 
 - **Mac OS Classic**: Платиновая тема и Aqua
 - **BeOS**: Уникальная эстетика BeOS
 - **AmigaOS**: Workbench и его особенности
+
+## Звуковое сопровождение оригинальной Windows
+
+Звуковая среда операционных систем Microsoft являлась ключевым элементом пользовательского опыта:
+- **Startup Chime (Мелодия запуска XP)**: Культовая восходящая аккордовая гармония композитора Билла Брауна в тональности ми-бемоль мажор (E♭–B♭–E♭–G–B♭–E♭–B♭ chime), плавно воспроизводящаяся при появлении экрана приветствия.
+- **Logon & Logoff**: 3-нотный тёплый перезвон при входе в сеанс и 4-нотный нисходящий мотив при завершении сеанса.
+- **Shutdown**: Оркестровый нисходящий аккорд завершения работы Windows XP.
+- **Navigation Click**: Короткий 15 мс акустический щелчок при нажатии на кнопку «Пуск», вызове меню и переходах в проводнике.
+- **Error Chord**: Оригинальный резонансный звук ошибки (`error.wav`), подключённый к системным диалоговым окнам.
 
 ## Применение
 

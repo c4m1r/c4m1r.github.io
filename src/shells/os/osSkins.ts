@@ -412,7 +412,7 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     osClassName: 'os-shell',
     displayName: 'WebOS',
     appNames: {
-      'loop': {
+      'loops': {
         showOnDesktop: true,
         showInStartMenu: true,
       },

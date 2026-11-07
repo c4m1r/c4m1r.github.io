@@ -42,7 +42,7 @@ import { THEME_ASSETS } from '../../themes/webos/themeAssets';
 import { THEME_STYLES } from '../../themes/webos/themeStyles';
 import { playXpClick } from '../../themes/winxp/xpSoundService';
 import { AsciiAurora } from '../../components/effects';
-import loopIcon from '../../apps/loop/assets/loop-icon.png';
+import loopsIcon from '../../apps/loops/assets/favicon.ico';
 import {
   getOsAppTitle,
   getOsSystemLabel,
@@ -704,8 +704,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (!iconSrc && app.iconKey) {
       iconSrc = themeAssets[app.iconKey as keyof typeof themeAssets] as string;
     }
-    if (!iconSrc && app.iconKey === 'loopIcon') {
-      iconSrc = loopIcon;
+    if (!iconSrc && app.iconKey === 'loopsIcon') {
+      iconSrc = loopsIcon;
     }
     if (!iconSrc && app.iconKey === 'richTextIcon') {
       iconSrc = textDocumentIcon;

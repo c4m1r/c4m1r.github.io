@@ -1,4 +1,0 @@
-# Repo refreshed on 2025-11-15
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow:
