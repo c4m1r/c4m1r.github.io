@@ -30,6 +30,9 @@ import ios9PhotosIcon from '../../themes/apple/assets/ios9/gallery.png';
 import ios9MusicIcon from '../../themes/apple/assets/ios9/itunes.png';
 import ios9CalendarIcon from '../../themes/apple/assets/ios9/iconcal.png';
 
+import rssNewsIcon from '../../assets/icons/rss-icon.svg';
+import currencyDollarIcon from '../../assets/icons/currency-dollar-icon.svg';
+
 export interface AppleDockAsset {
   id: string;
   title: string;
@@ -49,7 +52,8 @@ const MODERN_IOS_ICON_BY_ID: Readonly<Record<string, string>> = {
   'control-panel': iosSettingsIcon,
   pictures: iosPhotosIcon,
   blog: iosNewsIcon,
-  news: iosNewsIcon,
+  news: rssNewsIcon,
+  currency: currencyDollarIcon,
   notepad: iosNotesIcon,
   'my-computer': iosFilesIcon,
 };
@@ -61,6 +65,8 @@ const IOS9_ICON_BY_ID: Readonly<Record<string, string>> = {
   'control-panel': ios9SettingsIcon,
   pictures: ios9PhotosIcon,
   calendar: ios9CalendarIcon,
+  news: rssNewsIcon,
+  currency: currencyDollarIcon,
 };
 
 export const MACOS_SYSTEM_ICON_BY_ID: Readonly<Record<string, string>> = {
@@ -79,6 +85,8 @@ export const MACOS_APP_ICON_BY_ID: Readonly<Record<string, string>> = {
   calculator: macCalculatorIcon,
   calendar: macCalendarIcon,
   'projects-grid': macFolderGenericIcon,
+  news: rssNewsIcon,
+  currency: currencyDollarIcon,
 };
 
 export const MACOS_DOCK_ITEMS: readonly AppleDockAsset[] = [

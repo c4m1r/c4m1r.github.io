@@ -13,6 +13,7 @@ import { CalendarApp } from '../../apps/calendar';
 import { Terminal } from '../../apps/Terminal';
 import { ProjectsGrid } from '../../apps/ProjectsGrid';
 import { NewsRssFeedWindow } from '../../apps/news/NewsRssFeedWindow';
+import { CurrencyWindow } from '../../apps/currency/CurrencyWindow';
 import { InternetExplorer } from '../../apps/internetexplorer/InternetExplorer';
 import { OutlookExpress } from '../../apps/outlook/OutlookExpress';
 import { WindowsMediaPlayer } from '../../apps/mediaplayer/WindowsMediaPlayer';
@@ -238,6 +239,23 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'newsIcon',
     component: NewsRssFeedWindow,
     defaultWindow: { width: 920, height: 620 },
+    showInStartMenu: true,
+    showOnDesktop: true,
+  },
+  'currency': {
+    id: 'currency',
+    title: {
+      en: 'Market Rates',
+      ru: 'Курсы валют',
+      fr: 'Taux de change',
+      es: 'Cotizaciones',
+      zh: '汇率行情',
+      ja: '為替レート',
+      ko: '환율 시세',
+    },
+    iconKey: 'currencyIcon',
+    component: CurrencyWindow,
+    defaultWindow: { width: 840, height: 520 },
     showInStartMenu: true,
     showOnDesktop: true,
   },

@@ -41,7 +41,8 @@ import fullscreenIconWebos from '../winxp/assets/icons/full-screen-icon-sm.webp'
 import notificationIconWebos from '../winxp/assets/icons/Information.png';
 import calendarIconWebos from '../winxp/assets/icons/Date and Time.png';
 import terminalIconWebos from '../winxp/assets/icons/cmd.png';
-import newsIconWebos from '../winxp/assets/icons/OE News Post.png';
+import rssNewsIcon from '../../assets/icons/rss-icon.svg';
+import currencyDollarIcon from '../../assets/icons/currency-dollar-icon.svg';
 import runIconWebos from '../winxp/assets/icons/run.png';
 import helpIconWebos from '../winxp/assets/icons/help.png';
 import searchIconWebos from '../winxp/assets/icons/search.png';
@@ -112,8 +113,10 @@ export interface ThemeAssets {
   calendarIcon?: string;
   /** Terminal app icon (cmd.png) */
   terminalIcon?: string;
-  /** News app icon (OE News Post.png) */
+  /** News app icon (RSS) */
   newsIcon?: string;
+  /** Currency / Market Rates app icon ($) */
+  currencyIcon?: string;
   startMenuIcons: StartMenuIconSet;
   placesIcons: PlaceIconSet;
   uiSounds?: {
@@ -155,7 +158,8 @@ const sharedWebosAssets: ThemeAssets = {
   bootProgress: bootProgressWebos,
   calendarIcon: calendarIconWebos,
   terminalIcon: terminalIconWebos,
-  newsIcon: newsIconWebos,
+  newsIcon: rssNewsIcon,
+  currencyIcon: currencyDollarIcon,
   volumeIcon: volumeIconWebos,
   muteIcon: muteIconWebos,
   fullscreenIcon: fullscreenIconWebos,

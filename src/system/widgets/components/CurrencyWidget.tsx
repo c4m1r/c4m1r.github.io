@@ -66,6 +66,7 @@ export function CurrencyWidget() {
       nameRu: 'Биткоин',
       nameEn: 'Bitcoin',
       symbol: 'BTC/USD',
+      numericPrice: 75930,
       priceFormatted: '$75,930',
       change24h: 0.22,
       unitRu: 'USDT',

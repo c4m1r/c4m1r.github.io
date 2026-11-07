@@ -229,6 +229,19 @@
 - **Acceptance criteria**: WebOS desktop displays glassmorphic widgets arranged per layout reference; Weather widget displays live Open-Meteo data for chosen cities; Winamp widget synchronizes seamlessly with full Winamp player with zero duplicate audio; Currency widget shows live KZT rates for BTC, USD, RUB, and Gold/g; News RSS feed window allows viewing and configuring feeds; widget gallery enables toggling widgets in macOS and other OSes; build and typecheck pass cleanly.
 - **Files**: `src/system/audio/winampController.ts`, `src/system/widgets/*`, `src/apps/news/NewsRssFeedWindow.tsx`, `src/apps/winamp/WinampPlayer.tsx`, `src/shells/desktop/DesktopShellContainer.tsx`, `src/shells/desktop/components/AppleDesktopWidgets.tsx`, `src/shells/desktop/components/AppleWidgetGallery.tsx`, `src/shells/desktop/appRegistry.tsx`.
 
+### TASK-WIDGETS-APPS-02: Universal News RSS & Market Rates Apps, Video Wallpaper & Expanded Quotes
+- **Priority**: P0
+- **Status**: COMPLETED
+- **Problem**: News and Currency needed to exist as standalone launchable applications with standard RSS and dollar icons across all operating systems, retaining native OS window chrome. WebOS required setting `Ascii_Blossom.mp4` as an animated desktop wallpaper. The quotes bundle was limited to 15 entries and needed a wider selection of gaming and wisdom quotes.
+- **Expected result**:
+  1. **News App & RSS Icon**: Created canonical RSS SVG icon `src/assets/icons/rss-icon.svg`. Registered News app globally across WebOS, Windows XP, Windows 7, Windows 98/2000, macOS, and iOS with typical RSS broadcast styling.
+  2. **Currency App & Dollar Icon**: Created `src/apps/currency/CurrencyWindow.tsx` and dollar coin SVG `src/assets/icons/currency-dollar-icon.svg`. Registered `currency` app globally with live quotes (BTC, USD, RUB, Gold/g in KZT), instant converter calculator, and refresh tools.
+  3. **Native Window Framing**: Both applications launch within `<Window />` with native OS styling and borders across every system (Luna chrome for XP, Aero for Win7, 3D beveled classic for Win98/2000, traffic lights for macOS, dark glass for WebOS).
+  4. **WebOS Animated MP4 Wallpaper**: Bound `/src/themes/webos/assets/Ascii_Blossom.mp4` as looping background video in `DesktopShellContainer.tsx` for `webos` theme with subtle overlay.
+  5. **Expanded Quotes Collection**: Expanded `src/system/widgets/services/quotesData.ts` to 50 iconic bilingual quotes (Gaming: Mass Effect, Dark Souls, MGS, Skyrim, RDR2, Disco Elysium, DOOM, Deus Ex, STALKER; Wisdom: Turing, Sagan, Einstein, Jobs, Torvalds, Clarke, Asimov, Aurelius, Kant).
+- **Acceptance criteria**: News and Currency applications appear on desktops, start menus, launchers, and dock in all OS themes with RSS and $ icons; opening them renders within native OS window frames; WebOS plays `Ascii_Blossom.mp4` in background; quotes widget cycles through 50 quotes; all verification tests pass.
+- **Files**: `src/apps/currency/CurrencyWindow.tsx`, `src/assets/icons/rss-icon.svg`, `src/assets/icons/currency-dollar-icon.svg`, `src/system/widgets/services/quotesData.ts`, `src/system/widgets/services/cryptoCurrencyService.ts`, `src/system/widgets/components/CurrencyWidget.tsx`, `src/shells/desktop/DesktopShellContainer.tsx`, `src/shells/desktop/appRegistry.tsx`, `src/shells/desktop/appleIconAssets.ts`, `src/shells/desktop/components/AppleLauncherSurface.tsx`, `src/shells/desktop/components/start-menu/StartMenu7.tsx`, `src/shells/desktop/components/start-menu/StartMenuXP.tsx`, `src/shells/desktop/runtime/desktopAppLauncher.ts`, `src/shells/desktop/shortcutsRegistry.ts`, `src/themes/webos/themeAssets.ts`.
+
 ---
 
 ## 5. Quality Verification Pipeline

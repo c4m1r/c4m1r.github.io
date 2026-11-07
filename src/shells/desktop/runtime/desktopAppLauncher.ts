@@ -2,6 +2,8 @@ import { type DesktopAppDefinition } from '../types';
 import { findAppDefinition } from './appLaunch';
 import { type Language } from '../../../i18n/translations';
 import loopsIcon from '../../../apps/loops/assets/favicon.ico';
+import rssNewsIcon from '../../../assets/icons/rss-icon.svg';
+import currencyDollarIcon from '../../../assets/icons/currency-dollar-icon.svg';
 
 export interface ResolvedAppWindowConfig {
   app: DesktopAppDefinition;
@@ -32,6 +34,12 @@ export function resolveAppWindowConfig(
   }
   if (!iconSrc && app.iconKey === 'loopsIcon') {
     iconSrc = loopsIcon;
+  }
+  if (!iconSrc && app.iconKey === 'newsIcon') {
+    iconSrc = themeAssets.newsIcon ?? rssNewsIcon;
+  }
+  if (!iconSrc && app.iconKey === 'currencyIcon') {
+    iconSrc = themeAssets.currencyIcon ?? currencyDollarIcon;
   }
 
   const windowId = appId === 'notepad' ? `app:notepad-${Date.now()}` : `app:${appId}`;

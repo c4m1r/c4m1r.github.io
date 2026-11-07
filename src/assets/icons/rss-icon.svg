@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="rss-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff8c00" />
+      <stop offset="100%" stop-color="#e54300" />
+    </linearGradient>
+    <filter id="rss-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="44" height="44" x="2" y="2" rx="10" fill="url(#rss-grad)" filter="url(#rss-shadow)" />
+  <circle cx="12" cy="36" r="4.5" fill="#ffffff" />
+  <path d="M 8 22 A 18 18 0 0 1 26 40" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" />
+  <path d="M 8 13 A 27 27 0 0 1 35 40" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" />
+</svg>

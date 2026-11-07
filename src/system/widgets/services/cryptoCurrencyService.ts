@@ -3,6 +3,7 @@ export interface CurrencyItem {
   nameRu: string;
   nameEn: string;
   symbol: string;
+  numericPrice: number;
   priceFormatted: string;
   change24h: number; // percentage, e.g. +1.45 or -0.25
   unitRu: string;
@@ -115,6 +116,7 @@ export async function fetchMarketRates(): Promise<MarketRatesData> {
       nameRu: 'Биткоин',
       nameEn: 'Bitcoin',
       symbol: 'BTC/USD',
+      numericPrice: btcPrice,
       priceFormatted: `$${btcPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`,
       change24h: btcChange,
       unitRu: 'USDT',
@@ -127,6 +129,7 @@ export async function fetchMarketRates(): Promise<MarketRatesData> {
       nameRu: 'Доллар США',
       nameEn: 'US Dollar',
       symbol: 'USD/KZT',
+      numericPrice: usdToKzt,
       priceFormatted: `₸${usdToKzt.toFixed(2)}`,
       change24h: 0.15,
       unitRu: 'KZT',
@@ -139,6 +142,7 @@ export async function fetchMarketRates(): Promise<MarketRatesData> {
       nameRu: 'Российский рубль',
       nameEn: 'Russian Ruble',
       symbol: 'RUB/KZT',
+      numericPrice: rubToKzt,
       priceFormatted: `₸${rubToKzt.toFixed(2)}`,
       change24h: -0.28,
       unitRu: 'KZT',
@@ -151,6 +155,7 @@ export async function fetchMarketRates(): Promise<MarketRatesData> {
       nameRu: 'Золото (XAU)',
       nameEn: 'Gold (XAU)',
       symbol: 'XAU/KZT',
+      numericPrice: goldKztPerGram,
       priceFormatted: `₸${goldKztPerGram.toLocaleString('ru-RU')}`,
       change24h: goldChange,
       unitRu: 'KZT / г',

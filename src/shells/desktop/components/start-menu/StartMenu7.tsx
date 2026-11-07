@@ -91,6 +91,18 @@ export function StartMenu7({
       appId: 'notepad',
       icon: assets.notepadIcon,
     },
+    {
+      id: 'news',
+      label: appRegistry.news?.title[language] ?? (isRu ? 'Лента новостей RSS' : 'News RSS Feed'),
+      appId: 'news',
+      icon: assets.newsIcon,
+    },
+    {
+      id: 'currency',
+      label: appRegistry.currency?.title[language] ?? (isRu ? 'Курсы валют' : 'Market Rates'),
+      appId: 'currency',
+      icon: assets.currencyIcon,
+    },
   ], [assets, isRu, language]);
 
   const filteredPrograms = programs.filter((program) =>

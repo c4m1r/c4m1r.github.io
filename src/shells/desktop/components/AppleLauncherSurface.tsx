@@ -22,6 +22,8 @@ const APP_IDS = [
   'my-cv',
   'projects-grid',
   'blog',
+  'news',
+  'currency',
   'wiki',
   'about',
 ] as const;
@@ -49,6 +51,8 @@ const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], Record<Language, string>>
   'my-cv': localizedTitle('My CV', 'Моё резюме'),
   'projects-grid': localizedTitle('Projects', 'Проекты'),
   blog: localizedTitle('Blog', 'Блог'),
+  news: localizedTitle('News RSS', 'Новости RSS'),
+  currency: localizedTitle('Market Rates', 'Курсы валют'),
   wiki: localizedTitle('Wiki', 'Wiki'),
   about: localizedTitle('About', 'Обо мне'),
 };
@@ -66,6 +70,8 @@ const GLYPHS: Record<string, string> = {
   'my-cv': 'CV',
   'projects-grid': '▦',
   blog: '✎',
+  news: '📡',
+  currency: '$',
   wiki: 'W',
   about: 'i',
 };

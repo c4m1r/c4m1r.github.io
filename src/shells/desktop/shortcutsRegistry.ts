@@ -1,5 +1,3 @@
-import { isFeatureEnabled } from '../../config/features';
-
 export const desktopShortcuts: string[] = [
   'internet-explorer',
   'outlook',
@@ -12,7 +10,8 @@ export const desktopShortcuts: string[] = [
   'control-panel',
   'pictures',
   'blog',
-  ...(isFeatureEnabled('news') ? ['news'] : []),
+  'news',
+  'currency',
   'wiki',
   'notepad',
   'calendar',

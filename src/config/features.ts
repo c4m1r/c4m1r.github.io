@@ -1,5 +1,6 @@
 export const features = {
-  news: false,
+  news: true,
+  currency: true,
 } as const;
 
 export type FeatureKey = keyof typeof features;

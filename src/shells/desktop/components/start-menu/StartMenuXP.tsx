@@ -119,6 +119,18 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       appId: 'minesweeper',
     },
     {
+      id: 'news',
+      title: appRegistry['news']?.title[language] || (isRu ? 'Лента новостей RSS' : 'News RSS Feed'),
+      icon: themeAssets.newsIcon,
+      appId: 'news',
+    },
+    {
+      id: 'currency',
+      title: appRegistry['currency']?.title[language] || (isRu ? 'Курсы валют' : 'Market Rates'),
+      icon: themeAssets.currencyIcon,
+      appId: 'currency',
+    },
+    {
       id: 'my-computer',
       title: t.myComputer || (isRu ? 'Мой компьютер' : 'My Computer'),
       icon: placeIcons.myComputer ?? themeAssets.computerIcon ?? fallbackIcon,

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="curr-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="gold-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+    <filter id="curr-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <circle cx="24" cy="24" r="21" fill="url(#curr-grad)" filter="url(#curr-shadow)" stroke="url(#gold-border)" stroke-width="2.5" />
+  <circle cx="24" cy="24" r="17.5" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="2 2" />
+  <text x="24" y="32.5" font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="900" font-size="25" fill="#ffffff" text-anchor="middle" filter="drop-shadow(0px 1px 1px rgba(0,0,0,0.5))">$</text>
+</svg>

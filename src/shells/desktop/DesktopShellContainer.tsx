@@ -43,6 +43,9 @@ import { THEME_STYLES } from '../../themes/webos/themeStyles';
 import { playXpClick } from '../../themes/winxp/xpSoundService';
 import { AsciiAurora } from '../../components/effects';
 import loopsIcon from '../../apps/loops/assets/favicon.ico';
+import rssNewsIcon from '../../assets/icons/rss-icon.svg';
+import currencyDollarIcon from '../../assets/icons/currency-dollar-icon.svg';
+import webosVideoWallpaper from '../../themes/webos/assets/Ascii_Blossom.mp4';
 import {
   getOsAppTitle,
   getOsSystemLabel,
@@ -731,6 +734,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (!iconSrc && app.iconKey === 'notepadIcon') {
       iconSrc = themeAssets.notepadIcon ?? textDocumentIcon;
     }
+    if (!iconSrc && app.iconKey === 'newsIcon') {
+      iconSrc = themeAssets.newsIcon ?? rssNewsIcon;
+    }
+    if (!iconSrc && app.iconKey === 'currencyIcon') {
+      iconSrc = themeAssets.currencyIcon ?? currencyDollarIcon;
+    }
 
     const label = getOsAppTitle(appId, app.title, themeKey, language);
     const icon = renderShortcutIcon(iconSrc, themeAssets.folderIcon);
@@ -1387,6 +1396,18 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         });
       }}
     >
+      {/* WebOS Animated MP4 Video Wallpaper */}
+      {themeKey === 'webos' && !customWallpaper && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-0"
+          src={webosVideoWallpaper}
+        />
+      )}
+
       <AppleSystemBar
         theme={themeKey}
         language={language}
