@@ -1,0 +1,175 @@
+/* ============================================================
+   Halloween Edition Visual Skin — halloween.css
+   Scope: .os-spooky
+   Spooky midnight purple, neon pumpkin orange, and gothic glow
+   ============================================================ */
+
+.os-spooky {
+  --spooky-orange: #ff7518;
+  --spooky-orange-light: #ffa15d;
+  --spooky-orange-glow: rgba(255, 117, 24, 0.45);
+  --spooky-purple-dark: #12041d;
+  --spooky-purple-mid: #25093b;
+  --spooky-purple-light: #44126b;
+  --spooky-border: #5a198d;
+  --spooky-text: #f5eefc;
+  --spooky-text-muted: #bda6cc;
+  --spooky-radius: 8px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Cinzel", Georgia, serif;
+  background-color: var(--spooky-purple-dark);
+  color: var(--spooky-text);
+}
+
+/* ── 1. Window Chrome ───────────────────────────────────────── */
+
+.os-spooky .os-window {
+  border-radius: var(--spooky-radius) !important;
+  border: 1px solid var(--spooky-border) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.75), 0 0 16px var(--spooky-orange-glow) !important;
+  background-color: var(--spooky-purple-dark) !important;
+  color: var(--spooky-text) !important;
+  overflow: hidden !important;
+}
+
+.os-spooky .os-window:focus-within,
+.os-spooky .os-window:not(.os-window--inactive) {
+  border-color: var(--spooky-orange) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 117, 24, 0.55) !important;
+}
+
+.os-spooky .os-titlebar {
+  background: linear-gradient(90deg, #1b072a 0%, #3d0f5e 50%, #1b072a 100%) !important;
+  color: var(--spooky-orange-light) !important;
+  padding: 4px 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px;
+  height: 32px !important;
+  min-height: 32px !important;
+  border-bottom: 1px solid var(--spooky-border) !important;
+  text-shadow: 0 0 8px var(--spooky-orange-glow);
+}
+
+.os-spooky .os-window--inactive .os-titlebar {
+  background: var(--spooky-purple-dark) !important;
+  color: var(--spooky-text-muted) !important;
+  text-shadow: none;
+}
+
+.os-spooky .xp-titlebar__controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.os-spooky .xp-titlebar__button {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--spooky-border) !important;
+  background: var(--spooky-purple-mid) !important;
+  color: var(--spooky-text) !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.os-spooky .xp-titlebar__button--close:hover {
+  background: var(--spooky-orange) !important;
+  box-shadow: 0 0 8px var(--spooky-orange) !important;
+}
+
+.os-spooky .xp-titlebar__button--minimize:hover,
+.os-spooky .xp-titlebar__button--maximize:hover,
+.os-spooky .xp-titlebar__button--restore:hover {
+  background: var(--spooky-purple-light) !important;
+  box-shadow: 0 0 8px var(--spooky-orange-glow) !important;
+}
+
+/* ── 2. Taskbar & Panel ─────────────────────────────────────── */
+
+.os-spooky .taskbar {
+  background: linear-gradient(180deg, #1d072c 0%, #0c0213 100%) !important;
+  border-top: 1px solid var(--spooky-border) !important;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.7), 0 0 8px var(--spooky-orange-glow) !important;
+  height: 36px !important;
+  min-height: 36px !important;
+}
+
+.os-spooky .start-button {
+  background: linear-gradient(135deg, #ff7518 0%, #a43803 100%) !important;
+  border: 1px solid #ff9d5c !important;
+  border-radius: var(--spooky-radius) !important;
+  color: #ffffff !important;
+  font-weight: bold !important;
+  font-size: 12px !important;
+  padding: 2px 12px !important;
+  height: 28px !important;
+  margin: 4px !important;
+  box-shadow: 0 0 10px var(--spooky-orange-glow) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+.os-spooky .start-button:hover,
+.os-spooky .start-button[aria-expanded="true"] {
+  background: linear-gradient(135deg, #ff944d 0%, #c44405 100%) !important;
+  box-shadow: 0 0 16px var(--spooky-orange) !important;
+}
+
+.os-spooky .taskbar-button {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--spooky-border) !important;
+  border-radius: var(--spooky-radius) !important;
+  color: var(--spooky-text-muted) !important;
+  height: 28px !important;
+  padding: 0 10px !important;
+  margin: 4px 2px !important;
+  font-size: 12px !important;
+}
+
+.os-spooky .taskbar-button:hover {
+  background: rgba(255, 117, 24, 0.15) !important;
+  border-color: var(--spooky-orange) !important;
+  color: var(--spooky-text) !important;
+}
+
+.os-spooky .taskbar-button.is-active {
+  background: var(--spooky-purple-light) !important;
+  border-color: var(--spooky-orange) !important;
+  color: var(--spooky-orange-light) !important;
+  box-shadow: 0 0 8px var(--spooky-orange-glow) !important;
+}
+
+.os-spooky .taskbar-tray {
+  background: transparent !important;
+  border: none !important;
+  color: var(--spooky-text) !important;
+  font-size: 12px !important;
+  padding: 0 12px !important;
+}
+
+.os-spooky .taskbar-tray-time {
+  color: var(--spooky-orange) !important;
+  font-weight: bold !important;
+  text-shadow: 0 0 6px var(--spooky-orange-glow) !important;
+}
+
+/* ── 3. Start Menu ──────────────────────────────────────────── */
+
+.os-spooky .start-panel,
+.os-spooky .start-menu {
+  background: linear-gradient(180deg, #1b072b 0%, #0d0214 100%) !important;
+  border: 1px solid var(--spooky-orange) !important;
+  border-radius: var(--spooky-radius) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 20px var(--spooky-orange-glow) !important;
+  color: var(--spooky-text) !important;
+}
+
+.os-spooky .start-panel button:hover,
+.os-spooky .start-menu button:hover {
+  background: rgba(255, 117, 24, 0.2) !important;
+  color: var(--spooky-orange-light) !important;
+}

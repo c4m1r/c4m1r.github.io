@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { type ThemeId } from '../../contexts/appContextTypes';
-import macWallpaper from '../../../eat/playground-macos-main/public/img/ui/wallpaper.jpg';
+import macWallpaper from './assets/wallpapers/wallpaper.jpg';
 import iosWallpaper from '../../content/pictures/wallpapers/ios/ios6-background-3.png';
 
 export function isAppleTheme(theme: ThemeId): boolean {

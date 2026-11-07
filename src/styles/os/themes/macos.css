@@ -13,7 +13,7 @@
 .os-macos-26 {
   background-image:
     linear-gradient(rgba(14, 19, 29, 0.08), rgba(14, 19, 29, 0.12)),
-    url('../../../../eat/playground-macos-main/public/img/ui/wallpaper.jpg') !important;
+    url('../../../themes/apple/assets/wallpapers/wallpaper.jpg') !important;
   background-size: cover !important;
   background-position: center !important;
 }
@@ -1407,7 +1407,7 @@
   align-items: center;
   background:
     linear-gradient(rgba(10,14,22,0.08), rgba(10,14,22,0.24)),
-    url('../../../../eat/playground-macos-main/public/img/ui/wallpaper.jpg') center / cover no-repeat;
+    url('../../../themes/apple/assets/wallpapers/wallpaper.jpg') center / cover no-repeat;
   color: #fff;
   font-family: var(--mac-font);
   cursor: default;

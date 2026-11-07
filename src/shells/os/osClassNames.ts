@@ -2,7 +2,7 @@ import { type ThemeId } from '../../contexts/appContextTypes';
 
 export const OS_CLASS_MAP: Record<ThemeId, string> = {
   'win-xp': 'winxp',
-  webos: 'winxp',
+  webos: 'webos',
   'win-98': 'classic',
   win7: 'win7',
   win10: 'win7',

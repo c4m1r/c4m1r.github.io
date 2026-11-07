@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { type Language } from '../../../i18n/translations';
 import { type ThemeId } from '../../../contexts/appContextTypes';
-import macWallpaper from '../../../../eat/playground-macos-main/public/img/ui/wallpaper.jpg';
-import iosWallpaper from '../../../../eat/macos-portfolio-main/public/images/mobile-wallpaper.webp';
+import macWallpaper from '../../../themes/apple/assets/wallpapers/wallpaper.jpg';
+import iosWallpaper from '../../../themes/apple/assets/wallpapers/mobile-wallpaper.webp';
 
 interface AppleLockScreenProps {
   open: boolean;

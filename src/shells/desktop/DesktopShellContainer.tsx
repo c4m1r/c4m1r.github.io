@@ -1242,7 +1242,19 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           : isXpFamily && themeAssets.wallpaper
           ? `url(${themeAssets.wallpaper})`
           : undefined,
-        backgroundColor: isXpFamily ? 'transparent' : '#008080',
+        backgroundColor: isXpFamily
+          ? 'transparent'
+          : themeKey === 'win-98'
+          ? '#008080'
+          : themeKey === 'ubuntu'
+          ? '#2c001e'
+          : themeKey === 'arch'
+          ? '#1e222b'
+          : themeKey === 'halloween'
+          ? '#12041d'
+          : themeKey === 'webos'
+          ? '#0f172a'
+          : 'transparent',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         paddingBottom: '30px',

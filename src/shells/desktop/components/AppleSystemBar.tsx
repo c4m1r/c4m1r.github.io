@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
-import iosWifiIcon from '../../../../eat/homescreen-main/public/icons/wifi.svg';
-import iosBatteryIcon from '../../../../eat/homescreen-main/public/icons/battery-75.svg';
-import macWifiIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/wifi.svg';
-import macBatteryIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/battery.100.svg';
-import macControlCenterIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/control-center.svg';
-import macSearchIcon from '../../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/search.svg';
+import iosWifiIcon from '../../../themes/apple/assets/ui/wifi.svg';
+import iosBatteryIcon from '../../../themes/apple/assets/ui/battery-75.svg';
+import macWifiIcon from '../../../themes/apple/assets/sf-icons/wifi.svg';
+import macBatteryIcon from '../../../themes/apple/assets/sf-icons/battery.100.svg';
+import macControlCenterIcon from '../../../themes/apple/assets/sf-icons/control-center.svg';
+import macSearchIcon from '../../../themes/apple/assets/sf-icons/search.svg';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { type Language } from '../../../i18n/translations';
 import { useDeviceBattery } from '../hooks/useDeviceBattery';

@@ -10,6 +10,9 @@
 @import './themes/winxp-tray-clock.css';
 @import './themes/win7.css';
 @import './themes/ubuntu.css';
+@import './themes/arch.css';
+@import './themes/halloween.css';
+@import './themes/webos.css';
 @import './themes/macos.css';
 @import './themes/apple-launcher.css';
 @import './themes/apple-dock.css';

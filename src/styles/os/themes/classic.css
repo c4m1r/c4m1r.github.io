@@ -1,46 +1,176 @@
-/* Classic / Windows 98 visual overrides */
+/* ============================================================
+   Classic / Windows 98 Visual Skin — classic.css
+   Scope: .os-classic, .os-win-98
+   Authentic 3D bevels, MS Sans Serif typography, and retro controls
+   ============================================================ */
 
-.os-classic {
-  --os-font: "MS Sans Serif", "Tahoma", sans-serif;
-  background-color: #008080;
+.os-classic,
+.os-win-98 {
+  --os-font: "Pixelated MS Sans Serif", "MS Sans Serif", Tahoma, sans-serif;
+  --win98-gray: #c0c0c0;
+  --win98-gray-light: #ffffff;
+  --win98-gray-dark: #808080;
+  --win98-gray-black: #000000;
+  --win98-blue-active: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  --win98-blue-inactive: linear-gradient(90deg, #808080 0%, #b5b5b5 100%);
+  --win98-teal: #008080;
+
+  font-family: var(--os-font);
+  background-color: var(--win98-teal);
 }
+
+/* ── 1. Window Chrome ───────────────────────────────────────── */
 
 .os-classic .os-window,
 .os-win-98 .os-window {
-  box-shadow: 1px 1px 0px #000000;
-  border-top: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  border-right: 2px solid #808080;
-  border-bottom: 2px solid #808080;
-  background-color: #c0c0c0;
+  box-shadow: 1px 1px 0px var(--win98-gray-black);
+  border-top: 2px solid var(--win98-gray-light);
+  border-left: 2px solid var(--win98-gray-light);
+  border-right: 2px solid var(--win98-gray-dark);
+  border-bottom: 2px solid var(--win98-gray-dark);
+  background-color: var(--win98-gray);
+  border-radius: 0 !important;
 }
 
 .os-classic .os-titlebar,
 .os-win-98 .os-titlebar {
-  background: linear-gradient(90deg, #000080 0%, #1084d0 100%) !important;
+  background: var(--win98-blue-active) !important;
   color: #ffffff !important;
-  padding: 2px 4px;
-  font-weight: bold;
+  padding: 3px 4px !important;
+  font-family: var(--os-font);
+  font-size: 11px !important;
+  font-weight: bold !important;
+  letter-spacing: 0.2px;
+  height: 20px !important;
+  min-height: 20px !important;
+  border-radius: 0 !important;
 }
+
+.os-classic .os-window--inactive .os-titlebar,
+.os-win-98 .os-window--inactive .os-titlebar {
+  background: var(--win98-blue-inactive) !important;
+  color: #c0c0c0 !important;
+}
+
+.os-classic .xp-titlebar__controls,
+.os-win-98 .xp-titlebar__controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  height: 14px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Classic 16x14px beveled control buttons */
+.os-classic .xp-titlebar__button,
+.os-win-98 .xp-titlebar__button {
+  width: 16px !important;
+  height: 14px !important;
+  min-width: 16px !important;
+  min-height: 14px !important;
+  background: var(--win98-gray) !important;
+  box-shadow: inset 1px 1px 0px var(--win98-gray-light),
+              inset -1px -1px 0px var(--win98-gray-dark),
+              1px 1px 0px var(--win98-gray-black) !important;
+  border-top: 1px solid var(--win98-gray-light) !important;
+  border-left: 1px solid var(--win98-gray-light) !important;
+  border-right: 1px solid var(--win98-gray-dark) !important;
+  border-bottom: 1px solid var(--win98-gray-dark) !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: default !important;
+  position: relative !important;
+}
+
+.os-classic .xp-titlebar__button:active,
+.os-win-98 .xp-titlebar__button:active {
+  box-shadow: inset 1px 1px 0px var(--win98-gray-dark),
+              1px 1px 0px var(--win98-gray-light) !important;
+  border-top: 1px solid var(--win98-gray-dark) !important;
+  border-left: 1px solid var(--win98-gray-dark) !important;
+  border-right: 1px solid var(--win98-gray-light) !important;
+  border-bottom: 1px solid var(--win98-gray-light) !important;
+}
+
+/* Minimize glyph: black line at bottom */
+.os-classic .xp-titlebar__button--minimize::before,
+.os-win-98 .xp-titlebar__button--minimize::before {
+  content: "" !important;
+  display: block !important;
+  width: 6px !important;
+  height: 2px !important;
+  background: #000000 !important;
+  margin-top: 6px !important;
+}
+
+/* Maximize glyph: rectangle outline with heavy top border */
+.os-classic .xp-titlebar__button--maximize::before,
+.os-win-98 .xp-titlebar__button--maximize::before {
+  content: "" !important;
+  display: block !important;
+  width: 9px !important;
+  height: 9px !important;
+  border: 1px solid #000000 !important;
+  border-top: 2px solid #000000 !important;
+  background: transparent !important;
+}
+
+/* Restore glyph: two overlapping rectangles */
+.os-classic .xp-titlebar__button--restore::before,
+.os-win-98 .xp-titlebar__button--restore::before {
+  content: "" !important;
+  display: block !important;
+  width: 7px !important;
+  height: 7px !important;
+  border: 1px solid #000000 !important;
+  border-top: 2px solid #000000 !important;
+  background: var(--win98-gray) !important;
+  position: relative !important;
+}
+
+/* Close glyph: ✕ */
+.os-classic .xp-titlebar__button--close::before,
+.os-win-98 .xp-titlebar__button--close::before {
+  content: "×" !important;
+  display: block !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  line-height: 10px !important;
+  color: #000000 !important;
+  margin-top: -1px !important;
+}
+
+/* ── 2. Standard Buttons & Inputs ───────────────────────────── */
 
 .os-classic .os-button,
 .os-win-98 .os-button {
-  box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080, 1px 1px 0px #000000;
-  border-top: 1px solid #ffffff;
-  border-left: 1px solid #ffffff;
-  border-right: 1px solid #808080;
-  border-bottom: 1px solid #808080;
-  background: #c0c0c0;
+  box-shadow: inset 1px 1px 0px var(--win98-gray-light),
+              inset -1px -1px 0px var(--win98-gray-dark),
+              1px 1px 0px var(--win98-gray-black);
+  border-top: 1px solid var(--win98-gray-light);
+  border-left: 1px solid var(--win98-gray-light);
+  border-right: 1px solid var(--win98-gray-dark);
+  border-bottom: 1px solid var(--win98-gray-dark);
+  background: var(--win98-gray);
+  color: #000000;
   font-family: inherit;
+  border-radius: 0 !important;
 }
 
 .os-classic .os-button:active,
 .os-win-98 .os-button:active {
-  box-shadow: inset 1px 1px 0px #808080, 1px 1px 0px #ffffff;
-  border-top: 1px solid #808080;
-  border-left: 1px solid #808080;
-  border-right: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  box-shadow: inset 1px 1px 0px var(--win98-gray-dark),
+              1px 1px 0px var(--win98-gray-light);
+  border-top: 1px solid var(--win98-gray-dark);
+  border-left: 1px solid var(--win98-gray-dark);
+  border-right: 1px solid var(--win98-gray-light);
+  border-bottom: 1px solid var(--win98-gray-light);
   padding: 5px 11px 3px 13px;
 }
 
@@ -48,38 +178,167 @@
 .os-classic .os-textarea,
 .os-win-98 .os-input,
 .os-win-98 .os-textarea {
-  box-shadow: inset 1px 1px 0px #808080, inset -1px -1px 0px #ffffff;
-  border-top: 1px solid #000000;
-  border-left: 1px solid #000000;
-  border-right: 1px solid #c0c0c0;
-  border-bottom: 1px solid #c0c0c0;
+  box-shadow: inset 1px 1px 0px var(--win98-gray-dark),
+              inset -1px -1px 0px var(--win98-gray-light);
+  border-top: 1px solid var(--win98-gray-black);
+  border-left: 1px solid var(--win98-gray-black);
+  border-right: 1px solid var(--win98-gray);
+  border-bottom: 1px solid var(--win98-gray);
   background: #ffffff;
+  color: #000000;
+  border-radius: 0 !important;
 }
 
 .os-classic .os-panel,
 .os-win-98 .os-panel {
   border: 2px solid;
-  border-top-color: #808080;
-  border-left-color: #808080;
-  border-right-color: #ffffff;
-  border-bottom-color: #ffffff;
+  border-top-color: var(--win98-gray-dark);
+  border-left-color: var(--win98-gray-dark);
+  border-right-color: var(--win98-gray-light);
+  border-bottom-color: var(--win98-gray-light);
   background-color: #ffffff;
+  border-radius: 0 !important;
 }
 
-.os-classic .taskbar {
-  background-color: #c0c0c0 !important;
-  border-top: 2px solid #ffffff !important;
+/* ── 3. Taskbar & System Tray ───────────────────────────────── */
+
+.os-classic .taskbar,
+.os-win-98 .taskbar {
+  background-color: var(--win98-gray) !important;
+  border-top: 2px solid var(--win98-gray-light) !important;
   box-shadow: inset 0 1px 0 #dfdfdf !important;
+  height: 28px !important;
+  min-height: 28px !important;
 }
 
-.os-classic .start-button {
-  background-color: #c0c0c0 !important;
-  box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080, 1px 1px 0px #000000 !important;
-  border-top: 1px solid #ffffff !important;
-  border-left: 1px solid #ffffff !important;
-  border-right: 1px solid #808080 !important;
-  border-bottom: 1px solid #808080 !important;
+.os-classic .start-button,
+.os-win-98 .start-button {
+  background-color: var(--win98-gray) !important;
+  box-shadow: inset 1px 1px 0px var(--win98-gray-light),
+              inset -1px -1px 0px var(--win98-gray-dark),
+              1px 1px 0px var(--win98-gray-black) !important;
+  border-top: 1px solid var(--win98-gray-light) !important;
+  border-left: 1px solid var(--win98-gray-light) !important;
+  border-right: 1px solid var(--win98-gray-dark) !important;
+  border-bottom: 1px solid var(--win98-gray-dark) !important;
   color: #000000 !important;
   font-weight: bold !important;
+  font-size: 11px !important;
   border-radius: 0 !important;
+  height: 22px !important;
+  padding: 0 6px !important;
+  margin: 2px 2px 2px 2px !important;
+}
+
+.os-classic .start-button:active,
+.os-classic .start-button[aria-expanded="true"],
+.os-win-98 .start-button:active,
+.os-win-98 .start-button[aria-expanded="true"] {
+  box-shadow: inset 1px 1px 0px var(--win98-gray-black),
+              inset -1px -1px 0px var(--win98-gray-light) !important;
+  border-top: 1px solid var(--win98-gray-dark) !important;
+  border-left: 1px solid var(--win98-gray-dark) !important;
+  border-right: 1px solid var(--win98-gray-light) !important;
+  border-bottom: 1px solid var(--win98-gray-light) !important;
+}
+
+/* Classic Taskbar Window Buttons */
+.os-classic .taskbar-button,
+.os-win-98 .taskbar-button {
+  background: var(--win98-gray) !important;
+  box-shadow: inset 1px 1px 0px var(--win98-gray-light),
+              inset -1px -1px 0px var(--win98-gray-dark),
+              1px 1px 0px var(--win98-gray-black) !important;
+  border-top: 1px solid var(--win98-gray-light) !important;
+  border-left: 1px solid var(--win98-gray-light) !important;
+  border-right: 1px solid var(--win98-gray-dark) !important;
+  border-bottom: 1px solid var(--win98-gray-dark) !important;
+  border-radius: 0 !important;
+  height: 22px !important;
+  margin: 2px 2px 2px 0 !important;
+  padding: 1px 6px !important;
+  font-size: 11px !important;
+  color: #000000 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* Active pressed taskbar button with dither background */
+.os-classic .taskbar-button.is-active,
+.os-win-98 .taskbar-button.is-active {
+  box-shadow: inset 1px 1px 0px var(--win98-gray-dark),
+              1px 1px 0px var(--win98-gray-light) !important;
+  border-top: 1px solid var(--win98-gray-dark) !important;
+  border-left: 1px solid var(--win98-gray-dark) !important;
+  border-right: 1px solid var(--win98-gray-light) !important;
+  border-bottom: 1px solid var(--win98-gray-light) !important;
+  background-color: #e0e0e0 !important;
+  background-image: radial-gradient(#ffffff 20%, transparent 20%), radial-gradient(#ffffff 20%, transparent 20%) !important;
+  background-position: 0 0, 1px 1px !important;
+  background-size: 2px 2px !important;
+  font-weight: bold !important;
+}
+
+/* Classic Taskbar Divider: 3D sunken vertical groove */
+.os-classic .taskbar-divider,
+.os-win-98 .taskbar-divider {
+  width: 2px !important;
+  height: 20px !important;
+  border-left: 1px solid var(--win98-gray-dark) !important;
+  border-right: 1px solid var(--win98-gray-light) !important;
+  background: transparent !important;
+  margin: 0 4px !important;
+  display: block !important;
+}
+
+/* Sunken classic System Tray */
+.os-classic .taskbar-tray,
+.os-win-98 .taskbar-tray {
+  border-top: 1px solid var(--win98-gray-dark) !important;
+  border-left: 1px solid var(--win98-gray-dark) !important;
+  border-right: 1px solid var(--win98-gray-light) !important;
+  border-bottom: 1px solid var(--win98-gray-light) !important;
+  background-color: var(--win98-gray) !important;
+  height: 22px !important;
+  padding: 0 6px !important;
+  margin-right: 3px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #000000 !important;
+  font-size: 11px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.os-classic .taskbar-tray-time,
+.os-win-98 .taskbar-tray-time {
+  color: #000000 !important;
+  font-size: 11px !important;
+  font-family: var(--os-font) !important;
+}
+
+/* ── 4. Start Menu ──────────────────────────────────────────── */
+
+.os-classic .start-panel,
+.os-classic .start-menu,
+.os-win-98 .start-panel,
+.os-win-98 .start-menu {
+  background-color: var(--win98-gray) !important;
+  border-top: 2px solid var(--win98-gray-light) !important;
+  border-left: 2px solid var(--win98-gray-light) !important;
+  border-right: 2px solid var(--win98-gray-dark) !important;
+  border-bottom: 2px solid var(--win98-gray-dark) !important;
+  box-shadow: 2px 2px 0px var(--win98-gray-black) !important;
+  border-radius: 0 !important;
+  color: #000000 !important;
+}
+
+.os-classic .start-panel button:hover,
+.os-classic .start-menu button:hover,
+.os-win-98 .start-panel button:hover,
+.os-win-98 .start-menu button:hover {
+  background-color: #000080 !important;
+  color: #ffffff !important;
 }

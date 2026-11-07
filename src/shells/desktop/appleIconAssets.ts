@@ -1,34 +1,34 @@
 import { type ThemeId } from '../../contexts/appContextTypes';
 
-import macLaunchpadIcon from '../../../eat/playground-macos-main/public/img/icons/launchpad.png';
-import macSafariIcon from '../../../eat/playground-macos-main/public/img/icons/safari.png';
-import macTerminalIcon from '../../../eat/playground-macos-main/public/img/icons/terminal.png';
-import macSettingsIcon from '../../../eat/macos-portfolio-main/public/icons/settings.svg';
-import macPhotosIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/photos.png';
-import macMailIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/mail.png';
-import macMusicIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/music.png';
-import macFolderGenericIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/folder-generic.png';
-import macFinderIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/finder.png';
-import macTrashIcon from '../../../eat/macos-portfolio-main/public/images/trash.webp';
-import macNotesIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/notes.png';
-import macCalendarIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/calendar.png';
-import macCalculatorIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/calculator.png';
+import macLaunchpadIcon from '../../themes/apple/assets/icons/launchpad.png';
+import macSafariIcon from '../../themes/apple/assets/icons/safari.png';
+import macTerminalIcon from '../../themes/apple/assets/icons/terminal.png';
+import macSettingsIcon from '../../themes/apple/assets/icons/settings.svg';
+import macPhotosIcon from '../../themes/apple/assets/icons/photos.png';
+import macMailIcon from '../../themes/apple/assets/icons/mail.png';
+import macMusicIcon from '../../themes/apple/assets/icons/music.png';
+import macFolderGenericIcon from '../../themes/apple/assets/icons/folder-generic.png';
+import macFinderIcon from '../../themes/apple/assets/icons/finder.png';
+import macTrashIcon from '../../themes/apple/assets/icons/trash.webp';
+import macNotesIcon from '../../themes/apple/assets/icons/notes.png';
+import macCalendarIcon from '../../themes/apple/assets/icons/calendar.png';
+import macCalculatorIcon from '../../themes/apple/assets/icons/calculator.png';
 
-import iosSafariIcon from '../../../eat/homescreen-main/public/images/Icon=Safari.png';
-import iosMailIcon from '../../../eat/homescreen-main/public/images/Icon=Mail.png';
-import iosMusicIcon from '../../../eat/homescreen-main/public/images/Icon=Music.png';
-import iosFilesIcon from '../../../eat/homescreen-main/public/images/Icon=Files.png';
-import iosCalculatorIcon from '../../../eat/homescreen-main/public/images/Icon=Calculator.png';
-import iosSettingsIcon from '../../../eat/homescreen-main/public/images/Icon=Settings.png';
-import iosPhotosIcon from '../../../eat/homescreen-main/public/images/Icon=Photos.png';
-import iosNewsIcon from '../../../eat/homescreen-main/public/images/Icon=News.png';
-import iosNotesIcon from '../../../eat/homescreen-main/public/images/Icon=Notes.png';
+import iosSafariIcon from '../../themes/apple/assets/ios/Icon=Safari.png';
+import iosMailIcon from '../../themes/apple/assets/ios/Icon=Mail.png';
+import iosMusicIcon from '../../themes/apple/assets/ios/Icon=Music.png';
+import iosFilesIcon from '../../themes/apple/assets/ios/Icon=Files.png';
+import iosCalculatorIcon from '../../themes/apple/assets/ios/Icon=Calculator.png';
+import iosSettingsIcon from '../../themes/apple/assets/ios/Icon=Settings.png';
+import iosPhotosIcon from '../../themes/apple/assets/ios/Icon=Photos.png';
+import iosNewsIcon from '../../themes/apple/assets/ios/Icon=News.png';
+import iosNotesIcon from '../../themes/apple/assets/ios/Icon=Notes.png';
 
-import ios9SafariIcon from '../../../eat/Iphone-7-Html-Css-Js-main/assets/images/safari.png';
-import ios9SettingsIcon from '../../../eat/Iphone-7-Html-Css-Js-main/assets/images/settings.png';
-import ios9PhotosIcon from '../../../eat/Iphone-7-Html-Css-Js-main/assets/images/gallery.png';
-import ios9MusicIcon from '../../../eat/Iphone-7-Html-Css-Js-main/assets/images/itunes.png';
-import ios9CalendarIcon from '../../../eat/Iphone-7-Html-Css-Js-main/assets/images/iconcal.png';
+import ios9SafariIcon from '../../themes/apple/assets/ios9/safari.png';
+import ios9SettingsIcon from '../../themes/apple/assets/ios9/settings.png';
+import ios9PhotosIcon from '../../themes/apple/assets/ios9/gallery.png';
+import ios9MusicIcon from '../../themes/apple/assets/ios9/itunes.png';
+import ios9CalendarIcon from '../../themes/apple/assets/ios9/iconcal.png';
 
 export interface AppleDockAsset {
   id: string;

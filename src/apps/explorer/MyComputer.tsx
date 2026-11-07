@@ -11,10 +11,10 @@ import forwardIcon from '../../themes/winxp/assets/toolbar/forward.png';
 import upIcon from '../../themes/winxp/assets/toolbar/folder.png';
 import goIcon from '../../themes/winxp/assets/toolbar/go.png';
 import { getItemsFromPath, getFileIcon, FileSystemItem, initialFileSystem } from '../../utils/FileSystem';
-import appleFolderIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/folder-generic.png';
-import appleDocumentIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/document.svg';
-import appleImageIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/image.svg';
-import appleDriveIcon from '../../../eat/macOS-Portfolio-main 2/public/img/icons/sf-icons/hard-drive.svg';
+import appleFolderIcon from '../../themes/apple/assets/icons/folder-generic.png';
+import appleDocumentIcon from '../../themes/apple/assets/sf-icons/document.svg';
+import appleImageIcon from '../../themes/apple/assets/sf-icons/image.svg';
+import appleDriveIcon from '../../themes/apple/assets/sf-icons/hard-drive.svg';
 
 export interface MyComputerProps {
   currentPath?: string;

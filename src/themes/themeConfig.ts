@@ -40,12 +40,12 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
   'webos': {
     id: 'webos',
     name: 'WebOS',
-    family: 'windows',
+    family: 'other',
     hasBootScreen: true,
     hasLoginScreen: true,
     hasWelcomeScreen: true,
-    cssFile: './themes/winxp/xp.css', // Использует те же стили что и XP
-    assetsPath: './themes/winxp/assets',
+    cssFile: './styles/os/themes/webos.css',
+    assetsPath: './themes/webos/assets',
     defaultWallpaper: winxpBliss,
     soundsEnabled: true,
   },
@@ -57,7 +57,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: true,
     hasLoginScreen: true,
     hasWelcomeScreen: false,
-    cssFile: './themes/winxp/xp.css', // Стили Win98 включены в xp.css
+    cssFile: './styles/os/themes/classic.css',
     assetsPath: './themes/win98',
     defaultWallpaper: '',
     soundsEnabled: true,
@@ -82,7 +82,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: false,
     hasLoginScreen: true,
     hasWelcomeScreen: false,
-    cssFile: './themes/winxp/xp.css', // TODO: Создать отдельный CSS
+    cssFile: './styles/os/themes/win7.css',
     assetsPath: './themes/win10',
     defaultWallpaper: '',
     soundsEnabled: false,
@@ -94,7 +94,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: false,
     hasLoginScreen: true,
     hasWelcomeScreen: false,
-    cssFile: './themes/winxp/xp.css', // TODO: Создать отдельный CSS
+    cssFile: './styles/os/themes/win7.css',
     assetsPath: './themes/win11',
     defaultWallpaper: '',
     soundsEnabled: false,
@@ -106,7 +106,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: true,
     hasLoginScreen: true,
     hasWelcomeScreen: false,
-    cssFile: './themes/winxp/xp.css', // TODO: Создать отдельный CSS
+    cssFile: './styles/os/themes/ubuntu.css',
     assetsPath: './themes/ubuntu',
     defaultWallpaper: '',
     soundsEnabled: false,
@@ -118,7 +118,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: true,
     hasLoginScreen: true,
     hasWelcomeScreen: false,
-    cssFile: './themes/winxp/xp.css', // TODO: Создать отдельный CSS
+    cssFile: './styles/os/themes/arch.css',
     assetsPath: './themes/arch',
     defaultWallpaper: '',
     soundsEnabled: false,
@@ -130,7 +130,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: false,
     hasLoginScreen: false,
     hasWelcomeScreen: false,
-    cssFile: './themes/winxp/xp.css', // TODO: Создать отдельный CSS
+    cssFile: './styles/os/themes/halloween.css',
     assetsPath: './themes/halloween',
     defaultWallpaper: '',
     soundsEnabled: false,

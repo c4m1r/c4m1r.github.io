@@ -40,12 +40,34 @@ This report details the visual hallmarks, architectural constraints, and safety 
 - **Desktop**: Yaru purple aubergine gradient background.
 - **System Labels**: "Menu" / "Меню", "Files" / "Файлы", "Trash" / "Корзина", "Settings" / "Настройки", "Browser" / "Браузер", "Photos" / "Фото", "Terminal" / "Терминал".
 
-### 5. WebOS (`.os-shell`)
-- Default WebOS presentation identity without inheriting Windows or Ubuntu CSS overrides.
+### 5. WebOS (`.os-webos`)
+- **Taskbar**: Semi-translucent dark glass (`rgba(15, 23, 42, 0.85)`) with backdrop blur and cyan glowing border.
+- **Start Button**: Dark rounded pill with cyan glowing indicator dot and vibrant cyan accent hover.
+- **Window Chrome**: Sleek dark slate titlebar (`#1e293b`) with cyan active glow and modern flat window controls.
+- **Desktop**: Deep slate navy background (`#0f172a`).
+- **System Labels**: "Launcher", "Files", "Terminal", "Settings".
+
+### 6. Arch Linux (`.os-arch`)
+- **Taskbar**: Minimalist dark panel (`#1e222b`) with top cyan accent line (`#1793d1`).
+- **Start Button**: Cyan-accented Arch badge button with crisp hover feedback.
+- **Window Chrome**: Clean dark titlebar (`#282c34`) with circular modern window controls.
+- **Desktop**: Dark slate canvas (`#1e222b`) with cyan selection outlines.
+- **System Labels**: "Terminal", "Pacman", "Files", "System".
+
+### 7. Halloween Edition (`.os-spooky`)
+- **Taskbar**: Deep midnight purple panel (`rgba(18, 4, 29, 0.95)`) with neon pumpkin orange top border (`#ff7518`).
+- **Start Button**: Vibrant pumpkin orange gradient button with eerie hover glow.
+- **Window Chrome**: Midnight violet titlebar gradient with pumpkin orange border and neon control buttons.
+- **Desktop**: Midnight purple canvas (`#12041d`).
+- **System Labels**: "Spooky", "Cauldron", "Tombstone", "Ghost Shell".
+
+### 8. macOS & iOS Family (`.os-macos`, `.os-ios`, `.os-ios-9`)
+- **macOS Tahoe**: Authentic frosted glass top menu bar with Apple logo, live Control Center, functional Dock with magnification bounce effect, and Monterey/Sonoma/Tahoe wallpaper suite.
+- **iOS Generations**: Authentic mobile lock screen with "slide to unlock" / "swipe up", SpringBoard app grid, pagination dots, iOS Control Center, and generational icon suites (iOS 5, 9, 16, 26).
 
 ---
 
 ## Verification Standards
 
 - **Static Checks**: `npm run verify`, `npm run typecheck`, `npm run lint`, `npm run build`, `git diff --check`.
-- **Visual Smoke Verification**: Manual browser review across all boot entries (`Site`, `Windows XP`, `Windows 98`, `Windows 7`, `Ubuntu`, `WebOS`).
+- **Visual Smoke Verification**: Manual browser review across all boot entries (`Site`, `Windows XP`, `Windows 98`, `Windows 7`, `Ubuntu`, `Arch Linux`, `Halloween`, `WebOS`, `macOS`, `iOS`).
