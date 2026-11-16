@@ -1,0 +1,132 @@
+@import "../../theme/variables";
+
+.action-center {
+	height: calc(100% - 40px) !important;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 8px;
+}
+
+.action-center-wrapper {
+	display: flex !important;
+	flex-wrap: wrap !important;
+	width: 100% !important;
+	gap: 8px;
+	justify-content: flex-start;
+}
+
+.action-center-btn {
+	min-height: 60px !important;
+	min-width: 60px !important;
+	color: var(--font-white) !important;
+	background-color: rgb(50, 49, 48) !important;
+	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+	flex: 1 1 calc(50% - 8px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 8px;
+}
+
+.action-center-btn:hover {
+	cursor: pointer !important;
+	background-color: rgb(60, 59, 58) !important;
+	border: 2px solid var(--color-blue) !important;
+	transform: translateY(-2px);
+}
+
+.settings-active {
+	background-color: var(--color-blue) !important;
+	border: 2px solid var(--color-blue) !important;
+}
+
+@media screen and (max-width: 1024px) {
+	.action-center-btn {
+		flex: 1 1 calc(33.333% - 6px);
+		min-height: 55px !important;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.action-center {
+		height: calc(100% - 40px) !important;
+		padding: 6px;
+	}
+
+	.action-center-wrapper {
+		gap: 6px;
+	}
+
+	.action-center-btn {
+		min-height: 50px !important;
+		min-width: 50px !important;
+		flex: 1 1 calc(33.333% - 4px);
+		padding: 6px;
+		font-size: 12px;
+	}
+}
+
+@media screen and (max-width: 640px) {
+	.action-center {
+		height: calc(100% - 45px) !important;
+		padding: 5px;
+	}
+
+	.action-center-wrapper {
+		gap: 5px;
+	}
+
+	.action-center-btn {
+		min-height: 45px !important;
+		min-width: 45px !important;
+		flex: 1 1 calc(50% - 3px);
+		padding: 5px;
+		font-size: 11px;
+		border-radius: 3px;
+	}
+
+	.action-center-btn:hover {
+		transform: translateY(-1px);
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.action-center {
+		height: calc(100% - 50px) !important;
+		padding: 4px;
+	}
+
+	.action-center-wrapper {
+		gap: 4px;
+	}
+
+	.action-center-btn {
+		min-height: 40px !important;
+		min-width: 40px !important;
+		flex: 1 1 calc(50% - 2px);
+		padding: 4px;
+		font-size: 10px;
+	}
+}
+
+@media screen and (max-width: 320px) {
+	.action-center {
+		height: calc(100% - 52px) !important;
+		padding: 3px;
+	}
+
+	.action-center-wrapper {
+		gap: 3px;
+	}
+
+	.action-center-btn {
+		min-height: 36px !important;
+		min-width: 36px !important;
+		flex: 1 1 calc(50% - 2px);
+		padding: 3px;
+		font-size: 9px;
+	}
+}

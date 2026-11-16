@@ -1,0 +1,103 @@
+.black-background{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: black;
+  display: none;
+}
+.calculator {
+  background: black;
+  color: white;
+  height: 1050px;
+  padding: 20px;
+  position: absolute;
+  width: 563px;
+  transform: scale(0.5);
+  top: -270px;
+  left: -130px;
+  overflow: hidden;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.top-container {
+  display: flex;
+  height: 250px;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.value {
+  font-size: 130px;
+  font-weight: 300;
+  height: 158px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  text-align: right;
+}
+
+.buttons-container {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.buttoncal {
+  align-items: center;
+  background: #333;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  font-size: 45px;
+  height: 110px;
+  justify-content: center;
+  transition: filter .3s;
+  width: 110px;
+}
+
+.buttoncal.function {
+  color: black;
+  background: #a5a5a5;
+}
+
+.buttoncal.operator {
+  background: #f1a33c;
+}
+
+.buttoncal.number-0 {
+  border-radius: 55px;
+  grid-column: 1 / span 2;
+  justify-content: flex-start;
+  padding-left: 43px;
+  width: 250px;
+}
+
+.buttoncal:active,
+.buttoncal:focus {
+  filter: brightness(120%);
+}
+
+.bottomcal {
+  width: 200px;
+  height: 5px;
+  background: white;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.status img{
+  width: 150px;
+  position: absolute;
+  right: -5px;
+}
+.clockcal span{
+  font-size: 30px;
+}
+.clockcal{
+  position: absolute;
+  right: 530px;
+}

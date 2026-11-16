@@ -1,0 +1,31 @@
+@import '../../theme/variables';
+
+// Window Frame Heights
+$window-title-bar-height-desktop: 38px;
+$window-title-bar-height-tablet: 34px;
+$window-title-bar-height-mobile: 32px;
+
+// Window Content Padding
+$window-content-padding-desktop: var(--spacing-md);
+$window-content-padding-tablet: 10px;
+$window-content-padding-mobile: 8px;
+
+// Window Border Radius
+$window-border-radius-desktop: 10px;
+$window-border-radius-tablet: 8px;
+$window-border-radius-mobile: 0px;
+
+// Window Control Button Size
+$window-control-btn-width-desktop: 42px;
+$window-control-btn-width-tablet: 38px;
+$window-control-btn-width-mobile: 32px;
+
+// Snap zones
+$snap-edge-threshold: 20px;
+$snap-preview-opacity: 0.4;
+
+// Mobile touch targets
+$window-control-btn-touch-size: 44px;
+
+// Taskbar height for mobile calculations
+$taskbar-height-mobile: 48px;

@@ -1,0 +1,90 @@
+[
+    {
+        "title": "Outlook",
+        "icon" : "/assets/apps/outlook.png",
+        "entry": "https://login.microsoftonline.com/",
+        "type" : "external",
+        "location": {
+            "desktop": false,
+            "pinned": true,
+            "folder": ""
+        }
+    },
+    {
+        "title": "Archidekt",
+        "icon" : "/assets/apps/archidekt.png",
+        "entry": "https://archidekt.com/",
+        "type" : "external",
+        "location": {
+            "desktop": false,
+            "pinned": true,
+            "folder": ""
+        }
+    },
+    {
+        "title": "Github",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/GitHub_Invertocat_Logo.svg/1200px-GitHub_Invertocat_Logo.svg.png",
+        "entry": "https://github.com/",
+        "type": "external",
+        "location": {
+            "desktop":false,
+            "pinned":true,
+            "folder":""
+        }
+    },
+    {
+        "title": "Reddit",
+        "icon": "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png",
+        "entry": "https://www.reddit.com",
+        "type": "external",
+        "location": {
+            "desktop":false,
+            "pinned":false,
+            "folder":"Media"
+        }
+    },
+    {
+        "title": "Youtube",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png",
+        "entry": "https://www.youtube.com",
+        "type": "external",
+        "location": {
+            "desktop":false,
+            "pinned":false,
+            "folder":"Media"
+        }
+    },
+    {
+        "title": "Readme.md",
+        "icon": "/assets/apps/file_word.ico",
+        "entry": "/assets/apps/README.md",
+        "type": "internal",
+        "location": {
+            "desktop":true,
+            "pinned":false,
+            "folder":""
+        }
+    },
+    {
+        "title": "My Vista",
+        "icon": "/assets/apps/folder_clear_files.ico",
+        "entry": "https://github1s.com/snowlizard/my_vista",
+        "type": "internal",
+        "location": {
+            "desktop":true,
+            "pinned":false,
+            "folder":""
+        }
+    },
+    {
+        "title": "Steam",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/1200px-Steam_icon_logo.svg.png",
+        "entry": "https://store.steampowered.com/",
+        "type": "external",
+        "location": {
+            "desktop":true,
+            "pinned":false,
+            "folder":""
+        }
+    } 
+]

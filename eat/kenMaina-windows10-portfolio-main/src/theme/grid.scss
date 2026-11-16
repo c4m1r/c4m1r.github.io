@@ -1,0 +1,81 @@
+@import './variables';
+
+/* Desktop Grid (1024px+) */
+.desktop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    height: 100%;
+
+    @media screen and (max-width: 1024px) {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+
+    @media screen and (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+
+    @media screen and (max-width: 640px) {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Responsive Container */
+.responsive-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+
+    @media screen and (max-width: 1024px) {
+        max-width: 900px;
+        padding: var(--spacing-md);
+    }
+
+    @media screen and (max-width: 768px) {
+        max-width: 100%;
+        padding: var(--spacing-md);
+    }
+
+    @media screen and (max-width: 640px) {
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Flexbox Utilities */
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.gap-xs {
+    gap: var(--spacing-xs);
+}
+
+.gap-sm {
+    gap: var(--spacing-sm);
+}
+
+.gap-md {
+    gap: var(--spacing-md);
+}
+
+.gap-lg {
+    gap: var(--spacing-lg);
+}
+
+.gap-xl {
+    gap: var(--spacing-xl);
+}

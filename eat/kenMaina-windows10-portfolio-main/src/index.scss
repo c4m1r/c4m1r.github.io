@@ -1,0 +1,27 @@
+// 1. Theme Variables (Single Source of Truth)
+@import 'theme/variables';
+
+// 2. Base Styles
+@import 'theme/reset';
+
+// 3. System Components
+@import 'components/desktop/desktop';
+@import 'components/windowFrame/windowFrame';
+@import 'components/taskBar/taskbar';
+
+// 4. Application Styles
+// Note: Some apps import their own styles, but we can import them here for global availability if needed.
+// However, to avoid duplication if they are not modules, we should be careful.
+// The guide suggests importing 'components/applications/application.scss'.
+@import 'components/applications/application';
+@import 'components/applications/chrome.application';
+@import 'components/applications/vscode.application';
+@import 'components/applications/spreadsheet.application';
+@import 'components/applications/document.application';
+
+// 5. Utility Classes
+@import 'theme/grid';
+@import 'theme/mixins'; // Mixins don't output CSS unless used, but good to have available if we use this file as a global import.
+
+// 6. Responsive Overrides
+@import 'theme/optimize';

@@ -1,0 +1,31 @@
+@use 'variables' as vars;
+
+.app-container {
+  width: #{vars.$app-container-width};
+  height: #{vars.$app-container-height};
+  background-image: #{vars.$app-bg-image};
+  background-size: #{vars.$app-bg-size};
+  background-position: #{vars.$app-bg-position};
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.9);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+}
+
+app-desktop {
+  flex: 1;
+  position: relative;
+}

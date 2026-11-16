@@ -1,0 +1,61 @@
+.faker-phone #clock{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 15%;
+    left: 50%;
+    font-size: 70px;
+    color: #fff;
+}
+.faker-phone #clock2{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 24%;
+    left: 50%;
+    font-size: 20px;
+    width: 250px;
+    text-align: center;
+    color: #fff;
+}
+.faker-phone #wifi{
+    color: #fff;
+    font-size: 20px;
+    padding: 10px;
+}
+.faker-phone #battery{
+    color: #fff;
+    font-size: 20px;
+    padding: 10px;
+    position: absolute;
+    right: 0px;
+}
+.faker-phone--screen {
+    /* your existing styles */
+  
+    transition: background-image 1s ease-in-out;
+  }
+.faker-phone .dot{
+    border-radius: 100%;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    display: inline-block;
+    margin-right: 5px;
+}
+.faker-phone .dot.active{
+    background-color: black;
+}
+.faker-phone .dots{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 95%;
+    left: 50%;
+}
+.faker-phone--screen{
+  transition: background-image 0.5s;
+}
+
+
+
+
+  
+

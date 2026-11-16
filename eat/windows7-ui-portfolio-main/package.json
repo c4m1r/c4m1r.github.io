@@ -1,0 +1,36 @@
+{
+  "name": "winxp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 4000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@google/genai": "^2.10.0",
+    "7.css": "^0.21.1",
+    "chess.js": "^1.4.0",
+    "lucide-react": "^1.23.0",
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-draggable": "^4.7.0",
+    "react-markdown": "^10.1.0",
+    "react-rnd": "^10.5.3",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.5.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "postcss": "^8.5.16",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^5"
+  }
+}

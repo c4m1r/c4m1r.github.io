@@ -1,0 +1,143 @@
+// General application styles
+$app-bg-image: url('/assets/backgrounds/macos-bg2.webp');
+$app-bg-size: cover;
+$app-bg-position: center;
+$app-container-width: 100%;
+$app-container-height: 100vh;
+
+// Traffic light buttons
+$traffic-light-color-close: #ff5f56;
+$traffic-light-border-close: #e0443e;
+$traffic-light-color-minimize: #ffbd2e;
+$traffic-light-border-minimize: #dea123;
+$traffic-light-color-maximize: #27c93f;
+$traffic-light-border-maximize: #1aab29;
+$traffic-light-button-size: 0.8rem;
+$traffic-light-hover-scale: 1.2;
+$traffic-light-transform-duration: 100ms;
+$traffic-light-opacity-duration: 200ms;
+
+// Window styles
+$window-bg-color: #ffffff;
+$window-border-radius: 0.75rem;
+$window-shadow-elevated:
+  0px 8px 10px rgba(0, 0, 0, 0.1),
+  0px 16px 24px rgba(0, 0, 0, 0.2);
+$window-shadow-active:
+  0px 10px 15px rgba(0, 0, 0, 0.2),
+  0px 20px 30px rgba(0, 0, 0, 0.4);
+$window-header-bg-color: #f5f5f7;
+$window-header-border-color: #e0e0e0;
+$window-header-padding: 0.5rem;
+$window-content-bg-color: $window-bg-color;
+$window-content-padding: 1rem;
+$window-title-color: #333333;
+
+// Dock item
+$dock-item-size: 4rem;
+$dock-item-hover-scale: 1;
+$dock-item-tooltip-bg: rgba(255, 255, 255, 0.9);
+$dock-item-tooltip-shadow: 0 0 0.3125rem rgba(0, 0, 0, 0.3);
+$dock-item-tooltip-blur: 5px;
+$dock-item-tooltip-padding: 0.3125rem 0.625rem;
+$dock-item-tooltip-radius: 0.3125rem;
+$dock-item-label-color: #000;
+$dock-item-label-font-size: 14px;
+$dock-item-active-color: #1b1b1d;
+$dock-item-active-size: 4px;
+$dock-item-transition: 0.3s;
+
+// Dock panel
+$dock-panel-height: 5.2rem;
+$dock-panel-padding: 0.625rem 0.9375rem;
+$dock-panel-background: rgba(255, 255, 255, 0.4);
+$dock-panel-border-radius: 0.9375rem;
+$dock-panel-blur: 10px;
+
+// Divider
+$dock-divider-width: 1px;
+$dock-divider-color: rgba(0, 0, 0, 0.2);
+$dock-divider-margin: 0 0.5rem;
+
+// Cursor variables
+$cursor-default: url('/assets/cursors/normal-select.svg'), auto;
+$cursor-pointer: url('/assets/cursors/link-select.svg'), auto;
+$cursor-text: url('/assets/cursors/text-select.svg'), auto;
+$cursor-help: url('/assets/cursors/help-select.svg'), auto;
+$cursor-busy: url('/assets/cursors/busy.webp'), auto;
+$cursor-working-bg: url('/assets/cursors/working-in-background.webp'), auto;
+
+// System Colors
+$system-color-primary: hsl(211, 100%, 50%);
+$system-color-primary-hsl: 211, 100%, 50%;
+$system-color-primary-contrast: hsl(240, 24%, 100%);
+$system-color-primary-contrast-hsl: 240, 24%, 100%;
+
+$system-color-dark: hsl(240, 3%, 11%);
+$system-color-dark-hsl: 240, 3%, 11%;
+$system-color-dark-contrast: hsl(240, 24%, 100%);
+$system-color-dark-contrast-hsl: 240, 24%, 100%;
+
+$system-color-light: hsl(240, 24%, 100%);
+$system-color-light-hsl: 240, 24%, 100%;
+$system-color-light-contrast: hsl(0, 0%, 11%);
+$system-color-light-contrast-hsl: 0, 0%, 11%;
+
+$system-font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', 'Helvetica',
+  'Arial', sans-serif;
+
+// Common
+$font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue',
+  'Helvetica', 'Arial', sans-serif;
+$focus-outline: 0 0 0 3px hsla(210, 100%, 52%, 0.5);
+
+// Colors
+$color-text-dark: hsla(240, 3%, 11%, 1);
+$color-text-dark-light: hsla(240, 3%, 11%, 0.3);
+$color-hover-background: hsla(240, 3%, 11%, 0.1);
+$color-divider: $color-text-dark-light;
+$color-dropdown-bg: rgba(255, 255, 255, 0.3);
+$color-hover-highlight: hsl(211, 100%, 50%);
+$color-hover-text: hsl(0, 0%, 100%);
+
+// Top Bar Colors
+$top-bar-bg: rgba(255, 255, 255, 0.3);
+$top-bar-text: hsl(0, 0%, 11%);
+$top-bar-shadow: hsla(0, 0%, 0%, 0.1);
+
+
+// Colors
+$background-primary: #f8f9fa;
+$background-white: #ffffff;
+$text-primary: #2c3e50;
+$text-secondary: #666666;
+$accent-primary: #6366f1;
+$accent-secondary: #007bff;
+
+// Gradients
+$gradient-primary: linear-gradient(to bottom, $background-primary, $background-white);
+$gradient-accent: linear-gradient(90deg, $accent-primary, #8b5cf6);
+$gradient-header-overlay: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+
+// Spacing
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+
+// Border radius
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+
+// Shadows
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
+$transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);

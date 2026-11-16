@@ -1,0 +1,75 @@
+@use 'variables' as vars;
+
+.window-container {
+  --elevated-shadow: #{vars.$window-shadow-elevated};
+  --active-shadow: #{vars.$window-shadow-active};
+  position: absolute;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: #{vars.$window-border-radius};
+  box-shadow: var(--elevated-shadow);
+  background-color: #{vars.$window-bg-color};
+  will-change: transform, box-shadow;
+  transition: transform 0ms, width 0.3s ease, height 0.3s ease;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+
+  &.active {
+    box-shadow: var(--active-shadow);
+  }
+
+  &.maximized {
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: calc(100vh - 2rem);
+    z-index: 100;
+
+    .window-header {
+      border-radius: 0;
+    }
+
+    .window-content {
+      border-radius: 0;
+    }
+  }
+}
+
+.window-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: #{vars.$window-header-padding};
+  background-color: #{vars.$window-header-bg-color};
+  border-bottom: 1px solid #{vars.$window-header-border-color};
+  user-select: none;
+  flex-shrink: 0;
+  border-top-left-radius: #{vars.$window-border-radius};
+  border-top-right-radius: #{vars.$window-border-radius};
+}
+
+.window-title {
+  flex-grow: 1;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #{vars.$window-title-color};
+}
+
+.window-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #{vars.$window-content-bg-color};
+  position: relative;
+  height: 100%;
+  border-bottom-left-radius: #{vars.$window-border-radius};
+  border-bottom-right-radius: #{vars.$window-border-radius};
+}
+
+app-traffic-lights {
+  position: absolute;
+}

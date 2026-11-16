@@ -1,0 +1,20 @@
+.infoer{
+    background-color: gray;
+    color: #fff;
+}
+.infoer p{
+    padding: 0 10px 0 10px;
+}
+.infoer span{
+    font-size: 30px;
+}
+.infoer ul{
+ padding-left: 30px;
+}
+.infoer h2{
+    text-align: center;
+}
+.infoer a{
+    text-align: center;
+}
+

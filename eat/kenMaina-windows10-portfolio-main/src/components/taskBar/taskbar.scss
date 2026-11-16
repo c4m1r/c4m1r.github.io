@@ -1,0 +1,226 @@
+@import "../../theme/variables";
+
+.taskbar-bottom {
+    height: 40px !important;
+    background: rgba(0, 0, 0, 0.55);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.taskbar-icon {
+    color: var(--color-white);
+    width: 45px;
+    margin-right: 5px;
+}
+
+.taskbar-quick-icon {
+    color: var(--color-white);
+    width: 30px;
+    margin-right: 5px;
+}
+
+.taskbar-quick-icon:hover {
+    color: var(--color-white);
+    cursor: pointer !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.taskbar-icon:hover {
+    color: var(--color-white);
+    cursor: pointer !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.taskbar-icon:focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: -2px;
+}
+
+.taskbar-icon:active {
+    transform: scale(0.95);
+}
+
+.taskbar-icon-active {
+    height: 90% !important;
+    border-bottom: 3px solid var(--color-blue) !important;
+    background: rgba(0, 162, 237, 0.15) !important;
+    transition: all 0.2s ease;
+
+    /* Entry animation when app opens */
+    animation: taskbarIconEnter 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+
+    /* Minimized state - dimmer indicator */
+    &:not(.onDesktop) {
+        border-bottom-color: rgba(0, 162, 237, 0.5) !important;
+        background: rgba(0, 162, 237, 0.08) !important;
+    }
+
+    /* Active (visible on desktop) - brighter glow */
+    &.onDesktop {
+        background: rgba(0, 162, 237, 0.2) !important;
+        box-shadow: 0 -2px 12px rgba(0, 162, 237, 0.3);
+    }
+}
+
+@keyframes taskbarIconEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.taskbar-quick-icon:focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: -2px;
+}
+
+.taskbar-quick-icon:active {
+    transform: scale(0.95);
+}
+
+.taskbar {
+    height: 40px !important;
+}
+
+@media screen and (max-width: 960px) {
+    .taskbar-icon {
+        width: 42px;
+        margin-right: 3px;
+    }
+
+    .taskbar-quick-icon {
+        width: 28px;
+        margin-right: 3px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .taskbar-icon {
+        width: 40px;
+        margin-right: 2px;
+    }
+
+    .taskbar-quick-icon {
+        width: 26px;
+        margin-right: 2px;
+    }
+}
+
+/* Enhanced Mobile Taskbar - Touch Friendly */
+@media screen and (max-width: 640px) {
+    .taskbar {
+        height: 52px;
+        padding: 4px 0;
+    }
+
+    .taskbar-icon {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px 10px;
+        margin: 0 2px;
+        border-radius: 6px;
+    }
+
+    .icon-label {
+        display: none;
+    }
+
+    .taskbar-icon:hover .icon-label,
+    .taskbar-icon:focus .icon-label {
+        display: block;
+        position: absolute;
+        bottom: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        font-size: 11px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .taskbar-bottom {
+        height: 45px !important;
+    }
+
+    .taskbar {
+        height: 45px !important;
+    }
+
+    .taskbar-icon {
+        width: 38px;
+        margin-right: 2px;
+        min-width: 38px;
+    }
+
+    .taskbar-quick-icon {
+        width: 24px;
+        margin-right: 2px;
+        min-width: 24px;
+    }
+
+    /* Hide the search icon on small screens to save space */
+    .taskbar-icon[title="Search"] {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .taskbar-bottom {
+        height: 50px !important;
+    }
+
+    .taskbar {
+        height: 50px !important;
+    }
+
+    .taskbar-icon {
+        width: 36px;
+        margin-right: 1px;
+        min-width: 36px;
+    }
+
+    .taskbar-quick-icon {
+        width: 22px;
+        margin-right: 1px;
+        min-width: 22px;
+    }
+
+    .taskbar-icon-active {
+        height: 85% !important;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .taskbar-bottom {
+        height: 52px !important;
+    }
+
+    .taskbar {
+        height: 52px !important;
+    }
+
+    .taskbar-icon {
+        width: 34px;
+        margin-right: 1px;
+        min-width: 34px;
+        padding: 4px 2px;
+    }
+
+    .taskbar-quick-icon {
+        width: 20px;
+        margin-right: 1px;
+        min-width: 20px;
+    }
+
+    .taskbar-icon[title="Search"],
+    .taskbar-icon[title="Cortana"] {
+        display: none !important;
+    }
+}

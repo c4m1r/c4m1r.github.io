@@ -1,0 +1,126 @@
+import React, { useState, useRef, useEffect } from 'react'
+import styles from './HomeScreen.module.css';
+import startMenuIcon from '@/public/assets/images/windows-7-start.png'
+import hoverStartMenuIcon from '@/public/assets/images/windows-7-start-hover.png';
+import soundIcon from '@/public/assets/images/sound-icon.png';
+import Image from 'next/image';
+import TaskBar from './TaskBar';
+import PDFIcon from '@/public/assets/images/pdf.png';
+import MailIcon from '@/public/assets/images/email-icon.png';
+import intnetExplorerImage from '@/public/assets/images/internet-explorer.png';
+import myComputerIcon from '@/public/assets/images/my-computer.png';
+import Explorer from './Explorer';
+import LoaderDialog from './LoaderDialog';
+import { PDFViewer } from './PDFViewer';
+import AboutMe from './AboutMe';
+import ContactMe from './ContactMe';
+import MyProjects from './MyProjects';
+
+const HomeScreen = () => {
+  const [hover, setHover] = useState(false);
+  const [isShowStartMenu, setShowStartMenu] = useState(false);
+  const [isShowFileExplorer, setIsShowFileExplorer] = useState(false);
+  const [isShowLoader, setShowLoader] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const taskbarRef = useRef<HTMLDivElement>(null);
+  const [dialogConfig, setDialogConfig] : any= useState({
+    type: "",
+    content: ""
+  });
+  const [listOfWindowsOpened, setListOfWindowsOpened] : any = useState([]);
+
+  useEffect(() => {
+    setShowLoader(true);
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if click is outside the taskbar
+      if (taskbarRef.current && !taskbarRef.current.contains(event.target as Node)) {
+        setShowStartMenu(false);
+      }
+    };
+
+    if (isShowStartMenu) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isShowStartMenu]);
+  const [desktopIcons, setDesktopIcons] = useState([
+    {
+      name: "About Me",
+      src: myComputerIcon,
+      component: AboutMe,
+      isShowExplorer : false
+    },
+    {
+      name: "Resume",
+      src: PDFIcon,
+      component: PDFViewer,
+      isShowExplorer : false
+    },
+    {
+      name: "Contact Me",
+      src: MailIcon,
+      component: ContactMe,
+      isShowExplorer : false
+    },
+    {
+      name: "My Projects",
+      src: intnetExplorerImage,
+      component: MyProjects,
+      isShowExplorer : false
+    },
+  ]);
+
+  // const desktopIcons = ;
+
+
+  const openFileExplorer = (icon : any) : any  => {
+    // if(icon.name === 'Resume') {
+    //   setDialogConfig(icon)
+    // }
+    const isWWindowOpen :any = listOfWindowsOpened.findIndex((data : any) => String(data['name']) === String(icon['name']));
+    if(isWWindowOpen === -1) {
+      setListOfWindowsOpened((prevList : any) => [...prevList, icon]);
+    }
+    // icon.isShowExplorer = true;
+    setDesktopIcons((prevData : any) => prevData.map((singleIcon : any) => singleIcon['name'] === icon['name'] ? {...singleIcon, isShowExplorer: true} : singleIcon))
+
+  }
+
+  return (
+    <div className={styles.windowsBackground} ref={containerRef}>
+      <div ref={taskbarRef}>
+        <div className="absolute top-4 left-4 flex flex-col gap-4 select-none">
+          {desktopIcons.map((icon : any, index : any) => (
+            <div
+              key={index}
+              // className={!hover ? "group flex flex-col items-center cursor-pointer w-20" : "group flex flex-col items-center cursor-pointer w-20 desktop-icon rounded-md group-hover:opacity-100 transition-opacity bg-gradient-to-b from-[#7eb6f6cc] to-[#4a84dacc] border border-[#9fc3f7]/40 "}
+              className={`group flex flex-col items-center cursor-pointer w-25 h-25 ${styles.desktopIcon}`}
+              onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+              onDoubleClick={() => openFileExplorer(icon)}
+            >
+              <Image width={52} height={52} src={icon.src} alt={icon.name} />
+                <span
+                  className="text-white text-sm text-center mt-1 px-1"
+                >
+                  {icon.name}
+                </span>
+            </div>
+          ))}
+
+        </div>
+        <TaskBar setDesktopIcons={setDesktopIcons} isShowStartMenu={isShowStartMenu} setShowStartMenu={setShowStartMenu} listOfWindowsOpened={listOfWindowsOpened} setListOfWindowsOpened={setListOfWindowsOpened} />
+      </div>
+      {desktopIcons.map((singleWindow : any, index : number) => (singleWindow.isShowExplorer && <Explorer key={index} desktopIcons={desktopIcons} setDesktopIcons={setDesktopIcons} windowConfig={singleWindow} listOfWindowsOpened={listOfWindowsOpened} setListOfWindowsOpened={setListOfWindowsOpened} />))}
+      {/* {isShowFileExplorer && <Explorer setIsShowFileExplorer={setIsShowFileExplorer} dialogConfig={dialogConfig} setDialogConfig={setDialogConfig} listOfWindowsOpened={listOfWindowsOpened} setListOfWindowsOpened={setListOfWindowsOpened} />} */}
+      {isShowLoader && <LoaderDialog setShowLoader={setShowLoader} />}
+    </div>
+  )
+}
+
+export default HomeScreen

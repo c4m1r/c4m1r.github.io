@@ -1,0 +1,393 @@
+@import "tailwindcss";
+
+/* ================================================================
+   GLOBAL RESETS — Keep page clean for desktop simulation
+   ================================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000 !important;
+}
+
+/* ================================================================
+   TASKBAR — Windows 7 Aero Glass
+   All in !important to override 7.css resets
+   ================================================================ */
+.win7-taskbar {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 40px !important;
+  z-index: 9999 !important;
+  user-select: none !important;
+  display: flex !important;
+  align-items: center !important;
+  /* Windows 7 Aero Glass */
+  background: linear-gradient(180deg, rgba(30, 60, 100, 0.6) 0%, rgba(20, 45, 80, 0.75) 45%, rgba(10, 25, 60, 0.85) 85%, rgba(5, 15, 40, 0.95) 100%) !important;
+  backdrop-filter: blur(15px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(1.2) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    0 -2px 12px rgba(0,0,0,0.5) !important;
+}
+
+/* Gloss sweep across top of taskbar */
+.win7-taskbar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 18px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(255,255,255,0.03));
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* ================================================================
+   TASKBAR BUTTONS
+   ================================================================ */
+.win7-taskbar-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  height: 34px !important;
+  max-width: 160px !important;
+  min-width: 54px !important;
+  padding: 0 8px !important;
+  border-radius: 3px !important;
+  border: 1px solid transparent !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  color: rgba(255,255,255,0.92) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  font-family: "Segoe UI", Tahoma, sans-serif !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9) !important;
+  background: transparent !important;
+  transition: background 0.1s, border-color 0.1s !important;
+}
+
+/* Top gloss on inactive buttons */
+.win7-taskbar-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent);
+  border-radius: 3px 3px 0 0;
+  pointer-events: none;
+}
+
+.win7-taskbar-btn:hover {
+  background: linear-gradient(
+    to bottom,
+    rgba(180,220,255,0.22) 0%,
+    rgba(80,140,220,0.18) 100%
+  ) !important;
+  border-color: rgba(160,210,255,0.4) !important;
+}
+
+.win7-taskbar-btn.active {
+  background: linear-gradient(
+    to bottom,
+    rgba(160,210,255,0.38) 0%,
+    rgba(70,140,230,0.28) 100%
+  ) !important;
+  border-color: rgba(170,218,255,0.65) !important;
+  box-shadow: inset 0 0 12px rgba(255,255,255,0.15) !important;
+}
+
+/* Active bottom glow bar */
+.win7-taskbar-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 5%; width: 90%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.95), transparent);
+  box-shadow: 0 -1px 8px 2px rgba(255,255,255,0.7);
+  border-radius: 2px 2px 0 0;
+}
+
+/* ================================================================
+   SYSTEM TRAY
+   ================================================================ */
+.win7-systray {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  gap: 1px !important;
+  padding: 0 2px 0 4px !important;
+  border-left: 1px solid rgba(255,255,255,0.12) !important;
+  margin-left: 4px !important;
+}
+
+.win7-systray-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  transition: background 0.1s !important;
+}
+
+.win7-systray-icon:hover {
+  background: rgba(255,255,255,0.18) !important;
+}
+
+.win7-systray-clock {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-size: 11.5px !important;
+  line-height: 14px !important;
+  padding: 0 8px !important;
+  margin: 2px 2px !important;
+  height: calc(100% - 4px) !important;
+  cursor: pointer !important;
+  border-radius: 3px !important;
+  border: 1px solid transparent !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9) !important;
+  font-family: "Segoe UI", Tahoma, sans-serif !important;
+  white-space: nowrap !important;
+  transition: background 0.1s, border-color 0.1s !important;
+}
+
+.win7-systray-clock:hover {
+  background: linear-gradient(
+    to bottom,
+    rgba(180,220,255,0.22) 0%,
+    rgba(80,140,220,0.18) 100%
+  ) !important;
+  border-color: rgba(160,210,255,0.4) !important;
+  box-shadow: inset 0 0 2px rgba(255,255,255,0.3) !important;
+}
+
+/* ================================================================
+   SHOW DESKTOP STRIP
+   ================================================================ */
+.win7-show-desktop {
+  width: 14px !important;
+  height: 40px !important;
+  flex-shrink: 0 !important;
+  cursor: pointer !important;
+  border-left: 1px solid rgba(255,255,255,0.14) !important;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.05)) !important;
+  transition: background 0.1s !important;
+}
+
+.win7-show-desktop:hover {
+  background: linear-gradient(to right, rgba(255,255,255,0.08), rgba(255,255,255,0.15)) !important;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.2) !important;
+}
+
+
+/* ================================================================
+   ANIMATIONS
+   ================================================================ */
+.animate-xp-loading {
+  animation: xp-loading 2s infinite linear;
+}
+
+@keyframes xp-loading {
+  0%   { left: -30%; }
+  100% { left: 100%; }
+}
+
+@keyframes sm-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ================================================================
+   WINDOWS 7 BOOT SCREEN ANIMATIONS (New Version)
+   ================================================================ */
+.boot-screen {
+  --size: 3px;
+  --cycle: 7s;
+  --delay: 0.4s;
+  --red-glow: 0px 0px calc(var(--size)*1.2) 2px #FF2828;
+  --blue-glow: 0px 0px calc(var(--size)*1.2) 2px #448AFF;
+  --limegreen-glow: 0px 0px calc(var(--size)*1.2) 2px limegreen;
+  --yellow-glow: 0px 0px calc(var(--size)*1.2) 2px #FDD835;
+
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 10000;
+  cursor: none;
+  user-select: none;
+}
+
+.orb-stage {
+  position: relative;
+  width: 2px;
+  height: 2px;
+}
+
+.boot-ball {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 60%;
+  will-change: transform, opacity, box-shadow;
+}
+
+.boot-text {
+  margin: 0;
+  margin-top: 130px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  letter-spacing: 0.4px;
+  color: #e8e8e8;
+  opacity: 0;
+  animation: textFade var(--cycle) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes textFade{
+  0%,42%   { opacity:0; }
+  58%      { opacity:1; }
+  90%      { opacity:1; }
+  100%     { opacity:0; }
+}
+
+/* ===== RED ===== */
+.boot-red {
+  background: #FF2828;
+  box-shadow: var(--red-glow);
+  margin-left: -20px;
+  margin-top: -20px;
+  opacity: 0.7;
+  transform-origin: 100% 100%;
+  z-index: 4;
+  animation: boot-red var(--cycle) infinite;
+  animation-delay: var(--delay);
+}
+@keyframes boot-red {
+  0%   { margin-left:-20px; margin-top:-20px; transform:scale(1); opacity:0.7; filter:blur(0px); box-shadow:var(--red-glow); background:#FF2828; }
+  6%   { margin-left:0px;   margin-top:0px;   transform:scale(0.5); opacity:0.35; filter:blur(1px); animation-timing-function:ease-out; }
+  20%  { margin-left:40px;  margin-top:40px;  transform:scale(1.2); opacity:1; filter:blur(0px); animation-timing-function:ease-in; }
+  40%  { margin-left:40px;  margin-top:0px;   transform:scale(2); opacity:1; animation-timing-function:ease-in-out; }
+  50%  { margin-left:-5px;  margin-top:-5px;  transform:scale(3.6); opacity:1; animation-timing-function:ease-out; }
+  65%  { margin-left:-5px;  margin-top:-5px;  border-radius:0.2px; transform:skewx(-15deg) scale(10); box-shadow:0px 0px 2px 0.5px #FF2828; opacity:1; }
+  75%  { margin-left:-5px;  margin-top:-5px;  border-radius:0.2px; transform:skewx(-15deg) scale(9); box-shadow:0px 0px 2px 0.5px #FF2828; opacity:1; animation-timing-function:ease-in-out; }
+  82%  { margin-left:-5px;  margin-top:-5px;  border-radius:0.2px; transform:skewx(-15deg) scale(11.5); box-shadow:0px 0px 4px 1.6px #FF2828; opacity:1; background:radial-gradient(#FF6B6B,#FF2828); }
+  90%  { margin-left:-5px;  margin-top:-5px;  border-radius:0.2px; transform:skewx(-15deg) scale(10.3); box-shadow:0px 0px 2px 0.6px #FF2828; opacity:0.7; background:radial-gradient(#FF2828,rgba(250,60,60,0.7)); animation-timing-function:ease-in; }
+  96%  { margin-left:-5px;  margin-top:-5px;  transform:scale(2); opacity:0; filter:blur(1px); }
+  100% { margin-left:-20px; margin-top:-20px; transform:scale(1); opacity:0.7; filter:blur(0px); box-shadow:var(--red-glow); background:#FF2828; border-radius:60%; }
+}
+
+/* ===== GREEN ===== */
+.boot-green {
+  background: limegreen;
+  box-shadow: var(--limegreen-glow);
+  margin-left: 30px;
+  margin-top: 30px;
+  opacity: 0.7;
+  transform-origin: 0% 100%;
+  z-index: 3;
+  animation: boot-green var(--cycle) infinite;
+  animation-delay: var(--delay);
+}
+@keyframes boot-green {
+  0%   { margin-left:30px;  margin-top:30px;  transform:scale(1); opacity:0.7; filter:blur(0px); box-shadow:var(--limegreen-glow); background:limegreen; }
+  4%   { margin-left:15px;  margin-top:15px;  transform:scale(0.5); opacity:0.35; filter:blur(1px); animation-timing-function:ease-out; }
+  15%  { margin-left:-40px; margin-top:-40px; transform:scale(1.2); opacity:1; filter:blur(0px); animation-timing-function:ease-in; }
+  35%  { margin-left:-40px; margin-top:25px;  transform:scale(2); opacity:1; animation-timing-function:ease-in-out; }
+  50%  { margin-left:5px;   margin-top:5px;   transform:scale(3.6); opacity:1; animation-timing-function:ease-out; }
+  65%  { margin-left:5px;   margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(10); box-shadow:0px 0px 2px 0.5px limegreen; opacity:1; }
+  75%  { margin-left:5px;   margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(9); box-shadow:0px 0px 2px 0.5px limegreen; opacity:1; animation-timing-function:ease-in-out; }
+  82%  { margin-left:5px;   margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(11.5); box-shadow:0px 0px 4px 1.6px limegreen; opacity:1; background:radial-gradient(#7CFC7C,limegreen); }
+  90%  { margin-left:5px;   margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(10.3); box-shadow:0px 0px 2px 0.6px limegreen; opacity:0.7; background:radial-gradient(limegreen,rgba(50,205,50,0.7)); animation-timing-function:ease-in; }
+  96%  { margin-left:5px;   margin-top:5px;   transform:scale(2); opacity:0; filter:blur(1px); }
+  100% { margin-left:30px;  margin-top:30px;  transform:scale(1); opacity:0.7; filter:blur(0px); box-shadow:var(--limegreen-glow); background:limegreen; border-radius:60%; }
+}
+
+/* ===== BLUE ===== */
+.boot-blue {
+  background: #448AFF;
+  box-shadow: var(--blue-glow);
+  margin-left: -10px;
+  margin-top: -30px;
+  opacity: 0.3;
+  transform-origin: 100% 0%;
+  z-index: 4;
+  animation: boot-blue var(--cycle) infinite;
+  animation-delay: var(--delay);
+}
+@keyframes boot-blue {
+  0%   { margin-left:-10px; margin-top:-30px; transform:scale(1); opacity:0.3; filter:blur(0px); box-shadow:var(--blue-glow); background:#448AFF; }
+  10%  { margin-left:5px;   margin-top:-15px; transform:scale(0.5); opacity:0.2; filter:blur(1px); animation-timing-function:ease-out; }
+  32%  { margin-left:35px;  margin-top:40px;  transform:scale(1.2); opacity:1; filter:blur(0px); animation-timing-function:ease-in; }
+  45%  { margin-left:-35px; margin-top:40px;  transform:scale(2); opacity:1; animation-timing-function:ease-in-out; }
+  55%  { margin-left:-5px;  margin-top:5px;   transform:scale(3.6); opacity:1; animation-timing-function:ease-out; }
+  65%  { margin-left:-5px;  margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(10); box-shadow:0px 0px 2px 0.5px #448AFF; opacity:1; }
+  75%  { margin-left:-5px;  margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(9); box-shadow:0px 0px 2px 0.5px #448AFF; opacity:1; animation-timing-function:ease-in-out; }
+  82%  { margin-left:-5px;  margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(11.5); box-shadow:0px 0px 4px 1.6px #448AFF; opacity:1; background:radial-gradient(#8AB8FF,#448AFF); }
+  90%  { margin-left:-5px;  margin-top:5px;   border-radius:0.2px; transform:skewx(-15deg) scale(10.3); box-shadow:0px 0px 2px 0.6px #448AFF; opacity:0.7; background:radial-gradient(#448AFF,rgba(68,138,255,0.7)); animation-timing-function:ease-in; }
+  96%  { margin-left:-5px;  margin-top:5px;   transform:scale(2); opacity:0; filter:blur(1px); }
+  100% { margin-left:-10px; margin-top:-30px; transform:scale(1); opacity:0.3; filter:blur(0px); box-shadow:var(--blue-glow); background:#448AFF; border-radius:60%; }
+}
+
+/* ===== YELLOW ===== */
+.boot-yellow {
+  background: #FDD835;
+  box-shadow: var(--yellow-glow);
+  margin-left: 10px;
+  margin-top: 30px;
+  opacity: 0;
+  transform-origin: 0% 0%;
+  z-index: 3;
+  animation: boot-yellow var(--cycle) infinite;
+  animation-delay: var(--delay);
+}
+@keyframes boot-yellow {
+  0%   { margin-left:10px;  margin-top:30px;  transform:scale(1); opacity:0; filter:blur(0px); box-shadow:var(--yellow-glow); background:#FDD835; }
+  8%   { margin-left:0px;   margin-top:15px;  transform:scale(0.5); opacity:0.15; filter:blur(1px); animation-timing-function:ease-out; }
+  30%  { margin-left:-30px; margin-top:-40px; transform:scale(1.2); opacity:1; filter:blur(0px); animation-timing-function:ease-in; }
+  40%  { margin-left:0px;   margin-top:0px;   transform:scale(2); opacity:1; animation-timing-function:ease-in-out; }
+  50%  { margin-left:5px;   margin-top:15px;  transform:scale(3.6); opacity:1; animation-timing-function:ease-out; }
+  65%  { margin-left:5px;   margin-top:15px;  border-radius:0.2px; transform:skewx(-15deg) scale(10); box-shadow:0px 0px 2px 0.5px #FDD835; opacity:1; }
+  75%  { margin-left:5px;   margin-top:15px;  border-radius:0.2px; transform:skewx(-15deg) scale(9); box-shadow:0px 0px 2px 0.5px #FDD835; opacity:1; animation-timing-function:ease-in-out; }
+  82%  { margin-left:5px;   margin-top:15px;  border-radius:0.2px; transform:skewx(-15deg) scale(11.5); box-shadow:0px 0px 4px 1.6px #FDD835; opacity:1; background:radial-gradient(#FFEB8A,#FDD835); }
+  90%  { margin-left:5px;   margin-top:15px;  border-radius:0.2px; transform:skewx(-15deg) scale(10.3); box-shadow:0px 0px 2px 0.6px #FDD835; opacity:0.7; background:radial-gradient(#FDD835,rgba(253,216,53,0.7)); animation-timing-function:ease-in; }
+  96%  { margin-left:5px;   margin-top:15px;  transform:scale(2); opacity:0; filter:blur(1px); }
+  100% { margin-left:10px;  margin-top:30px;  transform:scale(1); opacity:0; filter:blur(0px); box-shadow:var(--yellow-glow); background:#FDD835; border-radius:60%; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .boot-ball, .boot-text{ animation:none !important; }
+  .boot-red   { margin-left:-5px; margin-top:-5px; border-radius:0.2px; transform:skewx(-15deg) scale(11.5); opacity:1; box-shadow:0px 0px 4px 1.6px #FF2828; }
+  .boot-green { margin-left:5px;  margin-top:5px;  border-radius:0.2px; transform:skewx(-15deg) scale(11.5); opacity:1; box-shadow:0px 0px 4px 1.6px limegreen; }
+  .boot-blue  { margin-left:-5px; margin-top:5px;  border-radius:0.2px; transform:skewx(-15deg) scale(11.5); opacity:1; box-shadow:0px 0px 4px 1.6px #448AFF; }
+  .boot-yellow{ margin-left:5px;  margin-top:15px; border-radius:0.2px; transform:skewx(-15deg) scale(11.5); opacity:1; box-shadow:0px 0px 4px 1.6px #FDD835; }
+  .boot-text{ opacity:1; }
+}
+
+@keyframes win7-fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}

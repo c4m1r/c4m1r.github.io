@@ -1,0 +1,122 @@
+import React from "react";
+import { Menu, Item, Separator } from "react-contexify";
+import star from "../../assets/images/contextMenu/star.png";
+import contact_me from "../../assets/images/contextMenu/contact_me.png";
+import refresh from "../../assets/images/contextMenu/refresh.png";
+import source_code from "../../assets/images/contextMenu/source_code.png";
+import credits from "../../assets/images/contextMenu/credits.svg";
+import github from "../../assets/images/contextMenu/github.svg";
+import { SCREENS } from "../../utils/documents/enums";
+import Credits from "../base/credits";
+import { useBoolean } from "@fluentui/react-hooks";
+import LazyImage from "../base/lazyImage";
+
+const MENU_ID = "context-menu";
+
+function DesktopContextMenu(props) {
+	const handleRefresh = ({ event, props }) =>
+		console.log("Super Refreshed !!");
+	const navigate = (link) => {
+		window.open(link, "_blank");
+	};
+
+	const [isModalOpen, { setTrue: showModal, setFalse: hideModal }] =
+		useBoolean(false);
+	return (
+		<div>
+			<Menu id={MENU_ID}>
+				<Item
+					onClick={() =>
+						navigate(
+							"https://github.com/arnoldadero/win10_portfolio/"
+						)
+					}
+				>
+					<LazyImage
+						src={star}
+						width="30"
+						height="30"
+						className="uk-margin-small-right"
+						alt="Star"
+					/>
+					Star This Project
+				</Item>
+				<Separator />
+				{props.location === SCREENS.DESKTOP && (
+					<Item onClick={handleRefresh}>
+						<LazyImage
+							src={refresh}
+							width="30"
+							height="30"
+							className="uk-margin-small-right"
+							alt="Refresh"
+						/>
+						Refresh
+					</Item>
+				)}
+				{props.location === SCREENS.DESKTOP && <Separator />}
+				<Item
+					onClick={() =>
+						navigate(
+							"https://github.com/arnoldadero/win10_portfolio/"
+						)
+					}
+				>
+					<LazyImage
+						src={source_code}
+						width="30"
+						height="30"
+						className="uk-margin-small-right"
+						alt="Code"
+					/>
+					View Source Code
+				</Item>
+				<Separator />
+				<Item
+					onClick={() =>
+						navigate("https://github.com/arnoldadero")
+					}
+				>
+					<LazyImage
+						src={github}
+						width="30"
+						height="30"
+						className="uk-margin-small-right"
+						alt="Github"
+					/>
+					Github Profile
+				</Item>
+				<Separator />
+				<Item
+					onClick={() =>
+						navigate("mailto:arnold@mvuvi.co.ke")
+					}
+				>
+					<LazyImage
+						src={contact_me}
+						width="30"
+						height="30"
+						className="uk-margin-small-right"
+						alt="mail"
+					/>
+					Contact Me
+				</Item>
+				<Separator />
+				<Item onClick={showModal}>
+					<LazyImage
+						src={credits}
+						width="30"
+						height="30"
+						className="uk-margin-small-right"
+						alt="Credits"
+					/>
+					Credits
+				</Item>
+				<Separator />
+			</Menu>
+			<Credits isModalOpen={isModalOpen} hideModal={hideModal} />
+		</div>
+	);
+}
+
+export default DesktopContextMenu;

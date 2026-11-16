@@ -1,0 +1,137 @@
+@import "../../theme/variables";
+@import "../../theme/mixins";
+
+/* ========== MAIL APPLICATION ========== */
+.mail-app-container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	.mail-content {
+		flex: 1;
+		@include app-content-spacing();
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+		background: linear-gradient(135deg, rgba(100, 150, 200, 0.05) 0%, rgba(50, 100, 150, 0.05) 100%);
+		border-radius: 6px;
+
+		.mail-form {
+			display: flex;
+			flex-direction: column;
+			gap: var(--spacing-md);
+
+			/* Mail Actions */
+			.mail-actions {
+				display: flex;
+				justify-content: flex-end;
+				gap: var(--spacing-sm);
+				padding-bottom: var(--spacing-md);
+				border-bottom: 1px solid var(--border-light);
+
+				.mail-discard-btn {
+					background: var(--overlay-light);
+					color: var(--text-primary);
+					border: 1px solid var(--border-light);
+					padding: 8px 16px;
+					border-radius: 4px;
+					cursor: pointer;
+					transition: all var(--transition-base);
+					display: flex;
+					align-items: center;
+					gap: 6px;
+
+					&:hover {
+						background: var(--overlay-medium);
+					}
+				}
+
+				.mail-send-btn {
+					background: var(--color-blue);
+					color: var(--color-white);
+					border: none;
+					padding: 8px 16px;
+					border-radius: 4px;
+					cursor: pointer;
+					transition: all var(--transition-base);
+					display: flex;
+					align-items: center;
+					gap: 6px;
+					font-weight: 500;
+
+					&:hover {
+						background: rgba(0, 162, 237, 0.9);
+						box-shadow: 0 2px 8px rgba(0, 162, 237, 0.3);
+					}
+
+					&:active {
+						transform: scale(0.98);
+					}
+				}
+			}
+
+			/* Mail Response */
+			.mail-response {
+				min-height: 0;
+			}
+
+			/* Form Groups */
+			.mail-form-group {
+				width: 100%;
+			}
+
+			.mail-message-box {
+				flex: 1;
+				min-height: 200px;
+			}
+		}
+	}
+}
+
+/* Fluent UI TextField Overrides */
+.mail-form-group .ms-TextField {
+	.ms-TextField-wrapper {
+		.ms-Label {
+			color: var(--text-primary) !important;
+			font-weight: 500 !important;
+		}
+		.ms-TextField-fieldGroup {
+			border-color: var(--border-light) !important;
+
+			.ms-TextField-field {
+				background-color: var(--overlay-light) !important;
+				color: var(--text-primary) !important;
+				font-size: 13px !important;
+			}
+
+			&:hover {
+				border-color: var(--border-medium) !important;
+			}
+		}
+
+		&.is-focused {
+			.ms-TextField-fieldGroup {
+				border-color: var(--color-blue) !important;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.mail-app-container .mail-content {
+		@include app-content-spacing(10px, 8px, 6px);
+
+		.mail-form .mail-actions {
+			flex-direction: column-reverse;
+		}
+	}
+}
+
+@media screen and (max-width: 640px) {
+	.mail-app-container .mail-content {
+		@include app-content-spacing(8px, 6px, 4px);
+
+		.mail-form .mail-message-box {
+			min-height: 150px;
+		}
+	}
+}
