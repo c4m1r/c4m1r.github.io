@@ -6,6 +6,7 @@ interface AppleWidgetGalleryProps {
   visibility: AppleWidgetVisibility;
   onClose: () => void;
   onToggle: (key: keyof AppleWidgetVisibility) => void;
+  themeKey: string;
 }
 
 const widgets: Array<{
@@ -33,6 +34,7 @@ export function AppleWidgetGallery({
   visibility,
   onClose,
   onToggle,
+  themeKey,
 }: AppleWidgetGalleryProps) {
   const { language } = useApp();
   const isRu = language === 'ru';
@@ -40,11 +42,11 @@ export function AppleWidgetGallery({
   if (!open) return null;
 
   return (
-    <div className="apple-widget-gallery" role="dialog" aria-label={isRu ? 'Галерея виджетов' : 'Edit Widgets'}>
+    <div className={`apple-widget-gallery apple-widget-gallery--${themeKey.startsWith("win") ? "windows" : themeKey.startsWith("linux") || themeKey === "webos" ? themeKey : themeKey.startsWith("macos") ? "macos" : "generic"}`} role="dialog" aria-label={isRu ? 'Галерея виджетов' : 'Edit Widgets'}>
       <button
         type="button"
         className="apple-widget-gallery__backdrop"
-        aria-label="Close Edit Widgets"
+        aria-label={isRu ? 'Закрыть' : 'Close'}
         onClick={onClose}
       />
 
@@ -52,7 +54,7 @@ export function AppleWidgetGallery({
         <header>
           <div>
             <strong>{isRu ? 'Галерея виджетов' : 'Edit Widgets'}</strong>
-            <small>NervaWEB WebOS / macOS</small>
+            <small>{themeKey === 'webos' ? 'WebOS' : themeKey.startsWith('macos') ? 'macOS' : themeKey.startsWith('win') ? 'Windows' : 'Linux'}</small>
           </div>
           <button type="button" onClick={onClose}>{isRu ? 'Готово' : 'Done'}</button>
         </header>

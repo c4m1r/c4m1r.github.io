@@ -147,7 +147,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   });
   const [macDesktopWidgetsEnabled, setMacDesktopWidgetsEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
-    return localStorage.getItem('macos-desktop-widgets-enabled') !== 'false';
+    return localStorage.getItem('macos-desktop-widgets-enabled') === 'true';
   });
   const [macClockShowSeconds, setMacClockShowSeconds] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -195,10 +195,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('ios-assistive-touch-enabled') !== 'false';
   });
-  const [appleWidgetVisibility, setAppleWidgetVisibility] = useState<AppleWidgetVisibility>({
-    clock: true,
-    battery: true,
-    calendar: true,
+  const [appleWidgetVisibility, setAppleWidgetVisibility] = useState<AppleWidgetVisibility>(() => {
+    if (typeof window === 'undefined') return { clock: false, battery: false, calendar: false };
+    try {
+      const saved = localStorage.getItem('desktop-apple-widget-visibility-v1');
+      return saved ? { clock: false, battery: false, calendar: false, ...JSON.parse(saved) } : { clock: false, battery: false, calendar: false };
+    } catch { return { clock: false, battery: false, calendar: false }; }
   });
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
@@ -1495,7 +1497,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         onOpenHelp={() => launchApp('help')}
       />
 
-      {(themeKey === 'macos-26' || (themeKey !== 'webos' && Object.values(appleWidgetVisibility).some(Boolean))) && macDesktopWidgetsEnabled && (
+      {themeKey !== 'webos' && Object.values(appleWidgetVisibility).some(Boolean) && (
         <AppleDesktopWidgets
           time={time}
           language={language}
@@ -1513,14 +1515,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       )}
 
       <AppleWidgetGallery
+        themeKey={themeKey}
         open={showAppleWidgetGallery}
         visibility={appleWidgetVisibility}
         onClose={() => setShowAppleWidgetGallery(false)}
         onToggle={(key) => {
-          setAppleWidgetVisibility((current) => ({
-            ...current,
-            [key]: !current[key],
-          }));
+          setAppleWidgetVisibility((current) => {
+            const next = { ...current, [key]: !current[key] };
+            localStorage.setItem('desktop-apple-widget-visibility-v1', JSON.stringify(next));
+            return next;
+          });
         }}
       />
 
