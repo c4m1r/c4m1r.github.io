@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PROJECT_PLAYLIST } from '../mediaplayer/playlist';
+import { winampController } from '../../system/audio/winampController';
 import loopsIconUrl from './assets/favicon.ico';
 import chpokSoundUrl from './assets/chpok.mp3';
 import './loops.css';
@@ -94,37 +95,27 @@ function getCellColorClass(code: string): string {
 }
 
 export function LoopsApp() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(() => winampController.getState().trackIndex);
+  const [isPlaying, setIsPlaying] = useState(() => winampController.getState().isPlaying);
   const [activePattern, setActivePattern] = useState(PATTERN_0CHAN);
   const [cells, setCells] = useState<string[]>(() => PATTERN_0CHAN.pattern.split(''));
   const [flashingIndices, setFlashingIndices] = useState<Set<number>>(() => new Set());
 
   const currentTrack = PROJECT_PLAYLIST[trackIndex] ?? PROJECT_PLAYLIST[0];
 
+  useEffect(() => winampController.subscribe((state) => {
+    setTrackIndex(state.trackIndex);
+    setIsPlaying(state.isPlaying);
+  }), []);
+
   const initWebAudio = useCallback(() => {
-    if (audioCtxRef.current || !audioRef.current) return;
-    try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      audioCtxRef.current = ctx;
-
-      const source = ctx.createMediaElementSource(audioRef.current);
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 256;
-      analyserRef.current = analyser;
-
-      source.connect(analyser);
-      analyser.connect(ctx.destination);
-    } catch (e) {
-      console.warn('Web Audio init skipped:', e);
-    }
+    const sharedAudio = winampController.getWebAudio();
+    audioCtxRef.current = sharedAudio.ctx;
+    analyserRef.current = sharedAudio.analyser;
   }, []);
 
   const playChpok = useCallback(() => {
@@ -138,36 +129,21 @@ export function LoopsApp() {
   }, []);
 
   const togglePlay = useCallback(async () => {
+    if (winampController.getState().isPlaying) {
+      winampController.pause();
+      return;
+    }
+
     initWebAudio();
     if (audioCtxRef.current?.state === 'suspended') {
       void audioCtxRef.current.resume();
     }
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-    } else {
-      try {
-        await audio.play();
-        setIsPlaying(true);
-      } catch {
-        setIsPlaying(false);
-      }
-    }
-  }, [initWebAudio, isPlaying]);
+    await winampController.playRandom();
+  }, [initWebAudio]);
 
-  const nextTrack = useCallback(() => {
-    setTrackIndex((prev) => (prev + 1) % PROJECT_PLAYLIST.length);
-  }, []);
-
-  const prevTrack = useCallback(() => {
-    setTrackIndex((prev) => (prev - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length);
-  }, []);
-
-  const randomTrack = useCallback(() => {
-    setTrackIndex(Math.floor(Math.random() * PROJECT_PLAYLIST.length));
-  }, []);
+  const nextTrack = useCallback(() => winampController.next(), []);
+  const prevTrack = useCallback(() => winampController.prev(), []);
+  const randomTrack = useCallback(() => winampController.randomTrack(), []);
 
   // When pattern changes
   const applyPattern = (p: typeof PATTERN_0CHAN) => {
@@ -262,17 +238,6 @@ export function LoopsApp() {
     return () => cancelAnimationFrame(animId);
   }, [cells.length, isPlaying]);
 
-  // Audio track switch effect
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const continuePlaying = isPlaying;
-    audio.load();
-    if (continuePlaying) {
-      void audio.play().catch(() => setIsPlaying(false));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackIndex]);
 
   return (
     <div className="loop-app-container">
@@ -368,15 +333,7 @@ export function LoopsApp() {
         </div>
       </div>
 
-      {/* Audio element */}
-      <audio
-        ref={audioRef}
-        src={currentTrack.src}
-        preload="metadata"
-        loop
-        onEnded={nextTrack}
-        crossOrigin="anonymous"
-      />
+
     </div>
   );
 }

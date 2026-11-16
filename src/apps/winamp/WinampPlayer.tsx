@@ -42,7 +42,8 @@ export function WinampPlayer() {
   const [duration, setDuration] = useState(() => winampController.getState().duration || 0);
   const [volume, setVolume] = useState(() => winampController.getState().volume);
   const [balance, setBalance] = useState(0);
-  const [shuffle, setShuffle] = useState(false);
+  const [shuffle, setShuffle] = useState(() => winampController.isShuffle());
+  const [autoAdvance, setAutoAdvance] = useState(() => winampController.isAutoAdvance());
   const [repeat, setRepeat] = useState(() => winampController.isRepeat());
   const [timeRemainingMode, setTimeRemainingMode] = useState(false);
 
@@ -54,6 +55,8 @@ export function WinampPlayer() {
       setCurrentTime(st.currentTime);
       if (st.duration > 0) setDuration(st.duration);
       setVolume(st.volume);
+      setShuffle(st.shuffle);
+      setAutoAdvance(st.autoAdvance);
     });
   }, []);
 
@@ -159,43 +162,11 @@ export function WinampPlayer() {
   }, []);
 
   const historyRef = useRef<number[]>([]);
-  const shuffleOrderRef = useRef<number[]>([]);
-  const shufflePointerRef = useRef<number>(0);
-
-  const regenerateShuffleOrder = useCallback(() => {
-    const indices = Array.from({ length: PROJECT_PLAYLIST.length }, (_, i) => i);
-    for (let i = indices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const temp = indices[i];
-      indices[i] = indices[j];
-      indices[j] = temp;
-    }
-    shuffleOrderRef.current = indices;
-    shufflePointerRef.current = 0;
-  }, []);
-
-  useEffect(() => {
-    if (shuffle) {
-      regenerateShuffleOrder();
-    }
-  }, [shuffle, regenerateShuffleOrder]);
 
   const next = useCallback(() => {
-    if (shuffle && PROJECT_PLAYLIST.length > 1) {
-      if (shufflePointerRef.current >= shuffleOrderRef.current.length) {
-        regenerateShuffleOrder();
-      }
-      let nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
-      if (nextIdx === trackIndex && shufflePointerRef.current < shuffleOrderRef.current.length) {
-        nextIdx = shuffleOrderRef.current[shufflePointerRef.current++];
-      }
-      historyRef.current.push(trackIndex);
-      winampController.setTrack(nextIdx ?? (trackIndex + 1) % PROJECT_PLAYLIST.length);
-      return;
-    }
     historyRef.current.push(trackIndex);
     winampController.next();
-  }, [regenerateShuffleOrder, shuffle, trackIndex]);
+  }, [trackIndex]);
 
   const previous = useCallback(() => {
     if (historyRef.current.length > 0) {
@@ -429,7 +400,11 @@ export function WinampPlayer() {
                 <button
                   type="button"
                   className={`wa-btn-mode ${shuffle ? 'is-active' : ''}`}
-                  onClick={() => setShuffle((v) => !v)}
+                  onClick={() => {
+                    const nextVal = !shuffle;
+                    setShuffle(nextVal);
+                    winampController.setShuffle(nextVal);
+                  }}
                   title="Shuffle"
                 >
                   <span className="wa-led-dot" />
@@ -447,6 +422,20 @@ export function WinampPlayer() {
                 >
                   <span className="wa-led-dot" />
                   🔁
+                </button>
+                <button
+                  type="button"
+                  className={`wa-btn-mode ${autoAdvance ? 'is-active' : ''}`}
+                  onClick={() => {
+                    const nextVal = !autoAdvance;
+                    setAutoAdvance(nextVal);
+                    winampController.setAutoAdvance(nextVal);
+                  }}
+                  title={autoAdvance ? 'Disable automatic next track' : 'Enable automatic next track'}
+                  aria-pressed={autoAdvance}
+                >
+                  <span className="wa-led-dot" />
+                  NEXT
                 </button>
               </div>
 

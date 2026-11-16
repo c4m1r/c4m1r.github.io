@@ -7,6 +7,8 @@ export interface WinampState {
   currentTime: number;
   duration: number;
   volume: number;
+  autoAdvance: boolean;
+  shuffle: boolean;
 }
 
 type WinampSubscriber = (state: WinampState) => void;
@@ -19,6 +21,8 @@ class WinampControllerService {
   private duration = 0;
   private volume = 0.85;
   private repeat = false;
+  private autoAdvance = true;
+  private shuffle = false;
   private subscribers = new Set<WinampSubscriber>();
   private initialized = false;
   private audioCtx: AudioContext | null = null;
@@ -29,13 +33,15 @@ class WinampControllerService {
     if (typeof window !== 'undefined') {
       window.addEventListener('winamp:command', (e: Event) => {
         const custom = e as CustomEvent<{ action: string; value?: unknown }>;
-        if (custom.detail?.action === 'play') this.play();
+        if (custom.detail?.action === 'play') void this.play();
         else if (custom.detail?.action === 'pause') this.pause();
         else if (custom.detail?.action === 'toggle') this.toggle();
         else if (custom.detail?.action === 'next') this.next();
         else if (custom.detail?.action === 'prev') this.prev();
         else if (custom.detail?.action === 'seek') this.seek(Number(custom.detail.value));
         else if (custom.detail?.action === 'setTrack') this.setTrack(Number(custom.detail.value));
+        else if (custom.detail?.action === 'setAutoAdvance') this.setAutoAdvance(Boolean(custom.detail.value));
+        else if (custom.detail?.action === 'setShuffle') this.setShuffle(Boolean(custom.detail.value));
       });
     }
   }
@@ -53,16 +59,20 @@ class WinampControllerService {
     });
 
     audio.addEventListener('loadedmetadata', () => {
-      this.duration = audio.duration || 0;
+      this.duration = Number.isFinite(audio.duration) ? audio.duration : 0;
       this.notify();
     });
 
     audio.addEventListener('ended', () => {
-      if (this.repeat && this.audioElement) {
-        this.audioElement.currentTime = 0;
+      if (this.repeat) {
+        audio.currentTime = 0;
         void this.play();
+      } else if (this.autoAdvance) {
+        this.advance(true);
       } else {
-        this.next();
+        this.isPlaying = false;
+        this.currentTime = audio.duration || this.currentTime;
+        this.notify();
       }
     });
 
@@ -76,24 +86,44 @@ class WinampControllerService {
       this.notify();
     });
 
+    audio.addEventListener('error', () => {
+      this.isPlaying = false;
+      this.notify();
+    });
+
     this.audioElement = audio;
-    this.updateAudioSrc();
+    this.updateAudioSrc(false);
   }
 
-  private updateAudioSrc() {
+  private updateAudioSrc(shouldPlay = this.isPlaying) {
     const track = this.getTrack();
-    if (this.audioElement && track) {
-      const wasPlaying = this.isPlaying;
-      this.audioElement.src = track.src;
-      this.audioElement.currentTime = 0;
-      this.currentTime = 0;
-      if (wasPlaying) {
-        this.audioElement.play().catch(() => {
-          this.isPlaying = false;
-          this.notify();
-        });
-      }
+    const audio = this.audioElement;
+    if (!audio || !track) return;
+
+    audio.pause();
+    audio.src = track.src;
+    audio.currentTime = 0;
+    this.currentTime = 0;
+    this.duration = 0;
+    audio.load();
+    this.notify();
+
+    if (shouldPlay) {
+      void this.play();
     }
+  }
+
+  private pickNextIndex(): number {
+    if (PROJECT_PLAYLIST.length <= 1) return this.trackIndex;
+    if (!this.shuffle) return (this.trackIndex + 1) % PROJECT_PLAYLIST.length;
+
+    const choices = PROJECT_PLAYLIST.map((_, index) => index).filter((index) => index !== this.trackIndex);
+    return choices[Math.floor(Math.random() * choices.length)] ?? this.trackIndex;
+  }
+
+  private advance(shouldPlay: boolean) {
+    this.trackIndex = this.pickNextIndex();
+    this.updateAudioSrc(shouldPlay);
   }
 
   public getTrack(): MediaTrack {
@@ -108,15 +138,15 @@ class WinampControllerService {
       currentTime: this.currentTime,
       duration: this.duration || 180,
       volume: this.volume,
+      autoAdvance: this.autoAdvance,
+      shuffle: this.shuffle,
     };
   }
 
   public subscribe(fn: WinampSubscriber): () => void {
     this.subscribers.add(fn);
     fn(this.getState());
-    return () => {
-      this.subscribers.delete(fn);
-    };
+    return () => this.subscribers.delete(fn);
   }
 
   private notify() {
@@ -125,7 +155,7 @@ class WinampControllerService {
       try {
         fn(state);
       } catch {
-        // Safe dispatch
+        // Isolate subscribers so one view cannot break playback state propagation.
       }
     });
     if (typeof window !== 'undefined') {
@@ -146,33 +176,48 @@ class WinampControllerService {
   }
 
   public pause(): void {
-    if (this.audioElement) {
-      this.audioElement.pause();
-    }
+    this.audioElement?.pause();
     this.isPlaying = false;
     this.notify();
   }
 
   public toggle(): void {
-    if (this.isPlaying) {
-      this.pause();
-    } else {
-      void this.play();
-    }
+    if (this.isPlaying) this.pause();
+    else void this.play();
   }
 
   public next(): void {
     this.initAudio();
-    this.trackIndex = (this.trackIndex + 1) % PROJECT_PLAYLIST.length;
-    this.updateAudioSrc();
-    this.notify();
+    this.advance(this.isPlaying);
   }
 
   public prev(): void {
     this.initAudio();
     this.trackIndex = (this.trackIndex - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length;
-    this.updateAudioSrc();
-    this.notify();
+    this.updateAudioSrc(this.isPlaying);
+  }
+
+  public randomTrack(): void {
+    this.initAudio();
+    if (PROJECT_PLAYLIST.length <= 1) return;
+    const currentPlaying = this.isPlaying;
+    this.trackIndex = this.pickRandomIndex();
+    this.updateAudioSrc(currentPlaying);
+  }
+
+  public playRandom(): Promise<void> {
+    this.initAudio();
+    if (PROJECT_PLAYLIST.length > 1) {
+      this.trackIndex = this.pickRandomIndex();
+      this.updateAudioSrc(false);
+    }
+    return this.play();
+  }
+
+  private pickRandomIndex(): number {
+    if (PROJECT_PLAYLIST.length <= 1) return 0;
+    const choices = PROJECT_PLAYLIST.map((_, index) => index).filter((index) => index !== this.trackIndex);
+    return choices[Math.floor(Math.random() * choices.length)] ?? this.trackIndex;
   }
 
   public seek(seconds: number): void {
@@ -188,25 +233,41 @@ class WinampControllerService {
     this.initAudio();
     if (index >= 0 && index < PROJECT_PLAYLIST.length) {
       this.trackIndex = index;
-      this.updateAudioSrc();
-      this.notify();
+      this.updateAudioSrc(this.isPlaying);
     }
   }
 
   public setVolume(val: number): void {
     this.volume = Math.max(0, Math.min(1, val));
-    if (this.audioElement) {
-      this.audioElement.volume = this.volume;
-    }
+    if (this.audioElement) this.audioElement.volume = this.volume;
     this.notify();
   }
 
   public setRepeat(val: boolean): void {
     this.repeat = val;
+    this.notify();
   }
 
   public isRepeat(): boolean {
     return this.repeat;
+  }
+
+  public setAutoAdvance(val: boolean): void {
+    this.autoAdvance = val;
+    this.notify();
+  }
+
+  public isAutoAdvance(): boolean {
+    return this.autoAdvance;
+  }
+
+  public setShuffle(val: boolean): void {
+    this.shuffle = val;
+    this.notify();
+  }
+
+  public isShuffle(): boolean {
+    return this.shuffle;
   }
 
   public getAudioElement(): HTMLAudioElement | null {
@@ -237,9 +298,7 @@ class WinampControllerService {
           analyser.connect(ctx.destination);
         }
       }
-      if (this.audioCtx && this.audioCtx.state === 'suspended') {
-        void this.audioCtx.resume();
-      }
+      if (this.audioCtx?.state === 'suspended') void this.audioCtx.resume();
     } catch (e) {
       console.warn('Web Audio init skipped:', e);
     }
