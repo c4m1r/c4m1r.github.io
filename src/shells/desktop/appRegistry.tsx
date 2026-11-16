@@ -103,8 +103,8 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'loopsIcon',
     component: LoopsApp,
     defaultWindow: { width: 580, height: 600, resizable: true },
-    showInStartMenu: true,
-    showOnDesktop: true,
+    showInStartMenu: false,
+    showOnDesktop: false,
   },
   'projects-grid': {
     id: 'projects-grid',

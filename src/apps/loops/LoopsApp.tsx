@@ -118,6 +118,10 @@ export function LoopsApp() {
     analyserRef.current = sharedAudio.analyser;
   }, []);
 
+  useEffect(() => {
+    initWebAudio();
+  }, [initWebAudio]);
+
   const playChpok = useCallback(() => {
     try {
       const snd = new Audio(chpokSoundUrl);

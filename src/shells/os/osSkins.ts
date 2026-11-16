@@ -645,10 +645,6 @@ export function getOsAppVisibility(
   theme: ThemeId,
   target: 'desktop' | 'startMenu'
 ): boolean {
-  if (defaultVisible === false) {
-    return false;
-  }
-
   const rules = getOsSkinRules(theme);
   const appRule = rules.appNames?.[appId];
 
@@ -657,6 +653,8 @@ export function getOsAppVisibility(
       ? appRule?.showOnDesktop
       : appRule?.showInStartMenu;
 
+  // Theme-specific visibility may intentionally expose an app hidden by default
+  // (for example, Loops is a WebOS-only desktop application).
   return osOverride ?? defaultVisible ?? false;
 }
 

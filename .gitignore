@@ -28,5 +28,5 @@ artifacts
 *.sln
 *.sw?
 .env
-/eat/*
-!/eat/.gitkeep
+/eat/
+eat/
