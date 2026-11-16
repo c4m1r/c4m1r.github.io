@@ -79,7 +79,7 @@ export function AppleDesktopWidgets({
   return (
     <aside className="apple-desktop-widgets" aria-label="Desktop widgets">
       {visibility.clock && <section className="apple-widget apple-widget--clock">
-        <svg viewBox="0 0 54 54" aria-hidden="true">
+        <svg viewBox="0 0 54 54" width="54" height="54" fill="none" aria-hidden="true">
           <circle cx="27" cy="27" r="26" className="apple-widget-clock__face" />
           {Array.from({ length: 12 }, (_, index) => {
             const angle = (index * 30 * Math.PI) / 180;
