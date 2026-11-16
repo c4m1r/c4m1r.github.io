@@ -140,7 +140,9 @@ class WinampControllerService {
   public subscribe(fn: WinampSubscriber): () => void {
     this.subscribers.add(fn);
     fn(this.getState());
-    return () => this.subscribers.delete(fn);
+    return () => {
+      this.subscribers.delete(fn);
+    };
   }
 
   private notify() {
