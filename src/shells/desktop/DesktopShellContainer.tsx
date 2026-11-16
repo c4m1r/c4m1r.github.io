@@ -145,7 +145,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('macos-reduce-motion-enabled') === 'true';
   });
-  const [macDesktopWidgetsEnabled, setMacDesktopWidgetsEnabled] = useState(() => {
+  const [, setMacDesktopWidgetsEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-desktop-widgets-enabled') === 'true';
   });
