@@ -44,7 +44,18 @@ export function WinampWidget() {
           <Music size={11} className={state.isPlaying ? 'animate-pulse text-green-400' : ''} />
           {isRu ? 'СЕЙЧАС ИГРАЕТ' : 'NOW PLAYING'}
         </span>
-        <span className="text-[9px] opacity-75 font-mono">Winamp DSP</span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => winampController.setAutoAdvance(!state.autoAdvance)}
+            aria-pressed={state.autoAdvance}
+            title={isRu ? 'Автоматически включать следующий трек' : 'Automatically play the next track'}
+            className={`text-[9px] font-mono px-1.5 py-0.5 rounded border transition-colors ${state.autoAdvance ? 'text-emerald-300 border-emerald-400/40 bg-emerald-400/10' : 'text-gray-400 border-white/10 hover:bg-white/10'}`}
+          >
+            {isRu ? `АВТО ${state.autoAdvance ? 'ВКЛ' : 'ВЫКЛ'}` : `AUTO ${state.autoAdvance ? 'ON' : 'OFF'}`}
+          </button>
+          <span className="text-[9px] opacity-75 font-mono">Winamp DSP</span>
+        </div>
       </div>
 
       {/* Main Track Info */}
