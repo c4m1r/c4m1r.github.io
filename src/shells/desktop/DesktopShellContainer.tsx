@@ -1213,7 +1213,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         openExplorerWindow('C:\\Documents and Settings\\C4m1r\\My Documents');
         return;
       case 'programs-folder':
-        openExplorerWindow('C:\\Program Files\\Programs');
+        openExplorerWindow('C:\\Program Files\\Программы');
         return;
       case 'recycle-bin':
         playErrorSound();
