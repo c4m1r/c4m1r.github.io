@@ -15,6 +15,11 @@ import appleFolderIcon from '../../themes/apple/assets/icons/folder-generic.png'
 import appleDocumentIcon from '../../themes/apple/assets/sf-icons/document.svg';
 import appleImageIcon from '../../themes/apple/assets/sf-icons/image.svg';
 import appleDriveIcon from '../../themes/apple/assets/sf-icons/hard-drive.svg';
+import win98ComputerIcon from '../../themes/win98/assets/icons/computer_explorer-0.png';
+import win2000ComputerIcon from '../../themes/win98/assets/icons/computer_explorer_2k-0.png';
+import win98FolderIcon from '../../themes/win98/assets/icons/directory_closed-0.png';
+import win98DriveIcon from '../../themes/win98/assets/icons/hard_disk_drive-0.png';
+import win98SearchIcon from '../../themes/win98/assets/icons/search_computer-0.png';
 
 export interface MyComputerProps {
   currentPath?: string;
@@ -50,6 +55,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     return localStorage.getItem('macos-finder-status-bar') !== 'false';
   });
   const isWindowsXp = theme === 'win-xp';
+  const isClassicWindows = theme === 'win-98' || theme === 'win2000';
   const isAppleExplorer = theme === 'macos-26' || theme.startsWith('ios-');
   const isIosExplorer = theme.startsWith('ios-');
 
@@ -353,6 +359,20 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     ? ['Файл', 'Правка', 'Вид', 'Избранное', 'Сервис', 'Справка']
     : ['File', 'Edit', 'View', 'Favorites', 'Tools', 'Help'];
 
+  const getExplorerItemIcon = (item: FileSystemItem): string => {
+    if (theme === 'win-98' || theme === 'win2000') {
+      if (item.type === 'drive') return win98DriveIcon;
+      if (item.type === 'folder') return win98FolderIcon;
+    }
+    return getFileIcon(item) as string;
+  };
+
+  const getAddressIcon = () => {
+    if (theme === 'win-98') return path === 'My Computer' ? win98ComputerIcon : win98FolderIcon;
+    if (theme === 'win2000') return path === 'My Computer' ? win2000ComputerIcon : win98FolderIcon;
+    return path === 'My Computer' ? computerIcon : folderIcon;
+  };
+
   const getAppleItemIcon = (item: FileSystemItem) => {
     if (item.type === 'drive') return appleDriveIcon;
     if (item.type === 'folder') return appleFolderIcon;
@@ -648,7 +668,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
             disabled={historyIndex === 0}
             className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 disabled:opacity-40 text-black border-0 bg-transparent"
           >
-            <img src={backIcon} alt="" className="w-5 h-5 object-contain" />
+            {isClassicWindows ? <ChevronLeft size={16} /> : <img src={backIcon} alt="" className="w-5 h-5 object-contain" />}
             <span>{isRu ? 'Назад' : 'Back'}</span>
           </button>
           <button
@@ -656,26 +676,26 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
             disabled={historyIndex >= history.length - 1}
             className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 disabled:opacity-40 text-black border-0 bg-transparent"
           >
-            <img src={forwardIcon} alt="" className="w-5 h-5 object-contain" />
+            {isClassicWindows ? <ChevronRight size={16} /> : <img src={forwardIcon} alt="" className="w-5 h-5 object-contain" />}
             <span>{isRu ? 'Вперед' : 'Forward'}</span>
           </button>
           <button
             onClick={handleUp}
             className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 text-black border-0 bg-transparent"
           >
-            <img src={upIcon} alt="" className="w-5 h-5 object-contain" />
+            {isClassicWindows ? <ChevronUp size={16} /> : <img src={upIcon} alt="" className="w-5 h-5 object-contain" />}
             <span>{isRu ? 'Вверх' : 'Up'}</span>
           </button>
           <div className="w-px h-6 bg-gray-400 mx-1" />
           <button className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent">
-            <img src={searchIconXp} alt="" className="w-4 h-4 object-contain" />
+            {isClassicWindows ? <img src={win98SearchIcon} alt="" className="w-4 h-4 object-contain" /> : <img src={searchIconXp} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Поиск' : 'Search'}</span>
           </button>
           <button
             className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:bg-white/60 text-black ${showSidebar ? 'bg-white/60 border-gray-400' : 'bg-transparent'}`}
             onClick={() => setShowSidebar(!showSidebar)}
           >
-            <img src={foldersToggleIcon} alt="" className="w-4 h-4 object-contain" />
+            {isClassicWindows ? <span aria-hidden="true">▣</span> : <img src={foldersToggleIcon} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Папки' : 'Folders'}</span>
           </button>
           <div className="w-px h-6 bg-gray-400 mx-1" />
@@ -688,7 +708,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               setViewMode(modes[nextIndex]);
             }}
           >
-            <img src={viewThumbnailIcon} alt="" className="w-4 h-4 object-contain" />
+            {isClassicWindows ? <Grid size={15} /> : <img src={viewThumbnailIcon} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Виды' : 'Views'}</span>
           </button>
         </div>
@@ -697,7 +717,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         <div className="flex items-center p-1 bg-[#ece9d8] gap-2">
           <span className="text-gray-600 font-semibold">{isRu ? 'Адрес' : 'Address'}</span>
           <div className="flex-1 bg-white border border-[#7f9db9] flex items-center px-1 h-5 shadow-inner">
-            <img src={path === 'My Computer' ? computerIcon : folderIcon} className="w-4 h-4 mr-1.5 object-contain" alt="" />
+            <img src={getAddressIcon()} className="w-4 h-4 mr-1.5 object-contain" alt="" />
             <input
               type="text"
               value={addressInput}
@@ -867,7 +887,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                 >
                   <div className="w-24 h-20 bg-white border border-gray-300 shadow-sm flex items-center justify-center p-1 mb-2">
                     <img
-                      src={getFileIcon(item) as string}
+                      src={getExplorerItemIcon(item)}
                       alt={item.name}
                       className="max-w-full max-h-full object-contain"
                       onError={(e) => { e.currentTarget.style.display = 'none'; }}
