@@ -500,9 +500,11 @@ export function ControlPanel() {
       if (isMac || isIos) setView('network');
       else openExplorerPath('My Computer\\Network Neighborhood');
     } else if (categoryId === 'programs') {
-      openExplorerPath('C:\\Program Files\\Programs');
+      if (isMac || isIos) setView('systemInfo');
+      else openExplorerPath('C:\\Program Files\\Programs');
     } else if (categoryId === 'user-accounts') {
-      openExplorerPath('C:\\Users');
+      if (isMac || isIos) setView('systemInfo');
+      else openExplorerPath('C:\\Users');
     } else if (categoryId === 'date-time') {
       window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'calendar' } }));
     } else if (categoryId === 'accessibility') {
@@ -1206,9 +1208,9 @@ export function ControlPanel() {
                                 } else if (normalized.includes('сетев') || normalized.includes('network')) {
                                   openExplorerPath('My Computer\\Network Neighborhood');
                                 } else if (normalized.includes('программ') || normalized.includes('program') || normalized.includes('installed apps')) {
-                                  openExplorerPath('C:\\Program Files\\Programs');
+                                  openCategory(category.id);
                                 } else if (normalized.includes('учетн') || normalized.includes('пользовател') || normalized.includes('account') || normalized.includes('user')) {
-                                  openExplorerPath('C:\\Users');
+                                  openCategory(category.id);
                                 } else {
                                   openCategory(category.id);
                                 }
