@@ -270,6 +270,7 @@ class WinampControllerService {
   public setEqualizerEnabled(enabled: boolean): void {
     this.eqEnabled = enabled;
     this.eqFilters.forEach((filter, index) => filter.gain.setTargetAtTime(enabled ? this.eqGains[index] : 0, filter.context.currentTime, 0.015));
+    if (this.preampNode) this.preampNode.gain.setTargetAtTime(enabled ? Math.pow(10, this.preampGain / 20) : 1, this.preampNode.context.currentTime, 0.015);
   }
   public setEqualizerBand(index: number, gain: number): void {
     if (index < 0 || index >= this.eqGains.length || !Number.isFinite(gain)) return;
@@ -280,7 +281,7 @@ class WinampControllerService {
   public setPreamp(gainDb: number): void {
     if (!Number.isFinite(gainDb)) return;
     this.preampGain = Math.max(-12, Math.min(12, gainDb));
-    if (this.preampNode) this.preampNode.gain.setTargetAtTime(Math.pow(10, this.preampGain / 20), this.preampNode.context.currentTime, 0.015);
+    if (this.preampNode) this.preampNode.gain.setTargetAtTime(this.eqEnabled ? Math.pow(10, this.preampGain / 20) : 1, this.preampNode.context.currentTime, 0.015);
   }
   public setBalance(balance: number): void {
     if (!Number.isFinite(balance)) return;
