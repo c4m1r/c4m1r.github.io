@@ -1,4 +1,6 @@
-const EMUPEDIA_BASE = 'https://emupedia.net/beta/emuos';
+import doomIcon from './assets/doom-icon-lg.webp';
+
+const EMUPEDIA_BASE = 'https://emupedia.net';
 
 export type DoomVariantId = 'doom1' | 'doom2' | 'doom3';
 
@@ -25,8 +27,7 @@ export interface DoomVariant {
   };
 }
 
-const desktopIcon = (name: string) =>
-  `${EMUPEDIA_BASE}/assets/images/icons/desktop/${name}.png`;
+const desktopIcon = (_name: string) => doomIcon;
 
 export const doomVariants: DoomVariant[] = [
   {
@@ -84,12 +85,12 @@ export const doomVariants: DoomVariant[] = [
   },
   {
     id: 'doom3',
-    title: 'Doom 3 (d3wasm)',
+    title: 'Doom 3 Demo (WIP)',
     icon: desktopIcon('doom3'),
     homepage: `${EMUPEDIA_BASE}/emupedia-game-doom3/`,
     description: {
-      ru: 'Экспериментальный порт Doom 3 на WebAssembly (d3wasm). Может загружаться дольше.',
-      en: 'Experimental Doom 3 port using d3wasm. Loading can take a while.',
+      ru: 'Демонстрационная сборка Doom 3 на WebAssembly. Проект отмечен Emupedia как Work in Progress.',
+      en: 'Doom 3 WebAssembly demo. Emupedia currently labels this build as Work in Progress.',
     },
     builds: [
       {
