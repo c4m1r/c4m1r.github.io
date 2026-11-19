@@ -27,9 +27,10 @@ export interface MyComputerProps {
   currentPath?: string;
   onOpenItem?: (item: FileSystemItem, parentPath: string) => void;
   onOpenSlideshow?: (items: FileSystemItem[], parentPath: string) => void;
+  initialSearchOpen?: boolean;
 }
 
-export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow }: MyComputerProps) {
+export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, initialSearchOpen = false }: MyComputerProps) {
   const { theme, language } = useApp();
   const isRu = language === 'ru';
   const [path, setPath] = useState(currentPath);
@@ -42,7 +43,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow }
     isMyPictures ? 'thumbnails' : 'icons'
   );
   const [showSidebar, setShowSidebar] = useState(true);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(initialSearchOpen);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedTreePaths, setExpandedTreePaths] = useState<Record<string, boolean>>({ 'My Computer': true, 'C:\\': true });
   const [quickLookOpen, setQuickLookOpen] = useState(false);
@@ -82,11 +83,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow }
     setHistoryIndex(0);
     setAddressInput(currentPath);
     setSelectedItem(null);
+    setSearchOpen(initialSearchOpen);
+    setSearchQuery('');
     setAppleSearchQuery('');
     if (isPicturesFolderPath(currentPath)) {
       setViewMode('thumbnails');
     }
-  }, [currentPath]);
+  }, [currentPath, initialSearchOpen]);
 
   useEffect(() => {
     setAddressInput(path);
