@@ -3,6 +3,7 @@ import { type Language } from '../../../i18n/translations';
 import { useApp } from '../../../contexts/useApp';
 import { SystemActionMenu } from '../../../system/actions/SystemActionMenu';
 import { ensureCalendarEvents, getCalendarEventsForDate, moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
+import { getHolidaysForDate, isSelectedCountryWeekend, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
 
 export interface TaskbarSystemAreaProps {
   language: Language;
@@ -58,6 +59,7 @@ function areSameDay(a: Date, b: Date): boolean {
 
 function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { language: Language; time: Date; labels: TrayLabels; onOpenCalendar?: () => void }) {
   const { visibleMonth, selectedDate } = useCalendarCenter();
+  const labourCountries = useLabourCountries();
   const monthCursor = visibleMonth;
   const weekStartsOnMonday = language === 'ru' || language === 'fr' || language === 'es';
   const weekStart = weekStartsOnMonday ? 1 : 0;
@@ -108,7 +110,7 @@ function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { langua
         <div className="xp-clock-popup__weekdays">{weekdayLabels.map((weekday, index) => <span key={`${weekday}-${index}`}>{weekday}</span>)}</div>
         <div className="xp-clock-popup__days">
           {calendarCells.map((date, index) => date ? (
-            <button type="button" key={date.toISOString()} className={`${areSameDay(date, time) ? 'is-today' : ''} ${areSameDay(date, selectedDate) ? 'is-selected' : ''}`} title={getCalendarEventsForDate(date).map((event) => event.summary).join(', ') || (areSameDay(date, time) ? labels.today : date.toLocaleDateString(language))} aria-pressed={areSameDay(date, selectedDate)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }}>{date.getDate()}</button>
+            <button type="button" key={date.toISOString()} className={`${areSameDay(date, time) ? 'is-today' : ''} ${areSameDay(date, selectedDate) ? 'is-selected' : ''} ${isSelectedCountryWeekend(date, labourCountries) ? 'is-labour-weekend' : ''} ${getHolidaysForDate(date).length ? 'has-national-holiday' : ''}`} title={[...getHolidaysForDate(date).map((holiday) => `${holiday.country} · ${holiday.title}`), ...getCalendarEventsForDate(date).map((event) => event.summary)].join(', ') || (areSameDay(date, time) ? labels.today : date.toLocaleDateString(language))} aria-pressed={areSameDay(date, selectedDate)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }}>{date.getDate()}{getHolidaysForDate(date).length > 0 && <i aria-hidden="true" className="xp-clock-popup__holiday-dot" />}</button>
           ) : <span key={`empty-${index}`} aria-hidden="true" />)}
         </div>
         <button type="button" className="xp-clock-popup__open-calendar" onClick={onOpenCalendar}>{language === 'ru' ? 'Открыть календарь' : 'Open Calendar'}</button>
