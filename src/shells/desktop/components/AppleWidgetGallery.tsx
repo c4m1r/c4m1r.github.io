@@ -12,6 +12,8 @@ interface AppleWidgetGalleryProps {
   onPresetChange?: (key: keyof AppleWidgetVisibility, presetId: string) => void;
   webosVisibility: DesktopWidgetsVisibility;
   themeKey: string;
+  classicWinampOpen: boolean;
+  onToggleClassicWinamp: () => void;
 }
 
 const widgets: Array<{
@@ -34,7 +36,7 @@ const widgets: Array<{
   { key: 'gallery', title: 'Art Gallery', titleRu: 'Галерея', description: 'Curated artwork frame', descriptionRu: 'Рамка избранных иллюстраций', icon: Image },
 ];
 
-export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey, webosVisibility }: AppleWidgetGalleryProps) {
+export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey, webosVisibility, classicWinampOpen, onToggleClassicWinamp }: AppleWidgetGalleryProps) {
   const { language } = useApp();
   const locale = ({
     en: { title: 'Desktop Widgets', done: 'Done', nightMode: 'Night mode', lightMode: 'Light mode', on: 'On', off: 'Off', size: 'View / size', compact: 'Compact', standard: 'Standard', wide: 'Wide', clockCalendar: 'Clock & calendar', combinedDescription: 'Combined time and calendar widget', widgets: [['Clock', 'Current time and date'], ['Calendar', 'Current month calendar'], ['Battery', 'Device battery status'], ['Weather', 'Current weather forecast'], ['Winamp Now Playing', 'Compact music player'], ['Quotes', 'Quotes and sayings'], ['Market Rates', 'Currency and market rates'], ['System Monitor', 'CPU, memory and disk usage'], ['News RSS', 'RSS news headlines'], ['Art Gallery', 'Selected artwork']] },
@@ -49,6 +51,11 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
   } as Record<string, { title: string; done: string; nightMode: string; lightMode: string; on: string; off: string; size: string; compact: string; standard: string; wide: string; clockCalendar: string; combinedDescription: string; widgets: string[][] }>)[language] ?? ({
     title: 'Desktop Widgets', done: 'Done', nightMode: 'Night mode', lightMode: 'Light mode', on: 'On', off: 'Off', size: 'View / size', compact: 'Compact', standard: 'Standard', wide: 'Wide', clockCalendar: 'Clock & calendar', combinedDescription: 'Combined time and calendar widget', widgets: [['Clock', 'Current time and date'], ['Calendar', 'Current month calendar'], ['Battery', 'Device battery status'], ['Weather', 'Current weather forecast'], ['Winamp Now Playing', 'Compact music player'], ['Quotes', 'Quotes and sayings'], ['Market Rates', 'Currency and market rates'], ['System Monitor', 'CPU, memory and disk usage'], ['News RSS', 'RSS news headlines'], ['Art Gallery', 'Selected artwork']],
   });
+  const classicWinampLabels: Record<string, { title: string; description: string }> = {
+    ru: { title: 'Классический Winamp', description: 'Главное окно, эквалайзер и плейлист в стиле Winamp 2' },
+    en: { title: 'Classic Winamp', description: 'Classic player, equalizer and playlist windows' },
+  };
+  const classicWinampLabel = classicWinampLabels[language] ?? classicWinampLabels.en;
   const galleryTitle = themeKey === 'win7'
     ? ({
         en: 'Desktop Gadget Gallery', ru: 'Галерея гаджетов', fr: 'Galerie des gadgets', es: 'Galería de gadgets',
@@ -133,6 +140,13 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
           </div>
         </header>
         <div className="apple-widget-gallery__list">
+          <div className={`apple-widget-gallery__item ${classicWinampOpen ? 'is-enabled' : ''}`}>
+            <button type="button" className="apple-widget-gallery__toggle" onClick={onToggleClassicWinamp} aria-pressed={classicWinampOpen}>
+              <span className="apple-widget-gallery__glyph"><Music size={19} strokeWidth={1.8} aria-hidden="true" /></span>
+              <span><strong>{classicWinampLabel.title}</strong><small>{classicWinampLabel.description}</small></span>
+              <i>{classicWinampOpen ? locale.on : locale.off}</i>
+            </button>
+          </div>
           {widgets.filter((widget) => {
             if (themeKey === 'webos') return widget.key !== 'battery' && widget.key !== 'calendar';
             if (visibility.clock && visibility.calendar && widget.key === 'calendar') return false;
