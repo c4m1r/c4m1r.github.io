@@ -34,7 +34,7 @@ export function ControlPanel() {
   const isHalloween = theme === 'halloween';
 
   const [view, setView] = useState<CPView>('categories');
-  const [displayMode, setDisplayMode] = useState<CPDisplayMode>('category');
+  const [displayMode, setDisplayMode] = useState<CPDisplayMode>(() => theme === 'win-98' ? 'classic' : 'category');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
   const [customActive, setCustomActive] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -395,8 +395,8 @@ export function ControlPanel() {
         title: isRu ? 'Оформление и темы' : 'Appearance and Themes',
         emoji: '🎨',
         items: isRu
-          ? ['Экран', 'Панель задач и меню «Пуск»', 'Свойства папки', 'Шрифты']
-          : ['Display', 'Taskbar and Start Menu', 'Folder Options', 'Fonts'],
+          ? ['Экран', 'Панель задач и меню «Пуск»', 'Свойства папки', 'Шрифты', 'Виджеты']
+          : ['Display', 'Taskbar and Start Menu', 'Folder Options', 'Fonts', 'Widgets'],
       },
       {
         id: 'network',
@@ -427,8 +427,8 @@ export function ControlPanel() {
         title: isRu ? 'Производительность и обслуживание' : 'Performance and Maintenance',
         emoji: '🛡️',
         items: isRu
-          ? ['Администрирование', 'Электропитание', 'Система']
-          : ['Administrative Tools', 'Power Options', 'System'],
+          ? ['Администрирование', 'Электропитание', 'Система', 'Диспетчер задач']
+          : ['Administrative Tools', 'Power Options', 'System', 'Task Manager'],
       },
       {
         id: 'hardware',
@@ -483,6 +483,8 @@ export function ControlPanel() {
       { id: 'sounds', title: isRu ? 'Звуковые устройства' : 'Sounds and Audio Devices', emoji: '🔊' },
       { id: 'maintenance', title: isRu ? 'Система' : 'System', emoji: '💻' },
       { id: 'user-accounts', title: isRu ? 'Учетные записи пользователей' : 'User Accounts', emoji: '👤' },
+      { id: 'task-manager', title: isRu ? 'Диспетчер задач' : 'Task Manager', emoji: '📊' },
+      { id: 'widgets', title: isRu ? 'Виджеты рабочего стола' : 'Desktop Widgets', emoji: '🧩' },
     ],
     [isRu]
   );
@@ -1165,11 +1167,29 @@ export function ControlPanel() {
                         {category.title}
                       </h3>
                       <div className="text-xs opacity-80 space-y-0.5">
-                        {category.items.map((item, i) => (
-                          <div key={i} className="hover:underline cursor-pointer">
-                            {item}
-                          </div>
-                        ))}
+                        {category.items.map((item, i) => {
+                          const normalized = item.toLowerCase();
+                          const isTaskManagerItem = normalized.includes('диспетчер задач') || normalized.includes('task manager');
+                          const isWidgetItem = normalized.includes('виджет') || normalized.includes('widget');
+                          return (
+                            <button
+                              key={i}
+                              type="button"
+                              className="block w-full text-left hover:underline cursor-pointer"
+                              onClick={(event) => {
+                                if (isTaskManagerItem) {
+                                  event.stopPropagation();
+                                  window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'task-manager' } }));
+                                } else if (isWidgetItem) {
+                                  event.stopPropagation();
+                                  window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
+                                }
+                              }}
+                            >
+                              {item}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -1197,6 +1217,8 @@ export function ControlPanel() {
                   onClick={() => {
                     if (applet.id === 'appearance') setView('wallpaper');
                     else if (applet.id === 'maintenance') setView('systemInfo');
+                    else if (applet.id === 'task-manager') window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'task-manager' } }));
+                    else if (applet.id === 'widgets') window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
                   }}
                 >
                   <div className="mb-2">

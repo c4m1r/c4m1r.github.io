@@ -14,6 +14,7 @@ import { Notepad } from '../../apps/notepad';
 import { PictureViewer } from '../../apps/pictureview';
 import { ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
+import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
 import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
@@ -917,12 +918,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       icon: normalizedPath === 'My Computer' ? themeAssets.computerIcon : themeAssets.folderIcon,
       width: 720,
       height: 520,
-      content: (
-        <MyComputer
-          currentPath={normalizedPath}
-          onOpenItem={handleOpenFile}
-        />
-      ),
+      content: themeKey === 'win7'
+        ? <Windows7Explorer currentPath={normalizedPath} onOpenItem={handleOpenFile} />
+        : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} />,
     });
     playLaunchSound();
   }, [handleOpenFile, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon]);
@@ -1071,8 +1069,13 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       const appId = (event as CustomEvent<{ appId?: string }>).detail?.appId;
       if (appId) launchApp(appId);
     };
+    const handleOpenWidgetGallery = () => setShowAppleWidgetGallery(true);
     window.addEventListener('app:launch', handleAppLaunch);
-    return () => window.removeEventListener('app:launch', handleAppLaunch);
+    window.addEventListener('desktop:open-widget-gallery', handleOpenWidgetGallery);
+    return () => {
+      window.removeEventListener('app:launch', handleAppLaunch);
+      window.removeEventListener('desktop:open-widget-gallery', handleOpenWidgetGallery);
+    };
   }, [launchApp]);
 
   useEffect(() => {

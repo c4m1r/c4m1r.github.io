@@ -15,7 +15,7 @@ import type { MyComputerProps } from './MyComputer';
 const PATHS = {
   desktop: 'C:\\Documents and Settings\\C4m1r\\Desktop',
   documents: 'C:\\Documents and Settings\\C4m1r\\My Documents',
-  pictures: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures',
+  pictures: 'C:\\Documents and Settings\\C4m1r\\My Pictures',
   music: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music',
 } as const;
 

@@ -362,7 +362,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     component: () => <TaskManager windows={[]} />,
     defaultWindow: { width: 600, height: 500 },
     showInStartMenu: true,
-    showOnDesktop: true,
+    showOnDesktop: false,
   },
   'about': {
     id: 'about',

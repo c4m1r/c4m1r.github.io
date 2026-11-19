@@ -284,8 +284,8 @@
 | DOCS-01 | Create “Мои документы” and reorganize personal apps | 45% | Added the My Documents folder with Wiki, My Block, About Me and My Projects entries; app shortcuts route through the desktop launcher. Need user-facing polish and verification. |
 | PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 40% | Added My Pictures folder with the repository picture tree exposed as individual file entries; Bliss.jpg is now inside the folder and no longer on the desktop. Viewer/library unification remains. |
 | PICTURES-02 | Merge Picture Viewer and gallery browsing | 55% | Picture Viewer now has a small gallery-mode button in both Apple and Windows chrome; its library grid uses the shared gallery inventory, and the My Pictures app is now a compatibility entry point into that same viewer. Browser polish and validation remain. |
-| CONTROL-01 | Control Panel desktop shortcut and native categories | 25% | Task Manager's app metadata now points to TaskManager rather than ControlPanel; the shell's existing dedicated Task Manager surface remains the actual launcher. Control Panel categories and shortcuts are still pending. |
-| CONTROL-02 | Restore Explorer/Control Panel styling per OS | 20% | Existing theme-specific Explorer styles/assets identified. Need complete per-OS fidelity and verify all shell variants. |
+| CONTROL-01 | Control Panel desktop shortcut and native categories | 45% | Control Panel desktop shortcut already exists. Added Task Manager to the System/Performance category and Classic View, plus a Widget Gallery entry that opens the existing widget manager. Task Manager's duplicate desktop shortcut is hidden. |
+| CONTROL-02 | Restore Explorer/Control Panel styling per OS | 35% | Windows 7 now opens its dedicated Windows7Explorer implementation; Windows XP continues through its XP-styled MyComputer view. Windows 98 and remaining OS-specific fidelity still need refinement. |
 | CONTROL-03 | Widget shortcut and remaining system settings | 15% | Widget gallery exists. Need expose it from Control Panel and provide consistent links to relevant desktop/system settings. |
 | THEMES-01 | Add all gallery images to Appearance & Themes | 10% | Gallery collection exists, but its complete image inventory is not yet available in the theme picker. |
 | DOCS-02 | Maintain an accurate task register | 90% | This active workstream and implementation percentages are now documented. Keep percentages synchronized with actual commits and do not mark browser-only behavior complete before user verification. |
@@ -345,10 +345,10 @@
 
 ### CONTROL-01/02/03 — Control Panel
 - Add a desktop shortcut to Control Panel in each relevant OS.
-- Restore native Explorer-style presentation and visual language for each OS theme.
+- Windows 7 now uses the dedicated Windows 7 Explorer surface; Windows XP keeps the XP-styled Explorer. Complete and refine the native Explorer view for Windows 98 and the other supported OS themes.
 - Organize settings into recognizable categories (e.g. System and Security, Appearance and Personalization, Network and Internet, Hardware and Sound, Programs, User Accounts, Accessibility); adapt names/layout to the active OS rather than forcing one Windows version everywhere.
-- Put Task Manager under the System category and repair its app ID/launcher mapping so it opens Task Manager, not Control Panel.
-- Add a direct shortcut to the Widget Gallery and links to the other relevant system settings.
+- Task Manager is now exposed from the System/Performance category and Classic View, and its app registry no longer maps it to Control Panel. Keep its standalone desktop shortcut hidden to avoid duplication.
+- Added a Widget Gallery entry to the Appearance category and Classic View; it opens the existing widget manager through a shell event. Add any remaining system-setting shortcuts as their underlying surfaces are completed.
 
 ### THEMES-01 — Appearance and Themes
 - Include all images from the site's gallery as available desktop backgrounds/theme imagery.
