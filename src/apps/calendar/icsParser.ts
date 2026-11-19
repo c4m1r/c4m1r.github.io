@@ -9,7 +9,7 @@ export interface CalendarEvent {
 }
 
 function decodeICSText(value: string) {
-  return value.replace(/\\\\n/gi, '\n').replace(/\\\\,/g, ',').replace(/\\\\;/g, ';').replace(/\\\\\\\\/g, '\\');
+  return value.replace(/\\n/gi, '\n').replace(/\\,/g, ',').replace(/\\;/g, ';').replace(/\\\\/g, '\\');
 }
 
 function parseDateValue(value: string, timeZone?: string): Date | null {
