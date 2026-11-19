@@ -296,19 +296,34 @@ async function replaceSourceArticles(sourceUrl: string, articles: RssArticle[]):
     const tx = db.transaction(STORE_ARTICLES, 'readwrite');
     const store = tx.objectStore(STORE_ARTICLES);
     const request = store.openCursor();
+
     request.onsuccess = () => {
       const cursor = request.result;
-      if (!cursor) return;
-      if ((cursor.value as RssArticle).sourceUrl === sourceUrl) cursor.delete();
-      cursor.continue();
-    };
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
-  });
-  await saveArticlesToDatabase(articles);
-}
+      if (cursor) {
+        if ((cursor.value as RssArticle).sourceUrl === sourceUrl) cursor.delete();
+        cursor.continue();
+        return;
+      }
 
+      // Delete + insert happen in one IndexedDB transaction. If any write fails,
+      // the browser rolls the transaction back and the previous cache survives.
+      for (const article of articles) store.put(article);
+
+      const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+      store.index('pubDate').openCursor(IDBKeyRange.upperBound(cutoff)).onsuccess = (event) => {
+        const oldRecord = (event.target as IDBRequest<IDBCursorWithValue>).result;
+        if (oldRecord) {
+          oldRecord.delete();
+          oldRecord.continue();
+        }
+      };
+    };
+
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error ?? new Error('RSS cache transaction failed')); };
+    tx.onabort = () => { db.close(); reject(tx.error ?? new Error('RSS cache transaction aborted')); };
+  });
+}
 export async function saveArticlesToDatabase(articles: RssArticle[]): Promise<void> {
   if (!articles.length) return;
   try {

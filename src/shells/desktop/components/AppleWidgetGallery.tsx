@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useApp } from '../../../contexts/useApp';
 import { type AppleWidgetVisibility } from './AppleDesktopWidgets';
 import { type DesktopWidgetsVisibility } from '../../../system/widgets/types';
@@ -35,6 +36,32 @@ const widgets: Array<{
 export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey, webosVisibility }: AppleWidgetGalleryProps) {
   const { language } = useApp();
   const isRu = language === 'ru';
+  const [selectedPresets, setSelectedPresets] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!open || typeof window === 'undefined') return;
+    try {
+      const raw = localStorage.getItem('desktop-widget-layout-v2:' + themeKey);
+      const saved = raw ? JSON.parse(raw) as Record<string, { preset?: string }> : {};
+      setSelectedPresets(Object.fromEntries(Object.entries(saved).flatMap(([id, value]) =>
+        typeof value?.preset === 'string' ? [[id, value.preset]] : []
+      )));
+    } catch {
+      setSelectedPresets({});
+    }
+  }, [open, themeKey]);
+
+  const combinedClock = themeKey === 'webos' ? Boolean(webosVisibility.clock) : visibility.clock && visibility.calendar;
+  const getPresetValue = (key: keyof AppleWidgetVisibility) => {
+    const id = (key === 'clock' || key === 'calendar') && combinedClock ? 'clockCalendar' : key;
+    return selectedPresets[id] ?? 'standard';
+  };
+  const handlePresetChange = (key: keyof AppleWidgetVisibility, presetId: string) => {
+    const id = (key === 'clock' || key === 'calendar') && combinedClock ? 'clockCalendar' : key;
+    setSelectedPresets((current) => ({ ...current, [id]: presetId }));
+    onPresetChange?.(key, presetId);
+  };
+
   if (!open) return null;
 
   return (
@@ -57,7 +84,7 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
                 </button>
                 <label className="apple-widget-gallery__preset">
                   <span>{isRu ? 'Вид / размер' : 'View / size'}</span>
-                  <select defaultValue="standard" disabled={!isEnabled} onChange={(event) => onPresetChange?.(widget.key, event.target.value)}>
+                  <select value={getPresetValue(widget.key)} disabled={!isEnabled} onChange={(event) => handlePresetChange(widget.key, event.target.value)}>
                     <option value="compact">{isRu ? 'Компактный' : 'Compact'}</option>
                     <option value="standard">{isRu ? 'Стандартный' : 'Standard'}</option>
                     <option value="wide">{isRu ? 'Широкий' : 'Wide'}</option>
