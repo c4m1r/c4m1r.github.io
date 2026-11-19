@@ -60,11 +60,11 @@ export function CalendarApp() {
     const first = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1);
     const start = startOfWeek(first, monday);
     return Array.from({ length: 42 }, (_, index) => addDays(start, index));
-  }, [visibleMonth.getFullYear(), visibleMonth.getMonth(), monday]);
+  }, [visibleMonth, monday]);
   const monthEvents = useMemo(() => getCalendarEventsForRange(
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1),
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0)
-  ), [events, visibleMonth.getFullYear(), visibleMonth.getMonth()]);
+  ), [events, visibleMonth]);
   const monthLabel = visibleMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
   const weekdayLabels = useMemo(() => Array.from({ length: 7 }, (_, index) =>
     addDays(startOfWeek(new Date(2024, 0, 7), monday), index).toLocaleDateString(locale, { weekday: 'short' })
