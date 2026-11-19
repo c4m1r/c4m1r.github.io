@@ -409,7 +409,7 @@ const isComputerRootPath = (path: string) =>
     ['my computer', 'computer', 'this pc', 'компьютер', 'мой компьютер'].includes(path.trim().toLocaleLowerCase());
 
 export async function loadProjectMarkdown(path: string): Promise<string> {
-    const normalized = path.replace(/\\\\/g, '/').replace(/^\\/+/, '');
+    const normalized = path.split('\\').join('/').replace(/^\/+/, '');
     const moduleKey = `../content/${normalized}`;
     const loader = projectModules[moduleKey] ?? aboutProjectModules[moduleKey];
     if (!loader) throw new Error(`Project article not found: ${path}`);
