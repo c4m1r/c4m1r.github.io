@@ -90,9 +90,26 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
     return null;
   }, []);
 
+  const getPlacementBounds = useCallback((bounds: DOMRect, current: Record<string, Placement>) => {
+    if (themeKey !== 'webos') return bounds;
+    const layoutItems = itemsRef.current;
+    const baseWidth = Math.min(...layoutItems.map((item) => item.presets.find((preset) => preset.id === 'compact')?.width ?? item.presets[0]?.width ?? 260));
+    const columns = bounds.width >= 2 * (baseWidth + GAP) + 24 ? 2 : 1;
+    const maxHeight = Math.max(140, ...layoutItems.map((item) => getPreset(item, current[item.id])?.height ?? 140));
+    const savedBottom = Math.max(0, ...layoutItems.map((item) => {
+      const placement = current[item.id];
+      const preset = getPreset(item, placement);
+      return placement && preset ? placement.y + preset.height : 0;
+    }));
+    const rows = Math.ceil(layoutItems.length / columns);
+    const height = Math.max(bounds.height, rows * (maxHeight + GAP) + 16, savedBottom + 16);
+    return height === bounds.height ? bounds : ({ ...bounds, height } as DOMRect);
+  }, [getPreset, themeKey]);
+
   const normalizePlacements = useCallback((current: Record<string, Placement>, bounds: DOMRect) => {
     const next: Record<string, Placement> = {};
     const occupied: Rect[] = [];
+    const layoutBounds = getPlacementBounds(bounds, current);
     const layoutItems = itemsRef.current;
     const ordered = [...layoutItems].sort((a, b) => {
       const pa = current[a.id]; const pb = current[b.id];
@@ -113,9 +130,9 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
       if (!saved && (themeKey === 'webos' || bounds.width < 760 || layoutItems.length > 7)) {
         preset = item.presets.find((option) => option.id === 'compact') ?? preset;
       }
-      if (preset.width > bounds.width || preset.height > bounds.height) {
+      if (preset.width > bounds.width || preset.height > layoutBounds.height) {
         const compact = item.presets.find((option) => option.id === 'compact');
-        if (compact && compact.width <= bounds.width && compact.height <= bounds.height) preset = compact;
+        if (compact && compact.width <= bounds.width && compact.height <= layoutBounds.height) preset = compact;
       }
       let placement: Placement;
       if (saved) {
@@ -132,15 +149,15 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
         };
         columnBottoms[column] += preset.height + GAP;
       }
-      const size = getSize(item, placement, bounds);
-      const position = findFreePosition(placement, size, bounds, occupied);
+      const size = getSize(item, placement, layoutBounds);
+      const position = findFreePosition(placement, size, layoutBounds, occupied);
       // Never force a widget into an occupied rectangle when the desktop is full.
       if (!position) return;
       next[item.id] = { ...placement, ...position, preset: preset.id };
       occupied.push({ ...position, ...size });
     });
     return next;
-  }, [findFreePosition, getPreset, getSize, themeKey]);
+  }, [findFreePosition, getPlacementBounds, getPreset, getSize, themeKey]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -190,17 +207,18 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
     const placement = placements[drag.id];
     if (!item || !placement) return;
     const bounds = canvas.getBoundingClientRect();
-    const size = getSize(item, placement, bounds);
-    let x = Math.max(0, Math.min(drag.originX + event.clientX - drag.startX, bounds.width - size.width));
-    let y = Math.max(0, Math.min(drag.originY + event.clientY - drag.startY, bounds.height - size.height));
+    const layoutBounds = getPlacementBounds(bounds, placements);
+    const size = getSize(item, placement, layoutBounds);
+    let x = Math.max(0, Math.min(drag.originX + event.clientX - drag.startX, layoutBounds.width - size.width));
+    let y = Math.max(0, Math.min(drag.originY + event.clientY - drag.startY, layoutBounds.height - size.height));
     if (x < SNAP) x = 0;
     if (y < SNAP) y = 0;
     if (bounds.width - x - size.width < SNAP) x = bounds.width - size.width;
-    if (bounds.height - y - size.height < SNAP) y = bounds.height - size.height;
+    if (layoutBounds.height - y - size.height < SNAP) y = layoutBounds.height - size.height;
     const candidate = { x, y, ...size };
     const collision = items.some((other) => {
       if (other.id === drag.id || !placements[other.id]) return false;
-      const otherSize = getSize(other, placements[other.id], bounds);
+      const otherSize = getSize(other, placements[other.id], layoutBounds);
       return intersects(candidate, { ...placements[other.id], ...otherSize });
     });
     if (!collision) setPlacements((current) => ({ ...current, [drag.id]: { ...current[drag.id], x, y } }));
@@ -224,17 +242,18 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
     setPlacements((current) => {
       const previous = current[item.id] ?? { x: 8, y: 8, preset: item.defaultPreset };
       const proposed = { ...previous, preset: presetId };
-      const size = getSize(item, proposed, bounds);
+      const layoutBounds = getPlacementBounds(bounds, current);
+      const size = getSize(item, proposed, layoutBounds);
       const occupied = itemsRef.current.flatMap((other) => {
         if (other.id === item.id || !current[other.id]) return [];
-        return [{ ...current[other.id], ...getSize(other, current[other.id], bounds) }];
+        return [{ ...current[other.id], ...getSize(other, current[other.id], layoutBounds) }];
       });
-      const position = findFreePosition(previous, size, bounds, occupied);
+      const position = findFreePosition(previous, size, layoutBounds, occupied);
       if (!position) return current;
       const updated = { ...current, [item.id]: { ...proposed, ...position } };
       return normalizePlacements(updated, bounds);
     });
-  }, [findFreePosition, getSize, normalizePlacements]);
+  }, [findFreePosition, getPlacementBounds, getSize, normalizePlacements]);
 
   useEffect(() => {
     const handlePresetRequest = (event: Event) => {
