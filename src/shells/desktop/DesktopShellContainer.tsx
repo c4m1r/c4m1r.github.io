@@ -221,6 +221,15 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       isWebOS ? WEBOS_DEFAULT_WIDGETS_VISIBILITY : DEFAULT_WIDGETS_VISIBILITY,
     );
   });
+
+  useEffect(() => {
+    const isWebOS = theme === 'webos';
+    const storageKey = isWebOS ? WIDGETS_STORAGE_KEY : `${WIDGETS_STORAGE_KEY}_${theme}`;
+    setWebosWidgetVisibility(getStoredWidgetsVisibility(
+      storageKey,
+      isWebOS ? WEBOS_DEFAULT_WIDGETS_VISIBILITY : DEFAULT_WIDGETS_VISIBILITY,
+    ));
+  }, [theme]);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
