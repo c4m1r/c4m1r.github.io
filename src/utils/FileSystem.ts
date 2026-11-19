@@ -252,9 +252,9 @@ export const getFileSystemItemFromPath = (path: string): FileSystemItem | null =
 
     const normalizedPath = path
         .trim()
-        .replace(/^Local Disk \\(C:\\)$/i, 'C:')
-        .replace(/[\\\\/]+/g, '/')
-        .replace(/\\/+$/g, '');
+        .replace(/^Local Disk \(C:\)$/i, 'C:')
+        .replace(/[\\/]+/g, '/')
+        .replace(/\/+$/g, '');
     const parts = normalizedPath.split('/').filter(Boolean);
     if (parts.length > 0 && isComputerRootPath(parts[0])) parts.shift();
 
