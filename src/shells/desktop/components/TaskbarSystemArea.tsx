@@ -3,7 +3,7 @@ import { type Language } from '../../../i18n/translations';
 import { useApp } from '../../../contexts/useApp';
 import { SystemActionMenu } from '../../../system/actions/SystemActionMenu';
 import { ensureCalendarEvents, getCalendarEventsForDate, moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
-import { getHolidaysForDate, isSelectedCountryWeekend, isMakeupWorkday, NATIONAL_COUNTRIES, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
+import { getHolidaysForDate, getHolidayTitle, isSelectedCountryWeekend, isMakeupWorkday, NATIONAL_COUNTRIES, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
 
 export interface TaskbarSystemAreaProps {
   language: Language;
@@ -113,7 +113,7 @@ function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { langua
             const holidays = getHolidaysForDate(date);
             const dayOff = isSelectedCountryWeekend(date, labourCountries);
             const makeupWork = isMakeupWorkday(date, labourCountries);
-            const holidayNames = holidays.map((holiday) => `${NATIONAL_COUNTRIES.find((country) => country.code === holiday.country)?.flag ?? ''} ${holiday.title}`);
+            const holidayNames = holidays.map((holiday) => `${NATIONAL_COUNTRIES.find((country) => country.code === holiday.country)?.flag ?? ''} ${getHolidayTitle(holiday, language)}`);
             const tooltip = [dayOff ? (language === 'ru' ? 'Выходной' : 'Day off') : '', makeupWork ? (language === 'ru' ? 'Рабочий день' : 'Working day') : '', ...holidayNames, ...getCalendarEventsForDate(date).map((event) => event.summary)].filter(Boolean).join(', ');
             return <button type="button" key={date.toISOString()} className={`${areSameDay(date, time) ? 'is-today' : ''} ${areSameDay(date, selectedDate) ? 'is-selected' : ''} ${dayOff ? 'is-labour-weekend' : ''} ${makeupWork ? 'is-makeup-workday' : ''} ${holidays.length ? 'has-national-holiday' : ''}`} title={tooltip || (areSameDay(date, time) ? labels.today : date.toLocaleDateString(language))} aria-pressed={areSameDay(date, selectedDate)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }}>{date.getDate()}{(holidays.length > 0 || dayOff || makeupWork) && <i aria-hidden="true" className="xp-clock-popup__holiday-dot" />}</button>;
           })() : <span key={`empty-${index}`} aria-hidden="true" />)}
