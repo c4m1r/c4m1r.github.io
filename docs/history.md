@@ -548,3 +548,8 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - Added persistent desktop wallpaper placement preferences: Fill (`cover`), Fit (`contain`), Stretch (`100% 100%`), Tile (`repeat`) and Center (`auto`, centered). Control Panel emits a dedicated fit-change event; DesktopShellContainer applies the selected mode without duplicating wallpaper state. Storage reads are guarded for restricted environments.
 - DOOM II header now displays `Doom II` with the smaller `Hell on Earth` subtitle, keeping the description and right-aligned build/external controls on the same compact row.
 - Richer image folder/tag grouping and cross-OS/reload visual acceptance remain open. Latest CI for the final code/docs commit must be checked before calling this verified.
+
+
+### 2026-11-19 — Automated verification checkpoint
+- GitHub Actions build job for code commit `c5c6bd39deb5179063e551228423f50ef43bc36c` passed context-boundary verification, TypeScript, ESLint, Vite build and build-output verification.
+- The Pages deploy job was queued after the successful build at the time of this note; verify its final result separately. No browser/manual OS acceptance was run.
