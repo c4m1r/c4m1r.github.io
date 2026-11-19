@@ -153,8 +153,10 @@ export function CalendarApp() {
     ...monthEvents.map((event) => ({ type: 'event' as const, date: event.startDate, event })),
     ...monthHolidays.map((holiday) => ({ type: 'holiday' as const, date: holiday.date, holiday })),
     ...Array.from({ length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() }, (_, index) => new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
-      .filter((date) => isSelectedCountryWeekend(date, labourCountries) || isMakeupWorkday(date, labourCountries))
-      .map((date) => ({ type: isSelectedCountryWeekend(date, labourCountries) ? 'dayoff' as const : 'makeup' as const, date })),
+      .flatMap((date) => [
+        ...(isSelectedCountryWeekend(date, labourCountries) ? [{ type: 'dayoff' as const, date }] : []),
+        ...(isMakeupWorkday(date, labourCountries) ? [{ type: 'makeup' as const, date }] : []),
+      ]),
   ].sort((a, b) => a.date.getTime() - b.date.getTime()), [monthEvents, monthHolidays, visibleMonth, labourCountries]);
   const monthLabel = visibleMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
   const weekdayLabels = useMemo(() => Array.from({ length: 7 }, (_, index) =>
