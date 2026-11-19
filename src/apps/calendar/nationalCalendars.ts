@@ -7,7 +7,7 @@ export const NATIONAL_COUNTRIES: Array<{ code: CountryCode; flag: string; names:
   { code: 'BY', flag: '🇧🇾', names: { ru: 'Беларусь', en: 'Belarus', fr: 'Biélorussie', es: 'Bielorrusia', zh: '白俄罗斯', ja: 'ベラルーシ', ko: '벨라루스' } },
   { code: 'CN', flag: '🇨🇳', names: { ru: 'Китай', en: 'China', fr: 'Chine', es: 'China', zh: '中国', ja: '中国', ko: '중국' } },
   { code: 'JP', flag: '🇯🇵', names: { ru: 'Япония', en: 'Japan', fr: 'Japon', es: 'Japón', zh: '日本', ja: '日本', ko: '일본' } },
-  { code: 'KR', flag: '🇰🇷', names: { ru: 'Корея', en: 'Korea', fr: 'Corée', es: 'Corea', zh: '韩国', ja: '韓国', ko: '한국' } },
+  { code: 'KR', flag: '🇰🇷', names: { ru: 'Южная Корея', en: 'South Korea', fr: 'Corée du Sud', es: 'Corea del Sur', zh: '韩国', ja: '韓国', ko: '대한민국' } },
   { code: 'GB', flag: '🇬🇧', names: { ru: 'Великобритания', en: 'United Kingdom', fr: 'Royaume-Uni', es: 'Reino Unido', zh: '英国', ja: 'イギリス', ko: '영국' } },
 ];
 
