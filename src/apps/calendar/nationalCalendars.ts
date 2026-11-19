@@ -50,7 +50,7 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   if (cached) return cached;
   const result: NationalHoliday[]=[];
   for (const country of NATIONAL_COUNTRIES) {
-    if (['JP','CN','KR','GB'].includes(country.code) && (year===2026 || year===2027)) continue;
+    if (country.code === 'GB' || (['JP','CN','KR'].includes(country.code) && (year===2026 || year===2027))) continue;
     for (const [month,day,title,kind] of fixed[country.code]) {
       result.push({ id:`holiday-${country.code}-${year}-${month}-${day}`, date:new Date(year,month-1,day), country:country.code, title, kind });
     }
@@ -95,10 +95,8 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
     add('JP',new Date(year,7,15),'終戦の日 · День окончания войны','memorial');
   }
   // Annual memorial markers remain separate from labour-day status.
-  if(year===2026 || year===2027){
-    add('CN',new Date(year,11,13),'国家公祭日 · День памяти жертв Нанкинской резни','memorial');
-    add('GB',new Date(year,10,11),'Remembrance Day · День поминовения','memorial');
-  }
+  add('GB',new Date(year,10,11),'Remembrance Day · День поминовения','memorial');
+  if(year===2026 || year===2027) add('CN',new Date(year,11,13),'国家公祭日 · День памяти жертв Нанкинской резни','memorial');
   // China: official State Council holiday arrangements for 2026 and 2027.
   const addRange=(country:CountryCode,startMonth:number,startDay:number,endMonth:number,endDay:number,title:string,kind:NationalHoliday['kind']='public')=>{
     const cursor=new Date(year,startMonth-1,startDay); const end=new Date(year,endMonth-1,endDay);
@@ -202,11 +200,17 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   add('GB',new Date(year,0,1),'New Year’s Day');
   add('GB',new Date(year,11,25),'Christmas Day');
   add('GB',new Date(year,11,26),'Boxing Day');
-  if(year===2026){
-    add('GB',new Date(year,11,28),'Boxing Day (substitute day)');
-  } else if(year===2027){
-    add('GB',new Date(year,11,27),'Christmas Day (substitute day)');
-    add('GB',new Date(year,11,28),'Boxing Day (substitute day)');
+  const ukOccupied=new Set([dateKey(new Date(year,11,25)),dateKey(new Date(year,11,26))]);
+  const ukSubstituteDates=new Set<string>();
+  for(const [month,day,title] of [[0,1,'New Year’s Day (substitute day)'],[11,25,'Christmas Day (substitute day)'],[11,26,'Boxing Day (substitute day)']] as Array<[number,number,string]>){
+    const holidayDate=new Date(year,month,day);
+    if(holidayDate.getDay()!==0 && holidayDate.getDay()!==6) continue;
+    const substitute=new Date(holidayDate);
+    do { substitute.setDate(substitute.getDate()+1); }
+    while(substitute.getDay()===0 || substitute.getDay()===6 || ukOccupied.has(dateKey(substitute)) || ukSubstituteDates.has(dateKey(substitute)));
+    const key=dateKey(substitute);
+    ukSubstituteDates.add(key);
+    add('GB',substitute,title);
   }
   result.sort((a,b)=>a.date.getTime()-b.date.getTime());
   nationalHolidayCache.set(year, result);
