@@ -16,6 +16,8 @@ export interface RssArticle {
   sourceTitle: string;
   sourceUrl: string;
   imageUrl?: string;
+  /** Full HTML/text payload supplied by the feed, when available. */
+  content?: string;
 }
 
 export const DEFAULT_RSS_SOURCES: Array<{ category: string; url: string; title: string }> = [
@@ -200,8 +202,9 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
       const data = await res.json();
       if (data.status === 'ok' && Array.isArray(data.items)) {
         for (const item of data.items) {
-          const rawDesc = item.description || item.content || '';
-          const img = item.thumbnail || item.enclosure?.link || extractImage(rawDesc);
+          const rawContent = item.content || item.content_encoded || item['content:encoded'] || item.description || '';
+          const rawDesc = item.description || rawContent;
+          const img = item.thumbnail || item.enclosure?.link || extractImage(rawContent) || extractImage(rawDesc);
           const cleanDesc = cleanHtml(rawDesc).slice(0, 320);
 
           articles.push({
@@ -214,6 +217,7 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
             sourceTitle: source.title,
             sourceUrl: source.url,
             imageUrl: img,
+            content: typeof rawContent === 'string' ? rawContent : '',
           });
         }
         if (articles.length > 0) return articles;
@@ -240,10 +244,13 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
             elem.querySelector('link')?.getAttribute('href') ||
             elem.querySelector('link')?.textContent ||
             source.url;
+          const encodedContent = elem.getElementsByTagNameNS('*', 'encoded')[0]?.textContent || '';
+          const contentElement = elem.getElementsByTagNameNS('*', 'content')[0];
+          const fullContent = encodedContent || contentElement?.textContent || '';
           const descRaw =
             elem.querySelector('description')?.textContent ||
             elem.querySelector('summary')?.textContent ||
-            elem.querySelector('content')?.textContent ||
+            fullContent ||
             '';
           const pubDate =
             elem.querySelector('pubDate')?.textContent ||
@@ -268,6 +275,7 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
             sourceTitle: source.title,
             sourceUrl: source.url,
             imageUrl: img,
+            content: fullContent || descRaw,
           });
         });
       }
@@ -277,6 +285,26 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
   }
 
   return articles;
+}
+
+async function replaceSourceArticles(sourceUrl: string, articles: RssArticle[]): Promise<void> {
+  if (!articles.length) return;
+  const db = await openDatabase();
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction(STORE_ARTICLES, 'readwrite');
+    const store = tx.objectStore(STORE_ARTICLES);
+    const request = store.openCursor();
+    request.onsuccess = () => {
+      const cursor = request.result;
+      if (!cursor) return;
+      if ((cursor.value as RssArticle).sourceUrl === sourceUrl) cursor.delete();
+      cursor.continue();
+    };
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+  await saveArticlesToDatabase(articles);
 }
 
 export async function saveArticlesToDatabase(articles: RssArticle[]): Promise<void> {
@@ -341,31 +369,37 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     }
   }
 
-  // Fetch all enabled feeds concurrently in chunks of 5
+  // Refresh each source independently. Replace stale rows only when that source
+  // returned usable articles; a failed feed must not erase its last good cache.
   const allArticles: RssArticle[] = [];
   const chunkSize = 5;
   for (let i = 0; i < sources.length; i += chunkSize) {
     const chunk = sources.slice(i, i + chunkSize);
-    const results = await Promise.allSettled(chunk.map((s) => fetchFeedArticles(s)));
-    for (const res of results) {
-      if (res.status === 'fulfilled' && res.value.length > 0) {
-        allArticles.push(...res.value);
+    const results = await Promise.allSettled(chunk.map(async (source) => ({
+      source,
+      articles: await fetchFeedArticles(source),
+    })));
+    for (const result of results) {
+      if (result.status !== 'fulfilled' || result.value.articles.length === 0) continue;
+      allArticles.push(...result.value.articles);
+      try {
+        await replaceSourceArticles(result.value.source.url, result.value.articles);
+      } catch {
+        // Keep the previous cache if IndexedDB replacement fails.
       }
     }
   }
 
-  // Deduplicate by link or id
   const seen = new Set<string>();
   const uniqueArticles: RssArticle[] = [];
-  for (const a of allArticles) {
-    if (!seen.has(a.link)) {
-      seen.add(a.link);
-      uniqueArticles.push(a);
+  for (const article of allArticles) {
+    const key = article.link || article.id;
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueArticles.push(article);
     }
   }
-
   uniqueArticles.sort((a, b) => normalizePublicationDate(b.pubDate).localeCompare(normalizePublicationDate(a.pubDate)));
-  await saveArticlesToDatabase(uniqueArticles);
 
   return uniqueArticles.length > 0 ? uniqueArticles : await getCachedArticlesFromDatabase();
 }
