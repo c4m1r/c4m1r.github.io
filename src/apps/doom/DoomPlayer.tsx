@@ -83,7 +83,7 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
           loading="eager"
-          onError={() => { setFrameLoaded(false); setFrameFailed(true); }}
+          onError={() => setFrameFailed(true)}
         />
         {frameFailed && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/95 p-6 text-center text-white">
