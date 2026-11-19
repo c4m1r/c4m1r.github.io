@@ -180,10 +180,10 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
   'pictures': {
     id: 'pictures',
     title: {
-      en: 'My Pictures',
-      ru: 'Мои изображения',
-      fr: 'Mes images',
-      es: 'Mis imágenes',
+      en: 'Picture Viewer',
+      ru: 'Просмотр изображений',
+      fr: 'Visionneuse d’images',
+      es: 'Visor de imágenes',
       zh: '我的图片',
       ja: 'マイ ピクチャ',
       ko: '내 그림',
