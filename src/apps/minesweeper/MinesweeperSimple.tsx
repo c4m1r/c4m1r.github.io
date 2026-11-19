@@ -103,9 +103,39 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
       if (gameState === 'won' || gameState === 'lost') return;
 
       const newBoard = board.map((r) => r.map((c) => ({ ...c })));
-      const cell = newBoard[row][col];
+      let cell = newBoard[row][col];
 
       if (cell.isRevealed || cell.isFlagged || cell.isQuestioned) return;
+
+      // Classic Minesweeper never ends on the opening click: move that mine
+      // to a free square and rebuild all neighbor counts before revealing.
+      if (gameState === 'idle' && cell.isMine) {
+        cell.isMine = false;
+        const candidates: Array<[number, number]> = [];
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if ((r !== row || c !== col) && !newBoard[r][c].isMine) candidates.push([r, c]);
+          }
+        }
+        if (candidates.length > 0) {
+          const [mineRow, mineCol] = candidates[Math.floor(Math.random() * candidates.length)];
+          newBoard[mineRow][mineCol].isMine = true;
+        }
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && newBoard[nr][nc].isMine) count++;
+              }
+            }
+            newBoard[r][c].neighborMines = count;
+          }
+        }
+        cell = newBoard[row][col];
+      }
 
       if (gameState === 'idle') {
         setGameState('playing');
@@ -184,11 +214,7 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
 
       if (cell.isRevealed) return;
 
-      if (gameState === 'idle') {
-        setGameState('playing');
-        setTimerActive(true);
-      }
-
+      // Placing a flag does not start the clock; the first revealed cell does.
       if (!cell.isFlagged && !cell.isQuestioned) {
         cell.isFlagged = true;
         setFlagCount((count) => Math.max(0, count - 1));
