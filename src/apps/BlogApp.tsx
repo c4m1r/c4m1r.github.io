@@ -12,7 +12,7 @@ type HelpDocument = {
   title: string;
   content: string;
   category: string;
-  source: 'blog' | 'wiki' | 'category';
+  source: 'blog' | 'wiki' | 'category' | 'site';
   date?: string;
 };
 
