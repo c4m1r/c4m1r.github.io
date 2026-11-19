@@ -11,6 +11,12 @@ import snakeGameIcon from '../apps/games/assets/snake-icon.svg';
 import memoryGameIcon from '../apps/games/assets/memory-icon.svg';
 import { PROJECT_PLAYLIST } from '../apps/mediaplayer/playlist';
 import winampIcon from '../themes/winxp/assets/icons/winamp.png';
+import dateTimeIcon from '../themes/winxp/assets/icons/Date and Time.png';
+import terminalIcon from '../themes/winxp/assets/icons/cmd.png';
+import helpIcon from '../themes/winxp/assets/icons/help.png';
+import performanceMonitorIcon from '../themes/winxp/assets/icons/Performance Monitor.png';
+import rssNewsIcon from '../assets/icons/rss-icon.svg';
+import currencyDollarIcon from '../assets/icons/currency-dollar-icon.svg';
 
 export interface FileSystemItem {
     id: string;
@@ -388,12 +394,23 @@ if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
     };
     const desktop = c4m1rProfile.children?.['Desktop'];
     if (desktop?.children) {
+        const programFiles = cDrive.children?.['Program Files'];
+        const gameFolder = programFiles?.children?.['Games'];
+        const programsFolder = programFiles?.children?.['Programs'];
+        const flattenPublisherShortcuts = (folder?: FileSystemItem): Record<string, FileSystemItem> => {
+            const shortcuts = Object.values(folder?.children ?? {}).flatMap((entry) =>
+                entry.type === 'folder' ? Object.values(entry.children ?? {}) : [entry]
+            ).filter((entry) => entry.type === 'file' && Boolean(entry.appId));
+            return Object.fromEntries(shortcuts.map((entry) => [entry.name, entry]));
+        };
+
         desktop.children['Игры'] = {
             id: 'desktop-games-shortcut',
             name: 'Игры',
             type: 'folder',
             icon: gamesFolderIcon,
             targetPath: 'C:\\Program Files\\Games',
+            children: flattenPublisherShortcuts(gameFolder),
         };
         desktop.children['Программы'] = {
             id: 'desktop-programs-shortcut',
@@ -401,6 +418,7 @@ if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
             type: 'folder',
             icon: folderIcon,
             targetPath: 'C:\\Program Files\\Programs',
+            children: flattenPublisherShortcuts(programsFolder),
         };
     }
 }
@@ -457,7 +475,11 @@ export const getFileSystemItemFromPath = (path: string): FileSystemItem | null =
                 const targetParts = match.targetPath.replace(/[\\/]+/g, '/').split('/').filter(Boolean);
                 const target = resolveParts(initialFileSystem['My Computer'], targetParts);
                 if (!target) return null;
-                current = target;
+                // Keep the canonical Program Files target while showing its launchable
+                // shortcuts as a flat desktop-folder view.
+                current = match.children
+                    ? { ...target, id: match.id, name: match.name, icon: match.icon, children: match.children }
+                    : target;
             } else {
                 current = match;
             }
@@ -478,20 +500,20 @@ const APP_ICON_URLS: Record<string, string | undefined> = {
     'windows-media-player': WINXP_ASSETS.mediaPlayerIcon,
     winamp: winampIcon,
     paint: WINXP_ASSETS.paintIcon,
-    pictures: WINXP_ASSETS.projectsIcon,
-    calendar: WINXP_ASSETS.notepadIcon,
-    news: WINXP_ASSETS.richTextIcon,
-    currency: WINXP_ASSETS.calculatorIcon,
+    pictures: picturesFolderIcon,
+    calendar: dateTimeIcon,
+    news: rssNewsIcon,
+    currency: currencyDollarIcon,
     wiki: WINXP_ASSETS.richTextIcon,
     notepad: WINXP_ASSETS.notepadIcon,
     'projects-grid': WINXP_ASSETS.projectsIcon,
-    help: WINXP_ASSETS.richTextIcon,
-    'task-manager': WINXP_ASSETS.controlPanelIcon,
+    help: helpIcon,
+    'task-manager': performanceMonitorIcon,
     calculator: WINXP_ASSETS.calculatorIcon,
     'control-panel': WINXP_ASSETS.controlPanelIcon,
-    terminal: WINXP_ASSETS.notepadIcon,
+    terminal: terminalIcon,
     blog: WINXP_ASSETS.richTextIcon,
-    loops: WINXP_ASSETS.mediaPlayerIcon,
+    loops: winampIcon,
     minesweeper: WINXP_ASSETS.minesweeperIcon,
     snake: snakeGameIcon,
     memory: memoryGameIcon,
