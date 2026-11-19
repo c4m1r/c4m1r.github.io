@@ -41,6 +41,7 @@ let state: CalendarCenterState = {
 };
 const listeners = new Set<() => void>();
 const inFlight = new Map<string, Promise<void>>();
+let activeLocaleRequest = '';
 
 function emit() {
   listeners.forEach((listener) => listener());
@@ -95,9 +96,10 @@ export function goToCalendarToday() {
 
 export async function ensureCalendarEvents(locale: string) {
   const normalized = locale.split('-')[0].toLowerCase();
-  if (state.loadedLocale === normalized || inFlight.has(normalized)) {
-    return inFlight.get(normalized);
-  }
+  if (state.loadedLocale === normalized) return Promise.resolve();
+  const existingRequest = inFlight.get(normalized);
+  if (existingRequest) return existingRequest;
+  activeLocaleRequest = normalized;
 
   const request = (async () => {
     updateState({ loading: true, error: null });
@@ -112,17 +114,20 @@ export async function ensureCalendarEvents(locale: string) {
 
     try {
       const events = await tryFetch(primary);
+      if (activeLocaleRequest !== normalized) return;
       updateState({ events, loadedLocale: normalized, loading: false, error: null });
     } catch (primaryError) {
       if (fallback) {
         try {
           const events = await tryFetch(fallback);
+          if (activeLocaleRequest !== normalized) return;
           updateState({ events, loadedLocale: normalized, loading: false, error: null });
           return;
         } catch {
           // Keep the original failure for the visible error state below.
         }
       }
+      if (activeLocaleRequest !== normalized) return;
       updateState({
         loading: false,
         error: primaryError instanceof Error ? primaryError.message : 'Calendar could not be loaded',
