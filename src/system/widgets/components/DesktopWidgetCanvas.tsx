@@ -187,7 +187,7 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
     setPlacements((current) => {
       const normalized = normalizePlacements(current, bounds);
       const same = Object.keys(current).length === Object.keys(normalized).length &&
-        Object.entries(normalized).every(([id, value]) => current[id]?.x === value.x && current[id]?.y === value.y);
+        Object.entries(normalized).every(([id, value]) => current[id]?.x === value.x && current[id]?.y === value.y && current[id]?.preset === value.preset);
       return same ? current : normalized;
     });
   }, [normalizePlacements]);
@@ -274,8 +274,11 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
         if (!placement) return null;
         const preset = getPreset(item, placement);
         if (!preset) return null;
-        const width = Math.min(preset.width, canvasRef.current?.clientWidth ?? preset.width);
-        const height = preset.height;
+        const canvasBounds = canvasRef.current?.getBoundingClientRect();
+        const width = Math.min(preset.width, canvasBounds?.width ?? preset.width);
+        // Match the dimensions used by placement normalization on fixed-height desktop canvases.
+        // WebOS intentionally grows vertically and scrolls, so its widget height remains unconstrained.
+        const height = themeKey === 'webos' ? preset.height : Math.min(preset.height, canvasBounds?.height ?? preset.height);
         return (
           <section key={item.id} data-widget-id={item.id} className="desktop-widget-canvas__item" style={{ left: placement.x, top: placement.y, width, height }}>
             <div className={`desktop-widget-canvas__handle${expandedControls[item.id] ? ' is-expanded' : ''}`} role="group" aria-label={`Move ${item.title}`} tabIndex={0}
