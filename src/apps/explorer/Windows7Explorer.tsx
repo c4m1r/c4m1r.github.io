@@ -13,17 +13,17 @@ import { getFileIcon, getFileSystemItemFromPath, getItemsFromPath, type FileSyst
 import type { MyComputerProps } from './MyComputer';
 
 const PATHS = {
-  desktop: 'C:\\Documents and Settings\\C4m1r\\Desktop',
-  documents: 'C:\\Documents and Settings\\C4m1r\\My Documents',
-  pictures: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures',
-  music: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music',
-  videos: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Videos',
-  downloads: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Downloads',
+  desktop: 'C:\\Users\\C4m1r\\Desktop',
+  documents: 'C:\\Users\\C4m1r\\Documents',
+  pictures: 'C:\\Users\\C4m1r\\Pictures',
+  music: 'C:\\Users\\C4m1r\\Music',
+  videos: 'C:\\Users\\C4m1r\\Videos',
+  downloads: 'C:\\Users\\C4m1r\\Downloads',
 } as const;
 
 type Win7ViewMode = 'icons' | 'details' | 'thumbnails';
 
-const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки/i.test(value);
+const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки|(?:^|[\\/])pictures$/i.test(value);
 
 function joinWindowsPath(parent: string, child: string) {
   if (!parent || parent === 'My Computer') return child;
