@@ -29,7 +29,7 @@ Repository source baseline inspected before this pass: `0fc60199c127ae52b06e2b65
 | Picture Viewer | 55% | Shared viewer direction exists; grid/single-image parity and file associations need completion |
 | Control Panel | 45% | Entry points exist; categories, settings navigation and OS-native presentation remain |
 | OS-specific Explorer / Control Panel | 35% | Dedicated styles exist for some systems; others still need authentic native layouts |
-| Widgets desktop shortcut | 20% | Widget Gallery is reachable elsewhere; dedicated shortcut must open the same canonical manager |
+| Widgets desktop entry point | 60% | Non-Windows desktop shortcut, Windows 7 Gadgets context-menu entry and macOS Edit Widgets context-menu route open the shared manager; exact icon and visual acceptance remain |
 | Appearance & Themes | 45% | Shared image inventory and persistence/preview need verification |
 
 Percentages are working estimates, not test results. The previous task registry and audit snapshot are preserved in [history.md](./history.md).
@@ -75,14 +75,14 @@ Percentages are working estimates, not test results. The previous task registry 
 - Network Neighborhood now exists as a virtual folder under My Computer and has routes in classic, XP and Windows 7 Start Menus; the path resolver also accepts the legacy standalone alias.
 - The Start Menu host now stops desktop mousedown bubbling at the Start Menu host (without blocking target focus/click handlers) without blocking target click handlers. XP All Programs is a keyboard-addressable fly-out. Manual click-through acceptance remains required.
 - XP All Programs now expands an in-menu application list; Windows 7 All Programs toggles the complete program list; Windows 98/2000 Programs opens a classic cascading submenu. IE and Outlook Express now use the same row/icon sizing as the other XP pinned entries; special E-mail/Internet tags and oversized treatment were removed.
-- Desktop Games and Programs are now shortcut folders in the user Desktop node; their target aliases resolve to the canonical `C:\\Program Files\\Games` and `C:\\Program Files\\Programs` folders. Core desktop launchers remain, and a dedicated Widgets shortcut opens the existing Widget Gallery surface.
+- Desktop Games and Programs are shortcut folders in the user Desktop node; their target aliases resolve to the canonical `C:\\Program Files\\Games` and `C:\\Program Files\\Programs` folders. The alias view now flattens publisher subfolders into the actual launchable game/program shortcut files while preserving the publisher-organized Program Files trees. Non-Windows shells have a desktop entry point to the shared Widget Gallery; Windows uses its OS-native entry point instead.
 - Desktop Programs shortcut and Start Menu folder references must resolve to `C:\\Program Files\\Programs` (not the localized display name).
 - Acceptance: test every item by mouse and keyboard on Windows 98/2000, XP, 7 and WebOS; verify folder paths resolve to populated folders and each app opens/focuses its window. Verify menu does not close on mousedown before click.
 
 ### GAME-03 — Minesweeper sprite sheets and game/program icons (P0)
 - Audited the actual PNG IHDR dimensions: `cells.png` is 16×256, `digits.png` is 13×276 and `smileys.png` is 24×120. The CSS incorrectly treated all three vertical sprite sheets as horizontal strips; background sizes and per-sprite offsets are now vertical.
 - Explorer icon resolution now maps app IDs to actual assets before generic file fallbacks. DOOM uses its game icon, Minesweeper its dedicated icon, and Snake/Memory have dedicated lightweight SVG icons. Program Files app entries retain their own app icons.
-- Sprite elements now explicitly use block/flex dimensions, fixed background x-position and pixelated rendering. Acceptance: verify numbers 0–8, mine, exploded mine, flag, question marker, smiley states and both counters in Minesweeper. Verify game/program icons in every Explorer view and OS skin; ensure missing assets do not silently hide icons.
+- Sprite elements now explicitly use block/flex dimensions, fixed background x-position and pixelated rendering. Revealed zero-neighbour cells are blank (no `0` sprite); numbers 1–8 are shown only on the boundary around cleared areas and provide adjacent-mine hints. Acceptance: verify number-to-sprite mapping, blank flood-fill regions, mine/exploded/wrong-flag/flag/question states, smiley states and both counters in Minesweeper. Verify game/program icons in every Explorer view and OS skin; ensure missing assets do not silently hide icons.
 
 ### GAME-01 follow-up — DOOM / DOOM II clean game surface
 - Removed the Emupedia/wasm-doom footer, the warning tip and the duplicate iframe-loaded status/link overlay. The selected build's external-launch action remains in the header, and an error-only fallback remains if iframe navigation fails.
@@ -148,7 +148,7 @@ Percentages are working estimates, not test results. The previous task registry 
 
 ### CONTROL-02 — Desktop shortcuts and canonical settings surfaces
 - Provide a desktop shortcut to Control Panel and a separate shortcut to the existing Widgets/Widget Gallery manager.
-- Both shortcuts must open the same canonical surfaces used by Start Menu/context menus; no duplicate managers or divergent settings state.
+- The Control Panel shortcut opens the canonical settings surface. Widget entry points are OS-native rather than universal: Windows 7 uses the desktop context-menu item `Gadgets`, macOS uses `Edit Widgets…`, and non-Windows/non-macOS desktop shells expose the shared Widgets shortcut. No duplicate manager or divergent settings state.
 
 ### CONTROL-03 — OS-native Explorer and Control Panel fidelity
 - Restore authentic OS-specific window chrome, typography, icons, toolbar/address/navigation, menus, category layouts, spacing and responsive behavior.
@@ -167,7 +167,7 @@ Percentages are working estimates, not test results. The previous task registry 
 
 ### APP-ICONS-02 — Restore application icons in virtual folders
 - Explorer file entries with an `appId` resolve the application icon before falling back to the generic file/document icon.
-- The initial mapping uses the existing Windows XP asset registry and covers the current native apps and game entries. Confirm icon loading in Programs/Games and review per-OS icon fidelity; do not duplicate app metadata in the filesystem.
+- App mappings now use specific existing assets for Picture Viewer, Calendar, RSS, currency, Help, Task Manager, Terminal, Winamp and game entries. Desktop folder aliases expose flattened launchable shortcuts; publisher-organized Program Files trees remain canonical. Confirm every icon in Programs/Games and review per-OS icon fidelity; do not duplicate app metadata in the filesystem.
 
 ### STARTMENU-01 — Functional Start Menu navigation and actions
 - XP and Windows 7 All Programs expand their in-menu application lists; Windows 98/2000 Programs opens a cascading submenu. The desktop Programs shortcut and the Explorer folder route resolve to `C:\\Program Files\\Programs`.
