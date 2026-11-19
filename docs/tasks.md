@@ -448,3 +448,15 @@ Percentages are repository implementation estimates, not QA confidence. User rep
 ### DOCS-02 — Task registry maintenance
 - Keep docs/tasks.md as the single master registry for the active WebOS/desktop workstream. Update status/percentage only after inspecting implementation; distinguish implemented, partial, blocked by provenance/license and manually verified.
 - Preserve completed task history. Do not mark 100% because a shortcut/component/config exists; use acceptance criteria and runtime checks.
+
+### /eat/ game-source audit snapshot — 2026-11-19
+
+Repository tree search identified these concrete candidates (this is a source inventory, not a license clearance or gameplay test):
+- eat/alanagoyal-main: Chess and Solo Games modules, chess.js-based logic, sound assets, tests and Supabase-backed multiplayer/API/migrations. LICENSE.md is MIT (Copyright 2024 Alana Goyal). Prefer only isolated self-contained solo-game logic; do not port server/matchmaking/Supabase features into this static site. Audit every asset separately.
+- eat/windows7-ui-portfolio-main: Chess.tsx, Solitaire.tsx and Windows 7 game icon assets (Chess, Checkers, FreeCell, Hearts, Mahjong, Minesweeper, Solitaire, Spider Solitaire, Purble Place). Repository LICENSE is MIT (Copyright 2026 Gividu Elladeniya). The project uses a newer React/Next/Tailwind stack; extract/adapt individual components only after dependency and asset provenance review. Do not copy the whole application or its framework dependencies.
+- eat/Personal-Portfolio-main: SnakeGame.tsx and MemoryGame.tsx are present, but no LICENSE/LICENCE/COPYING file was found at repository root. Existing native Snake/Memory in src remain canonical; do not replace them with this donor source without permission.
+- eat/wins95Portfolio-main: MineSweeper.jsx and CSS/assets are present; repository LICENSE exists. Existing native Minesweeper remains canonical; use this donor for reference only unless a specific missing feature is identified and provenance/assets are checked.
+- eat/98.portfolio-main: custom 98.DOOM Three.js game files and Three.js dependency are present; no root LICENSE/LICENCE/COPYING file was found. README identifies it as a Windows 98 portfolio demo. Do not port its code or artwork until rights are established. It is not a classic DOOM engine.
+- Other matches in the tree include game UI/icon references in macOS/iOS/Windows donor folders; a filename match alone is not evidence of a complete playable game.
+
+Next source-review priority: inspect the MIT Chess/Solitaire components and their exact imports/assets, identify which solo games are self-contained, then choose additions that do not require Supabase, API routes, remote services or an extra game engine. Keep attribution/license notices with every reused code fragment and independently verify third-party fonts, sounds, sprites and icons.
