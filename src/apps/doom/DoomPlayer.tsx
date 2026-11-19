@@ -69,7 +69,6 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
               {isRu ? 'Открыть выбранную сборку отдельно' : 'Open selected build separately'}
             </a>
           </div>
-        </div>
       </header>
 
       <div className="doom-player__stage flex-1 relative bg-black overflow-hidden">
