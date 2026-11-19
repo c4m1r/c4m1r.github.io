@@ -541,3 +541,10 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - Minesweeper now pins cell/digit/smiley sprite dimensions and background sizing so global OS theme CSS cannot collapse or rescale the sprite sheets. On loss, all mines are revealed and incorrectly placed flags use the existing wrong-flag sprite.
 - Calendar ICS parser now reads repeated/comma-separated RDATE and EXDATE date values, including TZID parameters. Recurrence expansion merges explicit RDATE instances with RRULE instances, deduplicates by start timestamp, and filters EXDATE matches. RDATE PERIOD values remain unsupported rather than assigning an invented duration.
 - Verification for these latest commits is pending; inspect the latest GitHub Actions run and manually verify Explorer large icons, Minesweeper sprite states, and ICS recurrence fixtures before acceptance.
+
+
+### 2026-11-19 — Appearance gallery filters and wallpaper placement
+- Appearance & Themes now uses the shared `useGallery()` inventory and provides All / Wallpapers / Pictures filters with visible result counts. The selected image preview reflects the current placement mode and offers explicit Apply and Cancel actions.
+- Added persistent desktop wallpaper placement preferences: Fill (`cover`), Fit (`contain`), Stretch (`100% 100%`), Tile (`repeat`) and Center (`auto`, centered). Control Panel emits a dedicated fit-change event; DesktopShellContainer applies the selected mode without duplicating wallpaper state. Storage reads are guarded for restricted environments.
+- DOOM II header now displays `Doom II` with the smaller `Hell on Earth` subtitle, keeping the description and right-aligned build/external controls on the same compact row.
+- Richer image folder/tag grouping and cross-OS/reload visual acceptance remain open. Latest CI for the final code/docs commit must be checked before calling this verified.
