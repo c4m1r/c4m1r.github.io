@@ -175,6 +175,23 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
     add('BY',new Date(year,4,10),'Перенесённый выходной');
     add('BY',new Date(year,4,11),'Радуница');
   }
+  // Beyond the published 2026 Kazakhstan schedule, derive statutory substitute days
+  // from the labour-code rule and mark them explicitly until a year-specific schedule is published.
+  if(year!==2026){
+    const kzPublic=result.filter((holiday)=>holiday.country==='KZ'&&holiday.kind==='public');
+    const occupied=new Set(kzPublic.map((holiday)=>dateKey(holiday.date)));
+    for(const holiday of kzPublic){
+      if(holiday.date.getDay()!==0 && holiday.date.getDay()!==6) continue;
+      const substitute=new Date(holiday.date);
+      do { substitute.setDate(substitute.getDate()+1); }
+      while(substitute.getDay()===0 || substitute.getDay()===6 || occupied.has(dateKey(substitute)));
+      const key=dateKey(substitute);
+      if(!result.some((item)=>item.country==='KZ'&&dateKey(item.date)===key)){
+        add('KZ',substitute,'Перенесённый выходной');
+        occupied.add(key);
+      }
+    }
+  }
   // UK bank holidays: England and Wales baseline (regional calendars differ).
   add('GB',new Date(year, easter.getMonth(), easter.getDate()-2),'Good Friday');
   add('GB',easter,'Easter Sunday','cultural');
