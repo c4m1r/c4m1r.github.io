@@ -527,3 +527,10 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - My Projects now indexes the same two sources and filename-ID precedence as `loadAllProjects()`: root standard projects first, then nested `content/about/projects` entries not already represented. The folder stores lightweight paths rather than eager Markdown bodies; article contents and localized frontmatter are loaded only on double-click.
 - The previous eager Markdown import was removed to avoid duplicating large project text in the initial bundle. The article reader uses the shared Markdown renderer.
 - Verification: latest source workflow is pending; earlier snapshot `7f50b5ef` passed Typecheck, Lint, Build and Deploy. Do not infer the newer Control Panel and lazy project changes are green until their own latest-main run completes.
+
+
+### 2026-11-19 — Shared picture and wallpaper inventory
+- Updated `gallery.loader.ts` so `loadPictures()` excludes the wallpaper subtree and `loadWallpapers()` includes nested wallpaper folders. The two media types no longer duplicate the same direct wallpaper files in the shared gallery.
+- Gallery IDs now use relative paths under `content/pictures` / `content/pictures/wallpapers`, avoiding collisions when different subfolders contain files with the same basename.
+- My Pictures continues to index the complete picture tree, including wallpapers; the shared gallery and wallpaper picker now expose the same assets with distinct picture/wallpaper media types.
+- Manual inventory acceptance (gallery, wallpaper picker, Explorer, Picture Viewer) remains pending.
