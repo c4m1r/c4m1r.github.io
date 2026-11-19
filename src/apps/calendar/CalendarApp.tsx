@@ -100,6 +100,14 @@ export function CalendarApp() {
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1),
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0)
   ), [events, visibleMonth]);
+  const monthHolidays = useMemo(() => Array.from(
+    { length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() },
+    (_, index) => getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
+  ).flat(), [visibleMonth]);
+  const listEntries = useMemo(() => [
+    ...monthEvents.map((event) => ({ type: 'event' as const, date: event.startDate, event })),
+    ...monthHolidays.map((holiday) => ({ type: 'holiday' as const, date: holiday.date, holiday })),
+  ].sort((a, b) => a.date.getTime() - b.date.getTime()), [monthEvents, monthHolidays]);
   const monthLabel = visibleMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
   const weekdayLabels = useMemo(() => Array.from({ length: 7 }, (_, index) =>
     addDays(startOfWeek(new Date(2024, 0, 7), monday), index).toLocaleDateString(locale, { weekday: 'short' })
@@ -237,17 +245,16 @@ export function CalendarApp() {
           )}
           {view === 'list' && (
             <div className="calendar-app__list-view">
-              {monthEvents.length === 0 && Array.from({ length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() }, (_, index) => getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))).flat().length === 0 && <p>{isRu ? 'В этом месяце событий нет.' : 'No events this month.'}</p>}
-              {monthEvents.map((event) => <div key={event.id ?? event.startDate.toISOString()} className="calendar-app__list-row">
-                <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(event.startDate)}>{event.startDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
-                {renderEvent(event)}
-              </div>)}
-              {Array.from({ length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() }, (_, index) =>
-                getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
-              ).flat().map((holiday) => (
-                <div key={holiday.id} className="calendar-app__list-row">
-                  <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(holiday.date)}>{holiday.date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
-                  {renderHoliday(holiday)}
+              {listEntries.length === 0 && <p>{isRu ? 'В этом месяце событий нет.' : 'No events this month.'}</p>}
+              {listEntries.map((entry) => entry.type === 'event' ? (
+                <div key={entry.event.id ?? entry.event.startDate.toISOString()} className="calendar-app__list-row">
+                  <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(entry.event.startDate)}>{entry.event.startDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
+                  {renderEvent(entry.event)}
+                </div>
+              ) : (
+                <div key={entry.holiday.id} className="calendar-app__list-row">
+                  <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(entry.holiday.date)}>{entry.holiday.date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
+                  {renderHoliday(entry.holiday)}
                 </div>
               ))}
             </div>
