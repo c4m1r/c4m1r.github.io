@@ -297,12 +297,12 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
                 if (!blocked) setPlacements((current) => ({ ...current, [item.id]: { ...current[item.id], x: nextX, y: nextY } }));
               }}
               onPointerDown={(event) => {
-                if ((event.target as HTMLElement).closest('select,button')) return;
+                if ((event.target as HTMLElement).closest('select')) return;
                 event.currentTarget.setPointerCapture(event.pointerId);
                 dragRef.current = { id: item.id, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, originX: placement.x, originY: placement.y };
               }}
               onPointerMove={moveWidget} onPointerUp={endDrag} onPointerCancel={endDrag}>
-              <button type="button" className="desktop-widget-canvas__grip" aria-label={`${expandedControls[item.id] ? 'Hide' : 'Show'} ${item.title} controls`} aria-expanded={Boolean(expandedControls[item.id])} onPointerDown={(event) => event.stopPropagation()} onClick={() => setExpandedControls((current) => ({ ...current, [item.id]: !current[item.id] }))}>⠿</button>
+              <button type="button" className="desktop-widget-canvas__grip" aria-label={`${expandedControls[item.id] ? 'Hide' : 'Show'} ${item.title} controls`} aria-expanded={Boolean(expandedControls[item.id])} onClick={() => setExpandedControls((current) => ({ ...current, [item.id]: !current[item.id] }))}>⠿</button>
               {expandedControls[item.id] && <><span className="desktop-widget-canvas__title">{item.title}</span>
               <select aria-label={item.title + ' size'} value={preset.id} onChange={(event) => changePreset(item, event.target.value)} onPointerDown={(event) => event.stopPropagation()}>
                 {item.presets.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
