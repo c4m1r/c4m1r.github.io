@@ -20,7 +20,7 @@ Repository source baseline inspected before this pass: `0fc60199c127ae52b06e2b65
 |---|---:|---|
 | Core desktop / shared shell | 60% | Unified shell exists; cross-OS visual and runtime consistency still needs systematic verification |
 | Widgets + 3 size classes | 70–75% | Existing widgets need fixed size contracts, responsive adaptation and final placement checks |
-| RSS | 60–65% | Cumulative cache/deduplication and refresh/filter behavior still need runtime proof |
+| RSS | 70% | Historical merge, URL/GUID identity, valid empty-feed handling and refresh health/freshness UI implemented; runtime/feed-outage acceptance remains |
 | DOOM | 35% | Presentation cleaned; remote iframe remains unverified for actual gameplay |
 | Other games | 45% | Minesweeper vertical sprite mapping and per-game Explorer icons corrected in source; runtime acceptance pending |
 | Explorer / Games folder | 60% | Per-game app icon resolution restored; OS-native presentation and launch acceptance remain |
@@ -62,8 +62,11 @@ Percentages are working estimates, not test results. The previous task registry 
 - Preserve accumulated cached articles across refreshes; deduplicate by stable article identity (canonical URL/GUID with safe fallback).
 - Sort newest-first; do not erase older cached entries when a feed temporarily returns fewer items or fails.
 - Category filter lives inside the News RSS Feed application, not as a detached desktop widget/control.
-- Provide clear loading, stale-cache, refresh success/failure and empty states; show cache freshness and source errors honestly.
-- Acceptance: repeated refresh, duplicate feeds, partial feed outage, empty feed and category filtering do not destroy cached history.
+- Valid empty feeds are distinct from transport/parser failures; XML feed roots are validated before returning an empty result.
+- Deduplicate by canonical URL (tracking parameters/fragments removed), falling back to RSS GUID/Atom ID and then source+title only when no usable link/GUID exists.
+- Refresh metadata records last attempt/success, succeeded/failed source counts and success/partial/failure/disabled state. Partial and total failures retry after a short delay rather than remaining cached for the full TTL.
+- News RSS Feed shows last successful update time, partial-source counts, stale-cache messaging and empty states. Category filtering remains inside the app.
+- Acceptance: repeated refresh, duplicate feeds, partial feed outage, empty feed, disabled sources and category filtering do not destroy cached history; manually confirm the stale-cache and retry states.
 
 ### STARTMENU-02 — Start Menu interaction and complete navigation (P0)
 - Root cause found for the reported dead menu items: the desktop-level `onMouseDown` handler closed the Start Menu on every bubbled left-button press, unmounting it before the item's `onClick` could execute. The Start Menu surface now stops `mousedown` propagation as well as `click` propagation.
@@ -83,7 +86,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - An iframe load is still not proof of playable gameplay. Keyboard, mouse, pointer lock, audio, resize, restart and browser compatibility require manual acceptance for both DOOM and DOOM II.
 
 ### GAME-01 — DOOM: repair the launch experience and verify actual gameplay
-- Audit `src/apps/doom/`, app registration and launch routes. Current `DoomPlayer` embeds Emupedia URLs; iframe `onLoad`/ `onError` cannot establish that the game engine booted or that gameplay is available.
+- Audit `src/apps/doom/`, app registration and launch routes. Current `DoomPlayer` embeds Emupedia URLs; iframe navigation/error events cannot establish that the game engine booted or that gameplay is available.
 - Separate states: selecting a build, iframe navigation/load event, actual gameplay verification (manual only), remote unavailable/blocked, and external launch fallback.
 - Do not label Emupedia builds as locally hosted or guaranteed playable. Doom 3 remains WIP and must not be presented as a confirmed playable game.
 - Review candidate local engine/source/data and legal provenance before considering a bundled build. `eat/98.portfolio-main` contains a distinct custom Three.js game branded 98.DOOM, not id Software DOOM; no root licence was found in the audit. Do not port it without permission.
@@ -162,7 +165,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - The initial mapping uses the existing Windows XP asset registry and covers the current native apps and game entries. Confirm icon loading in Programs/Games and review per-OS icon fidelity; do not duplicate app metadata in the filesystem.
 
 ### STARTMENU-01 — Functional Start Menu navigation and actions
-- All Programs opens `C:\\Program Files\\Programs`; the classic Programs entry opens the same folder. The legacy `all-programs` launcher route is aligned.
+- XP and Windows 7 All Programs expand their in-menu application lists; Windows 98/2000 Programs opens a cascading submenu. The desktop Programs shortcut and the Explorer folder route resolve to `C:\\Program Files\\Programs`.
 - XP Search and Windows 98/2000 Find open a dedicated Explorer window with the current-folder search row focused. Unsupported XP shell destinations are genuinely disabled and no longer launch fake `unavailable:` error requests.
 - Existing app launch, folder navigation, Run, Help, Control Panel, My Computer, Documents, Pictures, logoff and shutdown routes must be manually exercised for each Start Menu variant. Windows 7 search currently filters its program list; full filesystem search remains a separate acceptance item.
 
