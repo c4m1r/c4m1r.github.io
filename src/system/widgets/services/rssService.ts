@@ -63,6 +63,8 @@ const DB_NAME = 'webos_rss_db_v1';
 const STORE_ARTICLES = 'articles';
 const STORE_SOURCES = 'sources';
 const SOURCES_STORAGE_KEY = 'webos_rss_sources_config_v1';
+const RSS_LAST_REFRESH_KEY = 'webos_rss_last_refresh_v1';
+const RSS_CACHE_TTL_MS = 15 * 60 * 1000;
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -364,7 +366,8 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
 
   if (!forceRefresh) {
     const cached = await getCachedArticlesFromDatabase();
-    if (cached.length > 0) {
+    const lastRefresh = Number(typeof localStorage !== 'undefined' ? localStorage.getItem(RSS_LAST_REFRESH_KEY) : 0);
+    if (cached.length > 0 && Number.isFinite(lastRefresh) && lastRefresh > 0 && Date.now() - lastRefresh < RSS_CACHE_TTL_MS) {
       return cached;
     }
   }
@@ -400,6 +403,9 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     }
   }
   uniqueArticles.sort((a, b) => normalizePublicationDate(b.pubDate).localeCompare(normalizePublicationDate(a.pubDate)));
+  if (uniqueArticles.length > 0 && typeof localStorage !== 'undefined') {
+    try { localStorage.setItem(RSS_LAST_REFRESH_KEY, String(Date.now())); } catch { /* storage can be unavailable */ }
+  }
 
   return uniqueArticles.length > 0 ? uniqueArticles : await getCachedArticlesFromDatabase();
 }
