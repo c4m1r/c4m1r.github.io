@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react';
 export type CountryCode = 'RU' | 'KZ' | 'BY' | 'CN' | 'JP' | 'KR' | 'GB';
 
 export const NATIONAL_COUNTRIES: Array<{ code: CountryCode; flag: string; names: Record<'ru' | 'en' | 'fr', string> }> = [
@@ -150,6 +151,21 @@ export function isSelectedCountryWeekend(date: Date, selected: CountryCode[]): b
   return date.getDay()===0 || date.getDay()===6;
 }
 
+const labourCountryListeners = new Set<() => void>();
+let selectedLabourCountries: CountryCode[] = [];
+function emitLabourCountries() { labourCountryListeners.forEach((listener) => listener()); }
+export function subscribeLabourCountries(listener: () => void) {
+  labourCountryListeners.add(listener);
+  return () => labourCountryListeners.delete(listener);
+}
+export function useLabourCountries() {
+  return useSyncExternalStore(subscribeLabourCountries, () => selectedLabourCountries, () => []);
+}
+export function setSelectedLabourCountries(countries: CountryCode[]) {
+  selectedLabourCountries = countries.filter((value, index) => NATIONAL_COUNTRIES.some((country) => country.code === value) && countries.indexOf(value) === index);
+  saveSelectedLabourCountries(selectedLabourCountries);
+  emitLabourCountries();
+}
 export function loadSelectedLabourCountries(): CountryCode[] {
   if (typeof window==='undefined') return [];
   try {
@@ -162,3 +178,5 @@ export function saveSelectedLabourCountries(countries: CountryCode[]) {
     try { window.localStorage.setItem('calendar-labour-countries-v1',JSON.stringify(countries)); } catch { /* Session-only fallback. */ }
   }
 }
+
+selectedLabourCountries = loadSelectedLabourCountries();
