@@ -3,7 +3,7 @@ import { BookOpen, ChevronDown, ChevronRight, FileText, Home, Search } from 'luc
 import { loadArticles } from '../domain/articles/articles.loader';
 import { type ContentItem } from '../domain/content/types';
 import { useWiki } from '../domain/wiki/useWiki';
-import type { WikiCategory, WikiIndex } from '../domain/wiki/wiki.types';
+import type { WikiCategory } from '../domain/wiki/wiki.types';
 import { markdownToHtml } from '../domain/content/markdown';
 import { useApp } from '../contexts/useApp';
 
