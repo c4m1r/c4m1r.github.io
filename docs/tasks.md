@@ -280,6 +280,7 @@
 | RSS-03 | RSS collection, category drawer and article reader | 65% | Feed parser, category controls and article reader exist; proxy availability and publisher-specific extraction still need validation. |
 | GAME-01 | Repair the existing DOOM implementation | 45% | Corrected the broken Emupedia base path: the previous URLs incorrectly pointed under /beta/emuos/, while the current live game pages are at /emupedia-game-doom1/ and /emupedia-game-doom2/ (including /asmjs/ builds). Iframe permissions and direct-launch fallback also fixed. Doom 3 remains a WIP upstream. The separate 98.DOOM donor has no LICENSE file, so its source is not copied. |
 | GAME-02 | Audit /eat/ and add other working games | 40% | Added native Snake and Memory games without copying donor code; both appear in the real Games folder alongside the existing Minesweeper and DOOM launch entries. Candidate donor implementations under /eat/ remain under license/dependency review. |
+| GAME-03 | Minesweeper gameplay fidelity and interaction | 45% | Opening-click mine relocation and correct timer start-on-first-reveal are implemented. Next: chord reveal, keyboard/touch flag controls, difficulty presets, responsive board sizing and visual QA. |
 | EXPLORER-01 | Game folder as a native folder with tree icon | 55% | Game shortcut opens the real Program Files/Games directory in the current OS Explorer; Windows XP desktop and Explorer folder icons now use the program/tree folder asset. DOOM and remaining game entries still need integration. |
 | DOCS-01 | Create “Мои документы” and reorganize personal apps | 45% | Added the My Documents folder with Wiki, My Block, About Me and My Projects entries; app shortcuts route through the desktop launcher. Need user-facing polish and verification. |
 | PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 40% | Added My Pictures folder with the repository picture tree exposed as individual file entries; Bliss.jpg is now inside the folder and no longer on the desktop. Viewer/library unification remains. |
@@ -336,6 +337,14 @@
 - The compact News widget must display the cached list immediately and still trigger a TTL-aware refresh so stale caches do not remain indefinitely.
 - Failed feeds must not erase cached records; partial failures must not block successful feeds.
 - A successful empty feed response does not erase historical entries.
+
+### GAME-03 — Minesweeper gameplay and presentation
+- Use the current native React implementation and existing sprite assets as the canonical baseline; avoid importing a second game engine.
+- Keep the opening move safe by relocating a mine when the first revealed cell would otherwise explode, then recompute all adjacent-mine counts.
+- Start the timer on the first reveal, never when placing a flag.
+- Next implementation targets: number chording (open adjacent covered cells when the surrounding flag count matches), accessible keyboard controls, touch-friendly flag mode, difficulty presets with validated board dimensions, and responsive board sizing.
+- Keep the classic Windows Minesweeper visual language while ensuring the app remains usable inside each OS window size.
+- Reference projects for UI/interaction study only: [captbaritone/webamp](https://github.com/captbaritone/webamp) and [1j01/jspaint](https://github.com/1j01/jspaint). Do not copy their code wholesale or add unnecessary runtime dependencies.
 
 ### GAME-01/02 — Games and DOOM
 - Audit actual source code and assets under /eat/; do not assume /eat/ has already been cleared.
