@@ -84,16 +84,25 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
         const position = next[item.id];
         if (!position) return;
         const preset = getPreset(item, position);
-        const width = Math.min(preset.width, Math.max(160, bounds.width));
-        const height = Math.min(preset.height + 28, Math.max(100, bounds.height));
+        const width = Math.min(preset.width, Math.max(1, bounds.width));
+        const height = Math.min(preset.height + 28, Math.max(1, bounds.height));
         let x = Math.max(0, Math.min(position.x, bounds.width - width));
         let y = Math.max(0, Math.min(position.y, bounds.height - height));
         let candidate = { x, y, width, height };
         if (placed.some((other) => intersects(candidate, other))) {
-          x = 8; y = 8;
-          candidate = { x, y, width, height };
-          while (placed.some((other) => intersects(candidate, other)) && y + height < bounds.height) {
-            y += height + GAP;
+          const maxX = Math.max(0, bounds.width - width);
+          const maxY = Math.max(0, bounds.height - height);
+          const candidates: Array<{ x: number; y: number }> = [];
+          for (let row = 8; row <= maxY; row += height + GAP) {
+            candidates.push({ x: 8, y: row }, { x: maxX, y: row });
+          }
+          const free = candidates.find((spot) => {
+            const test = { ...spot, width, height };
+            return spot.x <= maxX && spot.y <= maxY && !placed.some((other) => intersects(test, other));
+          });
+          if (free) {
+            x = free.x;
+            y = free.y;
             candidate = { x, y, width, height };
           }
         }
