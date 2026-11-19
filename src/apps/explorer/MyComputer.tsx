@@ -626,7 +626,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   }
 
   return (
-    <div className="flex flex-col h-full bg-white font-tahoma text-xs select-none">
+    <div data-os-theme={theme} className={`file-explorer flex flex-col h-full min-h-0 bg-white font-tahoma text-xs select-none file-explorer--${theme}`}>
       {/* Toolbar */}
       <div className="flex flex-col border-b border-[#aca899]">
         {/* Menu Bar */}
