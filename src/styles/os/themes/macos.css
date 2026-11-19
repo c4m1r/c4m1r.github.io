@@ -1315,19 +1315,26 @@
   font-size: 9px;
 }
 
-.os-macos .apple-widget-calendar__days span {
+.os-macos .apple-widget-calendar__days span,
+.os-macos .apple-widget-calendar__days button {
   width: 22px;
   height: 22px;
   margin: auto;
+  border: 0;
   border-radius: 50%;
+  background: transparent;
   color: rgba(255,255,255,0.82);
+  font: inherit;
+  cursor: pointer;
 }
 
-.os-macos .apple-widget-calendar__days span.is-outside {
+.os-macos .apple-widget-calendar__days span.is-outside,
+.os-macos .apple-widget-calendar__days button.is-outside {
   color: rgba(255,255,255,0.20);
 }
 
-.os-macos .apple-widget-calendar__days span.is-today {
+.os-macos .apple-widget-calendar__days span.is-today,
+.os-macos .apple-widget-calendar__days button.is-today {
   background: #ff453a;
   color: #fff;
   font-weight: 700;
@@ -2278,3 +2285,5 @@
   color: #1d1d1f;
   font: 10px var(--mac-font);
 }
+
+.os-macos .apple-widget-calendar__days button.is-selected { outline: 1px solid #0a84ff; outline-offset: 1px; }
