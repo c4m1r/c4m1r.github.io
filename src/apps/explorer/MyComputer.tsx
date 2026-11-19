@@ -278,9 +278,9 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow }
         return null;
       }
 
-      const keyedMatch = Object.entries(current.children).find(([key]) => key.toLocaleLowerCase() === part.toLocaleLowerCase());
+      const keyedMatch = Object.keys(current.children).find((key) => key.toLocaleLowerCase() === part.toLocaleLowerCase());
       if (keyedMatch) {
-        current = keyedMatch[1];
+        current = current.children[keyedMatch];
         continue;
       }
 
