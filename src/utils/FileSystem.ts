@@ -116,13 +116,13 @@ const projectChildren: FileSystemChildren = (() => {
             if (!fileName) return;
 
             const parsed = parseFrontmatter(rawContent);
-            const baseName = fileName.replace(/\\.(md|txt)$/i, '');
+            const baseName = fileName.replace(/\.(md|txt)$/i, '');
             const slug = String(parsed.metadata.slug || baseName).trim().toLocaleLowerCase();
             if (seenProjects.has(slug)) return;
             seenProjects.add(slug);
 
             const title = String(parsed.metadata.title || baseName).trim();
-            const displayName = `${title.replace(/\\.(md|txt)$/i, '')}.md`;
+            const displayName = `${title.replace(/\.(md|txt)$/i, '')}.md`;
             let currentChildren = root;
             let currentPath = 'projects';
 
