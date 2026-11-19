@@ -108,7 +108,6 @@ export function StartMenu7({
 
   const allPrograms: Win7MenuEntry[] = [
     ...programs,
-    { id: 'notepad', label: isRu ? 'Блокнот' : 'Notepad', appId: 'notepad', icon: assets.notepadIcon },
     { id: 'pictures-viewer', label: isRu ? 'Просмотр изображений' : 'Picture Viewer', appId: 'pictures', icon: assets.folderIcon },
     { id: 'calendar', label: isRu ? 'Календарь' : 'Calendar', appId: 'calendar', icon: assets.notepadIcon },
     { id: 'control-panel', label: isRu ? 'Панель управления' : 'Control Panel', appId: 'control-panel', icon: assets.controlPanelIcon },
