@@ -41,6 +41,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   const [showSidebar, setShowSidebar] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedTreePaths, setExpandedTreePaths] = useState<Record<string, boolean>>({ 'My Computer': true, 'C:\\': true });
   const [quickLookOpen, setQuickLookOpen] = useState(false);
   const [appleSearchQuery, setAppleSearchQuery] = useState('');
   const [showApplePathBar, setShowApplePathBar] = useState(() => {
@@ -371,6 +372,34 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     if (theme === 'win-98') return path === 'My Computer' ? win98ComputerIcon : win98FolderIcon;
     if (theme === 'win2000') return path === 'My Computer' ? win2000ComputerIcon : win98FolderIcon;
     return path === 'My Computer' ? computerIcon : folderIcon;
+  };
+
+  const getTreeItemPath = (parentPath: string, item: FileSystemItem) => {
+    if (parentPath === 'My Computer' && item.type === 'drive') return 'C:\\';
+    if (parentPath === 'My Computer') return item.name;
+    return parentPath.replace(/\\\\$/, '') + '\\\\' + item.name;
+  };
+
+  const renderFolderTree = (node: FileSystemItem, nodePath: string, depth: number): React.ReactNode => {
+    const children = Object.values(node.children ?? {}).filter(child => child.type === 'folder' || child.type === 'drive');
+    const expanded = Boolean(expandedTreePaths[nodePath]);
+    const current = path.toLocaleLowerCase() === nodePath.toLocaleLowerCase();
+    return (
+      <div key={node.id} className="min-w-0">
+        <div className="flex min-w-0 items-center" style={{ paddingLeft: depth * 12 }}>
+          {children.length > 0 ? (
+            <button type="button" onClick={() => setExpandedTreePaths(prev => ({ ...prev, [nodePath]: !prev[nodePath] }))} aria-label={expanded ? (isRu ? 'Свернуть' : 'Collapse') : (isRu ? 'Развернуть' : 'Expand')} className="w-5 h-6 shrink-0 border-0 bg-transparent flex items-center justify-center">
+              {expanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+            </button>
+          ) : <span className="w-5 shrink-0" />}
+          <button type="button" onClick={() => navigateToPath(nodePath)} title={node.name} className={`flex min-w-0 flex-1 items-center gap-1 rounded-sm px-1 py-1 text-left ${current ? 'font-semibold bg-blue-600/15' : 'hover:bg-black/5'}`}>
+            <img src={getExplorerItemIcon(node)} alt="" className="h-4 w-4 shrink-0 object-contain" />
+            <span className="truncate">{node.name}</span>
+          </button>
+        </div>
+        {expanded && children.length > 0 && <div>{children.map(child => renderFolderTree(child, getTreeItemPath(nodePath, child), depth + 1))}</div>}
+      </div>
+    );
   };
 
   const getAppleItemIcon = (item: FileSystemItem) => {
@@ -872,8 +901,15 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           </div>
         )}
 
+        {!isWindowsXp && showSidebar && (
+          <aside className="w-52 max-w-[42%] shrink-0 overflow-auto border-r border-black/10 p-2 text-xs" aria-label={isRu ? 'Дерево папок' : 'Folder tree'}>
+            <div className="mb-2 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide opacity-60">{isRu ? 'Папки' : 'Folders'}</div>
+            {renderFolderTree(initialFileSystem['My Computer'], 'My Computer', 0)}
+          </aside>
+        )}
+
         {/* Content Pane */}
-        <div className="flex-1 bg-white p-4 overflow-y-auto" onClick={() => setSelectedItem(null)}>
+        <div className="min-w-0 flex-1 bg-white p-4 overflow-y-auto" onClick={() => setSelectedItem(null)}>
           {viewMode === 'thumbnails' ? (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4">
               {visibleItems.map((item, i) => (
