@@ -876,7 +876,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         : themeKey.startsWith('ios-')
           ? `${item.name} - Notes`
           : `${item.name} - Notepad`;
-    } else if (/\.(png|jpg|jpeg|gif)$/i.test(lowerName)) {
+    } else if (/\.(png|jpg|jpeg|gif|webp)$/i.test(lowerName)) {
       if (typeof item.content === 'string') {
         content = <PictureViewer initialImage={item.content} />;
         title = themeKey === 'macos-26'
