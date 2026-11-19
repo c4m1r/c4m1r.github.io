@@ -16,6 +16,8 @@ export interface CalendarEvent {
   startDate: Date;
   endDate: Date;
   recurrenceRule?: CalendarRecurrenceRule;
+  recurrenceDates?: Date[];
+  exceptionDates?: Date[];
   recurrenceMasterId?: string;
 }
 
@@ -74,6 +76,20 @@ function parseProperty(line: string): ICSProperty | null {
   return { name, params, value: line.slice(separator + 1) };
 }
 
+function parseDateList(properties: ICSProperty[], propertyName: 'RDATE' | 'EXDATE'): Date[] {
+  return properties
+    .filter((property) => property.name === propertyName)
+    .flatMap((property) => property.value.split(',').flatMap((rawValue) => {
+      const value = rawValue.trim();
+      // RFC 5545 PERIOD values need a per-occurrence duration; do not guess one.
+      if (!value || value.includes('/')) return [];
+      const date = parseDateValue(value, property.params.TZID);
+      return date ? [date] : [];
+    }))
+    .filter((date, index, dates) => dates.findIndex((candidate) => candidate.getTime() === date.getTime()) === index)
+    .sort((a, b) => a.getTime() - b.getTime());
+}
+
 const WEEKDAY_CODES: Record<string, number> = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
 function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined {
   const fields: Record<string, string> = {};
@@ -130,7 +146,9 @@ export function parseICS(icsData: string): CalendarEvent[] {
       description,
       startDate,
       endDate,
-      recurrenceRule: recurrenceProperty && !get('RDATE') && !get('EXDATE') ? parseRecurrenceRule(recurrenceProperty.value) : undefined,
+      recurrenceRule: recurrenceProperty ? parseRecurrenceRule(recurrenceProperty.value) : undefined,
+      recurrenceDates: parseDateList(properties, 'RDATE'),
+      exceptionDates: parseDateList(properties, 'EXDATE'),
     });
   });
 
