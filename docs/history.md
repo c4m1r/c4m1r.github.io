@@ -498,3 +498,12 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - Corrected Minesweeper's sprite-sheet CSS after inspecting PNG dimensions: all three source sheets are vertical, while prior CSS expected horizontal strips. Updated cell, digit and smiley offsets.
 - Restored Explorer icons for games/programs through appId-specific asset mapping; added Snake and Memory SVG icons and mapped DOOM/Minesweeper to dedicated artwork.
 - Automated and manual acceptance remain pending for the latest commit; do not mark these workstreams complete until CI and browser tests pass.
+
+
+### 2026-11-19 — RSS empty feeds, GUID identity and refresh health
+- Corrected RSS fetch semantics: rss2json `status: ok` with an empty `items` array is a successful empty feed; XML fallback validates RSS/RDF/Atom documents and returns an empty list for valid feeds without entries rather than a false transport failure.
+- Persisted GUID/Atom ID in article records. Dedup identity prefers canonical URL after removing fragments/tracking parameters, then absolute or opaque GUID, and finally source+title fallback.
+- Preserved additive IndexedDB history merge. A successful empty feed does not delete cached records; short feeds and failed feeds cannot wipe the cache.
+- Added persisted refresh metadata for attempt/success times, success/failure counts and success/partial/failed/disabled status. Partial and total failures use a short retry window; a complete refresh receives the normal TTL.
+- News RSS Feed paints cached articles before refresh completes, displays last successful update time, reports partial source failures and stale-cache fallback, and retains its in-app category drawer.
+- Automated CI for commit `1b204318f798ad90f73f0539c4027f9c2a5d1296` passed verify, typecheck, lint, build and build-output verification; GitHub Pages deployment succeeded. Follow-up retry-window and documentation commits require their own latest-main CI run. Live feed reachability and browser behavior remain unverified.
