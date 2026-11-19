@@ -217,7 +217,9 @@ export function getCalendarEventsForRange(startDate: Date, endDate: Date) {
   return state.events.filter((event) => {
     const eventStart = dateOnly(event.startDate).getTime();
     const eventEnd = dateOnly(event.endDate).getTime();
-    return eventStart <= end && eventEnd >= start;
+    const isAllDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
+      event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
+    return eventStart <= end && (isAllDayExclusive ? eventEnd > start : eventEnd >= start);
   });
 }
 
