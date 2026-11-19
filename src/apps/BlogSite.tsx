@@ -22,7 +22,6 @@ import { loadAboutMe, loadLegalNotice } from '../domain/about/about.loader';
 import { loadAppEntries } from '../domain/apps/apps.loader';
 import { loadWikiArticles, loadWikiCategoryIndex } from '../domain/wiki/wiki.loader';
 import { loadAllProjects } from '../domain/projects/projects.loader';
-import { type Language } from '../i18n/translations';
 import { useApp } from '../contexts/useApp';
 import { isFeatureEnabled } from '../config/features';
 import { stripMarkdown, markdownToHtml } from '../domain/content/markdown';
