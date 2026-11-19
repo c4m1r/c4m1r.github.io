@@ -117,6 +117,16 @@ export function CalendarApp() {
     { length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() },
     (_, index) => getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
   ).flat(), [visibleMonth]);
+  const getMonthEventsForDate = (date: Date) => {
+    const target = dayStart(date).getTime();
+    return monthEvents.filter((event) => {
+      const start = dayStart(event.startDate).getTime();
+      const end = dayStart(event.endDate).getTime();
+      const allDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
+        event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
+      return target >= start && (allDayExclusive ? target < end : target <= end);
+    });
+  };
   const listEntries = useMemo(() => [
     ...monthEvents.map((event) => ({ type: 'event' as const, date: event.startDate, event })),
     ...monthHolidays.map((holiday) => ({ type: 'holiday' as const, date: holiday.date, holiday })),
@@ -238,7 +248,7 @@ export function CalendarApp() {
               <div className="calendar-app__weekdays grid grid-cols-7 gap-1 text-xs">{weekdayLabels.map((label, index) => <div key={index}>{label}</div>)}</div>
               <div className="calendar-app__month-grid grid min-h-0 flex-1 grid-cols-7 gap-1">
                 {monthDays.map((date) => {
-                  const dayEvents = getCalendarEventsForDate(date);
+                  const dayEvents = getMonthEventsForDate(date);
                   const holidays = getHolidaysForDate(date);
                   const weekend = isSelectedCountryWeekend(date, labourCountries);
                   const makeupWorkday = isMakeupWorkday(date, labourCountries);
