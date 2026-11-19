@@ -26,9 +26,10 @@ const isPicturesFolderPath = (value: string) => /my pictures|мои рисунк
 export interface MyComputerProps {
   currentPath?: string;
   onOpenItem?: (item: FileSystemItem, parentPath: string) => void;
+  onOpenSlideshow?: (items: FileSystemItem[], parentPath: string) => void;
 }
 
-export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps) {
+export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow }: MyComputerProps) {
   const { theme, language } = useApp();
   const isRu = language === 'ru';
   const [path, setPath] = useState(currentPath);
@@ -803,9 +804,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                   <div className="bg-[#d6dff7] p-2 flex flex-col gap-1.5 border-x border-b border-white/50 text-[11px]">
                     <button
                       onClick={() => {
-                        const pictureItems = visibleItems.filter(i => /\.(png|jpe?g|gif|webp)$/i.test(i.name));
-                        if (pictureItems.length > 0 && onOpenItem) {
-                          onOpenItem(pictureItems[0], path);
+                        const pictureItems = visibleItems.filter(i => /\.(png|jpe?g|gif|webp)$/i.test(i.name) && typeof i.content === 'string');
+                        if (pictureItems.length > 0) {
+                          if (onOpenSlideshow) onOpenSlideshow(pictureItems, path);
+                          else onOpenItem?.(pictureItems[0], path);
                         }
                       }}
                       className="text-left hover:underline text-[#215dc6] flex items-center gap-1.5 bg-transparent border-0 cursor-pointer"
