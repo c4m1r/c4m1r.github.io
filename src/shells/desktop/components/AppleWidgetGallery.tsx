@@ -1,5 +1,6 @@
 import { useApp } from '../../../contexts/useApp';
 import { type AppleWidgetVisibility } from './AppleDesktopWidgets';
+import { type DesktopWidgetsVisibility } from '../../../system/widgets/types';
 
 interface AppleWidgetGalleryProps {
   open: boolean;
@@ -7,6 +8,7 @@ interface AppleWidgetGalleryProps {
   onClose: () => void;
   onToggle: (key: keyof AppleWidgetVisibility) => void;
   onPresetChange?: (key: keyof AppleWidgetVisibility, presetId: string) => void;
+  webosVisibility: DesktopWidgetsVisibility;
   themeKey: string;
 }
 
@@ -30,7 +32,7 @@ const widgets: Array<{
   { key: 'gallery', title: 'Art Gallery', titleRu: 'Галерея', description: 'Curated artwork frame', descriptionRu: 'Рамка избранных иллюстраций', glyph: '🖼️' },
 ];
 
-export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey }: AppleWidgetGalleryProps) {
+export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey, webosVisibility }: AppleWidgetGalleryProps) {
   const { language } = useApp();
   const isRu = language === 'ru';
   if (!open) return null;
@@ -44,8 +46,8 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
           <button type="button" onClick={onClose}>{isRu ? 'Готово' : 'Done'}</button>
         </header>
         <div className="apple-widget-gallery__list">
-          {widgets.map((widget) => {
-            const isEnabled = Boolean(visibility[widget.key]);
+          {widgets.filter((widget) => themeKey !== 'webos' || (widget.key !== 'battery' && widget.key !== 'calendar')).map((widget) => {
+            const isEnabled = themeKey === 'webos' ? Boolean(webosVisibility[widget.key as keyof DesktopWidgetsVisibility]) : Boolean(visibility[widget.key]);
             return (
               <div className={`apple-widget-gallery__item ${isEnabled ? 'is-enabled' : ''}`} key={widget.key}>
                 <button type="button" className="apple-widget-gallery__toggle" onClick={() => onToggle(widget.key)} aria-pressed={isEnabled}>

@@ -61,6 +61,7 @@ import { AppleNotificationCenter } from './components/AppleNotificationCenter';
 import { AppleSpotlight } from './components/AppleSpotlight';
 import { AppleDesktopWidgets, type AppleWidgetVisibility } from './components/AppleDesktopWidgets';
 import { WebosDesktopWidgets } from '../../system/widgets/components/WebosDesktopWidgets';
+import { getStoredWidgetsVisibility, saveStoredWidgetsVisibility, type DesktopWidgetsVisibility } from '../../system/widgets/types';
 import { AppleLockScreen } from './components/AppleLockScreen';
 import { AppleWidgetGallery } from './components/AppleWidgetGallery';
 import { IosAssistiveTouch } from './components/IosAssistiveTouch';
@@ -202,6 +203,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       return saved ? { clock: false, battery: false, calendar: false, ...JSON.parse(saved) } : { clock: false, battery: false, calendar: false };
     } catch { return { clock: false, battery: false, calendar: false }; }
   });
+  const [webosWidgetVisibility, setWebosWidgetVisibility] = useState<DesktopWidgetsVisibility>(getStoredWidgetsVisibility);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
@@ -1518,8 +1520,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         themeKey={themeKey}
         open={showAppleWidgetGallery}
         visibility={appleWidgetVisibility}
+        webosVisibility={webosWidgetVisibility}
         onClose={() => setShowAppleWidgetGallery(false)}
         onToggle={(key) => {
+          if (themeKey === 'webos') {
+            setWebosWidgetVisibility((current) => {
+              const next = { ...current, [key]: !current[key as keyof DesktopWidgetsVisibility] };
+              saveStoredWidgetsVisibility(next);
+              return next;
+            });
+            return;
+          }
           setAppleWidgetVisibility((current) => {
             const next = { ...current, [key]: !current[key] };
             localStorage.setItem('desktop-apple-widget-visibility-v1', JSON.stringify(next));
@@ -1527,9 +1538,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           });
         }}
         onPresetChange={(key, presetId) => {
-          const widgetId = (key === 'clock' || key === 'calendar') && appleWidgetVisibility.clock && appleWidgetVisibility.calendar
-            ? 'clockCalendar'
-            : key;
+          const widgetId = themeKey === 'webos'
+            ? (key === 'clock' ? 'clockCalendar' : key)
+            : (key === 'clock' || key === 'calendar') && appleWidgetVisibility.clock && appleWidgetVisibility.calendar
+              ? 'clockCalendar'
+              : key;
           window.dispatchEvent(new CustomEvent('desktop-widget-preset-change', { detail: { widgetId, presetId } }));
         }}
       />
