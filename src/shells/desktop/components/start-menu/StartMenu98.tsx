@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Folder, Star, FileText, Settings, Search, HelpCircle, Play, LogOut, Power } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
 import { getActiveEdition } from '../../../os/osEditions';
@@ -17,6 +17,7 @@ type ClassicMenuItem = {
   appId?: string;
   path?: string;
   action?: 'logoff' | 'shutdown';
+  submenu?: ClassicMenuItem[];
 };
 
 const DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
@@ -27,12 +28,25 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const { theme, language } = useApp();
   const isRu = language === 'ru';
   const isWin2000 = theme === 'win2000';
+  const [programsOpen, setProgramsOpen] = useState(false);
   const activeEdition = getActiveEdition(theme);
   const menuItems: ClassicMenuItem[] = [
-    { label: isRu ? 'Программы' : 'Programs', icon: <Folder size={16} />, path: 'C:\\Program Files\\Programs' },
+    { label: isRu ? 'Программы' : 'Programs', icon: <Folder size={16} />, submenu: [
+      { label: 'Internet Explorer', icon: <Folder size={16} />, appId: 'internet-explorer' },
+      { label: 'Outlook Express', icon: <Folder size={16} />, appId: 'outlook' },
+      { label: 'Windows Media Player', icon: <Folder size={16} />, appId: 'windows-media-player' },
+      { label: 'Winamp', icon: <Folder size={16} />, appId: 'winamp' },
+      { label: isRu ? 'Блокнот' : 'Notepad', icon: <FileText size={16} />, appId: 'notepad' },
+      { label: isRu ? 'Калькулятор' : 'Calculator', icon: <FileText size={16} />, appId: 'calculator' },
+      { label: isRu ? 'Панель управления' : 'Control Panel', icon: <Settings size={16} />, appId: 'control-panel' },
+      { label: 'DOOM', icon: <Folder size={16} />, appId: 'doom1' },
+      { label: 'DOOM II', icon: <Folder size={16} />, appId: 'doom2' },
+      { label: isRu ? 'Сапёр' : 'Minesweeper', icon: <Folder size={16} />, appId: 'minesweeper' },
+    ] },
     { label: isRu ? 'Избранное' : 'Favorites', icon: <Star size={16} />, path: DESKTOP_PATH },
     { label: isRu ? 'Документы' : 'Documents', icon: <FileText size={16} />, path: DOCUMENTS_PATH },
     { label: isRu ? 'Мой компьютер' : 'My Computer', icon: <Folder size={16} />, appId: 'my-computer' },
+    { label: isRu ? 'Сетевое окружение' : 'Network Neighborhood', icon: <Folder size={16} />, path: 'Network Neighborhood' },
     { label: isRu ? 'Мои рисунки' : 'My Pictures', icon: <FileText size={16} />, path: PICTURES_PATH },
     { label: isRu ? 'Настройка' : 'Settings', icon: <Settings size={16} />, appId: 'control-panel' },
     { label: isRu ? 'Поиск' : 'Find', icon: <Search size={16} />, appId: 'search' },
@@ -78,17 +92,36 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       </div>
       <div className="flex-1 py-1 os-list">
         {menuItems.map((item) => (
-          <button
-            key={item.label}
-            type="button"
-            className="w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white flex items-center gap-2 text-sm transition-colors os-list-item os-button"
-            style={{ fontFamily: 'MS Sans Serif, sans-serif' }}
-            onClick={() => activate(item)}
-            onMouseEnter={onHover}
-          >
-            {item.icon}
-            <span>{item.label}</span>
-          </button>
+          <div key={item.label} className="relative">
+            <button
+              type="button"
+              className="w-full text-left px-2 py-1 hover:bg-[#000080] hover:text-white flex items-center gap-2 text-sm transition-colors os-list-item os-button"
+              style={{ fontFamily: 'MS Sans Serif, sans-serif' }}
+              onClick={() => item.submenu ? setProgramsOpen((open) => !open) : activate(item)}
+              onMouseEnter={() => { onHover?.(); if (item.submenu) setProgramsOpen(true); }}
+              aria-expanded={item.submenu ? programsOpen : undefined}
+            >
+              {item.icon}
+              <span className="flex-1">{item.label}</span>
+              {item.submenu ? <span aria-hidden="true">›</span> : null}
+            </button>
+            {item.submenu && programsOpen && (
+              <div className="absolute left-full top-0 z-[100001] min-w-52 border-2 border-solid border-white bg-[#c0c0c0] py-1 shadow-lg">
+                {item.submenu.map((entry) => (
+                  <button
+                    key={entry.appId ?? entry.label}
+                    type="button"
+                    className="flex w-full items-center gap-2 px-2 py-1 text-left text-sm hover:bg-[#000080] hover:text-white"
+                    style={{ fontFamily: 'MS Sans Serif, sans-serif' }}
+                    onClick={() => activate(entry)}
+                    onMouseEnter={onHover}
+                  >
+                    {entry.icon}<span>{entry.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>
