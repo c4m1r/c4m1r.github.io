@@ -292,19 +292,22 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
               }
 
               let content = null;
-              if (isRevealed) {
-                if (isMine) {
-                  const mineClass =
-                    explodedCell && explodedCell.row === rowIndex && explodedCell.col === colIndex
-                      ? 'minesweeper-sprite-mine-exploded'
-                      : 'minesweeper-sprite-mine';
-                  content = <div className={`minesweeper-cell-sprite ${mineClass}`} />;
-                } else if (neighborMines > 0) {
-                  content = <div className={`minesweeper-cell-sprite minesweeper-sprite-${neighborMines}`} />;
-                } else {
-                  content = <div className="minesweeper-cell-sprite minesweeper-sprite-0" />;
-                }
-              } else if (cell.isFlagged) {
+              const showMine = isMine && (isRevealed || gameState === 'lost');
+              const showWrongFlag = gameState === 'lost' && isFlagged && !isMine;
+
+              if (showMine) {
+                const mineClass =
+                  explodedCell && explodedCell.row === rowIndex && explodedCell.col === colIndex
+                    ? 'minesweeper-sprite-mine-exploded'
+                    : 'minesweeper-sprite-mine';
+                content = <div className={`minesweeper-cell-sprite ${mineClass}`} aria-label="Mine" />;
+              } else if (showWrongFlag) {
+                content = <div className="minesweeper-cell-sprite minesweeper-sprite-mine-wrong" aria-label="Incorrect flag" />;
+              } else if (isRevealed && neighborMines > 0) {
+                content = <div className={`minesweeper-cell-sprite minesweeper-sprite-${neighborMines}`} />;
+              } else if (isRevealed) {
+                content = <div className="minesweeper-cell-sprite minesweeper-sprite-0" />;
+              } else if (isFlagged) {
                 content = <div className="minesweeper-cell-sprite minesweeper-sprite-flag" />;
               } else if (cell.isQuestioned) {
                 content = <div className="minesweeper-cell-sprite minesweeper-sprite-question" />;
