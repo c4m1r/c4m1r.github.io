@@ -226,7 +226,6 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
   const handleMenuAction = (entry: MenuItem) => {
     if (entry.disabled) {
-      onLaunchApp?.(`unavailable:${entry.title ?? entry.id}`);
       onClose();
       return;
     }
@@ -379,6 +378,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
                   <button
                     key={program.id}
                     className={`start-menu-item os-list-item ${program.disabled ? 'disabled' : ''}`}
+                    disabled={program.disabled}
                     onClick={() => handleMenuAction(program)}
                     onMouseEnter={handleHover}
                   >
@@ -467,6 +467,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               <button
                 key={place.id}
                 className={`start-menu-item os-list-item ${place.disabled ? 'disabled' : ''}`}
+                disabled={place.disabled}
                 onClick={() => handleMenuAction(place)}
                 onMouseEnter={handleHover}
               >
