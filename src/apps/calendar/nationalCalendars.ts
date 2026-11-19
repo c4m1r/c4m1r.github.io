@@ -332,7 +332,12 @@ function isCountryLabourDayOff(date: Date, country: CountryCode): boolean {
 export function getLabourDayStatus(date: Date, selected: CountryCode[]) {
   const dayOffCountries=selected.filter((country)=>isCountryLabourDayOff(date,country));
   const workingCountries=selected.filter((country)=>!dayOffCountries.includes(country));
-  return { isDayOff: dayOffCountries.length>0, dayOffCountries, workingCountries };
+  const key=dateKeyLocal(date);
+  const makeupWorkCountries=selected.filter((country)=>labourOverrides[date.getFullYear()]?.[country]?.work.includes(key) ?? false);
+  return { isDayOff: dayOffCountries.length>0, dayOffCountries, workingCountries, makeupWorkCountries };
+}
+export function isMakeupWorkday(date: Date, selected: CountryCode[]) {
+  return getLabourDayStatus(date,selected).makeupWorkCountries.length>0;
 }
 export function isSelectedCountryWeekend(date: Date, selected: CountryCode[]): boolean {
   return getLabourDayStatus(date,selected).isDayOff;
