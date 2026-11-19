@@ -226,7 +226,7 @@ const CONTEXT_MENU_LABELS: Partial<Record<Language, ContextMenuDictionary>> & Pi
     'Tile Windows Vertically': '창 세로 정렬',
     'Show the Desktop': '바탕 화면 표시',
     'Task Manager': '작업 관리자',
-  },,
+  },
   be: {
     Open: 'Адкрыць', Cut: 'Выразаць', Copy: 'Капіяваць', Delete: 'Выдаліць', Rename: 'Перайменаваць',
     Properties: 'Уласцівасці', Refresh: 'Абнавіць', Paste: 'Уставіць', New: 'Стварыць',
