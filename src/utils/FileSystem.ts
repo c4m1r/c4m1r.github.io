@@ -311,7 +311,7 @@ export const getFileSystemItemFromPath = (path: string): FileSystemItem | null =
         .replace(/[\\/]+/g, '/')
         .replace(/\/+$/g, '');
     const usesModernProfile = /^C:\/Users(?:\/|$)/i.test(normalizedPath);
-    const compatiblePath = normalizedPath.replace(/^C:\/Users(?=\/|$)/i, 'C:/Documents and Settings');
+    const compatiblePath = normalizedPath;
     const parts = compatiblePath.split('/').filter(Boolean).map((part, index) => {
         if (!usesModernProfile || index < 3) return part;
         const modernFolderAliases: Record<string, string> = {
