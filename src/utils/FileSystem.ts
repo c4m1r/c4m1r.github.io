@@ -408,6 +408,14 @@ if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
 const isComputerRootPath = (path: string) =>
     ['my computer', 'computer', 'this pc', 'компьютер', 'мой компьютер'].includes(path.trim().toLocaleLowerCase());
 
+export async function loadProjectMarkdown(path: string): Promise<string> {
+    const normalized = path.replace(/^\\/+/, '').replace(/\\\\/g, '/');
+    const moduleKey = `../content/${normalized}`;
+    const loader = projectModules[moduleKey] ?? aboutProjectModules[moduleKey];
+    if (!loader) throw new Error(`Project article not found: ${path}`);
+    return loader();
+}
+
 export const getFileSystemItemFromPath = (path: string): FileSystemItem | null => {
     if (isComputerRootPath(path)) return initialFileSystem['My Computer'];
     if (['network neighborhood', 'сетевое окружение', 'my network places'].includes(path.trim().toLocaleLowerCase())) {
