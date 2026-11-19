@@ -487,3 +487,14 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - Organized `Program Files\\Games` and `Program Files\\Programs` by publisher/author folders (id Software, Microsoft, Nullsoft, C4m1r).
 - Added Belarusian (`be`) and Kazakh (`kk`) locale selection, detection and persistence. Core shell/navigation labels are translated; long-form translation coverage is still partial and uses Russian fallback.
 - All changes were committed directly to `main`. No local verification commands or browser acceptance were run in this pass; check the latest GitHub Actions deployment workflow before treating the build as green.
+
+
+### 2026-11-19 — Start Menu event propagation, DOOM surface and game sprites
+- Fixed the Start Menu dead-click root cause: desktop mousedown handling was closing/unmounting the menu before child click handlers fired. Start Menu wrapper now stops mousedown and click propagation.
+- Added Network Neighborhood to the virtual filesystem and classic/XP/Windows 7 Start Menu navigation.
+- Implemented expanding All Programs lists in XP and Windows 7 and a cascading Programs submenu in Windows 98/2000. IE and Outlook Express now share the normal XP pinned-row sizing without special tags.
+- Corrected the canonical Programs path to `C:\\Program Files\\Programs`.
+- Removed DOOM's Emupedia/wasm-doom footer, warning tip and duplicate iframe-loaded status overlay. Retained header external launch and error-only fallback. No gameplay verification implied.
+- Corrected Minesweeper's sprite-sheet CSS after inspecting PNG dimensions: all three source sheets are vertical, while prior CSS expected horizontal strips. Updated cell, digit and smiley offsets.
+- Restored Explorer icons for games/programs through appId-specific asset mapping; added Snake and Memory SVG icons and mapped DOOM/Minesweeper to dedicated artwork.
+- Automated and manual acceptance remain pending for the latest commit; do not mark these workstreams complete until CI and browser tests pass.
