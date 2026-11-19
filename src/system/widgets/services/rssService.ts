@@ -88,6 +88,7 @@ const STORE_ARTICLES = 'articles';
 const STORE_SOURCES = 'sources';
 const SOURCES_STORAGE_KEY = 'webos_rss_sources_config_v1';
 const RSS_LAST_REFRESH_KEY = 'webos_rss_last_refresh_v1';
+const RSS_CACHE_VERSION_KEY = 'webos_rss_cache_version_v2';
 const RSS_CACHE_TTL_MS = 15 * 60 * 1000;
 const RSS_PARTIAL_RETRY_MS = 2 * 60 * 1000;
 const RSS_REQUEST_TIMEOUT_MS = 7000;
@@ -437,9 +438,24 @@ export async function getCachedArticlesFromDatabase(category?: string): Promise<
   }
 }
 
+function migrateRssCacheMarker(): void {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    if (localStorage.getItem(RSS_CACHE_VERSION_KEY) !== '2') {
+      // Force one refresh after the publication-date/cache replacement fix.
+      // Individual source caches are replaced only after that source succeeds.
+      localStorage.removeItem(RSS_LAST_REFRESH_KEY);
+      localStorage.setItem(RSS_CACHE_VERSION_KEY, '2');
+    }
+  } catch {
+    // Private browsing or storage restrictions must not break feed loading.
+  }
+}
+
 export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle[]> {
   const sources = getRssSources().filter((source) => source.enabled);
   if (!sources.length) return [];
+  migrateRssCacheMarker();
 
   if (!forceRefresh) {
     const cached = await getCachedArticlesFromDatabase();
