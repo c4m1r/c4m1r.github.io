@@ -12,10 +12,12 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
   const builds = useMemo(() => variant?.builds ?? [], [variant]);
   const [activeBuildId, setActiveBuildId] = useState(builds[0]?.id ?? 'webgl');
   const [frameFailed, setFrameFailed] = useState(false);
+  const [frameLoaded, setFrameLoaded] = useState(false);
 
   useEffect(() => {
     setActiveBuildId(builds[0]?.id ?? 'webgl');
     setFrameFailed(false);
+    setFrameLoaded(false);
   }, [variantId, builds]);
 
   const activeBuild = useMemo(() => {
@@ -48,7 +50,7 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
             {variant.builds.map((build) => (
               <button
                 key={build.id}
-                onClick={() => { setActiveBuildId(build.id); setFrameFailed(false); }}
+                onClick={() => { setActiveBuildId(build.id); setFrameFailed(false); setFrameLoaded(false); }}
                 className={`doom-player__button px-3 py-1 rounded border text-[11px] ${
                   build.id === activeBuildId
                     ? 'is-active bg-[#f44336] border-[#ff7961] text-white'
@@ -58,16 +60,14 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
                 {build.label}
               </button>
             ))}
-            {variant.homepage && (
-              <a
-                href={variant.homepage}
-                target="_blank"
-                rel="noreferrer"
-                className="doom-player__link px-3 py-1 rounded border border-[#3d3d3d] text-[#9fd4ff] text-[11px] hover:border-[#9fd4ff]"
-              >
-                {isRu ? 'Открыть на Emupedia' : 'Open on Emupedia'}
-              </a>
-            )}
+            <a
+              href={activeBuild.url}
+              target="_blank"
+              rel="noreferrer"
+              className="doom-player__link px-3 py-1 rounded border border-[#9fd4ff] text-[#9fd4ff] text-[11px] hover:bg-[#9fd4ff]/10"
+            >
+              {isRu ? 'Открыть выбранную сборку отдельно' : 'Open selected build separately'}
+            </a>
           </div>
         </div>
         <p className="text-[#bcbcbc] mt-2">
@@ -76,6 +76,18 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
       </header>
 
       <div className="doom-player__stage flex-1 relative bg-black overflow-hidden">
+        <div className="doom-player__status absolute top-2 left-2 right-2 z-10 flex items-center justify-between gap-3 border border-[#555] bg-black/85 px-3 py-2 text-[11px] text-[#f5d98a]">
+          <span>
+            {frameFailed
+              ? (isRu ? 'Не удалось подтвердить загрузку встроенной страницы.' : 'The embedded page could not be confirmed as loaded.')
+              : frameLoaded
+                ? (isRu ? 'Страница iframe загружена; запуск игрового движка и доступность управления не подтверждены.' : 'The iframe page loaded; game engine startup and input are not verified.')
+                : (isRu ? 'Ожидание ответа внешней страницы. Загрузка iframe не гарантирует запуск игры.' : 'Waiting for the external page. An iframe load does not guarantee that the game started.')}
+          </span>
+          <a href={activeBuild.url} target="_blank" rel="noreferrer" className="shrink-0 underline text-[#9fd4ff]">
+            {isRu ? 'В отдельной вкладке' : 'Open separately'}
+          </a>
+        </div>
         <iframe
           key={activeBuild.url}
           src={activeBuild.url}
@@ -85,14 +97,14 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
           loading="eager"
-          onLoad={() => setFrameFailed(false)}
-          onError={() => setFrameFailed(true)}
+          onLoad={() => { setFrameLoaded(true); setFrameFailed(false); }}
+          onError={() => { setFrameLoaded(false); setFrameFailed(true); }}
         />
         {frameFailed && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/95 p-6 text-center text-white">
             <strong>{isRu ? 'Встроенная версия не загрузилась' : 'The embedded build did not load'}</strong>
             <p className="max-w-lg text-xs text-gray-300">
-              {isRu ? 'Похоже, сервер игры недоступен или запрещает встраивание. Запусти игру отдельно — это обходит ограничения iframe.' : 'The game host may be unavailable or may block embedding. Open the game directly to bypass iframe restrictions.'}
+              {isRu ? 'Встроенная навигация не удалась. Прямая ссылка может работать независимо от ограничений iframe, но доступность самой игры всё равно нужно проверить.' : 'Embedded navigation failed. The direct link may work independently of iframe restrictions, but actual game availability still needs verification.'}
             </p>
             <a href={activeBuild.url} target="_blank" rel="noreferrer" className="rounded border border-blue-400 px-4 py-2 text-sm text-blue-200 hover:bg-blue-500/20">
               {isRu ? 'Открыть игру отдельно' : 'Open game separately'}
@@ -101,8 +113,8 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
         )}
         <div className="doom-player__tip absolute bottom-2 right-4 bg-[#111]/80 px-3 py-2 rounded text-[11px] text-[#ffb400] border border-[#ffb400]/40 shadow-lg max-w-sm">
           {isRu
-            ? 'Если игра не стартует внутри окна, открой её отдельно. Управление мышью активируется внутри игрового поля.'
-            : 'If the game does not start inside the window, open it separately. Mouse controls activate inside the game area.'}
+            ? 'Важно: успешная загрузка страницы не означает, что игровой движок запустился. Проверяй управление, звук и игровой процесс отдельно.'
+            : 'Important: a successful page load does not mean the game engine started. Verify controls, audio and gameplay separately.'}
         </div>
       </div>
 
