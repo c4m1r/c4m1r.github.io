@@ -25,6 +25,7 @@ type ClassicMenuItem = {
 
 const DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
 const PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures';
+const VIDEOS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Videos';
 const DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
 
 export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand, onHover }: StartMenu98Props) {
@@ -51,6 +52,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     { label: isRu ? 'Мой компьютер' : 'My Computer', icon: <Folder size={16} />, appId: 'my-computer' },
     { label: isRu ? 'Сетевое окружение' : 'Network Neighborhood', icon: <Folder size={16} />, path: 'My Computer\\\\Network Neighborhood' },
     { label: isRu ? 'Мои рисунки' : 'My Pictures', icon: <FileText size={16} />, path: PICTURES_PATH },
+    { label: isRu ? 'Мои видеозаписи' : 'My Videos', icon: <FileText size={16} />, path: VIDEOS_PATH },
     { label: isRu ? 'Настройка' : 'Settings', icon: <Settings size={16} />, appId: 'control-panel' },
     { label: isRu ? 'Поиск' : 'Find', icon: <Search size={16} />, appId: 'search' },
     { label: isRu ? 'Справка' : 'Help', icon: <HelpCircle size={16} />, appId: 'wiki' },
