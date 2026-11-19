@@ -282,3 +282,14 @@
 .calendar-app__makeup-work-label{display:block;color:#16804d;font-size:9px;font-weight:800;line-height:1.2}
 
 .xp-clock-popup__days button.is-makeup-workday{box-shadow:inset 0 0 0 1px rgba(30,145,90,.75);color:#16804d}
+
+.calendar-app__source-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 10px;border-bottom:1px solid rgba(120,120,120,.22);font-size:10px}
+.calendar-app__source-controls label{display:inline-flex;align-items:center;gap:5px}
+.calendar-app__source-controls input{width:13px;height:13px;accent-color:#3977b9}
+.calendar-app__source-controls select{padding:3px 5px;border:1px solid rgba(120,120,120,.35);border-radius:4px;background:var(--calendar-surface,#fff);color:inherit}
+.calendar-app__event-chip[data-calendar-color="blue"]{background:rgba(60,125,205,.15);border-color:rgba(60,125,205,.38);color:inherit}
+.calendar-app__event-chip[data-calendar-color="purple"]{background:rgba(135,85,190,.15);border-color:rgba(135,85,190,.38);color:inherit}
+.calendar-app__event-chip[data-calendar-color="orange"]{background:rgba(210,130,45,.16);border-color:rgba(210,130,45,.4);color:inherit}
+.calendar-app__event-chip[data-calendar-color="teal"]{background:rgba(25,145,145,.15);border-color:rgba(25,145,145,.38);color:inherit}
+.calendar-app__event-chip[data-calendar-color="green"]{background:rgba(30,145,90,.15);border-color:rgba(30,145,90,.38);color:inherit}
+@media(max-width:640px){.calendar-app__source-controls{gap:6px}.calendar-app__source-controls label{font-size:9px}}
