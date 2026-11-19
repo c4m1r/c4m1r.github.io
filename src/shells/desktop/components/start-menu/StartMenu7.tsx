@@ -41,6 +41,7 @@ export function StartMenu7({
   const assets = THEME_ASSETS.win7;
   const activeEdition = getActiveEdition(theme);
   const [query, setQuery] = useState('');
+  const [showAllPrograms, setShowAllPrograms] = useState(false);
 
   const programs: Win7MenuEntry[] = useMemo(() => [
     {
@@ -105,7 +106,24 @@ export function StartMenu7({
     },
   ], [assets, isRu, language]);
 
-  const filteredPrograms = programs.filter((program) =>
+  const allPrograms: Win7MenuEntry[] = [
+    ...programs,
+    { id: 'notepad', label: isRu ? 'Блокнот' : 'Notepad', appId: 'notepad', icon: assets.notepadIcon },
+    { id: 'pictures-viewer', label: isRu ? 'Просмотр изображений' : 'Picture Viewer', appId: 'pictures', icon: assets.folderIcon },
+    { id: 'calendar', label: isRu ? 'Календарь' : 'Calendar', appId: 'calendar', icon: assets.notepadIcon },
+    { id: 'control-panel', label: isRu ? 'Панель управления' : 'Control Panel', appId: 'control-panel', icon: assets.controlPanelIcon },
+    { id: 'task-manager', label: isRu ? 'Диспетчер задач' : 'Task Manager', appId: 'task-manager', icon: assets.controlPanelIcon },
+    { id: 'wiki', label: 'Wiki', appId: 'wiki', icon: assets.projectsIcon },
+    { id: 'help', label: isRu ? 'Справка и поддержка' : 'Help and Support', appId: 'help', icon: assets.helpIcon },
+    { id: 'terminal', label: isRu ? 'Терминал' : 'Terminal', appId: 'terminal', icon: assets.terminalIcon },
+    { id: 'loops', label: 'Loops', appId: 'loops', icon: assets.mediaPlayerIcon },
+    { id: 'minesweeper', label: isRu ? 'Сапёр' : 'Minesweeper', appId: 'minesweeper', icon: assets.minesweeperIcon },
+    { id: 'snake', label: isRu ? 'Змейка' : 'Snake', appId: 'snake', icon: assets.gamesIcon },
+    { id: 'memory', label: isRu ? 'Память' : 'Memory', appId: 'memory', icon: assets.gamesIcon },
+    { id: 'doom1', label: 'DOOM', appId: 'doom1', icon: assets.doomIcon },
+    { id: 'doom2', label: 'DOOM II', appId: 'doom2', icon: assets.doomIcon },
+  ];
+  const filteredPrograms = (showAllPrograms ? allPrograms : programs).filter((program) =>
     program.label.toLocaleLowerCase(language).includes(query.trim().toLocaleLowerCase(language)),
   );
 
@@ -133,6 +151,12 @@ export function StartMenu7({
       label: isRu ? 'Компьютер' : 'Computer',
       appId: 'my-computer',
       icon: assets.computerIcon,
+    },
+    {
+      id: 'network',
+      label: isRu ? 'Сетевое окружение' : 'Network',
+      path: 'Network Neighborhood',
+      icon: assets.placesIcons.network ?? assets.computerIcon,
     },
     {
       id: 'control-panel',
@@ -191,14 +215,12 @@ export function StartMenu7({
           <button
             type="button"
             className="win7-start-menu__all-programs"
-            onClick={() => {
-              onOpenPath?.('C:\\Program Files\\Programs');
-              onClose();
-            }}
+            aria-expanded={showAllPrograms}
+            onClick={() => setShowAllPrograms((open) => !open)}
             onMouseEnter={onHover}
           >
             <ChevronRight size={13} aria-hidden="true" />
-            <span>{isRu ? 'Все программы' : 'All Programs'}</span>
+            <span>{showAllPrograms ? (isRu ? 'Назад' : 'Back') : (isRu ? 'Все программы' : 'All Programs')}</span>
           </button>
 
           <label className="win7-start-menu__search">
