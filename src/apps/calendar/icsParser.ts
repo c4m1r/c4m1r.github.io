@@ -1,3 +1,12 @@
+export interface CalendarRecurrenceRule {
+  freq: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+  interval: number;
+  count?: number;
+  until?: Date;
+  byDay?: number[];
+  byMonthDay?: number[];
+}
+
 export interface CalendarEvent {
   id?: string;
   source?: 'ics' | 'local';
@@ -6,6 +15,7 @@ export interface CalendarEvent {
   description?: string;
   startDate: Date;
   endDate: Date;
+  recurrenceRule?: CalendarRecurrenceRule;
 }
 
 function decodeICSText(value: string) {
@@ -63,6 +73,23 @@ function parseProperty(line: string): ICSProperty | null {
   return { name, params, value: line.slice(separator + 1) };
 }
 
+const WEEKDAY_CODES: Record<string, number> = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
+function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined {
+  const fields = Object.fromEntries(value.split(';').map((part) => {
+    const separator = part.indexOf('=');
+    return separator > 0 ? [part.slice(0, separator).toUpperCase(), part.slice(separator + 1)] : ['', ''];
+  }).filter(([key]) => key));
+  const freq = fields.FREQ?.toUpperCase();
+  if (!['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'].includes(freq)) return undefined;
+  const interval = Math.min(365, Math.max(1, Number(fields.INTERVAL) || 1));
+  const countValue = Number(fields.COUNT);
+  const count = Number.isFinite(countValue) && countValue > 0 ? Math.min(10000, Math.floor(countValue)) : undefined;
+  const until = fields.UNTIL ? parseDateValue(fields.UNTIL) ?? undefined : undefined;
+  const byDay = fields.BYDAY?.split(',').map((value: string) => WEEKDAY_CODES[value.slice(-2)]).filter((day: number | undefined): day is number => day !== undefined);
+  const byMonthDay = fields.BYMONTHDAY?.split(',').map(Number).filter((day: number) => Number.isInteger(day) && day >= 1 && day <= 31);
+  return { freq: freq as CalendarRecurrenceRule['freq'], interval, count, until, byDay, byMonthDay };
+}
+
 export function parseICS(icsData: string): CalendarEvent[] {
   // RFC 5545 folded content lines continue with one leading space or tab.
   const unfolded = icsData.replace(/\r?\n[ \t]/g, '');
@@ -78,6 +105,7 @@ export function parseICS(icsData: string): CalendarEvent[] {
     const description = decodeICSText(get('DESCRIPTION')?.value ?? '').trim();
     const startProperty = get('DTSTART');
     const endProperty = get('DTEND');
+    const recurrenceProperty = get('RRULE');
     const startDate = startProperty ? parseDateValue(startProperty.value, startProperty.params.TZID) : null;
     const endDate = endProperty ? parseDateValue(endProperty.value, endProperty.params.TZID) : startDate;
     if (!summary || !startDate || !endDate || endDate < startDate) return;
@@ -90,6 +118,7 @@ export function parseICS(icsData: string): CalendarEvent[] {
       description,
       startDate,
       endDate,
+      recurrenceRule: recurrenceProperty ? parseRecurrenceRule(recurrenceProperty.value) : undefined,
     });
   });
 
