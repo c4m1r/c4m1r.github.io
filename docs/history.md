@@ -519,3 +519,11 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - Classic Windows Start Menu uses the theme's native Internet Explorer, Outlook Express, Media Player and Winamp artwork. XP All Programs is a visible keyboard-addressable fly-out; Network Neighborhood paths are normalized to the shared My Computer folder.
 - Minesweeper sprite elements now have explicit display/flex dimensions and pixelated rendering for cell, flag, bomb, digit and smiley sheets.
 - Verification remains pending. Earlier CI caught a JSX nesting issue in the new DOOM header; the closing tag was corrected in commit `6875f22f`. Check the latest-main workflow and complete manual interaction checks before accepting.
+
+
+### 2026-11-19 — Control Panel navigation and lazy project articles
+- Added a shared `explorer:open-path` event bridge so Control Panel categories can open the same Explorer windows and virtual filesystem used elsewhere.
+- Category cards and classic applets now route Programs to `C:\\Program Files\\Programs`, User Accounts to `C:\\Users`, Network to My Computer/Network Neighborhood, Date & Time to the Calendar app, Task Manager to its registered window, and Widgets to the existing Widget Gallery. Apple routes remain in Apple settings surfaces; hardware/sound and non-Apple accessibility still use the System & Device Info surface and need deeper dedicated controls.
+- My Projects now indexes the same two sources and filename-ID precedence as `loadAllProjects()`: root standard projects first, then nested `content/about/projects` entries not already represented. The folder stores lightweight paths rather than eager Markdown bodies; article contents and localized frontmatter are loaded only on double-click.
+- The previous eager Markdown import was removed to avoid duplicating large project text in the initial bundle. The article reader uses the shared Markdown renderer.
+- Verification: latest source workflow is pending; earlier snapshot `7f50b5ef` passed Typecheck, Lint, Build and Deploy. Do not infer the newer Control Panel and lazy project changes are green until their own latest-main run completes.
