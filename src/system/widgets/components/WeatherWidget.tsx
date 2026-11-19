@@ -106,6 +106,9 @@ export function WeatherWidget() {
             type="button"
             onClick={() => setShowCityPicker((prev) => !prev)}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/15 text-xs font-semibold tracking-wide transition-colors cursor-pointer"
+            aria-haspopup="listbox"
+            aria-expanded={showCityPicker}
+            aria-controls="weather-city-picker-options"
           >
             <MapPin size={12} className="text-blue-400" />
             <span>{activeCity.flag} {isRu ? activeCity.nameRu : activeCity.nameEn}</span>
@@ -115,10 +118,21 @@ export function WeatherWidget() {
           {showCityPicker && typeof document !== 'undefined' && createPortal(
             <div
               ref={cityPickerMenuRef}
+              id="weather-city-picker-options"
               className="weather-city-picker"
               role="listbox"
               aria-label={isRu ? 'Выбор города' : 'Choose city'}
               style={{ top: cityPickerPosition.top, left: cityPickerPosition.left, width: cityPickerPosition.width }}
+              onKeyDown={(event) => {
+                if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+                const options = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>("[role=option]"));
+                if (!options.length) return;
+                event.preventDefault();
+                const current = options.indexOf(document.activeElement as HTMLButtonElement);
+                const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 :
+                  (current + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length;
+                options[next].focus();
+              }}
             >
               {CITIES.map((c) => (
                 <button
