@@ -222,7 +222,12 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                     'Блокнот': { id: 'program-notepad', name: 'Блокнот', type: 'file', appId: 'notepad', icon: defaultTextIcon },
                                     'Мои проекты': { id: 'program-projects', name: 'Мои проекты', type: 'file', appId: 'projects-grid', icon: defaultTextIcon },
                                     'Справка и поддержка': { id: 'program-help', name: 'Справка и поддержка', type: 'file', appId: 'help', icon: defaultTextIcon },
-                                    'Диспетчер задач': { id: 'program-task-manager', name: 'Диспетчер задач', type: 'file', appId: 'task-manager', icon: defaultTextIcon }
+                                    'Диспетчер задач': { id: 'program-task-manager', name: 'Диспетчер задач', type: 'file', appId: 'task-manager', icon: defaultTextIcon },
+                                    'Калькулятор': { id: 'program-calculator', name: 'Калькулятор', type: 'file', appId: 'calculator', icon: defaultTextIcon },
+                                    'Панель управления': { id: 'program-control-panel', name: 'Панель управления', type: 'file', appId: 'control-panel', icon: defaultTextIcon },
+                                    'Терминал': { id: 'program-terminal', name: 'Терминал', type: 'file', appId: 'terminal', icon: defaultTextIcon },
+                                    'Блог.chm': { id: 'program-blog', name: 'Блог.chm', type: 'file', appId: 'blog', icon: defaultTextIcon },
+                                    'loops': { id: 'program-loops', name: 'loops', type: 'file', appId: 'loops', icon: defaultTextIcon }
                                 }
                             }
                         }
