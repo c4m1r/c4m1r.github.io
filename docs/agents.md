@@ -297,7 +297,7 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 
 ### User-reported desktop / Start Menu / Pictures regression pass — 2026-11-19
 - Branch: main; no feature branch.
-- Source baseline inspected: f6bc699452ad794102637e0ae3f254b40800021d. Latest implementation commit at the end of this pass: f6bc699452ad794102637e0ae3f254b40800021d.
+- Source baseline inspected: 0fc60199c127ae52b06e2b65c499f22ca24a5b91. Latest implementation commit at the end of this pass: f6bc699452ad794102637e0ae3f254b40800021d.
 - Widget defaults:
   - src/system/widgets/types.ts: DEFAULT_WIDGETS_VISIBILITY is now all false; WEBOS_DEFAULT_WIDGETS_VISIBILITY is all true and is used only by the WebOS widget canvas/storage reader.
   - src/shells/desktop/DesktopShellContainer.tsx: Apple/non-WebOS widget visibility moved from storage key desktop-apple-widget-visibility-v1 to v2. This intentionally ignores old v1 values left by the prior behavior; all non-WebOS widgets start off unless explicitly enabled under v2.
