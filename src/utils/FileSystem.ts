@@ -273,6 +273,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                             }
                         }
                         }
+                        }
                     },
                     'WINDOWS': {
                         id: 'windows',
