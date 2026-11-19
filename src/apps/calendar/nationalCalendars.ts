@@ -397,7 +397,7 @@ for (const [title, translations] of Object.entries(additionalHolidayTranslations
 }
 
 export function getHolidayTitle(holiday: NationalHoliday, locale: string): string {
-  const language = locale.split('-')[0].toLowerCase();
+  const language = locale.split('-')[0].toLowerCase() as 'ru' | 'en' | 'fr' | 'es' | 'zh' | 'ja' | 'ko';
   const separator = ' · ';
   const russian = holiday.title.includes(separator) ? holiday.title.split(separator).slice(1).join(separator) : holiday.title;
   const translated = holidayTranslations[russian]?.[language] ?? holidayTranslations[russian]?.en;
