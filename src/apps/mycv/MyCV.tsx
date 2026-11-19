@@ -11,7 +11,9 @@ import { useApp } from '../../contexts/useApp';
 import type { CvTabId } from '../../domain/resume/resume.types';
 import type { Language } from '../../i18n/translations';
 
-const TAB_LABELS: Record<CvTabId, Record<Language, string>> = {
+type LocalizedTabLabel = Partial<Record<Language, string>> & Pick<Record<Language, string>, 'en'>;
+
+const TAB_LABELS: Record<CvTabId, LocalizedTabLabel> = {
   education: {
     en: 'Education',
     ru: 'Образование',
@@ -81,7 +83,7 @@ export function MyCV() {
                 activeTab === tab ? 'selected' : ''
               }`}
             >
-              {TAB_LABELS[tab][language] ?? TAB_LABELS[tab].en}
+              {TAB_LABELS[tab][language] ?? TAB_LABELS[tab].ru ?? TAB_LABELS[tab].en}
             </button>
           ))}
         </div>
