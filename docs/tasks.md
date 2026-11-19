@@ -276,6 +276,7 @@
 | WIDGET-02 | Unified widget size system and adaptive contents | 70% | Three shared dimensions now replace per-widget dimensions; canvas no longer reserves a permanent title bar; responsive sizing and Winamp controls updated. Remaining widget-specific overflow/layout polish and QA. |
 | WIDGET-03 | Hover-only widget controls | 75% | Name, drag handle and size selector are now an overlay revealed on hover/focus instead of consuming permanent widget space. Accessibility and touch behavior still require QA. |
 | WINAMP-02 | Responsive Winamp modules and accessible controls | 45% | Added narrow-window layout rules, focus-visible outlines and pressed-state semantics for EQ/playlist/shuffle/repeat toggles. Playback controls, module chrome and cross-OS visual behavior still need functional/browser QA. |
+| WINAMP-03 | Shared audio DSP pipeline and functional equalizer | 30% | Moved EQ filters, preamp and stereo balance into the singleton `winampController`; main player now routes band/preamp/balance changes through the shared audio graph used by all views. Presets, persistence, widget controls and browser/audio QA remain. |
 | RSS-01 | Restore historical IndexedDB cache | 65% | Refresh now merges/upserts new entries instead of deleting all records from a source; old entries remain inside the existing 14-day retention window. Cache TTL optimization retained. |
 | RSS-02 | RSS duplicate prevention and chronological sorting | 60% | Stable article-link IDs, tracking-parameter normalization and cross-source URL deduplication added; publication-date sorting remains. Needs live-feed validation. |
 | RSS-03 | RSS collection, category drawer and article reader | 65% | Feed parser, category controls and article reader exist; proxy availability and publisher-specific extraction still need validation. |
@@ -338,6 +339,15 @@
 - The compact News widget must display the cached list immediately and still trigger a TTL-aware refresh so stale caches do not remain indefinitely.
 - Failed feeds must not erase cached records; partial failures must not block successful feeds.
 - A successful empty feed response does not erase historical entries.
+
+### WINAMP-03 — One shared audio processing pipeline
+- Keep a single audio element and processing graph in `src/system/audio/winampController.ts`; widgets and full player must never create parallel playback or independent DSP graphs.
+- Route playback through ten peaking EQ filters, preamp, stereo balance/panner and analyser in a stable order; expose state-changing methods from the controller rather than keeping audio nodes inside the React view.
+- EQ bypass must neutralize both band filters and preamp without resetting the user's saved slider values.
+- The full player and compact Winamp widget must read/write the same EQ and balance state.
+- Add named presets, user preset save/restore and persistence only after the shared DSP path is verified. Preset selection must update the same controller state as manual slider changes.
+- Skin system target: keep playback/DSP independent from presentation. Support multiple Winamp layouts/skins without cloning audio logic; preserve OS-native window chrome where the application is hosted inside a system window.
+- Verification: check that changes are audible across all bands, preamp and left/right balance; EQ bypass is level-neutral; switching views does not reset audio or create a second source; test browser autoplay and context resume behavior.
 
 ### GAME-03 — Minesweeper gameplay and presentation
 - Winamp visual/interaction reference: [captbaritone/webamp](https://github.com/captbaritone/webamp). Use it to compare module behavior, playlist interaction, transport controls and responsive layout; retain the current shared `winampController` and local audio pipeline.
