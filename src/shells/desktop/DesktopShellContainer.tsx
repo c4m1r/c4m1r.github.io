@@ -20,7 +20,6 @@ import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileS
 import { useDesktopWindowManager } from './runtime/useDesktopWindowManager';
 import { useDesktopIconGridState } from './runtime/useDesktopIconGridState';
 import { DoomPlayer } from '../../apps/doom/DoomPlayer';
-import { GamesFolder } from '../../apps/games/GamesFolder';
 import { doomVariantMap, DoomVariantId } from '../../apps/doom/config';
 import { TaskManager } from '../../apps/TaskManager';
 import { LangSwitcher } from '../../apps/langs/LangSwitcher';
@@ -840,6 +839,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
   const handleOpenFile = useCallback(async (item: FileSystemItem, parentPath: string) => {
     const fullPath = joinWindowsPath(parentPath, item.name);
+    if (item.appId) {
+      window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: item.appId } }));
+      return;
+    }
     let content: React.ReactNode | null = null;
     let title = item.name;
     let width = 640;
@@ -943,27 +946,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   }, [openWindow, playLaunchSound, playErrorSound]);
 
   const openGamesFolder = useCallback(() => {
-    openWindow({
-      id: 'app:games-folder',
-      title: gamesLabel,
-      icon: resolveAssetPath(
-        themeAssets.gamesFolderIcon,
-        fallbackAssets.gamesFolderIcon ?? themeAssets.gamesIcon
-      ),
-      width: 820,
-      height: 560,
-      content: <GamesFolder onLaunch={openDoomVariant} />,
-    });
-    playLaunchSound();
-  }, [
-    fallbackAssets.gamesFolderIcon,
-    gamesLabel,
-    openDoomVariant,
-    openWindow,
-    playLaunchSound,
-    themeAssets.gamesFolderIcon,
-    themeAssets.gamesIcon,
-  ]);
+    openExplorerWindow('C:\\Program Files\\Games');
+  }, [openExplorerWindow]);
 
   const recordRecentApp = useCallback((appId: string) => {
     setRecentAppIds((current) => {
@@ -1081,6 +1065,15 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     openDoomVariant,
     recordRecentApp,
   ]);
+
+  useEffect(() => {
+    const handleAppLaunch = (event: Event) => {
+      const appId = (event as CustomEvent<{ appId?: string }>).detail?.appId;
+      if (appId) launchApp(appId);
+    };
+    window.addEventListener('app:launch', handleAppLaunch);
+    return () => window.removeEventListener('app:launch', handleAppLaunch);
+  }, [launchApp]);
 
   useEffect(() => {
     if (themeKey !== 'macos-26') return;

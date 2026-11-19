@@ -3,7 +3,9 @@ import folderIcon from '../themes/winxp/assets/icons/folder_plain.png';
 import textIcon from '../themes/winxp/assets/icons/doc.png';
 import { WINXP_ASSETS } from '../themes/winxp/themeAssets';
 import userIcon from '../themes/winxp/assets/user.gif';
-import blissIcon from '../content/pictures/wallpapers/windows/winxp-bliss.jpg';
+import documentsFolderIcon from '../themes/winxp/assets/icons/folder-documents.png';
+import picturesFolderIcon from '../themes/winxp/assets/icons/folder-pictures.png';
+import gamesFolderIcon from '../themes/winxp/assets/icons/folder_program.png';
 
 export interface FileSystemItem {
     id: string;
@@ -13,6 +15,7 @@ export interface FileSystemItem {
     content?: string;
     children?: Record<string, FileSystemItem>;
     size?: string;
+    appId?: string;
 }
 
 const defaultTextIcon = WINXP_ASSETS.richTextIcon ?? WINXP_ASSETS.notepadIcon ?? textIcon;
@@ -47,6 +50,34 @@ const buildBlogChildren = (): FileSystemChildren => {
 };
 
 const blogChildren = buildBlogChildren();
+const pictureModules = import.meta.glob('../content/pictures/**/*.{jpg,jpeg,png,gif,webp}', {
+    query: '?url',
+    import: 'default',
+    eager: true,
+}) as Record<string, string>;
+
+const pictureChildren: FileSystemChildren = (() => {
+    const root: FileSystemChildren = {};
+    Object.entries(pictureModules).forEach(([path, url]) => {
+        const relative = path.split('../content/pictures/')[1];
+        if (!relative) return;
+        const segments = relative.split('/');
+        const fileName = segments.pop();
+        if (!fileName) return;
+        let current = root;
+        let prefix = 'my-pictures';
+        segments.forEach((segment) => {
+            if (!current[segment]) current[segment] = { id: `${prefix}/${segment}`, name: segment, type: 'folder', children: {} };
+            current = current[segment].children!;
+            prefix += `/${segment}`;
+        });
+        current[fileName] = { id: `picture:${relative}`, name: fileName, type: 'file', icon: url, content: url };
+    });
+    const blissImage = pictureModules['../content/pictures/wallpapers/windows/winxp-bliss.jpg'];
+    if (blissImage) root['Bliss.jpg'] = { id: 'picture:bliss', name: 'Bliss.jpg', type: 'file', icon: blissImage, content: blissImage };
+    return root;
+})();
+
 const projectChildren: FileSystemChildren = (() => {
     const root: FileSystemChildren = {};
 
@@ -117,12 +148,6 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         name: 'Desktop',
                                         type: 'folder',
                                         children: {
-                                            'My Projects': {
-                                                id: 'my-projects',
-                                                name: 'My Projects',
-                                                type: 'folder',
-                                                        children: projectChildren
-                                            },
                                             'My Blog': {
                                                 id: 'my-blog',
                                                 name: 'My Blog',
@@ -130,34 +155,42 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                                 icon: folderIcon,
                                                 children: blogChildren
                                             },
-                                            'About Me.txt': {
-                                                id: 'about-me',
-                                                name: 'My CV',
-                                                type: 'file',
-                                                icon: userIcon, // Special icon request
-                                                content: 'Hi! I am C4m1r.\n\nWelcome to my WebOS portfolio.'
-                                            },
                                             'Welcome.txt': {
                                                 id: 'welcome',
                                                 name: 'Welcome.txt',
                                                 type: 'file',
                                                 icon: defaultTextIcon,
-                                                content: 'about/welcome.md' // Dynamic markdown loading
-                                            },
-                                            'Bliss.jpg': {
-                                                id: 'bliss',
-                                                name: 'Bliss.jpg',
-                                                type: 'file',
-                                                icon: blissIcon,
-                                                content: blissIcon // Use content for image path
+                                                content: 'about/welcome.md'
                                             }
                                         }
                                     },
                                     'My Documents': {
                                         id: 'my-documents',
-                                        name: 'My Documents',
+                                        name: 'Мои документы',
                                         type: 'folder',
-                                        children: {}
+                                        icon: documentsFolderIcon,
+                                        children: {
+                                            'Вики': { id: 'shortcut-wiki', name: 'Вики', type: 'file', appId: 'wiki', icon: defaultTextIcon },
+                                            'Мой блок': { id: 'shortcut-notepad', name: 'Мой блок', type: 'file', appId: 'notepad', icon: defaultTextIcon },
+                                            'Обо мне': { id: 'shortcut-about', name: 'Обо мне', type: 'file', appId: 'about', icon: userIcon },
+                                            'Мои проекты': {
+                                                id: 'my-projects',
+                                                name: 'Мои проекты',
+                                                type: 'folder',
+                                                icon: folderIcon,
+                                                children: {
+                                                    ...projectChildren,
+                                                    'Открыть проекты': { id: 'shortcut-projects-grid', name: 'Открыть проекты', type: 'file', appId: 'projects-grid', icon: defaultTextIcon }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    'My Pictures': {
+                                        id: 'my-pictures',
+                                        name: 'Мои изображения',
+                                        type: 'folder',
+                                        icon: picturesFolderIcon,
+                                        children: pictureChildren
                                     },
                                     'Start Menu': {
                                         id: 'start-menu',
@@ -179,7 +212,17 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                         id: 'program-files',
                         name: 'Program Files',
                         type: 'folder',
-                        children: {}
+                        children: {
+                            'Games': {
+                                id: 'games-folder',
+                                name: 'Игры',
+                                type: 'folder',
+                                icon: gamesFolderIcon,
+                                children: {
+                                    'Minesweeper': { id: 'games-minesweeper', name: 'Сапёр', type: 'file', appId: 'minesweeper', icon: defaultTextIcon }
+                                }
+                            }
+                        }
                     },
                     'WINDOWS': {
                         id: 'windows',

@@ -121,7 +121,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     component: ProjectsGrid,
     defaultWindow: { width: 820, height: 560 },
     showInStartMenu: true,
-    showOnDesktop: true,
+    showOnDesktop: false,
   },
   'calculator': {
     id: 'calculator',
@@ -274,7 +274,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     component: WikiApp,
     defaultWindow: { width: 960, height: 640 },
     showInStartMenu: true,
-    showOnDesktop: true,
+    showOnDesktop: false,
   },
   'help': {
     id: 'help',
@@ -308,7 +308,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     component: Notepad,
     defaultWindow: { width: 640, height: 480 },
     showInStartMenu: true,
-    showOnDesktop: true,
+    showOnDesktop: false,
   },
   'calendar': {
     id: 'calendar',
@@ -376,7 +376,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     component: AboutApp,
     defaultWindow: { width: 720, height: 520 },
     showInStartMenu: true,
-    showOnDesktop: true,
+    showOnDesktop: false,
   },
   'minesweeper': {
     id: 'minesweeper',

@@ -280,9 +280,9 @@
 | RSS-03 | RSS collection, category drawer and article reader | 65% | Feed parser, category controls and article reader exist; proxy availability and publisher-specific extraction still need validation. |
 | GAME-01 | Repair the existing DOOM implementation | 10% | Existing launcher currently points to an unreliable external implementation. /eat/98.portfolio-main contains a separate Three.js DOOM implementation and engine files; port and runtime integration not completed. |
 | GAME-02 | Audit /eat/ and add other working games | 10% | Donor source inventory started. Need identify usable games, licenses/assets, dependencies and integrate only selected self-contained implementations. |
-| EXPLORER-01 | Game folder as a native folder with tree icon | 10% | Existing Explorer/FileSystem infrastructure identified. Need use the current OS folder view and replace the game folder's current icon with the Windows XP tree-folder asset where that theme is active. |
-| DOCS-01 | Create “Мои документы” and reorganize personal apps | 10% | Existing Wiki, Notepad, About and Projects surfaces identified; filesystem placement and launch routing not yet implemented. |
-| PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 10% | Gallery data source and image viewer exist. Need enumerate all gallery images as filesystem entries, include bliss.jpg, and remove the desktop wallpaper file shortcut. |
+| EXPLORER-01 | Game folder as a native folder with tree icon | 45% | Game shortcut now opens the real Program Files/Games directory in the current OS Explorer; the virtual folder uses the XP program-folder icon. DOOM and remaining game entries still need integration. |
+| DOCS-01 | Create “Мои документы” and reorganize personal apps | 45% | Added the My Documents folder with Wiki, My Block, About Me and My Projects entries; app shortcuts route through the desktop launcher. Need user-facing polish and verification. |
+| PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 40% | Added My Pictures folder with the repository picture tree exposed as individual file entries; Bliss.jpg is now inside the folder and no longer on the desktop. Viewer/library unification remains. |
 | PICTURES-02 | Merge Picture Viewer and gallery browsing | 20% | Both existing app surfaces identified. Need add a compact gallery/library toggle in Picture Viewer and share one image collection/navigation model. |
 | CONTROL-01 | Control Panel desktop shortcut and native categories | 20% | Control Panel and Task Manager registrations exist, but Task Manager is incorrectly mapped to Control Panel in current app registry. Need repair routing and group system tools into authentic OS-style categories. |
 | CONTROL-02 | Restore Explorer/Control Panel styling per OS | 20% | Existing theme-specific Explorer styles/assets identified. Need complete per-OS fidelity and verify all shell variants. |
@@ -330,16 +330,16 @@
 - Document donor source, license status, copied assets, runtime dependencies and selected integration path for every added game.
 
 ### EXPLORER-01 / DOCS-01 — Native folder structure
-- Game folder must be a normal filesystem folder opened by the current OS Explorer, not a custom application window.
+- Game folder is now a normal filesystem folder opened by the current OS Explorer, not the old custom DOOM-card window. The current directory contains Minesweeper; populate it with DOOM and other integrated games after their implementations are ready.
 - Use the Windows XP tree/folder icon for the Game folder in the XP theme, with appropriate theme-specific icon fallback elsewhere.
-- Add “Мои документы” as a real folder in the virtual filesystem.
-- Move Wiki, “Мой блок” (Notepad), “Обо мне” and “Мои проекты” into “Мои документы”.
+- Added “Мои документы” as a real folder in the virtual filesystem.
+- Added Wiki, “Мой блок” (Notepad), “Обо мне” and “Мои проекты” entries inside “Мои документы” and removed their standalone desktop shortcuts.
 - Opening those entries must launch the existing native content/application surfaces through the current OS Explorer.
 
 ### PICTURES-01/02 — Unified picture library
-- Add “Мои изображения” as a real folder.
-- Every image from the site's gallery must appear as an individual file entry, including the current gallery media collection.
-- Move bliss.jpg into “Мои изображения” and remove its standalone desktop shortcut.
+- Added “Мои изображения” as a real folder.
+- The repository picture collection is now enumerated into individual file entries, retaining its folder hierarchy.
+- Added a Bliss.jpg file entry inside “Мои изображения” and removed its standalone desktop file shortcut.
 - Picture Viewer gains a small mode toggle to switch between single-image viewing and a gallery/grid view of all available images.
 - Gallery and Picture Viewer must share the same image inventory and navigation state rather than maintaining two separate pseudo-applications.
 
