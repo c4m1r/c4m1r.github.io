@@ -178,3 +178,5 @@ Percentages are working estimates, not test results. The previous task registry 
 - Source changes are committed on main; runtime acceptance and all quality gates remain pending.
 
 - 2026-11-19: Removed desktop duplicates for Projects, Wiki, Notepad and About while retaining Blog; fixed Windows 7 Explorer's Pictures library path and added a thumbnail presentation for that folder.
+
+- 2026-11-19: Added My Pictures to the Windows XP Explorer Other Places pane and included WebP in the Picture Tasks image filter; full slide-show behavior and manual acceptance remain open.
