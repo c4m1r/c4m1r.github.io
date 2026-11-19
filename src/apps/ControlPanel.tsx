@@ -1755,7 +1755,7 @@ export function ControlPanel() {
                           }}
                           className="flex-1 py-1.5 px-3 rounded bg-gray-500 text-white hover:bg-gray-600 transition-colors text-xs font-semibold cursor-pointer"
                         >
-                          Restore Default
+                          {galleryText.restore}
                         </button>
                       )}
                     </div>
