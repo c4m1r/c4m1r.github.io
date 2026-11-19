@@ -498,19 +498,34 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow }
               </button>
               <button
                 type="button"
-                className={path === 'C:\\Documents and Settings\\C4m1r\\Desktop\\My Projects' ? 'is-active' : ''}
-                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop\\My Projects')}
+                className={path === 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Projects' ? 'is-active' : ''}
+                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Projects')}
               >
                 <img src={appleFolderIcon} alt="" />
                 <span>{isRu ? 'Проекты' : 'Projects'}</span>
               </button>
               <button
                 type="button"
-                className={path === 'C:\\Documents and Settings\\C4m1r\\Desktop\\My Blog' ? 'is-active' : ''}
-                onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\Desktop\\My Blog')}
+                onClick={() => window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'blog' } }))}
               >
-                <img src={appleFolderIcon} alt="" />
+                <img src={appleDocumentIcon} alt="" />
                 <span>{isRu ? 'Блог' : 'Blog'}</span>
+              </button>
+              <button type="button" className={path.endsWith('My Pictures') ? 'is-active' : ''} onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures')}>
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Мои рисунки' : 'Pictures'}</span>
+              </button>
+              <button type="button" className={path.endsWith('My Music') ? 'is-active' : ''} onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Music')}>
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Моя музыка' : 'Music'}</span>
+              </button>
+              <button type="button" className={path.endsWith('My Videos') ? 'is-active' : ''} onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Videos')}>
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Мои видеозаписи' : 'Videos'}</span>
+              </button>
+              <button type="button" className={path.endsWith('My Downloads') ? 'is-active' : ''} onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Downloads')}>
+                <img src={appleFolderIcon} alt="" />
+                <span>{isRu ? 'Загрузки' : 'Downloads'}</span>
               </button>
 
               <small>{isRu ? 'Расположения' : 'Locations'}</small>
