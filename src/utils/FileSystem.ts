@@ -496,6 +496,7 @@ export const getItemsFromPath = (path: string): FileSystemItem[] => {
 };
 
 const APP_ICON_URLS: Record<string, string | undefined> = {
+    about: WINXP_ASSETS.userAvatar,
     'internet-explorer': WINXP_ASSETS.internetExplorerIcon,
     outlook: WINXP_ASSETS.mailIcon,
     'windows-media-player': WINXP_ASSETS.mediaPlayerIcon,
