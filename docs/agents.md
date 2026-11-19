@@ -243,3 +243,13 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Removed the `DOOM 3` WIP item from the normal Program Files/Games folder. The app's WIP config remains in source, but the folder no longer advertises it alongside the playable titles.
 - No replacement title was added in this pass. Chess/Solitaire donor review found the Windows 7 Solitaire component has an unused donor store import, a hard minimum board width of 700px and mouse-only interactions; it is not safe to copy wholesale. Its donor repo has an MIT licence, but component assets/imports and adaptation still need review.
 - Chess donor component requires `chess.js`, which is not in this repository's `package.json`; do not add the donor framework or assume the dependency is present.
+
+
+### Latest implementation note — Explorer OS presentation pass
+- Game folder icon in `src/utils/FileSystem.ts` now imports `src/themes/winxp/assets/icons/My Games.png` instead of the generic `folder_program.png`. This is a dedicated XP My Games asset already present in the repository.
+- `src/apps/explorer/MyComputer.tsx` shared Legacy Explorer root now exposes `data-os-theme={theme}` and stable `file-explorer` classes. Existing XP selectors remain compatible because the original utility classes are retained.
+- `src/styles/os/themes/winxp-explorer-fidelity.css` now includes first-pass direct theme styles for `win-98` (classic grey, beveled controls, compact Tahoma) and `webos` (dark neutral modern surface).
+- `src/apps/explorer/ExplorerSurface.tsx` currently routes Windows 7 to its dedicated Explorer and macOS/iOS to its Finder-like branch in `MyComputer`; other profiles use the shared Legacy Explorer.
+- Known limitation: Windows 98 first-pass skin still reuses XP toolbar image assets imported by `MyComputer.tsx`; its chrome is differentiated but iconography/toolbars are not yet fully native. The generic Legacy Explorer is still used for Linux profiles; do not count full OS fidelity complete.
+- Do not increase OS-specific Explorer progress percentage yet. The new styling is a first pass and needs runtime review at desktop/mobile widths and across each OS profile.
+- Relevant commits: `4e485592d880f37ca8cb4ad133b7b46d237e5e99` (XP My Games icon), `a022c4f396bbac75475d2ff4fca3f5801af4b7a0` (Explorer theme metadata), `906eef11a5491b3f6c82aa46ce6e530f75c3de1c` (Win98/WebOS Explorer skin pass).
