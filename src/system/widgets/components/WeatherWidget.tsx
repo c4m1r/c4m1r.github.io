@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useApp } from '../../../contexts/useApp';
 import {
   type WeatherData,
@@ -25,6 +26,46 @@ export function WeatherWidget() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCityPicker, setShowCityPicker] = useState<boolean>(false);
+  const cityPickerAnchorRef = useRef<HTMLButtonElement>(null);
+  const cityPickerMenuRef = useRef<HTMLDivElement>(null);
+  const [cityPickerPosition, setCityPickerPosition] = useState({ top: 0, left: 0, width: 224 });
+
+  const updateCityPickerPosition = useCallback(() => {
+    const anchor = cityPickerAnchorRef.current;
+    if (!anchor) return;
+    const rect = anchor.getBoundingClientRect();
+    const width = Math.min(224, window.innerWidth - 24);
+    const left = Math.max(12, Math.min(rect.left, window.innerWidth - width - 12));
+    const estimatedHeight = Math.min(420, CITIES.length * 34 + 8, window.innerHeight - 24);
+    const below = window.innerHeight - rect.bottom - 12;
+    const top = below >= Math.min(estimatedHeight, 220) || below >= rect.top
+      ? Math.min(rect.bottom + 8, window.innerHeight - estimatedHeight - 12)
+      : Math.max(12, rect.top - estimatedHeight - 8);
+    setCityPickerPosition({ top, left, width });
+  }, []);
+
+  useEffect(() => {
+    if (!showCityPicker) return;
+    updateCityPickerPosition();
+    const closeOnOutside = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (cityPickerAnchorRef.current?.contains(target) || cityPickerMenuRef.current?.contains(target)) return;
+      setShowCityPicker(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowCityPicker(false);
+    };
+    document.addEventListener('pointerdown', closeOnOutside);
+    document.addEventListener('keydown', closeOnEscape);
+    window.addEventListener('resize', updateCityPickerPosition);
+    window.addEventListener('scroll', updateCityPickerPosition, true);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutside);
+      document.removeEventListener('keydown', closeOnEscape);
+      window.removeEventListener('resize', updateCityPickerPosition);
+      window.removeEventListener('scroll', updateCityPickerPosition, true);
+    };
+  }, [showCityPicker, updateCityPickerPosition]);
 
   const loadData = useCallback(async (targetCity: string) => {
     const requestId = ++weatherRequest.current;
@@ -61,6 +102,7 @@ export function WeatherWidget() {
       <div className="flex items-center justify-between z-10">
         <div className="relative">
           <button
+            ref={cityPickerAnchorRef}
             type="button"
             onClick={() => setShowCityPicker((prev) => !prev)}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/15 text-xs font-semibold tracking-wide transition-colors cursor-pointer"
@@ -70,26 +112,33 @@ export function WeatherWidget() {
             <ChevronDown size={11} className="opacity-70" />
           </button>
 
-          {showCityPicker && (
-            <div className="absolute top-8 left-0 z-30 w-44 bg-gray-900/95 border border-white/15 rounded-xl shadow-2xl p-1 backdrop-blur-xl">
+          {showCityPicker && typeof document !== 'undefined' && createPortal(
+            <div
+              ref={cityPickerMenuRef}
+              className="weather-city-picker"
+              role="listbox"
+              aria-label={isRu ? 'Выбор города' : 'Choose city'}
+              style={{ top: cityPickerPosition.top, left: cityPickerPosition.left, width: cityPickerPosition.width }}
+            >
               {CITIES.map((c) => (
                 <button
                   key={c.id}
                   type="button"
+                  role="option"
+                  aria-selected={c.id === cityId}
                   onClick={() => {
                     setCityId(c.id);
                     try { localStorage.setItem('webos_weather_selected_city_v2', JSON.stringify({ language: languageCode, cityId: c.id })); } catch { /* Keep session state. */ }
                     setShowCityPicker(false);
                   }}
-                  className={`w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-between ${
-                    c.id === cityId ? 'bg-blue-600 text-white font-medium' : 'text-gray-300 hover:bg-white/10'
-                  }`}
+                  className={c.id === cityId ? 'is-active' : ''}
                 >
-                  <span className="flex items-center gap-1.5"><span aria-hidden="true">{c.flag}</span>{isRu ? c.nameRu : c.nameEn}</span>
-                  {c.id === cityId && <span className="text-[10px]">✓</span>}
+                  <span><span aria-hidden="true">{c.flag}</span>{isRu ? c.nameRu : c.nameEn}</span>
+                  {c.id === cityId && <span aria-hidden="true">✓</span>}
                 </button>
               ))}
-            </div>
+            </div>,
+            document.body
           )}
         </div>
 
