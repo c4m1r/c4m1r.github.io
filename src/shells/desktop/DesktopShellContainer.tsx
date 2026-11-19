@@ -20,6 +20,7 @@ import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
 import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
 import { winampController } from '../../system/audio/winampController';
+import { markdownToHtml } from '../../domain/content/markdown';
 import { useDesktopWindowManager } from './runtime/useDesktopWindowManager';
 import { useDesktopIconGridState } from './runtime/useDesktopIconGridState';
 import { DoomPlayer } from '../../apps/doom/DoomPlayer';
@@ -849,7 +850,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     }
 
     const lowerName = item.name.toLowerCase();
-    if (lowerName.endsWith('.txt') || lowerName.endsWith('.md')) {
+    if (lowerName.endsWith('.md') && item.id.startsWith('project:')) {
+      const markdown = typeof item.content === 'string' ? item.content : '';
+      content = (
+        <div className="h-full overflow-auto bg-white px-6 py-5 text-slate-900">
+          <article className="prose prose-sm mx-auto max-w-4xl" dangerouslySetInnerHTML={{ __html: markdownToHtml(markdown) }} />
+        </div>
+      );
+      title = item.name.replace(/\\.md$/i, '');
+      width = 820;
+      height = 620;
+    } else if (lowerName.endsWith('.txt') || lowerName.endsWith('.md')) {
       let fileContent = item.content || '';
 
       if (typeof fileContent === 'string' && fileContent.endsWith('.md') && !fileContent.includes('\n')) {
