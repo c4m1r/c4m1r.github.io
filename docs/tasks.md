@@ -14,7 +14,7 @@
 
 ## Current verified baseline — 2026-11-19
 
-Repository head inspected: `617b2ee75baef787b331965b79bcee6fa637c66f`.
+Repository source baseline inspected before this pass: `f6bc699452ad794102637e0ae3f254b40800021d`.
 
 | Workstream | Progress | Current assessment |
 |---|---:|---|
@@ -42,6 +42,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - Define exactly 3 supported widget size classes (small/medium/large) with shared dimensions, spacing and breakpoint rules.
 - Every widget must adapt its internal layout to the selected size. No clipped controls, overflow beyond viewport, hidden playback controls or inaccessible resize/drag handles. Winamp is a mandatory regression case.
 - Keep placement, visibility and size settings coherent across reloads and OS changes; do not unexpectedly enable widgets in another OS.
+- Source fix now separates defaults: non-WebOS visibility defaults are all false; the WebOS widget canvas retains its eight-widget enabled default. Apple/non-WebOS widget persistence moved to a v2 key so stale v1 values from the previous faulty behavior cannot re-enable widgets. Runtime acceptance is still pending.
 - Acceptance: desktop and mobile-width checks; all 8 widgets fit; 3 size classes are consistent; Winamp remains fully usable in every supported size.
 
 ### RSS-01 — Durable RSS cache and feed controls
@@ -74,13 +75,14 @@ Percentages are working estimates, not test results. The previous task registry 
 ### DOCS-01 — My Documents canonical structure
 - `Мои документы` is the canonical parent for `Вики`, `Мой блок`, `Обо мне` and `Мои проекты`.
 - Preserve app IDs and content; open entries through the active OS Explorer.
+- A dedicated My Documents desktop icon now opens the canonical folder; the XP/7/classic Start Menu entries route to the same virtual path. Windows 98/2000 Start Menu entries now call the shared launch/path handlers instead of merely closing the menu.
 - Remove duplicate standalone desktop shortcuts where those entries should live in My Documents, without removing intentional Start Menu/registry navigation.
 - Acceptance: folder tree and open/reopen behavior verified across OS profiles.
 
 ### PICTURES-01 — My Pictures as a real virtual folder
-- `Мои изображения` is a normal user-profile folder containing every image in the site's shared gallery inventory, preserving useful subfolders and extensions.
+- `Мои рисунки` is a normal user-profile folder nested under `Мои документы` (the Windows XP profile layout), containing every image in the site's shared gallery inventory, preserving useful subfolders and extensions.
 - Include `Bliss.jpg` in the folder and remove its separate desktop shortcut; retain the source asset for wallpaper/gallery use.
-- Opening My Pictures opens the shared Picture Viewer in grid mode. Opening an image file opens the same viewer focused on that image.
+- Opening My Pictures from Start Menu resolves to the nested canonical folder; Explorer recognizes both the English path key and localized Russian folder name and enters thumbnail mode. The separate desktop/start-menu application is named Picture Viewer / Просмотр изображений and opens the shared viewer in grid mode. Opening an image file ensures that image is included and focused in the same viewer session.
 - Acceptance: every gallery asset resolves to a file entry and opens; no duplicate viewer/gallery implementation.
 
 ### PICTURES-02 — Unified Picture Viewer modes
@@ -164,3 +166,13 @@ Percentages are working estimates, not test results. The previous task registry 
 - 2026-11-19: Added a collapsible Legacy Explorer folder tree for non-XP/non-Apple profiles. It reads the canonical virtual filesystem; tree labels navigate and disclosure controls expand/collapse. XP retains its task pane and Apple keeps Finder sidebar.
 
 - 2026-11-19: Added per-profile folder-tree sidebar treatments to the shared Explorer adapter stylesheet; changed body selectors to target the flex body by class so the optional search row does not shift CSS targeting.
+
+
+### 2026-11-19 — User-reported desktop and Pictures regressions
+- Fixed widget defaults: all non-WebOS widgets are off by default; WebOS keeps its eight enabled defaults. Apple/non-WebOS widget visibility now uses a v2 storage key, ignoring stale v1 values that could preserve the old unwanted enabled state.
+- Fixed Windows 98/2000 Start Menu: Programs, Favorites, Documents, Settings, Find, Help, Run, Computer and My Pictures now route through the existing shared app/Explorer callbacks. Previously most menu entries only closed the menu.
+- Added a My Documents desktop icon and explicit double-click route to the canonical virtual folder.
+- Corrected the user-profile hierarchy: My Pictures is nested inside My Documents. Start Menu XP/7/classic paths now target that same location; My Music is also represented so its existing shortcut no longer points to a missing folder.
+- Renamed the gallery application to Picture Viewer / Просмотр изображений while preserving My Pictures / Мои рисунки as the folder name.
+- Explorer now recognizes both English and Russian My Pictures path names and switches to thumbnail view. Picture Viewer also adds an Explorer-opened image to its active image list if it is absent from the gallery hook result.
+- Source changes are committed on main; runtime acceptance and all quality gates remain pending.
