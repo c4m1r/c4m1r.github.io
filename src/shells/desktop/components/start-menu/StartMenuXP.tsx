@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useApp } from '../../../../contexts/useApp';
 import { translations } from '../../../../i18n/translations';
 import { ChevronsRight } from 'lucide-react';
@@ -37,8 +38,6 @@ type MenuItem = {
   isSeparator?: boolean;
 };
 
-type PrimaryShortcut = MenuItem & { tag: string };
-
 const MY_DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
 const MY_RECENT_PATH = 'C:\\Documents and Settings\\C4m1r\\Recent';
 const MY_PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures';
@@ -58,27 +57,23 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const handleHover = () => {
     onHover?.();
   };
-
-  const primaryShortcuts: PrimaryShortcut[] = [
-    {
-      id: 'primary-internet',
-      title: appRegistry['internet-explorer']?.title[language] || 'Internet Explorer',
-      icon: startMenuIcons.internetExplorer ?? themeAssets.internetExplorerIcon,
-      appId: 'internet-explorer',
-      tag: t.internet ?? (isRu ? 'Интернет' : 'Internet'),
-    },
-    {
-      id: 'primary-email',
-      title: appRegistry['outlook']?.title[language] || 'Outlook Express',
-      icon: startMenuIcons.outlook ?? themeAssets.mailIcon,
-      appId: 'outlook',
-      tag: t.email ?? (isRu ? 'Электронная почта' : 'E-mail'),
-    },
-  ];
+  const [allProgramsOpen, setAllProgramsOpen] = useState(false);
 
   const gamesTitle = t.games ?? (isRu ? 'Игры' : 'Games');
 
   const pinnedPrograms: MenuItem[] = [
+    {
+      id: 'internet-explorer',
+      title: appRegistry['internet-explorer']?.title[language] || 'Internet Explorer',
+      icon: startMenuIcons.internetExplorer ?? themeAssets.internetExplorerIcon,
+      appId: 'internet-explorer',
+    },
+    {
+      id: 'outlook',
+      title: appRegistry.outlook?.title[language] || 'Outlook Express',
+      icon: startMenuIcons.outlook ?? themeAssets.mailIcon,
+      appId: 'outlook',
+    },
     {
       id: 'windows-media-player',
       title: appRegistry['windows-media-player']?.title[language] || 'Windows Media Player',
@@ -97,6 +92,32 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       icon: startMenuIcons.paint ?? themeAssets.paintIcon ?? themeAssets.folderIcon,
       appId: 'paint',
     },
+  ];
+
+  const allProgramsEntries: MenuItem[] = [
+    { id: 'internet-explorer', title: 'Internet Explorer', icon: startMenuIcons.internetExplorer ?? themeAssets.internetExplorerIcon, appId: 'internet-explorer' },
+    { id: 'outlook', title: 'Outlook Express', icon: startMenuIcons.outlook ?? themeAssets.mailIcon, appId: 'outlook' },
+    { id: 'windows-media-player', title: 'Windows Media Player', icon: startMenuIcons.windowsMediaPlayer ?? themeAssets.mediaPlayerIcon, appId: 'windows-media-player' },
+    { id: 'winamp', title: 'Winamp', icon: themeAssets.startMenuIcons.winamp ?? themeAssets.mediaPlayerIcon, appId: 'winamp' },
+    { id: 'paint', title: 'Paint', icon: startMenuIcons.paint ?? themeAssets.paintIcon, appId: 'paint' },
+    { id: 'calculator', title: isRu ? 'Калькулятор' : 'Calculator', icon: startMenuIcons.calculator ?? themeAssets.calculatorIcon, appId: 'calculator' },
+    { id: 'notepad', title: isRu ? 'Блокнот' : 'Notepad', icon: themeAssets.notepadIcon, appId: 'notepad' },
+    { id: 'pictures', title: isRu ? 'Просмотр изображений' : 'Picture Viewer', icon: themeAssets.projectsIcon, appId: 'pictures' },
+    { id: 'calendar', title: isRu ? 'Календарь' : 'Calendar', icon: themeAssets.notepadIcon, appId: 'calendar' },
+    { id: 'control-panel', title: isRu ? 'Панель управления' : 'Control Panel', icon: placeIcons.controlPanel ?? fallbackIcon, appId: 'control-panel' },
+    { id: 'task-manager', title: isRu ? 'Диспетчер задач' : 'Task Manager', icon: placeIcons.controlPanel ?? fallbackIcon, appId: 'task-manager' },
+    { id: 'news', title: isRu ? 'Лента новостей RSS' : 'News RSS Feed', icon: themeAssets.newsIcon, appId: 'news' },
+    { id: 'currency', title: isRu ? 'Курсы валют' : 'Market Rates', icon: themeAssets.currencyIcon, appId: 'currency' },
+    { id: 'wiki', title: 'Wiki', icon: themeAssets.projectsIcon, appId: 'wiki' },
+    { id: 'help', title: isRu ? 'Справка и поддержка' : 'Help and Support', icon: helpIcon, appId: 'help' },
+    { id: 'terminal', title: isRu ? 'Терминал' : 'Terminal', icon: themeAssets.notepadIcon, appId: 'terminal' },
+    { id: 'loops', title: 'Loops', icon: themeAssets.mediaPlayerIcon, appId: 'loops' },
+    { id: 'projects-grid', title: isRu ? 'Мои проекты' : 'My Projects', icon: themeAssets.projectsIcon, appId: 'projects-grid' },
+    { id: 'minesweeper', title: isRu ? 'Сапёр' : 'Minesweeper', icon: themeAssets.minesweeperIcon, appId: 'minesweeper' },
+    { id: 'snake', title: isRu ? 'Змейка' : 'Snake', icon: themeAssets.gamesIcon, appId: 'snake' },
+    { id: 'memory', title: isRu ? 'Память' : 'Memory', icon: themeAssets.gamesIcon, appId: 'memory' },
+    { id: 'doom1', title: 'DOOM', icon: themeAssets.doomIcon, appId: 'doom1' },
+    { id: 'doom2', title: 'DOOM II', icon: themeAssets.doomIcon, appId: 'doom2' },
   ];
 
   const frequentPrograms: MenuItem[] = [
@@ -168,6 +189,12 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       title: t.myComputer || (isRu ? 'Мой компьютер' : 'My Computer'),
       icon: placeIcons.myComputer ?? themeAssets.computerIcon,
       appId: 'my-computer',
+    },
+    {
+      id: 'network-neighborhood',
+      title: isRu ? 'Сетевое окружение' : 'My Network Places',
+      icon: placeIcons.network ?? themeAssets.networkIcon ?? themeAssets.computerIcon,
+      appId: 'network-neighborhood',
     },
     {
       id: 'control-panel',
@@ -340,35 +367,6 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
         {/* Left Menu - Programs */}
         <div className="start-menu-section start-menu-section--left os-list">
-          <div className="start-menu-primary">
-            {primaryShortcuts.map((shortcut) => {
-              const iconSrc = shortcut.icon ?? fallbackIcon;
-              return (
-                <button
-                  key={shortcut.id}
-                  className="start-menu-item start-menu-item--primary os-list-item"
-                  onClick={() => handleMenuAction(shortcut)}
-                  onMouseEnter={handleHover}
-                >
-                  <div className="start-menu-item__icon">
-                    {iconSrc ? (
-                      <img src={iconSrc} alt={shortcut.title} className="w-6 h-6" />
-                    ) : (
-                      <span className="w-6 h-6" />
-                    )}
-                  </div>
-                  <div className="start-menu-item__content">
-                    <div className="start-menu-item__title font-bold">{shortcut.title}</div>
-                    {shortcut.subtitle && (
-                      <div className="start-menu-item__subtitle">{shortcut.subtitle}</div>
-                    )}
-                  </div>
-                  <span className="start-menu-item__tag">{shortcut.tag}</span>
-                </button>
-              );
-            })}
-          </div>
-
           {pinnedPrograms.length > 0 && (
             <>
               <div className="start-menu-separator start-menu-separator--dense" />
@@ -437,15 +435,32 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           {/* All Programs */}
           <button
             className="start-menu-item start-menu-item--footer"
-            onClick={() => {
-              onOpenPath?.('C:\\Program Files\\Programs');
-              onClose();
-            }}
+            aria-expanded={allProgramsOpen}
+            onClick={() => setAllProgramsOpen((open) => !open)}
             onMouseEnter={handleHover}
           >
             <span>{allProgramsLabel}</span>
             <ChevronsRight size={14} className="opacity-70" />
           </button>
+          {allProgramsOpen && (
+            <div className="start-menu-all-programs mt-1 max-h-56 overflow-y-auto border border-[#7f9db9] bg-white text-[#111] shadow-lg">
+              <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#555]">
+                {isRu ? 'Установленные программы' : 'Installed programs'}
+              </div>
+              {allProgramsEntries.map((program) => (
+                <button
+                  key={program.id}
+                  type="button"
+                  className="flex w-full items-center gap-2 px-2 py-1 text-left text-xs hover:bg-[#316ac5] hover:text-white"
+                  onClick={() => { handleMenuAction(program); setAllProgramsOpen(false); }}
+                  onMouseEnter={handleHover}
+                >
+                  {program.icon ? <img src={program.icon} alt="" className="h-5 w-5 object-contain" /> : <span className="h-5 w-5" />}
+                  <span>{program.title}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right Menu - Places */}
