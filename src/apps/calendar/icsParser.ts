@@ -1,4 +1,6 @@
 export interface CalendarEvent {
+  id?: string;
+  source?: 'ics' | 'local';
   summary: string;
   location?: string;
   description?: string;
