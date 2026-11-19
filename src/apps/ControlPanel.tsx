@@ -10,6 +10,7 @@ import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
 import { getEditionsForProfile, getActiveEdition, setSelectedEditionId } from '../shells/os/osEditions';
+import { getSystemSettings, subscribeSystemSettings, updateSystemSettings } from '../system/settings/settingsStore';
 
 type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus' | 'display';
 type CPDisplayMode = 'category' | 'classic';
@@ -48,6 +49,45 @@ export function ControlPanel() {
       return 3;
     }
   });
+  const [webosColorScheme, setWebosColorScheme] = useState<'light' | 'dark'>(() => getSystemSettings().perOs?.[theme]?.colorScheme ?? 'dark');
+
+  useEffect(() => {
+    const syncColorScheme = () => setWebosColorScheme(getSystemSettings().perOs?.[theme]?.colorScheme ?? 'dark');
+    syncColorScheme();
+    return subscribeSystemSettings(syncColorScheme);
+  }, [theme]);
+
+  const applyWebosColorScheme = (colorScheme: 'light' | 'dark') => {
+    setWebosColorScheme(colorScheme);
+    updateSystemSettings((previous) => ({
+      ...previous,
+      perOs: {
+        ...previous.perOs,
+        [theme]: {
+          ...previous.perOs?.[theme],
+          colorScheme,
+        },
+      },
+    }));
+  };
+
+  const appearanceText = ({
+    en: { title: 'Desktop color scheme', description: 'Changes the desktop icon backing and label contrast without changing the wallpaper.', light: 'Light', dark: 'Dark' },
+    ru: { title: 'Цветовая схема рабочего стола', description: 'Меняет подложку значков и контраст подписей, не затрагивая обои.', light: 'Светлая', dark: 'Тёмная' },
+    fr: { title: 'Jeu de couleurs du bureau', description: 'Modifie le fond des icônes et le contraste des libellés sans changer le fond d’écran.', light: 'Clair', dark: 'Sombre' },
+    es: { title: 'Esquema de color del escritorio', description: 'Cambia el fondo de los iconos y el contraste de las etiquetas sin cambiar el fondo.', light: 'Claro', dark: 'Oscuro' },
+    zh: { title: '桌面配色', description: '更改桌面图标底色和标签对比度，不更改壁纸。', light: '浅色', dark: '深色' },
+    ja: { title: 'デスクトップの配色', description: '壁紙を変更せず、アイコンの背景とラベルのコントラストを変更します。', light: 'ライト', dark: 'ダーク' },
+    ko: { title: '바탕 화면 색 구성표', description: '배경 화면은 유지하면서 아이콘 배경과 레이블 대비를 변경합니다.', light: '라이트', dark: '다크' },
+    be: { title: 'Колеравая схема працоўнага стала', description: 'Змяняе падкладку значкоў і кантраст подпісаў без змены шпалер.', light: 'Светлая', dark: 'Цёмная' },
+    kk: { title: 'Жұмыс үстелінің түс схемасы', description: 'Түсқағазды өзгертпей, белгішелердің фоны мен жазулардың контрастын өзгертеді.', light: 'Ашық', dark: 'Қараңғы' },
+  } as Record<string, { title: string; description: string; light: string; dark: string }>)[language] ?? {
+    title: 'Desktop color scheme',
+    description: 'Changes the desktop icon backing and label contrast without changing the wallpaper.',
+    light: 'Light',
+    dark: 'Dark',
+  };
+
   const [showGalleryOptions, setShowGalleryOptions] = useState(false);
   const galleryText = ({
     en: { all: 'All images', wallpapers: 'Wallpapers', pictures: 'Pictures', type: 'Image sources', count: 'images', empty: 'No images in this category yet.', preview: 'Preview', placement: 'Placement', fill: 'Fill', fit: 'Fit', stretch: 'Stretch', tile: 'Tile', center: 'Center', apply: 'Apply', cancel: 'Cancel', restore: 'Restore Default', columns: 'Gallery columns', three: '3 columns', two: '2 columns', loading: 'Loading gallery wallpapers...' },
@@ -1550,6 +1590,25 @@ export function ControlPanel() {
         {/* ── Wallpaper view ── */}
         {view === 'wallpaper' && (
           <>
+            {theme === 'webos' && (
+              <section className={`${cardClass} p-4 mb-6`}>
+                <h2 className={`text-base font-bold mb-1 ${titleClass}`}>{appearanceText.title}</h2>
+                <p className="text-xs opacity-75 mb-3">{appearanceText.description}</p>
+                <div className="grid grid-cols-2 gap-2" role="group" aria-label={appearanceText.title}>
+                  {(['light', 'dark'] as const).map((scheme) => (
+                    <button
+                      key={scheme}
+                      type="button"
+                      aria-pressed={webosColorScheme === scheme}
+                      onClick={() => applyWebosColorScheme(scheme)}
+                      className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors ${webosColorScheme === scheme ? 'border-[#06b6d4] bg-[#06b6d4]/15 ring-1 ring-[#06b6d4]/40' : 'border-gray-500/30 hover:bg-gray-500/10'}`}
+                    >
+                      {scheme === 'light' ? appearanceText.light : appearanceText.dark}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
             <div className="mb-6">
               <h1 className={`text-2xl font-bold mb-2 ${titleClass}`}>
                 {isRu ? 'Фон рабочего стола и редакции' : 'Desktop Wallpaper & Editions'}
