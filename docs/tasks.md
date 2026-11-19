@@ -275,6 +275,7 @@
 | WEBOS-DESKTOP-01 | WebOS desktop identity and shell fidelity | 60% | Requirements retained: pure black desktop, Arch Linux identity instead of Windows branding, Russian UI, one clock only and Linux-like bottom panel. Existing theme/shell implementation needs a complete visual audit and final polish. |\n| WIDGET-01 | Widget startup policy and WebOS placement | 75% | Code updated: only WebOS defaults to all widgets enabled; other OS widget visibility defaults off; WebOS initial layout is compact, right-aligned, two columns. Browser verification pending. |
 | WIDGET-02 | Unified widget size system and adaptive contents | 70% | Three shared dimensions now replace per-widget dimensions; canvas no longer reserves a permanent title bar; responsive sizing and Winamp controls updated. Remaining widget-specific overflow/layout polish and QA. |
 | WIDGET-03 | Hover-only widget controls | 75% | Name, drag handle and size selector are now an overlay revealed on hover/focus instead of consuming permanent widget space. Accessibility and touch behavior still require QA. |
+| WINAMP-02 | Responsive Winamp modules and accessible controls | 45% | Added narrow-window layout rules, focus-visible outlines and pressed-state semantics for EQ/playlist/shuffle/repeat toggles. Playback controls, module chrome and cross-OS visual behavior still need functional/browser QA. |
 | RSS-01 | Restore historical IndexedDB cache | 65% | Refresh now merges/upserts new entries instead of deleting all records from a source; old entries remain inside the existing 14-day retention window. Cache TTL optimization retained. |
 | RSS-02 | RSS duplicate prevention and chronological sorting | 60% | Stable article-link IDs, tracking-parameter normalization and cross-source URL deduplication added; publication-date sorting remains. Needs live-feed validation. |
 | RSS-03 | RSS collection, category drawer and article reader | 65% | Feed parser, category controls and article reader exist; proxy availability and publisher-specific extraction still need validation. |
@@ -339,6 +340,7 @@
 - A successful empty feed response does not erase historical entries.
 
 ### GAME-03 — Minesweeper gameplay and presentation
+- Winamp visual/interaction reference: [captbaritone/webamp](https://github.com/captbaritone/webamp). Use it to compare module behavior, playlist interaction, transport controls and responsive layout; retain the current shared `winampController` and local audio pipeline.
 - Use the current native React implementation and existing sprite assets as the canonical baseline; avoid importing a second game engine.
 - Keep the opening move safe by relocating a mine when the first revealed cell would otherwise explode, then recompute all adjacent-mine counts.
 - Start the timer on the first reveal, never when placing a flag.
