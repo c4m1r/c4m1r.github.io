@@ -305,11 +305,21 @@ function isCountryLabourDayOff(date: Date, country: CountryCode): boolean {
   if (date.getDay()===0 || date.getDay()===6) return true;
   // Statutory public holidays are non-working days even when no annual transfer schedule exists.
   if (getNationalHolidays(date.getFullYear()).some((holiday)=>holiday.country===country && holiday.kind==='public' && dateKeyLocal(holiday.date)===key)) return true;
-  // Kazakhstan's labour code transfers a public holiday that coincides with a weekend to the next working day.
+  // Kazakhstan transfers a public holiday falling on Saturday/Sunday to the next working weekday.
   if(country==='KZ' && date.getFullYear()!==2026){
-    const previous=new Date(date.getFullYear(),date.getMonth(),date.getDate()-1);
-    const previousHoliday=getNationalHolidays(previous.getFullYear()).some((holiday)=>holiday.country==='KZ'&&holiday.kind==='public'&&dateKeyLocal(holiday.date)===dateKeyLocal(previous));
-    if(previousHoliday && previous.getDay()===0) return true;
+    const publicHolidayKeys=new Set(getNationalHolidays(date.getFullYear())
+      .filter((holiday)=>holiday.country==='KZ'&&holiday.kind==='public')
+      .map((holiday)=>dateKeyLocal(holiday.date)));
+    for(const holidayKey of publicHolidayKeys){
+      const [year,month,day]=holidayKey.split('-').map(Number);
+      const holidayDate=new Date(year,month-1,day);
+      if(holidayDate.getDay()!==0 && holidayDate.getDay()!==6) continue;
+      const candidate=new Date(holidayDate);
+      do {
+        candidate.setDate(candidate.getDate()+1);
+      } while(candidate.getDay()===0 || candidate.getDay()===6 || publicHolidayKeys.has(dateKeyLocal(candidate)));
+      if(dateKeyLocal(candidate)===key) return true;
+    }
   }
   return false;
 }
