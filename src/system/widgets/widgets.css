@@ -66,3 +66,78 @@
     flex-direction: column;
   }
 }
+
+
+/* Shared free-placement desktop widget layer (all desktop shells). */
+.desktop-widget-canvas {
+  position: absolute;
+  inset: 16px 18px 76px;
+  z-index: 14;
+  overflow: hidden;
+  pointer-events: none;
+}
+.desktop-widget-canvas__item {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: calc(100% - 4px);
+  pointer-events: auto;
+  border-radius: 13px;
+  overflow: hidden;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,.22));
+}
+.desktop-widget-canvas__handle {
+  height: 28px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px;
+  color: rgba(255,255,255,.86);
+  background: rgba(18,22,30,.94);
+  border: 1px solid rgba(255,255,255,.14);
+  border-bottom: 0;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  font: 11px/1 system-ui, sans-serif;
+}
+.desktop-widget-canvas__handle:active { cursor: grabbing; }
+.desktop-widget-canvas__grip { color: rgba(255,255,255,.48); font-size: 16px; }
+.desktop-widget-canvas__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
+.desktop-widget-canvas__handle select {
+  max-width: 104px;
+  min-width: 82px;
+  padding: 3px 5px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 6px;
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  font: 10px system-ui, sans-serif;
+  cursor: pointer;
+}
+.desktop-widget-canvas__handle select option { color: #111827; background: #fff; }
+.desktop-widget-canvas__content {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  border: 1px solid rgba(255,255,255,.14);
+  border-top: 0;
+  border-radius: 0 0 13px 13px;
+  background: rgba(15,20,29,.76);
+  scrollbar-width: thin;
+}
+.desktop-widget-canvas__content > * { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
+.desktop-widget-canvas__content .glass-widget { height: 100%; min-height: 0; border: 0; border-radius: 0 0 12px 12px; box-shadow: none; }
+.apple-clock-calendar-combo { display: flex; align-items: stretch; gap: 8px; width: 100%; height: 100%; padding: 8px; background: rgba(24,27,32,.88); }
+.apple-clock-calendar-combo .apple-widget { flex: 1 1 0; min-width: 0; box-shadow: none; background: rgba(255,255,255,.045); }
+.apple-clock-calendar-combo .apple-widget--clock { flex: 0 0 145px; flex-direction: column; justify-content: center; text-align: center; }
+.apple-clock-calendar-combo .apple-widget--clock svg { margin: 0 auto; }
+.apple-clock-calendar-combo .apple-widget--calendar { padding: 10px; }
+@media (max-width: 760px) {
+  .desktop-widget-canvas { inset: 72px 8px 68px; }
+  .desktop-widget-canvas__handle { height: 30px; min-height: 30px; }
+  .desktop-widget-canvas__handle select { max-width: 92px; min-width: 74px; }
+}

@@ -1526,6 +1526,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             return next;
           });
         }}
+        onPresetChange={(key, presetId) => {
+          const widgetId = (key === 'clock' || key === 'calendar') && appleWidgetVisibility.clock && appleWidgetVisibility.calendar
+            ? 'clockCalendar'
+            : key;
+          window.dispatchEvent(new CustomEvent('desktop-widget-preset-change', { detail: { widgetId, presetId } }));
+        }}
       />
 
       {themeKey === 'macos-26' && (
