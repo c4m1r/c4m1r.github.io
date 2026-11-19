@@ -553,3 +553,13 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 ### 2026-11-19 — Automated verification checkpoint
 - GitHub Actions build job for code commit `c5c6bd39deb5179063e551228423f50ef43bc36c` passed context-boundary verification, TypeScript, ESLint, Vite build and build-output verification.
 - The Pages deploy job was queued after the successful build at the time of this note; verify its final result separately. No browser/manual OS acceptance was run.
+
+
+### 2026-11-19 — Widget entry points, gallery night mode, wallpaper layout and Explorer shortcuts
+- Windows no longer receives a generic desktop Widgets icon. Windows 7 exposes the canonical **Gadgets** command in the desktop context menu; macOS retains **Edit Widgets…** in its context menu. Non-Windows/non-macOS desktop shells keep a dedicated Widgets entry point. Vista Sidebar itself is not a separate theme in this repository.
+- The shared Widget Gallery now has a persisted night palette and localized labels/descriptions for all nine supported locales: English, Russian, French, Spanish, Chinese, Japanese, Korean, Belarusian and Kazakh. OS-specific presentation remains shared through the existing shell classes.
+- Appearance & Themes wallpaper picker now defaults to three columns. Its gear control offers 3-column and 2-column layouts, persisted locally. Selected-image preview is wider and taller (4:3 rather than 16:9). Gallery filters, counts, empty/loading states, placement modes and actions have locale strings for all nine supported languages.
+- Desktop Games/Programs aliases now retain their canonical Program Files target paths while exposing a flat view of launchable shortcut files in Explorer. Publisher folders remain in the canonical Program Files trees; the desktop aliases no longer expose only those publisher folders.
+- App icon resolution now uses specific assets for Picture Viewer, Calendar, RSS, currency, Help, Task Manager, Terminal and Winamp in addition to existing game/browser/media icons. Generic file fallbacks no longer override an appId-specific icon.
+- Minesweeper's revealed zero-neighbour cells now render as genuinely blank cells. Number sprites 1–8 remain the boundary hints around cleared regions; the zero sprite is not displayed.
+- Verification: source edits were committed directly to main; latest workflow run must be checked after all commits. No browser-level visual/gameplay acceptance was performed. Widget Gallery night mode is scoped to the gallery surface; a system-wide dark appearance mode is not claimed as implemented.
