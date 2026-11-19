@@ -507,3 +507,15 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - Added persisted refresh metadata for attempt/success times, success/failure counts and success/partial/failed/disabled status. Partial and total failures use a short retry window; a complete refresh receives the normal TTL.
 - News RSS Feed paints cached articles before refresh completes, displays last successful update time, reports partial source failures and stale-cache fallback, and retains its in-app category drawer.
 - Automated CI for commit `1b204318f798ad90f73f0539c4027f9c2a5d1296` passed verify, typecheck, lint, build and build-output verification; GitHub Pages deployment succeeded. Follow-up retry-window and documentation commits require their own latest-main CI run. Live feed reachability and browser behavior remain unverified.
+
+
+### 2026-11-19 — DOOM chrome, desktop shortcuts, music associations and project articles
+- Compact DOOM/DOOM II player header: game title, reduced subtitle, truncated one-line description and build/external-launch controls share one horizontal row. The player retains only the error fallback; no success tip, Emupedia footer or duplicate iframe-loaded overlay is rendered. This is a layout change, not gameplay verification.
+- Desktop Games and Programs are represented by shortcut folders under the C4m1r Desktop profile. Their `targetPath` aliases resolve to the canonical Program Files Games/Programs nodes; the desktop does not duplicate the installed folder trees.
+- Added a second `User` profile visible through both legacy `Documents and Settings` and modern `Users` paths, with standard profile folders and shared media/project folder structure.
+- Populated My Music with the 58 existing Winamp playlist entries as virtual `.mp3` files. Double-click selects the matching shared playlist index, starts playback and launches/focuses Winamp.
+- Explorer icon view now renders app icons at the full 64px icon cell size; thumbnail images fill their thumbnail frame. Winamp receives its own icon asset mapping.
+- Project folder generation now parses frontmatter titles, uses stable slug-based IDs, sorts source paths and suppresses duplicate project slugs. Project `.md` files open in a rendered Markdown article surface rather than the raw Notepad editor.
+- Classic Windows Start Menu uses the theme's native Internet Explorer, Outlook Express, Media Player and Winamp artwork. XP All Programs is a visible keyboard-addressable fly-out; Network Neighborhood paths are normalized to the shared My Computer folder.
+- Minesweeper sprite elements now have explicit display/flex dimensions and pixelated rendering for cell, flag, bomb, digit and smiley sheets.
+- Verification remains pending. Earlier CI caught a JSX nesting issue in the new DOOM header; the closing tag was corrected in commit `6875f22f`. Check the latest-main workflow and complete manual interaction checks before accepting.
