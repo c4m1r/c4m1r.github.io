@@ -253,3 +253,12 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Known limitation: Windows 98 first-pass skin still reuses XP toolbar image assets imported by `MyComputer.tsx`; its chrome is differentiated but iconography/toolbars are not yet fully native. The generic Legacy Explorer is still used for Linux profiles; do not count full OS fidelity complete.
 - Do not increase OS-specific Explorer progress percentage yet. The new styling is a first pass and needs runtime review at desktop/mobile widths and across each OS profile.
 - Relevant commits: `4e485592d880f37ca8cb4ad133b7b46d237e5e99` (XP My Games icon), `a022c4f396bbac75475d2ff4fca3f5801af4b7a0` (Explorer theme metadata), `906eef11a5491b3f6c82aa46ce6e530f75c3de1c` (Win98/WebOS Explorer skin pass).
+
+
+### Latest implementation note — shared Explorer skin adapters
+- Reused the existing `ExplorerSurface` routing and `data-os-theme` root attribute; no new skin registry or duplicate Explorer component was introduced.
+- `src/apps/explorer/MyComputer.tsx` now resolves folder/drive/address icons for Win98 and Windows 2000 from the site's existing `src/themes/win98/assets/icons/` collection. XP retains its XP toolbar assets; classic profiles use classic controls rather than XP bitmap toolbar images.
+- Added `src/styles/os/themes/explorer-os-adapters.css` and imported it from `src/styles/os/index.css`. It defines separate presentation adapters for Win98, Windows 2000, Ubuntu, Arch and WebOS. Navigation, file operations and selection remain shared.
+- Removed the earlier Win98/WebOS adapter block from `winxp-explorer-fidelity.css` so that file is again XP-specific.
+- Important limitation: the shared Legacy Explorer still does not implement a Linux tree/sidebar or a fully native Nautilus/Thunar interaction model; the current Linux work is a theme adapter, not full parity. Win98/2000 toolbar icons are still vector controls rather than a complete historical bitmap toolbar.
+- No runtime, typecheck, lint or build verification was performed in this connector-only change. Keep task progress conservative until browser checks cover all OS profiles and narrow layouts.
