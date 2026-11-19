@@ -380,6 +380,9 @@ const isComputerRootPath = (path: string) =>
 
 export const getFileSystemItemFromPath = (path: string): FileSystemItem | null => {
     if (isComputerRootPath(path)) return initialFileSystem['My Computer'];
+    if (['network neighborhood', 'сетевое окружение', 'my network places'].includes(path.trim().toLocaleLowerCase())) {
+        return initialFileSystem['My Computer'].children?.['Network Neighborhood'] ?? null;
+    }
 
     const normalizedPath = path
         .trim()
