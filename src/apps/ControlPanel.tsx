@@ -13,6 +13,7 @@ import { getEditionsForProfile, getActiveEdition, setSelectedEditionId } from '.
 type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus' | 'display';
 type CPDisplayMode = 'category' | 'classic';
 type GalleryFilter = 'all' | 'wallpapers' | 'pictures';
+type WallpaperFit = 'fill' | 'fit' | 'stretch' | 'tile' | 'center';
 
 export function ControlPanel() {
   const { theme, language } = useApp();
@@ -38,6 +39,11 @@ export function ControlPanel() {
   const [displayMode, setDisplayMode] = useState<CPDisplayMode>(() => theme === 'win-98' ? 'classic' : 'category');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('all');
+  const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>(() => {
+    if (typeof window === 'undefined') return 'fill';
+    const saved = window.localStorage.getItem('desktop-wallpaper-fit');
+    return saved === 'fit' || saved === 'stretch' || saved === 'tile' || saved === 'center' ? saved : 'fill';
+  });
   const [customActive, setCustomActive] = useState(() => {
     if (typeof window !== 'undefined') {
       return !!localStorage.getItem('desktop-custom-wallpaper');
@@ -1650,12 +1656,35 @@ export function ControlPanel() {
                         />
                       </div>
                     )}
+                    <div className="mx-auto mb-3 flex max-w-xs items-center gap-2">
+                      <label htmlFor="control-panel-wallpaper-fit" className="shrink-0 text-xs opacity-70">
+                        {isRu ? 'Размещение' : 'Placement'}
+                      </label>
+                      <select
+                        id="control-panel-wallpaper-fit"
+                        value={wallpaperFit}
+                        onChange={(event) => {
+                          const next = event.target.value as WallpaperFit;
+                          setWallpaperFit(next);
+                          localStorage.setItem('desktop-wallpaper-fit', next);
+                          window.dispatchEvent(new CustomEvent('wallpaper-fit-changed', { detail: next }));
+                        }}
+                        className="min-w-0 flex-1 rounded border border-gray-500/40 bg-white px-2 py-1 text-xs text-black"
+                      >
+                        <option value="fill">{isRu ? 'Заполнить' : 'Fill'}</option>
+                        <option value="fit">{isRu ? 'По размеру' : 'Fit'}</option>
+                        <option value="stretch">{isRu ? 'Растянуть' : 'Stretch'}</option>
+                        <option value="tile">{isRu ? 'Замостить' : 'Tile'}</option>
+                        <option value="center">{isRu ? 'По центру' : 'Center'}</option>
+                      </select>
+                    </div>
                     <div className="flex gap-2 max-w-xs mx-auto">
                       {selectedWallpaper && (
                         <button
                           onClick={() => {
                             localStorage.setItem('desktop-custom-wallpaper', selectedWallpaper);
                             window.dispatchEvent(new CustomEvent('wallpaper-changed', { detail: selectedWallpaper }));
+                            window.dispatchEvent(new CustomEvent('wallpaper-fit-changed', { detail: wallpaperFit }));
                             setCustomActive(true);
                           }}
                           className="flex-1 py-1.5 px-3 rounded bg-[#316ac5] text-white hover:bg-[#255199] transition-colors text-xs font-semibold cursor-pointer"
