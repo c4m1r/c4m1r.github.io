@@ -287,3 +287,27 @@ Percentages are working estimates, not test results. The previous task registry 
 - 2026-11-19: Explorer launcher now includes the active OS theme in its callback dependencies, preventing a stale Explorer surface when the active theme changes without remounting.
 
 - Gallery inventory follow-up: picture and wallpaper types are now disjoint; nested wallpapers are included and stable IDs use relative paths. Manual cross-app image inventory acceptance remains pending.
+
+
+### WEBOS-02 — Widget canvas interaction and overflow regression (P0)
+- Keep one shared DesktopWidgetCanvas implementation; do not fork widget behavior per OS.
+- Widget cards must retain their full preset height. The canvas is the scroll/viewport boundary; a card must not silently shrink its content to the currently visible canvas height.
+- Canvas Grip is the compact affordance: visible on hover/focus, directly draggable, and toggles the persistent per-widget controls row (title + size selector) on click. A second click collapses the controls without changing widget content or placement.
+- Preserve pointer capture, keyboard movement, collision avoidance and viewport clamping. Dragging must work from the grip, not be blocked by its button semantics.
+- Canvas must not clip the widget vertically or block pointer movement due to an overflow/stacking ancestor. Recheck after Compact → another size → Compact and after viewport resize.
+- Dropdown/popover menus inside widgets must render above adjacent cards and outside card clipping, with a restrained translucent glass surface and backdrop blur. Keep menus usable by pointer and keyboard.
+- Acceptance: verify Weather city selector with all entries visible; verify every widget dropdown, Winamp controls and media interactions; test mouse/touch/keyboard and compact-mode round trips.
+- 2026-11-19 source pass: widget preset height is no longer reduced to canvas client height; canvas uses vertical scrolling; card overflow is relaxed; Canvas Grip toggles persistent controls and remains a drag handle. Runtime/typecheck/lint/build/browser acceptance is still pending. Dropdown-specific glass/popover treatment remains open.
+
+### WINDOWS-01 — Desktop icon tile and night palette
+- Start with WebOS as the reference implementation, then share the palette contract with Windows desktop skins.
+- Windows light mode: icon tile/selection backing uses the familiar light surface without obscuring the icon. Night mode: switch the same surface and text/selection contrast to dark values; do not leave a white rectangle behind the icon.
+- Scope styles to desktop icon tiles and selection/focus states; do not alter application icon artwork, Explorer file icons or unrelated buttons.
+- Keep wallpaper contrast, hover, selected, focus-visible and disabled states accessible. Verify Windows 10/11 light/dark and WebOS before extending to XP/7/classic profiles.
+- Acceptance: switch themes repeatedly without stale inline styles; inspect transparent PNG/SVG icons over light and dark wallpapers; confirm selection rectangle remains legible.
+
+### DOCS-03 — Single Wiki / Blog help library
+- Wiki and Blog are two content sources in one documentation application, not separate products or launch destinations.
+- Continue the shared BlogApp HTML Help viewer. Windows presents it as Блог.chm / Blog.chm; WebOS and other shells use a single Help/Documentation entry point.
+- Keep one global search, one reader pane, a hierarchical Wiki contents tree and article/blog/site content grouped within the same library. Avoid duplicate desktop/start-menu shortcuts and parallel navigation systems.
+- Acceptance: search across Wiki, Blog, app catalogue, projects, news and site pages; open every source in the same reader; verify Windows CHM-like chrome and WebOS presentation.
