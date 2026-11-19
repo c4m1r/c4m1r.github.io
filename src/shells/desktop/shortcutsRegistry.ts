@@ -8,6 +8,7 @@ export const desktopShortcuts: string[] = [
   'paint',
   'control-panel',
   'pictures',
+  'blog',
   'news',
   'currency',
   'calendar',
