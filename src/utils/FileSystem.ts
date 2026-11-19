@@ -147,22 +147,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         id: 'desktop',
                                         name: 'Desktop',
                                         type: 'folder',
-                                        children: {
-                                            'My Blog': {
-                                                id: 'my-blog',
-                                                name: 'My Blog',
-                                                type: 'folder',
-                                                icon: folderIcon,
-                                                children: blogChildren
-                                            },
-                                            'Welcome.txt': {
-                                                id: 'welcome',
-                                                name: 'Welcome.txt',
-                                                type: 'file',
-                                                icon: defaultTextIcon,
-                                                content: 'about/welcome.md'
-                                            }
-                                        }
+                                        children: {}
                                     },
                                     'My Documents': {
                                         id: 'my-documents',
@@ -171,6 +156,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         icon: documentsFolderIcon,
                                         children: {
                                             'My Music': { id: 'my-music', name: 'Моя музыка', type: 'folder', icon: folderIcon, children: {} },
+                                            'My Videos': { id: 'my-videos', name: 'Мои видеозаписи', type: 'folder', icon: folderIcon, children: {} },
                                             'My Pictures': {
                                                 id: 'my-pictures',
                                                 name: 'Мои рисунки',
@@ -225,6 +211,28 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                     'Minesweeper': { id: 'games-minesweeper', name: 'Сапёр', type: 'file', appId: 'minesweeper', icon: defaultTextIcon },
                                     'Snake': { id: 'games-snake', name: 'Змейка', type: 'file', appId: 'snake', icon: defaultTextIcon },
                                     'Memory': { id: 'games-memory', name: 'Память', type: 'file', appId: 'memory', icon: defaultTextIcon }
+                                }
+                            },
+                            'Programs': {
+                                id: 'programs-folder',
+                                name: 'Программы',
+                                type: 'folder',
+                                icon: folderIcon,
+                                children: {
+                                    'Internet Explorer': { id: 'program-internet-explorer', name: 'Internet Explorer', type: 'file', appId: 'internet-explorer', icon: defaultTextIcon },
+                                    'Outlook Express': { id: 'program-outlook', name: 'Outlook Express', type: 'file', appId: 'outlook', icon: defaultTextIcon },
+                                    'Windows Media Player': { id: 'program-wmp', name: 'Windows Media Player', type: 'file', appId: 'windows-media-player', icon: defaultTextIcon },
+                                    'Winamp': { id: 'program-winamp', name: 'Winamp', type: 'file', appId: 'winamp', icon: defaultTextIcon },
+                                    'Paint': { id: 'program-paint', name: 'Paint', type: 'file', appId: 'paint', icon: defaultTextIcon },
+                                    'Просмотр изображений': { id: 'program-picture-viewer', name: 'Просмотр изображений', type: 'file', appId: 'pictures', icon: defaultTextIcon },
+                                    'Календарь': { id: 'program-calendar', name: 'Календарь', type: 'file', appId: 'calendar', icon: defaultTextIcon },
+                                    'Лента новостей RSS': { id: 'program-news', name: 'Лента новостей RSS', type: 'file', appId: 'news', icon: defaultTextIcon },
+                                    'Курсы валют': { id: 'program-currency', name: 'Курсы валют', type: 'file', appId: 'currency', icon: defaultTextIcon },
+                                    'Вики': { id: 'program-wiki', name: 'Вики', type: 'file', appId: 'wiki', icon: defaultTextIcon },
+                                    'Блокнот': { id: 'program-notepad', name: 'Блокнот', type: 'file', appId: 'notepad', icon: defaultTextIcon },
+                                    'Мои проекты': { id: 'program-projects', name: 'Мои проекты', type: 'file', appId: 'projects-grid', icon: defaultTextIcon },
+                                    'Справка и поддержка': { id: 'program-help', name: 'Справка и поддержка', type: 'file', appId: 'help', icon: defaultTextIcon },
+                                    'Диспетчер задач': { id: 'program-task-manager', name: 'Диспетчер задач', type: 'file', appId: 'task-manager', icon: defaultTextIcon }
                                 }
                             }
                         }
