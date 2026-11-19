@@ -28,9 +28,10 @@ export interface PictureViewerProps {
   initialIndex?: number;
   onClose?: () => void;
   initialView?: 'viewer' | 'gallery';
+  startSlideshow?: boolean;
 }
 
-export function PictureViewer({ initialImage, images, initialIndex = 0, initialView = 'viewer' }: PictureViewerProps) {
+export function PictureViewer({ initialImage, images, initialIndex = 0, initialView = 'viewer', startSlideshow = false }: PictureViewerProps) {
   const { theme, language } = useApp();
   const { items: galleryItems } = useGallery();
   const isRu = language === 'ru';
@@ -55,7 +56,7 @@ export function PictureViewer({ initialImage, images, initialIndex = 0, initialV
   }, [imageList, initialImage]);
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
-  const [isPlayingSlideshow, setIsPlayingSlideshow] = useState(false);
+  const [isPlayingSlideshow, setIsPlayingSlideshow] = useState(startSlideshow);
 
   useEffect(() => {
     let interval: number | undefined;
