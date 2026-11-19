@@ -26,7 +26,7 @@ type Win7MenuEntry = {
 // still stores the user's content under its historical XP-era paths. Keeping the
 // adapter here preserves all existing files without duplicating or migrating data.
 const DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
-const PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Pictures';
+const PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures';
 const MUSIC_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music';
 
 export function StartMenu7({
