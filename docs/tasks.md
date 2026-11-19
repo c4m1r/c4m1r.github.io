@@ -223,12 +223,13 @@ Percentages are working estimates, not test results. The previous task registry 
 
 | Gate | Last known result | Notes |
 |---|---|---|
-| `npm run verify` | Not run in this source pass | Must run after code changes |
-| `npm run typecheck` | Not run in this source pass | Must run after code changes |
-| `npm run lint` | Not run in this source pass | Must run after code changes |
-| `npm run build` | Not run in this source pass | Must run after code changes |
-| `git diff --check` | Not run in this documentation pass | Must run after code changes |
-| Browser/manual OS matrix | Pending | New widget, Start Menu, Explorer path and locale changes need cross-OS runtime review |
+| `npm run verify` | Passed in GitHub Actions at code commit `c5c6bd39` | Context-boundary verification step passed |
+| `npm run typecheck` | Passed in GitHub Actions at `c5c6bd39` | TypeScript check passed |
+| `npm run lint` | Passed in GitHub Actions at `c5c6bd39` | ESLint passed |
+| `npm run build` | Passed in GitHub Actions at `c5c6bd39` | Vite build and build-output verification passed |
+| `git diff --check` | Not run | Connector-only edits were committed through GitHub API |
+| Browser/manual OS matrix | Pending | Verify Start Menu click-through, Explorer icon sizing, Minesweeper sprites, DOOM/DOOM II gameplay and wallpaper modes across OS skins |
+| GitHub Pages deploy | Queued for code commit `c5c6bd39` | Build job succeeded; deploy result must be checked separately |
 
 ## Recent change log
 - 2026-11-19: Consolidated active WebOS/multi-OS tasks, retained previous registry in history, corrected DOOM status to 30%, and promoted OS-native styling to explicit acceptance criteria.
