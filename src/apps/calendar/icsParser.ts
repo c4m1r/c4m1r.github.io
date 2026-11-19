@@ -85,7 +85,11 @@ function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined 
   const interval = Math.min(365, Math.max(1, Number(fields.INTERVAL) || 1));
   const countValue = Number(fields.COUNT);
   const count = Number.isFinite(countValue) && countValue > 0 ? Math.min(10000, Math.floor(countValue)) : undefined;
-  const until = fields.UNTIL ? parseDateValue(fields.UNTIL) ?? undefined : undefined;
+  const until = fields.UNTIL ? (() => {
+    const parsed = parseDateValue(fields.UNTIL);
+    if (parsed && /^\\d{8}$/.test(fields.UNTIL)) parsed.setHours(23, 59, 59, 999);
+    return parsed ?? undefined;
+  })() : undefined;
   const byDay = fields.BYDAY?.split(',').map((value: string) => WEEKDAY_CODES[value.slice(-2)]).filter((day: number | undefined): day is number => day !== undefined);
   const byMonthDay = fields.BYMONTHDAY?.split(',').map(Number).filter((day: number) => Number.isInteger(day) && day >= 1 && day <= 31);
   return { freq: freq as CalendarRecurrenceRule['freq'], interval, count, until, byDay, byMonthDay };
