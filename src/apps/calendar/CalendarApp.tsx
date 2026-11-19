@@ -93,8 +93,12 @@ export function CalendarApp() {
   const [showLocalEvents, setShowLocalEvents] = useState<boolean>(() => {
     try { return JSON.parse(localStorage.getItem('calendar-center-source-preferences-v1') || '{}').showLocalEvents ?? true; } catch { return true; }
   });
-  const [importedEventColor, setImportedEventColor] = useState('blue');
-  const [localEventColor, setLocalEventColor] = useState('green');
+  const [importedEventColor, setImportedEventColor] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('calendar-center-source-preferences-v1') || '{}').importedEventColor ?? 'blue'; } catch { return 'blue'; }
+  });
+  const [localEventColor, setLocalEventColor] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('calendar-center-source-preferences-v1') || '{}').localEventColor ?? 'green'; } catch { return 'green'; }
+  });
   const labourCountries = useLabourCountries();
   useEffect(() => {
     try {
@@ -126,12 +130,11 @@ export function CalendarApp() {
     const start = startOfWeek(first, monday);
     return Array.from({ length: 42 }, (_, index) => addDays(start, index));
   }, [visibleMonth, monday]);
-  const isEventSourceVisible = (event: CalendarEvent) => event.source === 'local' ? showLocalEvents : showImportedEvents;
   const getVisibleEventsForDate = (date: Date) => getCalendarEventsForDate(date).filter(isEventSourceVisible);
   const monthEvents = useMemo(() => getCalendarEventsForRange(
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1),
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0)
-  ).filter(isEventSourceVisible), [events, visibleMonth, showImportedEvents, showLocalEvents]);
+  ).filter((event) => event.source === 'local' ? showLocalEvents : showImportedEvents), [events, visibleMonth, showImportedEvents, showLocalEvents]);
   const monthHolidays = useMemo(() => Array.from(
     { length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() },
     (_, index) => getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
