@@ -5,6 +5,8 @@ const CALENDAR_FILES: Record<string, string> = {
   en: new URL('./assets/calendar-en.ics', import.meta.url).toString(),
   ru: new URL('./assets/calendar-ru.ics', import.meta.url).toString(),
 };
+const SELECTED_DATE_KEY = 'calendar-center-selected-date-v1';
+const LOCAL_EVENTS_KEY = 'calendar-center-local-events-v1';
 
 export interface CalendarCenterState {
   selectedDate: Date;
@@ -15,26 +17,66 @@ export interface CalendarCenterState {
   error: string | null;
 }
 
-function readInitialDate(): Date {
-  if (typeof window !== 'undefined') {
-    try {
-      const stored = window.localStorage.getItem('calendar-center-selected-date-v1');
-      if (stored && /^\d{4}-\d{2}-\d{2}$/.test(stored)) {
-        const [year, month, day] = stored.split('-').map(Number);
-        return new Date(year, month - 1, day);
-      }
-    } catch {
-      // Storage can be unavailable in private or restricted browsing contexts.
-    }
-  }
-  return new Date();
+export type CalendarEventInput = Pick<CalendarEvent, 'summary' | 'startDate' | 'endDate'> &
+  Partial<Pick<CalendarEvent, 'location' | 'description'>>;
+
+function dateOnly(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+function dateKey(date: Date) {
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+}
+
+function parseStoredDate(value: unknown): Date | null {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const [year, month, day] = value.split('-').map(Number);
+  const parsed = new Date(year, month - 1, day);
+  return parsed.getFullYear() === year && parsed.getMonth() === month - 1 && parsed.getDate() === day ? parsed : null;
+}
+
+function readInitialDate() {
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = parseStoredDate(window.localStorage.getItem(SELECTED_DATE_KEY));
+      if (stored) return stored;
+    } catch { /* Storage may be unavailable. */ }
+  }
+  return dateOnly(new Date());
+}
+
+function readLocalEvents(): CalendarEvent[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(LOCAL_EVENTS_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((item): CalendarEvent[] => {
+      if (!item || typeof item !== 'object') return [];
+      const event = item as Record<string, unknown>;
+      const startDate = typeof event.startDate === 'string' ? new Date(event.startDate) : new Date(NaN);
+      const endDate = typeof event.endDate === 'string' ? new Date(event.endDate) : new Date(NaN);
+      if (typeof event.id !== 'string' || typeof event.summary !== 'string' || !event.summary.trim() ||
+          Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime()) || endDate < startDate) return [];
+      return [{
+        id: event.id, source: 'local', summary: event.summary,
+        location: typeof event.location === 'string' ? event.location : '',
+        description: typeof event.description === 'string' ? event.description : '',
+        startDate, endDate,
+      }];
+    });
+  } catch {
+    return [];
+  }
+}
+
+let localEvents = readLocalEvents();
 const initialDate = readInitialDate();
 let state: CalendarCenterState = {
   selectedDate: initialDate,
   visibleMonth: new Date(initialDate.getFullYear(), initialDate.getMonth(), 1),
-  events: [],
+  events: localEvents,
   loading: false,
   loadedLocale: null,
   error: null,
@@ -52,6 +94,28 @@ function updateState(patch: Partial<CalendarCenterState>) {
   emit();
 }
 
+function persistLocalEvents() {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(LOCAL_EVENTS_KEY, JSON.stringify(localEvents));
+  } catch {
+    updateState({ error: 'Local calendar storage is unavailable. Changes may not survive reload.' });
+  }
+}
+
+function withEventIdentity(events: CalendarEvent[]): CalendarEvent[] {
+  return events.map((event, index) => ({
+    ...event,
+    id: event.id ?? `ics-${dateKey(event.startDate)}-${index}-${event.summary.slice(0, 32)}`,
+    source: event.source ?? 'ics',
+  }));
+}
+
+function publishEvents(icsEvents: CalendarEvent[]) {
+  const existingLocal = localEvents;
+  updateState({ events: [...withEventIdentity(icsEvents), ...existingLocal].sort((a, b) => a.startDate.getTime() - b.startDate.getTime()) });
+}
+
 export function getCalendarCenterSnapshot() {
   return state;
 }
@@ -66,18 +130,10 @@ export function useCalendarCenter() {
 }
 
 export function selectCalendarDate(date: Date) {
-  const selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  updateState({
-    selectedDate,
-    visibleMonth: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1),
-  });
+  const selectedDate = dateOnly(date);
+  updateState({ selectedDate, visibleMonth: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1) });
   if (typeof window !== 'undefined') {
-    try {
-      const stored = [selectedDate.getFullYear(), String(selectedDate.getMonth() + 1).padStart(2, '0'), String(selectedDate.getDate()).padStart(2, '0')].join('-');
-      window.localStorage.setItem('calendar-center-selected-date-v1', stored);
-    } catch {
-      // Calendar remains functional for the current session without storage.
-    }
+    try { window.localStorage.setItem(SELECTED_DATE_KEY, dateKey(selectedDate)); } catch { /* Session-only fallback. */ }
   }
 }
 
@@ -99,7 +155,7 @@ export async function ensureCalendarEvents(locale: string) {
   activeLocaleRequest = normalized;
   if (state.loadedLocale === normalized) {
     if (state.loading || state.error) updateState({ loading: false, error: null });
-    return Promise.resolve();
+    return;
   }
   const existingRequest = inFlight.get(normalized);
   if (existingRequest) return existingRequest;
@@ -108,7 +164,6 @@ export async function ensureCalendarEvents(locale: string) {
     updateState({ loading: true, error: null });
     const primary = CALENDAR_FILES[normalized] ?? CALENDAR_FILES.en;
     const fallback = normalized === 'en' ? null : CALENDAR_FILES.en;
-
     const tryFetch = async (url: string) => {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Calendar request failed (${response.status})`);
@@ -117,35 +172,73 @@ export async function ensureCalendarEvents(locale: string) {
 
     try {
       const events = await tryFetch(primary);
-      if (activeLocaleRequest !== normalized) return;
-      updateState({ events, loadedLocale: normalized, loading: false, error: null });
+      if (activeLocaleRequest === normalized) {
+        updateState({ loadedLocale: normalized, loading: false, error: null });
+        publishEvents(events);
+      }
     } catch (primaryError) {
       if (fallback) {
         try {
           const events = await tryFetch(fallback);
-          if (activeLocaleRequest !== normalized) return;
-          updateState({ events, loadedLocale: normalized, loading: false, error: null });
+          if (activeLocaleRequest === normalized) {
+            updateState({ loadedLocale: normalized, loading: false, error: null });
+            publishEvents(events);
+          }
           return;
-        } catch {
-          // Keep the original failure for the visible error state below.
-        }
+        } catch { /* Keep the primary error for diagnostics. */ }
       }
-      if (activeLocaleRequest !== normalized) return;
-      updateState({
-        loading: false,
-        error: primaryError instanceof Error ? primaryError.message : 'Calendar could not be loaded',
-      });
+      if (activeLocaleRequest === normalized) {
+        updateState({ loading: false, error: primaryError instanceof Error ? primaryError.message : 'Calendar could not be loaded' });
+      }
     }
   })().finally(() => inFlight.delete(normalized));
-
   inFlight.set(normalized, request);
   return request;
 }
 
 export function getCalendarEventsForDate(date: Date) {
-  return state.events.filter((event) =>
-    event.startDate.getFullYear() === date.getFullYear() &&
-    event.startDate.getMonth() === date.getMonth() &&
-    event.startDate.getDate() === date.getDate()
-  );
+  const target = dateOnly(date).getTime();
+  return state.events.filter((event) => {
+    const start = dateOnly(event.startDate).getTime();
+    const end = dateOnly(event.endDate).getTime();
+    if (event.source === 'local') return target >= start && target <= end;
+    // ICS DTEND is exclusive for all-day events; timed events remain visible on their start day.
+    return target === start || (end > start && target > start && target < end);
+  });
+}
+
+export function getCalendarEventsForRange(startDate: Date, endDate: Date) {
+  const start = dateOnly(startDate).getTime();
+  const end = dateOnly(endDate).getTime();
+  return state.events.filter((event) => {
+    const eventStart = dateOnly(event.startDate).getTime();
+    const eventEnd = dateOnly(event.endDate).getTime();
+    return eventStart <= end && eventEnd >= start;
+  });
+}
+
+export function saveCalendarEvent(input: CalendarEventInput, eventId?: string) {
+  const summary = input.summary.trim();
+  if (!summary) throw new Error('Event title is required');
+  if (Number.isNaN(input.startDate.getTime()) || Number.isNaN(input.endDate.getTime()) || input.endDate < input.startDate) {
+    throw new Error('Event end must be the same as or later than its start');
+  }
+  const id = eventId ?? (typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `local-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  const event: CalendarEvent = {
+    id, source: 'local', summary, location: input.location?.trim() ?? '',
+    description: input.description?.trim() ?? '',
+    startDate: new Date(input.startDate), endDate: new Date(input.endDate),
+  };
+  localEvents = eventId
+    ? localEvents.map((item) => item.id === eventId ? event : item)
+    : [...localEvents, event];
+  persistLocalEvents();
+  updateState({ events: [...state.events.filter((item) => item.source !== 'local' || item.id !== event.id), event].sort((a, b) => a.startDate.getTime() - b.startDate.getTime()) });
+  return event;
+}
+
+export function deleteCalendarEvent(eventId: string) {
+  localEvents = localEvents.filter((event) => event.id !== eventId);
+  persistLocalEvents();
+  updateState({ events: state.events.filter((event) => event.id !== eventId) });
 }
