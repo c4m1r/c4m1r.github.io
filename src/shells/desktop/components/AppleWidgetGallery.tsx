@@ -101,6 +101,11 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
   const handlePresetChange = (key: keyof AppleWidgetVisibility, presetId: string) => {
     onPresetChange?.(key, presetId);
   };
+  const toggleNightMode = () => {
+    const next = !nightMode;
+    setNightMode(next);
+    try { window.localStorage.setItem('desktop-widget-gallery-night-mode', String(next)); } catch { /* Keep the session preference. */ }
+  };
 
   if (!open) return null;
 
@@ -123,7 +128,7 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
         <header>
           <div><strong>{galleryTitle}</strong><small>{themeKey === 'webos' ? 'WebOS' : themeKey === 'win7' ? 'Windows 7' : themeKey.startsWith('win') ? 'Windows' : themeKey.startsWith('macos') ? 'macOS' : themeKey === 'ubuntu' ? 'Ubuntu' : themeKey === 'arch' ? 'Arch Linux' : 'Linux'}</small></div>
           <div className="apple-widget-gallery__header-actions">
-            <button type="button" className="apple-widget-gallery__night-toggle" aria-label={nightMode ? locale.lightMode : locale.nightMode} aria-pressed={nightMode} onClick={() => setNightMode((current) => { const next = !current; try { window.localStorage.setItem('desktop-widget-gallery-night-mode', String(next)); } catch { /* Keep the session preference. */ } return next; })}>{nightMode ? <Sun size={15} /> : <Moon size={15} />}</button>
+            <button type="button" className="apple-widget-gallery__night-toggle" aria-label={nightMode ? locale.lightMode : locale.nightMode} aria-pressed={nightMode} onClick={toggleNightMode}>{nightMode ? <Sun size={15} /> : <Moon size={15} />}</button>
             <button type="button" onClick={onClose}>{locale.done}</button>
           </div>
         </header>
