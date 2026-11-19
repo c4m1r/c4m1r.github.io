@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useApp } from '../../contexts/useApp';
 import {
   type RssArticle,
@@ -28,7 +28,7 @@ function formatRelativeTime(isoString: string, isRu: boolean): string {
   return isRu ? `${diffDays} дн. назад` : `${diffDays}d ago`;
 }
 
-function sanitizeArticleHtml(html: string): string {
+function sanitizeArticleHtml(html: string, baseUrl?: string): string {
   if (typeof DOMParser === 'undefined') return '';
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('script,style,iframe,object,embed,form,button, input,meta,link').forEach((node) => node.remove());
@@ -36,8 +36,14 @@ function sanitizeArticleHtml(html: string): string {
     Array.from(node.attributes).forEach((attr) => {
       const name = attr.name.toLowerCase();
       const value = attr.value.trim();
-      if (name.startsWith('on') || name === 'srcdoc' || ((name === 'href' || name === 'src') && /^\\s*javascript:/i.test(value))) {
+      if (name.startsWith('on') || name === 'srcdoc' || name === 'srcset' || ((name === 'href' || name === 'src') && /^\s*(javascript|vbscript|data):/i.test(value))) {
         node.removeAttribute(attr.name);
+      } else if (baseUrl && (name === 'href' || name === 'src') && value) {
+        try {
+          const absolute = new URL(value, baseUrl);
+          if (absolute.protocol === 'http:' || absolute.protocol === 'https:') node.setAttribute(attr.name, absolute.href);
+          else node.removeAttribute(attr.name);
+        } catch { node.removeAttribute(attr.name); }
       }
     });
     if (node instanceof HTMLAnchorElement) {
@@ -56,6 +62,10 @@ export function NewsRssFeedWindow() {
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [showCategories, setShowCategories] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState<RssArticle | null>(null);
+  const [pageContent, setPageContent] = useState<string | null>(null);
+  const [articleLoading, setArticleLoading] = useState(false);
+  const [articleFetchFailed, setArticleFetchFailed] = useState(false);
+  const activeArticleId = useRef<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsText, setSettingsText] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -81,6 +91,32 @@ export function NewsRssFeedWindow() {
     [articles, selectedCategory]
   );
 
+  const openArticle = async (article: RssArticle) => {
+    activeArticleId.current = article.id;
+    setSelectedArticle(article);
+    setPageContent(null);
+    setArticleFetchFailed(false);
+    setArticleLoading(true);
+    try {
+      const articleUrl = new URL(article.link);
+      if (articleUrl.protocol !== 'http:' && articleUrl.protocol !== 'https:') throw new Error('Unsupported article URL');
+      const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(articleUrl.href));
+      if (!response.ok) throw new Error('Article proxy request failed');
+      const wrapper = await response.json() as { contents?: string };
+      if (!wrapper.contents) throw new Error('Article page is unavailable');
+      const document = new DOMParser().parseFromString(wrapper.contents, 'text/html');
+      const source = document.querySelector('[itemprop="articleBody"], article, .article-content, .post-content, .entry-content, main') ?? document.body;
+      const extracted = source.cloneNode(true) as HTMLElement;
+      extracted.querySelectorAll('script,style,iframe,object,embed,form,button,nav,footer,aside').forEach((node) => node.remove());
+      if ((extracted.textContent ?? '').trim().length < 160) throw new Error('No readable article body found');
+      const safeHtml = sanitizeArticleHtml(extracted.innerHTML, articleUrl.href);
+      if (activeArticleId.current === article.id) setPageContent(safeHtml);
+    } catch {
+      if (activeArticleId.current === article.id) setArticleFetchFailed(true);
+    } finally {
+      if (activeArticleId.current === article.id) setArticleLoading(false);
+    }
+  };
   const handleOpenSettings = () => {
     setSettingsText(formatSourcesToText(getRssSources()));
     setShowSettings(true);
@@ -102,9 +138,9 @@ export function NewsRssFeedWindow() {
     await loadArticles(true);
   };
 
-  const safeContent = selectedArticle?.content
-    ? sanitizeArticleHtml(selectedArticle.content)
-    : selectedArticle?.description || '';
+  const safeContent = pageContent ?? (selectedArticle?.content
+    ? sanitizeArticleHtml(selectedArticle.content, selectedArticle.link)
+    : selectedArticle?.description || '');
 
   return (
     <div className="h-full flex flex-col bg-gray-950 text-gray-100 font-sans overflow-hidden relative">
@@ -146,14 +182,16 @@ export function NewsRssFeedWindow() {
           {selectedArticle ? (
             <article className="max-w-4xl mx-auto">
               <div className="sticky top-0 z-10 -mx-1 px-1 py-2 mb-3 bg-gray-950/90 backdrop-blur flex items-center justify-between border-b border-gray-800">
-                <button type="button" onClick={() => setSelectedArticle(null)} className="flex items-center gap-1.5 text-xs text-blue-300 hover:text-white"><ChevronLeft size={15}/>{isRu ? 'К ленте' : 'Back to feed'}</button>
+                <button type="button" onClick={() => { activeArticleId.current = null; setSelectedArticle(null); setPageContent(null); }} className="flex items-center gap-1.5 text-xs text-blue-300 hover:text-white"><ChevronLeft size={15}/>{isRu ? 'К ленте' : 'Back to feed'}</button>
                 <a href={selectedArticle.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-blue-300 hover:text-white">{isRu ? 'Оригинал' : 'Original'}<ExternalLink size={12}/></a>
               </div>
               <div className="text-[10px] uppercase tracking-wider text-blue-300 mb-2">#{selectedArticle.category} · {selectedArticle.sourceTitle} · {formatRelativeTime(selectedArticle.pubDate, isRu)}</div>
               <h2 className="text-xl sm:text-2xl font-bold leading-tight mb-4">{selectedArticle.title}</h2>
               {selectedArticle.imageUrl && <img src={selectedArticle.imageUrl} alt="" className="w-full max-h-80 object-cover rounded-xl mb-5 bg-gray-900" onError={(e) => { e.currentTarget.style.display = 'none'; }}/>}
+              {articleLoading && <p className="mb-3 text-xs text-blue-300">{isRu ? 'Загружаю полную страницу публикации…' : 'Loading the full article page…'}</p>}
+              {articleFetchFailed && <p className="mb-3 text-xs text-amber-300">{isRu ? 'Сайт не отдал полную статью через прокси. Показано доступное содержимое RSS.' : 'The publisher page could not be retrieved through the proxy. Showing the available RSS content.'}</p>}
               <div className="rss-article-content text-sm leading-7 text-gray-200 break-words" dangerouslySetInnerHTML={{ __html: safeContent }} />
-              <p className="mt-6 pt-3 border-t border-gray-800 text-[11px] text-gray-500">{isRu ? 'Показано содержимое, предоставленное RSS-источником. Для полной версии откройте оригинальную публикацию.' : 'Showing content supplied by the RSS feed. Open the original publication for the full webpage.'}</p>
+              <p className="mt-6 pt-3 border-t border-gray-800 text-[11px] text-gray-500">{pageContent ? (isRu ? 'Загружено содержимое страницы издателя.' : 'Publisher page content loaded.') : (isRu ? 'Показано содержимое, предоставленное RSS-источником.' : 'Showing content supplied by the RSS feed.')}</p>
             </article>
           ) : (
             <>
@@ -169,7 +207,7 @@ export function NewsRssFeedWindow() {
                       <div className="mt-auto pt-3 flex items-center justify-between gap-2">
                         <span className="text-[10px] text-gray-600">{Number.isFinite(new Date(article.pubDate).getTime()) && new Date(article.pubDate).getTime() > 0 ? new Date(article.pubDate).toLocaleDateString(isRu ? 'ru-RU' : 'en-US') : (isRu ? 'Дата не указана' : 'Date unavailable')}</span>
                         <div className="flex items-center gap-3">
-                          <button type="button" onClick={() => setSelectedArticle(article)} className="flex items-center gap-1 text-xs font-semibold text-blue-300 hover:text-blue-200"><BookOpen size={13}/>{isRu ? 'Подробнее' : 'Details'}</button>
+                          <button type="button" onClick={() => openArticle(article)} className="flex items-center gap-1 text-xs font-semibold text-blue-300 hover:text-blue-200"><BookOpen size={13}/>{isRu ? 'Подробнее' : 'Details'}</button>
                           <a href={article.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[11px] text-gray-400 hover:text-white"><ExternalLink size={12}/>{isRu ? 'Оригинал' : 'Original'}</a>
                         </div>
                       </div>
