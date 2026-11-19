@@ -130,7 +130,7 @@ export function CalendarApp() {
     const start = startOfWeek(first, monday);
     return Array.from({ length: 42 }, (_, index) => addDays(start, index));
   }, [visibleMonth, monday]);
-  const getVisibleEventsForDate = (date: Date) => getCalendarEventsForDate(date).filter(isEventSourceVisible);
+  const getVisibleEventsForDate = (date: Date) => getCalendarEventsForDate(date).filter((event) => event.source === 'local' ? showLocalEvents : showImportedEvents);
   const monthEvents = useMemo(() => getCalendarEventsForRange(
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1),
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0)
