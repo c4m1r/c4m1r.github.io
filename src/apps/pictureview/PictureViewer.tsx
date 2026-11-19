@@ -81,7 +81,7 @@ export function PictureViewer({ initialImage, images, initialIndex = 0, initialV
     return (
       <div className={`picture-viewer picture-viewer--library h-full w-full flex flex-col ${isAppleViewer ? 'picture-viewer--apple' : 'bg-[#ece9d8]'}`}>
         <header className="flex items-center justify-between gap-3 border-b border-black/15 px-3 py-2">
-          <div><strong>{isRu ? 'Мои изображения' : 'My Pictures'}</strong><small className="ml-2 opacity-60">{imageList.length}</small></div>
+          <div><strong>{isRu ? 'Мои рисунки' : 'My Pictures'}</strong><small className="ml-2 opacity-60">{imageList.length}</small></div>
           <button type="button" onClick={toggleGallery} className="rounded border border-current/30 px-3 py-1 text-xs hover:bg-black/5">{isRu ? 'К просмотру' : 'Back to viewer'}</button>
         </header>
         <div className="grid flex-1 grid-cols-[repeat(auto-fill,minmax(120px,1fr))] content-start gap-3 overflow-auto p-4">
