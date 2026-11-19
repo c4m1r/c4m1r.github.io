@@ -36,6 +36,17 @@ Percentages are working estimates, not test results. The previous task registry 
 
 ## P0 — Current implementation priorities
 
+### CALENDAR-01 — Unified Calendar Center (P0)
+- Replace the three independent calendar implementations with one canonical calendar domain/service shared by the desktop widget, taskbar clock flyout and full Calendar application. Keep the three entry points; do not merge them into one oversized UI.
+- Current source audit: `src/apps/calendar/CalendarApp.tsx` is a read-only month grid loaded from locale-specific bundled ICS files; it owns its own month/year state and event filtering. `AppleDesktopWidgets.tsx` independently renders a month grid and combined clock/calendar widget without event data or shared selection state. `TaskbarSystemArea.tsx` independently owns `ClockCalendarPopup`, its month cursor and analog/digital clock presentation. These are separate implementations, not three views of one service.
+- Establish a typed Calendar Core for event/calendar data, selected date, visible date/range, navigation, locale/week-start rules, persistence and subscriptions. Keep storage migration-safe; do not silently discard existing ICS events or any locally stored events discovered during implementation.
+- Preserve the strongest existing presentation/functionality from all three current surfaces: taskbar analog + digital clock, date header, month navigation and compact month grid; widget clock/calendar combination, compact layout and existing widget sizing; full app month grid, event labels/location and existing locale-specific ICS loading.
+- Expand the full app without regressing current behavior: month/week/day/list views where supported by the existing design, event details and creation/edit/delete only when backed by the shared data model, calendar visibility/color controls if implemented, today navigation and clear empty/loading/error states. Do not invent backend sync; local-first persistence is acceptable and must be explicit.
+- All three surfaces read and update the same selected date and event source. Selecting a date in the flyout/widget opens or focuses the full Calendar app at that date; navigation in the app updates the shared center. Avoid duplicate windows and stale state.
+- Implement OS presentation adapters, not separate calendar logic: Windows XP/98/2000/7 native flyout/app chrome; macOS menu-bar/dock/widget conventions; iOS compact touch-first presentation; Ubuntu/Arch conventions; WebOS glass/dark widget and app styling. Keep the existing native design language of each shell and do not force XP beige styling into other systems.
+- Acceptance: test event/date synchronization across all three entry points; month boundaries, leap years, locale/week start, timezone-safe date handling, persistence/reload, keyboard/touch interaction, small viewport and all OS skins. Confirm no calendar UI or event source has been lost.
+- Do not import donor application code from `/eat/`; donor examples are reference material only and require separate licence/dependency review before any selective reuse.
+
 ### WEBOS-01 — Desktop and widget placement contract
 - WebOS is the only OS where widgets are enabled by default. All other OS profiles start with widgets disabled; users may enable them deliberately.
 - WebOS initially displays the agreed set of 8 widgets on the right side in 2 columns.
