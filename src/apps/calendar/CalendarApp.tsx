@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useApp } from '../../contexts/useApp';
 import type { CalendarEvent } from './icsParser';
 import {
-  NATIONAL_COUNTRIES, getHolidaysForDate, isSelectedCountryWeekend,
+  NATIONAL_COUNTRIES, getHolidaysForDate, getHolidayTitle, isSelectedCountryWeekend,
   loadSelectedLabourCountries, saveSelectedLabourCountries,
   type CountryCode,
 } from './nationalCalendars';
@@ -81,7 +81,7 @@ export function CalendarApp() {
     const country = NATIONAL_COUNTRIES.find((item) => item.code === holiday.country)!;
     return <div key={holiday.id} className={`calendar-app__holiday calendar-app__holiday--${holiday.kind}`} title={`${countryName(holiday.country, locale)} · ${holiday.title}`}>
       <img src={countryFlags[holiday.country]} alt={country.flag} />
-      <strong>{holiday.title}</strong>
+      <strong>{getHolidayTitle(holiday, locale)}</strong>
     </div>;
   };
 
@@ -230,17 +230,25 @@ export function CalendarApp() {
               {getHolidaysForDate(selectedDate).map(renderHoliday)}
               {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{isRu ? 'Выходной' : 'Day off'}</small>}
               {getCalendarEventsForDate(selectedDate).map(renderEvent)}
-              {getCalendarEventsForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
+              {getCalendarEventsForDate(selectedDate).length === 0 && getHolidaysForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
               <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(selectedDate)}>{isRu ? '+ Добавить событие' : '+ Add event'}</button>
             </section>
           )}
           {view === 'list' && (
             <div className="calendar-app__list-view">
-              {monthEvents.length === 0 && <p>{isRu ? 'В этом месяце событий нет.' : 'No events this month.'}</p>}
+              {monthEvents.length === 0 && Array.from({ length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() }, (_, index) => getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))).flat().length === 0 && <p>{isRu ? 'В этом месяце событий нет.' : 'No events this month.'}</p>}
               {monthEvents.map((event) => <div key={event.id ?? event.startDate.toISOString()} className="calendar-app__list-row">
                 <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(event.startDate)}>{event.startDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
                 {renderEvent(event)}
               </div>)}
+              {Array.from({ length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() }, (_, index) =>
+                getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
+              ).flat().map((holiday) => (
+                <div key={holiday.id} className="calendar-app__list-row">
+                  <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(holiday.date)}>{holiday.date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
+                  {renderHoliday(holiday)}
+                </div>
+              ))}
             </div>
           )}
           <div className="calendar-app__selection-summary mt-2 border-t border-gray-200 pt-2 text-xs">
