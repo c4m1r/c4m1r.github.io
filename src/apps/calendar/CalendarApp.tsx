@@ -120,7 +120,10 @@ export function CalendarApp() {
   const listEntries = useMemo(() => [
     ...monthEvents.map((event) => ({ type: 'event' as const, date: event.startDate, event })),
     ...monthHolidays.map((holiday) => ({ type: 'holiday' as const, date: holiday.date, holiday })),
-  ].sort((a, b) => a.date.getTime() - b.date.getTime()), [monthEvents, monthHolidays]);
+    ...Array.from({ length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() }, (_, index) => new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
+      .filter((date) => isSelectedCountryWeekend(date, labourCountries))
+      .map((date) => ({ type: 'dayoff' as const, date })),
+  ].sort((a, b) => a.date.getTime() - b.date.getTime()), [monthEvents, monthHolidays, visibleMonth, labourCountries]);
   const monthLabel = visibleMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
   const weekdayLabels = useMemo(() => Array.from({ length: 7 }, (_, index) =>
     addDays(startOfWeek(new Date(2024, 0, 7), monday), index).toLocaleDateString(locale, { weekday: 'short' })
@@ -281,10 +284,15 @@ export function CalendarApp() {
                   <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(entry.event.startDate)}>{entry.event.startDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
                   {renderEvent(entry.event)}
                 </div>
-              ) : (
+              ) : entry.type === 'holiday' ? (
                 <div key={entry.holiday.id} className="calendar-app__list-row">
                   <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(entry.holiday.date)}>{entry.holiday.date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
                   {renderHoliday(entry.holiday)}
+                </div>
+              ) : (
+                <div key={'dayoff-' + toLocalDateInput(entry.date)} className="calendar-app__list-row">
+                  <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(entry.date)}>{entry.date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
+                  <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>
                 </div>
               ))}
             </div>
