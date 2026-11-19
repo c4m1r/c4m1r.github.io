@@ -59,7 +59,7 @@ import { AppleNotificationCenter } from './components/AppleNotificationCenter';
 import { AppleSpotlight } from './components/AppleSpotlight';
 import { AppleDesktopWidgets, type AppleWidgetVisibility } from './components/AppleDesktopWidgets';
 import { WebosDesktopWidgets } from '../../system/widgets/components/WebosDesktopWidgets';
-import { getStoredWidgetsVisibility, saveStoredWidgetsVisibility, type DesktopWidgetsVisibility } from '../../system/widgets/types';
+import { DEFAULT_WIDGETS_VISIBILITY, WEBOS_DEFAULT_WIDGETS_VISIBILITY, WIDGETS_STORAGE_KEY, getStoredWidgetsVisibility, saveStoredWidgetsVisibility, type DesktopWidgetsVisibility } from '../../system/widgets/types';
 import { AppleLockScreen } from './components/AppleLockScreen';
 import { AppleWidgetGallery } from './components/AppleWidgetGallery';
 import { IosAssistiveTouch } from './components/IosAssistiveTouch';
@@ -213,7 +213,14 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       return saved ? { clock: false, battery: false, calendar: false, ...JSON.parse(saved) } : { clock: false, battery: false, calendar: false };
     } catch { return { clock: false, battery: false, calendar: false }; }
   });
-  const [webosWidgetVisibility, setWebosWidgetVisibility] = useState<DesktopWidgetsVisibility>(getStoredWidgetsVisibility);
+  const [webosWidgetVisibility, setWebosWidgetVisibility] = useState<DesktopWidgetsVisibility>(() => {
+    const isWebOS = theme === 'webos';
+    const storageKey = isWebOS ? WIDGETS_STORAGE_KEY : `${WIDGETS_STORAGE_KEY}_${theme}`;
+    return getStoredWidgetsVisibility(
+      storageKey,
+      isWebOS ? WEBOS_DEFAULT_WIDGETS_VISIBILITY : DEFAULT_WIDGETS_VISIBILITY,
+    );
+  });
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() =>
     typeof document !== 'undefined' ? Boolean(document.fullscreenElement) : false
   );
@@ -1597,7 +1604,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           if (themeKey === 'webos') {
             setWebosWidgetVisibility((current) => {
               const next = { ...current, [key]: !current[key as keyof DesktopWidgetsVisibility] };
-              saveStoredWidgetsVisibility(next);
+              saveStoredWidgetsVisibility(next, themeKey === 'webos' ? WIDGETS_STORAGE_KEY : `${WIDGETS_STORAGE_KEY}_${themeKey}`);
               return next;
             });
             return;
