@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BatteryFull, CalendarDays, ChartNoAxesCombined, Clock3, CloudSun, Cpu, Image, MessageSquareQuote, Music2, Newspaper, type LucideIcon } from 'lucide-react';
 import { useApp } from '../../../contexts/useApp';
 import { type AppleWidgetVisibility } from './AppleDesktopWidgets';
 import { type DesktopWidgetsVisibility } from '../../../system/widgets/types';
@@ -19,18 +20,18 @@ const widgets: Array<{
   titleRu: string;
   description: string;
   descriptionRu: string;
-  glyph: string;
+  icon: LucideIcon;
 }> = [
-  { key: 'clock', title: 'Clock', titleRu: 'Часы', description: 'Current time and date', descriptionRu: 'Текущее время и дата', glyph: '⏰' },
-  { key: 'calendar', title: 'Calendar', titleRu: 'Календарь', description: 'Current month calendar', descriptionRu: 'Календарь на текущий месяц', glyph: '📅' },
-  { key: 'battery', title: 'Battery', titleRu: 'Батарея', description: 'Device battery status', descriptionRu: 'Состояние аккумулятора', glyph: '🔋' },
-  { key: 'weather', title: 'Weather', titleRu: 'Погода', description: 'Open-Meteo live forecast', descriptionRu: 'Прогноз погоды Open-Meteo', glyph: '⛅' },
-  { key: 'winamp', title: 'Winamp Now Playing', titleRu: 'Winamp Плеер', description: 'Glassmorphic music player', descriptionRu: 'Компактный музыкальный плеер', glyph: '🎵' },
-  { key: 'quotes', title: 'Quotes', titleRu: 'Цитаты', description: 'Wise & gaming quotes', descriptionRu: 'Мудрые и игровые цитаты', glyph: '💬' },
-  { key: 'currency', title: 'Market Rates', titleRu: 'Курсы валют', description: 'BTC, USD, RUB, Gold to KZT', descriptionRu: 'BTC, USD, RUB, Золото к KZT', glyph: '📈' },
-  { key: 'monitor', title: 'System Monitor', titleRu: 'Монитор системы', description: 'Live CPU, RAM & Disk usage', descriptionRu: 'Загрузка CPU, памяти и диска', glyph: '⚡' },
-  { key: 'news', title: 'News RSS', titleRu: 'Новости RSS', description: 'Interactive news headlines', descriptionRu: 'Лента игровых и IT новостей', glyph: '📰' },
-  { key: 'gallery', title: 'Art Gallery', titleRu: 'Галерея', description: 'Curated artwork frame', descriptionRu: 'Рамка избранных иллюстраций', glyph: '🖼️' },
+  { key: 'clock', title: 'Clock', titleRu: 'Часы', description: 'Current time and date', descriptionRu: 'Текущее время и дата', icon: Clock3 },
+  { key: 'calendar', title: 'Calendar', titleRu: 'Календарь', description: 'Current month calendar', descriptionRu: 'Календарь на текущий месяц', icon: CalendarDays },
+  { key: 'battery', title: 'Battery', titleRu: 'Батарея', description: 'Device battery status', descriptionRu: 'Состояние аккумулятора', icon: BatteryFull },
+  { key: 'weather', title: 'Weather', titleRu: 'Погода', description: 'Open-Meteo live forecast', descriptionRu: 'Прогноз погоды Open-Meteo', icon: CloudSun },
+  { key: 'winamp', title: 'Winamp Now Playing', titleRu: 'Winamp Плеер', description: 'Glassmorphic music player', descriptionRu: 'Компактный музыкальный плеер', icon: Music2 },
+  { key: 'quotes', title: 'Quotes', titleRu: 'Цитаты', description: 'Wise & gaming quotes', descriptionRu: 'Мудрые и игровые цитаты', icon: MessageSquareQuote },
+  { key: 'currency', title: 'Market Rates', titleRu: 'Курсы валют', description: 'BTC, USD, RUB, Gold to KZT', descriptionRu: 'BTC, USD, RUB, Золото к KZT', icon: ChartNoAxesCombined },
+  { key: 'monitor', title: 'System Monitor', titleRu: 'Монитор системы', description: 'Live CPU, RAM & Disk usage', descriptionRu: 'Загрузка CPU, памяти и диска', icon: Cpu },
+  { key: 'news', title: 'News RSS', titleRu: 'Новости RSS', description: 'Interactive news headlines', descriptionRu: 'Лента игровых и IT новостей', icon: Newspaper },
+  { key: 'gallery', title: 'Art Gallery', titleRu: 'Галерея', description: 'Curated artwork frame', descriptionRu: 'Рамка избранных иллюстраций', icon: Image },
 ];
 
 export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey, webosVisibility }: AppleWidgetGalleryProps) {
@@ -80,8 +81,20 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
 
   if (!open) return null;
 
+  const osFamily = themeKey.startsWith('win')
+    ? 'windows'
+    : themeKey === 'ubuntu'
+      ? 'ubuntu'
+      : themeKey === 'arch'
+        ? 'arch'
+        : themeKey === 'webos'
+          ? 'webos'
+          : themeKey.startsWith('macos')
+            ? 'macos'
+            : 'generic';
+
   return (
-    <div className={`apple-widget-gallery apple-widget-gallery--${themeKey.startsWith('win') ? 'windows' : themeKey.startsWith('linux') || themeKey === 'webos' ? themeKey : themeKey.startsWith('macos') ? 'macos' : 'generic'}`} role="dialog" aria-label={isRu ? 'Галерея виджетов' : 'Edit Widgets'}>
+    <div className={`apple-widget-gallery apple-widget-gallery--${osFamily}`} role="dialog" aria-label={isRu ? 'Галерея виджетов' : 'Edit Widgets'}>
       <button type="button" className="apple-widget-gallery__backdrop" aria-label={isRu ? 'Закрыть' : 'Close'} onClick={onClose} />
       <section className="apple-widget-gallery__panel" onClick={(event) => event.stopPropagation()}>
         <header>
@@ -109,7 +122,7 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
             return (
               <div className={`apple-widget-gallery__item ${isEnabled ? 'is-enabled' : ''}`} key={widget.key}>
                 <button type="button" className="apple-widget-gallery__toggle" onClick={toggleWidget} aria-pressed={isEnabled}>
-                  <span className="apple-widget-gallery__glyph">{widget.glyph}</span>
+                  <span className="apple-widget-gallery__glyph"><widget.icon size={19} strokeWidth={1.8} aria-hidden="true" /></span>
                   <span><strong>{displayTitle}</strong><small>{displayDescription}</small></span>
                   <i>{isEnabled ? (isRu ? 'Вкл' : 'On') : (isRu ? 'Выкл' : 'Off')}</i>
                 </button>
