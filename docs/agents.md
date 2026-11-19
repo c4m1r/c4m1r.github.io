@@ -572,3 +572,11 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - `SystemSettings.perOs[theme].colorScheme` now supports optional `light` / `dark` values; existing v1 settings remain backward-compatible because the field is optional. WebOS defaults to dark when no preference is stored.
 - `ControlPanel.tsx` exposes the WebOS desktop palette in Appearance & Themes and persists the selection through `updateSystemSettings`; `DesktopShellContainer.tsx` subscribes to the shared settings store and applies `data-color-scheme` to the WebOS desktop root. The CSS light variant changes the desktop icon tile backing and label contrast only; it does not recolor icon artwork or the wallpaper.
 - Runtime acceptance remains pending: change light/dark, reload, switch away and back to WebOS, verify persistence and contrast over both light and dark wallpapers. Do not call the entire OS light-themed; this first pass is specifically the desktop icon tile contract.
+
+
+### Winamp standalone-window handoff — 2026-11-19
+- app:winamp bypasses the generic OS window frame in src/apps/desktop/Window.tsx; do not restore the Explorer-like wrapper around it.
+- WinampPlayer.tsx controls three independently positioned classic surfaces (main/equalizer/playlist). Each titlebar starts drag, movement is clamped to the viewport, and clicking a surface raises it. Main close routes through closeWindow(config.windowId).
+- winamp.css makes the root transparent/non-interactive outside the actual player surfaces. Verify no full-screen overlay blocks desktop pointer input.
+- The Widget Gallery already exposes the compact “Winamp Now Playing” widget. Keep this distinct from the full classic player until a separate visibility preference is intentionally added; do not silently replace the compact widget.
+- Webamp reference: https://github.com/captbaritone/webamp. Its documented features include independent main/EQ/playlist windows, skin support, windowshade and double-size mode. Current implementation is only a first structural step, not feature parity. Remaining acceptance: independent dragging on touch, persistence, .wsz skin loading, file drop/import, EQ preset persistence, keyboard accessibility, responsive behavior and playback metadata.
