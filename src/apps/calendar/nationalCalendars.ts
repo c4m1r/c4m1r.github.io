@@ -50,7 +50,7 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   if (cached) return cached;
   const result: NationalHoliday[]=[];
   for (const country of NATIONAL_COUNTRIES) {
-    if (country.code === 'JP') continue;
+    if (['JP','CN','KR','GB'].includes(country.code) && (year===2026 || year===2027)) continue;
     for (const [month,day,title,kind] of fixed[country.code]) {
       result.push({ id:`holiday-${country.code}-${year}-${month}-${day}`, date:new Date(year,month-1,day), country:country.code, title, kind });
     }
@@ -92,6 +92,9 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   add('GB',new Date(year,easter.getMonth(),easter.getDate()+1),'Easter Monday');
   add('GB',lastWeekday(year,5,1),'Spring bank holiday');
   add('GB',lastWeekday(year,8,1),'Summer bank holiday');
+  // Annual memorial markers remain separate from labour-day status.
+  add('CN',new Date(year,11,13),'国家公祭日 · День памяти жертв Нанкинской резни','memorial');
+  add('GB',new Date(year,10,11),'Remembrance Day · День поминовения','memorial');
   // China: official State Council holiday arrangements for 2026 and 2027.
   const addRange=(country:CountryCode,startMonth:number,startDay:number,endMonth:number,endDay:number,title:string,kind:NationalHoliday['kind']='public')=>{
     const cursor=new Date(year,startMonth-1,startDay); const end=new Date(year,endMonth-1,endDay);
@@ -161,6 +164,9 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   add('GB',nthWeekday(year,5,1,1),'Early May bank holiday');
   add('GB',lastWeekday(year,5,1),'Spring bank holiday');
   add('GB',lastWeekday(year,8,1),'Summer bank holiday');
+  add('GB',new Date(year,0,1),'New Year’s Day');
+  add('GB',new Date(year,11,25),'Christmas Day');
+  add('GB',new Date(year,11,26),'Boxing Day');
   if(year===2026){
     add('GB',new Date(year,11,28),'Boxing Day (substitute day)');
   } else if(year===2027){
