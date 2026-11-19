@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useApp } from '../../contexts/useApp';
 import type { CalendarEvent, CalendarRecurrenceRule } from './icsParser';
 import {
-  NATIONAL_COUNTRIES, getHolidaysForDate, getHolidayTitle, isSelectedCountryWeekend,
+  NATIONAL_COUNTRIES, getHolidaysForDate, getHolidayTitle, isSelectedCountryWeekend, isMakeupWorkday,
   setSelectedLabourCountries, useLabourCountries,
   type CountryCode,
 } from './nationalCalendars';
@@ -121,8 +121,8 @@ export function CalendarApp() {
     ...monthEvents.map((event) => ({ type: 'event' as const, date: event.startDate, event })),
     ...monthHolidays.map((holiday) => ({ type: 'holiday' as const, date: holiday.date, holiday })),
     ...Array.from({ length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() }, (_, index) => new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
-      .filter((date) => isSelectedCountryWeekend(date, labourCountries))
-      .map((date) => ({ type: 'dayoff' as const, date })),
+      .filter((date) => isSelectedCountryWeekend(date, labourCountries) || isMakeupWorkday(date, labourCountries))
+      .map((date) => ({ type: isSelectedCountryWeekend(date, labourCountries) ? 'dayoff' as const : 'makeup' as const, date })),
   ].sort((a, b) => a.date.getTime() - b.date.getTime()), [monthEvents, monthHolidays, visibleMonth, labourCountries]);
   const monthLabel = visibleMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
   const weekdayLabels = useMemo(() => Array.from({ length: 7 }, (_, index) =>
@@ -241,14 +241,15 @@ export function CalendarApp() {
                   const dayEvents = getCalendarEventsForDate(date);
                   const holidays = getHolidaysForDate(date);
                   const weekend = isSelectedCountryWeekend(date, labourCountries);
+                  const makeupWorkday = isMakeupWorkday(date, labourCountries);
                   const inMonth = date.getMonth() === visibleMonth.getMonth();
-                  return <div key={date.toISOString()} className={`calendar-app__month-cell ${!inMonth ? 'is-outside' : ''} ${sameDay(date, selectedDate) ? 'is-selected' : ''} ${sameDay(date, new Date()) ? 'is-today' : ''} ${weekend ? 'is-labour-weekend' : ''}`}>
+                  return <div key={date.toISOString()} className={`calendar-app__month-cell ${!inMonth ? 'is-outside' : ''} ${sameDay(date, selectedDate) ? 'is-selected' : ''} ${sameDay(date, new Date()) ? 'is-today' : ''} ${weekend ? 'is-labour-weekend' : ''} ${makeupWorkday ? 'is-makeup-workday' : ''}`}>
                     <button type="button" className="calendar-app__date-button" onClick={() => selectCalendarDate(date)} aria-pressed={sameDay(date, selectedDate)}>{date.getDate()}</button>
                     <div className="calendar-app__cell-events">
                       {holidays.slice(0, 2).map(renderHoliday)}
                       {dayEvents.slice(0, Math.max(0, 3 - holidays.length)).map(renderEvent)}
                       {dayEvents.length + holidays.length > 3 && <button type="button" className="calendar-app__more-events" onClick={() => { selectCalendarDate(date); setView('day'); }}>+{dayEvents.length + holidays.length - 3}</button>}
-                      {weekend && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}
+                      {weekend && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}{makeupWorkday && <small className="calendar-app__makeup-work-label">{locale.startsWith('ru') ? 'Рабочий день' : 'Working day'}</small>}
                     </div>
                   </div>;
                 })}
@@ -261,7 +262,7 @@ export function CalendarApp() {
                 <button type="button" onClick={() => selectCalendarDate(date)} className="calendar-app__week-date">{date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}</button>
                 {getHolidaysForDate(date).map(renderHoliday)}
                 {getCalendarEventsForDate(date).map(renderEvent)}
-                {isSelectedCountryWeekend(date, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}
+                {isSelectedCountryWeekend(date, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}{isMakeupWorkday(date, labourCountries) && <small className="calendar-app__makeup-work-label">{locale.startsWith('ru') ? 'Рабочий день' : 'Working day'}</small>}
                 <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(date)}>{isRu ? '+ Добавить' : '+ Add'}</button>
               </section>)}
             </div>
@@ -270,7 +271,7 @@ export function CalendarApp() {
             <section className="calendar-app__day-view">
               <h3>{selectedDate.toLocaleDateString(locale, { dateStyle: 'full' })}</h3>
               {getHolidaysForDate(selectedDate).map(renderHoliday)}
-              {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}
+              {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}{isMakeupWorkday(selectedDate, labourCountries) && <small className="calendar-app__makeup-work-label">{locale.startsWith('ru') ? 'Рабочий день' : 'Working day'}</small>}
               {getCalendarEventsForDate(selectedDate).map(renderEvent)}
               {getCalendarEventsForDate(selectedDate).length === 0 && getHolidaysForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
               <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(selectedDate)}>{isRu ? '+ Добавить событие' : '+ Add event'}</button>
@@ -290,9 +291,9 @@ export function CalendarApp() {
                   {renderHoliday(entry.holiday)}
                 </div>
               ) : (
-                <div key={'dayoff-' + toLocalDateInput(entry.date)} className="calendar-app__list-row">
+                <div key={entry.type + '-' + toLocalDateInput(entry.date)} className="calendar-app__list-row">
                   <button type="button" className="calendar-app__list-date" onClick={() => selectCalendarDate(entry.date)}>{entry.date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })}</button>
-                  <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>
+                  <small className={entry.type === 'dayoff' ? 'calendar-app__weekend-label' : 'calendar-app__makeup-work-label'}>{entry.type === 'dayoff' ? dayOffLabel(locale) : (locale.startsWith('ru') ? 'Рабочий день' : 'Working day')}</small>
                 </div>
               ))}
             </div>
