@@ -293,3 +293,99 @@
 .calendar-app__event-chip[data-calendar-color="teal"]{background:rgba(25,145,145,.15);border-color:rgba(25,145,145,.38);color:inherit}
 .calendar-app__event-chip[data-calendar-color="green"]{background:rgba(30,145,90,.15);border-color:rgba(30,145,90,.38);color:inherit}
 @media(max-width:640px){.calendar-app__source-controls{gap:6px}.calendar-app__source-controls label{font-size:9px}}
+
+/* Native clock flyout adapters. One shared calendar model, OS-specific system surfaces. */
+.os-win7 .xp-clock-popup--win7{
+  width:310px;padding:10px;border:1px solid rgba(20,45,70,.55);border-radius:7px;
+  background:linear-gradient(135deg,rgba(246,251,255,.94),rgba(214,231,246,.96));
+  color:#18344c;font:12px "Segoe UI",sans-serif;
+  box-shadow:0 12px 34px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.9);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)
+}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__header{background:transparent;border:0;min-height:45px}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__title{color:#17466c}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__digital{background:rgba(255,255,255,.72);border:1px solid rgba(80,120,155,.25);color:#17466c}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__calendar{border:1px solid rgba(80,120,155,.32);background:rgba(255,255,255,.82)}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__month-row{background:linear-gradient(#f9fcff,#d9e9f6);border-color:#b6cadb}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__month-row>span{color:#17466c}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__month-row button{border:1px solid #9bb8d0;border-radius:3px;background:linear-gradient(#fff,#dcebf7);color:#17466c}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__days button.is-today{background:#2678bd;color:white;border-radius:3px}
+.os-win7 .xp-clock-popup--win7 .xp-clock-popup__open-calendar{color:#17466c;border-top:1px solid rgba(80,120,155,.25)}
+
+.os-win10 .xp-clock-popup--win10,.os-win11 .xp-clock-popup--win11{
+  width:340px;padding:16px;border:1px solid rgba(255,255,255,.14);border-radius:10px;
+  background:rgba(32,34,38,.96);color:#f5f5f5;font:13px "Segoe UI",sans-serif;
+  box-shadow:0 18px 48px rgba(0,0,0,.48);-webkit-backdrop-filter:blur(28px);backdrop-filter:blur(28px)
+}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__header,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__header{min-height:0;padding:0 0 12px;border:0;background:transparent}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__title,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__title{color:#fff;font-size:18px;font-weight:400}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__date,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__date{color:#b9bec7}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__digital,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__digital{margin:0 0 12px;padding:0;border:0;background:transparent;color:#fff;text-align:left;font-size:24px;font-weight:300}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__calendar,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__calendar{border:0;background:transparent}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__month-row,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__month-row{background:transparent;border:0}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__month-row>span,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__month-row>span{color:#fff}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__month-row button,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__month-row button{border:0;border-radius:4px;background:transparent;color:#fff}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__weekdays,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__weekdays{color:#aeb5bf}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__days button,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__days button{color:#f0f0f0;border-radius:4px}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__days button.is-today,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__days button.is-today{background:#2878d0;color:#fff}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__days button.is-labour-weekend,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__days button.is-labour-weekend{background:rgba(226,65,75,.2);color:#ffb9bd}
+.os-win10 .xp-clock-popup--win10 .xp-clock-popup__open-calendar,.os-win11 .xp-clock-popup--win11 .xp-clock-popup__open-calendar{border-top:1px solid rgba(255,255,255,.12);color:#8abaff}
+
+.os-ubuntu .xp-clock-popup--ubuntu{
+  width:320px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;
+  background:#2d2a28;color:#f5f3f1;font:13px Ubuntu,"Segoe UI",sans-serif;box-shadow:0 16px 42px rgba(0,0,0,.48)
+}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__header{min-height:0;padding:0 0 8px;border:0;background:transparent}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__title{color:#fff;font-size:15px}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__digital{margin:0 0 8px;padding:0;border:0;background:transparent;color:#fff;text-align:left;font-size:24px}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__calendar{border:0;background:transparent}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__month-row{background:transparent;border:0}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__month-row>span{color:#fff}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__month-row button{border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__days button.is-today{background:#e95420;color:white}
+.os-ubuntu .xp-clock-popup--ubuntu .xp-clock-popup__open-calendar{border-top:1px solid rgba(255,255,255,.12);color:#ff9a70}
+
+.os-arch .xp-clock-popup--arch{
+  width:320px;padding:14px;border:1px solid rgba(90,160,210,.35);border-radius:8px;
+  background:rgba(25,31,40,.97);color:#e8edf4;font:13px "Segoe UI",sans-serif;box-shadow:0 16px 42px rgba(0,0,0,.48)
+}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__header{min-height:0;padding:0 0 8px;border:0;background:transparent}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__title{color:#fff;font-size:15px}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__digital{margin:0 0 8px;padding:0;border:0;background:transparent;color:#fff;text-align:left;font-size:24px}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__calendar{border:0;background:transparent}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__month-row{background:transparent;border:0}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__month-row>span{color:#fff}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__month-row button{border:1px solid rgba(23,147,209,.4);border-radius:4px;background:rgba(23,147,209,.12);color:#55b9e8}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__days button.is-today{background:#1793d1;color:#fff}
+.os-arch .xp-clock-popup--arch .xp-clock-popup__open-calendar{border-top:1px solid rgba(255,255,255,.12);color:#55b9e8}
+
+.os-webos .xp-clock-popup--webos{
+  width:320px;padding:14px;border:1px solid rgba(255,255,255,.2);border-radius:16px;
+  background:rgba(14,18,24,.88);color:#f4f6f8;font:12px system-ui,sans-serif;
+  box-shadow:0 18px 48px rgba(0,0,0,.46);-webkit-backdrop-filter:blur(28px) saturate(150%);backdrop-filter:blur(28px) saturate(150%)
+}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__header{min-height:0;padding:0 0 8px;border:0;background:transparent}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__title{color:#fff;font-size:14px}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__date{color:#aeb7c2}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__digital{margin:0 0 8px;padding:0;border:0;background:transparent;color:#fff;text-align:left;font-size:26px}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__calendar{border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.04)}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__month-row{background:transparent;border:0}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__month-row>span{color:#fff}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__month-row button{border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__days button.is-today{background:#e5484d;color:#fff}
+.os-webos .xp-clock-popup--webos .xp-clock-popup__open-calendar{border-top:1px solid rgba(255,255,255,.1);color:#ff777d}
+
+.os-classic .xp-clock-popup{border:2px outset #fff;border-radius:0;background:#c0c0c0;color:#000;font:11px Tahoma,Arial,sans-serif;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+.os-classic .xp-clock-popup__header,.os-classic .xp-clock-popup__calendar{border:1px solid #808080;border-radius:0;background:#d4d0c8}
+.os-classic .xp-clock-popup__title,.os-classic .xp-clock-popup__month-row>span{color:#000080}
+.os-classic .xp-clock-popup__digital{border:2px inset #fff;border-radius:0;background:#fff;color:#000080}
+.os-classic .xp-clock-popup__month-row{background:#c0c0c0}
+.os-classic .xp-clock-popup__month-row button{border:2px outset #fff;border-radius:0;background:#c0c0c0;color:#000080}
+.os-classic .xp-clock-popup__days button.is-today{border-radius:0;background:#000080;color:#fff}
+
+.xp-clock-popup__days button{position:relative;min-height:23px;border:1px solid transparent;background:transparent;font:inherit;cursor:pointer}
+.xp-clock-popup__days button.is-selected{outline:2px solid currentColor;outline-offset:-2px}
+.xp-clock-popup__days button:focus-visible{outline:2px solid #2685d2;outline-offset:-2px}
+.xp-clock-popup__open-calendar{display:block;width:100%;margin-top:6px;padding:7px 4px;border:0;border-top:1px solid rgba(120,120,120,.25);background:transparent;text-align:center;font:inherit;cursor:pointer}
+.xp-clock-popup__days button.is-makeup-workday{box-shadow:inset 0 0 0 1px rgba(30,145,90,.75)}
+.xp-clock-popup__days button.has-national-holiday{font-weight:800;text-decoration:underline;text-decoration-color:#c93440;text-underline-offset:3px}
