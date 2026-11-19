@@ -555,7 +555,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         appId,
         title: getOsAppTitle(appId, definition.title, themeKey, language),
         src: MACOS_APP_ICON_BY_ID[appId],
-        glyph: MACOS_APP_ICON_BY_ID[appId] ? undefined : definition.title[language].slice(0, 1).toUpperCase(),
+        glyph: MACOS_APP_ICON_BY_ID[appId] ? undefined : (definition.title[language] ?? definition.title.en).slice(0, 1).toUpperCase(),
       });
     }
   }
