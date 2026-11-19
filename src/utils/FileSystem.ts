@@ -221,7 +221,6 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                 children: {
                                     'DOOM': { id: 'games-doom1', name: 'DOOM (1993)', type: 'file', appId: 'doom1', icon: defaultTextIcon },
                                     'DOOM II': { id: 'games-doom2', name: 'DOOM II', type: 'file', appId: 'doom2', icon: defaultTextIcon },
-                                    'DOOM 3': { id: 'games-doom3', name: 'DOOM 3', type: 'file', appId: 'doom3', icon: defaultTextIcon },
                                     'Minesweeper': { id: 'games-minesweeper', name: 'Сапёр', type: 'file', appId: 'minesweeper', icon: defaultTextIcon },
                                     'Snake': { id: 'games-snake', name: 'Змейка', type: 'file', appId: 'snake', icon: defaultTextIcon },
                                     'Memory': { id: 'games-memory', name: 'Память', type: 'file', appId: 'memory', icon: defaultTextIcon }
