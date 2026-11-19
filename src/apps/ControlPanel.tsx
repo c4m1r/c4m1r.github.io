@@ -62,9 +62,9 @@ export function ControlPanel() {
     updateSystemSettings((previous) => ({
       ...previous,
       perOs: {
-        ...previous.perOs,
+        ...(previous.perOs ?? {}),
         [theme]: {
-          ...previous.perOs?.[theme],
+          ...(previous.perOs?.[theme] ?? {}),
           colorScheme,
         },
       },
