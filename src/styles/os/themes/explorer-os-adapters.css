@@ -30,8 +30,8 @@
   background: #d4d0c8 !important;
   border-color: #fff #404040 #404040 #fff !important;
 }
-.file-explorer[data-os-theme='win-98'] > div:first-child > div:nth-child(2) > button,
-.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) > button {
+.file-explorer[data-os-theme='win-98'] > div:first-child > div.flex-1 > button,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div.flex-1 > button {
   min-height: 27px !important;
   padding: 2px 7px !important;
   border: 1px solid #808080 !important;
@@ -40,8 +40,8 @@
   box-shadow: inset 1px 1px #fff, inset -1px -1px #404040 !important;
   color: #000 !important;
 }
-.file-explorer[data-os-theme='win-98'] > div:first-child > div:nth-child(2) > button:active,
-.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) > button:active {
+.file-explorer[data-os-theme='win-98'] > div:first-child > div.flex-1 > button:active,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div.flex-1 > button:active {
   box-shadow: inset 1px 1px #404040, inset -1px -1px #fff !important;
 }
 .file-explorer[data-os-theme='win-98'] > div:first-child > div:nth-child(3),
@@ -56,12 +56,12 @@
   color: #000 !important;
   font: 11px 'MS Sans Serif', Tahoma, sans-serif !important;
 }
-.file-explorer[data-os-theme='win-98'] > div:nth-child(2),
-.file-explorer[data-os-theme='win2000'] > div:nth-child(2) {
+.file-explorer[data-os-theme='win-98'] > div.flex-1,
+.file-explorer[data-os-theme='win2000'] > div.flex-1 {
   background: #c0c0c0 !important;
 }
-.file-explorer[data-os-theme='win-98'] > div:nth-child(2) > .flex-1,
-.file-explorer[data-os-theme='win2000'] > div:nth-child(2) > .flex-1 {
+.file-explorer[data-os-theme='win-98'] > div.flex-1 > .flex-1,
+.file-explorer[data-os-theme='win2000'] > div.flex-1 > .flex-1 {
   background: #fff !important;
   color: #000 !important;
 }
@@ -74,10 +74,10 @@
   color: #000 !important;
   box-shadow: inset 0 1px #fff !important;
 }
-.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) {
+.file-explorer[data-os-theme='win2000'] > div:first-child > div.flex-1 {
   background: linear-gradient(#dce8f5, #b7cce3) !important;
 }
-.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) > button {
+.file-explorer[data-os-theme='win2000'] > div:first-child > div.flex-1 > button {
   border-color: #8aa6c2 !important;
   background: linear-gradient(#f8fbff, #d7e4f2) !important;
 }
@@ -107,8 +107,8 @@
   background: #fff !important;
   color: #222 !important;
 }
-.file-explorer[data-os-theme='ubuntu'] > div:nth-child(2) { background: #ededed !important; }
-.file-explorer[data-os-theme='ubuntu'] > div:nth-child(2) > .flex-1 { background: #fff !important; color: #222 !important; }
+.file-explorer[data-os-theme='ubuntu'] > div.flex-1 { background: #ededed !important; }
+.file-explorer[data-os-theme='ubuntu'] > div.flex-1 > .flex-1 { background: #fff !important; color: #222 !important; }
 .file-explorer[data-os-theme='ubuntu'] > div:last-child { background: #ededed !important; color: #555 !important; border-top: 1px solid #ccc !important; }
 
 .file-explorer[data-os-theme='arch'] {
@@ -126,8 +126,8 @@
 .file-explorer[data-os-theme='arch'] > div:first-child > div:nth-child(3) input {
   border: 1px solid #3b4048 !important; border-radius: 5px !important; background: #181b22 !important; color: #e6edf3 !important;
 }
-.file-explorer[data-os-theme='arch'] > div:nth-child(2) { background: #181b22 !important; }
-.file-explorer[data-os-theme='arch'] > div:nth-child(2) > .flex-1 { background: #1e222b !important; color: #e6edf3 !important; }
+.file-explorer[data-os-theme='arch'] > div.flex-1 { background: #181b22 !important; }
+.file-explorer[data-os-theme='arch'] > div.flex-1 > .flex-1 { background: #1e222b !important; color: #e6edf3 !important; }
 .file-explorer[data-os-theme='arch'] > div:last-child { background: #181b22 !important; color: #8b949e !important; border-top: 1px solid #3b4048 !important; }
 
 .file-explorer[data-os-theme='webos'] {
@@ -142,6 +142,45 @@
 .file-explorer[data-os-theme='webos'] > div:first-child > div:nth-child(3) input {
   background: #11151c !important; border: 1px solid #414b5d !important; border-radius: 6px !important; color: #f4f6fb !important;
 }
-.file-explorer[data-os-theme='webos'] > div:nth-child(2) { background: #17191f !important; }
-.file-explorer[data-os-theme='webos'] > div:nth-child(2) > .flex-1 { background: #17191f !important; color: #e8ebf2 !important; }
+.file-explorer[data-os-theme='webos'] > div.flex-1 { background: #17191f !important; }
+.file-explorer[data-os-theme='webos'] > div.flex-1 > .flex-1 { background: #17191f !important; color: #e8ebf2 !important; }
 .file-explorer[data-os-theme='webos'] > div:last-child { background: #20242d !important; color: #aeb8c8 !important; border-top: 1px solid #343b49 !important; }
+
+
+/* Folder-tree sidebar: shared structure, OS-specific native treatment. */
+.file-explorer[data-os-theme='win-98'] > div.flex-1 > aside,
+.file-explorer[data-os-theme='win2000'] > div.flex-1 > aside {
+  background: #d4d0c8;
+  color: #000;
+  border-right: 1px solid #808080;
+}
+.file-explorer[data-os-theme='win-98'] > div.flex-1 > aside button,
+.file-explorer[data-os-theme='win2000'] > div.flex-1 > aside button {
+  color: #000;
+  border-radius: 0;
+}
+.file-explorer[data-os-theme='win-98'] > div.flex-1 > aside button:hover,
+.file-explorer[data-os-theme='win2000'] > div.flex-1 > aside button:hover {
+  background: #bfcbe2;
+}
+.file-explorer[data-os-theme='ubuntu'] > div.flex-1 > aside {
+  background: #f1f1f1;
+  color: #333;
+  border-right: 1px solid #d5d5d5;
+}
+.file-explorer[data-os-theme='ubuntu'] > div.flex-1 > aside button { color: #333; }
+.file-explorer[data-os-theme='ubuntu'] > div.flex-1 > aside button:hover { background: #e6e6e6; }
+.file-explorer[data-os-theme='arch'] > div.flex-1 > aside {
+  background: #181b22;
+  color: #c9d1d9;
+  border-right: 1px solid #3b4048;
+}
+.file-explorer[data-os-theme='arch'] > div.flex-1 > aside button { color: #c9d1d9; }
+.file-explorer[data-os-theme='arch'] > div.flex-1 > aside button:hover { background: #303744; }
+.file-explorer[data-os-theme='webos'] > div.flex-1 > aside {
+  background: #20242d;
+  color: #c7d0df;
+  border-right: 1px solid #343b49;
+}
+.file-explorer[data-os-theme='webos'] > div.flex-1 > aside button { color: #e8ebf2; }
+.file-explorer[data-os-theme='webos'] > div.flex-1 > aside button:hover { background: #30394a; }
