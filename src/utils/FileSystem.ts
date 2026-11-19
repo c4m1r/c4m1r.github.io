@@ -244,33 +244,35 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
     }
 };
 
-export const getItemsFromPath = (path: string): FileSystemItem[] => {
-    if (path === 'My Computer') {
-        return Object.values(initialFileSystem['My Computer'].children || {});
-    }
+const isComputerRootPath = (path: string) =>
+    ['my computer', 'computer', 'this pc', 'компьютер', 'мой компьютер'].includes(path.trim().toLocaleLowerCase());
 
-    // Handle C:\ path normalization
-    const normalizedPath = path.replace('Local Disk (C:)', 'C:').replace(/\\/g, '/');
-    const parts = normalizedPath.split('/').filter(p => p);
+export const getFileSystemItemFromPath = (path: string): FileSystemItem | null => {
+    if (isComputerRootPath(path)) return initialFileSystem['My Computer'];
 
-    let current = initialFileSystem['My Computer'];
+    const normalizedPath = path
+        .trim()
+        .replace(/^Local Disk \\(C:\\)$/i, 'C:')
+        .replace(/[\\\\/]+/g, '/')
+        .replace(/\\/+$/g, '');
+    const parts = normalizedPath.split('/').filter(Boolean);
+    if (parts.length > 0 && isComputerRootPath(parts[0])) parts.shift();
 
-    // Navigate through parts
+    let current: FileSystemItem = initialFileSystem['My Computer'];
     for (const part of parts) {
-        if (current.children && current.children[part]) {
-            current = current.children[part];
-        } else {
-            // Try finding by name if key doesn't match exactly (though keys should match names in this simple setup)
-            const found = Object.values(current.children || {}).find(c => c.name === part);
-            if (found) {
-                current = found;
-            } else {
-                return [];
-            }
-        }
+        const children = current.children;
+        if (!children) return null;
+        const key = Object.keys(children).find((candidate) => candidate.toLocaleLowerCase() === part.toLocaleLowerCase());
+        const match = key ? children[key] : Object.values(children).find((child) => child.name.toLocaleLowerCase() === part.toLocaleLowerCase());
+        if (!match) return null;
+        current = match;
     }
+    return current;
+};
 
-    return current.children ? Object.values(current.children) : [];
+export const getItemsFromPath = (path: string): FileSystemItem[] => {
+    const node = getFileSystemItemFromPath(path);
+    return node?.children ? Object.values(node.children) : [];
 };
 
 export const getFileIcon = (item: FileSystemItem) => {
