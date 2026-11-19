@@ -104,16 +104,36 @@
 .minesweeper-smiley-lose { background-position: 0 -72px; }
 .minesweeper-smiley-hover { background-position: 0 -96px; }
 
- .minesweeper-cell-sprite {
+.minesweeper-cell-sprite {
   display: block;
+  position: relative;
   flex: 0 0 16px;
   width: 16px;
+  min-width: 16px;
   height: 16px;
+  min-height: 16px;
+  overflow: hidden;
+  background-color: transparent;
   background-image: url('./assets/cells.png');
-  background-size: 16px 256px;
-  background-repeat: no-repeat;
+  background-size: 16px 256px !important;
+  background-repeat: no-repeat !important;
   background-position-x: 0;
   image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.minesweeper-digit {
+  min-width: 13px;
+  min-height: 23px;
+  background-size: 13px 276px !important;
+  background-repeat: no-repeat !important;
+}
+
+.minesweeper-smiley {
+  min-width: 24px;
+  min-height: 24px;
+  background-size: 24px 120px !important;
+  background-repeat: no-repeat !important;
 }
 
 .minesweeper-sprite-0 { background-position: 0 0; }
