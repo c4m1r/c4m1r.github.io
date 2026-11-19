@@ -692,16 +692,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       };
       const iconPath = icons[iconType];
       if (iconPath) {
-        return <img src={iconPath} alt="" className="w-12 h-12" onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
+        return <img src={iconPath} alt="" className="w-16 h-16" onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
       }
     }
     switch (iconType) {
       case 'folder':
-        return <Folder size={48} />;
+        return <Folder size={64} />;
       case 'computer':
-        return <HardDrive size={48} />;
+        return <HardDrive size={64} />;
       case 'recycle':
-        return <Trash2 size={48} />;
+        return <Trash2 size={64} />;
     }
   };
 
@@ -711,7 +711,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     <img
       src={resolveAssetPath(asset, fallback ?? fallbackAssets.folderIcon)}
       alt={altText}
-      className="w-12 h-12 drop-shadow"
+      className="w-16 h-16 drop-shadow"
       onError={(e) => {
         e.currentTarget.style.display = 'none';
       }}
@@ -789,7 +789,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         <img
           src={item.icon}
           alt=""
-          className={`w-12 h-12 ${item.name === 'Bliss.jpg' ? 'object-cover border-2 border-white shadow-md' : ''}`}
+          className={`w-16 h-16 ${item.name === 'Bliss.jpg' ? 'object-cover border-2 border-white shadow-md' : ''}`}
           onError={(e) => {
             e.currentTarget.src = item.type === 'folder'
               ? resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon)
@@ -802,7 +802,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             ? resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon)
             : textDocumentIcon}
           alt=""
-          className="w-12 h-12"
+          className="w-16 h-16"
         />
       ),
       label: item.name,
