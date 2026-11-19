@@ -171,6 +171,13 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         icon: documentsFolderIcon,
                                         children: {
                                             'My Music': { id: 'my-music', name: 'Моя музыка', type: 'folder', icon: folderIcon, children: {} },
+                                            'My Pictures': {
+                                                id: 'my-pictures',
+                                                name: 'Мои рисунки',
+                                                type: 'folder',
+                                                icon: picturesFolderIcon,
+                                                children: pictureChildren
+                                            },
                                             'Вики': { id: 'shortcut-wiki', name: 'Вики', type: 'file', appId: 'wiki', icon: defaultTextIcon },
                                             'Мой блок': { id: 'shortcut-notepad', name: 'Мой блок', type: 'file', appId: 'notepad', icon: defaultTextIcon },
                                             'Обо мне': { id: 'shortcut-about', name: 'Обо мне', type: 'file', appId: 'about', icon: userIcon },
@@ -185,13 +192,6 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                                 }
                                             }
                                         }
-                                    },
-                                    'My Pictures': {
-                                        id: 'my-pictures',
-                                        name: 'Мои рисунки',
-                                        type: 'folder',
-                                        icon: picturesFolderIcon,
-                                        children: pictureChildren
                                     },
                                     'Start Menu': {
                                         id: 'start-menu',
