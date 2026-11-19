@@ -125,7 +125,7 @@
 /* Black Inset Display */
 .wa-display {
   display: grid;
-  grid-template-columns: 88px 76px 1fr;
+  grid-template-columns: minmax(60px, 88px) minmax(50px, 76px) minmax(0, 1fr);
   height: 54px;
   background: #000;
   border: 2px inset #1e1e24;
@@ -138,7 +138,8 @@
 }
 
 /* Left: Time LCD */
-.wa-display__left {
+ .wa-display__left {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -217,7 +218,8 @@
 }
 
 /* Right: Marquee & Bitrate */
-.wa-display__right {
+ .wa-display__right {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -412,8 +414,9 @@
 /* Transport Row                                                              */
 /* -------------------------------------------------------------------------- */
 
-.wa-transport-row {
+ .wa-transport-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 4px;
@@ -759,3 +762,65 @@
 .wa-btn-pl--opts {
   margin-left: auto;
 }
+
+/* Narrow native-window layouts: keep every control inside the app viewport. */
+@media (max-width: 440px) {
+  .wa-shell {
+    padding: 3px;
+  }
+
+  .wa-display {
+    grid-template-columns: 62px 54px minmax(0, 1fr);
+    gap: 3px;
+    padding-inline: 3px;
+  }
+
+  .wa-time-lcd__digits {
+    font-size: 17px;
+    letter-spacing: -1px;
+  }
+
+  .wa-tech-info {
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .wa-vol-bal-row {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .wa-slider-track--vol,
+  .wa-slider-track--bal {
+    width: clamp(38px, 15vw, 68px);
+  }
+
+  .wa-buttons-group,
+  .wa-toggles-group {
+    flex-wrap: wrap;
+  }
+
+  .wa-btn-transport {
+    width: 21px;
+  }
+
+  .wa-eq__sliders-container {
+    gap: 2px;
+  }
+
+  .wa-eq__labels-left {
+    font-size: 6px;
+  }
+
+  .wa-eq__band-name {
+    font-size: 6px;
+  }
+}
+
+.wa-shell button:focus-visible,
+.wa-shell input:focus-visible {
+  outline: 1px solid #ffe36e;
+  outline-offset: 2px;
+}
+
