@@ -477,3 +477,13 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - The former master registry is preserved above rather than deleted.
 - Newer implementation requirements and corrected progress assessments are maintained in the active registry.
 - Historical completion labels are not proof of current runtime behavior. Re-verify against source and acceptance criteria.
+
+
+### 2026-11-19 — Widget Gallery, Start Menu, profile filesystem and locales
+- Added explicit OS-family presentation to the shared Widget Gallery, replaced emoji glyphs with Lucide icons and added distinct styles for classic Windows, XP, Windows 7, Windows 10/11, Ubuntu, Arch, macOS and WebOS. The CSS is loaded through the global OS stylesheet; runtime visual acceptance remains pending.
+- Restored Explorer app icons by resolving `FileSystemItem.appId` before generic document icons, using existing XP asset keys.
+- Routed XP/Windows 98/2000 Search/Find to Explorer search mode, fixed All Programs to open `Program Files\\Programs`, and made unsupported XP Start Menu entries inert/disabled instead of dispatching fake unavailable apps.
+- Added a shared profile alias for `C:\\Users\\C4m1r` and modern folder aliases while retaining the legacy `C:\\Documents and Settings\\C4m1r` paths. Windows 7 Start Menu and Explorer now use the modern paths.
+- Organized `Program Files\\Games` and `Program Files\\Programs` by publisher/author folders (id Software, Microsoft, Nullsoft, C4m1r).
+- Added Belarusian (`be`) and Kazakh (`kk`) locale selection, detection and persistence. Core shell/navigation labels are translated; long-form translation coverage is still partial and uses Russian fallback.
+- All changes were committed directly to `main`. No local verification commands or browser acceptance were run in this pass; check the latest GitHub Actions deployment workflow before treating the build as green.
