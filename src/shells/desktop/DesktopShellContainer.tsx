@@ -44,9 +44,6 @@ import { THEME_ASSETS } from '../../themes/webos/themeAssets';
 import { THEME_STYLES } from '../../themes/webos/themeStyles';
 import { playXpClick } from '../../themes/winxp/xpSoundService';
 import { AsciiAurora } from '../../components/effects';
-import loopsIcon from '../../apps/loops/assets/favicon.ico';
-import rssNewsIcon from '../../assets/icons/rss-icon.svg';
-import currencyDollarIcon from '../../assets/icons/currency-dollar-icon.svg';
 import webosVideoWallpaper from '../../themes/webos/assets/Ascii_Blossom.mp4';
 import {
   getOsAppTitle,
