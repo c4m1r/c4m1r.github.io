@@ -4,7 +4,7 @@ import { type AppMode } from './appContextTypes';
 
 export const LANGUAGE_STORAGE_KEY = 'webos-language';
 
-const supportedLanguages: Language[] = ['en', 'ru', 'fr', 'es', 'zh', 'ja', 'ko'];
+const supportedLanguages: Language[] = ['en', 'ru', 'be', 'kk', 'fr', 'es', 'zh', 'ja', 'ko'];
 
 const isLanguage = (value: string | null): value is Language =>
   !!value && (supportedLanguages as readonly string[]).includes(value);
