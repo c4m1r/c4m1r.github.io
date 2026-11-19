@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, ChevronDown, ChevronRight, FileText, Home, Search } from 'lucide-react';
-import { loadArticles } from '../domain/articles/articles.loader';
+import { loadAllContent } from '../domain/content/contentRegistry';
 import { type ContentItem } from '../domain/content/types';
 import { useWiki } from '../domain/wiki/useWiki';
 import type { WikiCategory } from '../domain/wiki/wiki.types';
@@ -114,6 +114,7 @@ export function BlogApp() {
   const { language, theme } = useApp();
   const { categories, loading: wikiLoading } = useWiki();
   const [posts, setPosts] = useState<ContentItem[]>([]);
+  const [sitePages, setSitePages] = useState<ContentItem[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [selected, setSelected] = useState<HelpDocument | null>(null);
   const [query, setQuery] = useState('');
@@ -124,9 +125,10 @@ export function BlogApp() {
   useEffect(() => {
     let active = true;
     setLoadingPosts(true);
-    loadArticles(language).then((items) => {
+    loadAllContent(language).then((items) => {
       if (!active) return;
-      setPosts(items);
+      setPosts(items.filter((item) => item.kind === 'articles'));
+      setSitePages(items.filter((item) => ['news', 'projects', 'about', 'apps'].includes(item.kind ?? '')));
       setLoadingPosts(false);
     });
     return () => { active = false; };
@@ -141,8 +143,25 @@ export function BlogApp() {
     date: post.updatedAt || post.date,
   })), [isRu, posts]);
 
+  const siteDocuments = useMemo<HelpDocument[]>(() => sitePages.map((item) => {
+    const sourceLabel = item.kind === 'apps'
+      ? (isRu ? 'Приложения' : 'Apps')
+      : item.kind === 'projects'
+        ? (isRu ? 'Проекты' : 'Projects')
+        : item.kind === 'news'
+          ? (isRu ? 'Новости' : 'News')
+          : (isRu ? 'О сайте' : 'About');
+    return {
+      id: `site:${item.kind ?? 'page'}:${item.id}`,
+      title: item.title,
+      content: item.content,
+      category: `${sourceLabel} / ${item.category || (isRu ? 'Общее' : 'General')}`,
+      source: 'site',
+      date: item.updatedAt || item.date,
+    };
+  }), [isRu, sitePages]);
   const wikiDocuments = useMemo(() => collectWikiDocuments(categories), [categories]);
-  const allDocuments = useMemo(() => [...wikiDocuments, ...blogDocuments], [blogDocuments, wikiDocuments]);
+  const allDocuments = useMemo(() => [...wikiDocuments, ...blogDocuments, ...siteDocuments], [blogDocuments, siteDocuments, wikiDocuments]);
   const filteredDocuments = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase(language);
     if (!needle) return allDocuments;
@@ -160,6 +179,15 @@ export function BlogApp() {
     });
     return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
   }, [blogDocuments]);
+
+  const siteGroups = useMemo(() => {
+    const groups = new Map<string, HelpDocument[]>();
+    siteDocuments.forEach((document) => {
+      if (!groups.has(document.category)) groups.set(document.category, []);
+      groups.get(document.category)!.push(document);
+    });
+    return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+  }, [siteDocuments]);
 
   const selectDocument = (document: HelpDocument) => {
     setSelected(document);
@@ -222,6 +250,23 @@ export function BlogApp() {
                   </details>
                 ))}
               </div>
+              {siteGroups.length > 0 && (
+                <div className="mt-4 border-t pt-3">
+                  <div className="mb-2 px-1 text-xs font-bold">{isRu ? 'Страницы сайта' : 'Site Pages'}</div>
+                  {siteGroups.map(([category, documents]) => (
+                    <details key={category}>
+                      <summary className="cursor-pointer rounded px-2 py-1 text-xs font-semibold hover:bg-black/5">{category}</summary>
+                      <div className="ml-3 border-l border-current/10 pl-1">
+                        {documents.map((document) => (
+                          <button key={document.id} type="button" onClick={() => selectDocument(document)} className={`w-full rounded px-2 py-1.5 text-left text-xs hover:bg-black/5 ${selected?.id === document.id ? 'is-selected' : ''}`}>
+                            <span className="block truncate">{document.title}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </aside>
@@ -239,7 +284,7 @@ export function BlogApp() {
               <p className="mb-6 text-sm opacity-70">{isRu ? 'Выберите категорию или статью слева. Здесь собраны страницы Wiki и публикации блога из Markdown-файлов сайта.' : 'Choose a category or article on the left. This library includes the site Wiki pages and blog posts sourced from Markdown files.'}</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded border p-4"><div className="text-2xl font-semibold">{wikiDocuments.length}</div><div className="text-xs opacity-65">{isRu ? 'страниц базы знаний' : 'knowledge-base pages'}</div></div>
-                <div className="rounded border p-4"><div className="text-2xl font-semibold">{blogDocuments.length}</div><div className="text-xs opacity-65">{isRu ? 'статей блога' : 'blog articles'}</div></div>
+                <div className="rounded border p-4"><div className="text-2xl font-semibold">{blogDocuments.length + siteDocuments.length}</div><div className="text-xs opacity-65">{isRu ? 'статей и страниц сайта' : 'blog and site pages'}</div></div>
               </div>
             </div>
           )}
