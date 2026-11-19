@@ -124,6 +124,15 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
       navigateToPath('My Computer');
       return;
     }
+
+    // Windows 7 Libraries are aliases into the legacy XP-style My Documents tree.
+    // Up from a modern library must return to Documents, not the profile root.
+    const modernLibraryMatch = path.match(/^(C:\\Users\\[^\\]+)\\(Pictures|Music|Videos|Downloads)(?:\\.*)?$/i);
+    if (modernLibraryMatch) {
+      navigateToPath(`${modernLibraryMatch[1]}\\Documents`);
+      return;
+    }
+
     const parts = path.split('\\').filter(Boolean);
     parts.pop();
     navigateToPath(parts.length ? parts.join('\\') : 'My Computer');
