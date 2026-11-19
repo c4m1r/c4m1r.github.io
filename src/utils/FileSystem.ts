@@ -227,7 +227,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                     'Калькулятор': { id: 'program-calculator', name: 'Калькулятор', type: 'file', appId: 'calculator', icon: defaultTextIcon },
                                     'Панель управления': { id: 'program-control-panel', name: 'Панель управления', type: 'file', appId: 'control-panel', icon: defaultTextIcon },
                                     'Терминал': { id: 'program-terminal', name: 'Терминал', type: 'file', appId: 'terminal', icon: defaultTextIcon },
-                                    'Блог.chm': { id: 'program-blog', name: 'Блог.chm', type: 'file', appId: 'blog', icon: defaultTextIcon },
+                                    'Блог': { id: 'program-blog', name: 'Блог', type: 'file', appId: 'blog', icon: defaultTextIcon },
                                     'loops': { id: 'program-loops', name: 'loops', type: 'file', appId: 'loops', icon: defaultTextIcon }
                                 }
                             }
