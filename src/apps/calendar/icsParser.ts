@@ -81,13 +81,13 @@ function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined 
     if (separator > 0) fields[part.slice(0, separator).toUpperCase()] = part.slice(separator + 1);
   });
   const freq = fields.FREQ?.toUpperCase();
-  if (!['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'].includes(freq)) return undefined;
+  if (!freq || !['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'].includes(freq)) return undefined;
   const interval = Math.min(365, Math.max(1, Number(fields.INTERVAL) || 1));
   const countValue = Number(fields.COUNT);
   const count = Number.isFinite(countValue) && countValue > 0 ? Math.min(10000, Math.floor(countValue)) : undefined;
   const until = fields.UNTIL ? (() => {
     const parsed = parseDateValue(fields.UNTIL);
-    if (parsed && /^\\d{8}$/.test(fields.UNTIL)) parsed.setHours(23, 59, 59, 999);
+    if (parsed && fields.UNTIL.length === 8) parsed.setHours(23, 59, 59, 999);
     return parsed ?? undefined;
   })() : undefined;
   const byDay = fields.BYDAY?.split(',').filter((value: string) => value.length === 2).map((value: string) => WEEKDAY_CODES[value]).filter((day: number | undefined): day is number => day !== undefined);
