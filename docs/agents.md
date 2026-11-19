@@ -395,3 +395,33 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Localized country names and holiday names for Russian, English and French where the dataset has a translation.
 - **Data caveat:** annual official transfer days, substitute days and make-up working Saturdays are not yet encoded. China/Korea lunar holidays currently have dates only for 2026 and 2027; these dates/ranges need authoritative year-by-year verification. This first pass is not a payroll/legal production calendar.
 - **Verification:** no local checkout/build was available in this connector session. Typecheck, lint, build, verify, browser rendering and cross-OS visual checks have not been run. Review the latest GitHub Actions results before treating this as accepted.
+
+
+### Calendar completion pass — 2026-11-19
+- Implemented local all-day event editing and recurring event series in the shared Calendar Center. The editor supports no repeat / daily / weekly / monthly / yearly, interval, optional occurrence count or inclusive end date. Local event recurrence metadata persists in localStorage. Generated occurrences preserve master IDs so series edits/deletes target the stored series.
+- ICS parser now reads the supported RFC 5545 RRULE subset: FREQ, INTERVAL, COUNT, UNTIL, BYDAY weekday tokens and BYMONTHDAY. Date-only UNTIL is inclusive through the final day. Recurrence expansion uses local calendar-day arithmetic and preserves wall-clock time across DST boundaries for generated occurrences. RDATE/EXDATE, BYSETPOS, ordinal BYDAY and full VTIMEZONE definitions remain unsupported.
+- National calendar data expanded and corrected for 2026–2027:
+  - Russia: 2026/2027 transfer dates.
+  - Kazakhstan: 2026 five-day work calendar, Nauryz/May/October transfers, Qurban Ait, and the new Constitution Day on 15 March following the 2026 constitutional referendum; 2027 official transfer schedule not found in checked official sources.
+  - Belarus: 2026 Radunitsa and 20 April → 25 April workday transfer; 2027 10 May → 8 May transfer, with 9–11 May rest days.
+  - China: State Council 2026/2027 holiday ranges and explicit make-up workdays.
+  - Japan: Cabinet Office 2026/2027 holidays including substitute/citizen holidays; memorial dates remain separately visible.
+  - South Korea: 2026/2027 lunar holidays, substitute days, Labour Day and Constitution Day.
+  - UK: England/Wales bank holiday baseline for 2026/2027; regional Scotland/Northern Ireland calendars are not yet selectable.
+- Labour calendar status now distinguishes ordinary days off from transferred working days. Full Calendar month/week/day/list views show both; taskbar and WebOS clock tooltips include selected-country rest-day labels and national holiday flags.
+- Weather widget catalogue now has two cities per seven requested countries, plus Paris/Lyon and Madrid/Barcelona to satisfy French/Spanish language-country defaults. Current defaults are EN London, RU Almaty, FR Paris, ES Madrid, ZH Beijing, JA Tokyo, KO Seoul. City names show flags; manual choices persist per language; switching language resets the default. Weather cache is locale-specific and stale request results are ignored.
+- Source references used:
+  - Russia 2026 transfer decree: https://www.consultant.ru/document/cons_doc_LAW_515170/
+  - Russia 2027 transfer decree: https://www.consultant.ru/document/cons_doc_LAW_544706/
+  - Kazakhstan 2026 production calendar: https://www.gov.kz/article/16887?lang=ru
+  - Kazakhstan 2026 constitutional change / 15 March holiday: https://www.gov.kz/org/maslihat-zhambyl/press/news/details/1183102?lang=ru
+  - Belarus 2026 transfer: https://otdelkadrov.by/number/2025/8/Novosti_zakonodatelstva_082025/
+  - Belarus 2027 transfer: https://t.me/s/DGITbelarus?before=7847 (Ministry of Labour announcement quoting Resolution No. 499)
+  - China 2026: https://english.bjhd.gov.cn/workinginhaidian/supportingservices/publicholidays/202512/t20251211_4797062.shtml
+  - China 2027: https://english.www.gov.cn/policies/latestreleases/202611/06/content_WS6aed74dcc6d00ca5f9a0e22e.html
+  - Japan 2026/2027: https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
+  - South Korea 2026: https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=140038
+  - South Korea 2027 lunar/observed dates cross-checked against KASA 2027 calendar guidelines: https://www.kasa.go.kr/prog/plcyBrf/brief/kor/sub01_01_04/view.do?plcyBrfNo=431
+  - UK bank holidays: https://www.gov.uk/bank-holidays
+  - City population references: UN World Cities 2025 data and national statistical sources; the city pairs are selected on city-proper population rather than metro-area ranking.
+- **Verification remains outstanding:** connector writes are not equivalent to a build. No local checkout or browser runtime was available in this pass; typecheck/lint/build/verify, automated date tests and visual cross-OS checks are not confirmed. The annual labour data should not be presented as payroll/legal advice.
