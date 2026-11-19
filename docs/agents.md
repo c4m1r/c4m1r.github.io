@@ -597,3 +597,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - CI for commit 9a25a195 exposed: Windows7Explorer slideshow callback needed `(items, path)`; Winamp titlebar handlers still used mouse event types after drag logic moved to Pointer Events; three desktop icon imports were unused after removing app shortcuts. These are fixed in main: Windows7Explorer passes `pictureItems, path`; Winamp titlebars and z-order use pointer handlers; unused imports removed.
 - DesktopShellContainer filters the FileSystem's legacy Games/Programs targetPath aliases from desktop icon rendering to avoid duplicate icons while preserving aliases for path compatibility.
 - Re-run CI and inspect typecheck/lint/build after the final batch. Do not mark browser acceptance complete without runtime testing.
+
+
+### Latest implementation handoff — Responsive widget canvas correction (2026-11-19)
+- Commit `2e4d62e2a8b001e55838ee6eeb4a4a22a88bca41` updates `src/system/widgets/components/DesktopWidgetCanvas.tsx`.
+- `clampAll` now compares the normalized preset as well as x/y. Previously a resize could select the compact preset but discard that state update when coordinates stayed unchanged.
+- Rendered widget height now matches the placement size calculation on fixed-height non-WebOS canvases. WebOS keeps full preset heights because its canvas is vertically scrollable and deliberately expands to fit its two-column widget layout.
+- No local checkout, npm commands or browser runtime were available in this connector session. CI for the follow-up documentation commit must be checked; do not claim the code is build-verified until that run passes. Browser acceptance remains outstanding for viewport resize/orientation, all three size classes, WebOS eight-widget placement and Winamp controls.
