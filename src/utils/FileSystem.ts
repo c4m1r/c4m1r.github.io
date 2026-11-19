@@ -6,6 +6,9 @@ import userIcon from '../themes/winxp/assets/user.gif';
 import documentsFolderIcon from '../themes/winxp/assets/icons/folder-documents.png';
 import picturesFolderIcon from '../themes/winxp/assets/icons/folder-pictures.png';
 import gamesFolderIcon from '../themes/winxp/assets/icons/My Games.png';
+import doomGameIcon from '../apps/doom/assets/doom-icon-sm.webp';
+import snakeGameIcon from '../apps/games/assets/snake-icon.svg';
+import memoryGameIcon from '../apps/games/assets/memory-icon.svg';
 
 export interface FileSystemItem {
     id: string;
@@ -350,37 +353,36 @@ export const getItemsFromPath = (path: string): FileSystemItem[] => {
     return node?.children ? Object.values(node.children) : [];
 };
 
-const APP_ICON_KEYS: Record<string, keyof typeof WINXP_ASSETS> = {
-    'internet-explorer': 'internetExplorerIcon',
-    outlook: 'mailIcon',
-    'windows-media-player': 'mediaPlayerIcon',
-    winamp: 'mediaPlayerIcon',
-    paint: 'paintIcon',
-    pictures: 'projectsIcon',
-    calendar: 'notepadIcon',
-    news: 'richTextIcon',
-    currency: 'calculatorIcon',
-    wiki: 'richTextIcon',
-    notepad: 'notepadIcon',
-    'projects-grid': 'projectsIcon',
-    help: 'richTextIcon',
-    'task-manager': 'controlPanelIcon',
-    calculator: 'calculatorIcon',
-    'control-panel': 'controlPanelIcon',
-    terminal: 'notepadIcon',
-    blog: 'richTextIcon',
-    loops: 'mediaPlayerIcon',
-    minesweeper: 'minesweeperIcon',
-    snake: 'gamesIcon',
-    memory: 'gamesIcon',
-    doom1: 'gamesIcon',
-    doom2: 'gamesIcon',
+const APP_ICON_URLS: Record<string, string | undefined> = {
+    'internet-explorer': WINXP_ASSETS.internetExplorerIcon,
+    outlook: WINXP_ASSETS.mailIcon,
+    'windows-media-player': WINXP_ASSETS.mediaPlayerIcon,
+    winamp: WINXP_ASSETS.mediaPlayerIcon,
+    paint: WINXP_ASSETS.paintIcon,
+    pictures: WINXP_ASSETS.projectsIcon,
+    calendar: WINXP_ASSETS.notepadIcon,
+    news: WINXP_ASSETS.richTextIcon,
+    currency: WINXP_ASSETS.calculatorIcon,
+    wiki: WINXP_ASSETS.richTextIcon,
+    notepad: WINXP_ASSETS.notepadIcon,
+    'projects-grid': WINXP_ASSETS.projectsIcon,
+    help: WINXP_ASSETS.richTextIcon,
+    'task-manager': WINXP_ASSETS.controlPanelIcon,
+    calculator: WINXP_ASSETS.calculatorIcon,
+    'control-panel': WINXP_ASSETS.controlPanelIcon,
+    terminal: WINXP_ASSETS.notepadIcon,
+    blog: WINXP_ASSETS.richTextIcon,
+    loops: WINXP_ASSETS.mediaPlayerIcon,
+    minesweeper: WINXP_ASSETS.minesweeperIcon,
+    snake: snakeGameIcon,
+    memory: memoryGameIcon,
+    doom1: doomGameIcon,
+    doom2: doomGameIcon,
 };
 
 export const getFileIcon = (item: FileSystemItem) => {
     if (item.appId) {
-        const iconKey = APP_ICON_KEYS[item.appId];
-        const appIcon = iconKey ? WINXP_ASSETS[iconKey] : undefined;
+        const appIcon = APP_ICON_URLS[item.appId];
         if (typeof appIcon === 'string') return appIcon;
     }
     if (item.icon && typeof item.icon === 'string') return item.icon;
