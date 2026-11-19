@@ -10,7 +10,6 @@ import {
   moveCalendarMonth,
   saveCalendarEvent,
   selectCalendarDate,
-  setCalendarVisibleMonth,
   useCalendarCenter,
 } from './calendarCenter';
 
@@ -56,7 +55,7 @@ export function CalendarApp() {
 
   const monday = ['ru', 'fr', 'es'].includes(locale.split('-')[0].toLowerCase());
   const weekStart = startOfWeek(selectedDate, monday);
-  const weekDays = useMemo(() => Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)), [weekStart.getTime()]);
+  const weekDays = Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
   const monthDays = useMemo(() => {
     const first = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1);
     const start = startOfWeek(first, monday);
