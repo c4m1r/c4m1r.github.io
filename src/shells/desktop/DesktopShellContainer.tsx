@@ -16,7 +16,7 @@ import { ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
 import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
-import { Folder, HardDrive, Trash2 } from 'lucide-react';
+import { Folder, HardDrive, Trash2, LayoutGrid } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
 import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
 import { winampController } from '../../system/audio/winampController';
@@ -774,7 +774,13 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
             type: 'system' as const,
           },
-
+          ...applicationShortcuts,
+          {
+            id: 'widget-gallery',
+            icon: <LayoutGrid size={48} />,
+            label: language === 'ru' ? 'Виджеты' : 'Widgets',
+            type: 'system' as const,
+          },
         ]),
     ...desktopItems.map(item => ({
       id: item.id,
@@ -1216,6 +1222,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         return;
       case 'my-documents':
         openExplorerWindow('C:\\Documents and Settings\\C4m1r\\My Documents');
+        return;
+      case 'widget-gallery':
+        window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
         return;
       case 'recycle-bin':
         playErrorSound();
