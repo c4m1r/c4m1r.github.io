@@ -19,7 +19,7 @@ type ClassicMenuItem = {
 };
 
 const DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
-const PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Pictures';
+const PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures';
 const DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
 
 export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand, onHover }: StartMenu98Props) {
