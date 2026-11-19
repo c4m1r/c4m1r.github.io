@@ -219,8 +219,13 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
   const [customWallpaperFit, setCustomWallpaperFit] = useState<'fill' | 'fit' | 'stretch' | 'tile' | 'center'>(() => {
-    const saved = typeof window !== 'undefined' ? window.localStorage.getItem('desktop-wallpaper-fit') : null;
-    return saved === 'fit' || saved === 'stretch' || saved === 'tile' || saved === 'center' ? saved : 'fill';
+    if (typeof window === 'undefined') return 'fill';
+    try {
+      const saved = window.localStorage.getItem('desktop-wallpaper-fit');
+      return saved === 'fit' || saved === 'stretch' || saved === 'tile' || saved === 'center' ? saved : 'fill';
+    } catch {
+      return 'fill';
+    }
   });
   const [activeEdition, setActiveEdition] = useState(() => getActiveEdition(theme));
 
