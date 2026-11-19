@@ -31,7 +31,7 @@ export interface PictureViewerProps {
   startSlideshow?: boolean;
 }
 
-export function PictureViewer({ initialImage, images, initialIndex = 0, initialView = 'viewer', startSlideshow = false }: PictureViewerProps) {
+export function PictureViewer({ initialImage, images, initialIndex = 0, initialView = 'viewer', startSlideshow = false, onClose }: PictureViewerProps) {
   const { theme, language } = useApp();
   const { items: galleryItems } = useGallery();
   const isRu = language === 'ru';
@@ -61,6 +61,40 @@ export function PictureViewer({ initialImage, images, initialIndex = 0, initialV
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [isPlayingSlideshow, setIsPlayingSlideshow] = useState(startSlideshow);
+
+  useEffect(() => {
+    setZoom(1);
+    setRotation(0);
+  }, [currentIndex]);
+
+  useEffect(() => {
+    const handleViewerKeys = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        Boolean(target?.isContentEditable);
+      if (isTypingTarget || viewMode !== 'viewer') return;
+
+      if (event.key === 'ArrowLeft' && imageList.length > 1) {
+        event.preventDefault();
+        setCurrentIndex((current) => (current - 1 + imageList.length) % imageList.length);
+      } else if (event.key === 'ArrowRight' && imageList.length > 1) {
+        event.preventDefault();
+        setCurrentIndex((current) => (current + 1) % imageList.length);
+      } else if (event.key === 'Escape') {
+        setIsPlayingSlideshow(false);
+        onClose?.();
+      } else if (event.key === '+' || event.key === '=') {
+        setZoom((current) => Math.min(current + 0.25, 4));
+      } else if (event.key === '-') {
+        setZoom((current) => Math.max(current - 0.25, 0.25));
+      }
+    };
+
+    window.addEventListener('keydown', handleViewerKeys);
+    return () => window.removeEventListener('keydown', handleViewerKeys);
+  }, [imageList.length, onClose, viewMode]);
 
   useEffect(() => {
     let interval: number | undefined;
