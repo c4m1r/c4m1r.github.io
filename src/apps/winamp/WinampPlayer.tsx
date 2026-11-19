@@ -6,6 +6,17 @@ import './winamp.css';
 // 10 standard Winamp EQ bands in Hz
 const EQ_FREQUENCIES = [70, 180, 320, 600, 1000, 3000, 6000, 12000, 14000, 16000];
 
+const EQ_PRESETS = [
+  { id: 'flat', label: 'Flat', preamp: 0, bands: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+  { id: 'rock', label: 'Rock', preamp: 0, bands: [5, 3, -2, -4, -1, 2, 4, 5, 5, 5] },
+  { id: 'pop', label: 'Pop', preamp: -1, bands: [-1, 2, 4, 4, 1, -1, -1, 0, 1, 2] },
+  { id: 'jazz', label: 'Jazz', preamp: 0, bands: [4, 2, 1, 2, -2, -2, 0, 1, 3, 4] },
+  { id: 'classical', label: 'Classical', preamp: 0, bands: [5, 4, 3, 2, -1, -1, 0, 2, 3, 4] },
+  { id: 'bass', label: 'Bass Boost', preamp: -2, bands: [8, 7, 5, 2, 0, -2, -3, -3, -2, -1] },
+  { id: 'vocal', label: 'Vocal', preamp: 0, bands: [-3, -2, 0, 3, 5, 4, 2, 1, 0, -1] },
+];
+
+
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
   const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -69,6 +80,7 @@ export function WinampPlayer() {
   const [eqAuto, setEqAuto] = useState(false);
   const [preamp, setPreamp] = useState(() => winampController.getEqualizerState().preamp);
   const [eqBands, setEqBands] = useState<number[]>(() => winampController.getEqualizerState().bands);
+  const [selectedEqPreset, setSelectedEqPreset] = useState('custom');
 
   // Visualizer bar heights and peak dots
   const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
@@ -181,6 +193,7 @@ export function WinampPlayer() {
 
   // Sync EQ slider changes to Web Audio filters
   const handleEqBandChange = (index: number, value: number) => {
+    setSelectedEqPreset('custom');
     setEqBands((prev) => {
       const next = [...prev];
       next[index] = value;
@@ -190,6 +203,7 @@ export function WinampPlayer() {
   };
 
   const handlePreampChange = (value: number) => {
+    setSelectedEqPreset('custom');
     setPreamp(value);
     winampController.setPreamp(value);
   };
@@ -517,19 +531,25 @@ export function WinampPlayer() {
                   </svg>
                 </div>
 
-                <button
-                  type="button"
+                <select
                   className="wa-btn-presets"
-                  onClick={() => {
-                    // Reset to flat
-                    setEqBands(Array(10).fill(0));
-                    setPreamp(0);
-                    EQ_FREQUENCIES.forEach((_, index) => winampController.setEqualizerBand(index, 0));
-                    winampController.setPreamp(0);
+                  aria-label="Equalizer preset"
+                  value={selectedEqPreset}
+                  onChange={(event) => {
+                    const preset = EQ_PRESETS.find((item) => item.id === event.currentTarget.value);
+                    if (!preset) return;
+                    setSelectedEqPreset(preset.id);
+                    setEqBands(preset.bands);
+                    setPreamp(preset.preamp);
+                    setEqOn(true);
+                    winampController.setEqualizerEnabled(true);
+                    preset.bands.forEach((gain, index) => winampController.setEqualizerBand(index, gain));
+                    winampController.setPreamp(preset.preamp);
                   }}
                 >
-                  PRESETS
-                </button>
+                  <option value="custom">CUSTOM</option>
+                  {EQ_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
+                </select>
               </div>
 
               {/* Sliders Grid */}
