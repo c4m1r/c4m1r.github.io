@@ -87,7 +87,23 @@ export function CalendarApp() {
   const [recurrenceInterval, setRecurrenceInterval] = useState(1);
   const [recurrenceCount, setRecurrenceCount] = useState('');
   const [recurrenceUntil, setRecurrenceUntil] = useState('');
+  const [showImportedEvents, setShowImportedEvents] = useState<boolean>(() => {
+    try { return JSON.parse(localStorage.getItem('calendar-center-source-preferences-v1') || '{}').showImportedEvents ?? true; } catch { return true; }
+  });
+  const [showLocalEvents, setShowLocalEvents] = useState<boolean>(() => {
+    try { return JSON.parse(localStorage.getItem('calendar-center-source-preferences-v1') || '{}').showLocalEvents ?? true; } catch { return true; }
+  });
+  const [importedEventColor, setImportedEventColor] = useState('blue');
+  const [localEventColor, setLocalEventColor] = useState('green');
   const labourCountries = useLabourCountries();
+  useEffect(() => {
+    try {
+      localStorage.setItem('calendar-center-source-preferences-v1', JSON.stringify({
+        showImportedEvents, showLocalEvents, importedEventColor, localEventColor,
+      }));
+    } catch { /* Keep display preferences in session state. */ }
+  }, [showImportedEvents, showLocalEvents, importedEventColor, localEventColor]);
+
   const toggleLabourCountry = (code: CountryCode) => {
     const next = labourCountries.includes(code) ? labourCountries.filter((item) => item !== code) : [...labourCountries, code];
     setSelectedLabourCountries(next);
@@ -110,10 +126,12 @@ export function CalendarApp() {
     const start = startOfWeek(first, monday);
     return Array.from({ length: 42 }, (_, index) => addDays(start, index));
   }, [visibleMonth, monday]);
+  const isEventSourceVisible = (event: CalendarEvent) => event.source === 'local' ? showLocalEvents : showImportedEvents;
+  const getVisibleEventsForDate = (date: Date) => getCalendarEventsForDate(date).filter(isEventSourceVisible);
   const monthEvents = useMemo(() => getCalendarEventsForRange(
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1),
     new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0)
-  ), [events, visibleMonth]);
+  ).filter(isEventSourceVisible), [events, visibleMonth, showImportedEvents, showLocalEvents]);
   const monthHolidays = useMemo(() => Array.from(
     { length: new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate() },
     (_, index) => getHolidaysForDate(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), index + 1))
@@ -197,7 +215,7 @@ export function CalendarApp() {
       : monthLabel;
 
   const renderEvent = (event: CalendarEvent) => (
-    <button type="button" key={event.id ?? `${event.summary}-${event.startDate.toISOString()}`} className={`calendar-app__event-chip ${event.source === 'local' ? 'is-local' : 'is-readonly'}`} onClick={() => openEditEvent(event)} title={event.location || event.summary}>
+    <button type="button" key={event.id ?? `${event.summary}-${event.startDate.toISOString()}`} className={`calendar-app__event-chip ${event.source === 'local' ? 'is-local' : 'is-readonly'}`} data-calendar-color={event.source === 'local' ? localEventColor : importedEventColor} onClick={() => openEditEvent(event)} title={event.location || event.summary}>
       <span>{isAllDayEvent(event) ? (isRu ? 'Весь день' : 'All day') : event.startDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span>
       <strong>{event.summary}</strong>
       {event.location && <small>{event.location}</small>}
@@ -234,6 +252,16 @@ export function CalendarApp() {
             <span>{countryName(country.code, locale)}</span>
           </button>
         ))}
+      </div>
+      <div className="calendar-app__source-controls">
+        <label><input type="checkbox" checked={showImportedEvents} onChange={(event) => setShowImportedEvents(event.target.checked)} />{isRu ? 'Импортированные календари' : 'Imported calendars'}</label>
+        <label><input type="checkbox" checked={showLocalEvents} onChange={(event) => setShowLocalEvents(event.target.checked)} />{isRu ? 'Мои события' : 'My events'}</label>
+        <label>{isRu ? 'Цвет ICS' : 'ICS color'}<select value={importedEventColor} onChange={(event) => setImportedEventColor(event.target.value)}>
+          <option value="blue">{isRu ? 'Синий' : 'Blue'}</option><option value="purple">{isRu ? 'Фиолетовый' : 'Purple'}</option><option value="orange">{isRu ? 'Оранжевый' : 'Orange'}</option><option value="teal">{isRu ? 'Бирюзовый' : 'Teal'}</option>
+        </select></label>
+        <label>{isRu ? 'Цвет моих событий' : 'My events color'}<select value={localEventColor} onChange={(event) => setLocalEventColor(event.target.value)}>
+          <option value="green">{isRu ? 'Зелёный' : 'Green'}</option><option value="blue">{isRu ? 'Синий' : 'Blue'}</option><option value="purple">{isRu ? 'Фиолетовый' : 'Purple'}</option><option value="orange">{isRu ? 'Оранжевый' : 'Orange'}</option>
+        </select></label>
       </div>
 
       {loading ? (
@@ -273,7 +301,7 @@ export function CalendarApp() {
               {weekDays.map((date) => <section key={date.toISOString()} className={`calendar-app__week-column ${sameDay(date, selectedDate) ? 'is-selected' : ''}`}>
                 <button type="button" onClick={() => selectCalendarDate(date)} className="calendar-app__week-date">{date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}</button>
                 {getHolidaysForDate(date).map(renderHoliday)}
-                {getCalendarEventsForDate(date).map(renderEvent)}
+                {getVisibleEventsForDate(date).map(renderEvent)}
                 {isSelectedCountryWeekend(date, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}{isMakeupWorkday(date, labourCountries) && <small className="calendar-app__makeup-work-label">{locale.startsWith('ru') ? 'Рабочий день' : 'Working day'}</small>}
                 <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(date)}>{isRu ? '+ Добавить' : '+ Add'}</button>
               </section>)}
@@ -284,8 +312,8 @@ export function CalendarApp() {
               <h3>{selectedDate.toLocaleDateString(locale, { dateStyle: 'full' })}</h3>
               {getHolidaysForDate(selectedDate).map(renderHoliday)}
               {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}{isMakeupWorkday(selectedDate, labourCountries) && <small className="calendar-app__makeup-work-label">{locale.startsWith('ru') ? 'Рабочий день' : 'Working day'}</small>}
-              {getCalendarEventsForDate(selectedDate).map(renderEvent)}
-              {getCalendarEventsForDate(selectedDate).length === 0 && getHolidaysForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
+              {getVisibleEventsForDate(selectedDate).map(renderEvent)}
+              {getVisibleEventsForDate(selectedDate).length === 0 && getHolidaysForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
               <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(selectedDate)}>{isRu ? '+ Добавить событие' : '+ Add event'}</button>
             </section>
           )}
