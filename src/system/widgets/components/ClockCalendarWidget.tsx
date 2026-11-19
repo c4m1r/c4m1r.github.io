@@ -7,7 +7,7 @@ import {
   selectCalendarDate,
   useCalendarCenter,
 } from '../../../apps/calendar/calendarCenter';
-import { getHolidaysForDate, isSelectedCountryWeekend, isMakeupWorkday, NATIONAL_COUNTRIES, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
+import { getHolidaysForDate, getHolidayTitle, isSelectedCountryWeekend, isMakeupWorkday, NATIONAL_COUNTRIES, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
 
 export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () => void }) {
   const { language } = useApp();
@@ -95,7 +95,7 @@ export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () =>
               const hasEvents = getCalendarEventsForDate(date).length > 0 || holidays.length > 0;
               const weekend = isSelectedCountryWeekend(date, labourCountries);
               const makeupWork = isMakeupWorkday(date, labourCountries);
-              const holidayTitle = holidays.map((holiday) => `${NATIONAL_COUNTRIES.find((country) => country.code === holiday.country)?.flag ?? ''} ${holiday.title}`).join(', ');
+              const holidayTitle = holidays.map((holiday) => `${NATIONAL_COUNTRIES.find((country) => country.code === holiday.country)?.flag ?? ''} ${getHolidayTitle(holiday, language)}`).join(', ');
               const dayOffTitle = weekend ? (language === 'ru' ? 'Выходной' : 'Day off') : '';
               const makeupWorkTitle = makeupWork ? (language === 'ru' ? 'Рабочий день' : 'Working day') : '';
               return (
