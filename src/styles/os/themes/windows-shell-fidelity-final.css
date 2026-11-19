@@ -416,6 +416,26 @@
   white-space: nowrap;
 }
 
+.win7-explorer__icons--thumbnails {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.win7-explorer__icons--thumbnails > button {
+  min-height: 124px;
+  gap: 7px;
+}
+
+.win7-explorer__icons--thumbnails img {
+  width: 112px;
+  height: 84px;
+  padding: 3px;
+  border: 1px solid #c8d4df;
+  background: #fff;
+  object-fit: contain;
+}
+
+
 .win7-explorer__details {
   min-width: 520px;
 }
