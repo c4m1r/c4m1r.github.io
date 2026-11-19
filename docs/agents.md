@@ -610,3 +610,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Commit `51b99fd8587218c3d3838635983fbb9632dbcdf8` updates `src/apps/pictureview/PictureViewer.tsx`.
 - The selected image index is now synchronized when the supplied image inventory changes. If `initialImage` is present it is focused; otherwise the index is clamped to the new list, including the empty-list case. This covers switching folders/libraries where the previous index may no longer exist.
 - No browser test was run. Verify opening a single image, switching between folders with different image counts, empty inventory, gallery-to-viewer selection and slideshow stop/restart.
+
+
+### Latest implementation handoff — WebOS first-launch widget defaults (2026-11-19)
+- Commit `07c43fff6babfd666efd7022269f387bbae65666` updates `src/system/widgets/components/WebosDesktopWidgets.tsx`.
+- The WebOS widget component previously called `getStoredWidgetsVisibility` with no arguments, inheriting the global all-false defaults. It now explicitly loads `WEBOS_DEFAULT_WIDGETS_VISIBILITY` under `WIDGETS_STORAGE_KEY`, so a fresh WebOS profile starts with all eight agreed widgets visible. Existing saved per-widget choices are still merged over those defaults.
+- No browser test was run. Verify fresh storage shows all eight widgets, toggling a widget persists, switching OS and returning restores WebOS visibility/layout, and other OS profiles remain disabled by default.
