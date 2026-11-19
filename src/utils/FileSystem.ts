@@ -159,7 +159,7 @@ const projectChildren: FileSystemChildren = (() => {
     });
 
     return root;
-})();;;
+})();
 
 export const initialFileSystem: Record<string, FileSystemItem> = {
     'My Computer': {
