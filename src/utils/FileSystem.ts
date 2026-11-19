@@ -170,6 +170,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         type: 'folder',
                                         icon: documentsFolderIcon,
                                         children: {
+                                            'My Music': { id: 'my-music', name: 'Моя музыка', type: 'folder', icon: folderIcon, children: {} },
                                             'Вики': { id: 'shortcut-wiki', name: 'Вики', type: 'file', appId: 'wiki', icon: defaultTextIcon },
                                             'Мой блок': { id: 'shortcut-notepad', name: 'Мой блок', type: 'file', appId: 'notepad', icon: defaultTextIcon },
                                             'Обо мне': { id: 'shortcut-about', name: 'Обо мне', type: 'file', appId: 'about', icon: userIcon },
