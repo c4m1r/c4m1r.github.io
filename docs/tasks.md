@@ -71,15 +71,17 @@ Percentages are working estimates, not test results. The previous task registry 
 ### STARTMENU-02 — Start Menu interaction and complete navigation (P0)
 - Root cause found for the reported dead menu items: the desktop-level `onMouseDown` handler closed the Start Menu on every bubbled left-button press, unmounting it before the item's `onClick` could execute. The Start Menu surface now stops `mousedown` propagation as well as `click` propagation.
 - Route menu destinations through the shared launcher / Explorer callbacks. Canonical user paths: My Documents, My Pictures, My Music and the shared `C:\\Users\\C4m1r` / `C:\\Documents and Settings\\C4m1r` profile. My Computer and Control Panel use their registered system routes.
-- Network Neighborhood now exists as a virtual folder under My Computer and has routes in classic, XP and Windows 7 Start Menus.
+- Network Neighborhood now exists as a virtual folder under My Computer and has routes in classic, XP and Windows 7 Start Menus; the path resolver also accepts the legacy standalone alias.
+- The Start Menu host now isolates desktop mousedown handling in the capture phase without blocking target click handlers. XP All Programs is a keyboard-addressable fly-out. Manual click-through acceptance remains required.
 - XP All Programs now expands an in-menu application list; Windows 7 All Programs toggles the complete program list; Windows 98/2000 Programs opens a classic cascading submenu. IE and Outlook Express now use the same row/icon sizing as the other XP pinned entries; special E-mail/Internet tags and oversized treatment were removed.
+- Desktop Games and Programs are now shortcut folders in the user Desktop node; their target aliases resolve to the canonical `C:\\Program Files\\Games` and `C:\\Program Files\\Programs` folders. Core desktop launchers remain, and a dedicated Widgets shortcut opens the existing Widget Gallery surface.
 - Desktop Programs shortcut and Start Menu folder references must resolve to `C:\\Program Files\\Programs` (not the localized display name).
 - Acceptance: test every item by mouse and keyboard on Windows 98/2000, XP, 7 and WebOS; verify folder paths resolve to populated folders and each app opens/focuses its window. Verify menu does not close on mousedown before click.
 
 ### GAME-03 — Minesweeper sprite sheets and game/program icons (P0)
 - Audited the actual PNG IHDR dimensions: `cells.png` is 16×256, `digits.png` is 13×276 and `smileys.png` is 24×120. The CSS incorrectly treated all three vertical sprite sheets as horizontal strips; background sizes and per-sprite offsets are now vertical.
 - Explorer icon resolution now maps app IDs to actual assets before generic file fallbacks. DOOM uses its game icon, Minesweeper its dedicated icon, and Snake/Memory have dedicated lightweight SVG icons. Program Files app entries retain their own app icons.
-- Acceptance: verify numbers 0–8, mine, exploded mine, flag, question marker, smiley states and both counters in Minesweeper. Verify game/program icons in every Explorer view and OS skin; ensure missing assets do not silently hide icons.
+- Sprite elements now explicitly use block/flex dimensions, fixed background x-position and pixelated rendering. Acceptance: verify numbers 0–8, mine, exploded mine, flag, question marker, smiley states and both counters in Minesweeper. Verify game/program icons in every Explorer view and OS skin; ensure missing assets do not silently hide icons.
 
 ### GAME-01 follow-up — DOOM / DOOM II clean game surface
 - Removed the Emupedia/wasm-doom footer, the warning tip and the duplicate iframe-loaded status/link overlay. The selected build's external-launch action remains in the header, and an error-only fallback remains if iframe navigation fails.
@@ -199,8 +201,9 @@ Percentages are working estimates, not test results. The previous task registry 
 
 ### PROFILE-FS-02 — User account and media associations
 - Expose both `C:\\Documents and Settings\\User` and `C:\\Users\\User` as the same second profile, alongside C4m1r.
-- My Music exposes the same Winamp playlist tracks as real `.mp3` virtual files. Double-click selects that track in the shared Winamp controller, starts playback from the user gesture, and opens/focuses Winamp.
+- My Music exposes all 58 existing Winamp playlist tracks as real `.mp3` virtual files with Winamp artwork. Double-click selects that track in the shared Winamp controller, starts playback from the user gesture, and opens/focuses Winamp.
 - Project Markdown files in My Projects use parsed frontmatter titles, stable slug IDs and deduplication; double-click opens a rendered article reader rather than raw Markdown text.
+- Both `C:\\Documents and Settings\\User` and `C:\\Users\\User` resolve to the second User profile; C4m1r remains the default profile.
 
 ### APP-UNIFY-01 — Reusable application surfaces
 - Consolidate duplicate galleries, file viewers, settings managers and launch flows into canonical implementations.
