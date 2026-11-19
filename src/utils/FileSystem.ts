@@ -30,7 +30,13 @@ const defaultTextIcon = WINXP_ASSETS.richTextIcon ?? WINXP_ASSETS.notepadIcon ??
 
 type FileSystemChildren = Record<string, FileSystemItem>;
 
-const projectModules = import.meta.glob('../content/projects/**/*.{md,txt}', {
+const projectModules = import.meta.glob('../content/projects/*.{md,txt}', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+}) as Record<string, string>;
+
+const aboutProjectModules = import.meta.glob('../content/about/projects/**/*.md', {
     query: '?raw',
     import: 'default',
     eager: true,
@@ -91,7 +97,7 @@ const pictureChildren: FileSystemChildren = (() => {
 
 const projectChildren: FileSystemChildren = (() => {
     const root: FileSystemChildren = {};
-    const seenProjects = new Set<string>();
+    const seenProjectIds = new Set<string>();
 
     const ensureFolder = (children: FileSystemChildren, folderName: string, pathPrefix: string) => {
         if (!children[folderName]) {
@@ -105,43 +111,55 @@ const projectChildren: FileSystemChildren = (() => {
         return children[folderName].children!;
     };
 
-    Object.entries(projectModules)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .forEach(([path, rawContent]) => {
-            const relative = path.split('../content/projects/')[1];
-            if (!relative) return;
+    // Match loadAllProjects(): standard project files win, then about/projects
+    // entries are added only when their filename ID has not appeared already.
+    const entries = [
+        ...Object.entries(projectModules).map(([path, content]) => ({ path, content, source: 'standard' as const })),
+        ...Object.entries(aboutProjectModules).map(([path, content]) => ({ path, content, source: 'about' as const })),
+    ].sort((a, b) => {
+        if (a.source !== b.source) return a.source === 'standard' ? -1 : 1;
+        return a.path.localeCompare(b.path);
+    });
 
-            const segments = relative.split('/');
-            const fileName = segments.pop();
-            if (!fileName) return;
+    entries.forEach(({ path, content: rawContent, source }) => {
+        const relative = source === 'standard'
+            ? path.split('../content/projects/')[1]
+            : path.split('../content/about/projects/')[1];
+        if (!relative) return;
 
-            const parsed = parseFrontmatter(rawContent);
-            const baseName = fileName.replace(/\.(md|txt)$/i, '');
-            const slug = String(parsed.metadata.slug || baseName).trim().toLocaleLowerCase();
-            if (seenProjects.has(slug)) return;
-            seenProjects.add(slug);
+        const segments = relative.split('/');
+        const fileName = segments.pop();
+        if (!fileName) return;
 
-            const title = String(parsed.metadata.title || baseName).trim();
-            const displayName = `${title.replace(/\.(md|txt)$/i, '')}.md`;
-            let currentChildren = root;
-            let currentPath = 'projects';
+        const projectId = fileName.replace(/\.(md|txt)$/i, '');
+        const dedupeKey = projectId.toLocaleLowerCase();
+        if (seenProjectIds.has(dedupeKey)) return;
+        seenProjectIds.add(dedupeKey);
 
+        const parsed = parseFrontmatter(rawContent);
+        const title = String(parsed.metadata.title || projectId).trim();
+        const displayName = `${title.replace(/\.(md|txt)$/i, '')}.md`;
+        let currentChildren = root;
+        let currentPath = source === 'standard' ? 'projects' : 'about-projects';
+
+        if (source === 'about') {
             segments.forEach((segment) => {
                 currentChildren = ensureFolder(currentChildren, segment, currentPath);
                 currentPath += `/${segment}`;
             });
+        }
 
-            currentChildren[displayName] = {
-                id: `project:${slug}`,
-                name: displayName,
-                type: 'file',
-                icon: defaultTextIcon,
-                content: parsed.body,
-            };
-        });
+        currentChildren[displayName] = {
+            id: `project:${projectId}`,
+            name: displayName,
+            type: 'file',
+            icon: defaultTextIcon,
+            content: parsed.body,
+        };
+    });
 
     return root;
-})();;
+})();;;
 
 export const initialFileSystem: Record<string, FileSystemItem> = {
     'My Computer': {
