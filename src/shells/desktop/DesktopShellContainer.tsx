@@ -1946,6 +1946,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             fullscreenIconSrc={fullscreenIconSrc}
             notificationIconSrc={notificationIconSrc}
             trayExpandIconSrc={themeAssets.trayExpandIcon}
+            onOpenCalendar={() => launchApp('calendar')}
           />
         </div>
       </div>
