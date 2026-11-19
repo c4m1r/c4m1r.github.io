@@ -530,3 +530,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - `src/apps/doom/config.ts`: DOOM II title is now `Doom II` with smaller `Hell on Earth` subtitle, matching DOOM's `Doom (1993)` / `Ultimate Doom` header hierarchy. Game availability remains unverified.
 - Current outstanding Appearance work: richer grouping by asset folder/tag and manual checks for Fill/Fit/Stretch/Tile/Center with wide/tall images and every OS theme.
 - Do not mark these tasks complete until the latest GitHub Actions run and browser acceptance pass.
+
+
+### Verification checkpoint — code commit c5c6bd39 (2026-11-19)
+- GitHub Actions build job passed: context-boundary verification, TypeScript, ESLint, Vite build and build-output verification.
+- Pages deploy was queued after the build; check the final deploy conclusion. No browser/manual OS matrix or actual DOOM/DOOM II gameplay was verified.
+- The subsequent commit(s) only updated task/history/agent documentation; code content is unchanged from the passing c5c6bd39 snapshot.
