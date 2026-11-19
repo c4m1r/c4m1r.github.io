@@ -586,3 +586,8 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Windows7Explorer.tsx now accepts `onOpenSlideshow` from MyComputerProps, filters supported image files from the current directory, and offers a slideshow action when there are at least two images. DesktopShellContainer passes the existing shared slideshow callback.
 - Thumbnail mode displays `item.content` for image files rather than the generic file icon. The shared PictureViewer remains the only slideshow implementation.
 - Verify paths under `C:\Users\C4m1r\Pictures` (resolved by FileSystem modern-profile aliases), mixed folders, nested directories, single-image folders, and all supported formats. Browser acceptance is not yet done.
+
+
+### Desktop shortcut layout — 2026-11-19
+- DesktopShellContainer.tsx no longer renders the desktopShortcuts list as individual desktop icons. Keep app launchers inside Start / Programs. The desktop's standard non-macOS layout now contains My Computer, My Documents, Games and Programs; the WebOS widget gallery shortcut remains non-Windows.
+- games-folder opens C:\Program Files\Games; programs-folder opens C:\Program Files\Programs. The latter is handled directly in the desktop icon double-click switch. Keep Start Menu launch paths aligned with these canonical locations.
