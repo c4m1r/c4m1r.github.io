@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useGallery } from '../../domain/gallery/useGallery';
 import { useApp } from '../../contexts/useApp';
 import {
   ZoomIn,
@@ -12,7 +13,8 @@ import {
   Maximize2,
   Play,
   Pause,
-  Download
+  Download,
+  Grid3X3
 } from 'lucide-react';
 
 export interface PictureViewerImage {
@@ -25,29 +27,68 @@ export interface PictureViewerProps {
   images?: PictureViewerImage[];
   initialIndex?: number;
   onClose?: () => void;
+  initialView?: 'viewer' | 'gallery';
 }
 
-export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: PictureViewerProps) {
-  const { theme } = useApp();
+export function PictureViewer({ initialImage, images, initialIndex = 0, initialView = 'viewer' }: PictureViewerProps) {
+  const { theme, language } = useApp();
+  const { items: galleryItems } = useGallery();
+  const isRu = language === 'ru';
   const isAppleViewer = theme === 'macos-26' || theme.startsWith('ios-');
   const isIosViewer = theme.startsWith('ios-');
-  const imageList: PictureViewerImage[] =
-    images.length > 0
-      ? images
-      : initialImage
-      ? [{ src: initialImage, name: 'Image' }]
-      : [];
+  const imageList: PictureViewerImage[] = useMemo(() => {
+    if (images?.length) return images;
+    const library = galleryItems.map((item) => ({ src: item.imagePath, name: item.title }));
+    if (library.length) return library;
+    return initialImage ? [{ src: initialImage, name: 'Image' }] : [];
+  }, [galleryItems, images, initialImage]);
 
+  const [viewMode, setViewMode] = useState<'viewer' | 'gallery'>(initialView);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  useEffect(() => {
+    if (!initialImage) return;
+    const index = imageList.findIndex((image) => image.src === initialImage);
+    if (index >= 0) setCurrentIndex(index);
+  }, [imageList, initialImage]);
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [isPlayingSlideshow, setIsPlayingSlideshow] = useState(false);
 
   const currentImage = imageList[currentIndex]?.src || initialImage;
+  const toggleGallery = () => {
+    if (viewMode === 'viewer' && currentImage) {
+      const index = imageList.findIndex((image) => image.src === currentImage);
+      if (index >= 0) setCurrentIndex(index);
+    }
+    setIsPlayingSlideshow(false);
+    setViewMode((current) => current === 'viewer' ? 'gallery' : 'viewer');
+  };
+
+  if (viewMode === 'gallery') {
+    return (
+      <div className={`picture-viewer picture-viewer--library h-full w-full flex flex-col ${isAppleViewer ? 'picture-viewer--apple' : 'bg-[#ece9d8]'}`}>
+        <header className="flex items-center justify-between gap-3 border-b border-black/15 px-3 py-2">
+          <div><strong>{isRu ? 'Мои изображения' : 'My Pictures'}</strong><small className="ml-2 opacity-60">{imageList.length}</small></div>
+          <button type="button" onClick={toggleGallery} className="rounded border border-current/30 px-3 py-1 text-xs hover:bg-black/5">{isRu ? 'К просмотру' : 'Back to viewer'}</button>
+        </header>
+        <div className="grid flex-1 grid-cols-[repeat(auto-fill,minmax(120px,1fr))] content-start gap-3 overflow-auto p-4">
+          {imageList.map((image, index) => (
+            <button key={image.src + index} type="button" onClick={() => { setCurrentIndex(index); setViewMode('viewer'); }}
+              className={`flex min-w-0 flex-col gap-1 rounded border p-2 text-left hover:bg-blue-500/10 ${currentIndex === index ? 'border-blue-500 bg-blue-500/10' : 'border-black/15'}`}>
+              <span className="flex aspect-square w-full items-center justify-center overflow-hidden bg-black/10">
+                <img src={image.src} alt={image.name || ''} loading="lazy" className="h-full w-full object-contain" />
+              </span>
+              <span className="w-full truncate text-center text-xs">{image.name || `Image ${index + 1}`}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     let interval: number | undefined;
-    if (isPlayingSlideshow && imageList.length > 1) {
+    if (isPlayingSlideshow && viewMode === 'viewer' && imageList.length > 1) {
       interval = window.setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % imageList.length);
       }, 3000);
@@ -55,7 +96,7 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlayingSlideshow, imageList.length]);
+  }, [isPlayingSlideshow, imageList.length, viewMode]);
 
   const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.25, 4));
   const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.25, 0.25));
@@ -113,6 +154,7 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
             <button type="button" onClick={handleZoomIn} aria-label="Zoom in"><ZoomIn size={16} /></button>
             <button type="button" onClick={handleRotateCcw} aria-label="Rotate counter-clockwise"><RotateCcw size={16} /></button>
             <button type="button" onClick={handleRotateCw} aria-label="Rotate clockwise"><RotateCw size={16} /></button>
+            <button type="button" onClick={toggleGallery} aria-label={isRu ? "Показать все изображения" : "Show image library"} title={isRu ? "Все изображения" : "All pictures"}><Grid3X3 size={16} /></button>
             <button type="button" onClick={handleDownload} aria-label="Download"><Download size={16} /></button>
           </div>
         </header>
@@ -196,6 +238,11 @@ export function PictureViewer({ initialImage, images = [], initialIndex = 0 }: P
 
         {/* View & Zoom Controls */}
         <div className="flex items-center gap-1 border-r border-[#aca899] pr-2 mr-1">
+          <button
+            onClick={toggleGallery}
+            className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"
+            title={isRu ? 'Все изображения' : 'All pictures'}
+          ><Grid3X3 size={16} className="text-[#003c74]" /></button>
           <button
             onClick={handleFit}
             className="p-1.5 hover:bg-[#ffe7a2] border border-transparent hover:border-[#003c74] rounded bg-transparent text-[#003c74] cursor-pointer"

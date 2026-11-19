@@ -283,7 +283,7 @@
 | EXPLORER-01 | Game folder as a native folder with tree icon | 45% | Game shortcut now opens the real Program Files/Games directory in the current OS Explorer; the virtual folder uses the XP program-folder icon. DOOM and remaining game entries still need integration. |
 | DOCS-01 | Create “Мои документы” and reorganize personal apps | 45% | Added the My Documents folder with Wiki, My Block, About Me and My Projects entries; app shortcuts route through the desktop launcher. Need user-facing polish and verification. |
 | PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 40% | Added My Pictures folder with the repository picture tree exposed as individual file entries; Bliss.jpg is now inside the folder and no longer on the desktop. Viewer/library unification remains. |
-| PICTURES-02 | Merge Picture Viewer and gallery browsing | 20% | Both existing app surfaces identified. Need add a compact gallery/library toggle in Picture Viewer and share one image collection/navigation model. |
+| PICTURES-02 | Merge Picture Viewer and gallery browsing | 55% | Picture Viewer now has a small gallery-mode button in both Apple and Windows chrome; its library grid uses the shared gallery inventory, and the My Pictures app is now a compatibility entry point into that same viewer. Browser polish and validation remain. |
 | CONTROL-01 | Control Panel desktop shortcut and native categories | 25% | Task Manager's app metadata now points to TaskManager rather than ControlPanel; the shell's existing dedicated Task Manager surface remains the actual launcher. Control Panel categories and shortcuts are still pending. |
 | CONTROL-02 | Restore Explorer/Control Panel styling per OS | 20% | Existing theme-specific Explorer styles/assets identified. Need complete per-OS fidelity and verify all shell variants. |
 | CONTROL-03 | Widget shortcut and remaining system settings | 15% | Widget gallery exists. Need expose it from Control Panel and provide consistent links to relevant desktop/system settings. |
@@ -340,8 +340,8 @@
 - Added “Мои изображения” as a real folder.
 - The repository picture collection is now enumerated into individual file entries, retaining its folder hierarchy.
 - Added a Bliss.jpg file entry inside “Мои изображения” and removed its standalone desktop file shortcut.
-- Picture Viewer gains a small mode toggle to switch between single-image viewing and a gallery/grid view of all available images.
-- Gallery and Picture Viewer must share the same image inventory and navigation state rather than maintaining two separate pseudo-applications.
+- Picture Viewer now has a small toolbar toggle to switch between image viewing and a gallery/grid view of the shared image inventory.
+- The My Pictures application now opens the gallery mode of Picture Viewer; both modes share one image inventory and selection state rather than maintaining two separate pseudo-applications.
 
 ### CONTROL-01/02/03 — Control Panel
 - Add a desktop shortcut to Control Panel in each relevant OS.
