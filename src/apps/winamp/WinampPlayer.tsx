@@ -419,7 +419,7 @@ export function WinampPlayer() {
                   type="button"
                   className={`wa-btn-mode ${repeat ? 'is-active' : ''}`}
                   aria-pressed={repeat}
-                  onClick={() => {}
+                  onClick={() => {
                     const nextVal = !repeat;
                     setRepeat(nextVal);
                     winampController.setRepeat(nextVal);
