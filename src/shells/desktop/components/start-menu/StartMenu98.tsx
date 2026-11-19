@@ -29,7 +29,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const isWin2000 = theme === 'win2000';
   const activeEdition = getActiveEdition(theme);
   const menuItems: ClassicMenuItem[] = [
-    { label: isRu ? 'Программы' : 'Programs', icon: <Folder size={16} />, path: 'C:\\Program Files' },
+    { label: isRu ? 'Программы' : 'Programs', icon: <Folder size={16} />, path: 'C:\\Program Files\\Programs' },
     { label: isRu ? 'Избранное' : 'Favorites', icon: <Star size={16} />, path: DESKTOP_PATH },
     { label: isRu ? 'Документы' : 'Documents', icon: <FileText size={16} />, path: DOCUMENTS_PATH },
     { label: isRu ? 'Мой компьютер' : 'My Computer', icon: <Folder size={16} />, appId: 'my-computer' },
