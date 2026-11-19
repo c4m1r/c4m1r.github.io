@@ -22,34 +22,24 @@ const defaultTextIcon = WINXP_ASSETS.richTextIcon ?? WINXP_ASSETS.notepadIcon ??
 
 type FileSystemChildren = Record<string, FileSystemItem>;
 
-const blogModules = import.meta.glob('../content/blog/*.md', {
-    query: '?raw',
-    import: 'default',
-    eager: true,
-}) as Record<string, string>;
-
 const projectModules = import.meta.glob('../content/projects/**/*.{md,txt}', {
     query: '?raw',
     import: 'default',
     eager: true,
 }) as Record<string, string>;
 
-const buildBlogChildren = (): FileSystemChildren => {
-    const children: FileSystemChildren = {};
-    Object.entries(blogModules).forEach(([path, rawContent]) => {
-        const name = path.split('/').pop() || 'post.md';
-        children[name] = {
-            id: `blog-${name}`,
-            name,
-            type: 'file',
-            icon: defaultTextIcon,
-            content: rawContent,
-        };
-    });
-    return children;
-};
+const videoModules = import.meta.glob('../content/videos/**/*.{mp4,webm,mov,m4v}', {
+    query: '?url',
+    import: 'default',
+    eager: true,
+}) as Record<string, string>;
 
-const blogChildren = buildBlogChildren();
+const videoChildren: FileSystemChildren = Object.entries(videoModules).reduce((children, [path, url]) => {
+    const name = path.split('/').pop() || 'video';
+    children[name] = { id: `video:${name}`, name, type: 'file', icon: defaultTextIcon, content: url };
+    return children;
+}, {} as FileSystemChildren);
+
 const pictureModules = import.meta.glob('../content/pictures/**/*.{jpg,jpeg,png,gif,webp}', {
     query: '?url',
     import: 'default',
@@ -156,7 +146,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         icon: documentsFolderIcon,
                                         children: {
                                             'My Music': { id: 'my-music', name: 'Моя музыка', type: 'folder', icon: folderIcon, children: {} },
-                                            'My Videos': { id: 'my-videos', name: 'Мои видеозаписи', type: 'folder', icon: folderIcon, children: {} },
+                                            'My Videos': { id: 'my-videos', name: 'Мои видеозаписи', type: 'folder', icon: folderIcon, children: videoChildren },
                                             'My Pictures': {
                                                 id: 'my-pictures',
                                                 name: 'Мои рисунки',
