@@ -51,6 +51,24 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
     }
   }, [open, themeKey]);
 
+  useEffect(() => {
+    const syncPresets = (event?: Event) => {
+      const detail = event instanceof CustomEvent ? event.detail as { themeKey?: string } | undefined : undefined;
+      if (detail?.themeKey && detail.themeKey !== themeKey) return;
+      try {
+        const raw = localStorage.getItem('desktop-widget-layout-v2:' + themeKey);
+        const saved = raw ? JSON.parse(raw) as Record<string, { preset?: string }> : {};
+        setSelectedPresets(Object.fromEntries(Object.entries(saved).flatMap(([id, value]) =>
+          typeof value?.preset === 'string' ? [[id, value.preset]] : []
+        )));
+      } catch {
+        setSelectedPresets({});
+      }
+    };
+    window.addEventListener('desktop-widget-layout-updated', syncPresets);
+    return () => window.removeEventListener('desktop-widget-layout-updated', syncPresets);
+  }, [themeKey]);
+
   const combinedClock = themeKey === 'webos' ? Boolean(webosVisibility.clock) : visibility.clock && visibility.calendar;
   const getPresetValue = (key: keyof AppleWidgetVisibility) => {
     const id = (key === 'clock' || key === 'calendar') && combinedClock ? 'clockCalendar' : key;

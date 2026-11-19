@@ -28,10 +28,21 @@ function formatRelativeTime(isoString: string, isRu: boolean): string {
   return isRu ? `${diffDays} дн. назад` : `${diffDays}d ago`;
 }
 
+async function fetchArticleWithTimeout<T>(url: string, readResponse: (response: Response) => Promise<T>): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    return await readResponse(response);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 function sanitizeArticleHtml(html: string, baseUrl?: string): string {
   if (typeof DOMParser === 'undefined') return '';
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  doc.querySelectorAll('script,style,iframe,object,embed,form,button, input,meta,link').forEach((node) => node.remove());
+  doc.querySelectorAll('script,style,iframe,object,embed,form,button,input,meta,link,svg,canvas,video,audio,source').forEach((node) => node.remove());
   doc.body.querySelectorAll('*').forEach((node) => {
     if (node instanceof HTMLImageElement && !node.getAttribute('src')) {
       const lazySource = node.getAttribute('data-src') || node.getAttribute('data-original') || node.getAttribute('data-lazy-src');
@@ -123,9 +134,10 @@ export function NewsRssFeedWindow() {
       if (articleUrl.protocol !== 'http:' && articleUrl.protocol !== 'https:') throw new Error('Unsupported article URL');
       let safeHtml = '';
       try {
-        const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(articleUrl.href));
-        if (!response.ok) throw new Error('Article proxy request failed');
-        const wrapper = await response.json() as { contents?: string };
+        const wrapper = await fetchArticleWithTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(articleUrl.href), async (response) => {
+          if (!response.ok) throw new Error('Article proxy request failed');
+          return await response.json() as { contents?: string };
+        });
         if (!wrapper.contents) throw new Error('Article page is unavailable');
         const document = new DOMParser().parseFromString(wrapper.contents, 'text/html');
         const candidates = Array.from(document.querySelectorAll('[itemprop="articleBody"], article, .article-content, .post-content, .entry-content, main'))
@@ -138,9 +150,10 @@ export function NewsRssFeedWindow() {
         safeHtml = sanitizeArticleHtml(extracted.innerHTML, articleUrl.href);
       } catch {
         const readerUrl = `https://r.jina.ai/${articleUrl.protocol}//${articleUrl.host}${articleUrl.pathname}${articleUrl.search}`;
-        const readerResponse = await fetch(readerUrl);
-        if (!readerResponse.ok) throw new Error('Reader proxy request failed');
-        const markdownText = await readerResponse.text();
+        const markdownText = await fetchArticleWithTimeout(readerUrl, async (response) => {
+          if (!response.ok) throw new Error('Reader proxy request failed');
+          return await response.text();
+        });
         if (markdownText.trim().length < 180) throw new Error('No readable article body found');
         safeHtml = sanitizeArticleHtml(markdownArticleToHtml(markdownText), articleUrl.href);
       }
@@ -158,7 +171,9 @@ export function NewsRssFeedWindow() {
   const handleSaveSettings = async () => {
     saveRssSources(parseRawTextSources(settingsText));
     setShowSettings(false);
+    activeArticleId.current = null;
     setSelectedArticle(null);
+    setPageContent(null);
     await loadArticles(true);
   };
   const handleResetSettings = async () => {
@@ -203,7 +218,7 @@ export function NewsRssFeedWindow() {
           </div>
           <nav className="p-2 space-y-1 overflow-y-auto max-h-[calc(100%-48px)]">
             {categories.map((category) => (
-              <button key={category} type="button" onClick={() => { setSelectedCategory(category); setSelectedArticle(null); setShowCategories(false); }} className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${selectedCategory === category ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`}>
+              <button key={category} type="button" onClick={() => { setSelectedCategory(category); activeArticleId.current = null; setSelectedArticle(null); setPageContent(null); setShowCategories(false); }} className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${selectedCategory === category ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`}>
                 {category === 'Все' ? (isRu ? 'Все новости' : 'All news') : `#${category}`}
                 <span className="float-right opacity-60">{category === 'Все' ? articles.length : articles.filter((a) => a.category === category).length}</span>
               </button>

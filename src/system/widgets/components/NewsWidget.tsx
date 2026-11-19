@@ -5,7 +5,10 @@ import { Newspaper, ChevronRight } from 'lucide-react';
 
 function formatRelativeTime(isoString: string, isRu: boolean): string {
   try {
-    const diffMs = Date.now() - new Date(isoString).getTime();
+    const timestamp = new Date(isoString).getTime();
+    if (!Number.isFinite(timestamp) || timestamp <= 0) return isRu ? 'дата неизвестна' : 'date unknown';
+    const diffMs = Date.now() - timestamp;
+    if (diffMs < -60_000) return isRu ? 'в будущем' : 'in the future';
     const diffMin = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMin / 60);
     const diffDays = Math.floor(diffHours / 24);

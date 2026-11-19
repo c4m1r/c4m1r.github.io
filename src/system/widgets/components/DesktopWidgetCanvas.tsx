@@ -157,8 +157,11 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   }, [itemIds, layoutSignature, normalizePlacements]);
 
   useEffect(() => {
-    try { localStorage.setItem(storageKey, JSON.stringify(placements)); } catch { /* storage may be unavailable */ }
-  }, [placements, storageKey]);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(placements));
+      window.dispatchEvent(new CustomEvent('desktop-widget-layout-updated', { detail: { themeKey } }));
+    } catch { /* storage may be unavailable */ }
+  }, [placements, storageKey, themeKey]);
 
   const clampAll = useCallback(() => {
     const canvas = canvasRef.current;

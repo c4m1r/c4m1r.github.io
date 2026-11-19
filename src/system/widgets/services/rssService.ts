@@ -6,6 +6,30 @@ export interface RssSource {
   enabled: boolean;
 }
 
+interface Rss2JsonItem {
+  guid?: string;
+  title?: string;
+  link?: string;
+  content?: string;
+  content_encoded?: string;
+  'content:encoded'?: string;
+  description?: string;
+  thumbnail?: string;
+  enclosure?: { link?: string };
+  pubDate?: string | number;
+  isoDate?: string | number;
+  date_published?: string | number;
+}
+
+interface Rss2JsonPayload {
+  status?: string;
+  items?: Rss2JsonItem[];
+}
+
+interface AllOriginsPayload {
+  contents?: string;
+}
+
 export interface RssArticle {
   id: string;
   title: string;
@@ -66,6 +90,19 @@ const SOURCES_STORAGE_KEY = 'webos_rss_sources_config_v1';
 const RSS_LAST_REFRESH_KEY = 'webos_rss_last_refresh_v1';
 const RSS_CACHE_TTL_MS = 15 * 60 * 1000;
 const RSS_PARTIAL_RETRY_MS = 2 * 60 * 1000;
+const RSS_REQUEST_TIMEOUT_MS = 8000;
+
+async function fetchJsonWithTimeout<T>(url: string): Promise<{ response: Response; data: T | null }> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), RSS_REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    const data = response.ok ? await response.json() as T : null;
+    return { response, data };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -214,9 +251,8 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
   // Method 1: Try rss2json API
   try {
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
-    const res = await fetch(apiUrl);
-    if (res.ok) {
-      const data = await res.json();
+    const { response: res, data } = await fetchJsonWithTimeout<Rss2JsonPayload>(apiUrl);
+    if (res.ok && data) {
       if (data.status === 'ok' && Array.isArray(data.items)) {
         for (const item of data.items) {
           const rawContent = item.content || item.content_encoded || item['content:encoded'] || item.description || '';
@@ -249,9 +285,8 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
   // Method 2: Try AllOrigins proxy
   try {
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(source.url)}`;
-    const res = await fetch(proxyUrl);
-    if (res.ok) {
-      const wrapper = await res.json();
+    const { response: res, data: wrapper } = await fetchJsonWithTimeout<AllOriginsPayload>(proxyUrl);
+    if (res.ok && wrapper) {
       if (typeof wrapper.contents === 'string' && wrapper.contents.trim()) {
         const parser = new DOMParser();
         const xml = parser.parseFromString(wrapper.contents, 'text/xml');
@@ -333,7 +368,7 @@ async function replaceSourceArticles(sourceUrl: string, articles: RssArticle[]):
       store.index('pubDate').openCursor(IDBKeyRange.upperBound(cutoff)).onsuccess = (event) => {
         const oldRecord = (event.target as IDBRequest<IDBCursorWithValue>).result;
         if (oldRecord) {
-          oldRecord.delete();
+          if ((oldRecord.value as RssArticle).pubDate !== UNKNOWN_PUBLICATION_DATE) oldRecord.delete();
           oldRecord.continue();
         }
       };
@@ -362,7 +397,7 @@ export async function saveArticlesToDatabase(articles: RssArticle[]): Promise<vo
     index.openCursor(range).onsuccess = (e) => {
       const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
       if (cursor) {
-        cursor.delete();
+        if ((cursor.value as RssArticle).pubDate !== UNKNOWN_PUBLICATION_DATE) cursor.delete();
         cursor.continue();
       }
     };
@@ -409,7 +444,8 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
   if (!forceRefresh) {
     const cached = await getCachedArticlesFromDatabase();
     const lastRefresh = Number(typeof localStorage !== 'undefined' ? localStorage.getItem(RSS_LAST_REFRESH_KEY) : 0);
-    if (cached.length > 0 && Number.isFinite(lastRefresh) && lastRefresh > 0 && Date.now() - lastRefresh < RSS_CACHE_TTL_MS) {
+    const cacheAge = Date.now() - lastRefresh;
+    if (cached.length > 0 && Number.isFinite(lastRefresh) && lastRefresh > 0 && cacheAge >= 0 && cacheAge < RSS_CACHE_TTL_MS) {
       return cached;
     }
   }
