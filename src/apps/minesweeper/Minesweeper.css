@@ -38,12 +38,15 @@
 }
 
 .minesweeper-smiley {
+  display: block;
   width: 24px;
   height: 24px;
   background-image: url('./assets/smileys.png');
   background-size: 24px 120px;
   flex: 0 0 24px;
+  background-position: 0 0;
   background-repeat: no-repeat;
+  image-rendering: pixelated;
 }
 
 .minesweeper-app__board {
@@ -72,11 +75,15 @@
 /* --- 2. GLOBAL SPRITES AND GRAPHICS (Required for functionality across all OS themes) --- */
 
 .minesweeper-digit {
+  display: block;
+  flex: 0 0 13px;
   width: 13px;
   height: 23px;
   background-image: url('./assets/digits.png');
   background-size: 13px 276px;
   background-repeat: no-repeat;
+  background-position-x: 0;
+  image-rendering: pixelated;
   filter: drop-shadow(0 0 2px rgba(255, 0, 0, 0.4));
 }
 
@@ -97,12 +104,16 @@
 .minesweeper-smiley-lose { background-position: 0 -72px; }
 .minesweeper-smiley-hover { background-position: 0 -96px; }
 
-.minesweeper-cell-sprite {
+ .minesweeper-cell-sprite {
+  display: block;
+  flex: 0 0 16px;
   width: 16px;
   height: 16px;
   background-image: url('./assets/cells.png');
   background-size: 16px 256px;
   background-repeat: no-repeat;
+  background-position-x: 0;
+  image-rendering: pixelated;
 }
 
 .minesweeper-sprite-0 { background-position: 0 0; }
