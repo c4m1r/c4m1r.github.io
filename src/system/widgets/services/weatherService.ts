@@ -1,5 +1,7 @@
 export interface CityConfig {
   id: string;
+  countryCode: string;
+  flag: string;
   nameRu: string;
   nameEn: string;
   lat: number;
@@ -7,13 +9,43 @@ export interface CityConfig {
 }
 
 export const CITIES: CityConfig[] = [
-  { id: 'moscow', nameRu: 'Москва', nameEn: 'Moscow', lat: 55.7558, lon: 37.6173 },
-  { id: 'astana', nameRu: 'Астана', nameEn: 'Astana', lat: 51.1694, lon: 71.4491 },
-  { id: 'almaty', nameRu: 'Алматы', nameEn: 'Almaty', lat: 43.2220, lon: 76.8512 },
-  { id: 'spb', nameRu: 'Санкт-Петербург', nameEn: 'Saint Petersburg', lat: 59.9343, lon: 30.3351 },
-  { id: 'tokyo', nameRu: 'Токио', nameEn: 'Tokyo', lat: 35.6762, lon: 139.6503 },
-  { id: 'london', nameRu: 'Лондон', nameEn: 'London', lat: 51.5074, lon: -0.1278 },
+  // Russia
+  { id: 'moscow', countryCode: 'RU', flag: '🇷🇺', nameRu: 'Москва', nameEn: 'Moscow', lat: 55.7558, lon: 37.6173 },
+  { id: 'spb', countryCode: 'RU', flag: '🇷🇺', nameRu: 'Санкт-Петербург', nameEn: 'Saint Petersburg', lat: 59.9343, lon: 30.3351 },
+  // Kazakhstan
+  { id: 'astana', countryCode: 'KZ', flag: '🇰🇿', nameRu: 'Астана', nameEn: 'Astana', lat: 51.1694, lon: 71.4491 },
+  { id: 'almaty', countryCode: 'KZ', flag: '🇰🇿', nameRu: 'Алматы', nameEn: 'Almaty', lat: 43.2220, lon: 76.8512 },
+  // Belarus
+  { id: 'minsk', countryCode: 'BY', flag: '🇧🇾', nameRu: 'Минск', nameEn: 'Minsk', lat: 53.9006, lon: 27.5590 },
+  { id: 'gomel', countryCode: 'BY', flag: '🇧🇾', nameRu: 'Гомель', nameEn: 'Gomel', lat: 52.4345, lon: 30.9754 },
+  // China
+  { id: 'beijing', countryCode: 'CN', flag: '🇨🇳', nameRu: 'Пекин', nameEn: 'Beijing', lat: 39.9042, lon: 116.4074 },
+  { id: 'shanghai', countryCode: 'CN', flag: '🇨🇳', nameRu: 'Шанхай', nameEn: 'Shanghai', lat: 31.2304, lon: 121.4737 },
+  // Japan
+  { id: 'tokyo', countryCode: 'JP', flag: '🇯🇵', nameRu: 'Токио', nameEn: 'Tokyo', lat: 35.6762, lon: 139.6503 },
+  { id: 'yokohama', countryCode: 'JP', flag: '🇯🇵', nameRu: 'Йокогама', nameEn: 'Yokohama', lat: 35.4437, lon: 139.6380 },
+  // South Korea
+  { id: 'seoul', countryCode: 'KR', flag: '🇰🇷', nameRu: 'Сеул', nameEn: 'Seoul', lat: 37.5665, lon: 126.9780 },
+  { id: 'busan', countryCode: 'KR', flag: '🇰🇷', nameRu: 'Пусан', nameEn: 'Busan', lat: 35.1796, lon: 129.0756 },
+  // United Kingdom
+  { id: 'london', countryCode: 'GB', flag: '🇬🇧', nameRu: 'Лондон', nameEn: 'London', lat: 51.5074, lon: -0.1278 },
+  { id: 'birmingham', countryCode: 'GB', flag: '🇬🇧', nameRu: 'Бирмингем', nameEn: 'Birmingham', lat: 52.4862, lon: -1.8904 },
+  // Additional language defaults for Français and Español
+  { id: 'paris', countryCode: 'FR', flag: '🇫🇷', nameRu: 'Париж', nameEn: 'Paris', lat: 48.8566, lon: 2.3522 },
+  { id: 'lyon', countryCode: 'FR', flag: '🇫🇷', nameRu: 'Лион', nameEn: 'Lyon', lat: 45.7640, lon: 4.8357 },
+  { id: 'madrid', countryCode: 'ES', flag: '🇪🇸', nameRu: 'Мадрид', nameEn: 'Madrid', lat: 40.4168, lon: -3.7038 },
+  { id: 'barcelona', countryCode: 'ES', flag: '🇪🇸', nameRu: 'Барселона', nameEn: 'Barcelona', lat: 41.3874, lon: 2.1686 },
 ];
+
+export const DEFAULT_CITY_BY_LANGUAGE: Record<string, string> = {
+  en: 'london',
+  ru: 'almaty',
+  fr: 'paris',
+  es: 'madrid',
+  zh: 'beijing',
+  ja: 'tokyo',
+  ko: 'seoul',
+};
 
 export interface WeatherData {
   cityId: string;
@@ -55,7 +87,7 @@ export function getWeatherCondition(code: number): { ru: string; en: string; ico
 
 const WEATHER_CACHE_KEY_PREFIX = 'webos_weather_';
 
-export async function fetchWeather(cityId = 'moscow', language: 'ru' | 'en' = 'ru'): Promise<WeatherData> {
+export async function fetchWeather(cityId = 'almaty', language = 'ru'): Promise<WeatherData> {
   const city = CITIES.find((c) => c.id === cityId) ?? CITIES[0];
 
   // Try cached data if fresh (< 20 mins)
@@ -87,11 +119,12 @@ export async function fetchWeather(cityId = 'moscow', language: 'ru' | 'en' = 'r
   const daily = json.daily;
   const cond = getWeatherCondition(current.weather_code);
 
+  const locale = language === 'ru' ? 'ru-RU' : language === 'fr' ? 'fr-FR' : language === 'es' ? 'es-ES' : language === 'zh' ? 'zh-CN' : language === 'ja' ? 'ja-JP' : language === 'ko' ? 'ko-KR' : 'en-GB';
   const hourly = (json.hourly?.time || []).slice(0, 6).map((timeStr: string, idx: number) => {
     const date = new Date(timeStr);
     const code = json.hourly?.weather_code?.[idx] ?? 0;
     return {
-      time: date.toLocaleTimeString(language === 'ru' ? 'ru-RU' : 'en-US', { hour: '2-digit', minute: '2-digit' }),
+      time: date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }),
       temp: Math.round(json.hourly?.temperature_2m?.[idx] ?? 0),
       icon: getWeatherCondition(code).icon,
     };
@@ -99,7 +132,7 @@ export async function fetchWeather(cityId = 'moscow', language: 'ru' | 'en' = 'r
 
   const weatherData: WeatherData = {
     cityId: city.id,
-    cityName: language === 'ru' ? city.nameRu : city.nameEn,
+    cityName: `${city.flag} ${language === 'ru' ? city.nameRu : city.nameEn}`,
     temperature: Math.round(current.temperature_2m),
     apparentTemperature: Math.round(current.apparent_temperature),
     humidity: Math.round(current.relative_humidity_2m),
