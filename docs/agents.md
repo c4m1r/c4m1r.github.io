@@ -428,9 +428,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 
 
 ### Calendar follow-up — source controls and annual-rule review — 2026-11-19
-- Added persistent source visibility switches for imported ICS calendars and personal events. National holidays/memorial dates are deliberately not hidden by these switches, preserving the always-visible country holiday requirement.
+- Added persistent source visibility switches for imported ICS calendars and personal events. National holidays/memorial dates are deliberately not hidden by these switches, preserving the always-visible country holiday requirement. Independent color palettes are configurable for ICS and personal events.
 - Added independent source color selectors (ICS and personal events) with local persistence and palette styling.
-- Added day-off and make-up workday entries to list view; taskbar and WebOS clock calendar tooltips now show flags, day-off text and make-up-work text.
+- Added day-off and make-up workday entries to list view; taskbar and WebOS clock calendar tooltips now show flags, localized holiday names, day-off text and make-up-work text.
 - Added generic substitute-day derivation for future Russian statutory holidays (excluding 1–8 January, which require the annual government schedule), Japanese Sunday national holidays, UK bank-holiday substitutes, and Kazakhstan public holidays under the next-working-day rule. These are statutory-rule fallbacks only; annual decrees still take precedence when published.
-- Corrected France weather pair to Paris/Marseille; Spain remains Madrid/Barcelona.
+- Corrected France weather pair to Paris/Marseille; Spain remains Madrid/Barcelona. Country names, holiday names and new calendar editor/source controls are localized across EN/RU/FR/ES/ZH/JA/KO.
 - **Current limitation:** UK calendar is still England/Wales baseline; Scotland and Northern Ireland have distinct regional bank holidays. Kazakhstan 2027 Qurban Ait date and any annual transfer schedule should be refreshed from official sources when issued.
