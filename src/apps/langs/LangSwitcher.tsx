@@ -3,17 +3,21 @@ import { useApp } from '../../contexts/useApp';
 import type { Language } from '../../i18n/translations';
 import flagEn from './flag-en.webp';
 import flagFr from './flag-fr.webp';
+import flagRu from './flag-ru.svg';
+import flagCn from './flag-cn.svg';
+import flagJp from './flag-jp.svg';
+import flagKr from './flag-kr.svg';
 
 const languageOrder: Language[] = ['en', 'ru', 'fr', 'es', 'zh', 'ja', 'ko'];
 
 const languageMeta: Record<Language, { code: string; title: string; icon?: string }> = {
   en: { code: 'EN', title: 'English', icon: flagEn },
-  ru: { code: 'RU', title: 'Русский' },
+  ru: { code: 'RU', title: 'Русский', icon: flagRu },
   fr: { code: 'FR', title: 'Français', icon: flagFr },
   es: { code: 'ES', title: 'Español' },
-  zh: { code: '中文', title: '中文' },
-  ja: { code: 'JP', title: '日本語' },
-  ko: { code: 'KR', title: '한국어' },
+  zh: { code: '中文', title: '中文', icon: flagCn },
+  ja: { code: 'JP', title: '日本語', icon: flagJp },
+  ko: { code: 'KR', title: '한국어', icon: flagKr },
 };
 
 interface LangSwitcherProps {
