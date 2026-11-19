@@ -1421,6 +1421,13 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         }
       }}
       onContextMenu={(e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('.os-window')) {
+          e.preventDefault();
+          e.stopPropagation();
+          setContextMenu(null);
+          return;
+        }
         e.preventDefault();
         closeStartMenu();
         if (themeKey.startsWith('ios-')) {
