@@ -173,6 +173,7 @@ git diff --check
 - Inspected head before documentation consolidation: `617b2ee75baef787b331965b79bcee6fa637c66f`.
 - Documentation consolidation commits: `6a857d268494103103bbeff3d3a7f5d4cd5763ab` (history), `738962164069edbc98e635ef197f3a4c6f62f34a` (tasks), `c9417d7ba3c03634dd558525e75a06e3a5506cd7` (agents).
 - DOOM launch UX hardening commit: `b0d989789ff06c688be78270aca3b2c3ceea7cc8`.
+- Games catalogue correction commit: `811ea2862e65aa7344247a428d30175851ed7937`.
 - No root `tasks.md` exists. The canonical file is `docs/tasks.md`.
 - `/eat/` is present in the Git tree. Do not repeat historical claims that all donor folders were removed.
 - Runtime stack from `package.json`: React 18, TypeScript, Vite 7, Tailwind 3.4. No Next.js runtime should be introduced to absorb donor components.
@@ -235,3 +236,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Embedded navigation failure copy no longer promises that direct launch will necessarily work; it says the external route still needs checking.
 - This is a UX truthfulness/recovery improvement, **not** a verified playable DOOM implementation. Keep GAME-01 at 30% until actual gameplay is manually tested.
 - No local typecheck/lint/build/browser test was run in this connector-only pass.
+
+
+### Latest implementation note — Games folder truthfulness
+- File changed: `src/utils/FileSystem.ts`.
+- Removed the `DOOM 3` WIP item from the normal Program Files/Games folder. The app's WIP config remains in source, but the folder no longer advertises it alongside the playable titles.
+- No replacement title was added in this pass. Chess/Solitaire donor review found the Windows 7 Solitaire component has an unused donor store import, a hard minimum board width of 700px and mouse-only interactions; it is not safe to copy wholesale. Its donor repo has an MIT licence, but component assets/imports and adaptation still need review.
+- Chess donor component requires `chess.js`, which is not in this repository's `package.json`; do not add the donor framework or assume the dependency is present.
