@@ -3,7 +3,7 @@ import { useApp } from '../../contexts/useApp';
 import type { CalendarEvent } from './icsParser';
 import {
   NATIONAL_COUNTRIES, getHolidaysForDate, getHolidayTitle, isSelectedCountryWeekend,
-  loadSelectedLabourCountries, saveSelectedLabourCountries,
+  setSelectedLabourCountries, useLabourCountries,
   type CountryCode,
 } from './nationalCalendars';
 import flagRu from '../langs/flag-ru.svg';
@@ -69,13 +69,10 @@ export function CalendarApp() {
   const [startValue, setStartValue] = useState('');
   const [endValue, setEndValue] = useState('');
   const [formError, setFormError] = useState('');
-  const [labourCountries, setLabourCountries] = useState<CountryCode[]>(() => loadSelectedLabourCountries());
+  const labourCountries = useLabourCountries();
   const toggleLabourCountry = (code: CountryCode) => {
-    setLabourCountries((current) => {
-      const next = current.includes(code) ? current.filter((item) => item !== code) : [...current, code];
-      saveSelectedLabourCountries(next);
-      return next;
-    });
+    const next = labourCountries.includes(code) ? labourCountries.filter((item) => item !== code) : [...labourCountries, code];
+    setSelectedLabourCountries(next);
   };
   const renderHoliday = (holiday: ReturnType<typeof getHolidaysForDate>[number]) => {
     const country = NATIONAL_COUNTRIES.find((item) => item.code === holiday.country)!;
