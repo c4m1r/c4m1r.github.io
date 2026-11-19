@@ -199,7 +199,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [appleWidgetVisibility, setAppleWidgetVisibility] = useState<AppleWidgetVisibility>(() => {
     if (typeof window === 'undefined') return { clock: false, battery: false, calendar: false };
     try {
-      const saved = localStorage.getItem('desktop-apple-widget-visibility-v1');
+      const saved = localStorage.getItem('desktop-apple-widget-visibility-v2');
       return saved ? { clock: false, battery: false, calendar: false, ...JSON.parse(saved) } : { clock: false, battery: false, calendar: false };
     } catch { return { clock: false, battery: false, calendar: false }; }
   });
@@ -773,6 +773,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             type: 'system' as const,
           },
           {
+            id: 'my-documents',
+            icon: getIconElement('folder'),
+            label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
+            type: 'system' as const,
+          },
+          {
             id: 'games-folder',
             icon: (
               <img
@@ -1184,6 +1190,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       case 'my-computer':
         openExplorerWindow('My Computer');
         return;
+      case 'my-documents':
+        openExplorerWindow('C:\\\\Documents and Settings\\\\C4m1r\\\\My Documents');
+        return;
       case 'recycle-bin':
         playErrorSound();
         setErrorWindow({
@@ -1512,7 +1521,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           }
           setAppleWidgetVisibility((current) => {
             const next = { ...current, [key]: !current[key] };
-            localStorage.setItem('desktop-apple-widget-visibility-v1', JSON.stringify(next));
+            localStorage.setItem('desktop-apple-widget-visibility-v2', JSON.stringify(next));
             return next;
           });
         }}
