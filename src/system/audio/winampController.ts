@@ -28,6 +28,14 @@ class WinampControllerService {
   private audioCtx: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
   private mediaSource: MediaElementAudioSourceNode | null = null;
+  private eqFilters: BiquadFilterNode[] = [];
+  private eqEnabled = true;
+  private eqGains = Array(10).fill(0) as number[];
+  private preampGain = 0;
+  private balance = 0;
+  private preampNode: GainNode | null = null;
+  private pannerNode: StereoPannerNode | null = null;
+  private readonly eqFrequencies = [70, 180, 320, 600, 1000, 3000, 6000, 12000, 14000, 16000];
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -259,6 +267,29 @@ class WinampControllerService {
     return this.shuffle;
   }
 
+  public setEqualizerEnabled(enabled: boolean): void {
+    this.eqEnabled = enabled;
+    this.eqFilters.forEach((filter, index) => filter.gain.setTargetAtTime(enabled ? this.eqGains[index] : 0, filter.context.currentTime, 0.015));
+  }
+  public setEqualizerBand(index: number, gain: number): void {
+    if (index < 0 || index >= this.eqGains.length || !Number.isFinite(gain)) return;
+    this.eqGains[index] = Math.max(-12, Math.min(12, gain));
+    const filter = this.eqFilters[index];
+    if (filter) filter.gain.setTargetAtTime(this.eqEnabled ? this.eqGains[index] : 0, filter.context.currentTime, 0.015);
+  }
+  public setPreamp(gainDb: number): void {
+    if (!Number.isFinite(gainDb)) return;
+    this.preampGain = Math.max(-12, Math.min(12, gainDb));
+    if (this.preampNode) this.preampNode.gain.setTargetAtTime(Math.pow(10, this.preampGain / 20), this.preampNode.context.currentTime, 0.015);
+  }
+  public setBalance(balance: number): void {
+    if (!Number.isFinite(balance)) return;
+    this.balance = Math.max(-1, Math.min(1, balance));
+    if (this.pannerNode) this.pannerNode.pan.setTargetAtTime(this.balance, this.pannerNode.context.currentTime, 0.015);
+  }
+  public getEqualizerState(): { enabled: boolean; bands: number[]; preamp: number; balance: number } {
+    return { enabled: this.eqEnabled, bands: [...this.eqGains], preamp: this.preampGain, balance: this.balance };
+  }
   public getAudioElement(): HTMLAudioElement | null {
     this.initAudio();
     return this.audioElement;
@@ -281,7 +312,23 @@ class WinampControllerService {
           this.mediaSource = ctx.createMediaElementSource(this.audioElement);
           this.analyser = ctx.createAnalyser();
           this.analyser.fftSize = 64;
-          this.mediaSource.connect(this.analyser);
+          this.eqFilters = this.eqFrequencies.map((frequency, index) => {
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'peaking';
+            filter.frequency.value = frequency;
+            filter.Q.value = 1;
+            filter.gain.value = this.eqEnabled ? this.eqGains[index] : 0;
+            return filter;
+          });
+          this.preampNode = ctx.createGain();
+          this.preampNode.gain.value = Math.pow(10, this.preampGain / 20);
+          this.pannerNode = ctx.createStereoPanner();
+          this.pannerNode.pan.value = this.balance;
+          let previous: AudioNode = this.mediaSource;
+          this.eqFilters.forEach((filter) => { previous.connect(filter); previous = filter; });
+          previous.connect(this.preampNode);
+          this.preampNode.connect(this.pannerNode);
+          this.pannerNode.connect(this.analyser);
           this.analyser.connect(ctx.destination);
         }
       }
