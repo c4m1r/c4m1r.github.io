@@ -563,3 +563,13 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - App icon resolution now uses specific assets for Picture Viewer, Calendar, RSS, currency, Help, Task Manager, Terminal and Winamp in addition to existing game/browser/media icons. Generic file fallbacks no longer override an appId-specific icon.
 - Minesweeper's revealed zero-neighbour cells now render as genuinely blank cells. Number sprites 1–8 remain the boundary hints around cleared regions; the zero sprite is not displayed.
 - Verification: source edits were committed directly to main; latest workflow run must be checked after all commits. No browser-level visual/gameplay acceptance was performed. Widget Gallery night mode is scoped to the gallery surface; a system-wide dark appearance mode is not claimed as implemented.
+
+
+### 2026-11-19 — Canonical gadget picker, locale coverage and CI verification
+- Windows 7's shared widget manager now presents as a tiled Aero-style Desktop Gadget Gallery rather than a generic vertical settings list. Its title and entry-point labels are localized; the Windows 7 entry is the desktop context-menu Gadgets command. Vista Sidebar remains a documented platform reference because this repository has no separate Windows Vista shell.
+- Widget Gallery night-mode control and all widget titles/descriptions/preset labels are localized across en/ru/fr/es/zh/ja/ko/be/kk. Wallpaper picker uses three columns by default, a gear menu for 3/2 columns, and a larger 4:3 preview; its gallery and placement UI also has all nine locale variants.
+- Desktop widget entry labels are localized across all supported languages. Windows themes do not receive a generic desktop Widgets shortcut; macOS uses its native Edit Widgets context menu; non-Windows/non-macOS desktop shells retain a Widgets desktop entry point.
+- Program Files app icon registry now covers every appId referenced by FileSystem.ts, including About. Desktop Games/Programs aliases flatten publisher-organized entries into launchable shortcuts while preserving their canonical target paths and Program Files trees.
+- Minesweeper zero-neighbour cells are blank; only positive adjacent-mine counts render number sprites. No gameplay/browser visual acceptance was performed.
+- GitHub Actions run 44524708630 for source commit 26784410a66354080cd7d7524d5d37f3ad4466e6 passed context-boundary verification, TypeScript, ESLint, Vite build, build-output verification and GitHub Pages deploy. This is automated verification only; manual OS and gameplay checks remain open.
+- Widget Gallery night mode is scoped to the gallery surface. No system-wide dark appearance mode is claimed.
