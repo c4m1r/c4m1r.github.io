@@ -141,7 +141,7 @@ const projectChildren: FileSystemChildren = (() => {
 
         const parsed = parseFrontmatter(rawContent);
         const title = String(parsed.metadata.title || projectId).trim();
-        const displayName = `${title.replace(/\.(md|txt)$/i, '')}.md`;
+        const baseDisplayName = `${title.replace(/\.(md|txt)$/i, '')}.md`;
         let currentChildren = root;
         let currentPath = source === 'standard' ? 'projects' : 'about-projects';
 
@@ -152,6 +152,9 @@ const projectChildren: FileSystemChildren = (() => {
             });
         }
 
+        const displayName = currentChildren[baseDisplayName]
+            ? `${baseDisplayName.replace(/\.md$/i, '')} (${projectId}).md`
+            : baseDisplayName;
         currentChildren[displayName] = {
             id: `project:${projectId}`,
             name: displayName,
