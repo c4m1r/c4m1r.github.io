@@ -383,3 +383,6 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Added responsive view/editor/event-detail styling in `calendar-os-adapters.css`, including compact mobile layout and initial classic/Windows/WebOS variants.
 - Remaining known format gap: recurring `RRULE` instances are not expanded. Calendar source visibility/colour management and an all-day editor toggle are not yet implemented. DST edge cases and actual visual acceptance across every OS still need testing.
 - Verification limitation unchanged: container could not resolve `github.com`, so no npm install, typecheck, lint, build, verify or browser tests were run. Treat all source changes as unverified until those gates pass.
+
+- Follow-up polish: all-day imported events are labelled as “All day” / “Весь день” rather than showing a misleading midnight time. Latest code commit: `38c7898b0774d6b8333febae162e73a13b48b612`.
+- CI status queried for that code commit: no status entries and no associated workflow runs were returned; this is not a passing build.
