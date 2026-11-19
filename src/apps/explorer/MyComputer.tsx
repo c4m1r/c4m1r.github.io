@@ -301,7 +301,9 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       const parentPath = parts.join('\\') || 'My Computer';
       if (fileName && onOpenItem) {
         const parentItems = getItemsFromPath(parentPath);
-        const fileItem = parentItems.find(item => item.name === fileName);
+        const fileItem = parentItems.find(
+          (item) => item.name.toLocaleLowerCase() === fileName.toLocaleLowerCase()
+        );
         if (fileItem) {
           onOpenItem(fileItem, parentPath);
         }
