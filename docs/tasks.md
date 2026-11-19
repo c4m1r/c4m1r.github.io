@@ -280,16 +280,16 @@
 | RSS-01 | Restore historical IndexedDB cache | 65% | Refresh now merges/upserts new entries instead of deleting all records from a source; old entries remain inside the existing 14-day retention window. Cache TTL optimization retained. |
 | RSS-02 | RSS duplicate prevention and chronological sorting | 60% | Stable article-link IDs, tracking-parameter normalization and cross-source URL deduplication added; publication-date sorting remains. Needs live-feed validation. |
 | RSS-03 | RSS collection, category drawer and article reader | 65% | Feed parser, category controls and article reader exist; proxy availability and publisher-specific extraction still need validation. |
-| GAME-01 | Repair the existing DOOM implementation | 45% | Corrected the broken Emupedia base path: the previous URLs incorrectly pointed under /beta/emuos/, while the current live game pages are at /emupedia-game-doom1/ and /emupedia-game-doom2/ (including /asmjs/ builds). Iframe permissions and direct-launch fallback also fixed. Doom 3 remains a WIP upstream. The separate 98.DOOM donor has no LICENSE file, so its source is not copied. |
-| GAME-02 | Audit /eat/ and add other working games | 40% | Added native Snake and Memory games without copying donor code; both appear in the real Games folder alongside the existing Minesweeper and DOOM launch entries. Candidate donor implementations under /eat/ remain under license/dependency review. |
+| GAME-01 | Repair and replace the non-working DOOM launch path | 30% | Current implementation still depends on Emupedia iframe URLs; iframe onError cannot reliably detect HTTP failures or X-Frame-Options/CSP blocking, so recovery is not dependable. Doom 3 is upstream WIP. /eat/98.portfolio-main contains a separate Three.js survival/FPS game branded 98.DOOM, not original id Software DOOM; license/ownership and assets/dependencies remain unaudited. A reliable playable path is not delivered. |
+| GAME-02 | Audit /eat/ and add other working games | 40% | Native Snake and Memory exist alongside Minesweeper. /eat/ still contains game donors, including 98.portfolio-main and its custom 98.DOOM project; a complete inventory, source/license/dependency matrix and selection of additional lightweight games remain pending. Do not copy donor source/assets until provenance, license and dependency compatibility are established. |
 | GAME-03 | Minesweeper gameplay fidelity and interaction | 45% | Opening-click mine relocation and correct timer start-on-first-reveal are implemented. Next: chord reveal, keyboard/touch flag controls, difficulty presets, responsive board sizing and visual QA. |
-| EXPLORER-01 | Game folder as a native folder with tree icon | 55% | Game shortcut opens the real Program Files/Games directory in the current OS Explorer; Windows XP desktop and Explorer folder icons now use the program/tree folder asset. DOOM and remaining game entries still need integration. |
-| DOCS-01 | Create “Мои документы” and reorganize personal apps | 45% | Added the My Documents folder with Wiki, My Block, About Me and My Projects entries; app shortcuts route through the desktop launcher. Need user-facing polish and verification. |
-| PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 40% | Added My Pictures folder with the repository picture tree exposed as individual file entries; Bliss.jpg is now inside the folder and no longer on the desktop. Viewer/library unification remains. |
+| EXPLORER-01 | Game folder as a native folder with Windows XP tree icon | 55% | Games opens the real Program Files/Games directory in the active OS Explorer, not a custom launcher window. The current folder_program.png mapping must be checked against the intended Windows XP tree/favorites folder icon and corrected if it is not the actual tree icon. Ensure icon, navigation and file launch behavior are consistent in every OS skin. |
+| DOCS-01 | Create “Мои документы” and reorganize personal apps | 45% | Virtual filesystem already contains Мои документы with Вики, Мой блок, Обо мне and Мои проекты; verify there are no duplicate standalone desktop items or orphaned app entries and each opens existing content/app in the active OS Explorer. |
+| PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 40% | Virtual filesystem enumerates repository images as individual files and adds Bliss.jpg to Мои изображения; verify inventory parity with the full gallery, nested folders, supported formats and absence of the old desktop Bliss shortcut. |
 | PICTURES-02 | Merge Picture Viewer and gallery browsing | 55% | Picture Viewer now has a small gallery-mode button in both Apple and Windows chrome; its library grid uses the shared gallery inventory, and the My Pictures app is now a compatibility entry point into that same viewer. Browser polish and validation remain. |
 | CONTROL-01 | Control Panel desktop shortcut and native categories | 45% | Control Panel desktop shortcut already exists. Added Task Manager to the System/Performance category and Classic View, plus a Widget Gallery entry that opens the existing widget manager. Task Manager's duplicate desktop shortcut is hidden. |
-| CONTROL-02 | Restore Explorer/Control Panel styling per OS | 35% | Windows 7 now opens its dedicated Windows7Explorer implementation; Windows XP continues through its XP-styled MyComputer view. Windows 98 and remaining OS-specific fidelity still need refinement. |
-| CONTROL-03 | Widget shortcut and remaining system settings | 15% | Widget gallery exists. Need expose it from Control Panel and provide consistent links to relevant desktop/system settings. |
+| CONTROL-02 | Restore authentic Explorer and Control Panel styling per OS | 35% | Windows 7 uses its dedicated Explorer surface and Windows XP retains XP-styled Explorer. Restore original OS-specific Explorer/Control Panel visual language for every supported system (Windows 98/2000/XP/7, WebOS, Arch, Ubuntu, macOS, iOS and other registered profiles), not one generic Windows layout. |
+| CONTROL-03 | Desktop shortcut to Widgets and remaining system settings | 20% | Widget Gallery is reachable from Control Panel. Add/verify a dedicated desktop shortcut to the existing widget manager and ensure Control Panel, context menu and widget gallery use the same underlying manager. |
 | THEMES-01 | Add all gallery images to Appearance & Themes | 45% | Appearance and Themes now reads the complete shared gallery inventory rather than only the wallpaper subset, making gallery pictures available as wallpaper choices. Need verify previews and selection persistence across themes. |
 | DOCS-02 | Maintain an accurate task register | 90% | This active workstream and implementation percentages are now documented. Keep percentages synchronized with actual commits and do not mark browser-only behavior complete before user verification. |
 
@@ -398,3 +398,53 @@ An earlier section in this document claims that /eat/ was completely cleared and
 - Code-level edits in the widget and RSS workstreams are committed only after review of the resulting diffs.
 - No browser interaction, manual gameplay, live RSS publisher verification or visual QA is represented as complete by the percentages above.
 - CI status must be reported per exact commit SHA; a prior successful workflow does not prove later commits pass.
+
+## Refinement pass — 2026-11-19 (user-confirmed scope)
+
+Percentages are repository implementation estimates, not QA confidence. User reports that current DOOM implementations do not work; a URL, iframe or launch button is not a playable game until gameplay is actually verified.
+
+### GAME-01 — DOOM: root-cause repair and reliable playable build
+- Re-audit src/apps/doom and all launch routes. Current DoomPlayer loads Emupedia in an iframe. Its onError handler cannot reliably detect remote HTTP errors, blocked framing (X-Frame-Options/CSP), missing game data/WADs or runtime boot failures. Replace optimistic loading with explicit, testable loading/error/recovery states.
+- Recheck upstream URLs, build directories, required data files, browser compatibility, iframe policy and input/audio/pointer-lock behavior. Do not label a remote page playable merely because the host responds.
+- Inspect /eat/98.portfolio-main/src/components/programs/DOOM/ fully: doom-game.tsx, game-engine.ts, constants.ts, textures.ts, sprite-data.ts, chunks.ts, audio.ts, rng.ts, types.ts, manifests, public assets and imports. This is a custom Three.js first-person survival game branded 98.DOOM, not original id Software DOOM. Establish code and asset provenance/license before copying. No license has been verified; absence of a LICENSE file is not permission.
+- Prefer a genuinely local/self-contained playable build when legally usable source and required game data are available. Otherwise provide a transparent external launch route with verified host compatibility and useful fallback; never present a broken iframe as finished.
+- Keep Doom 3 marked WIP/unavailable unless independently verified playable.
+- Acceptance: test every advertised build inside the actual app window; verify gameplay, keyboard/mouse, pointer lock acquire/release, sound, resize, restart and error recovery. Record browser/device and exact build. Count a game complete only after gameplay is confirmed.
+
+### GAME-02 — /eat/ game inventory and additional titles
+- Inventory every game-related donor folder/source in /eat/. Record title, donor path, entry point, assets, runtime/build dependencies, license/provenance, compatibility, bundle impact and integration decision.
+- Inspect candidate games for complete source/assets; reject demos dependent on unavailable APIs, remote services, missing binaries or unlicensed media.
+- Add several suitable games as independent entries in the real Program Files/Games virtual folder. Prefer lightweight self-contained implementations and reusable game-shell/input/fullscreen patterns; avoid duplicate engines/libraries where existing code suffices.
+- Keep game identity, icon, description, controls and status (Playable / WIP / External) explicit. Launch through normal file associations/app registry and active OS Explorer.
+- Acceptance: every Playable title starts and is playable; no dead buttons, missing assets or unverified claims. Update donor audit and license notes.
+
+### EXPLORER-01 — Games folder as a normal folder
+- Keep Games as an ordinary virtual-filesystem directory. Opening it uses the current OS Explorer and shows files/shortcuts with normal file associations; do not replace it with a custom DOOM collection card app.
+- Use the recognizable Windows XP tree/favorites folder icon (tree-bearing folder, not generic plain/program folder) for XP Games and theme-appropriate icon variants elsewhere. Confirm the exact source asset before changing imports.
+- Game file entries must launch real app IDs, with names/icons/status consistent with the game catalog.
+
+### DOCS-01 — My Documents structure and cleanup
+- Мои документы is the canonical parent for Вики, Мой блок, Обо мне and Мои проекты. Preserve existing app IDs/content and open each item through active OS Explorer.
+- Remove duplicate standalone desktop shortcuts for these entries where they should live in My Documents; do not remove apps from registry, Start Menu or other intentional navigation surfaces.
+- Verify folder placement/open behavior across OS themes, including navigation and reopening windows.
+
+### PICTURES-01/02 — One image library and two viewer modes
+- Мои изображения is a normal folder under the user profile. Expose every image present in the site's gallery as an individual file entry, preserving useful subfolders and extensions. Include bliss.jpg here and remove its separate desktop shortcut; retain the source image for gallery/wallpaper use.
+- Unify Picture Viewer and the former Мои изображения pseudo-app: one shared gallery inventory, current-image state and viewer surface. A small toolbar button in Picture Viewer toggles single-image mode and a thumbnail grid of all gallery images. Opening Мои изображения opens that same app directly in grid mode, not a second viewer.
+- Opening an image file in Explorer opens shared Picture Viewer on that exact image. Grid selection switches to single-image mode; navigation/reopen must not create stale duplicated state.
+- Acceptance: inventory count matches site gallery; every thumbnail/file association resolves; supported formats open; no duplicate viewer implementations or desktop Bliss file remain.
+
+### CONTROL-01/02/03 — Control Panel, widgets and OS-native styling
+- Add/keep a desktop shortcut to Control Panel and a separate desktop shortcut to the existing Widgets/Widget Gallery manager. Both open the same canonical surfaces used by shell/context menu.
+- Rebuild Control Panel as category navigation with active OS visual conventions. Include appropriate categories for System/Performance, Appearance & Themes/Personalization, Network & Internet, Hardware & Sound, Programs/Applications, User Accounts and Accessibility; adapt names/order to the emulated OS.
+- Place Task Manager inside System/Performance and retain access through Classic View. Avoid duplicate Task Manager desktop icons unless explicitly requested.
+- Restore original Explorer and Control Panel styling per OS, not one generic Windows frame. Preserve theme-specific title bars, toolbars/address/navigation, icons, typography, spacing, menus, category layout and responsive behavior.
+- Acceptance: Control Panel and Explorer look recognizably native for each supported OS; category entries open working settings/apps; widget shortcut opens the same manager; no dead placeholder categories.
+
+### THEMES-01 — Complete gallery in Appearance & Themes
+- Include every image from the site's shared gallery, not only wallpaper subset, in Appearance & Themes. Use local repository assets and the same inventory as My Pictures/Picture Viewer.
+- Keep thumbnails, grouping, preview, fit/fill positioning and apply/cancel coherent. Verify wallpaper selection persists after switching OS profiles and reload.
+
+### DOCS-02 — Task registry maintenance
+- Keep docs/tasks.md as the single master registry for the active WebOS/desktop workstream. Update status/percentage only after inspecting implementation; distinguish implemented, partial, blocked by provenance/license and manually verified.
+- Preserve completed task history. Do not mark 100% because a shortcut/component/config exists; use acceptance criteria and runtime checks.
