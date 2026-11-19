@@ -929,10 +929,13 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
   const openExplorerWindow = useCallback((path: string) => {
     const normalizedPath = path || 'My Computer';
-    const title =
-      normalizedPath === 'My Computer'
-        ? t.myComputer
-        : normalizedPath.split('\\').filter(Boolean).pop() || normalizedPath;
+    const pathName = normalizedPath.split('\\').filter(Boolean).pop() || normalizedPath;
+    const localizedFolderNames: Record<string, string> = language === 'ru'
+      ? { 'My Documents': 'Мои документы', 'My Pictures': 'Мои рисунки', 'My Music': 'Моя музыка' }
+      : {};
+    const title = normalizedPath === 'My Computer'
+      ? t.myComputer
+      : localizedFolderNames[pathName] ?? pathName;
 
     openWindow({
       id: `explorer:${normalizedPath}`,
@@ -945,7 +948,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} />,
     });
     playLaunchSound();
-  }, [handleOpenFile, handleOpenPictureSlideshow, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon]);
+  }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon]);
 
   const openDoomVariant = useCallback((variantId: DoomVariantId) => {
     const variant = doomVariantMap[variantId];
