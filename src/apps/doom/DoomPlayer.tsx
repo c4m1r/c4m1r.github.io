@@ -12,12 +12,10 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
   const builds = useMemo(() => variant?.builds ?? [], [variant]);
   const [activeBuildId, setActiveBuildId] = useState(builds[0]?.id ?? 'webgl');
   const [frameFailed, setFrameFailed] = useState(false);
-  const [frameLoaded, setFrameLoaded] = useState(false);
 
   useEffect(() => {
     setActiveBuildId(builds[0]?.id ?? 'webgl');
     setFrameFailed(false);
-    setFrameLoaded(false);
   }, [variantId, builds]);
 
   const activeBuild = useMemo(() => {
@@ -50,7 +48,7 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
             {variant.builds.map((build) => (
               <button
                 key={build.id}
-                onClick={() => { setActiveBuildId(build.id); setFrameFailed(false); setFrameLoaded(false); }}
+                onClick={() => { setActiveBuildId(build.id); setFrameFailed(false); }}
                 className={`doom-player__button px-3 py-1 rounded border text-[11px] ${
                   build.id === activeBuildId
                     ? 'is-active bg-[#f44336] border-[#ff7961] text-white'
@@ -76,18 +74,6 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
       </header>
 
       <div className="doom-player__stage flex-1 relative bg-black overflow-hidden">
-        <div className="doom-player__status absolute top-2 left-2 right-2 z-10 flex items-center justify-between gap-3 border border-[#555] bg-black/85 px-3 py-2 text-[11px] text-[#f5d98a]">
-          <span>
-            {frameFailed
-              ? (isRu ? 'Не удалось подтвердить загрузку встроенной страницы.' : 'The embedded page could not be confirmed as loaded.')
-              : frameLoaded
-                ? (isRu ? 'Страница iframe загружена; запуск игрового движка и доступность управления не подтверждены.' : 'The iframe page loaded; game engine startup and input are not verified.')
-                : (isRu ? 'Ожидание ответа внешней страницы. Загрузка iframe не гарантирует запуск игры.' : 'Waiting for the external page. An iframe load does not guarantee that the game started.')}
-          </span>
-          <a href={activeBuild.url} target="_blank" rel="noreferrer" className="shrink-0 underline text-[#9fd4ff]">
-            {isRu ? 'В отдельной вкладке' : 'Open separately'}
-          </a>
-        </div>
         <iframe
           key={activeBuild.url}
           src={activeBuild.url}
@@ -97,7 +83,6 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
           loading="eager"
-          onLoad={() => { setFrameLoaded(true); setFrameFailed(false); }}
           onError={() => { setFrameLoaded(false); setFrameFailed(true); }}
         />
         {frameFailed && (
@@ -111,17 +96,8 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
             </a>
           </div>
         )}
-        <div className="doom-player__tip absolute bottom-2 right-4 bg-[#111]/80 px-3 py-2 rounded text-[11px] text-[#ffb400] border border-[#ffb400]/40 shadow-lg max-w-sm">
-          {isRu
-            ? 'Важно: успешная загрузка страницы не означает, что игровой движок запустился. Проверяй управление, звук и игровой процесс отдельно.'
-            : 'Important: a successful page load does not mean the game engine started. Verify controls, audio and gameplay separately.'}
-        </div>
-      </div>
+    </div>
 
-      <footer className="doom-player__footer bg-[#101010] border-t border-[#272727] px-3 py-2 text-[#bcbcbc] text-[11px] flex justify-between">
-        <span>Emupedia / wasm-doom</span>
-        <span>{isRu ? 'Все права принадлежат id Software.' : 'All rights belong to id Software.'}</span>
-      </footer>
     </div>
   );
 }
