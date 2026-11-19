@@ -354,3 +354,11 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Latest source implementation commit: 0bdc4711d984243e7e8593a6d91facb48c7c884d. Docs-only follow-up commits may advance main afterward.
 - The source tree was reviewed for the canonical nested My Pictures path across XP, Windows 7 and Windows 98/2000 entry points. GitHub code-search excerpts can lag; direct main-branch file fetches are the source of truth.
 - Verification remains source-only: no local typecheck, lint, build, verify or browser/manual test was run.
+
+
+### Latest implementation handoff — Unified Calendar Center audit (2026-11-19)
+- User requested that the three calendar entry points become one shared center without losing their current features or visual identity: desktop widget, taskbar clock flyout and full Calendar app.
+- Source inspection on `main`: `src/apps/calendar/CalendarApp.tsx` currently loads locale-specific bundled ICS data and renders a read-only month grid; it owns local month/year state. `src/shells/desktop/components/AppleDesktopWidgets.tsx` independently builds a month grid and clock/calendar combination without shared event/date state. `src/shells/desktop/components/TaskbarSystemArea.tsx` independently implements `ClockCalendarPopup`, including analog/digital clock, month cursor and compact grid.
+- This is a confirmed architectural duplication. No shared Calendar Core or synchronized date/event state was found in the inspected entry points. The calendar app's current white/XP-like toolbar is not yet a sufficient OS adapter for all profiles.
+- Active implementation specification is `CALENDAR-01` in `docs/tasks.md`. Keep the three surfaces as distinct native views over one domain service; preserve each surface's useful UI. Do not import donor code from `/eat/` or claim runtime/test completion without running the gates.
+- Calendar refactor has not yet been implemented or runtime-verified in this audit pass. Next code pass should map all launch callbacks and theme CSS before introducing the shared store, then wire all three surfaces and add migration-safe persistence.
