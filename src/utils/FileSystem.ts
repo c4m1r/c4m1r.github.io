@@ -175,6 +175,12 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         name: 'Start Menu',
                                         type: 'folder',
                                         children: {}
+                                    },
+                                    'Recent': {
+                                        id: 'recent-documents',
+                                        name: 'Recent',
+                                        type: 'folder',
+                                        children: {}
                                     }
                                 }
                             },
