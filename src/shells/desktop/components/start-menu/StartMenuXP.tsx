@@ -42,6 +42,7 @@ const MY_DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
 const MY_RECENT_PATH = 'C:\\Documents and Settings\\C4m1r\\Recent';
 const MY_PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures';
 const MY_MUSIC_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music';
+const MY_VIDEOS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Videos';
 
 export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand, appearance = 'webos', onHover }: StartMenuXPProps) {
   const { language, theme } = useApp();
@@ -183,6 +184,12 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       title: isRu ? 'Моя музыка' : 'My Music',
       icon: placeIcons.myMusic ?? musicIcon,
       path: MY_MUSIC_PATH,
+    },
+    {
+      id: 'my-videos',
+      title: isRu ? 'Мои видеозаписи' : 'My Videos',
+      icon: themeAssets.folderIcon ?? fallbackIcon,
+      path: MY_VIDEOS_PATH,
     },
     {
       id: 'my-computer',
