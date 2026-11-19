@@ -911,6 +911,22 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     playLaunchSound();
   }, [openWindow, playErrorSound, playLaunchSound, themeKey]);
 
+  const handleOpenPictureSlideshow = useCallback((items: FileSystemItem[]) => {
+    const images = items.flatMap((item) => (
+      typeof item.content === 'string' ? [{ src: item.content, name: item.name }] : []
+    ));
+    if (images.length === 0) return;
+    openWindow({
+      id: `slideshow:${Date.now()}`,
+      title: language === 'ru' ? 'Просмотр изображений — слайд-шоу' : 'Picture Viewer — Slide Show',
+      icon: resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon),
+      width: 720,
+      height: 520,
+      content: <PictureViewer images={images} startSlideshow />,
+    });
+    playLaunchSound();
+  }, [language, openWindow, playLaunchSound, themeAssets.folderIcon, fallbackAssets.folderIcon]);
+
   const openExplorerWindow = useCallback((path: string) => {
     const normalizedPath = path || 'My Computer';
     const title =
@@ -926,10 +942,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       height: 520,
       content: themeKey === 'win7'
         ? <Windows7Explorer currentPath={normalizedPath} onOpenItem={handleOpenFile} />
-        : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} />,
+        : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} />,
     });
     playLaunchSound();
-  }, [handleOpenFile, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon]);
+  }, [handleOpenFile, handleOpenPictureSlideshow, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon]);
 
   const openDoomVariant = useCallback((variantId: DoomVariantId) => {
     const variant = doomVariantMap[variantId];
