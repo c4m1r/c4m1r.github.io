@@ -338,6 +338,7 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - 2026-11-19 source pass: Windows 7 Explorer now receives the shared slideshow callback, offers a Slide show action when the current folder contains multiple supported images, and uses actual image URLs in thumbnail view. This reuses the shared PictureViewer slideshow instead of creating a second viewer. Runtime acceptance remains pending.
 - 2026-11-19 follow-up: shared Picture Viewer now supports Left/Right image navigation, +/- zoom shortcuts and Escape to stop slideshow and invoke its optional close callback. Zoom and rotation reset when the active image changes, including slideshow advances. Browser/keyboard acceptance remains pending.
+- Explorer address-bar file activation in the shared legacy Explorer now resolves the final filename case-insensitively, matching the virtual filesystem's case-insensitive path resolver. Validate mixed-case file paths and associations in browser acceptance.
 
 - 2026-11-19 source pass: Desktop icons now follow the agreed shell layout: My Computer, My Documents, Games and Programs; per-application shortcuts have been removed from the desktop and remain available through Start / Programs. The WebOS widget-gallery desktop entry remains non-Windows only. Browser navigation acceptance remains pending.
 
