@@ -135,6 +135,31 @@ Percentages are working estimates, not test results. The previous task registry 
 - Provide previews, grouping, fit/fill positioning, apply/cancel and persistence across OS profile switch/reload.
 - Reuse the same canonical inventory as My Pictures/Picture Viewer.
 
+### WIDGET-GALLERY-02 — Canonical OS-native Widget Gallery
+- Shared widget catalogue, visibility toggles and size presets remain one implementation; presentation is adapted to Windows 98/2000, XP, 7, 10/11, Ubuntu, Arch, macOS and WebOS.
+- Current source pass replaces emoji glyphs with consistent vector icons, fixes the gallery's nested item/toggle/preset selectors, adds OS-family classes and dedicated skin treatments. The stylesheet is imported globally through `src/styles/os/index.css`.
+- Acceptance remains open: verify actual appearance, contrast, focus/keyboard behavior, scroll containment, narrow viewport layout and toggle/preset persistence on every OS family.
+
+### APP-ICONS-02 — Restore application icons in virtual folders
+- Explorer file entries with an `appId` resolve the application icon before falling back to the generic file/document icon.
+- The initial mapping uses the existing Windows XP asset registry and covers the current native apps and game entries. Confirm icon loading in Programs/Games and review per-OS icon fidelity; do not duplicate app metadata in the filesystem.
+
+### STARTMENU-01 — Functional Start Menu navigation and actions
+- All Programs opens `C:\\Program Files\\Programs`; the classic Programs entry opens the same folder. The legacy `all-programs` launcher route is aligned.
+- XP Search and Windows 98/2000 Find open a dedicated Explorer window with the current-folder search row focused. Unsupported XP shell destinations are genuinely disabled and no longer launch fake `unavailable:` error requests.
+- Existing app launch, folder navigation, Run, Help, Control Panel, My Computer, Documents, Pictures, logoff and shutdown routes must be manually exercised for each Start Menu variant. Windows 7 search currently filters its program list; full filesystem search remains a separate acceptance item.
+
+### PROFILE-FS-01 — One user profile across legacy and modern Windows paths
+- The same profile object is visible through both `C:\\Documents and Settings\\C4m1r` and `C:\\Users\\C4m1r`; the `Users` directory is an alias, not a copied profile.
+- Modern profile names `Documents`, `Pictures`, `Music`, `Videos` and `Downloads` resolve to the same canonical user folders as their legacy `My ...` names. Windows 7 Start Menu and Explorer use the modern paths; classic/XP shells retain legacy paths.
+- Program Files now groups installed applications by publisher/author (Microsoft Corporation, Nullsoft, C4m1r); Games groups titles under id Software, Microsoft and C4m1r.
+- Acceptance remains open: navigate both profile paths, create/resolve each shortcut target, verify Back/Forward/Up and folder tree, then double-click every publisher/game entry.
+
+### I18N-01 — Belarusian and Kazakh system locales
+- Added `be` and `kk` to the language type, language selector, browser-language detection and supported-language persistence. Legacy settings migration now preserves both values.
+- Added Belarusian and Kazakh translations for core shell, Start Menu, GRUB, terminal and site navigation labels. Untranslated long-form sections currently inherit Russian, and application names without explicit locale entries fall back to English; full translation coverage is not yet complete.
+- Acceptance: select each language, reload, switch OS profiles, test saved settings migration and audit every user-visible string for missing/fallback text.
+
 ## P1 — Quality, integration and regression
 
 ### OS-FIDELITY-01 — Cross-OS visual acceptance matrix
@@ -158,12 +183,12 @@ Percentages are working estimates, not test results. The previous task registry 
 
 | Gate | Last known result | Notes |
 |---|---|---|
-| `npm run verify` | Not run in this documentation pass | Must run after code changes |
-| `npm run typecheck` | Not run in this documentation pass | Must run after code changes |
-| `npm run lint` | Not run in this documentation pass | Must run after code changes |
-| `npm run build` | Not run in this documentation pass | Must run after code changes |
+| `npm run verify` | Not run in this source pass | Must run after code changes |
+| `npm run typecheck` | Not run in this source pass | Must run after code changes |
+| `npm run lint` | Not run in this source pass | Must run after code changes |
+| `npm run build` | Not run in this source pass | Must run after code changes |
 | `git diff --check` | Not run in this documentation pass | Must run after code changes |
-| Browser/manual OS matrix | Not run | Requires real runtime review |
+| Browser/manual OS matrix | Pending | New widget, Start Menu, Explorer path and locale changes need cross-OS runtime review |
 
 ## Recent change log
 - 2026-11-19: Consolidated active WebOS/multi-OS tasks, retained previous registry in history, corrected DOOM status to 30%, and promoted OS-native styling to explicit acceptance criteria.
@@ -210,5 +235,6 @@ Percentages are working estimates, not test results. The previous task registry 
 - 2026-11-19: Wired the Windows XP Picture Tasks slideshow action to the shared Picture Viewer with autoplay enabled, rather than opening only the first image.
 
 - 2026-11-19: Localized Explorer window titles for My Documents, My Pictures and My Music in Russian UI so Start Menu navigation and Explorer folder labels agree.
+- 2026-11-19: Added OS-native Widget Gallery styling, application icon resolution in virtual folders, Start Menu Programs/Search routing, shared legacy/modern Windows profile aliases, publisher-based Program Files folders and initial Belarusian/Kazakh locale support. Automated and manual verification remain pending.
 
 - 2026-11-19: Explorer launcher now includes the active OS theme in its callback dependencies, preventing a stale Explorer surface when the active theme changes without remounting.
