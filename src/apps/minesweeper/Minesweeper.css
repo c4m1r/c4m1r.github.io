@@ -136,20 +136,23 @@
   background-repeat: no-repeat !important;
 }
 
+/* cells.png is a 16-frame vertical sheet. Frames 14..7 are digits 1..8,
+   while frames 1..6 are flag/question/mine states. Keep game values mapped
+   explicitly; the sprite order is not the numeric order. */
 .minesweeper-sprite-0 { background-position: 0 0; }
-.minesweeper-sprite-1 { background-position: 0 -16px; }
-.minesweeper-sprite-2 { background-position: 0 -32px; }
-.minesweeper-sprite-3 { background-position: 0 -48px; }
-.minesweeper-sprite-4 { background-position: 0 -64px; }
-.minesweeper-sprite-5 { background-position: 0 -80px; }
-.minesweeper-sprite-6 { background-position: 0 -96px; }
-.minesweeper-sprite-7 { background-position: 0 -112px; }
-.minesweeper-sprite-8 { background-position: 0 -128px; }
-.minesweeper-sprite-mine { background-position: 0 -144px; }
-.minesweeper-sprite-mine-exploded { background-position: 0 -160px; }
-.minesweeper-sprite-mine-wrong { background-position: 0 -176px; }
-.minesweeper-sprite-flag { background-position: 0 -192px; }
-.minesweeper-sprite-question { background-position: 0 -208px; }
+.minesweeper-sprite-1 { background-position: 0 -224px; } /* frame 14 */
+.minesweeper-sprite-2 { background-position: 0 -208px; } /* frame 13 */
+.minesweeper-sprite-3 { background-position: 0 -192px; } /* frame 12 */
+.minesweeper-sprite-4 { background-position: 0 -176px; } /* frame 11 */
+.minesweeper-sprite-5 { background-position: 0 -160px; } /* frame 10 */
+.minesweeper-sprite-6 { background-position: 0 -144px; } /* frame 9 */
+.minesweeper-sprite-7 { background-position: 0 -128px; } /* frame 8 */
+.minesweeper-sprite-8 { background-position: 0 -112px; } /* frame 7 */
+.minesweeper-sprite-mine { background-position: 0 -80px; } /* frame 5 */
+.minesweeper-sprite-mine-exploded { background-position: 0 -48px; } /* frame 3 */
+.minesweeper-sprite-mine-wrong { background-position: 0 -64px; } /* frame 4 */
+.minesweeper-sprite-flag { background-position: 0 -16px; } /* frame 1 */
+.minesweeper-sprite-question { background-position: 0 -32px; } /* frame 2 */
 
 .minesweeper-number-1 { color: #0000ff; }
 .minesweeper-number-2 { color: #008000; }
