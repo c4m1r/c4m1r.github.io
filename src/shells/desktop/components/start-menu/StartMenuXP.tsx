@@ -438,7 +438,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           <button
             className="start-menu-item start-menu-item--footer"
             onClick={() => {
-              onLaunchApp?.('all-programs');
+              onOpenPath?.('C:\\Program Files\\Programs');
               onClose();
             }}
             onMouseEnter={handleHover}
