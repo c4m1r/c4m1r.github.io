@@ -257,11 +257,47 @@ export function getHolidaysForDate(date: Date): NationalHoliday[] {
   return getNationalHolidays(date.getFullYear()).filter(item=>dateKey(item.date)===key);
 }
 
+const labourOverrides: Record<number, Partial<Record<CountryCode, { off: string[]; work: string[] }>>> = {
+  2026: {
+    RU: { off: ['2026-01-01','2026-01-02','2026-01-05','2026-01-06','2026-01-07','2026-01-08','2026-01-09','2026-02-23','2026-03-09','2026-05-01','2026-05-11','2026-06-12','2026-11-04','2026-12-31'], work: [] },
+    KZ: { off: ['2026-01-01','2026-01-02','2026-01-07','2026-03-09','2026-03-21','2026-03-22','2026-03-23','2026-03-24','2026-03-25','2026-05-01','2026-05-07','2026-05-09','2026-05-11','2026-05-27','2026-07-06','2026-08-30','2026-08-31','2026-10-25','2026-10-26','2026-12-16'], work: [] },
+    BY: { off: ['2026-01-01','2026-01-02','2026-01-07','2026-03-08','2026-04-21','2026-05-01','2026-05-09','2026-07-03','2026-11-07','2026-12-25'], work: ['2026-04-25'] },
+    CN: { off: ['2026-01-01','2026-01-02','2026-01-03','2026-02-15','2026-02-16','2026-02-17','2026-02-18','2026-02-19','2026-02-20','2026-02-21','2026-02-22','2026-02-23','2026-04-04','2026-04-05','2026-04-06','2026-05-01','2026-05-02','2026-05-03','2026-05-04','2026-05-05','2026-06-19','2026-06-20','2026-06-21','2026-09-25','2026-09-26','2026-09-27','2026-10-01','2026-10-02','2026-10-03','2026-10-04','2026-10-05','2026-10-06','2026-10-07'], work: ['2026-01-04','2026-02-14','2026-02-28','2026-05-09','2026-09-20','2026-10-10'] },
+    KR: { off: ['2026-01-01','2026-02-16','2026-02-17','2026-02-18','2026-03-01','2026-03-02','2026-05-01','2026-05-05','2026-05-24','2026-05-25','2026-06-03','2026-06-06','2026-07-17','2026-08-15','2026-08-17','2026-09-24','2026-09-25','2026-09-26','2026-10-03','2026-10-05','2026-10-09','2026-12-25'], work: [] },
+    GB: { off: ['2026-01-01','2026-04-03','2026-04-06','2026-05-04','2026-05-25','2026-08-31','2026-12-25','2026-12-28'], work: [] },
+  },
+  2027: {
+    RU: { off: ['2027-01-01','2027-01-02','2027-01-03','2027-01-04','2027-01-05','2027-01-06','2027-01-07','2027-01-08','2027-01-09','2027-01-10','2027-02-21','2027-02-22','2027-02-23','2027-03-06','2027-03-07','2027-03-08','2027-05-01','2027-05-02','2027-05-03','2027-05-08','2027-05-09','2027-05-10','2027-06-12','2027-06-13','2027-06-14','2027-11-04','2027-11-05','2027-11-06','2027-11-07','2027-12-31'], work: ['2027-02-20'] },
+    BY: { off: ['2027-01-01','2027-01-02','2027-01-07','2027-03-08','2027-05-01','2027-05-09','2027-05-10','2027-05-11','2027-07-03','2027-11-07','2027-12-25'], work: ['2027-05-08'] },
+    CN: { off: ['2027-01-01','2027-01-02','2027-01-03','2027-02-05','2027-02-06','2027-02-07','2027-02-08','2027-02-09','2027-02-10','2027-02-11','2027-02-12','2027-02-13','2027-04-03','2027-04-04','2027-04-05','2027-05-01','2027-05-02','2027-05-03','2027-05-04','2027-05-05','2027-06-09','2027-09-15','2027-10-01','2027-10-02','2027-10-03','2027-10-04','2027-10-05','2027-10-06','2027-10-07'], work: ['2027-01-31','2027-02-14','2027-05-08','2027-09-26','2027-10-09'] },
+    KR: { off: ['2027-01-01','2027-02-06','2027-02-07','2027-02-08','2027-02-09','2027-03-01','2027-05-01','2027-05-03','2027-05-05','2027-05-13','2027-06-06','2027-07-17','2027-07-19','2027-08-15','2027-08-16','2027-09-14','2027-09-15','2027-09-16','2027-10-03','2027-10-04','2027-10-09','2027-10-11','2027-12-25','2027-12-27'], work: [] },
+    GB: { off: ['2027-01-01','2027-03-26','2027-03-29','2027-05-03','2027-05-31','2027-08-30','2027-12-27','2027-12-28'], work: [] },
+  },
+};
+function dateKeyLocal(date: Date) { return dateKey(date); }
+function isCountryLabourDayOff(date: Date, country: CountryCode): boolean {
+  const key=dateKeyLocal(date);
+  const overrides=labourOverrides[date.getFullYear()]?.[country];
+  if (overrides?.work.includes(key)) return false;
+  if (overrides?.off.includes(key)) return true;
+  if (date.getDay()===0 || date.getDay()===6) return true;
+  // Statutory public holidays are non-working days even when no annual transfer schedule exists.
+  if (getNationalHolidays(date.getFullYear()).some((holiday)=>holiday.country===country && holiday.kind==='public' && dateKeyLocal(holiday.date)===key)) return true;
+  // Kazakhstan's labour code transfers a public holiday that coincides with a weekend to the next working day.
+  if(country==='KZ' && date.getFullYear()!==2026){
+    const previous=new Date(date.getFullYear(),date.getMonth(),date.getDate()-1);
+    const previousHoliday=getNationalHolidays(previous.getFullYear()).some((holiday)=>holiday.country==='KZ'&&holiday.kind==='public'&&dateKeyLocal(holiday.date)===dateKeyLocal(previous));
+    if(previousHoliday && previous.getDay()===0) return true;
+  }
+  return false;
+}
+export function getLabourDayStatus(date: Date, selected: CountryCode[]) {
+  const dayOffCountries=selected.filter((country)=>isCountryLabourDayOff(date,country));
+  const workingCountries=selected.filter((country)=>!dayOffCountries.includes(country));
+  return { isDayOff: dayOffCountries.length>0, dayOffCountries, workingCountries };
+}
 export function isSelectedCountryWeekend(date: Date, selected: CountryCode[]): boolean {
-  if (!selected.length) return false;
-  // Saturday/Sunday is the standard weekly rest pattern; country-specific official transfer days
-  // require the published annual labour calendar and are not inferred here.
-  return date.getDay()===0 || date.getDay()===6;
+  return getLabourDayStatus(date,selected).isDayOff;
 }
 
 const labourCountryListeners = new Set<() => void>();
