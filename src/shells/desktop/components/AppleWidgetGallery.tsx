@@ -111,7 +111,7 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
 
   return (
     <div className={`apple-widget-gallery apple-widget-gallery--${osFamily} ${nightMode ? 'is-night' : ''}`} role="dialog" aria-label={locale.title}>
-      <button type="button" className="apple-widget-gallery__backdrop" aria-label={isRu ? 'Закрыть' : 'Close'} onClick={onClose} />
+      <button type="button" className="apple-widget-gallery__backdrop" aria-label={locale.done} onClick={onClose} />
       <section className="apple-widget-gallery__panel" onClick={(event) => event.stopPropagation()}>
         <header>
           <div><strong>{locale.title}</strong><small>{themeKey === 'webos' ? 'WebOS' : themeKey === 'win7' ? 'Windows 7' : themeKey.startsWith('win') ? 'Windows' : themeKey.startsWith('macos') ? 'macOS' : themeKey === 'ubuntu' ? 'Ubuntu' : themeKey === 'arch' ? 'Arch Linux' : 'Linux'}</small></div>
