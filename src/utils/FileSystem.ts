@@ -187,7 +187,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                     },
                                     'My Pictures': {
                                         id: 'my-pictures',
-                                        name: 'Мои изображения',
+                                        name: 'Мои рисунки',
                                         type: 'folder',
                                         icon: picturesFolderIcon,
                                         children: pictureChildren
