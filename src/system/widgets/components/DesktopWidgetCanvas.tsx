@@ -93,16 +93,34 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
     const occupied: Rect[] = [];
     const ordered = [...items].sort((a, b) => {
       const pa = current[a.id]; const pb = current[b.id];
+      if (Boolean(pa) !== Boolean(pb)) return pa ? -1 : 1;
       return (pa?.y ?? 0) - (pb?.y ?? 0) || (pa?.x ?? 0) - (pb?.x ?? 0);
     });
-    ordered.forEach((item, index) => {
+    const columnBottoms = [12, 12];
+    ordered.forEach((item) => {
       const saved = current[item.id];
       const preset = getPreset(item, saved);
       if (!preset) return;
-      const placement = saved ?? { x: 12 + (index % 2) * 300, y: 12 + Math.floor(index / 2) * 220, preset: preset.id };
+      let placement: Placement;
+      if (saved) {
+        placement = saved;
+        const column = saved.x < bounds.width / 2 ? 0 : 1;
+        columnBottoms[column] = Math.max(columnBottoms[column], saved.y + preset.height + HANDLE_HEIGHT + GAP);
+      } else {
+        const column = columnBottoms[0] <= columnBottoms[1] ? 0 : 1;
+        placement = {
+          x: column === 0 ? 12 : Math.max(12, bounds.width - preset.width - 12),
+          y: columnBottoms[column],
+          preset: preset.id,
+        };
+        columnBottoms[column] += preset.height + HANDLE_HEIGHT + GAP;
+      }
       const size = getSize(item, placement, bounds);
       const position = findFreePosition(placement, size, bounds, occupied);
-      const safePosition = position ?? { x: Math.max(0, Math.min(placement.x, bounds.width - size.width)), y: Math.max(0, Math.min(placement.y, bounds.height - size.height)) };
+      const safePosition = position ?? {
+        x: Math.max(0, Math.min(placement.x, bounds.width - size.width)),
+        y: Math.max(0, Math.min(placement.y, bounds.height - size.height)),
+      };
       next[item.id] = { ...placement, ...safePosition, preset: preset.id };
       occupied.push({ ...safePosition, ...size });
     });

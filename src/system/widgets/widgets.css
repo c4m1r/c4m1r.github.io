@@ -141,3 +141,15 @@
   .desktop-widget-canvas__handle { height: 30px; min-height: 30px; }
   .desktop-widget-canvas__handle select { max-width: 92px; min-width: 74px; }
 }
+
+/* RSS reader article content: keep feed HTML readable and constrained to the mini-window. */
+.rss-article-content { overflow-wrap: anywhere; user-select: text; }
+.rss-article-content p { margin: 0 0 1rem; }
+.rss-article-content h1,.rss-article-content h2,.rss-article-content h3 { margin: 1.25rem 0 .6rem; color: #f8fafc; font-weight: 700; line-height: 1.3; }
+.rss-article-content img,.rss-article-content video { display: block; max-width: 100%; height: auto; margin: 1rem auto; border-radius: 10px; }
+.rss-article-content figure { max-width: 100%; margin: 1rem 0; }
+.rss-article-content figcaption { margin-top: .35rem; color: #9ca3af; font-size: 11px; text-align: center; }
+.rss-article-content a { color: #93c5fd; text-decoration: underline; text-underline-offset: 2px; }
+.rss-article-content blockquote { margin: 1rem 0; padding: .5rem .9rem; border-left: 3px solid #3b82f6; background: rgba(59,130,246,.08); color: #d1d5db; }
+.rss-article-content table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.rss-article-content td,.rss-article-content th { padding: .4rem .6rem; border: 1px solid rgba(148,163,184,.25); }
