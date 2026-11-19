@@ -41,8 +41,12 @@ export function ControlPanel() {
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('all');
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>(() => {
     if (typeof window === 'undefined') return 'fill';
-    const saved = window.localStorage.getItem('desktop-wallpaper-fit');
-    return saved === 'fit' || saved === 'stretch' || saved === 'tile' || saved === 'center' ? saved : 'fill';
+    try {
+      const saved = window.localStorage.getItem('desktop-wallpaper-fit');
+      return saved === 'fit' || saved === 'stretch' || saved === 'tile' || saved === 'center' ? saved : 'fill';
+    } catch {
+      return 'fill';
+    }
   });
   const [customActive, setCustomActive] = useState(() => {
     if (typeof window !== 'undefined') {
