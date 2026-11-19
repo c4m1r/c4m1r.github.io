@@ -10,7 +10,7 @@ import backIcon from '../../themes/winxp/assets/toolbar/back.png';
 import forwardIcon from '../../themes/winxp/assets/toolbar/forward.png';
 import upIcon from '../../themes/winxp/assets/toolbar/folder.png';
 import goIcon from '../../themes/winxp/assets/toolbar/go.png';
-import { getItemsFromPath, getFileIcon, FileSystemItem, initialFileSystem } from '../../utils/FileSystem';
+import { getItemsFromPath, getFileIcon, getFileSystemItemFromPath, FileSystemItem, initialFileSystem } from '../../utils/FileSystem';
 import appleFolderIcon from '../../themes/apple/assets/icons/folder-generic.png';
 import appleDocumentIcon from '../../themes/apple/assets/sf-icons/document.svg';
 import appleImageIcon from '../../themes/apple/assets/sf-icons/image.svg';
@@ -21,7 +21,7 @@ import win98FolderIcon from '../../themes/win98/assets/icons/directory_closed-0.
 import win98DriveIcon from '../../themes/win98/assets/icons/hard_disk_drive-0.png';
 import win98SearchIcon from '../../themes/win98/assets/icons/search_computer-0.png';
 
-const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки/i.test(value);
+const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки|(?:^|[\\/])pictures$/i.test(value);
 
 export interface MyComputerProps {
   currentPath?: string;
@@ -267,35 +267,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
     navigateToPath(parent === 'C:' ? 'C:\\' : parent);
   };
 
-  const resolveNodeByPath = (target: string): FileSystemItem | null => {
-    if (target === 'My Computer') {
-      return initialFileSystem['My Computer'];
-    }
-
-    const normalized = target.replace('Local Disk (C:)', 'C:').replace(/\//g, '\\').replace(/^C:$/i, 'C:\\');
-    const parts = normalized.split('\\').filter(Boolean);
-    let current: FileSystemItem | undefined = initialFileSystem['My Computer'];
-
-    for (const part of parts) {
-      if (!current || !current.children) {
-        return null;
-      }
-
-      const keyedMatch: string | undefined = Object.keys(current.children).find((key) => key.toLocaleLowerCase() === part.toLocaleLowerCase());
-      if (keyedMatch) {
-        current = current.children[keyedMatch];
-        continue;
-      }
-
-      const match: FileSystemItem | undefined = Object.values(current.children).find(child => child.name.toLocaleLowerCase() === part.toLocaleLowerCase());
-      if (!match) {
-        return null;
-      }
-      current = match;
-    }
-
-    return current ?? null;
-  };
+  const resolveNodeByPath = (target: string): FileSystemItem | null =>
+    getFileSystemItemFromPath(target);
 
   const pathExists = (target: string) => {
     if (target === 'My Computer') return true;
