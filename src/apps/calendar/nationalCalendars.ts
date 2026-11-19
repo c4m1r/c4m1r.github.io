@@ -44,7 +44,10 @@ function equinoxDay(year:number, spring:boolean) {
 }
 function dateKey(date: Date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
 
+const nationalHolidayCache = new Map<number, NationalHoliday[]>();
 export function getNationalHolidays(year: number): NationalHoliday[] {
+  const cached = nationalHolidayCache.get(year);
+  if (cached) return cached;
   const result: NationalHoliday[]=[];
   for (const country of NATIONAL_COUNTRIES) {
     for (const [month,day,title,kind] of fixed[country.code]) {
@@ -79,7 +82,9 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
     add('KR',new Date(2027,1,6),'설날 · Соллаль (Лунный Новый год)');
     add('KR',new Date(2027,8,15),'추석 · Чхусок');
   }
-  return result.sort((a,b)=>a.date.getTime()-b.date.getTime());
+  result.sort((a,b)=>a.date.getTime()-b.date.getTime());
+  nationalHolidayCache.set(year, result);
+  return result;
 }
 
 
