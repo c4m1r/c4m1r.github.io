@@ -267,7 +267,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.main.x, top: windowPositions.main.y, zIndex: activeWindow === 'main' ? 90 : 80 }} onMouseDown={() => setActiveWindow('main')}>
         {/* Title Bar */}
-        <div className="wa-titlebar" onMouseDown={(event) => startWindowDrag(event, 'main')}>
+        <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'main')}>
           <div className="wa-titlebar__left">
             <span className="wa-titlebar__bolt">⚡</span>
             <span className="wa-titlebar__title">WINAMP</span>
@@ -509,7 +509,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       {showEq && (
         <div className={`wa-window wa-equalizer ${eqShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.equalizer.x, top: windowPositions.equalizer.y, zIndex: activeWindow === 'equalizer' ? 90 : 80 }} onMouseDown={() => setActiveWindow('equalizer')}>
-          <div className="wa-titlebar" onMouseDown={(event) => startWindowDrag(event, 'equalizer')}>
+          <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'equalizer')}>
             <span className="wa-titlebar__title">WINAMP EQUALIZER</span>
             <div className="wa-titlebar__controls">
               <button
@@ -646,7 +646,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       {showPl && (
         <div className={`wa-window wa-playlist ${plShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.playlist.x, top: windowPositions.playlist.y, zIndex: activeWindow === 'playlist' ? 90 : 80 }} onMouseDown={() => setActiveWindow('playlist')}>
-          <div className="wa-titlebar" onMouseDown={(event) => startWindowDrag(event, 'playlist')}>
+          <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'playlist')}>
             <span className="wa-titlebar__title">WINAMP PLAYLIST</span>
             <div className="wa-titlebar__controls">
               <button
