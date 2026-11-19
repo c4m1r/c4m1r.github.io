@@ -613,7 +613,7 @@ export function getOsSkinRules(theme: ThemeId): OsSkinRules {
 
 export function getOsAppTitle(
   appId: string,
-  defaultTitle: Record<Language, string>,
+  defaultTitle: Partial<Record<Language, string>> & Pick<Record<Language, string>, 'en'>,
   theme: ThemeId,
   language: Language
 ): string {
