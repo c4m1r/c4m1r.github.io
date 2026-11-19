@@ -43,7 +43,7 @@ export async function loadPictures(): Promise<ImageItem[]> {
   } catch (error) {
     console.error('Failed to load pictures:', error);
   }
-  return pictures;
+  return pictures.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function loadWallpapers(): Promise<ImageItem[]> {
@@ -65,7 +65,7 @@ export async function loadWallpapers(): Promise<ImageItem[]> {
   } catch (error) {
     console.error('Failed to load wallpapers:', error);
   }
-  return wallpapers;
+  return wallpapers.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
