@@ -31,7 +31,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const isWin2000 = theme === 'win2000';
   const [programsOpen, setProgramsOpen] = useState(false);
   const activeEdition = getActiveEdition(theme);
-  const themeAssets = THEME_ASSETS[theme] ?? THEME_ASSETS.webos;
+  const themeAssets = THEME_ASSETS[theme as keyof typeof THEME_ASSETS] ?? THEME_ASSETS.webos;
   const menuItems: ClassicMenuItem[] = [
     { label: isRu ? 'Программы' : 'Programs', icon: <Folder size={16} />, submenu: [
       { label: 'Internet Explorer', icon: <img src={themeAssets.internetExplorerIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'internet-explorer' },
