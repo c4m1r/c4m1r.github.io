@@ -7,11 +7,13 @@ import {
   selectCalendarDate,
   useCalendarCenter,
 } from '../../../apps/calendar/calendarCenter';
+import { getHolidaysForDate, isSelectedCountryWeekend, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
 
 export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () => void }) {
   const { language } = useApp();
   const [now, setNow] = useState(new Date());
   const { visibleMonth, selectedDate } = useCalendarCenter();
+  const labourCountries = useLabourCountries();
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
@@ -89,11 +91,14 @@ export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () =>
               if (!date) return <span key={`empty-${index}`} aria-hidden="true">·</span>;
               const sameDay = date.getFullYear() === selectedDate.getFullYear() && date.getMonth() === selectedDate.getMonth() && date.getDate() === selectedDate.getDate();
               const today = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
-              const hasEvents = getCalendarEventsForDate(date).length > 0;
+              const holidays = getHolidaysForDate(date);
+              const hasEvents = getCalendarEventsForDate(date).length > 0 || holidays.length > 0;
+              const weekend = isSelectedCountryWeekend(date, labourCountries);
+              const holidayTitle = holidays.map((holiday) => `${holiday.country} · ${holiday.title}`).join(', ');
               return (
-                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={hasEvents ? getCalendarEventsForDate(date).map((event) => event.summary).join(', ') : date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'}`}>
+                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={[holidayTitle, ...getCalendarEventsForDate(date).map((event) => event.summary)].filter(Boolean).join(' · ') || date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${weekend ? 'bg-red-500/20 text-red-100' : ''} ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'}`}>
                   {date.getDate()}
-                  {hasEvents && <i aria-hidden="true" className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-cyan-300" />}
+                  {hasEvents && <i aria-hidden="true" className={`absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${holidays.length ? 'bg-red-300' : 'bg-cyan-300'}`} />}
                 </button>
               );
             })}
