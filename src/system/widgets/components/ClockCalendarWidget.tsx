@@ -44,7 +44,7 @@ export function ClockCalendarWidget() {
   const monthLabel = now.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', { month: 'long' }).toUpperCase();
 
   return (
-    <div className="glass-widget p-3 flex gap-3 w-full sm:w-[260px] min-h-[220px]">
+    <div className="glass-widget p-3 flex gap-3 w-full h-full min-h-0">
       <div className="glass-widget__ambient" />
 
       {/* Analog Clock */}
