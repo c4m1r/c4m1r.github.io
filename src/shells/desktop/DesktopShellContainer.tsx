@@ -1472,10 +1472,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 ]
               },
               { separator: true },
-              {
-                label: language === 'ru' ? 'Виджеты рабочего стола…' : 'Desktop Widgets…',
-                onClick: () => setShowAppleWidgetGallery(true),
-              },
+              ...(themeKey === 'win7'
+                ? [{
+                    label: language === 'ru' ? 'Гаджеты' : 'Gadgets',
+                    onClick: () => setShowAppleWidgetGallery(true),
+                  }]
+                : themeKey.startsWith('win')
+                  ? []
+                  : [{
+                      label: language === 'ru' ? 'Виджеты рабочего стола…' : 'Desktop Widgets…',
+                      onClick: () => setShowAppleWidgetGallery(true),
+                    }]),
               { label: 'Properties' },
             ];
 
