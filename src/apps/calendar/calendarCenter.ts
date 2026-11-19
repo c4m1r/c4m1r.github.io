@@ -202,8 +202,12 @@ export function getCalendarEventsForDate(date: Date) {
     const start = dateOnly(event.startDate).getTime();
     const end = dateOnly(event.endDate).getTime();
     if (event.source === 'local') return target >= start && target <= end;
-    // ICS DTEND is exclusive for all-day events; timed events remain visible on their start day.
-    return target === start || (end > start && target > start && target < end);
+    // RFC 5545 treats all-day DTEND as exclusive; timed events also appear on their final calendar day.
+    if (target === start) return true;
+    if (end <= start || target <= start) return false;
+    const isAllDayExclusive = event.startDate.getHours() === 0 && event.startDate.getMinutes() === 0 &&
+      event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
+    return isAllDayExclusive ? target < end : target <= end;
   });
 }
 
