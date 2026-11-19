@@ -157,7 +157,7 @@ export function getHolidayTitle(holiday: NationalHoliday, locale: string): strin
   const language = locale.split('-')[0].toLowerCase();
   const separator = ' · ';
   const russian = holiday.title.includes(separator) ? holiday.title.split(separator).slice(1).join(separator) : holiday.title;
-  const translated = holidayTranslations[russian]?.[language];
+  const translated = holidayTranslations[russian]?.[language] ?? holidayTranslations[russian]?.en;
   if (language === 'ru') return holiday.title.includes(separator) ? russian : holidayTranslations[holiday.title]?.ru ?? holiday.title;
   if (translated) {
     const native = holiday.title.includes(separator) ? holiday.title.split(separator)[0] : '';
