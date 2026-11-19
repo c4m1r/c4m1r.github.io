@@ -94,15 +94,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     main: { x: 24, y: 48 }, equalizer: { x: 24, y: 174 }, playlist: { x: 24, y: 292 },
   });
   const dragRef = useRef<{ key: PlayerWindowKey; pointerX: number; pointerY: number; originX: number; originY: number } | null>(null);
-  const startWindowDrag = (event: React.MouseEvent, key: PlayerWindowKey) => {
+  const startWindowDrag = (event: React.PointerEvent, key: PlayerWindowKey) => {
     if ((event.target as HTMLElement).closest('button')) return;
     event.preventDefault();
     const origin = windowPositions[key];
     setActiveWindow(key);
     dragRef.current = { key, pointerX: event.clientX, pointerY: event.clientY, originX: origin.x, originY: origin.y };
+    (event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
   };
   useEffect(() => {
-    const move = (event: MouseEvent) => {
+    const move = (event: PointerEvent) => {
       const drag = dragRef.current;
       if (!drag) return;
       const node = document.querySelector<HTMLElement>(`.wa-${drag.key}`);
@@ -113,9 +114,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       setWindowPositions((current) => ({ ...current, [drag.key]: { x, y } }));
     };
     const stop = () => { dragRef.current = null; };
-    window.addEventListener('mousemove', move);
-    window.addEventListener('mouseup', stop);
-    return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', stop); };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', stop);
+    window.addEventListener('pointercancel', stop);
+    return () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', stop);
+      window.removeEventListener('pointercancel', stop);
+    };
   }, []);
 
   const track = PROJECT_PLAYLIST[trackIndex] ?? PROJECT_PLAYLIST[0];
