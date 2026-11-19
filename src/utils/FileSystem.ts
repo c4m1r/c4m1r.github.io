@@ -192,43 +192,83 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                         type: 'folder',
                         children: {
                             'Games': {
-                                id: 'games-folder',
-                                name: 'Игры',
+                        id: 'games-folder',
+                        name: 'Игры',
+                        type: 'folder',
+                        icon: gamesFolderIcon,
+                        children: {
+                            'id Software': {
+                                id: 'games-id-software',
+                                name: 'id Software',
                                 type: 'folder',
-                                icon: gamesFolderIcon,
                                 children: {
                                     'DOOM': { id: 'games-doom1', name: 'DOOM (1993)', type: 'file', appId: 'doom1', icon: defaultTextIcon },
-                                    'DOOM II': { id: 'games-doom2', name: 'DOOM II', type: 'file', appId: 'doom2', icon: defaultTextIcon },
-                                    'Minesweeper': { id: 'games-minesweeper', name: 'Сапёр', type: 'file', appId: 'minesweeper', icon: defaultTextIcon },
+                                    'DOOM II': { id: 'games-doom2', name: 'DOOM II', type: 'file', appId: 'doom2', icon: defaultTextIcon }
+                                }
+                            },
+                            'Microsoft': {
+                                id: 'games-microsoft',
+                                name: 'Microsoft',
+                                type: 'folder',
+                                children: {
+                                    'Minesweeper': { id: 'games-minesweeper', name: 'Сапёр', type: 'file', appId: 'minesweeper', icon: defaultTextIcon }
+                                }
+                            },
+                            'C4m1r': {
+                                id: 'games-c4m1r',
+                                name: 'C4m1r',
+                                type: 'folder',
+                                children: {
                                     'Snake': { id: 'games-snake', name: 'Змейка', type: 'file', appId: 'snake', icon: defaultTextIcon },
                                     'Memory': { id: 'games-memory', name: 'Память', type: 'file', appId: 'memory', icon: defaultTextIcon }
                                 }
-                            },
-                            'Programs': {
-                                id: 'programs-folder',
-                                name: 'Программы',
+                            }
+                        }
+                    },
+                    'Programs': {
+                        id: 'programs-folder',
+                        name: 'Программы',
+                        type: 'folder',
+                        icon: folderIcon,
+                        children: {
+                            'Microsoft Corporation': {
+                                id: 'programs-microsoft',
+                                name: 'Microsoft Corporation',
                                 type: 'folder',
-                                icon: folderIcon,
                                 children: {
                                     'Internet Explorer': { id: 'program-internet-explorer', name: 'Internet Explorer', type: 'file', appId: 'internet-explorer', icon: defaultTextIcon },
                                     'Outlook Express': { id: 'program-outlook', name: 'Outlook Express', type: 'file', appId: 'outlook', icon: defaultTextIcon },
                                     'Windows Media Player': { id: 'program-wmp', name: 'Windows Media Player', type: 'file', appId: 'windows-media-player', icon: defaultTextIcon },
-                                    'Winamp': { id: 'program-winamp', name: 'Winamp', type: 'file', appId: 'winamp', icon: defaultTextIcon },
                                     'Paint': { id: 'program-paint', name: 'Paint', type: 'file', appId: 'paint', icon: defaultTextIcon },
-                                    'Просмотр изображений': { id: 'program-picture-viewer', name: 'Просмотр изображений', type: 'file', appId: 'pictures', icon: defaultTextIcon },
-                                    'Календарь': { id: 'program-calendar', name: 'Календарь', type: 'file', appId: 'calendar', icon: defaultTextIcon },
-                                    'Лента новостей RSS': { id: 'program-news', name: 'Лента новостей RSS', type: 'file', appId: 'news', icon: defaultTextIcon },
-                                    'Курсы валют': { id: 'program-currency', name: 'Курсы валют', type: 'file', appId: 'currency', icon: defaultTextIcon },
-                                    'Вики': { id: 'program-wiki', name: 'Вики', type: 'file', appId: 'wiki', icon: defaultTextIcon },
-                                    'Блокнот': { id: 'program-notepad', name: 'Блокнот', type: 'file', appId: 'notepad', icon: defaultTextIcon },
-                                    'Мои проекты': { id: 'program-projects', name: 'Мои проекты', type: 'file', appId: 'projects-grid', icon: defaultTextIcon },
-                                    'Справка и поддержка': { id: 'program-help', name: 'Справка и поддержка', type: 'file', appId: 'help', icon: defaultTextIcon },
-                                    'Диспетчер задач': { id: 'program-task-manager', name: 'Диспетчер задач', type: 'file', appId: 'task-manager', icon: defaultTextIcon },
-                                    'Калькулятор': { id: 'program-calculator', name: 'Калькулятор', type: 'file', appId: 'calculator', icon: defaultTextIcon },
-                                    'Панель управления': { id: 'program-control-panel', name: 'Панель управления', type: 'file', appId: 'control-panel', icon: defaultTextIcon },
-                                    'Терминал': { id: 'program-terminal', name: 'Терминал', type: 'file', appId: 'terminal', icon: defaultTextIcon },
-                                    'Блог': { id: 'program-blog', name: 'Блог', type: 'file', appId: 'blog', icon: defaultTextIcon },
-                                    'loops': { id: 'program-loops', name: 'loops', type: 'file', appId: 'loops', icon: defaultTextIcon }
+                                    'Picture Viewer': { id: 'program-picture-viewer', name: 'Picture Viewer', type: 'file', appId: 'pictures', icon: defaultTextIcon },
+                                    'Calendar': { id: 'program-calendar', name: 'Calendar', type: 'file', appId: 'calendar', icon: defaultTextIcon },
+                                    'Notepad': { id: 'program-notepad', name: 'Notepad', type: 'file', appId: 'notepad', icon: defaultTextIcon },
+                                    'Calculator': { id: 'program-calculator', name: 'Calculator', type: 'file', appId: 'calculator', icon: defaultTextIcon },
+                                    'Control Panel': { id: 'program-control-panel', name: 'Control Panel', type: 'file', appId: 'control-panel', icon: defaultTextIcon },
+                                    'Task Manager': { id: 'program-task-manager', name: 'Task Manager', type: 'file', appId: 'task-manager', icon: defaultTextIcon },
+                                    'Help and Support': { id: 'program-help', name: 'Help and Support', type: 'file', appId: 'help', icon: defaultTextIcon }
+                                }
+                            },
+                            'Nullsoft': {
+                                id: 'programs-nullsoft',
+                                name: 'Nullsoft',
+                                type: 'folder',
+                                children: {
+                                    'Winamp': { id: 'program-winamp', name: 'Winamp', type: 'file', appId: 'winamp', icon: defaultTextIcon }
+                                }
+                            },
+                            'C4m1r': {
+                                id: 'programs-c4m1r',
+                                name: 'C4m1r',
+                                type: 'folder',
+                                children: {
+                                    'News RSS Feed': { id: 'program-news', name: 'News RSS Feed', type: 'file', appId: 'news', icon: defaultTextIcon },
+                                    'Market Rates': { id: 'program-currency', name: 'Market Rates', type: 'file', appId: 'currency', icon: defaultTextIcon },
+                                    'Wiki': { id: 'program-wiki', name: 'Wiki', type: 'file', appId: 'wiki', icon: defaultTextIcon },
+                                    'My Projects': { id: 'program-projects', name: 'My Projects', type: 'file', appId: 'projects-grid', icon: defaultTextIcon },
+                                    'Help Library': { id: 'program-blog', name: 'Help Library', type: 'file', appId: 'blog', icon: defaultTextIcon },
+                                    'Terminal': { id: 'program-terminal', name: 'Terminal', type: 'file', appId: 'terminal', icon: defaultTextIcon },
+                                    'Loops': { id: 'program-loops', name: 'Loops', type: 'file', appId: 'loops', icon: defaultTextIcon }
                                 }
                             }
                         }
@@ -244,6 +284,20 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
         }
     }
 };
+
+// Windows 7/10/11 expose the same C4m1r profile through C:\\Users.
+// The profile node is shared by reference: this is an alias, not duplicated data.
+const cDrive = initialFileSystem['My Computer'].children?.['C:'];
+const legacyProfiles = cDrive?.children?.['Documents and Settings'];
+const c4m1rProfile = legacyProfiles?.children?.['C4m1r'];
+if (cDrive?.children && c4m1rProfile) {
+    cDrive.children['Users'] = {
+        id: 'users-alias',
+        name: 'Users',
+        type: 'folder',
+        children: { 'C4m1r': c4m1rProfile },
+    };
+}
 
 const isComputerRootPath = (path: string) =>
     ['my computer', 'computer', 'this pc', 'компьютер', 'мой компьютер'].includes(path.trim().toLocaleLowerCase());
