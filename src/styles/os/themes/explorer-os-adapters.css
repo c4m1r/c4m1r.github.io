@@ -1,0 +1,147 @@
+
+/* OS-native adapters for the shared Legacy Explorer surface.
+   Behavior/navigation stay shared; only presentation changes per active profile. */
+.file-explorer[data-os-theme='win-98'],
+.file-explorer[data-os-theme='win2000'] {
+  --explorer-classic-face: #c0c0c0;
+  --explorer-classic-light: #ffffff;
+  --explorer-classic-shadow: #808080;
+  background: var(--explorer-classic-face) !important;
+  color: #000 !important;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif !important;
+  font-size: 11px !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:first-child,
+.file-explorer[data-os-theme='win2000'] > div:first-child,
+.file-explorer[data-os-theme='win-98'] > div:first-child > div,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div {
+  background: var(--explorer-classic-face) !important;
+  border-color: var(--explorer-classic-shadow) !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:first-child > div > button,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div > button {
+  color: #000 !important;
+  font: 11px 'MS Sans Serif', Tahoma, sans-serif !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:first-child > div > button:hover,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div > button:hover {
+  background: #d4d0c8 !important;
+  border-color: #fff #404040 #404040 #fff !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:first-child > div:nth-child(2) > button,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) > button {
+  min-height: 27px !important;
+  padding: 2px 7px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #c0c0c0 !important;
+  box-shadow: inset 1px 1px #fff, inset -1px -1px #404040 !important;
+  color: #000 !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:first-child > div:nth-child(2) > button:active,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) > button:active {
+  box-shadow: inset 1px 1px #404040, inset -1px -1px #fff !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:first-child > div:nth-child(3),
+.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(3) {
+  background: #c0c0c0 !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:first-child > div:nth-child(3) input,
+.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(3) input {
+  border: 1px solid #404040 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  color: #000 !important;
+  font: 11px 'MS Sans Serif', Tahoma, sans-serif !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:nth-child(2),
+.file-explorer[data-os-theme='win2000'] > div:nth-child(2) {
+  background: #c0c0c0 !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:nth-child(2) > .flex-1,
+.file-explorer[data-os-theme='win2000'] > div:nth-child(2) > .flex-1 {
+  background: #fff !important;
+  color: #000 !important;
+}
+.file-explorer[data-os-theme='win-98'] > div:last-child,
+.file-explorer[data-os-theme='win2000'] > div:last-child {
+  min-height: 20px !important;
+  padding: 2px 5px !important;
+  border-top: 1px solid #808080 !important;
+  background: #c0c0c0 !important;
+  color: #000 !important;
+  box-shadow: inset 0 1px #fff !important;
+}
+.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) {
+  background: linear-gradient(#dce8f5, #b7cce3) !important;
+}
+.file-explorer[data-os-theme='win2000'] > div:first-child > div:nth-child(2) > button {
+  border-color: #8aa6c2 !important;
+  background: linear-gradient(#f8fbff, #d7e4f2) !important;
+}
+
+.file-explorer[data-os-theme='ubuntu'] {
+  background: #f7f7f7 !important;
+  color: #252525 !important;
+  font: 13px Ubuntu, Cantarell, system-ui, sans-serif !important;
+}
+.file-explorer[data-os-theme='ubuntu'] > div:first-child,
+.file-explorer[data-os-theme='ubuntu'] > div:first-child > div {
+  background: #3d3d3d !important;
+  border-color: #292929 !important;
+  color: #f2f2f2 !important;
+}
+.file-explorer[data-os-theme='ubuntu'] > div:first-child > div > button {
+  color: #f2f2f2 !important;
+  border-radius: 5px !important;
+  font: 12px Ubuntu, Cantarell, sans-serif !important;
+}
+.file-explorer[data-os-theme='ubuntu'] > div:first-child > div > button:hover {
+  background: #565656 !important;
+}
+.file-explorer[data-os-theme='ubuntu'] > div:first-child > div:nth-child(3) input {
+  border: 1px solid #aaa !important;
+  border-radius: 5px !important;
+  background: #fff !important;
+  color: #222 !important;
+}
+.file-explorer[data-os-theme='ubuntu'] > div:nth-child(2) { background: #ededed !important; }
+.file-explorer[data-os-theme='ubuntu'] > div:nth-child(2) > .flex-1 { background: #fff !important; color: #222 !important; }
+.file-explorer[data-os-theme='ubuntu'] > div:last-child { background: #ededed !important; color: #555 !important; border-top: 1px solid #ccc !important; }
+
+.file-explorer[data-os-theme='arch'] {
+  background: #1e222b !important;
+  color: #e6edf3 !important;
+  font: 12px system-ui, sans-serif !important;
+}
+.file-explorer[data-os-theme='arch'] > div:first-child,
+.file-explorer[data-os-theme='arch'] > div:first-child > div {
+  background: #282c34 !important;
+  border-color: #3b4048 !important;
+}
+.file-explorer[data-os-theme='arch'] > div:first-child > div > button { color: #e6edf3 !important; border-radius: 5px !important; }
+.file-explorer[data-os-theme='arch'] > div:first-child > div > button:hover { background: #353c49 !important; color: #fff !important; }
+.file-explorer[data-os-theme='arch'] > div:first-child > div:nth-child(3) input {
+  border: 1px solid #3b4048 !important; border-radius: 5px !important; background: #181b22 !important; color: #e6edf3 !important;
+}
+.file-explorer[data-os-theme='arch'] > div:nth-child(2) { background: #181b22 !important; }
+.file-explorer[data-os-theme='arch'] > div:nth-child(2) > .flex-1 { background: #1e222b !important; color: #e6edf3 !important; }
+.file-explorer[data-os-theme='arch'] > div:last-child { background: #181b22 !important; color: #8b949e !important; border-top: 1px solid #3b4048 !important; }
+
+.file-explorer[data-os-theme='webos'] {
+  background: #17191f !important; color: #e8ebf2 !important; font: 12px Inter, system-ui, sans-serif !important;
+}
+.file-explorer[data-os-theme='webos'] > div:first-child,
+.file-explorer[data-os-theme='webos'] > div:first-child > div {
+  background: #20242d !important; border-color: #343b49 !important;
+}
+.file-explorer[data-os-theme='webos'] > div:first-child > div > button { color: #e8ebf2 !important; border-radius: 6px !important; }
+.file-explorer[data-os-theme='webos'] > div:first-child > div > button:hover { background: #30394a !important; color: #fff !important; }
+.file-explorer[data-os-theme='webos'] > div:first-child > div:nth-child(3) input {
+  background: #11151c !important; border: 1px solid #414b5d !important; border-radius: 6px !important; color: #f4f6fb !important;
+}
+.file-explorer[data-os-theme='webos'] > div:nth-child(2) { background: #17191f !important; }
+.file-explorer[data-os-theme='webos'] > div:nth-child(2) > .flex-1 { background: #17191f !important; color: #e8ebf2 !important; }
+.file-explorer[data-os-theme='webos'] > div:last-child { background: #20242d !important; color: #aeb8c8 !important; border-top: 1px solid #343b49 !important; }
