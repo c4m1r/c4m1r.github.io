@@ -17,6 +17,7 @@ import {
   deleteCalendarEvent,
   ensureCalendarEvents,
   getCalendarEventsForDate,
+  getCalendarEventMaster,
   getCalendarEventsForRange,
   goToCalendarToday,
   moveCalendarMonth,
@@ -150,16 +151,17 @@ export function CalendarApp() {
   };
   const openEditEvent = (event: CalendarEvent) => {
     if (event.source !== 'local') { setActiveEvent(event); return; }
-    setActiveEvent(event); setTitle(event.summary); setLocation(event.location ?? '');
-    setDescription(event.description ?? '');
-    const eventIsAllDay = isAllDayEvent(event);
+    const seriesEvent = getCalendarEventMaster(event);
+    setActiveEvent(seriesEvent); setTitle(seriesEvent.summary); setLocation(seriesEvent.location ?? '');
+    setDescription(seriesEvent.description ?? '');
+    const eventIsAllDay = isAllDayEvent(seriesEvent);
     setAllDay(eventIsAllDay);
-    setStartValue(eventIsAllDay ? toLocalDateInput(event.startDate) : toLocalInput(event.startDate));
-    setEndValue(eventIsAllDay ? toLocalDateInput(event.endDate) : toLocalInput(event.endDate));
-    setRecurrenceFreq(event.recurrenceRule?.freq ?? 'NONE');
-    setRecurrenceInterval(event.recurrenceRule?.interval ?? 1);
-    setRecurrenceCount(event.recurrenceRule?.count ? String(event.recurrenceRule.count) : '');
-    setRecurrenceUntil(event.recurrenceRule?.until ? toLocalDateInput(event.recurrenceRule.until) : '');
+    setStartValue(eventIsAllDay ? toLocalDateInput(seriesEvent.startDate) : toLocalInput(seriesEvent.startDate));
+    setEndValue(eventIsAllDay ? toLocalDateInput(seriesEvent.endDate) : toLocalInput(seriesEvent.endDate));
+    setRecurrenceFreq(seriesEvent.recurrenceRule?.freq ?? 'NONE');
+    setRecurrenceInterval(seriesEvent.recurrenceRule?.interval ?? 1);
+    setRecurrenceCount(seriesEvent.recurrenceRule?.count ? String(seriesEvent.recurrenceRule.count) : '');
+    setRecurrenceUntil(seriesEvent.recurrenceRule?.until ? toLocalDateInput(seriesEvent.recurrenceRule.until) : '');
     setFormError(''); setEditorOpen(true);
   };
   const submitEvent = (event: FormEvent<HTMLFormElement>) => {
