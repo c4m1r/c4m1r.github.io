@@ -417,11 +417,11 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
   - Kazakhstan 2026 constitutional change / 15 March holiday: https://www.gov.kz/org/maslihat-zhambyl/press/news/details/1183102?lang=ru
   - Belarus 2026 transfer: https://otdelkadrov.by/number/2025/8/Novosti_zakonodatelstva_082025/
   - Belarus 2027 transfer: https://t.me/s/DGITbelarus?before=7847 (Ministry of Labour announcement quoting Resolution No. 499)
-  - China 2026: https://english.bjhd.gov.cn/workinginhaidian/supportingservices/publicholidays/202512/t20251211_4797062.shtml
+  - China 2026: https://en.bjhd.gov.cn/workinginhaidian/supportingservices/publicholidays/202512/t20251211_4797062.shtml
   - China 2027: https://english.www.gov.cn/policies/latestreleases/202611/06/content_WS6aed74dcc6d00ca5f9a0e22e.html
   - Japan 2026/2027: https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
   - South Korea 2026: https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=140038
   - South Korea 2027 lunar/observed dates cross-checked against KASA 2027 calendar guidelines: https://www.kasa.go.kr/prog/plcyBrf/brief/kor/sub01_01_04/view.do?plcyBrfNo=431
   - UK bank holidays: https://www.gov.uk/bank-holidays
-  - City population references: UN World Cities 2025 data and national statistical sources; the city pairs are selected on city-proper population rather than metro-area ranking.
+  - City population references: UN World Cities 2025 data (https://population.un.org/wup/assets/Publications/undesa_pd_2025_wup2025_summary_of_results_final.pdf), UN Demographic Yearbook city table (https://unstats.un.org/unsd/demographic-social/products/dyb/documents/DYB2025/table08.pdf), and national statistical sources; city pairs use city-proper population where available rather than metro-area ranking.
 - **Verification remains outstanding:** connector writes are not equivalent to a build. No local checkout or browser runtime was available in this pass; typecheck/lint/build/verify, automated date tests and visual cross-OS checks are not confirmed. The annual labour data should not be presented as payroll/legal advice.
