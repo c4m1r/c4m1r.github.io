@@ -1,149 +1,101 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../../../contexts/useApp';
+import {
+  ensureCalendarEvents,
+  getCalendarEventsForDate,
+  moveCalendarMonth,
+  selectCalendarDate,
+  useCalendarCenter,
+} from '../../../apps/calendar/calendarCenter';
 
-export function ClockCalendarWidget() {
+export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () => void }) {
   const { language } = useApp();
   const [now, setNow] = useState(new Date());
+  const { visibleMonth, selectedDate } = useCalendarCenter();
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    void ensureCalendarEvents(language);
+  }, [language]);
+
   const seconds = now.getSeconds();
   const minutes = now.getMinutes();
   const hours = now.getHours() % 12;
-
   const secDeg = seconds * 6;
   const minDeg = minutes * 6 + seconds * 0.1;
   const hrDeg = hours * 30 + minutes * 0.5;
 
+  const weekStartsOnMonday = language === 'ru' || language === 'fr' || language === 'es';
+  const weekStart = weekStartsOnMonday ? 1 : 0;
   const monthDays = useMemo(() => {
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    const year = visibleMonth.getFullYear();
+    const month = visibleMonth.getMonth();
     const totalDays = new Date(year, month + 1, 0).getDate();
-    // Monday as start of week (0..6)
-    let firstDayOfWeek = new Date(year, month, 1).getDay() - 1;
-    if (firstDayOfWeek < 0) firstDayOfWeek = 6;
-
-    const cells: Array<{ day: number | null; isToday: boolean }> = [];
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      cells.push({ day: null, isToday: false });
-    }
-    for (let d = 1; d <= totalDays; d++) {
-      cells.push({ day: d, isToday: d === now.getDate() });
-    }
+    const firstDay = (new Date(year, month, 1).getDay() - weekStart + 7) % 7;
+    const cells: Array<Date | null> = Array.from({ length: firstDay }, () => null);
+    for (let day = 1; day <= totalDays; day += 1) cells.push(new Date(year, month, day));
     return cells;
-  }, [now]);
+  }, [visibleMonth, weekStart]);
 
-  const weekdayNamesRu = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-  const weekdayNamesEn = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-  const weekdays = language === 'ru' ? weekdayNamesRu : weekdayNamesEn;
+  const weekdays = useMemo(() => Array.from({ length: 7 }, (_, index) =>
+    new Intl.DateTimeFormat(language, { weekday: 'short' }).format(new Date(2024, 0, 7 + ((weekStart + index) % 7))).replace('.', '')
+  ), [language, weekStart]);
 
-  const weekdayLabel = now.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', { weekday: 'long' }).toUpperCase();
-  const monthLabel = now.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', { month: 'long' }).toUpperCase();
+  const weekdayLabel = now.toLocaleDateString(language, { weekday: 'long' }).toUpperCase();
+  const monthLabel = visibleMonth.toLocaleDateString(language, { month: 'long', year: 'numeric' }).toUpperCase();
 
   return (
     <div className="glass-widget p-3 flex gap-3 w-full h-full min-h-0">
       <div className="glass-widget__ambient" />
-
-      {/* Analog Clock */}
       <div className="flex flex-col items-center justify-center shrink-0 z-10">
         <div className="relative w-24 h-24 rounded-full border-2 border-white/20 bg-black/30 shadow-inner flex items-center justify-center">
-          {/* 12 hour ticks */}
-          {Array.from({ length: 12 }, (_, i) => {
-            const rot = i * 30;
-            return (
-              <div
-                key={i}
-                className={`absolute w-0.5 rounded-full ${i % 3 === 0 ? 'h-2 bg-white' : 'h-1 bg-white/40'}`}
-                style={{
-                  top: '4px',
-                  transformOrigin: '50% 44px',
-                  transform: `rotate(${rot}deg)`,
-                }}
-              />
-            );
-          })}
-
-          {/* Hour hand */}
-          <div
-            className="absolute w-1 bg-white rounded-full z-10"
-            style={{
-              height: '24px',
-              bottom: '48px',
-              transformOrigin: '50% 100%',
-              transform: `rotate(${hrDeg}deg)`,
-            }}
-          />
-
-          {/* Minute hand */}
-          <div
-            className="absolute w-0.5 bg-blue-300 rounded-full z-20"
-            style={{
-              height: '34px',
-              bottom: '48px',
-              transformOrigin: '50% 100%',
-              transform: `rotate(${minDeg}deg)`,
-            }}
-          />
-
-          {/* Second hand */}
-          <div
-            className="absolute w-[1px] bg-red-500 rounded-full z-30"
-            style={{
-              height: '38px',
-              bottom: '48px',
-              transformOrigin: '50% 100%',
-              transform: `rotate(${secDeg}deg)`,
-            }}
-          />
-
-          {/* Pin */}
+          {Array.from({ length: 12 }, (_, i) => (
+            <div key={i} className={`absolute w-0.5 rounded-full ${i % 3 === 0 ? 'h-2 bg-white' : 'h-1 bg-white/40'}`} style={{ top: '4px', transformOrigin: '50% 44px', transform: `rotate(${i * 30}deg)` }} />
+          ))}
+          <div className="absolute w-1 bg-white rounded-full z-10" style={{ height: '24px', bottom: '48px', transformOrigin: '50% 100%', transform: `rotate(${hrDeg}deg)` }} />
+          <div className="absolute w-0.5 bg-blue-300 rounded-full z-20" style={{ height: '34px', bottom: '48px', transformOrigin: '50% 100%', transform: `rotate(${minDeg}deg)` }} />
+          <div className="absolute w-[1px] bg-red-500 rounded-full z-30" style={{ height: '38px', bottom: '48px', transformOrigin: '50% 100%', transform: `rotate(${secDeg}deg)` }} />
           <div className="absolute w-2 h-2 rounded-full bg-red-500 border border-white z-40" />
         </div>
-
         <div className="text-[11px] font-bold mt-2 tracking-wider text-gray-200">
-          {now.toLocaleTimeString(language === 'ru' ? 'ru-RU' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
+          {now.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
 
-      {/* Calendar */}
-      <div className="flex-1 flex flex-col justify-between z-10 border-l border-white/10 pl-3">
+      <div className="flex-1 flex flex-col justify-between z-10 border-l border-white/10 pl-3 min-w-0">
         <div>
-          <div className="flex items-baseline justify-between text-[10px] font-bold tracking-wider">
-            <span className="text-red-400">{weekdayLabel}</span>
-            <span className="text-gray-400">{monthLabel}</span>
+          <div className="flex items-center justify-between gap-1 text-[10px] font-bold tracking-wider">
+            <span className="text-red-400 truncate">{weekdayLabel}</span>
+            <span className="text-gray-400 truncate">{monthLabel}</span>
           </div>
-
-          <div className="text-2xl font-black leading-none my-1">
-            {now.getDate()}
-          </div>
+          <div className="text-2xl font-black leading-none my-1">{selectedDate.getDate()}</div>
         </div>
 
-        {/* Mini Calendar Grid */}
         <div className="text-[9px]">
-          <div className="grid grid-cols-7 text-center text-gray-400 mb-1 font-semibold">
-            {weekdays.map((w, idx) => (
-              <span key={idx} className={idx >= 5 ? 'text-orange-400/80' : ''}>{w}</span>
-            ))}
+          <div className="flex items-center justify-between mb-1">
+            <button type="button" onClick={() => moveCalendarMonth(-1)} className="px-1 text-gray-300 hover:text-white" aria-label={language === 'ru' ? 'Предыдущий месяц' : 'Previous month'}>‹</button>
+            <button type="button" onClick={() => { selectCalendarDate(new Date()); onOpenCalendar?.(); }} className="text-[8px] text-gray-400 hover:text-white">{language === 'ru' ? 'Сегодня' : 'Today'}</button>
+            <button type="button" onClick={() => moveCalendarMonth(1)} className="px-1 text-gray-300 hover:text-white" aria-label={language === 'ru' ? 'Следующий месяц' : 'Next month'}>›</button>
           </div>
-
+          <div className="grid grid-cols-7 text-center text-gray-400 mb-1 font-semibold">
+            {weekdays.map((weekday, index) => <span key={index} className={index >= 5 ? 'text-orange-400/80' : ''}>{weekday}</span>)}
+          </div>
           <div className="grid grid-cols-7 text-center gap-y-0.5 font-mono">
-            {monthDays.map((item, idx) => (
-              <span
-                key={idx}
-                className={`py-0.5 rounded-full ${
-                  item.isToday
-                    ? 'bg-red-500 text-white font-bold'
-                    : item.day
-                    ? 'text-gray-300'
-                    : 'text-transparent'
-                }`}
-              >
-                {item.day ?? '·'}
-              </span>
-            ))}
+            {monthDays.map((date, index) => {
+              if (!date) return <span key={`empty-${index}`} aria-hidden="true">·</span>;
+              const sameDay = date.getFullYear() === selectedDate.getFullYear() && date.getMonth() === selectedDate.getMonth() && date.getDate() === selectedDate.getDate();
+              const today = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+              const hasEvents = getCalendarEventsForDate(date).length > 0;
+              return (
+                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={hasEvents ? getCalendarEventsForDate(date).map((event) => event.summary).join(', ') : date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'} ${hasEvents ? 'after:content-['•'] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:text-[7px] after:text-cyan-300' : ''}`}>
+                  {date.getDate()}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
