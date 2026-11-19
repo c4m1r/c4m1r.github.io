@@ -53,6 +53,7 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   const itemIds = items.map((item) => item.id).join('|');
   const layoutSignature = items.map((item) => `${item.id}:${item.defaultPreset}:${item.presets.map((preset) => `${preset.id}-${preset.width}x${preset.height}`).join(',')}`).join('|');
   const [placements, setPlacements] = useState<Record<string, Placement>>(() => readPlacements(storageKey));
+  const [expandedControls, setExpandedControls] = useState<Record<string, boolean>>({});
 
   const getPreset = useCallback((item: DesktopWidgetItem, placement?: Placement) => (
     item.presets.find((preset) => preset.id === placement?.preset) ??
@@ -274,10 +275,10 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
         const preset = getPreset(item, placement);
         if (!preset) return null;
         const width = Math.min(preset.width, canvasRef.current?.clientWidth ?? preset.width);
-        const height = Math.min(preset.height, canvasRef.current?.clientHeight ?? preset.height);
+        const height = preset.height;
         return (
           <section key={item.id} data-widget-id={item.id} className="desktop-widget-canvas__item" style={{ left: placement.x, top: placement.y, width, height }}>
-            <div className="desktop-widget-canvas__handle" role="group" aria-label={`Move ${item.title}`} tabIndex={0}
+            <div className={`desktop-widget-canvas__handle${expandedControls[item.id] ? ' is-expanded' : ''}`} role="group" aria-label={`Move ${item.title}`} tabIndex={0}
               onKeyDown={(event) => {
                 if (event.target !== event.currentTarget || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) return;
                 event.preventDefault();
@@ -301,11 +302,11 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
                 dragRef.current = { id: item.id, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, originX: placement.x, originY: placement.y };
               }}
               onPointerMove={moveWidget} onPointerUp={endDrag} onPointerCancel={endDrag}>
-              <span className="desktop-widget-canvas__grip" aria-hidden="true">⠿</span>
-              <span className="desktop-widget-canvas__title">{item.title}</span>
+              <button type="button" className="desktop-widget-canvas__grip" aria-label={`${expandedControls[item.id] ? 'Hide' : 'Show'} ${item.title} controls`} aria-expanded={Boolean(expandedControls[item.id])} onPointerDown={(event) => event.stopPropagation()} onClick={() => setExpandedControls((current) => ({ ...current, [item.id]: !current[item.id] }))}>⠿</button>
+              {expandedControls[item.id] && <><span className="desktop-widget-canvas__title">{item.title}</span>
               <select aria-label={item.title + ' size'} value={preset.id} onChange={(event) => changePreset(item, event.target.value)} onPointerDown={(event) => event.stopPropagation()}>
                 {item.presets.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
-              </select>
+              </select></>}
             </div>
             <div className="desktop-widget-canvas__content">{item.content}</div>
           </section>
