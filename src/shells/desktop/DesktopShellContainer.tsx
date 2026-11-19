@@ -18,6 +18,8 @@ import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
 import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
+import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
+import { winampController } from '../../system/audio/winampController';
 import { useDesktopWindowManager } from './runtime/useDesktopWindowManager';
 import { useDesktopIconGridState } from './runtime/useDesktopIconGridState';
 import { DoomPlayer } from '../../apps/doom/DoomPlayer';
@@ -702,7 +704,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   };
 
   const desktopItems = getItemsFromPath(DESKTOP_PATH);
-  const gamesLabel = t.games ?? (language === 'ru' ? 'Игры' : 'Games');
 
   const renderShortcutIcon = (asset?: string, fallback?: string, altText = '') => (
     <img
@@ -772,31 +773,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
             type: 'system' as const,
           },
-          {
-            id: 'games-folder',
-            icon: (
-              <img
-                src={resolveAssetPath(
-                  themeAssets.gamesFolderIcon,
-                  fallbackAssets.gamesFolderIcon ?? themeAssets.gamesIcon
-                )}
-                alt={gamesLabel}
-                className="w-12 h-12 drop-shadow"
-                onError={(e) => {
-                  e.currentTarget.src = resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon);
-                }}
-              />
-            ),
-            label: gamesLabel,
-            type: 'system' as const,
-          },
-          {
-            id: 'programs-folder',
-            icon: <img src={resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon)} alt={language === 'ru' ? 'Программы' : 'Programs'} className="w-12 h-12 drop-shadow" />,
-            label: language === 'ru' ? 'Программы' : 'Programs',
-            type: 'folder' as const,
-          },
-          ...applicationShortcuts,
+
         ]),
     ...desktopItems.map(item => ({
       id: item.id,
@@ -846,6 +823,15 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
   const handleOpenFile = useCallback(async (item: FileSystemItem, parentPath: string) => {
     const fullPath = joinWindowsPath(parentPath, item.name);
+    if (item.mediaTrackId) {
+      const trackIndex = PROJECT_PLAYLIST.findIndex((track) => track.id === item.mediaTrackId);
+      if (trackIndex >= 0) {
+        winampController.setTrack(trackIndex);
+        void winampController.play();
+        window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'winamp' } }));
+      }
+      return;
+    }
     if (item.appId) {
       window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: item.appId } }));
       return;
@@ -1219,12 +1205,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         return;
       case 'my-documents':
         openExplorerWindow('C:\\Documents and Settings\\C4m1r\\My Documents');
-        return;
-      case 'games-folder':
-        openExplorerWindow('C:\\Program Files\\Games');
-        return;
-      case 'programs-folder':
-        openExplorerWindow('C:\\Program Files\\Programs');
         return;
       case 'recycle-bin':
         playErrorSound();
