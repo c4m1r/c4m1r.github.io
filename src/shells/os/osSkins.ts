@@ -617,6 +617,10 @@ export function getOsAppTitle(
   theme: ThemeId,
   language: Language
 ): string {
+  if (appId === 'blog' && theme.startsWith('win')) {
+    return language === 'ru' ? 'Блог.chm' : 'Blog.chm';
+  }
+
   if (PROTECTED_CONTENT_APP_IDS.has(appId)) {
     return defaultTitle[language] ?? defaultTitle.en ?? '';
   }
