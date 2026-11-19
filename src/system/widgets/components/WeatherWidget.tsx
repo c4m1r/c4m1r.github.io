@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useApp } from '../../../contexts/useApp';
 import {
   type WeatherData,
   CITIES,
+  DEFAULT_CITY_BY_LANGUAGE,
   fetchWeather,
 } from '../services/weatherService';
 import { Wind, Droplets, MapPin, ChevronDown, RefreshCw } from 'lucide-react';
@@ -10,8 +11,16 @@ import { Wind, Droplets, MapPin, ChevronDown, RefreshCw } from 'lucide-react';
 export function WeatherWidget() {
   const { language } = useApp();
   const isRu = language === 'ru';
-
-  const [cityId, setCityId] = useState<string>('moscow');
+  const languageCode = language.split('-')[0];
+  const defaultCity = DEFAULT_CITY_BY_LANGUAGE[languageCode] ?? 'london';
+  const [cityId, setCityId] = useState<string>(() => {
+    if (typeof window === 'undefined') return defaultCity;
+    try {
+      const saved = JSON.parse(localStorage.getItem('webos_weather_selected_city_v2') || 'null');
+      return saved?.language === languageCode && CITIES.some((city) => city.id === saved.cityId) ? saved.cityId : defaultCity;
+    } catch { return defaultCity; }
+  });
+  const previousLanguage = useRef(languageCode);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCityPicker, setShowCityPicker] = useState<boolean>(false);
@@ -27,6 +36,14 @@ export function WeatherWidget() {
       setLoading(false);
     }
   }, [isRu]);
+
+  useEffect(() => {
+    if (previousLanguage.current !== languageCode) {
+      previousLanguage.current = languageCode;
+      setCityId(defaultCity);
+      try { localStorage.setItem('webos_weather_selected_city_v2', JSON.stringify({ language: languageCode, cityId: defaultCity })); } catch { /* Keep session state. */ }
+    }
+  }, [languageCode, defaultCity]);
 
   useEffect(() => {
     loadData(cityId);
@@ -59,13 +76,14 @@ export function WeatherWidget() {
                   type="button"
                   onClick={() => {
                     setCityId(c.id);
+                    try { localStorage.setItem('webos_weather_selected_city_v2', JSON.stringify({ language: languageCode, cityId: c.id })); } catch { /* Keep session state. */ }
                     setShowCityPicker(false);
                   }}
                   className={`w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-between ${
                     c.id === cityId ? 'bg-blue-600 text-white font-medium' : 'text-gray-300 hover:bg-white/10'
                   }`}
                 >
-                  <span>{isRu ? c.nameRu : c.nameEn}</span>
+                  <span className="flex items-center gap-1.5"><span aria-hidden="true">{c.flag}</span>{isRu ? c.nameRu : c.nameEn}</span>
                   {c.id === cityId && <span className="text-[10px]">✓</span>}
                 </button>
               ))}
