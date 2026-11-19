@@ -226,6 +226,20 @@ const CONTEXT_MENU_LABELS: Partial<Record<Language, ContextMenuDictionary>> & Pi
     'Tile Windows Vertically': '창 세로 정렬',
     'Show the Desktop': '바탕 화면 표시',
     'Task Manager': '작업 관리자',
+  },,
+  be: {
+    Open: 'Адкрыць', Cut: 'Выразаць', Copy: 'Капіяваць', Delete: 'Выдаліць', Rename: 'Перайменаваць',
+    Properties: 'Уласцівасці', Refresh: 'Абнавіць', Paste: 'Уставіць', New: 'Стварыць',
+    Folder: 'Папку', Shortcut: 'Ярлык', 'Text Document': 'Тэкставы дакумент',
+    'Show the Desktop': 'Паказаць працоўны стол', 'Task Manager': 'Дыспетчар задач',
+    'Edit Widgets…': 'Змяніць віджэты…', 'Change Desktop Background…': 'Змяніць фон працоўнага стала…',
+  },
+  kk: {
+    Open: 'Ашу', Cut: 'Қию', Copy: 'Көшіру', Delete: 'Жою', Rename: 'Атын өзгерту',
+    Properties: 'Қасиеттер', Refresh: 'Жаңарту', Paste: 'Қою', New: 'Жаңа',
+    Folder: 'Қалтаны', Shortcut: 'Таңбаша', 'Text Document': 'Мәтіндік құжат',
+    'Show the Desktop': 'Жұмыс үстелін көрсету', 'Task Manager': 'Тапсырмалар диспетчері',
+    'Edit Widgets…': 'Виджеттерді өңдеу…', 'Change Desktop Background…': 'Жұмыс үстелінің фонын өзгерту…',
   },
 };
 
