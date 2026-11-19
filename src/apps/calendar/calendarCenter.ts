@@ -223,7 +223,7 @@ function matchesRecurrenceDate(date: Date, event: CalendarEvent, rule: CalendarR
   const monthDiff = (date.getFullYear() - start.getFullYear()) * 12 + date.getMonth() - start.getMonth();
   const yearDiff = date.getFullYear() - start.getFullYear();
   if (dayDiff < 0) return false;
-  if (rule.freq === 'DAILY') return dayDiff % rule.interval === 0;
+  if (rule.freq === 'DAILY') return dayDiff % rule.interval === 0 && (!rule.byDay?.length || rule.byDay.includes(date.getDay()));
   if (rule.freq === 'WEEKLY') {
     const weekDiff = mondayWeekNumber(date) - mondayWeekNumber(start);
     const weekdays = rule.byDay?.length ? rule.byDay : [start.getDay()];
@@ -231,12 +231,17 @@ function matchesRecurrenceDate(date: Date, event: CalendarEvent, rule: CalendarR
   }
   if (rule.freq === 'MONTHLY') {
     if (monthDiff < 0 || monthDiff % rule.interval !== 0) return false;
-    if (rule.byMonthDay?.length) return rule.byMonthDay.includes(date.getDate());
-    if (rule.byDay?.length) return rule.byDay.includes(date.getDay());
+    if (rule.byMonthDay?.length || rule.byDay?.length) {
+      return (!rule.byMonthDay?.length || rule.byMonthDay.includes(date.getDate())) &&
+        (!rule.byDay?.length || rule.byDay.includes(date.getDay()));
+    }
     return date.getDate() === start.getDate();
   }
   if (yearDiff < 0 || yearDiff % rule.interval !== 0 || date.getMonth() !== start.getMonth()) return false;
-  if (rule.byMonthDay?.length) return rule.byMonthDay.includes(date.getDate());
+  if (rule.byMonthDay?.length || rule.byDay?.length) {
+    return (!rule.byMonthDay?.length || rule.byMonthDay.includes(date.getDate())) &&
+      (!rule.byDay?.length || rule.byDay.includes(date.getDay()));
+  }
   return date.getDate() === start.getDate();
 }
 function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: Date): CalendarEvent[] {
