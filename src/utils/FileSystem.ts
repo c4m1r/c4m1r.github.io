@@ -9,6 +9,7 @@ import gamesFolderIcon from '../themes/winxp/assets/icons/My Games.png';
 import doomGameIcon from '../apps/doom/assets/doom-icon-sm.webp';
 import snakeGameIcon from '../apps/games/assets/snake-icon.svg';
 import memoryGameIcon from '../apps/games/assets/memory-icon.svg';
+import { PROJECT_PLAYLIST } from '../apps/mediaplayer/playlist';
 
 export interface FileSystemItem {
     id: string;
@@ -19,6 +20,8 @@ export interface FileSystemItem {
     children?: Record<string, FileSystemItem>;
     size?: string;
     appId?: string;
+    targetPath?: string;
+    mediaTrackId?: string;
 }
 
 const defaultTextIcon = WINXP_ASSETS.richTextIcon ?? WINXP_ASSETS.notepadIcon ?? textIcon;
@@ -36,6 +39,19 @@ const videoModules = import.meta.glob('../content/videos/**/*.{mp4,webm,mov,m4v}
     import: 'default',
     eager: true,
 }) as Record<string, string>;
+
+const musicChildren: FileSystemChildren = PROJECT_PLAYLIST.reduce((children, track) => {
+    const fileName = `${track.artist} - ${track.title}.mp3`;
+    children[fileName] = {
+        id: `music:${track.id}`,
+        name: fileName,
+        type: 'file',
+        icon: WINXP_ASSETS.mediaPlayerIcon ?? WINXP_ASSETS.richTextIcon ?? textIcon,
+        content: track.src,
+        mediaTrackId: track.id,
+    };
+    return children;
+}, {} as FileSystemChildren);
 
 const videoChildren: FileSystemChildren = Object.entries(videoModules).reduce((children, [path, url]) => {
     const name = path.split('/').pop() || 'video';
@@ -156,7 +172,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         type: 'folder',
                                         icon: documentsFolderIcon,
                                         children: {
-                                            'My Music': { id: 'my-music', name: 'Моя музыка', type: 'folder', icon: folderIcon, children: {} },
+                                            'My Music': { id: 'my-music', name: 'Моя музыка', type: 'folder', icon: folderIcon, children: musicChildren },
                                             'My Videos': { id: 'my-videos', name: 'Мои видеозаписи', type: 'folder', icon: folderIcon, children: videoChildren },
                                             'My Downloads': { id: 'my-downloads', name: 'Загрузки', type: 'folder', icon: folderIcon, children: {} },
                                             'My Pictures': {
@@ -309,13 +325,54 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
 const cDrive = initialFileSystem['My Computer'].children?.['C:'];
 const legacyProfiles = cDrive?.children?.['Documents and Settings'];
 const c4m1rProfile = legacyProfiles?.children?.['C4m1r'];
-if (cDrive?.children && c4m1rProfile) {
+if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
+    const userProfile: FileSystemItem = {
+        id: 'user-user',
+        name: 'User',
+        type: 'folder',
+        children: {
+            'Desktop': { id: 'desktop-user', name: 'Desktop', type: 'folder', children: {} },
+            'My Documents': {
+                id: 'my-documents-user',
+                name: 'Мои документы',
+                type: 'folder',
+                icon: documentsFolderIcon,
+                children: {
+                    'My Music': { id: 'my-music-user', name: 'Моя музыка', type: 'folder', icon: folderIcon, children: musicChildren },
+                    'My Videos': { id: 'my-videos-user', name: 'Мои видеозаписи', type: 'folder', icon: folderIcon, children: videoChildren },
+                    'My Downloads': { id: 'my-downloads-user', name: 'Загрузки', type: 'folder', icon: folderIcon, children: {} },
+                    'My Pictures': { id: 'my-pictures-user', name: 'Мои рисунки', type: 'folder', icon: picturesFolderIcon, children: pictureChildren },
+                    'Мои проекты': { id: 'my-projects-user', name: 'Мои проекты', type: 'folder', icon: folderIcon, children: { ...projectChildren } },
+                },
+            },
+            'Start Menu': { id: 'start-menu-user', name: 'Start Menu', type: 'folder', children: {} },
+            'Recent': { id: 'recent-user', name: 'Recent', type: 'folder', children: {} },
+        },
+    };
+    legacyProfiles.children['User'] = userProfile;
     cDrive.children['Users'] = {
         id: 'users-alias',
         name: 'Users',
         type: 'folder',
-        children: { 'C4m1r': c4m1rProfile },
+        children: { 'C4m1r': c4m1rProfile, 'User': userProfile },
     };
+    const desktop = c4m1rProfile.children?.['Desktop'];
+    if (desktop?.children) {
+        desktop.children['Игры'] = {
+            id: 'desktop-games-shortcut',
+            name: 'Игры',
+            type: 'folder',
+            icon: gamesFolderIcon,
+            targetPath: 'C:\\Program Files\\Games',
+        };
+        desktop.children['Программы'] = {
+            id: 'desktop-programs-shortcut',
+            name: 'Программы',
+            type: 'folder',
+            icon: folderIcon,
+            targetPath: 'C:\\Program Files\\Programs',
+        };
+    }
 }
 
 const isComputerRootPath = (path: string) =>
@@ -330,30 +387,40 @@ export const getFileSystemItemFromPath = (path: string): FileSystemItem | null =
         .replace(/[\\/]+/g, '/')
         .replace(/\/+$/g, '');
     const usesModernProfile = /^C:\/Users(?:\/|$)/i.test(normalizedPath);
-    const compatiblePath = normalizedPath;
-    const parts = compatiblePath.split('/').filter(Boolean).map((part, index) => {
-        if (!usesModernProfile || index < 3) return part;
-        const modernFolderAliases: Record<string, string> = {
-            documents: 'My Documents',
-            pictures: 'My Pictures',
-            music: 'My Music',
-            videos: 'My Videos',
-            downloads: 'My Downloads',
+    const parts = normalizedPath.split('/').filter(Boolean);
+    if (usesModernProfile && parts.length >= 4) {
+        const modernFolderAliases: Record<string, string[]> = {
+            documents: ['My Documents'],
+            pictures: ['My Documents', 'My Pictures'],
+            music: ['My Documents', 'My Music'],
+            videos: ['My Documents', 'My Videos'],
+            downloads: ['My Documents', 'My Downloads'],
         };
-        return modernFolderAliases[part.toLocaleLowerCase()] ?? part;
-    });
+        const alias = modernFolderAliases[parts[3].toLocaleLowerCase()];
+        if (alias) parts.splice(3, 1, ...alias);
+    }
     if (parts.length > 0 && isComputerRootPath(parts[0])) parts.shift();
 
-    let current: FileSystemItem = initialFileSystem['My Computer'];
-    for (const part of parts) {
-        const children = current.children;
-        if (!children) return null;
-        const key = Object.keys(children).find((candidate) => candidate.toLocaleLowerCase() === part.toLocaleLowerCase());
-        const match = key ? children[key] : Object.values(children).find((child) => child.name.toLocaleLowerCase() === part.toLocaleLowerCase());
-        if (!match) return null;
-        current = match;
-    }
-    return current;
+    const resolveParts = (start: FileSystemItem, pathParts: string[]): FileSystemItem | null => {
+        let current = start;
+        for (const part of pathParts) {
+            const children = current.children;
+            if (!children) return null;
+            const key = Object.keys(children).find((candidate) => candidate.toLocaleLowerCase() === part.toLocaleLowerCase());
+            const match = key ? children[key] : Object.values(children).find((child) => child.name.toLocaleLowerCase() === part.toLocaleLowerCase());
+            if (!match) return null;
+            if (match.targetPath) {
+                const targetParts = match.targetPath.replace(/[\\/]+/g, '/').split('/').filter(Boolean);
+                const target = resolveParts(initialFileSystem['My Computer'], targetParts);
+                if (!target) return null;
+                current = target;
+            } else {
+                current = match;
+            }
+        }
+        return current;
+    };
+    return resolveParts(initialFileSystem['My Computer'], parts);
 };
 
 export const getItemsFromPath = (path: string): FileSystemItem[] => {
