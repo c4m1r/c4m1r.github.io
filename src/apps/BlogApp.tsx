@@ -201,7 +201,7 @@ export function BlogApp() {
   }
 
   return (
-    <div className={`chm-help-viewer flex h-full min-h-0 flex-col overflow-hidden ${isWindows ? 'chm-help-viewer--windows' : ''}`}>
+    <div data-os-theme={theme} className={`chm-help-viewer flex h-full min-h-0 flex-col overflow-hidden ${isWindows ? 'chm-help-viewer--windows' : ''}`}>
       <header className="chm-help-viewer__toolbar flex shrink-0 items-center gap-2 border-b px-3 py-2">
         <div className="flex items-center gap-2 min-w-0 mr-auto">
           <BookOpen size={18} />
