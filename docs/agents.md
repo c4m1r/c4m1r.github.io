@@ -449,3 +449,13 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
   - WebOS: glassmorphic clock/calendar panel.
 - All taskbar flyouts continue using shared selected date/month, holiday/workday/event data, and open/focus the single Calendar app when a date or Open Calendar action is selected.
 - Automated GitHub Actions build for the macOS Notification Center integration completed with Typecheck, Lint, Build and build-output verification all successful (run 44487688956). The subsequent OS-specific CSS and iOS styling commits are queued for their own latest-main validation; no browser/device visual acceptance has been performed yet.
+
+
+## Explorer / desktop Programs / CHM help viewer — 2026-11-19
+
+- Desktop shortcut inventory is now limited to the agreed core launchers: My Computer, My Documents, Games, Programs, Calculator, Control Panel, Terminal and Blog. The old generic application shortcut list no longer floods the desktop; the desktop-only recycle-bin placeholder was removed.
+- `src/utils/FileSystem.ts` now has a normal `C:\\Program Files\\Programs` folder alongside Games, with appId-backed shortcuts. My Documents exposes My Music, My Pictures, My Videos and Downloads; video files under `src/content/videos/**` are discovered as URL-backed file entries.
+- `getFileSystemItemFromPath` centralizes case-insensitive key/name lookup, slash normalization and computer-root aliases. Both Explorer variants use the shared filesystem listing; Windows 7 address-bar navigation now rejects nonexistent paths and its Downloads/Videos library entries point to their actual folders.
+- Windows-only Blog display title is `Блог.chm` / `Blog.chm`; non-Windows shells retain Blog. The shared `BlogApp` now acts as a CHM/HTML Help-style viewer: Wiki category tree and category index pages, Blog categories, site-page groups (news, projects, about/legal and app catalogue), global text search, Markdown rendering and a reader pane. It loads the complete content registry rather than the old OperatingSystems-only help subset.
+- Windows CHM viewer styling was added to `src/styles/os/themes/explorer-os-adapters.css` with XP, classic Windows, Windows 7 and modern Windows variants.
+- **Not yet accepted:** CI for the latest main commit is queued/pending; no successful typecheck/lint/build has been observed for this pass. No browser/device runtime acceptance has been performed. Validate every OS desktop inventory, Programs/Games launch, Explorer path/history/address/tree, media file associations, and Blog.chm category/search/article rendering before marking complete.
