@@ -1453,7 +1453,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 onClick: () => setShowAppleViewOptions(true),
               },
               {
-                label: 'Edit Widgets…',
+                label: macEditWidgetsLabels[language] ?? macEditWidgetsLabels.en,
                 onClick: () => setShowAppleWidgetGallery(true),
               },
             ]
@@ -1490,7 +1490,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 : themeKey.startsWith('win')
                   ? []
                   : [{
-                      label: language === 'ru' ? 'Виджеты рабочего стола…' : 'Desktop Widgets…',
+                      label: widgetEntryLabels[language] ?? widgetEntryLabels.en,
                       onClick: () => setShowAppleWidgetGallery(true),
                     }]),
               { label: 'Properties' },
