@@ -21,7 +21,7 @@ export interface NationalHoliday {
 
 const fixed: Record<CountryCode, Array<[number, number, string, NationalHoliday['kind']]>> = {
   RU: [[1,1,'Новый год','public'],[1,7,'Рождество Христово','public'],[2,23,'День защитника Отечества','public'],[3,8,'Международный женский день','public'],[5,1,'Праздник Весны и Труда','public'],[5,9,'День Победы','public'],[6,12,'День России','public'],[6,22,'День памяти и скорби','memorial'],[11,4,'День народного единства','public'],[12,9,'День Героев Отечества','memorial']],
-  KZ: [[1,1,'Новый год','public'],[1,2,'Новый год','public'],[1,7,'Православное Рождество','public'],[3,8,'Международный женский день','public'],[3,21,'Наурыз мейрамы','public'],[3,22,'Наурыз мейрамы','public'],[3,23,'Наурыз мейрамы','public'],[5,1,'Праздник единства народа Казахстана','public'],[5,7,'День защитника Отечества','public'],[5,9,'День Победы','public'],[5,31,'День памяти жертв политических репрессий и голода','memorial'],[7,6,'День столицы','public'],[3,15,'День Конституции','public'],[10,25,'День Республики','public'],[12,16,'День Независимости','public']],
+  KZ: [[1,1,'Новый год','public'],[1,2,'Новый год','public'],[1,7,'Православное Рождество','public'],[3,8,'Международный женский день','public'],[3,21,'Наурыз мейрамы','public'],[3,22,'Наурыз мейрамы','public'],[3,23,'Наурыз мейрамы','public'],[5,1,'Праздник единства народа Казахстана','public'],[5,7,'День защитника Отечества','public'],[5,9,'День Победы','public'],[5,31,'День памяти жертв политических репрессий и голода','memorial'],[7,6,'День столицы','public'],[10,25,'День Республики','public'],[12,16,'День Независимости','public']],
   BY: [[1,1,'Новый год','public'],[1,7,'Рождество Христово (православное)','public'],[3,8,'День женщин','public'],[5,1,'Праздник труда','public'],[5,9,'День Победы','public'],[6,22,'День всенародной памяти жертв Великой Отечественной войны','memorial'],[7,3,'День Независимости','public'],[11,7,'День Октябрьской революции','public'],[12,25,'Рождество Христово (католическое)','public']],
   CN: [[1,1,'元旦 · Новый год','public'],[5,1,'劳动节 · День труда','public'],[10,1,'国庆节 · День образования КНР','public'],[12,13,'国家公祭日 · День памяти жертв Нанкинской резни','memorial']],
   JP: [[1,1,'元日 · Новый год','public'],[2,11,'建国記念の日 · День основания государства','public'],[2,23,'天皇誕生日 · День рождения Императора','public'],[4,29,'昭和の日 · День Сёва','public'],[5,3,'憲法記念日 · День Конституции','public'],[5,4,'みどりの日 · День зелени','public'],[5,5,'こどもの日 · День детей','public'],[8,6,'広島平和記念日 · День памяти Хиросимы','memorial'],[8,9,'長崎原爆の日 · День памяти Нагасаки','memorial'],[8,11,'山の日 · День гор','public'],[8,15,'終戦の日 · День окончания войны','memorial'],[11,3,'文化の日 · День культуры','public'],[11,23,'勤労感謝の日 · День благодарности труду','public']],
@@ -56,6 +56,7 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
     }
   }
   const add=(country:CountryCode,date:Date,title:string,kind:NationalHoliday['kind']='public')=>result.push({id:`holiday-${country}-${dateKey(date)}-${title}`,date,country,title,kind});
+  add('KZ',new Date(year,year>=2026?2:7,year>=2026?15:30),'День Конституции');
   const easter=easterSunday(year);
   // Japan: Cabinet Office annual national-holiday lists (2026/2027), including substitute/citizen holidays.
   if (year === 2026) {
@@ -94,8 +95,10 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
     add('JP',new Date(year,7,15),'終戦の日 · День окончания войны','memorial');
   }
   // Annual memorial markers remain separate from labour-day status.
-  add('CN',new Date(year,11,13),'国家公祭日 · День памяти жертв Нанкинской резни','memorial');
-  add('GB',new Date(year,10,11),'Remembrance Day · День поминовения','memorial');
+  if(year===2026 || year===2027){
+    add('CN',new Date(year,11,13),'国家公祭日 · День памяти жертв Нанкинской резни','memorial');
+    add('GB',new Date(year,10,11),'Remembrance Day · День поминовения','memorial');
+  }
   // China: official State Council holiday arrangements for 2026 and 2027.
   const addRange=(country:CountryCode,startMonth:number,startDay:number,endMonth:number,endDay:number,title:string,kind:NationalHoliday['kind']='public')=>{
     const cursor=new Date(year,startMonth-1,startDay); const end=new Date(year,endMonth-1,endDay);
