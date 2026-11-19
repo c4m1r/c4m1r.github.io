@@ -306,7 +306,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - Windows light mode: icon tile/selection backing uses the familiar light surface without obscuring the icon. Night mode: switch the same surface and text/selection contrast to dark values; do not leave a white rectangle behind the icon.
 - Scope styles to desktop icon tiles and selection/focus states; do not alter application icon artwork, Explorer file icons or unrelated buttons.
 - Keep wallpaper contrast, hover, selected, focus-visible and disabled states accessible. Verify Windows 10/11 light/dark and WebOS before extending to XP/7/classic profiles.
-- WebOS first styling pass: shared desktop icon tile hook is in place; dark glass tile backing, cyan hover/selection edge, label contrast and focus outline are scoped to `.os-webos`. A light-surface CSS variant is prepared behind `data-color-scheme="light"`; the actual light/night palette switch still needs to be wired to the canonical appearance setting rather than guessed from OS identity.
+- WebOS first styling pass: shared desktop icon tile hook is in place; dark glass tile backing, cyan hover/selection edge, label contrast and focus outline are scoped to `.os-webos`. A canonical per-OS `colorScheme` setting (`light` / `dark`) now persists through `SystemSettings`; Control Panel exposes the choice in Appearance & Themes, and DesktopShellContainer applies `data-color-scheme` to WebOS. The light palette uses a clean light tile and dark label; dark remains the default.
 - Acceptance: wire the canonical palette state, switch themes repeatedly without stale inline styles; inspect transparent PNG/SVG icons over light and dark wallpapers; confirm selection rectangle remains legible.
 
 ### DOCS-03 — Single Wiki / Blog help library
@@ -317,3 +317,5 @@ Percentages are working estimates, not test results. The previous task registry 
 
 
 - 2026-11-19: Weather city selector moved to a viewport-level glass portal to avoid widget/canvas clipping; WebOS desktop icon tiles received their first dark-surface styling pass. Automated and browser verification remain pending.
+
+- 2026-11-19 source pass: WebOS light/dark desktop icon scheme is now connected to the shared per-OS settings store and Appearance & Themes UI. Browser contrast and persistence acceptance remain pending.
