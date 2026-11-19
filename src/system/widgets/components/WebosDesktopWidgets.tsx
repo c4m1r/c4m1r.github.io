@@ -15,11 +15,12 @@ import '../widgets.css';
 interface WebosDesktopWidgetsProps {
   onOpenFeed?: () => void;
   onOpenGalleryImage?: (path: string) => void;
+  onOpenCalendar?: () => void;
 }
 
 const presets = createDesktopWidgetPresets;
 
-export function WebosDesktopWidgets({ onOpenFeed, onOpenGalleryImage }: WebosDesktopWidgetsProps) {
+export function WebosDesktopWidgets({ onOpenFeed, onOpenGalleryImage, onOpenCalendar }: WebosDesktopWidgetsProps) {
   const [visibility, setVisibility] = useState<DesktopWidgetsVisibility>(getStoredWidgetsVisibility);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export function WebosDesktopWidgets({ onOpenFeed, onOpenGalleryImage }: WebosDes
 
   const items: DesktopWidgetItem[] = [
     ...(visibility.weather ? [{ id: 'weather', title: 'Погода', content: <WeatherWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
-    ...(visibility.clock ? [{ id: 'clockCalendar', title: 'Часы и календарь', content: <ClockCalendarWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.clock ? [{ id: 'clockCalendar', title: 'Часы и календарь', content: <ClockCalendarWidget onOpenCalendar={onOpenCalendar} />, presets: presets(), defaultPreset: 'standard' }] : []),
     ...(visibility.winamp ? [{ id: 'winamp', title: 'Winamp', content: <WinampWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
     ...(visibility.quotes ? [{ id: 'quotes', title: 'Цитаты', content: <QuotesWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
     ...(visibility.currency ? [{ id: 'currency', title: 'Курсы валют', content: <CurrencyWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
