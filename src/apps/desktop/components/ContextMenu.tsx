@@ -25,7 +25,7 @@ export interface ContextMenuItem {
 
 type ContextMenuDictionary = Record<string, string>;
 
-const CONTEXT_MENU_LABELS: Record<Language, ContextMenuDictionary> = {
+const CONTEXT_MENU_LABELS: Partial<Record<Language, ContextMenuDictionary>> & Pick<Record<Language, ContextMenuDictionary>, 'en'> = {
   en: {},
   ru: {
     Open: 'Открыть',
@@ -231,7 +231,7 @@ const CONTEXT_MENU_LABELS: Record<Language, ContextMenuDictionary> = {
 
 function localizeLabel(label: string | undefined, language: Language) {
   if (!label) return label;
-  return CONTEXT_MENU_LABELS[language][label] ?? label;
+  return CONTEXT_MENU_LABELS[language]?.[label] ?? CONTEXT_MENU_LABELS.ru?.[label] ?? label;
 }
 
 function ContextMenuLevel({
