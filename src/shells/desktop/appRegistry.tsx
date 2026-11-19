@@ -214,8 +214,8 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
   'blog': {
     id: 'blog',
     title: {
-      en: 'Blog',
-      ru: 'Блог',
+      en: 'Blog.chm',
+      ru: 'Блог.chm',
       fr: 'Blog',
       es: 'Blog',
       zh: '博客',
