@@ -1106,13 +1106,19 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       if (appId) launchApp(appId);
     };
     const handleOpenWidgetGallery = () => setShowAppleWidgetGallery(true);
+    const handleOpenExplorerPath = (event: Event) => {
+      const path = (event as CustomEvent<{ path?: string }>).detail?.path;
+      if (path) openExplorerWindow(path);
+    };
     window.addEventListener('app:launch', handleAppLaunch);
     window.addEventListener('desktop:open-widget-gallery', handleOpenWidgetGallery);
+    window.addEventListener('explorer:open-path', handleOpenExplorerPath);
     return () => {
       window.removeEventListener('app:launch', handleAppLaunch);
       window.removeEventListener('desktop:open-widget-gallery', handleOpenWidgetGallery);
+      window.removeEventListener('explorer:open-path', handleOpenExplorerPath);
     };
-  }, [launchApp]);
+  }, [launchApp, openExplorerWindow]);
 
   useEffect(() => {
     if (themeKey !== 'macos-26') return;
