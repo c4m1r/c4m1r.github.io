@@ -2430,3 +2430,19 @@
     transform: scale(1);
   }
 }
+
+/* iOS Notification Center calendar now uses the shared date/event store. */
+.os-ios .apple-notification-center__calendar > header{display:grid;grid-template-columns:28px 1fr 28px}
+.os-ios .apple-notification-center__calendar > header button{width:26px;height:24px;border:0;border-radius:8px;background:rgba(255,255,255,.08);color:#fff;font-size:18px}
+.os-ios .apple-notification-center__weekdays span{height:24px;display:grid;place-items:center}
+.os-ios .apple-notification-center__days span,.os-ios .apple-notification-center__days button{position:relative;width:28px;height:28px;margin:auto;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:rgba(255,255,255,.86);font:500 10px system-ui;cursor:pointer}
+.os-ios .apple-notification-center__days button.is-today{background:#ff453a;color:#fff}
+.os-ios .apple-notification-center__days button.is-selected:not(.is-today){box-shadow:inset 0 0 0 1.5px #0a84ff}
+.os-ios .apple-notification-center__days button.is-labour-weekend{background:rgba(255,69,58,.17);color:#ffaaa5}
+.os-ios .apple-notification-center__days button.is-makeup-workday{box-shadow:inset 0 0 0 1px #30d158}
+.os-ios .apple-notification-center__days button i{position:absolute;bottom:2px;left:50%;width:3px;height:3px;border-radius:50%;background:#ff6961;transform:translateX(-50%)}
+.os-ios .apple-notification-center__selected-day{display:flex;flex-direction:column;gap:4px;margin:8px 12px 0;padding:8px 0 0;border-top:1px solid rgba(255,255,255,.09);font-size:10px}
+.os-ios .apple-notification-center__selected-day>strong{font-size:11px;text-transform:capitalize}
+.os-ios .apple-notification-center__holiday,.os-ios .apple-notification-center__event{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.78)}
+.os-ios .apple-notification-center__holiday img{width:16px;height:11px;object-fit:cover;border-radius:2px}
+.os-ios .apple-notification-center__open-calendar{width:calc(100% - 24px);margin:9px 12px 0;padding:7px;border:0;border-radius:10px;background:rgba(10,132,255,.22);color:#8ec5ff;font:600 10px system-ui}
