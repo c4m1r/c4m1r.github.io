@@ -11,7 +11,6 @@ import snakeGameIcon from '../apps/games/assets/snake-icon.svg';
 import memoryGameIcon from '../apps/games/assets/memory-icon.svg';
 import { PROJECT_PLAYLIST } from '../apps/mediaplayer/playlist';
 import winampIcon from '../themes/winxp/assets/icons/winamp.png';
-import { parseFrontmatter } from '../domain/content/frontmatter';
 
 export interface FileSystemItem {
     id: string;
@@ -30,17 +29,15 @@ const defaultTextIcon = WINXP_ASSETS.richTextIcon ?? WINXP_ASSETS.notepadIcon ??
 
 type FileSystemChildren = Record<string, FileSystemItem>;
 
-const projectModules = import.meta.glob('../content/projects/*.{md,txt}', {
+const projectModules = import.meta.glob('../content/projects/*.md', {
     query: '?raw',
     import: 'default',
-    eager: true,
-}) as Record<string, string>;
+}) as Record<string, () => Promise<string>>;
 
 const aboutProjectModules = import.meta.glob('../content/about/projects/**/*.md', {
     query: '?raw',
     import: 'default',
-    eager: true,
-}) as Record<string, string>;
+}) as Record<string, () => Promise<string>>;
 
 const videoModules = import.meta.glob('../content/videos/**/*.{mp4,webm,mov,m4v}', {
     query: '?url',
@@ -114,17 +111,17 @@ const projectChildren: FileSystemChildren = (() => {
         return children[folderName].children!;
     };
 
-    // Match loadAllProjects(): standard project files win, then about/projects
-    // entries are added only when their filename ID has not appeared already.
+    // Keep the same source precedence and filename-ID deduplication as loadAllProjects(),
+    // but defer Markdown loading until the user opens a project article.
     const entries = [
-        ...Object.entries(projectModules).map(([path, content]) => ({ path, content, source: 'standard' as const })),
-        ...Object.entries(aboutProjectModules).map(([path, content]) => ({ path, content, source: 'about' as const })),
+        ...Object.keys(projectModules).map((path) => ({ path, source: 'standard' as const })),
+        ...Object.keys(aboutProjectModules).map((path) => ({ path, source: 'about' as const })),
     ].sort((a, b) => {
         if (a.source !== b.source) return a.source === 'standard' ? -1 : 1;
         return a.path.localeCompare(b.path);
     });
 
-    entries.forEach(({ path, content: rawContent, source }) => {
+    entries.forEach(({ path, source }) => {
         const relative = source === 'standard'
             ? path.split('../content/projects/')[1]
             : path.split('../content/about/projects/')[1];
@@ -134,17 +131,13 @@ const projectChildren: FileSystemChildren = (() => {
         const fileName = segments.pop();
         if (!fileName) return;
 
-        const projectId = fileName.replace(/\.(md|txt)$/i, '');
+        const projectId = fileName.replace(/\.md$/i, '');
         const dedupeKey = projectId.toLocaleLowerCase();
         if (seenProjectIds.has(dedupeKey)) return;
         seenProjectIds.add(dedupeKey);
 
-        const parsed = parseFrontmatter(rawContent);
-        const title = String(parsed.metadata.title || projectId).trim();
-        const baseDisplayName = `${title.replace(/\.(md|txt)$/i, '')}.md`;
         let currentChildren = root;
         let currentPath = source === 'standard' ? 'projects' : 'about-projects';
-
         if (source === 'about') {
             segments.forEach((segment) => {
                 currentChildren = ensureFolder(currentChildren, segment, currentPath);
@@ -152,20 +145,20 @@ const projectChildren: FileSystemChildren = (() => {
             });
         }
 
-        const displayName = currentChildren[baseDisplayName]
-            ? `${baseDisplayName.replace(/\.md$/i, '')} (${projectId}).md`
-            : baseDisplayName;
+        const displayName = `${projectId}.md`;
         currentChildren[displayName] = {
             id: `project:${projectId}`,
             name: displayName,
             type: 'file',
             icon: defaultTextIcon,
-            content: parsed.body,
+            content: source === 'standard'
+                ? `projects/${relative}`
+                : `about/projects/${relative}`,
         };
     });
 
     return root;
-})();
+})();;
 
 export const initialFileSystem: Record<string, FileSystemItem> = {
     'My Computer': {
