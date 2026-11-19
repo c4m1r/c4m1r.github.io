@@ -319,3 +319,10 @@ Percentages are working estimates, not test results. The previous task registry 
 - 2026-11-19: Weather city selector moved to a viewport-level glass portal to avoid widget/canvas clipping; WebOS desktop icon tiles received their first dark-surface styling pass. Automated and browser verification remain pending.
 
 - 2026-11-19 source pass: WebOS light/dark desktop icon scheme is now connected to the shared per-OS settings store and Appearance & Themes UI. Browser contrast and persistence acceptance remain pending.
+
+### WINAMP-01 — Independent classic player windows and widget entry point (P0)
+- Winamp is no longer wrapped by the operating-system Explorer-style window chrome. The desktop window manager keeps the app lifecycle/close route, while the player renders its own classic Winamp surfaces.
+- Main player, equalizer and playlist have independent viewport coordinates, titlebar drag handles, viewport clamping and active-window stacking. Windowshade controls remain local to each surface.
+- The existing Widget Gallery entry remains the canonical visibility control for the compact “Winamp Now Playing” desktop widget; it is not the same surface as the full classic player.
+- Current source work: `Window.tsx` bypasses OS chrome for `app:winamp`; `WinampPlayer.tsx` owns drag/stack/close behavior; `winamp.css` renders floating windows over the desktop.
+- Still required: browser test dragging each window by its titlebar, overlap/bring-to-front, windowshade, close/reopen, mobile touch, viewport edges, playback/EQ/playlist, and verify that the full player does not cover the taskbar or block desktop interaction outside its surfaces. Webamp is a behavior reference, not a bundled dependency. Do not claim full Webamp feature parity until skins, file drop, EQ presets persistence and media metadata are verified.
