@@ -297,17 +297,21 @@ Percentages are working estimates, not test results. The previous task registry 
 - Canvas must not clip the widget vertically or block pointer movement due to an overflow/stacking ancestor. Recheck after Compact → another size → Compact and after viewport resize.
 - Dropdown/popover menus inside widgets must render above adjacent cards and outside card clipping, with a restrained translucent glass surface and backdrop blur. Keep menus usable by pointer and keyboard.
 - Acceptance: verify Weather city selector with all entries visible; verify every widget dropdown, Winamp controls and media interactions; test mouse/touch/keyboard and compact-mode round trips.
-- 2026-11-19 source pass: widget preset height is no longer reduced to canvas client height; canvas uses vertical scrolling; card overflow is relaxed; Canvas Grip toggles persistent controls and remains a drag handle. Runtime/typecheck/lint/build/browser acceptance is still pending. Dropdown-specific glass/popover treatment remains open.
+- 2026-11-19 source pass: widget preset height is no longer reduced to canvas client height; Canvas Grip toggles persistent controls and remains a drag handle. Weather city picker now renders through a viewport-level React portal with a translucent blurred surface, viewport-aware placement, outside-click/Escape dismissal and keyboard focus styling, so it escapes card/canvas clipping. The canvas/card scroll boundaries were restored after this portal change. Remaining: inspect other widget menus and verify drag/scroll/compact round trips in a browser. Runtime/typecheck/lint/build/browser acceptance is still pending.
 
 ### WINDOWS-01 — Desktop icon tile and night palette
 - Start with WebOS as the reference implementation, then share the palette contract with Windows desktop skins.
 - Windows light mode: icon tile/selection backing uses the familiar light surface without obscuring the icon. Night mode: switch the same surface and text/selection contrast to dark values; do not leave a white rectangle behind the icon.
 - Scope styles to desktop icon tiles and selection/focus states; do not alter application icon artwork, Explorer file icons or unrelated buttons.
 - Keep wallpaper contrast, hover, selected, focus-visible and disabled states accessible. Verify Windows 10/11 light/dark and WebOS before extending to XP/7/classic profiles.
-- Acceptance: switch themes repeatedly without stale inline styles; inspect transparent PNG/SVG icons over light and dark wallpapers; confirm selection rectangle remains legible.
+- WebOS first styling pass: shared desktop icon tile hook is in place; dark glass tile backing, cyan hover/selection edge, label contrast and focus outline are scoped to `.os-webos`. A light-surface CSS variant is prepared behind `data-color-scheme="light"`; the actual light/night palette switch still needs to be wired to the canonical appearance setting rather than guessed from OS identity.
+- Acceptance: wire the canonical palette state, switch themes repeatedly without stale inline styles; inspect transparent PNG/SVG icons over light and dark wallpapers; confirm selection rectangle remains legible.
 
 ### DOCS-03 — Single Wiki / Blog help library
 - Wiki and Blog are two content sources in one documentation application, not separate products or launch destinations.
 - Continue the shared BlogApp HTML Help viewer. Windows presents it as Блог.chm / Blog.chm; WebOS and other shells use a single Help/Documentation entry point.
 - Keep one global search, one reader pane, a hierarchical Wiki contents tree and article/blog/site content grouped within the same library. Avoid duplicate desktop/start-menu shortcuts and parallel navigation systems.
 - Acceptance: search across Wiki, Blog, app catalogue, projects, news and site pages; open every source in the same reader; verify Windows CHM-like chrome and WebOS presentation.
+
+
+- 2026-11-19: Weather city selector moved to a viewport-level glass portal to avoid widget/canvas clipping; WebOS desktop icon tiles received their first dark-surface styling pass. Automated and browser verification remain pending.
