@@ -277,3 +277,8 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Tree labels navigate through the same `navigateToPath` callback. Disclosure controls only affect local expansion state. The existing Folders toolbar toggle shows/hides this tree in non-XP Legacy profiles.
 - Tree visual skin still needs per-OS refinement and narrow-screen validation. XP retains its established task pane; Apple remains on its Finder sidebar.
 - Do not count this as fully verified until click paths, deep nested folders, collapsed/expanded state and responsive behavior are browser-tested.
+
+
+### Explorer sidebar skin note
+- `src/styles/os/themes/explorer-os-adapters.css` now styles the new shared folder tree separately for Win98/2000, Ubuntu, Arch and WebOS.
+- Updated body selectors to target the stable `.flex-1` body wrapper instead of relying on its child index, because the optional Search row adds a sibling before the body and otherwise breaks theme selectors when search is open.
