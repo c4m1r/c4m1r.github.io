@@ -171,6 +171,8 @@ git diff --check
 ### Verified repository baseline
 - Branch: `main`.
 - Inspected head before documentation consolidation: `617b2ee75baef787b331965b79bcee6fa637c66f`.
+- Documentation consolidation commits: `6a857d268494103103bbeff3d3a7f5d4cd5763ab` (history), `738962164069edbc98e635ef197f3a4c6f62f34a` (tasks), `c9417d7ba3c03634dd558525e75a06e3a5506cd7` (agents).
+- DOOM launch UX hardening commit: `b0d989789ff06c688be78270aca3b2c3ceea7cc8`.
 - No root `tasks.md` exists. The canonical file is `docs/tasks.md`.
 - `/eat/` is present in the Git tree. Do not repeat historical claims that all donor folders were removed.
 - Runtime stack from `package.json`: React 18, TypeScript, Vite 7, Tailwind 3.4. No Next.js runtime should be introduced to absorb donor components.
@@ -225,3 +227,11 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Record only verified findings. For each external/donor source include URL/path, retrieval date, licence file and copyright holder, files actually reused, dependencies, and unresolved questions.
 - Re-check URLs and remote host behavior before relying on them; do not treat old cache entries as current availability.
 - Never cache credentials, personal secrets, access tokens or raw user data in this file.
+
+
+### Latest implementation note — DOOM embed status
+- File changed: `src/apps/doom/DoomPlayer.tsx`.
+- The UI now distinguishes iframe navigation from actual game startup. A completed iframe load is explicitly described as unverified; a direct link to the selected build is always available.
+- Embedded navigation failure copy no longer promises that direct launch will necessarily work; it says the external route still needs checking.
+- This is a UX truthfulness/recovery improvement, **not** a verified playable DOOM implementation. Keep GAME-01 at 30% until actual gameplay is manually tested.
+- No local typecheck/lint/build/browser test was run in this connector-only pass.
