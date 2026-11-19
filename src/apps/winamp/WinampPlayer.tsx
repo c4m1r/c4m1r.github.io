@@ -32,16 +32,13 @@ function generateAlbumArt(track: MediaTrack): { bg: string; accent: string; icon
 export function WinampPlayer() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const filtersRef = useRef<BiquadFilterNode[]>([]);
-  const pannerRef = useRef<StereoPannerNode | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
 
   const [trackIndex, setTrackIndex] = useState(() => winampController.getState().trackIndex);
   const [isPlaying, setIsPlaying] = useState(() => winampController.getState().isPlaying);
   const [currentTime, setCurrentTime] = useState(() => winampController.getState().currentTime);
   const [duration, setDuration] = useState(() => winampController.getState().duration || 0);
   const [volume, setVolume] = useState(() => winampController.getState().volume);
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(() => winampController.getEqualizerState().balance);
   const [shuffle, setShuffle] = useState(() => winampController.isShuffle());
   const [autoAdvance, setAutoAdvance] = useState(() => winampController.isAutoAdvance());
   const [repeat, setRepeat] = useState(() => winampController.isRepeat());
@@ -68,10 +65,10 @@ export function WinampPlayer() {
   const [plShade, setPlShade] = useState(false);
 
   // Equalizer states
-  const [eqOn, setEqOn] = useState(true);
+  const [eqOn, setEqOn] = useState(() => winampController.getEqualizerState().enabled);
   const [eqAuto, setEqAuto] = useState(false);
-  const [preamp, setPreamp] = useState(0);
-  const [eqBands, setEqBands] = useState<number[]>(() => Array(10).fill(0));
+  const [preamp, setPreamp] = useState(() => winampController.getEqualizerState().preamp);
+  const [eqBands, setEqBands] = useState<number[]>(() => winampController.getEqualizerState().bands);
 
   // Visualizer bar heights and peak dots
   const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
@@ -189,22 +186,17 @@ export function WinampPlayer() {
       next[index] = value;
       return next;
     });
-    if (filtersRef.current[index]) {
-      filtersRef.current[index].gain.value = eqOn ? value : 0;
-    }
+    winampController.setEqualizerBand(index, value);
   };
 
   const handlePreampChange = (value: number) => {
     setPreamp(value);
-    if (gainNodeRef.current) {
-      const gainFactor = Math.pow(10, value / 20);
-      gainNodeRef.current.gain.value = eqOn ? gainFactor : 1;
-    }
+    winampController.setPreamp(value);
   };
 
   // Sync balance
   useEffect(() => {
-    if (pannerRef.current) pannerRef.current.pan.value = balance;
+    winampController.setBalance(balance);
   }, [balance]);
 
   const displayTime = useMemo(() => {
@@ -496,7 +488,7 @@ export function WinampPlayer() {
                   <button
                     type="button"
                     className={`wa-btn-mode ${eqOn ? 'is-active' : ''}`}
-                    onClick={() => setEqOn((v) => !v)}
+                    onClick={() => setEqOn((v) => { const next = !v; winampController.setEqualizerEnabled(next); return next; })}
                   >
                     <span className="wa-led-dot" />
                     ON
@@ -532,6 +524,8 @@ export function WinampPlayer() {
                     // Reset to flat
                     setEqBands(Array(10).fill(0));
                     setPreamp(0);
+                    EQ_FREQUENCIES.forEach((_, index) => winampController.setEqualizerBand(index, 0));
+                    winampController.setPreamp(0);
                   }}
                 >
                   PRESETS
