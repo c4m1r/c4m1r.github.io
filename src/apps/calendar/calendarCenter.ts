@@ -253,7 +253,7 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
   const rule = event.recurrenceRule;
   const recurrenceDates = event.recurrenceDates ?? [];
   const exceptionDates = event.exceptionDates ?? [];
-  const hasRecurrenceSet = Boolean(rule || recurrenceDates.length);
+  const hasRecurrenceSet = Boolean(rule || recurrenceDates.length || exceptionDates.length);
 
   if (!hasRecurrenceSet) {
     const startsBeforeRangeEnd = event.startDate.getTime() < endExclusive;
