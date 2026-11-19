@@ -90,7 +90,7 @@ function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined 
     if (parsed && /^\\d{8}$/.test(fields.UNTIL)) parsed.setHours(23, 59, 59, 999);
     return parsed ?? undefined;
   })() : undefined;
-  const byDay = fields.BYDAY?.split(',').map((value: string) => WEEKDAY_CODES[value.slice(-2)]).filter((day: number | undefined): day is number => day !== undefined);
+  const byDay = fields.BYDAY?.split(',').filter((value: string) => value.length === 2).map((value: string) => WEEKDAY_CODES[value]).filter((day: number | undefined): day is number => day !== undefined);
   const byMonthDay = fields.BYMONTHDAY?.split(',').map(Number).filter((day: number) => Number.isInteger(day) && day >= 1 && day <= 31);
   return { freq: freq as CalendarRecurrenceRule['freq'], interval, count, until, byDay, byMonthDay };
 }
