@@ -1,6 +1,6 @@
-export type Language = 'en' | 'ru' | 'fr' | 'es' | 'zh' | 'ja' | 'ko';
+export type Language = 'en' | 'ru' | 'fr' | 'es' | 'zh' | 'ja' | 'ko' | 'be' | 'kk';
 
-export const translations = {
+export const translations: Record<string, any> = {
   en: {
     grub: {
       title: 'GNU GRUB  version 2.06',
@@ -654,9 +654,30 @@ export const translations = {
   }
 };
 
+// Belarusian and Kazakh are selectable locales. Long-form sections inherit Russian
+// until their dedicated translations are completed; core shell labels are localized.
+Object.assign(translations, {
+  be: {
+    ...translations.ru,
+    grub: { ...translations.ru.grub, title: 'GNU GRUB версія 2.06', blogSite: 'Мой сайт', terminal: 'Тэрмінал', autoboot: 'Выбраны пункт будзе запушчаны аўтаматычна праз {seconds} с.' },
+    xp: { ...translations.ru.xp, welcome: 'Вітаем', myComputer: 'Мой камп’ютар', myProjects: 'Мае праекты', recycleBin: 'Кошык', myDocuments: 'Мае дакументы', start: 'Пуск', games: 'Гульні', internet: 'Інтэрнэт', email: 'Электронная пошта', frequentPrograms: 'Часта выкарыстоўваныя праграмы', allPrograms: 'Усе праграмы', logOff: 'Выйсці', turnOff: 'Выключыць камп’ютар', loggingIn: 'Загрузка асабістых налад...', welcomeMessage: 'Каб пачаць, націсніце імя карыстальніка', loginHint: 'Націсніце імя карыстальніка, каб пачаць', turnOffComputer: 'Выключыць камп’ютар', footerNote: 'Пасля ўваходу можна змяняць уліковыя запісы ў Панэлі кіравання.' },
+    site: { ...translations.ru.site, nav: { ...translations.ru.site.nav, home: 'Галоўная', about: 'Пра мяне', wiki: 'Вікі', cv: 'Рэзюмэ', gallery: 'Галерэя', blog: 'Блог', apps: 'Праграмы', search: 'Пошук', legal: 'Прававая інфармацыя' } },
+    terminal: { welcome: 'Рэжым тэрмінала — распрацоўка працягваецца', help: translations.ru.terminal.help },
+  },
+  kk: {
+    ...translations.ru,
+    grub: { ...translations.ru.grub, title: 'GNU GRUB нұсқасы 2.06', blogSite: 'Менің сайтым', terminal: 'Терминал', autoboot: 'Таңдалған жазба {seconds} секундтан кейін автоматты түрде орындалады.' },
+    xp: { ...translations.ru.xp, welcome: 'Қош келдіңіз', myComputer: 'Менің компьютерім', myProjects: 'Менің жобаларым', recycleBin: 'Себет', myDocuments: 'Менің құжаттарым', start: 'Бастау', games: 'Ойындар', internet: 'Интернет', email: 'Электрондық пошта', frequentPrograms: 'Жиі қолданылатын бағдарламалар', allPrograms: 'Барлық бағдарламалар', logOff: 'Жүйеден шығу', turnOff: 'Компьютерді өшіру', loggingIn: 'Жеке параметрлер жүктелуде...', welcomeMessage: 'Бастау үшін пайдаланушы атыңызды басыңыз', loginHint: 'Бастау үшін пайдаланушы атыңызды басыңыз', turnOffComputer: 'Компьютерді өшіру', footerNote: 'Жүйеге кіргеннен кейін Басқару тақтасында тіркелгілерді өзгертуге болады.' },
+    site: { ...translations.ru.site, nav: { ...translations.ru.site.nav, home: 'Басты бет', about: 'Мен туралы', wiki: 'Уики', cv: 'Түйіндеме', gallery: 'Галерея', blog: 'Блог', apps: 'Қолданбалар', search: 'Іздеу', legal: 'Құқықтық ақпарат' } },
+    terminal: { welcome: 'Терминал режимі — әзірлеу жалғасуда', help: translations.ru.terminal.help },
+  },
+});
+
 export function detectLanguage(): Language {
   const browserLang = navigator.language.toLowerCase();
 
+  if (browserLang.startsWith('be')) return 'be';
+  if (browserLang.startsWith('kk')) return 'kk';
   if (browserLang.startsWith('ru')) return 'ru';
   if (browserLang.startsWith('fr')) return 'fr';
   if (browserLang.startsWith('es')) return 'es';
