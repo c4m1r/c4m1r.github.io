@@ -191,6 +191,27 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
       }
     }
   }
+  // For years without a published annual resolution, derive only the statutory weekend-substitute rules.
+  if(year>2027){
+    const transferWeekendHolidays=(country:CountryCode,skipNewYear=false,onlySunday=false)=>{
+      const base=result.filter((holiday)=>holiday.country===country&&holiday.kind==='public'&&
+        !(skipNewYear&&holiday.date.getMonth()===0&&holiday.date.getDate()<=8));
+      const occupied=new Set(base.map((holiday)=>dateKey(holiday.date)));
+      for(const holiday of base){
+        if(onlySunday ? holiday.date.getDay()!==0 : holiday.date.getDay()!==0&&holiday.date.getDay()!==6) continue;
+        const substitute=new Date(holiday.date);
+        do { substitute.setDate(substitute.getDate()+1); }
+        while(substitute.getDay()===0||substitute.getDay()===6||occupied.has(dateKey(substitute)));
+        const key=dateKey(substitute);
+        if(!result.some((item)=>item.country===country&&dateKey(item.date)===key)){
+          add(country,substitute,'Перенесённый выходной');
+          occupied.add(key);
+        }
+      }
+    };
+    transferWeekendHolidays('RU',true,false);
+    transferWeekendHolidays('JP',false,true);
+  }
   // UK bank holidays: England and Wales baseline (regional calendars differ).
   add('GB',new Date(year, easter.getMonth(), easter.getDate()-2),'Good Friday');
   add('GB',easter,'Easter Sunday','cultural');
