@@ -143,6 +143,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - Grid selection opens the selected image; navigation and reopening must not create stale duplicate state.
 - Support all actual image formats in the inventory with clear fallback for unsupported formats.
 - Share the same inventory with Appearance & Themes.
+- Selection state now follows changing image inventories: an explicitly requested image is focused when present; otherwise the current index is clamped to the new list length (or reset to zero for an empty list). This prevents a blank viewer after switching to a shorter folder. Browser acceptance remains pending.
 
 ### CONTROL-01 — Control Panel category architecture
 - Provide OS-appropriate categories: System/Performance, Appearance & Themes/Personalization, Network & Internet, Hardware & Sound, Programs/Applications, User Accounts and Accessibility. Adapt names, grouping and layout to each OS rather than forcing a modern generic panel.
