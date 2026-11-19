@@ -293,3 +293,31 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - CSS selectors for the Explorer body now target its stable `.flex-1` wrapper rather than positional child index; the optional search row otherwise shifts body position and can break skin targeting.
 - Remaining gaps: no recursive/global search; XP does not yet expose a classic left folder tree; tree/sidebar needs visual and mobile-width review; full Win98/2000 toolbar bitmap fidelity remains incomplete; Linux interaction model is not full Nautilus/Thunar parity.
 - Verification: GitHub combined status returned `statuses: []`; no local npm scripts or browser session were available/run. Do not infer CI success. Run `npm run verify`, `npm run typecheck`, `npm run lint`, `npm run build` and `git diff --check` before declaring this work verified.
+
+
+### User-reported desktop / Start Menu / Pictures regression pass — 2026-11-19
+- Branch: main; no feature branch.
+- Source baseline inspected: f6bc699452ad794102637e0ae3f254b40800021d. Latest implementation commit at the end of this pass: f6bc699452ad794102637e0ae3f254b40800021d.
+- Widget defaults:
+  - src/system/widgets/types.ts: DEFAULT_WIDGETS_VISIBILITY is now all false; WEBOS_DEFAULT_WIDGETS_VISIBILITY is all true and is used only by the WebOS widget canvas/storage reader.
+  - src/shells/desktop/DesktopShellContainer.tsx: Apple/non-WebOS widget visibility moved from storage key desktop-apple-widget-visibility-v1 to v2. This intentionally ignores old v1 values left by the prior behavior; all non-WebOS widgets start off unless explicitly enabled under v2.
+  - WebOS continues to render its own widget canvas with the eight enabled defaults. The Widget Gallery remains the shared settings surface.
+- Start Menu:
+  - src/shells/desktop/components/start-menu/StartMenu98.tsx previously accepted only close/system callbacks; all ordinary entries were inert. It now routes Programs/Favorites/Documents/Settings/Find/Help/Run/Computer/My Pictures through the existing onOpenPath and onLaunchApp callbacks.
+  - XP and Windows 7 Start Menu Pictures paths were aligned with the canonical folder location described below.
+- My Documents:
+  - src/shells/desktop/DesktopShellContainer.tsx now includes a desktop My Documents shortcut and handles its double-click by opening the shared Explorer at the canonical profile path.
+  - The desktop shortcut path was inspected after correcting source escaping; it is a normal Windows path literal, not a path containing doubled runtime separators.
+- My Pictures / Picture Viewer:
+  - src/utils/FileSystem.ts: My Pictures is now nested inside My Documents, matching the Windows XP profile layout. My Music was added because the existing XP/7 Start Menu shortcuts referenced it but the folder was absent.
+  - StartMenuXP.tsx, StartMenu7.tsx and StartMenu98.tsx route My Pictures to the nested canonical profile path C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures.
+  - Folder display name is Мои рисунки; MyComputer.tsx recognizes both English and Russian path text and switches the folder to thumbnails mode. This is still the same canonical filesystem, not a parallel gallery.
+  - appRegistry.tsx: app id pictures now displays as Picture Viewer / Просмотр изображений, while the actual folder remains My Pictures / Мои рисунки.
+  - PictureViewer.tsx: if an image opened from Explorer is not in the gallery hook result, it is prepended to the active viewer list so the requested image can still be displayed.
+- Important review notes:
+  - Start Menu XP/7 and classic callbacks are source-wired, but no browser interaction test was available; do not claim verified behavior.
+  - Verify desktop My Documents icon placement in every supported shell. macOS Finder already has a Documents sidebar item; this desktop shortcut is added to non-macOS profiles.
+  - Verify that the Picture Viewer gallery hook and content/pictures glob cover the same intended inventory. The fallback only ensures the specifically opened image appears; it does not prove inventory parity.
+  - Check that the current image selected from the Explorer thumbnail view opens in the expected viewer window and that Back/Forward and slideshow remain coherent.
+- Verification: no local npm run verify, npm run typecheck, npm run lint, npm run build, or browser/manual OS matrix was run in this connector-only pass. GitHub combined status was not queried for the final commit. Do not claim CI success.
+- Next work: continue Explorer behavior/fidelity (especially XP task pane and classic folder tree), then complete Picture Viewer inventory parity and appearance integration; continue Control Panel and widget shortcut unification. Keep docs/tasks.md and this handoff updated after each meaningful pass.
