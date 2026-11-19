@@ -218,6 +218,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const menuHoverCooldownRef = useRef<number>(0);
 
   const [customWallpaper, setCustomWallpaper] = useState<string | null>(getStoredCustomWallpaper);
+  const [customWallpaperFit, setCustomWallpaperFit] = useState<'fill' | 'fit' | 'stretch' | 'tile' | 'center'>(() => {
+    const saved = typeof window !== 'undefined' ? window.localStorage.getItem('desktop-wallpaper-fit') : null;
+    return saved === 'fit' || saved === 'stretch' || saved === 'tile' || saved === 'center' ? saved : 'fill';
+  });
   const [activeEdition, setActiveEdition] = useState(() => getActiveEdition(theme));
 
   useEffect(() => {
@@ -376,8 +380,18 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       const customEvent = e as CustomEvent<string | null>;
       setCustomWallpaper(customEvent.detail || null);
     };
+    const handleWallpaperFitChange = (e: Event) => {
+      const value = (e as CustomEvent<string>).detail;
+      if (value === 'fill' || value === 'fit' || value === 'stretch' || value === 'tile' || value === 'center') {
+        setCustomWallpaperFit(value);
+      }
+    };
     window.addEventListener('wallpaper-changed', handleWallpaperChange);
-    return () => window.removeEventListener('wallpaper-changed', handleWallpaperChange);
+    window.addEventListener('wallpaper-fit-changed', handleWallpaperFitChange);
+    return () => {
+      window.removeEventListener('wallpaper-changed', handleWallpaperChange);
+      window.removeEventListener('wallpaper-fit-changed', handleWallpaperFitChange);
+    };
   }, []);
   const trayRef = useRef<HTMLDivElement | null>(null);
 
@@ -1358,7 +1372,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           : themeKey === 'webos'
           ? '#0f172a'
           : 'transparent',
-        backgroundSize: 'cover',
+        backgroundSize: customWallpaperFit === 'fill' ? 'cover' : customWallpaperFit === 'fit' ? 'contain' : customWallpaperFit === 'stretch' ? '100% 100%' : 'auto',
+        backgroundRepeat: customWallpaperFit === 'tile' ? 'repeat' : 'no-repeat',
         backgroundPosition: 'center',
         paddingBottom: '30px',
         '--ios-screen-dim': themeKey.startsWith('ios-')
