@@ -45,7 +45,7 @@ export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () =>
     new Intl.DateTimeFormat(language, { weekday: 'short' }).format(new Date(2024, 0, 7 + ((weekStart + index) % 7))).replace('.', '')
   ), [language, weekStart]);
 
-  const weekdayLabel = now.toLocaleDateString(language, { weekday: 'long' }).toUpperCase();
+  const weekdayLabel = selectedDate.toLocaleDateString(language, { weekday: 'long' }).toUpperCase();
   const monthLabel = visibleMonth.toLocaleDateString(language, { month: 'long', year: 'numeric' }).toUpperCase();
 
   return (
@@ -91,8 +91,9 @@ export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () =>
               const today = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
               const hasEvents = getCalendarEventsForDate(date).length > 0;
               return (
-                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={hasEvents ? getCalendarEventsForDate(date).map((event) => event.summary).join(', ') : date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'} ${hasEvents ? 'after:content-['•'] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:text-[7px] after:text-cyan-300' : ''}`}>
+                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={hasEvents ? getCalendarEventsForDate(date).map((event) => event.summary).join(', ') : date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'}`}>
                   {date.getDate()}
+                  {hasEvents && <i aria-hidden="true" className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-cyan-300" />}
                 </button>
               );
             })}
