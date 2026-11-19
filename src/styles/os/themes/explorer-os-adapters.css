@@ -199,12 +199,12 @@
 .chm-help-viewer__statusbar { min-height: 22px; background: #f0f0f0; border-color: #c5c5c5; color: #555; }
 .chm-help-viewer__article { color: #222; font-size: 14px; line-height: 1.65; }
 .chm-help-viewer__article h1, .chm-help-viewer__article h2, .chm-help-viewer__article h3 { color: #173f70; }
-.os-winxp .chm-help-viewer--windows .chm-help-viewer__toolbar { background: linear-gradient(#fff 0%, #f2f6fc 45%, #dce8f7 100%); border-color: #9db7d5; }
-.os-winxp .chm-help-viewer--windows .chm-help-viewer__sidebar { background: #f4f7fc; }
-.os-win7 .chm-help-viewer--windows .chm-help-viewer__toolbar { background: linear-gradient(#f8fbff, #dce9f7); border-color: #a7bfd9; }
-.os-win98 .chm-help-viewer--windows .chm-help-viewer__toolbar,
-.os-win2000 .chm-help-viewer--windows .chm-help-viewer__toolbar { background: #c0c0c0; border-color: #fff #666 #666 #fff; }
-.os-win98 .chm-help-viewer--windows .chm-help-viewer__sidebar,
-.os-win2000 .chm-help-viewer--windows .chm-help-viewer__sidebar { background: #fff; }
-.os-win10 .chm-help-viewer--windows .chm-help-viewer__toolbar,
-.os-win11 .chm-help-viewer--windows .chm-help-viewer__toolbar { background: #f3f3f3; }
+.chm-help-viewer[data-os-theme='win-xp'] .chm-help-viewer__toolbar { background: linear-gradient(#fff 0%, #f2f6fc 45%, #dce8f7 100%); border-color: #9db7d5; }
+.chm-help-viewer[data-os-theme='win-xp'] .chm-help-viewer__sidebar { background: #f4f7fc; }
+.chm-help-viewer[data-os-theme='win7'] .chm-help-viewer__toolbar { background: linear-gradient(#f8fbff, #dce9f7); border-color: #a7bfd9; }
+.chm-help-viewer[data-os-theme='win-98'] .chm-help-viewer__toolbar,
+.chm-help-viewer[data-os-theme='win2000'] .chm-help-viewer__toolbar { background: #c0c0c0; border-color: #fff #666 #666 #fff; }
+.chm-help-viewer[data-os-theme='win-98'] .chm-help-viewer__sidebar,
+.chm-help-viewer[data-os-theme='win2000'] .chm-help-viewer__sidebar { background: #fff; }
+.chm-help-viewer[data-os-theme='win10'] .chm-help-viewer__toolbar,
+.chm-help-viewer[data-os-theme='win11'] .chm-help-viewer__toolbar { background: #f3f3f3; }
