@@ -16,7 +16,7 @@ const pictureModules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,pn
   eager: false,
 });
 
-const wallpaperModules = import.meta.glob('/src/content/pictures/wallpapers/*.{jpg,jpeg,png,webp}', {
+const wallpaperModules = import.meta.glob('/src/content/pictures/wallpapers/**/*.{jpg,jpeg,png,webp}', {
   query: '?url',
   import: 'default',
   eager: false,
@@ -26,12 +26,15 @@ export async function loadPictures(): Promise<ImageItem[]> {
   const pictures: ImageItem[] = [];
   try {
     for (const path in pictureModules) {
+      // Wallpapers have their own gallery media type and are loaded below.
+      if (path.includes('/wallpapers/')) continue;
       const url = (await pictureModules[path]()) as string;
-      const filename = path.split('/').pop() || '';
+      const relativePath = path.split('/src/content/pictures/')[1] || path;
+      const filename = relativePath.split('/').pop() || '';
       const name = filename.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
 
       pictures.push({
-        id: filename,
+        id: relativePath,
         name,
         path: url,
         thumbnail: url,
@@ -48,11 +51,12 @@ export async function loadWallpapers(): Promise<ImageItem[]> {
   try {
     for (const path in wallpaperModules) {
       const url = (await wallpaperModules[path]()) as string;
-      const filename = path.split('/').pop() || '';
+      const relativePath = path.split('/src/content/pictures/wallpapers/')[1] || path;
+      const filename = relativePath.split('/').pop() || '';
       const name = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
 
       wallpapers.push({
-        id: filename,
+        id: relativePath,
         name,
         path: url,
         thumbnail: url,
