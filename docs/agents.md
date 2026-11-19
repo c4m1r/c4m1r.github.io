@@ -342,3 +342,8 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - src/apps/explorer/MyComputer.tsx exposes onOpenSlideshow and passes all current-folder image files (PNG/JPEG/GIF/WebP with resolved content URLs) to the callback from the XP Picture Tasks action.
 - src/shells/desktop/DesktopShellContainer.tsx creates a normal resizable Picture Viewer window with the folder image list and startSlideshow enabled. The action now starts the existing 3-second slideshow timer; it does not create a second viewer implementation.
 - Latest source implementation commit: 8e1f8cb0ff6594ea6b2a8fa169e9d99e0720de05. No local typecheck/lint/build/browser tests were run; manually verify pause/resume, next/previous, closing the slideshow window and a one-image folder.
+
+
+### Explorer folder-title localization — 2026-11-19
+- src/shells/desktop/DesktopShellContainer.tsx now resolves Russian window titles for My Documents, My Pictures and My Music when Start Menu paths use the canonical English filesystem keys. The underlying paths remain unchanged; this is display-only localization.
+- Latest source implementation commit: 688e3d5d7d5e249b9c5e1e6c3584deb38e6ddbd4. The subsequent docs-only commit updates this handoff. No local typecheck/lint/build/browser verification was run.
