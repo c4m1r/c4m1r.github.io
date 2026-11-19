@@ -3,6 +3,8 @@ import { useApp } from '../../contexts/useApp';
 import {
   type RssArticle,
   type RssSource,
+  type RssRefreshMetadata,
+  getRssRefreshMetadata,
   getRssSources,
   saveRssSources,
   fetchAllRssFeeds,
@@ -101,15 +103,38 @@ export function NewsRssFeedWindow() {
   const [showSettings, setShowSettings] = useState(false);
   const [settingsText, setSettingsText] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [refreshMeta, setRefreshMeta] = useState<RssRefreshMetadata>(() => getRssRefreshMetadata());
 
   const loadArticles = useCallback(async (forceRefresh = false) => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      setArticles(await fetchAllRssFeeds(forceRefresh));
+      const cached = await getCachedArticlesFromDatabase();
+      if (cached.length > 0) setArticles(cached);
+
+      const loaded = await fetchAllRssFeeds(forceRefresh);
+      setArticles(loaded);
+      const metadata = getRssRefreshMetadata();
+      setRefreshMeta(metadata);
+
+      if (metadata.status === 'failed') {
+        setErrorMsg(metadata.lastSuccessAt > 0
+          ? (isRu ? `Не удалось обновить источники. Показан кеш от ${new Date(metadata.lastSuccessAt).toLocaleString('ru-RU')}.` : `Feed refresh failed. Showing the last successful cache from ${new Date(metadata.lastSuccessAt).toLocaleString()}.`)
+          : (isRu ? 'Не удалось получить данные ни от одного RSS-источника.' : 'No RSS source could be refreshed.'));
+      } else if (metadata.status === 'partial') {
+        setErrorMsg(isRu
+          ? `Частичное обновление: успешно ${metadata.succeededSources}, с ошибками ${metadata.failedSources}. Старые записи сохранены.`
+          : `Partial refresh: ${metadata.succeededSources} sources succeeded, ${metadata.failedSources} failed. Cached history was preserved.`);
+      } else if (metadata.status === 'disabled') {
+        setErrorMsg(isRu ? 'Все RSS-источники отключены в настройках.' : 'All RSS sources are disabled in settings.');
+      }
     } catch {
-      setErrorMsg(isRu ? 'Ошибка загрузки RSS-ленты. Показан последний доступный кеш.' : 'RSS refresh failed. Showing the last available cache.');
-      setArticles(await getCachedArticlesFromDatabase());
+      const cached = await getCachedArticlesFromDatabase();
+      setErrorMsg(cached.length > 0
+        ? (isRu ? 'Ошибка доступа к RSS-кешу или обновлению. Показаны последние сохранённые публикации.' : 'RSS cache or refresh error. Showing the last saved articles.')
+        : (isRu ? 'Ошибка доступа к RSS-кешу и источникам.' : 'Unable to access the RSS cache or feeds.'));
+      setArticles(cached);
+      setRefreshMeta(getRssRefreshMetadata());
     } finally {
       setLoading(false);
     }
@@ -199,7 +224,11 @@ export function NewsRssFeedWindow() {
           <div className="min-w-0">
             <h1 className="font-bold text-sm tracking-wide">News RSS Feed</h1>
             <p className="text-[10px] text-gray-400 truncate">
-              {loading ? (isRu ? 'Обновление источников…' : 'Refreshing feeds…') : `${filteredArticles.length} ${isRu ? 'публикаций' : 'articles'}`}
+              {loading
+                ? (isRu ? 'Обновление источников…' : 'Refreshing feeds…')
+                : refreshMeta.lastSuccessAt > 0
+                  ? `${filteredArticles.length} ${isRu ? 'публикаций · обновлено' : 'articles · updated'} ${new Date(refreshMeta.lastSuccessAt).toLocaleTimeString(isRu ? 'ru-RU' : undefined, { hour: '2-digit', minute: '2-digit' })}`
+                  : (isRu ? `${filteredArticles.length} публикаций · обновление не подтверждено` : `${filteredArticles.length} articles · refresh not confirmed`)}
             </p>
           </div>
         </div>
