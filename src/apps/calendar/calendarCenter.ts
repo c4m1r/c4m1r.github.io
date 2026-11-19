@@ -269,7 +269,7 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
       occurrenceEnd.setHours(event.endDate.getHours(), event.endDate.getMinutes(), event.endDate.getSeconds(), event.endDate.getMilliseconds());
       if (occurrenceEnd.getTime() >= startLimit && occurrenceStart.getTime() <= endLimit + 86400000 - 1) {
         const suffix = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
-        occurrences.push({ ...event, id: String(event.id ?? 'event') + '@' + suffix, startDate: occurrenceStart, endDate: occurrenceEnd });
+        occurrences.push({ ...event, id: String(event.id ?? 'event') + '@' + suffix, recurrenceMasterId: event.id, startDate: occurrenceStart, endDate: occurrenceEnd });
       }
     }
     cursor.setDate(cursor.getDate() + 1);
