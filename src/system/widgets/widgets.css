@@ -237,3 +237,50 @@
   .desktop-widget-canvas { overflow-x: hidden; overflow-y: auto; }
   .desktop-widget-canvas__item { max-width: calc(100% - 2px); }
 }
+
+
+/* Viewport-level weather city picker: escapes widget/canvas overflow and stacks above every card. */
+.weather-city-picker {
+  position: fixed;
+  z-index: 10000;
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 5px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 13px;
+  background: rgba(17,23,34,.82);
+  color: #f8fafc;
+  -webkit-backdrop-filter: blur(22px) saturate(175%);
+  backdrop-filter: blur(22px) saturate(175%);
+  box-shadow: 0 16px 42px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.12);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.3) transparent;
+}
+.weather-city-picker button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 32px;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(241,245,249,.9);
+  font: 12px/1.25 system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.weather-city-picker button > span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+.weather-city-picker button:hover,
+.weather-city-picker button:focus-visible { outline: none; background: rgba(255,255,255,.12); color: #fff; }
+.weather-city-picker button.is-active { background: rgba(37,99,235,.78); color: #fff; font-weight: 650; }
+.weather-city-picker button:focus-visible { box-shadow: inset 0 0 0 2px rgba(147,197,253,.95); }
+
+/* Keep the widget body scrollable; menus that must escape are rendered in a body portal. */
+.desktop-widget-canvas__item { overflow: hidden; contain: none; }
+.desktop-widget-canvas__content { overflow: auto; }
+.desktop-widget-canvas__content > .glass-widget,
+.desktop-widget-canvas__content .glass-widget { overflow: hidden; }
