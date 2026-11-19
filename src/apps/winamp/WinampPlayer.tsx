@@ -356,6 +356,8 @@ export function WinampPlayer() {
                     type="button"
                     className={`wa-btn-toggle ${showEq ? 'is-active' : ''}`}
                     onClick={() => setShowEq((v) => !v)}
+                    aria-pressed={showEq}
+                    aria-label="Toggle equalizer"
                   >
                     <span className="wa-led-dot" />
                     EQ
@@ -364,6 +366,8 @@ export function WinampPlayer() {
                     type="button"
                     className={`wa-btn-toggle ${showPl ? 'is-active' : ''}`}
                     onClick={() => setShowPl((v) => !v)}
+                    aria-pressed={showPl}
+                    aria-label="Toggle playlist"
                   >
                     <span className="wa-led-dot" />
                     PL
@@ -400,6 +404,7 @@ export function WinampPlayer() {
                 <button
                   type="button"
                   className={`wa-btn-mode ${shuffle ? 'is-active' : ''}`}
+                  aria-pressed={shuffle}
                   onClick={() => {
                     const nextVal = !shuffle;
                     setShuffle(nextVal);
@@ -413,7 +418,8 @@ export function WinampPlayer() {
                 <button
                   type="button"
                   className={`wa-btn-mode ${repeat ? 'is-active' : ''}`}
-                  onClick={() => {
+                  aria-pressed={repeat}
+                  onClick={() => {}
                     const nextVal = !repeat;
                     setRepeat(nextVal);
                     winampController.setRepeat(nextVal);
