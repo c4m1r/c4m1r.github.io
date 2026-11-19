@@ -97,7 +97,10 @@ export function goToCalendarToday() {
 export async function ensureCalendarEvents(locale: string) {
   const normalized = locale.split('-')[0].toLowerCase();
   activeLocaleRequest = normalized;
-  if (state.loadedLocale === normalized) return Promise.resolve();
+  if (state.loadedLocale === normalized) {
+    if (state.loading || state.error) updateState({ loading: false, error: null });
+    return Promise.resolve();
+  }
   const existingRequest = inFlight.get(normalized);
   if (existingRequest) return existingRequest;
 
