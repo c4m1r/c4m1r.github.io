@@ -9,7 +9,7 @@ import { NewsWidget } from './NewsWidget';
 import { GalleryWidget } from './GalleryWidget';
 import { DesktopWidgetCanvas, type DesktopWidgetItem } from './DesktopWidgetCanvas';
 import { createDesktopWidgetPresets } from '../types';
-import { type DesktopWidgetsVisibility, getStoredWidgetsVisibility } from '../types';
+import { type DesktopWidgetsVisibility, getStoredWidgetsVisibility, WEBOS_DEFAULT_WIDGETS_VISIBILITY, WIDGETS_STORAGE_KEY } from '../types';
 import '../widgets.css';
 
 interface WebosDesktopWidgetsProps {
@@ -21,7 +21,7 @@ interface WebosDesktopWidgetsProps {
 const presets = createDesktopWidgetPresets;
 
 export function WebosDesktopWidgets({ onOpenFeed, onOpenGalleryImage, onOpenCalendar }: WebosDesktopWidgetsProps) {
-  const [visibility, setVisibility] = useState<DesktopWidgetsVisibility>(getStoredWidgetsVisibility);
+  const [visibility, setVisibility] = useState<DesktopWidgetsVisibility>(() => getStoredWidgetsVisibility(WIDGETS_STORAGE_KEY, WEBOS_DEFAULT_WIDGETS_VISIBILITY));
 
   useEffect(() => {
     const handleVisChange = (event: Event) => {
