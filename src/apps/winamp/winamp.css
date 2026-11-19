@@ -48,6 +48,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 4px;
+  touch-action: none;
+  cursor: grab;
   background: repeating-linear-gradient(
     180deg,
     #666678 0,
@@ -58,6 +60,8 @@
   border-bottom: 1px solid #0a0a0f;
   cursor: grab;
 }
+
+.wa-titlebar:active { cursor: grabbing; }
 
 .wa-titlebar__left {
   display: flex;
