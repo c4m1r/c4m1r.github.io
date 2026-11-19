@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDeviceBattery } from '../hooks/useDeviceBattery';
 import { type Language } from '../../../i18n/translations';
+import { ensureCalendarEvents, moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
 import { WeatherWidget } from '../../../system/widgets/components/WeatherWidget';
 import { WinampWidget } from '../../../system/widgets/components/WinampWidget';
 import { QuotesWidget } from '../../../system/widgets/components/QuotesWidget';
@@ -31,31 +32,36 @@ interface AppleDesktopWidgetsProps {
   visibility: AppleWidgetVisibility;
   onOpenNews?: () => void;
   onOpenGalleryImage?: () => void;
+  onOpenCalendar?: () => void;
   themeKey?: string;
 }
 
 const presets = createDesktopWidgetPresets;
 
 export function AppleDesktopWidgets({
-  time, language, visibility, onOpenNews, onOpenGalleryImage, themeKey = 'desktop',
+  time, language, visibility, onOpenNews, onOpenGalleryImage, onOpenCalendar, themeKey = 'desktop',
 }: AppleDesktopWidgetsProps) {
   const { level, charging } = useDeviceBattery(true);
+  const { visibleMonth, selectedDate } = useCalendarCenter();
+  useEffect(() => { void ensureCalendarEvents(language); }, [language]);
   const calendarDays = useMemo(() => {
-    const year = time.getFullYear();
-    const month = time.getMonth();
+    const year = visibleMonth.getFullYear();
+    const month = visibleMonth.getMonth();
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
+    const weekStartsOnMonday = ['ru', 'fr', 'es'].includes(language.split('-')[0].toLowerCase());
+    const weekStart = weekStartsOnMonday ? 1 : 0;
     const start = new Date(first);
-    start.setDate(first.getDate() - first.getDay());
+    start.setDate(first.getDate() - ((first.getDay() - weekStart + 7) % 7));
     const end = new Date(last);
-    end.setDate(last.getDate() + (6 - last.getDay()));
+    end.setDate(last.getDate() + ((weekStart + 6 - last.getDay()) % 7));
     const days: Date[] = [];
     const cursor = new Date(start);
     while (cursor <= end) { days.push(new Date(cursor)); cursor.setDate(cursor.getDate() + 1); }
     return days;
-  }, [time]);
+  }, [visibleMonth, language]);
   const weekdayLabels = useMemo(
-    () => Array.from({ length: 7 }, (_, index) => new Intl.DateTimeFormat(language, { weekday: 'narrow' }).format(new Date(2026, 7, 2 + index))),
+    () => Array.from({ length: 7 }, (_, index) => new Intl.DateTimeFormat(language, { weekday: 'narrow' }).format(new Date(2024, 0, 7 + ((['ru', 'fr', 'es'].includes(language.split('-')[0].toLowerCase()) ? 1 : 0) + index) % 7))),
     [language]
   );
   const pct = level ?? 85;
@@ -84,12 +90,12 @@ export function AppleDesktopWidgets({
   );
   const calendar = (
     <section className="apple-widget apple-widget--calendar">
-      <header>{time.toLocaleDateString(language, { month: 'long', year: 'numeric' })}</header>
+      <header className="apple-widget-calendar__header"><button type="button" onClick={() => moveCalendarMonth(-1)} aria-label={language === 'ru' ? 'Предыдущий месяц' : 'Previous month'}>‹</button><span>{visibleMonth.toLocaleDateString(language, { month: 'long', year: 'numeric' })}</span><button type="button" onClick={() => moveCalendarMonth(1)} aria-label={language === 'ru' ? 'Следующий месяц' : 'Next month'}>›</button><button type="button" onClick={() => { selectCalendarDate(new Date()); onOpenCalendar?.(); }} aria-label={language === 'ru' ? 'Сегодня' : 'Today'}>•</button></header>
       <div className="apple-widget-calendar__weekdays">{weekdayLabels.map((label, index) => <span key={`${label}-${index}`}>{label}</span>)}</div>
       <div className="apple-widget-calendar__days">{calendarDays.map((day) => {
         const isToday = day.getFullYear() === time.getFullYear() && day.getMonth() === time.getMonth() && day.getDate() === time.getDate();
         const inMonth = day.getMonth() === time.getMonth();
-        return <span key={day.toISOString()} className={`${isToday ? 'is-today' : ''} ${!inMonth ? 'is-outside' : ''}`}>{day.getDate()}</span>;
+        return <button type="button" key={day.toISOString()} aria-pressed={day.getFullYear() === selectedDate.getFullYear() && day.getMonth() === selectedDate.getMonth() && day.getDate() === selectedDate.getDate()} onClick={() => { selectCalendarDate(day); onOpenCalendar?.(); }} className={`${isToday ? 'is-today' : ''} ${!inMonth ? 'is-outside' : ''} ${day.getFullYear() === selectedDate.getFullYear() && day.getMonth() === selectedDate.getMonth() && day.getDate() === selectedDate.getDate() ? 'is-selected' : ''}`}>{day.getDate()}</button>;
       })}</div>
     </section>
   );
