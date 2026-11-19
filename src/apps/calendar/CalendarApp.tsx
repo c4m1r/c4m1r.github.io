@@ -34,7 +34,7 @@ function dayOffLabel(locale: string) {
 function countryName(code: CountryCode, locale: string) {
   const language = locale.split('-')[0];
   const country = NATIONAL_COUNTRIES.find((item) => item.code === code)!;
-  return country.names[language === 'fr' ? 'fr' : language === 'ru' ? 'ru' : 'en'];
+  return country.names[(language in country.names ? language : 'en') as keyof typeof country.names];
 }
 
 function sameDay(a: Date, b: Date) {
@@ -179,7 +179,7 @@ export function CalendarApp() {
       </div>
 
       <div className="calendar-app__labour-country-picker" aria-label={isRu ? 'Трудовые календари стран' : 'Country labour calendars'}>
-        <span>{isRu ? 'Выходные:' : locale.startsWith('fr') ? 'Week-ends :' : 'Weekends:'}</span>
+        <span>{({ ru: 'Выходные:', en: 'Weekends:', fr: 'Week-ends :', es: 'Fines de semana:', zh: '周末：', ja: '週末：', ko: '주말:' } as Record<string, string>)[locale.split('-')[0]] ?? 'Weekends:'}</span>
         {NATIONAL_COUNTRIES.map((country) => (
           <button type="button" key={country.code} onClick={() => toggleLabourCountry(country.code)}
             aria-pressed={labourCountries.includes(country.code)}
