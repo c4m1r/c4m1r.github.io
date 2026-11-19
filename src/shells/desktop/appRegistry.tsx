@@ -21,6 +21,7 @@ import { WinampPlayer } from '../../apps/winamp/WinampPlayer';
 import { LoopsApp } from '../../apps/loops/LoopsApp';
 import { Minesweeper } from '../../apps/minesweeper';
 import { ResumeApp } from './apps/resume/ResumeApp';
+import { TaskManager } from '../../apps/TaskManager';
 
 // Default app identity. OS-specific labels/icons are resolved through src/shells/os/osSkins.ts.
 export const appRegistry: Record<string, DesktopAppDefinition> = {
@@ -356,7 +357,7 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
       ko: '작업 관리자',
     },
     iconKey: 'controlPanelIcon',
-    component: ControlPanel,
+    component: () => <TaskManager windows={[]} />,
     defaultWindow: { width: 600, height: 500 },
     showInStartMenu: true,
     showOnDesktop: true,

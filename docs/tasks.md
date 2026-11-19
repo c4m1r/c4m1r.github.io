@@ -278,13 +278,13 @@
 | RSS-01 | Restore historical IndexedDB cache | 65% | Refresh now merges/upserts new entries instead of deleting all records from a source; old entries remain inside the existing 14-day retention window. Cache TTL optimization retained. |
 | RSS-02 | RSS duplicate prevention and chronological sorting | 60% | Stable article-link IDs, tracking-parameter normalization and cross-source URL deduplication added; publication-date sorting remains. Needs live-feed validation. |
 | RSS-03 | RSS collection, category drawer and article reader | 65% | Feed parser, category controls and article reader exist; proxy availability and publisher-specific extraction still need validation. |
-| GAME-01 | Repair the existing DOOM implementation | 10% | Existing launcher currently points to an unreliable external implementation. /eat/98.portfolio-main contains a separate Three.js DOOM implementation and engine files; port and runtime integration not completed. |
-| GAME-02 | Audit /eat/ and add other working games | 10% | Donor source inventory started. Need identify usable games, licenses/assets, dependencies and integrate only selected self-contained implementations. |
+| GAME-01 | Repair the existing DOOM implementation | 20% | Removed iframe sandbox restrictions that could block game input/runtime APIs, added pointer-lock/gamepad/autoplay permissions and a direct-launch fallback. Audited /eat/98.portfolio-main and found a separate Three.js 98.DOOM survival game; no LICENSE file was found, so copying that source is blocked pending license verification. |
+| GAME-02 | Audit /eat/ and add other working games | 15% | Candidate sources found: standalone Snake/Memory components in Personal-Portfolio-main and Snake/Memory/Breakout/2048/Minesweeper implementations in alanagoyal-main; Minesweeper is already native. License/dependency audit and native integration remain. |
 | EXPLORER-01 | Game folder as a native folder with tree icon | 45% | Game shortcut now opens the real Program Files/Games directory in the current OS Explorer; the virtual folder uses the XP program-folder icon. DOOM and remaining game entries still need integration. |
 | DOCS-01 | Create “Мои документы” and reorganize personal apps | 45% | Added the My Documents folder with Wiki, My Block, About Me and My Projects entries; app shortcuts route through the desktop launcher. Need user-facing polish and verification. |
 | PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 40% | Added My Pictures folder with the repository picture tree exposed as individual file entries; Bliss.jpg is now inside the folder and no longer on the desktop. Viewer/library unification remains. |
 | PICTURES-02 | Merge Picture Viewer and gallery browsing | 20% | Both existing app surfaces identified. Need add a compact gallery/library toggle in Picture Viewer and share one image collection/navigation model. |
-| CONTROL-01 | Control Panel desktop shortcut and native categories | 20% | Control Panel and Task Manager registrations exist, but Task Manager is incorrectly mapped to Control Panel in current app registry. Need repair routing and group system tools into authentic OS-style categories. |
+| CONTROL-01 | Control Panel desktop shortcut and native categories | 25% | Task Manager's app metadata now points to TaskManager rather than ControlPanel; the shell's existing dedicated Task Manager surface remains the actual launcher. Control Panel categories and shortcuts are still pending. |
 | CONTROL-02 | Restore Explorer/Control Panel styling per OS | 20% | Existing theme-specific Explorer styles/assets identified. Need complete per-OS fidelity and verify all shell variants. |
 | CONTROL-03 | Widget shortcut and remaining system settings | 15% | Widget gallery exists. Need expose it from Control Panel and provide consistent links to relevant desktop/system settings. |
 | THEMES-01 | Add all gallery images to Appearance & Themes | 10% | Gallery collection exists, but its complete image inventory is not yet available in the theme picker. |
@@ -324,9 +324,9 @@
 
 ### GAME-01/02 — Games and DOOM
 - Audit actual source code and assets under /eat/; do not assume /eat/ has already been cleared.
-- Repair DOOM as a native app with working initialization, rendering, keyboard/mouse controls, audio handling and cleanup when the window closes.
+- Current Emupedia iframe no longer has a restrictive sandbox and now declares gamepad, pointer-lock, autoplay and fullscreen permissions, with a direct-launch fallback. This is a compatibility improvement, not proof that remote builds are available. The donor's 98.DOOM is a custom Three.js survival game, not the original id Software DOOM engine; no LICENSE file was found in that donor. Do not copy its source until its license/ownership is established.
 - Prefer self-contained implementations already present in /eat/ over external iframe links.
-- Add other games only after verifying that their source, assets and runtime dependencies can be integrated cleanly.
+- Audit candidate Snake, Memory, Breakout and 2048 implementations under /eat/. Add games only after verifying source license, assets and runtime dependencies; prefer fresh native implementations where donor licensing is unclear.
 - Document donor source, license status, copied assets, runtime dependencies and selected integration path for every added game.
 
 ### EXPLORER-01 / DOCS-01 — Native folder structure

@@ -11,9 +11,11 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
   const variant = doomVariantMap[variantId];
   const builds = useMemo(() => variant?.builds ?? [], [variant]);
   const [activeBuildId, setActiveBuildId] = useState(builds[0]?.id ?? 'webgl');
+  const [frameFailed, setFrameFailed] = useState(false);
 
   useEffect(() => {
     setActiveBuildId(builds[0]?.id ?? 'webgl');
+    setFrameFailed(false);
   }, [variantId, builds]);
 
   const activeBuild = useMemo(() => {
@@ -46,7 +48,7 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
             {variant.builds.map((build) => (
               <button
                 key={build.id}
-                onClick={() => setActiveBuildId(build.id)}
+                onClick={() => { setActiveBuildId(build.id); setFrameFailed(false); }}
                 className={`doom-player__button px-3 py-1 rounded border text-[11px] ${
                   build.id === activeBuildId
                     ? 'is-active bg-[#f44336] border-[#ff7961] text-white'
@@ -79,13 +81,28 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
           src={activeBuild.url}
           title={variant.title}
           className="w-full h-full border-0"
+          allow="autoplay; fullscreen; gamepad; pointer-lock"
           allowFullScreen
-          sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups"
+          referrerPolicy="strict-origin-when-cross-origin"
+          loading="eager"
+          onLoad={() => setFrameFailed(false)}
+          onError={() => setFrameFailed(true)}
         />
+        {frameFailed && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/95 p-6 text-center text-white">
+            <strong>{isRu ? 'Встроенная версия не загрузилась' : 'The embedded build did not load'}</strong>
+            <p className="max-w-lg text-xs text-gray-300">
+              {isRu ? 'Похоже, сервер игры недоступен или запрещает встраивание. Запусти игру отдельно — это обходит ограничения iframe.' : 'The game host may be unavailable or may block embedding. Open the game directly to bypass iframe restrictions.'}
+            </p>
+            <a href={activeBuild.url} target="_blank" rel="noreferrer" className="rounded border border-blue-400 px-4 py-2 text-sm text-blue-200 hover:bg-blue-500/20">
+              {isRu ? 'Открыть игру отдельно' : 'Open game separately'}
+            </a>
+          </div>
+        )}
         <div className="doom-player__tip absolute bottom-2 right-4 bg-[#111]/80 px-3 py-2 rounded text-[11px] text-[#ffb400] border border-[#ffb400]/40 shadow-lg max-w-sm">
           {isRu
-            ? 'Подсказка: первая загрузка может занять до минуты. Если WebAssembly завис, переключитесь на ASM.js.'
-            : 'Tip: first launch can take up to a minute. Switch builds if the WebAssembly version hangs.'}
+            ? 'Если игра не стартует внутри окна, открой её отдельно. Управление мышью активируется внутри игрового поля.'
+            : 'If the game does not start inside the window, open it separately. Mouse controls activate inside the game area.'}
         </div>
       </div>
 
