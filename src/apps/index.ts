@@ -24,6 +24,8 @@ export { OutlookExpress } from './outlook/OutlookExpress';
 export { WindowsMediaPlayer } from './mediaplayer/WindowsMediaPlayer';
 export { DoomPlayer } from './doom/DoomPlayer';
 export { Minesweeper } from './minesweeper';
+export { SnakeGame } from './games/SnakeGame';
+export { MemoryGame } from './games/MemoryGame';
 export { CalendarApp } from './calendar';
 export { GamesFolder } from './games/GamesFolder';
 export { MyCV } from './mycv/MyCV';

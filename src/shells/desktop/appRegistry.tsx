@@ -20,6 +20,8 @@ import { WindowsMediaPlayer } from '../../apps/mediaplayer/WindowsMediaPlayer';
 import { WinampPlayer } from '../../apps/winamp/WinampPlayer';
 import { LoopsApp } from '../../apps/loops/LoopsApp';
 import { Minesweeper } from '../../apps/minesweeper';
+import { SnakeGame } from '../../apps/games/SnakeGame';
+import { MemoryGame } from '../../apps/games/MemoryGame';
 import { ResumeApp } from './apps/resume/ResumeApp';
 import { TaskManager } from '../../apps/TaskManager';
 
@@ -395,6 +397,24 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     defaultWindow: { width: 360, height: 480, resizable: false },
     showInStartMenu: true,
     showOnDesktop: true,
+  },
+  'snake': {
+    id: 'snake',
+    title: { en: 'Snake', ru: 'Змейка', fr: 'Snake', es: 'Serpiente', zh: '贪吃蛇', ja: 'スネーク', ko: '스네이크' },
+    iconKey: 'gamesIcon',
+    component: SnakeGame,
+    defaultWindow: { width: 620, height: 700 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
+  'memory': {
+    id: 'memory',
+    title: { en: 'Memory', ru: 'Память', fr: 'Memory', es: 'Memoria', zh: '记忆', ja: 'メモリー', ko: '메모리' },
+    iconKey: 'gamesIcon',
+    component: MemoryGame,
+    defaultWindow: { width: 620, height: 700 },
+    showInStartMenu: false,
+    showOnDesktop: false,
   },
   'my-cv': {
     id: 'my-cv',

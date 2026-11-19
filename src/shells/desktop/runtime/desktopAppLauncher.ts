@@ -74,6 +74,8 @@ export const RUN_COMMAND_ALIASES: Record<string, string> = {
   iexplore: 'internet-explorer',
   winmine: 'minesweeper',
   minesweeper: 'minesweeper',
+  snake: 'snake',
+  memory: 'memory',
   pictures: 'pictures',
   pics: 'pictures',
   blog: 'blog',
