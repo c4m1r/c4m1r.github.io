@@ -5,7 +5,7 @@ import { WINXP_ASSETS } from '../themes/winxp/themeAssets';
 import userIcon from '../themes/winxp/assets/user.gif';
 import documentsFolderIcon from '../themes/winxp/assets/icons/folder-documents.png';
 import picturesFolderIcon from '../themes/winxp/assets/icons/folder-pictures.png';
-import gamesFolderIcon from '../themes/winxp/assets/icons/folder_program.png';
+import gamesFolderIcon from '../themes/winxp/assets/icons/My Games.png';
 
 export interface FileSystemItem {
     id: string;
