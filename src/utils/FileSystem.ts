@@ -10,6 +10,8 @@ import doomGameIcon from '../apps/doom/assets/doom-icon-sm.webp';
 import snakeGameIcon from '../apps/games/assets/snake-icon.svg';
 import memoryGameIcon from '../apps/games/assets/memory-icon.svg';
 import { PROJECT_PLAYLIST } from '../apps/mediaplayer/playlist';
+import winampIcon from '../themes/winxp/assets/icons/winamp.png';
+import { parseFrontmatter } from '../domain/content/frontmatter';
 
 export interface FileSystemItem {
     id: string;
@@ -89,6 +91,7 @@ const pictureChildren: FileSystemChildren = (() => {
 
 const projectChildren: FileSystemChildren = (() => {
     const root: FileSystemChildren = {};
+    const seenProjects = new Set<string>();
 
     const ensureFolder = (children: FileSystemChildren, folderName: string, pathPrefix: string) => {
         if (!children[folderName]) {
@@ -102,33 +105,43 @@ const projectChildren: FileSystemChildren = (() => {
         return children[folderName].children!;
     };
 
-    Object.entries(projectModules).forEach(([path, rawContent]) => {
-        const relative = path.split('../content/projects/')[1];
-        if (!relative) return;
+    Object.entries(projectModules)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .forEach(([path, rawContent]) => {
+            const relative = path.split('../content/projects/')[1];
+            if (!relative) return;
 
-        const segments = relative.split('/');
-        const fileName = segments.pop();
-        if (!fileName) return;
+            const segments = relative.split('/');
+            const fileName = segments.pop();
+            if (!fileName) return;
 
-        let currentChildren = root;
-        let currentPath = 'projects';
+            const parsed = parseFrontmatter(rawContent);
+            const baseName = fileName.replace(/\\.(md|txt)$/i, '');
+            const slug = String(parsed.metadata.slug || baseName).trim().toLocaleLowerCase();
+            if (seenProjects.has(slug)) return;
+            seenProjects.add(slug);
 
-        segments.forEach((segment) => {
-            currentChildren = ensureFolder(currentChildren, segment, currentPath);
-            currentPath += `/${segment}`;
+            const title = String(parsed.metadata.title || baseName).trim();
+            const displayName = `${title.replace(/\\.(md|txt)$/i, '')}.md`;
+            let currentChildren = root;
+            let currentPath = 'projects';
+
+            segments.forEach((segment) => {
+                currentChildren = ensureFolder(currentChildren, segment, currentPath);
+                currentPath += `/${segment}`;
+            });
+
+            currentChildren[displayName] = {
+                id: `project:${slug}`,
+                name: displayName,
+                type: 'file',
+                icon: defaultTextIcon,
+                content: parsed.body,
+            };
         });
 
-        currentChildren[fileName] = {
-            id: `${currentPath}/${fileName}`,
-            name: fileName,
-            type: 'file',
-            icon: defaultTextIcon,
-            content: rawContent,
-        };
-    });
-
     return root;
-})();
+})();;
 
 export const initialFileSystem: Record<string, FileSystemItem> = {
     'My Computer': {
@@ -435,7 +448,7 @@ const APP_ICON_URLS: Record<string, string | undefined> = {
     'internet-explorer': WINXP_ASSETS.internetExplorerIcon,
     outlook: WINXP_ASSETS.mailIcon,
     'windows-media-player': WINXP_ASSETS.mediaPlayerIcon,
-    winamp: WINXP_ASSETS.mediaPlayerIcon,
+    winamp: winampIcon,
     paint: WINXP_ASSETS.paintIcon,
     pictures: WINXP_ASSETS.projectsIcon,
     calendar: WINXP_ASSETS.notepadIcon,
