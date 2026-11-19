@@ -294,7 +294,7 @@ export function ControlPanel() {
     window.dispatchEvent(new CustomEvent(eventName, { detail: value }));
   };
 
-  const { wallpapers, loading: wallpapersLoading } = useGallery();
+  const { items: galleryImages, loading: wallpapersLoading } = useGallery();
 
   // OS-specific visual theme map
   const isRu = language === 'ru';
@@ -1549,7 +1549,7 @@ export function ControlPanel() {
             ) : (
               <>
                 <div className="grid grid-cols-3 gap-3 mb-6">
-                  {wallpapers.map((wp) => (
+                  {galleryImages.map((wp) => (
                     <div
                       key={wp.id}
                       onClick={() => setSelectedWallpaper(wp.imagePath)}

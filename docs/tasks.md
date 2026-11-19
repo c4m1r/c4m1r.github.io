@@ -287,7 +287,7 @@
 | CONTROL-01 | Control Panel desktop shortcut and native categories | 45% | Control Panel desktop shortcut already exists. Added Task Manager to the System/Performance category and Classic View, plus a Widget Gallery entry that opens the existing widget manager. Task Manager's duplicate desktop shortcut is hidden. |
 | CONTROL-02 | Restore Explorer/Control Panel styling per OS | 35% | Windows 7 now opens its dedicated Windows7Explorer implementation; Windows XP continues through its XP-styled MyComputer view. Windows 98 and remaining OS-specific fidelity still need refinement. |
 | CONTROL-03 | Widget shortcut and remaining system settings | 15% | Widget gallery exists. Need expose it from Control Panel and provide consistent links to relevant desktop/system settings. |
-| THEMES-01 | Add all gallery images to Appearance & Themes | 10% | Gallery collection exists, but its complete image inventory is not yet available in the theme picker. |
+| THEMES-01 | Add all gallery images to Appearance & Themes | 45% | Appearance and Themes now reads the complete shared gallery inventory rather than only the wallpaper subset, making gallery pictures available as wallpaper choices. Need verify previews and selection persistence across themes. |
 | DOCS-02 | Maintain an accurate task register | 90% | This active workstream and implementation percentages are now documented. Keep percentages synchronized with actual commits and do not mark browser-only behavior complete before user verification. |
 
 ## Detailed requirements and acceptance criteria
@@ -351,7 +351,7 @@
 - Added a Widget Gallery entry to the Appearance category and Classic View; it opens the existing widget manager through a shell event. Add any remaining system-setting shortcuts as their underlying surfaces are completed.
 
 ### THEMES-01 — Appearance and Themes
-- Include all images from the site's gallery as available desktop backgrounds/theme imagery.
+- Appearance and Themes now uses the complete gallery item collection (not just the dedicated wallpaper subset) as available desktop background/theme imagery.
 - Preserve grouping, preview thumbnails, current wallpaper selection and per-OS visual styling.
 - Do not add broken or remote-only image paths; all selected media must resolve from repository assets.
 
