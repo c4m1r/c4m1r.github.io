@@ -272,7 +272,10 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
       const occurrenceEnd = new Date(occurrenceStart);
       occurrenceEnd.setDate(occurrenceEnd.getDate() + endDayOffset);
       occurrenceEnd.setHours(event.endDate.getHours(), event.endDate.getMinutes(), event.endDate.getSeconds(), event.endDate.getMilliseconds());
-      if (occurrenceEnd.getTime() >= startLimit && occurrenceStart.getTime() <= endLimit + 86400000 - 1) {
+      const allDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
+        event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
+      const overlapsStart = allDayExclusive ? occurrenceEnd.getTime() > startLimit : occurrenceEnd.getTime() >= startLimit;
+      if (overlapsStart && occurrenceStart.getTime() <= endLimit + 86400000 - 1) {
         const suffix = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
         occurrences.push({ ...event, id: String(event.id ?? 'event') + '@' + suffix, recurrenceMasterId: event.id, startDate: occurrenceStart, endDate: occurrenceEnd });
       }
