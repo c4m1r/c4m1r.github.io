@@ -803,7 +803,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                   <div className="bg-[#d6dff7] p-2 flex flex-col gap-1.5 border-x border-b border-white/50 text-[11px]">
                     <button
                       onClick={() => {
-                        const pictureItems = visibleItems.filter(i => /\.(png|jpg|jpeg|gif)$/i.test(i.name));
+                        const pictureItems = visibleItems.filter(i => /\.(png|jpe?g|gif|webp)$/i.test(i.name));
                         if (pictureItems.length > 0 && onOpenItem) {
                           onOpenItem(pictureItems[0], path);
                         }
@@ -878,6 +878,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                   <button onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents')} className="text-left hover:underline text-[#215dc6] flex items-center gap-1.5 bg-transparent border-0 cursor-pointer">
                     <img src={folderIcon} className="w-4 h-4 object-contain" alt="" />
                     <span>{isRu ? 'Мои документы' : 'My Documents'}</span>
+                  </button>
+                  <button onClick={() => navigateToPath('C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures')} className="text-left hover:underline text-[#215dc6] flex items-center gap-1.5 bg-transparent border-0 cursor-pointer">
+                    <img src={folderIcon} className="w-4 h-4 object-contain" alt="" />
+                    <span>{isRu ? 'Мои рисунки' : 'My Pictures'}</span>
                   </button>
                 </div>
               )}
