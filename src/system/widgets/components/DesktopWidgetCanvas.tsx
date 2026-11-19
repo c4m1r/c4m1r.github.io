@@ -232,9 +232,10 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
       });
       const position = findFreePosition(previous, size, bounds, occupied);
       if (!position) return current;
-      return { ...current, [item.id]: { ...proposed, ...position } };
+      const updated = { ...current, [item.id]: { ...proposed, ...position } };
+      return normalizePlacements(updated, bounds);
     });
-  }, [findFreePosition, getSize]);
+  }, [findFreePosition, getSize, normalizePlacements]);
 
   useEffect(() => {
     const handlePresetRequest = (event: Event) => {

@@ -75,8 +75,6 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
     return selectedPresets[id] ?? 'standard';
   };
   const handlePresetChange = (key: keyof AppleWidgetVisibility, presetId: string) => {
-    const id = (key === 'clock' || key === 'calendar') && combinedClock ? 'clockCalendar' : key;
-    setSelectedPresets((current) => ({ ...current, [id]: presetId }));
     onPresetChange?.(key, presetId);
   };
 
