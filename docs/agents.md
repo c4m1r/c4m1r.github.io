@@ -489,3 +489,16 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - `NewsRssFeedWindow.tsx` immediately paints the last cache before awaiting refresh, shows last successful refresh time, and reports partial/failure/disabled-source states without pretending the cached feed is fresh.
 - **CI:** commit `1b204318f798ad90f73f0539c4027f9c2a5d1296` completed context verification, TypeScript, ESLint, Vite build and build-output verification successfully; GitHub Pages deploy succeeded. A subsequent small retry-window correction and docs updates are being validated separately.
 - **Still required:** browser-level tests with mocked feeds for valid empty XML, rss2json empty result, duplicate URL with tracking params, duplicate GUID, failed proxy, partial outage, all sources failed, and cache TTL/retry. Confirm category filtering, article view and stale-cache UI on desktop/mobile. Do not claim live RSS providers were all reachable from CI.
+
+
+### Latest implementation handoff — DOOM, Start Menu, Explorer aliases and media files (2026-11-19)
+- Current branch is `main`; no feature branch was created.
+- `src/apps/doom/DoomPlayer.tsx`: DOOM/DOOM II title, smaller subtitle, one-line description and build/external link controls are in a compact single-row header. Footer/tip/success-load overlays remain absent; actual gameplay remains unverified.
+- `src/utils/FileSystem.ts`: Desktop contains two shortcut folders, `Игры` and `Программы`, each with a `targetPath` to the canonical `C:\\Program Files\\Games` or `C:\\Program Files\\Programs` folder. Path resolution follows target aliases without duplicating the app tree. A second `User` profile is exposed through legacy and modern profile roots.
+- The modern profile path resolver maps `C:\\Users\\C4m1r\\Documents/Pictures/Music/Videos/Downloads` to the matching canonical child under My Documents. `Network Neighborhood` is resolved under My Computer for older Start Menu path forms.
+- My Music is built from `PROJECT_PLAYLIST` (58 entries) as virtual `.mp3` files with stable `mediaTrackId`. `DesktopShellContainer.handleOpenFile` uses the shared `winampController` to select/play the track, then dispatches `app:launch` for Winamp.
+- Project file tree parses Markdown frontmatter titles, deduplicates by slug and uses stable project IDs. Double-clicked project Markdown is rendered using `markdownToHtml`; text files continue to open in Notepad.
+- Explorer icon view uses 64px app icon cells and thumbnails fill their preview frame. App icons resolve by `appId`; Winamp uses the dedicated XP Winamp artwork.
+- Start Menu: XP All Programs is a fly-out; classic Windows submenu uses theme-native IE/Outlook/WMP/Winamp icons; Network Neighborhood paths point through My Computer. XP and Windows 7 path aliases for My Music/Pictures/Documents rely on the shared profile resolver.
+- Minesweeper sprite CSS now enforces block/flex dimensions and pixel rendering. If sprites remain missing in browser, inspect actual network asset responses and computed styles; no manual visual acceptance has been performed.
+- CI had a failed intermediate run for malformed JSX in the DOOM header. The unmatched closing `div` was removed in `6875f22f`. Check the latest GitHub Actions result; do not infer success from the commit.
