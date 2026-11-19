@@ -32,6 +32,44 @@ function dayOffLabel(locale: string) {
   const labels: Record<string, string> = { ru: 'Выходной', en: 'Day off', fr: 'Jour de repos', es: 'Día libre', zh: '休息日', ja: '休日', ko: '휴일' };
   return labels[locale.split('-')[0]] ?? labels.en;
 }
+const calendarUiLabels = {
+  allDay: { ru: 'Весь день', en: 'All day', fr: 'Toute la journée', es: 'Todo el día', zh: '全天', ja: '終日', ko: '종일' },
+  starts: { ru: 'Начало', en: 'Starts', fr: 'Début', es: 'Inicio', zh: '开始', ja: '開始', ko: '시작' },
+  ends: { ru: 'Окончание', en: 'Ends', fr: 'Fin', es: 'Fin', zh: '结束', ja: '終了', ko: '종료' },
+  repeat: { ru: 'Повторение', en: 'Repeat', fr: 'Répéter', es: 'Repetir', zh: '重复', ja: '繰り返し', ko: '반복' },
+  frequency: { ru: 'Период', en: 'Frequency', fr: 'Fréquence', es: 'Frecuencia', zh: '频率', ja: '頻度', ko: '빈도' },
+  noRepeat: { ru: 'Не повторять', en: 'Does not repeat', fr: 'Ne pas répéter', es: 'No repetir', zh: '不重复', ja: '繰り返さない', ko: '반복 안 함' },
+  daily: { ru: 'Ежедневно', en: 'Daily', fr: 'Tous les jours', es: 'Cada día', zh: '每天', ja: '毎日', ko: '매일' },
+  weekly: { ru: 'Еженедельно', en: 'Weekly', fr: 'Chaque semaine', es: 'Cada semana', zh: '每周', ja: '毎週', ko: '매주' },
+  monthly: { ru: 'Ежемесячно', en: 'Monthly', fr: 'Chaque mois', es: 'Cada mes', zh: '每月', ja: '毎月', ko: '매월' },
+  yearly: { ru: 'Ежегодно', en: 'Yearly', fr: 'Chaque année', es: 'Cada año', zh: '每年', ja: '毎年', ko: '매년' },
+  interval: { ru: 'Каждые N периодов', en: 'Every N intervals', fr: 'Tous les N intervalles', es: 'Cada N intervalos', zh: '每隔 N 个周期', ja: 'N 間隔ごと', ko: 'N 간격마다' },
+  occurrences: { ru: 'Количество повторов (необязательно)', en: 'Occurrences (optional)', fr: 'Nombre de répétitions (facultatif)', es: 'Número de repeticiones (opcional)', zh: '重复次数（可选）', ja: '繰り返し回数（任意）', ko: '반복 횟수(선택)' },
+  unlimited: { ru: 'Без ограничения', en: 'Unlimited', fr: 'Illimité', es: 'Ilimitado', zh: '不限', ja: '無制限', ko: '무제한' },
+  repeatUntil: { ru: 'Повторять до даты', en: 'Repeat until', fr: 'Répéter jusqu’au', es: 'Repetir hasta', zh: '重复至', ja: '終了日', ko: '종료 날짜' },
+  importedCalendars: { ru: 'Импортированные календари', en: 'Imported calendars', fr: 'Calendriers importés', es: 'Calendarios importados', zh: '导入的日历', ja: 'インポートしたカレンダー', ko: '가져온 캘린더' },
+  myEvents: { ru: 'Мои события', en: 'My events', fr: 'Mes événements', es: 'Mis eventos', zh: '我的事件', ja: '自分の予定', ko: '내 일정' },
+  icsColor: { ru: 'Цвет ICS', en: 'ICS color', fr: 'Couleur ICS', es: 'Color ICS', zh: 'ICS 颜色', ja: 'ICS の色', ko: 'ICS 색상' },
+  myEventsColor: { ru: 'Цвет моих событий', en: 'My events color', fr: 'Couleur de mes événements', es: 'Color de mis eventos', zh: '我的事件颜色', ja: '自分の予定の色', ko: '내 일정 색상' },
+  blue: { ru: 'Синий', en: 'Blue', fr: 'Bleu', es: 'Azul', zh: '蓝色', ja: '青', ko: '파랑' },
+  purple: { ru: 'Фиолетовый', en: 'Purple', fr: 'Violet', es: 'Morado', zh: '紫色', ja: '紫', ko: '보라' },
+  orange: { ru: 'Оранжевый', en: 'Orange', fr: 'Orange', es: 'Naranja', zh: '橙色', ja: 'オレンジ', ko: '주황' },
+  teal: { ru: 'Бирюзовый', en: 'Teal', fr: 'Bleu sarcelle', es: 'Verde azulado', zh: '青绿色', ja: '青緑', ko: '청록' },
+  green: { ru: 'Зелёный', en: 'Green', fr: 'Vert', es: 'Verde', zh: '绿色', ja: '緑', ko: '초록' },
+  title: { ru: 'Название', en: 'Title', fr: 'Titre', es: 'Título', zh: '标题', ja: 'タイトル', ko: '제목' },
+  location: { ru: 'Место', en: 'Location', fr: 'Lieu', es: 'Lugar', zh: '地点', ja: '場所', ko: '장소' },
+  description: { ru: 'Описание', en: 'Description', fr: 'Description', es: 'Descripción', zh: '描述', ja: '説明', ko: '설명' },
+  save: { ru: 'Сохранить', en: 'Save', fr: 'Enregistrer', es: 'Guardar', zh: '保存', ja: '保存', ko: '저장' },
+  cancel: { ru: 'Отмена', en: 'Cancel', fr: 'Annuler', es: 'Cancelar', zh: '取消', ja: 'キャンセル', ko: '취소' },
+  delete: { ru: 'Удалить', en: 'Delete', fr: 'Supprimer', es: 'Eliminar', zh: '删除', ja: '削除', ko: '삭제' },
+  edit: { ru: 'Изменить', en: 'Edit', fr: 'Modifier', es: 'Editar', zh: '编辑', ja: '編集', ko: '수정' },
+  newEvent: { ru: 'Новое событие', en: 'New event', fr: 'Nouvel événement', es: 'Nuevo evento', zh: '新建事件', ja: '新しい予定', ko: '새 일정' },
+  editEvent: { ru: 'Изменить событие', en: 'Edit event', fr: 'Modifier l’événement', es: 'Editar evento', zh: '编辑事件', ja: '予定を編集', ko: '일정 수정' },
+} as const;
+function calendarUiText(locale: string, key: keyof typeof calendarUiLabels) {
+  const language = locale.split('-')[0] as keyof typeof calendarUiLabels[typeof key];
+  return calendarUiLabels[key][language] ?? calendarUiLabels[key].en;
+}
 function countryName(code: CountryCode, locale: string) {
   const language = locale.split('-')[0];
   const country = NATIONAL_COUNTRIES.find((item) => item.code === code)!;
@@ -261,13 +299,13 @@ export function CalendarApp() {
         ))}
       </div>
       <div className="calendar-app__source-controls">
-        <label><input type="checkbox" checked={showImportedEvents} onChange={(event) => setShowImportedEvents(event.target.checked)} />{isRu ? 'Импортированные календари' : 'Imported calendars'}</label>
-        <label><input type="checkbox" checked={showLocalEvents} onChange={(event) => setShowLocalEvents(event.target.checked)} />{isRu ? 'Мои события' : 'My events'}</label>
-        <label>{isRu ? 'Цвет ICS' : 'ICS color'}<select value={importedEventColor} onChange={(event) => setImportedEventColor(event.target.value)}>
-          <option value="blue">{isRu ? 'Синий' : 'Blue'}</option><option value="purple">{isRu ? 'Фиолетовый' : 'Purple'}</option><option value="orange">{isRu ? 'Оранжевый' : 'Orange'}</option><option value="teal">{isRu ? 'Бирюзовый' : 'Teal'}</option>
+        <label><input type="checkbox" checked={showImportedEvents} onChange={(event) => setShowImportedEvents(event.target.checked)} />{calendarUiText(locale, 'importedCalendars')}</label>
+        <label><input type="checkbox" checked={showLocalEvents} onChange={(event) => setShowLocalEvents(event.target.checked)} />{calendarUiText(locale, 'myEvents')}</label>
+        <label>{calendarUiText(locale, 'icsColor')}<select value={importedEventColor} onChange={(event) => setImportedEventColor(event.target.value)}>
+          <option value="blue">{calendarUiText(locale, 'blue')}</option><option value="purple">{calendarUiText(locale, 'purple')}</option><option value="orange">{calendarUiText(locale, 'orange')}</option><option value="teal">{calendarUiText(locale, 'teal')}</option>
         </select></label>
-        <label>{isRu ? 'Цвет моих событий' : 'My events color'}<select value={localEventColor} onChange={(event) => setLocalEventColor(event.target.value)}>
-          <option value="green">{isRu ? 'Зелёный' : 'Green'}</option><option value="blue">{isRu ? 'Синий' : 'Blue'}</option><option value="purple">{isRu ? 'Фиолетовый' : 'Purple'}</option><option value="orange">{isRu ? 'Оранжевый' : 'Orange'}</option>
+        <label>{calendarUiText(locale, 'myEventsColor')}<select value={localEventColor} onChange={(event) => setLocalEventColor(event.target.value)}>
+          <option value="green">{calendarUiText(locale, 'green')}</option><option value="blue">{isRu ? 'Синий' : 'Blue'}</option><option value="purple">{isRu ? 'Фиолетовый' : 'Purple'}</option><option value="orange">{isRu ? 'Оранжевый' : 'Orange'}</option>
         </select></label>
       </div>
 
@@ -358,7 +396,7 @@ export function CalendarApp() {
           <span>{activeEvent.startDate.toLocaleString(locale)} – {activeEvent.endDate.toLocaleString(locale)}</span>
           {activeEvent.location && <span>{activeEvent.location}</span>}
           {activeEvent.description && <p>{activeEvent.description}</p>}
-          {activeEvent.source === 'local' && <div className="flex gap-2"><button type="button" onClick={() => openEditEvent(activeEvent)}>{isRu ? 'Изменить' : 'Edit'}</button><button type="button" onClick={() => { if (activeEvent.id) deleteCalendarEvent(activeEvent.recurrenceMasterId ?? activeEvent.id); setActiveEvent(null); }}>{isRu ? 'Удалить' : 'Delete'}</button></div>}
+          {activeEvent.source === 'local' && <div className="flex gap-2"><button type="button" onClick={() => openEditEvent(activeEvent)}>{calendarUiText(locale, 'edit')}</button><button type="button" onClick={() => { if (activeEvent.id) deleteCalendarEvent(activeEvent.recurrenceMasterId ?? activeEvent.id); setActiveEvent(null); }}>{calendarUiText(locale, 'delete')}</button></div>}
           {activeEvent.source !== 'local' && <small>{isRu ? 'Событие из календаря (только чтение)' : 'Imported calendar event (read-only)'}</small>}
         </aside>
       )}
@@ -367,8 +405,8 @@ export function CalendarApp() {
         <div className="calendar-app__editor-backdrop" role="presentation">
           <form className="calendar-app__editor" onSubmit={submitEvent}>
             <header><strong>{activeEvent ? (isRu ? 'Изменить событие' : 'Edit event') : (isRu ? 'Новое событие' : 'New event')}</strong><button type="button" onClick={() => setEditorOpen(false)} aria-label={isRu ? 'Закрыть' : 'Close'}>×</button></header>
-            <label>{isRu ? 'Название' : 'Title'}<input required value={title} onChange={(event) => setTitle(event.target.value)} maxLength={160} autoFocus /></label>
-            <label>{isRu ? 'Место' : 'Location'}<input value={location} onChange={(event) => setLocation(event.target.value)} maxLength={200} /></label>
+            <label>{calendarUiText(locale, 'title')}<input required value={title} onChange={(event) => setTitle(event.target.value)} maxLength={160} autoFocus /></label>
+            <label>{calendarUiText(locale, 'location')}<input value={location} onChange={(event) => setLocation(event.target.value)} maxLength={200} /></label>
             <label className="calendar-app__all-day-toggle"><input type="checkbox" checked={allDay} onChange={(event) => {
               const enabled = event.target.checked;
               setAllDay(enabled);
@@ -379,27 +417,27 @@ export function CalendarApp() {
                 setStartValue((value) => toLocalInput(fromLocalDateInput(value)));
                 setEndValue((value) => toLocalInput(fromLocalDateInput(value)));
               }
-            }} />{isRu ? 'Весь день' : 'All day'}</label>
-            <label>{isRu ? 'Начало' : 'Starts'}<input required type={allDay ? 'date' : 'datetime-local'} value={startValue} onChange={(event) => setStartValue(event.target.value)} /></label>
-            <label>{isRu ? 'Окончание' : 'Ends'}<input required type={allDay ? 'date' : 'datetime-local'} value={endValue} onChange={(event) => setEndValue(event.target.value)} /></label>
+            }} />{calendarUiText(locale, 'allDay')}</label>
+            <label>{calendarUiText(locale, 'starts')}<input required type={allDay ? 'date' : 'datetime-local'} value={startValue} onChange={(event) => setStartValue(event.target.value)} /></label>
+            <label>{calendarUiText(locale, 'ends')}<input required type={allDay ? 'date' : 'datetime-local'} value={endValue} onChange={(event) => setEndValue(event.target.value)} /></label>
             <fieldset className="calendar-app__recurrence-fields">
-              <legend>{isRu ? 'Повторение' : 'Repeat'}</legend>
-              <label>{isRu ? 'Период' : 'Frequency'}<select value={recurrenceFreq} onChange={(event) => setRecurrenceFreq(event.target.value as typeof recurrenceFreq)}>
-                <option value="NONE">{isRu ? 'Не повторять' : 'Does not repeat'}</option>
-                <option value="DAILY">{isRu ? 'Ежедневно' : 'Daily'}</option>
-                <option value="WEEKLY">{isRu ? 'Еженедельно' : 'Weekly'}</option>
-                <option value="MONTHLY">{isRu ? 'Ежемесячно' : 'Monthly'}</option>
-                <option value="YEARLY">{isRu ? 'Ежегодно' : 'Yearly'}</option>
+              <legend>{calendarUiText(locale, 'repeat')}</legend>
+              <label>{calendarUiText(locale, 'frequency')}<select value={recurrenceFreq} onChange={(event) => setRecurrenceFreq(event.target.value as typeof recurrenceFreq)}>
+                <option value="NONE">{calendarUiText(locale, 'noRepeat')}</option>
+                <option value="DAILY">{calendarUiText(locale, 'daily')}</option>
+                <option value="WEEKLY">{calendarUiText(locale, 'weekly')}</option>
+                <option value="MONTHLY">{calendarUiText(locale, 'monthly')}</option>
+                <option value="YEARLY">{calendarUiText(locale, 'yearly')}</option>
               </select></label>
               {recurrenceFreq !== 'NONE' && <>
-                <label>{isRu ? 'Каждые N периодов' : 'Every N intervals'}<input type="number" min="1" max="365" value={recurrenceInterval} onChange={(event) => setRecurrenceInterval(Number(event.target.value))} /></label>
-                <label>{isRu ? 'Количество повторов (необязательно)' : 'Occurrences (optional)'}<input type="number" min="1" max="10000" value={recurrenceCount} onChange={(event) => setRecurrenceCount(event.target.value)} placeholder={isRu ? 'Без ограничения' : 'Unlimited'} /></label>
-                {!recurrenceCount && <label>{isRu ? 'Повторять до даты' : 'Repeat until'}<input type="date" value={recurrenceUntil} onChange={(event) => setRecurrenceUntil(event.target.value)} /></label>}
+                <label>{calendarUiText(locale, 'interval')}<input type="number" min="1" max="365" value={recurrenceInterval} onChange={(event) => setRecurrenceInterval(Number(event.target.value))} /></label>
+                <label>{calendarUiText(locale, 'occurrences')}<input type="number" min="1" max="10000" value={recurrenceCount} onChange={(event) => setRecurrenceCount(event.target.value)} placeholder={calendarUiText(locale, 'unlimited')} /></label>
+                {!recurrenceCount && <label>{calendarUiText(locale, 'repeatUntil')}<input type="date" value={recurrenceUntil} onChange={(event) => setRecurrenceUntil(event.target.value)} /></label>}
               </>}
             </fieldset>
-            <label>{isRu ? 'Описание' : 'Description'}<textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={3} maxLength={2000} /></label>
+            <label>{calendarUiText(locale, 'description')}<textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={3} maxLength={2000} /></label>
             {formError && <p role="alert">{formError}</p>}
-            <footer><button type="button" onClick={() => setEditorOpen(false)}>{isRu ? 'Отмена' : 'Cancel'}</button><button type="submit">{isRu ? 'Сохранить' : 'Save'}</button></footer>
+            <footer><button type="button" onClick={() => setEditorOpen(false)}>{calendarUiText(locale, 'cancel')}</button><button type="submit">{calendarUiText(locale, 'save')}</button></footer>
           </form>
         </div>
       )}
