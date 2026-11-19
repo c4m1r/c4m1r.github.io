@@ -10,6 +10,17 @@ export interface DesktopWidgetsVisibility {
 }
 
 export const DEFAULT_WIDGETS_VISIBILITY: DesktopWidgetsVisibility = {
+  weather: false,
+  clock: false,
+  winamp: false,
+  quotes: false,
+  currency: false,
+  monitor: false,
+  news: false,
+  gallery: false,
+};
+
+export const WEBOS_DEFAULT_WIDGETS_VISIBILITY: DesktopWidgetsVisibility = {
   weather: true,
   clock: true,
   winamp: true,
@@ -23,16 +34,16 @@ export const DEFAULT_WIDGETS_VISIBILITY: DesktopWidgetsVisibility = {
 export const WIDGETS_STORAGE_KEY = 'webos_desktop_widgets_visibility_v1';
 
 export function getStoredWidgetsVisibility(): DesktopWidgetsVisibility {
-  if (typeof window === 'undefined') return DEFAULT_WIDGETS_VISIBILITY;
+  if (typeof window === 'undefined') return WEBOS_DEFAULT_WIDGETS_VISIBILITY;
   try {
     const raw = localStorage.getItem(WIDGETS_STORAGE_KEY);
     if (raw) {
-      return { ...DEFAULT_WIDGETS_VISIBILITY, ...JSON.parse(raw) };
+      return { ...WEBOS_DEFAULT_WIDGETS_VISIBILITY, ...JSON.parse(raw) };
     }
   } catch {
     // Keep defaults
   }
-  return DEFAULT_WIDGETS_VISIBILITY;
+  return WEBOS_DEFAULT_WIDGETS_VISIBILITY;
 }
 
 export function saveStoredWidgetsVisibility(val: DesktopWidgetsVisibility): void {
