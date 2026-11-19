@@ -167,7 +167,7 @@ export function StartMenu7({
     {
       id: 'default-programs',
       label: isRu ? 'Программы по умолчанию' : 'Default Programs',
-      disabled: true,
+      appId: 'all-programs',
     },
     {
       id: 'help',
