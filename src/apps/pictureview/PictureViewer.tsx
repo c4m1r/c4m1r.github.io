@@ -50,9 +50,13 @@ export function PictureViewer({ initialImage, images, initialIndex = 0, initialV
   const [viewMode, setViewMode] = useState<'viewer' | 'gallery'>(initialView);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   useEffect(() => {
-    if (!initialImage) return;
-    const index = imageList.findIndex((image) => image.src === initialImage);
-    if (index >= 0) setCurrentIndex(index);
+    const requestedIndex = initialImage ? imageList.findIndex((image) => image.src === initialImage) : -1;
+    if (requestedIndex >= 0) {
+      setCurrentIndex(requestedIndex);
+      return;
+    }
+    // Keep the viewer on a valid item when its folder/library changes or shrinks.
+    setCurrentIndex((current) => imageList.length === 0 ? 0 : Math.min(Math.max(0, current), imageList.length - 1));
   }, [imageList, initialImage]);
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
