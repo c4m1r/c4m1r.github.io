@@ -527,11 +527,11 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     failedSources: failed,
   });
 
-  if (succeeded > 0 && typeof localStorage !== 'undefined') {
+  if (typeof localStorage !== 'undefined') {
     try {
-      // Partial failures retry soon; a complete refresh uses the normal cache TTL.
-      const partial = succeeded < sources.length;
-      localStorage.setItem(RSS_LAST_REFRESH_KEY, String(Date.now() - (partial ? RSS_CACHE_TTL_MS - RSS_PARTIAL_RETRY_MS : 0)));
+      // Partial or total failures retry soon; only a complete refresh gets the full TTL.
+      const needsRetry = succeeded < sources.length;
+      localStorage.setItem(RSS_LAST_REFRESH_KEY, String(Date.now() - (needsRetry ? RSS_CACHE_TTL_MS - RSS_PARTIAL_RETRY_MS : 0)));
     } catch { /* storage can be unavailable */ }
   }
 
