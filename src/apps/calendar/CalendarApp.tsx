@@ -316,7 +316,7 @@ export function CalendarApp() {
               {getHolidaysForDate(selectedDate).map(renderHoliday)}
               {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}{isMakeupWorkday(selectedDate, labourCountries) && <small className="calendar-app__makeup-work-label">{locale.startsWith('ru') ? 'Рабочий день' : 'Working day'}</small>}
               {getVisibleEventsForDate(selectedDate).map(renderEvent)}
-              {getVisibleEventsForDate(selectedDate).length === 0 && getHolidaysForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
+              {getVisibleEventsForDate(selectedDate).length === 0 && getHolidaysForDate(selectedDate).length === 0 && !isSelectedCountryWeekend(selectedDate, labourCountries) && !isMakeupWorkday(selectedDate, labourCountries) && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
               <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(selectedDate)}>{isRu ? '+ Добавить событие' : '+ Add event'}</button>
             </section>
           )}
