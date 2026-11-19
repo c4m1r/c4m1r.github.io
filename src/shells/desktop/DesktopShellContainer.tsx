@@ -1016,7 +1016,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           recordRecentApp('my-computer');
           break;
         case 'games-folder':
-          openGamesFolder();
+          openExplorerWindow('C:\\Program Files\\Games');
           recordRecentApp('games-folder');
           break;
         case 'all-programs':
@@ -1215,6 +1215,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         return;
       case 'my-documents':
         openExplorerWindow('C:\\Documents and Settings\\C4m1r\\My Documents');
+        return;
+      case 'games-folder':
+        openExplorerWindow('C:\\Program Files\\Games');
         return;
       case 'programs-folder':
         openExplorerWindow('C:\\Program Files\\Программы');
