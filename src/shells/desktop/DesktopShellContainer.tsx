@@ -30,7 +30,6 @@ import { TaskManager } from '../../apps/TaskManager';
 import { LangSwitcher } from '../../apps/langs/LangSwitcher';
 import { MyCV } from '../../apps/mycv/MyCV';
 import { appRegistry } from './appRegistry';
-import { desktopShortcuts } from './shortcutsRegistry';
 import {
   DESKTOP_PATH,
   MINESWEEPER_WINDOW_ID,
@@ -38,7 +37,6 @@ import {
 } from './desktopConstants';
 import { type DesktopIcon, type DesktopShellProps } from './desktopTypes';
 import { getStoredCustomWallpaper } from './runtime/desktopStorage';
-import { findAppDefinition } from './runtime/appLaunch';
 import { resolveAppWindowConfig, resolveRunCommandTarget } from './runtime/desktopAppLauncher';
 import { getDesktopOsClassName, isThemeInFamily } from './runtime/shortcutFilters';
 import { getViewportSize } from './runtime/windowGeometry';
@@ -53,7 +51,6 @@ import webosVideoWallpaper from '../../themes/webos/assets/Ascii_Blossom.mp4';
 import {
   getOsAppTitle,
   getOsSystemLabel,
-  getOsAppVisibility,
 } from '../os/osSkins';
 import { getActiveEdition } from '../os/osEditions';
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
@@ -745,58 +742,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   };
 
   const desktopItems = getItemsFromPath(DESKTOP_PATH);
-
-  const renderShortcutIcon = (asset?: string, fallback?: string, altText = '') => (
-    <img
-      src={resolveAssetPath(asset, fallback ?? fallbackAssets.folderIcon)}
-      alt={altText}
-      className="w-16 h-16 drop-shadow"
-      onError={(e) => {
-        e.currentTarget.style.display = 'none';
-      }}
-    />
-  );
-
-  const applicationShortcuts: DesktopIcon[] = desktopShortcuts.map((appId) => {
-    const app = findAppDefinition(appRegistry, appId);
-    if (!app) return null;
-    if (!getOsAppVisibility(appId, app.showOnDesktop ?? true, themeKey, 'desktop')) {
-      return null;
-    }
-
-    let iconSrc = '';
-    if (themeKey === 'macos-26') {
-      iconSrc = MACOS_APP_ICON_BY_ID[appId] ?? '';
-    }
-    if (!iconSrc && app.iconKey) {
-      iconSrc = themeAssets[app.iconKey as keyof typeof themeAssets] as string;
-    }
-    if (!iconSrc && app.iconKey === 'loopsIcon') {
-      iconSrc = loopsIcon;
-    }
-    if (!iconSrc && app.iconKey === 'richTextIcon') {
-      iconSrc = textDocumentIcon;
-    }
-    if (!iconSrc && app.iconKey === 'notepadIcon') {
-      iconSrc = themeAssets.notepadIcon ?? textDocumentIcon;
-    }
-    if (!iconSrc && app.iconKey === 'newsIcon') {
-      iconSrc = themeAssets.newsIcon ?? rssNewsIcon;
-    }
-    if (!iconSrc && app.iconKey === 'currencyIcon') {
-      iconSrc = themeAssets.currencyIcon ?? currencyDollarIcon;
-    }
-
-    const label = getOsAppTitle(appId, app.title, themeKey, language);
-    const icon = renderShortcutIcon(iconSrc, themeAssets.folderIcon);
-
-    return {
-      id: `shortcut-${appId}`,
-      label,
-      type: 'system',
-      icon,
-    };
-  }).filter(Boolean) as DesktopIcon[];
 
   const initialDesktopIcons: DesktopIcon[] = [
     ...(themeKey === 'macos-26'
