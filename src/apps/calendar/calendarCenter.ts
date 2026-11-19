@@ -71,7 +71,7 @@ function readLocalEvents(): CalendarEvent[] {
           return {
             freq: rule.freq as CalendarRecurrenceRule['freq'],
             interval: Math.max(1, Math.min(365, Number(rule.interval) || 1)),
-            count: typeof rule.count === 'number' ? rule.count : undefined,
+            count: typeof rule.count === 'number' && rule.count > 0 ? Math.min(10000, Math.floor(rule.count)) : undefined,
             until: until && !Number.isNaN(until.getTime()) ? until : undefined,
             byDay: Array.isArray(rule.byDay) ? rule.byDay.filter((day): day is number => Number.isInteger(day) && day >= 0 && day <= 6) : undefined,
             byMonthDay: Array.isArray(rule.byMonthDay) ? rule.byMonthDay.filter((day): day is number => Number.isInteger(day) && day >= 1 && day <= 31) : undefined,
