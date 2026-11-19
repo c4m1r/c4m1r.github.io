@@ -56,3 +56,16 @@ All donor repositories have been fully digested:
 1. **Windows Classics (95, 98, 2000, XP, 7, 10)**: Sound schemes, boot animations, wallpapers, logon screens, Start Menus, taskbars, and font metrics are 100% integrated into `src/themes/` and `src/shells/`.
 2. **Apple Suite (macOS, iOS)**: Dock, Notification Center, Control Center, App Launcher, squircle icon maps, and audio effects are 100% native in `src/shells/desktop/` and `src/themes/apple/`.
 3. **WebOS & Core Apps**: Glassmorphism widgets, live Open-Meteo weather, synchronized Winamp audio bridge, live Binance/KZT rates, IndexedDB RSS reader, and animated video backgrounds are 100% native in `src/system/widgets/` and `src/apps/`.
+
+
+---
+
+## Current-state correction — 2026-11-19
+
+The historical summary above contains overconfident statements that all donor repositories were absorbed and removed. This is not true of the current Git tree: `/eat/` is present, including game donor repositories. Treat the matrix and 100% claims above as historical assertions, not verified current status.
+
+The current game-source audit in `docs/history.md` and the handoff notes in `docs/agents.md` supersede those blanket claims for the game donors. In particular:
+- `eat/98.portfolio-main` is still present; its 98.DOOM source has no verified root licence and is not the original id Software DOOM.
+- `eat/windows7-ui-portfolio-main` is still present; MIT licence found in prior inspection. Individual Chess/Solitaire files still require import/asset review before reuse.
+- `eat/alanagoyal-main` is still present; MIT licence found in prior inspection, but its game modules include Supabase-backed functionality that must not be imported wholesale.
+- Do not remove `/eat/` or mark a donor absorbed until exact paths, licences, asset rights, imports, build isolation and runtime behavior are verified.
