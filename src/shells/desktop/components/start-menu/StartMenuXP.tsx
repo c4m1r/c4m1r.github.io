@@ -382,12 +382,12 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
                   >
                     <div className="start-menu-item__icon">
                       {iconSrc ? (
-                        <img src={iconSrc} alt={program.title} className="w-6 h-6" />
+                        <img src={iconSrc} alt="" className="w-5 h-5 object-contain" />
                       ) : (
                         <span className="w-6 h-6" />
                       )}
                     </div>
-                    <div className="start-menu-item__title font-bold">{program.title}</div>
+                    <div className="start-menu-item__title">{program.title}</div>
                   </button>
                 );
               })}
