@@ -74,7 +74,7 @@ export function DesktopIconGrid({
               </div>
             ) : (
               <div
-                className={`p-2 rounded flex flex-col items-center justify-center ${
+                className={`desktop-icon__tile p-2 rounded-xl flex flex-col items-center justify-center ${
                   isSelected
                     ? 'bg-blue-800/40 border border-gray-200'
                     : 'group-hover:bg-blue-800/50 border border-transparent group-hover:border-gray-300'
