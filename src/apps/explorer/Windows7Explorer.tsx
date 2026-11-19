@@ -146,7 +146,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
     if (event.key !== 'Enter') return;
     const target = addressInput.trim();
     if (!target) return;
-    const normalizedTarget = target.replace(/\\//g, '\\\\');
+    const normalizedTarget = target.replaceAll('/', '\\');
     if (!getFileSystemItemFromPath(normalizedTarget)) {
       setAddressInput(path);
       setAddressEditing(false);
