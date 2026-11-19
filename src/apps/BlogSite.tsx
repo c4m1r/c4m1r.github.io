@@ -169,7 +169,7 @@ type UiText = {
   };
 };
 
-const uiTexts: Record<Language, UiText> = {
+const uiTexts: Record<string, UiText> = {
   en: {
     nav: { home: 'Home', about: 'About', wiki: 'Wiki', cv: 'CV', gallery: 'Gallery', blog: 'Blog', apps: 'Apps', search: 'Search', news: 'News', legal: 'Legal Notice' },
     heroTitle: 'IT Engineer',
@@ -556,6 +556,39 @@ const uiTexts: Record<Language, UiText> = {
     stats: { blogPosts: '블로그 게시물', wikiArticles: '위키 문서', galleryImages: '이미지', projects: '프로젝트' },
   },
 };
+
+Object.assign(uiTexts, {
+  be: {
+    ...uiTexts.ru,
+    nav: { ...uiTexts.ru.nav, home: 'Галоўная', about: 'Пра мяне', wiki: 'Вікі', cv: 'Рэзюмэ', gallery: 'Галерэя', blog: 'Блог', apps: 'Праграмы', search: 'Пошук', news: 'Навіны', legal: 'Прававая інфармацыя' },
+    heroTitle: 'ІТ-інжынер',
+    searchPlaceholder: 'Пошук артыкулаў...',
+    categories: 'Катэгорыі',
+    tags: 'Тэгі',
+    loading: 'Загрузка...',
+    nothing: 'Нічога не знойдзена.',
+    back: 'Назад',
+    galleryTitle: 'Галерэя',
+    wikiTitle: 'Вікі',
+    aboutTitle: 'Пра мяне',
+    projectsTitle: 'Праекты:',
+  },
+  kk: {
+    ...uiTexts.ru,
+    nav: { ...uiTexts.ru.nav, home: 'Басты бет', about: 'Мен туралы', wiki: 'Уики', cv: 'Түйіндеме', gallery: 'Галерея', blog: 'Блог', apps: 'Қолданбалар', search: 'Іздеу', news: 'Жаңалықтар', legal: 'Құқықтық ақпарат' },
+    heroTitle: 'IT инженері',
+    searchPlaceholder: 'Мақалаларды іздеу...',
+    categories: 'Санаттар',
+    tags: 'Тегтер',
+    loading: 'Жүктелуде...',
+    nothing: 'Ештеңе табылмады.',
+    back: 'Артқа',
+    galleryTitle: 'Галерея',
+    wikiTitle: 'Уики',
+    aboutTitle: 'Мен туралы',
+    projectsTitle: 'Жобалар:',
+  },
+});
 
 const themeOptions = [
   { id: 'default', name: 'Frutiger Aero', icon: '🌿' },
