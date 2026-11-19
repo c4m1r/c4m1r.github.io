@@ -534,3 +534,10 @@ Next source-review priority: inspect the MIT Chess/Solitaire components and thei
 - Gallery IDs now use relative paths under `content/pictures` / `content/pictures/wallpapers`, avoiding collisions when different subfolders contain files with the same basename.
 - My Pictures continues to index the complete picture tree, including wallpapers; the shared gallery and wallpaper picker now expose the same assets with distinct picture/wallpaper media types.
 - Manual inventory acceptance (gallery, wallpaper picker, Explorer, Picture Viewer) remains pending.
+
+
+### 2026-11-19 — Explorer icon scale, Minesweeper sprites and ICS recurrence sets
+- Explorer's normal large-icon view now gives app icons an explicit 64×64 rendered box with `object-contain`; this fixes the case where `max-width`/`max-height` only constrained native-size assets and left small application icons visually tiny. Desktop shortcut images and system glyphs were raised to 64px while preserving the existing desktop grid spacing.
+- Minesweeper now pins cell/digit/smiley sprite dimensions and background sizing so global OS theme CSS cannot collapse or rescale the sprite sheets. On loss, all mines are revealed and incorrectly placed flags use the existing wrong-flag sprite.
+- Calendar ICS parser now reads repeated/comma-separated RDATE and EXDATE date values, including TZID parameters. Recurrence expansion merges explicit RDATE instances with RRULE instances, deduplicates by start timestamp, and filters EXDATE matches. RDATE PERIOD values remain unsupported rather than assigning an invented duration.
+- Verification for these latest commits is pending; inspect the latest GitHub Actions run and manually verify Explorer large icons, Minesweeper sprite states, and ICS recurrence fixtures before acceptance.
