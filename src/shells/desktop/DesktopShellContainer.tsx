@@ -927,7 +927,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     playLaunchSound();
   }, [language, openWindow, playLaunchSound, themeAssets.folderIcon, fallbackAssets.folderIcon]);
 
-  const openExplorerWindow = useCallback((path: string) => {
+  const openExplorerWindow = useCallback((path: string, initialSearchOpen = false) => {
     const normalizedPath = path || 'My Computer';
     const pathName = normalizedPath.split('\\').filter(Boolean).pop() || normalizedPath;
     const localizedFolderNames: Record<string, string> = language === 'ru'
@@ -945,7 +945,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       height: 520,
       content: themeKey === 'win7'
         ? <Windows7Explorer currentPath={normalizedPath} onOpenItem={handleOpenFile} />
-        : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} />,
+        : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} initialSearchOpen={initialSearchOpen} />,
     });
     playLaunchSound();
   }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon, themeKey]);
@@ -1006,6 +1006,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           setShowRunDialog(true);
           playLaunchSound();
           recordRecentApp('run');
+          break;
+        case 'search':
+          openExplorerWindow('My Computer', true);
+          recordRecentApp('search');
           break;
         case 'my-computer':
           openExplorerWindow('My Computer');
