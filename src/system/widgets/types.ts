@@ -33,23 +33,27 @@ export const WEBOS_DEFAULT_WIDGETS_VISIBILITY: DesktopWidgetsVisibility = {
 
 export const WIDGETS_STORAGE_KEY = 'webos_desktop_widgets_visibility_v1';
 
-export function getStoredWidgetsVisibility(): DesktopWidgetsVisibility {
-  if (typeof window === 'undefined') return WEBOS_DEFAULT_WIDGETS_VISIBILITY;
+export function getStoredWidgetsVisibility(
+  storageKey = WIDGETS_STORAGE_KEY,
+  defaults: DesktopWidgetsVisibility = DEFAULT_WIDGETS_VISIBILITY,
+): DesktopWidgetsVisibility {
+  if (typeof window === 'undefined') return defaults;
   try {
-    const raw = localStorage.getItem(WIDGETS_STORAGE_KEY);
-    if (raw) {
-      return { ...WEBOS_DEFAULT_WIDGETS_VISIBILITY, ...JSON.parse(raw) };
-    }
+    const raw = localStorage.getItem(storageKey);
+    if (raw) return { ...defaults, ...JSON.parse(raw) };
   } catch {
-    // Keep defaults
+    // Keep the OS-specific defaults
   }
-  return WEBOS_DEFAULT_WIDGETS_VISIBILITY;
+  return defaults;
 }
 
-export function saveStoredWidgetsVisibility(val: DesktopWidgetsVisibility): void {
+export function saveStoredWidgetsVisibility(
+  val: DesktopWidgetsVisibility,
+  storageKey = WIDGETS_STORAGE_KEY,
+): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(WIDGETS_STORAGE_KEY, JSON.stringify(val));
+    localStorage.setItem(storageKey, JSON.stringify(val));
     window.dispatchEvent(new CustomEvent('desktop-widgets-visibility-changed', { detail: val }));
   } catch {
     // Ignore
