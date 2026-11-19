@@ -14,7 +14,7 @@
 
 ## Current verified baseline — 2026-11-19
 
-Repository source baseline inspected before this pass: `f6bc699452ad794102637e0ae3f254b40800021d`.
+Repository source baseline inspected before this pass: `0fc60199c127ae52b06e2b65c499f22ca24a5b91`.
 
 | Workstream | Progress | Current assessment |
 |---|---:|---|
