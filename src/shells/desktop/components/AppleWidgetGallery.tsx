@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BatteryFull, CalendarDays, ChartNoAxesCombined, Clock3, CloudSun, Cpu, Image, MessageSquareQuote, Music2, Newspaper, type LucideIcon } from 'lucide-react';
+import { Battery, Calendar, TrendingUp, Clock, CloudSun, Cpu, Image, MessageCircle, Music, Newspaper, type LucideIcon } from 'lucide-react';
 import { useApp } from '../../../contexts/useApp';
 import { type AppleWidgetVisibility } from './AppleDesktopWidgets';
 import { type DesktopWidgetsVisibility } from '../../../system/widgets/types';
@@ -22,13 +22,13 @@ const widgets: Array<{
   descriptionRu: string;
   icon: LucideIcon;
 }> = [
-  { key: 'clock', title: 'Clock', titleRu: 'Часы', description: 'Current time and date', descriptionRu: 'Текущее время и дата', icon: Clock3 },
-  { key: 'calendar', title: 'Calendar', titleRu: 'Календарь', description: 'Current month calendar', descriptionRu: 'Календарь на текущий месяц', icon: CalendarDays },
-  { key: 'battery', title: 'Battery', titleRu: 'Батарея', description: 'Device battery status', descriptionRu: 'Состояние аккумулятора', icon: BatteryFull },
+  { key: 'clock', title: 'Clock', titleRu: 'Часы', description: 'Current time and date', descriptionRu: 'Текущее время и дата', icon: Clock },
+  { key: 'calendar', title: 'Calendar', titleRu: 'Календарь', description: 'Current month calendar', descriptionRu: 'Календарь на текущий месяц', icon: Calendar },
+  { key: 'battery', title: 'Battery', titleRu: 'Батарея', description: 'Device battery status', descriptionRu: 'Состояние аккумулятора', icon: Battery },
   { key: 'weather', title: 'Weather', titleRu: 'Погода', description: 'Open-Meteo live forecast', descriptionRu: 'Прогноз погоды Open-Meteo', icon: CloudSun },
-  { key: 'winamp', title: 'Winamp Now Playing', titleRu: 'Winamp Плеер', description: 'Glassmorphic music player', descriptionRu: 'Компактный музыкальный плеер', icon: Music2 },
-  { key: 'quotes', title: 'Quotes', titleRu: 'Цитаты', description: 'Wise & gaming quotes', descriptionRu: 'Мудрые и игровые цитаты', icon: MessageSquareQuote },
-  { key: 'currency', title: 'Market Rates', titleRu: 'Курсы валют', description: 'BTC, USD, RUB, Gold to KZT', descriptionRu: 'BTC, USD, RUB, Золото к KZT', icon: ChartNoAxesCombined },
+  { key: 'winamp', title: 'Winamp Now Playing', titleRu: 'Winamp Плеер', description: 'Glassmorphic music player', descriptionRu: 'Компактный музыкальный плеер', icon: Music },
+  { key: 'quotes', title: 'Quotes', titleRu: 'Цитаты', description: 'Wise & gaming quotes', descriptionRu: 'Мудрые и игровые цитаты', icon: MessageCircle },
+  { key: 'currency', title: 'Market Rates', titleRu: 'Курсы валют', description: 'BTC, USD, RUB, Gold to KZT', descriptionRu: 'BTC, USD, RUB, Золото к KZT', icon: TrendingUp },
   { key: 'monitor', title: 'System Monitor', titleRu: 'Монитор системы', description: 'Live CPU, RAM & Disk usage', descriptionRu: 'Загрузка CPU, памяти и диска', icon: Cpu },
   { key: 'news', title: 'News RSS', titleRu: 'Новости RSS', description: 'Interactive news headlines', descriptionRu: 'Лента игровых и IT новостей', icon: Newspaper },
   { key: 'gallery', title: 'Art Gallery', titleRu: 'Галерея', description: 'Curated artwork frame', descriptionRu: 'Рамка избранных иллюстраций', icon: Image },
