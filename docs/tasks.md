@@ -156,7 +156,8 @@ Percentages are working estimates, not test results. The previous task registry 
 
 ### THEMES-01 — Complete Appearance & Themes image inventory
 - Expose every image in the site's shared gallery in Appearance & Themes, not only the wallpaper subset.
-- Provide previews, grouping, fit/fill positioning, apply/cancel and persistence across OS profile switch/reload.
+- Shared Appearance gallery now exposes All / Wallpapers / Pictures filters, image counts, a fit-aware preview, Apply and Cancel selection actions, and persistent Fill/Fit/Stretch/Tile/Center placement modes.
+- Remaining: add richer folder/tag grouping, verify the wallpaper and placement survive reload and OS profile switching, and inspect each mode on all desktop OS skins.
 - Reuse the same canonical inventory as My Pictures/Picture Viewer.
 
 ### WIDGET-GALLERY-02 — Canonical OS-native Widget Gallery
@@ -193,7 +194,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - Maintain visual checklist in [os-skin-visual-checklist.md](./os-skin-visual-checklist.md).
 
 ### GAME-03 — DOOM compact game chrome
-- DOOM and DOOM II keep title, smaller subtitle (e.g. Ultimate Doom), one-line project description and build/external-launch controls on a single compact header row. Controls stay right-aligned; the iframe receives the remaining window height.
+- DOOM and DOOM II keep title, smaller subtitle (Ultimate Doom / Hell on Earth), one-line project description and build/external-launch controls on a single compact header row. Controls stay right-aligned; the iframe receives the remaining window height.
 - The old Emupedia/wasm-doom footer, success tip and duplicate iframe-loaded overlay are not part of the player. An error-only fallback may remain. Actual gameplay still requires manual verification.
 
 ### EXPLORER-04 — Desktop shortcuts and application sizing
@@ -277,6 +278,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - 2026-11-19: Added OS-native Widget Gallery styling, application icon resolution in virtual folders, Start Menu Programs/Search routing, shared legacy/modern Windows profile aliases, publisher-based Program Files folders and initial Belarusian/Kazakh locale support. Automated and manual verification remain pending.
 - 2026-11-19: Explorer large-icon view now gives application shortcuts explicit 64px image dimensions instead of only max-size constraints; desktop shortcut artwork is also 64px. Minesweeper now forces sprite sheet sizing against theme overrides and reveals all mines/incorrect flags after loss.
 - 2026-11-19: ICS import now parses RDATE and EXDATE recurrence-set values and expands additional instances while suppressing excluded instances. RDATE PERIOD, BYSETPOS, ordinal BYDAY and full VTIMEZONE support remain open.
+- 2026-11-19: Appearance & Themes now filters the shared image inventory by all/wallpapers/pictures, previews fit mode, supports Apply/Cancel and persists Fill/Fit/Stretch/Tile/Center placement. Desktop shell applies the selected mode to the active custom wallpaper.
+- 2026-11-19: DOOM II header now separates `Doom II` and the smaller `Hell on Earth` subtitle to match the compact DOOM hierarchy.
 
 - 2026-11-19: Explorer launcher now includes the active OS theme in its callback dependencies, preventing a stale Explorer surface when the active theme changes without remounting.
 
