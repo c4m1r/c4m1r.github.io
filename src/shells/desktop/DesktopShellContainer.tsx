@@ -97,6 +97,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const { onSystemCommand } = props ?? {};
   const { language, theme } = useApp();
   const t = translations[language].xp;
+  const widgetEntryLabels: Record<string, string> = {
+    en: 'Widgets', ru: 'Виджеты', fr: 'Widgets', es: 'Widgets', zh: '小组件', ja: 'ウィジェット', ko: '위젯', be: 'Віджэты', kk: 'Виджеттер',
+  };
+  const windowsGadgetsLabels: Record<string, string> = {
+    en: 'Gadgets', ru: 'Гаджеты', fr: 'Gadgets', es: 'Gadgets', zh: '桌面小工具', ja: 'ガジェット', ko: '가젯', be: 'Гаджэты', kk: 'Гаджеттер',
+  };
+  const macEditWidgetsLabels: Record<string, string> = {
+    en: 'Edit Widgets…', ru: 'Изменить виджеты…', fr: 'Modifier les widgets…', es: 'Editar widgets…', zh: '编辑小组件…', ja: 'ウィジェットを編集…', ko: '위젯 편집…', be: 'Змяніць віджэты…', kk: 'Виджеттерді өңдеу…',
+  };
+
   const [viewport, setViewport] = useState(getViewportSize);
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [time, setTime] = useState(new Date());
@@ -798,7 +808,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           ...(!themeKey.startsWith('win') ? [{
             id: 'widget-gallery',
             icon: <PanelsTopLeft size={48} strokeWidth={1.8} />,
-            label: language === 'ru' ? 'Виджеты' : 'Widgets',
+            label: widgetEntryLabels[language] ?? widgetEntryLabels.en,
             type: 'system' as const,
           }] : []),
         ]),
@@ -1474,7 +1484,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               { separator: true },
               ...(themeKey === 'win7'
                 ? [{
-                    label: language === 'ru' ? 'Гаджеты' : 'Gadgets',
+                    label: windowsGadgetsLabels[language] ?? windowsGadgetsLabels.en,
                     onClick: () => setShowAppleWidgetGallery(true),
                   }]
                 : themeKey.startsWith('win')
