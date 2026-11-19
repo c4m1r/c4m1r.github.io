@@ -386,3 +386,12 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 
 - Follow-up polish: all-day imported events are labelled as “All day” / “Весь день” rather than showing a misleading midnight time. Latest code commit: `38c7898b0774d6b8333febae162e73a13b48b612`.
 - CI status queried for that code commit: no status entries and no associated workflow runs were returned; this is not a passing build.
+
+
+### National calendars implementation pass — 2026-11-19
+- Added `src/apps/calendar/nationalCalendars.ts` with country metadata and recurring Gregorian holiday rules for RU/KZ/BY/CN/JP/KR/GB, computed UK Easter/bank-holiday dates, Japan weekday/equinox rules, and limited 2026–2027 lunar-holiday entries for China/Korea.
+- Added a persistent, reactive multi-country labour-calendar selection. Calendar app, taskbar flyout and WebOS clock widget share the selection and show selected-country weekend styling; national holiday markers remain visible regardless of selection.
+- Added country flag SVG assets and extended the language switcher so EN/FR/RU/ES/ZH/JA/KO all show same-size flag images. Calendar country picker and holiday chips use the same compact flag dimensions.
+- Localized country names and holiday names for Russian, English and French where the dataset has a translation.
+- **Data caveat:** annual official transfer days, substitute days and make-up working Saturdays are not yet encoded. China/Korea lunar holidays currently have dates only for 2026 and 2027; these dates/ranges need authoritative year-by-year verification. This first pass is not a payroll/legal production calendar.
+- **Verification:** no local checkout/build was available in this connector session. Typecheck, lint, build, verify, browser rendering and cross-OS visual checks have not been run. Review the latest GitHub Actions results before treating this as accepted.
