@@ -44,7 +44,7 @@ interface TrayLabels {
   nextMonth: string;
 }
 
-const TRAY_LABELS: Record<Language, TrayLabels> = {
+const TRAY_LABELS: Partial<Record<Language, TrayLabels>> & Pick<Record<Language, TrayLabels>, 'en' | 'ru'> = {
   en: { fullscreen: 'Fullscreen', exitFullscreen: 'Exit Fullscreen', volume: 'Volume', notifications: 'Notifications', noNotifications: 'No new notifications', systemActions: 'System Actions', showHidden: 'Show hidden icons', hideHidden: 'Hide hidden icons', dateTime: 'Date and Time', today: 'Today', previousMonth: 'Previous month', nextMonth: 'Next month' },
   ru: { fullscreen: 'Полноэкранный режим', exitFullscreen: 'Выйти из полноэкранного режима', volume: 'Громкость', notifications: 'Уведомления', noNotifications: 'Нет новых уведомлений', systemActions: 'Системные действия', showHidden: 'Показать скрытые значки', hideHidden: 'Скрыть значки', dateTime: 'Дата и время', today: 'Сегодня', previousMonth: 'Предыдущий месяц', nextMonth: 'Следующий месяц' },
   fr: { fullscreen: 'Plein écran', exitFullscreen: 'Quitter le plein écran', volume: 'Volume', notifications: 'Notifications', noNotifications: 'Aucune nouvelle notification', systemActions: 'Actions système', showHidden: 'Afficher les icônes masquées', hideHidden: 'Masquer les icônes', dateTime: 'Date et heure', today: 'Aujourd’hui', previousMonth: 'Mois précédent', nextMonth: 'Mois suivant' },
@@ -152,7 +152,7 @@ export function TaskbarSystemArea({
   const useExpandableTray = isXpFamily || isWin7;
   const [hiddenTrayExpanded, setHiddenTrayExpanded] = useState(false);
   const [showClockPanel, setShowClockPanel] = useState(false);
-  const labels = TRAY_LABELS[language] ?? TRAY_LABELS.en;
+  const labels = TRAY_LABELS[language] ?? TRAY_LABELS.ru ?? TRAY_LABELS.en;
 
   useEffect(() => { void ensureCalendarEvents(language); }, [language]);
 
