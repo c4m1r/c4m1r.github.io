@@ -270,3 +270,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Address lookup now compares path keys/names case-insensitively. Adjacent duplicate navigation history entries are suppressed.
 - This pass did not implement the shared folder tree yet. Do not claim tree/sidebar completion. Search is current-folder-only, not recursive/global.
 - No tests/build/browser verification were run. Next agent should inspect the final diff and run quality gates before extending the Explorer tree.
+
+
+### Explorer folder-tree follow-up
+- Added a collapsible tree in `src/apps/explorer/MyComputer.tsx` for non-XP/non-Apple Legacy Explorer profiles. It recursively renders only folder/drive nodes from `initialFileSystem['My Computer']`; no duplicate tree data is maintained.
+- Tree labels navigate through the same `navigateToPath` callback. Disclosure controls only affect local expansion state. The existing Folders toolbar toggle shows/hides this tree in non-XP Legacy profiles.
+- Tree visual skin still needs per-OS refinement and narrow-screen validation. XP retains its established task pane; Apple remains on its Finder sidebar.
+- Do not count this as fully verified until click paths, deep nested folders, collapsed/expanded state and responsive behavior are browser-tested.
