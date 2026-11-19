@@ -250,47 +250,81 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
   const isAllDay = event.startDate.getHours() === 0 && event.startDate.getMinutes() === 0 &&
     event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
   const allDayLocalInclusive = event.source === 'local' && isAllDay;
-  if (!event.recurrenceRule) {
+  const rule = event.recurrenceRule;
+  const recurrenceDates = event.recurrenceDates ?? [];
+  const exceptionDates = event.exceptionDates ?? [];
+  const hasRecurrenceSet = Boolean(rule || recurrenceDates.length);
+
+  if (!hasRecurrenceSet) {
     const startsBeforeRangeEnd = event.startDate.getTime() < endExclusive;
     const endsAfterRangeStart = allDayLocalInclusive
       ? dateOnly(event.endDate).getTime() >= startLimit
       : event.endDate.getTime() > startLimit;
-    return startsBeforeRangeEnd && endsAfterRangeStart ? [event] : [];
+    if (!startsBeforeRangeEnd || !endsAfterRangeStart) return [];
+    return [event];
   }
-  const rule = event.recurrenceRule;
+
   const endDayOffset = calendarDayNumber(event.endDate) - calendarDayNumber(event.startDate);
-  const occurrences: CalendarEvent[] = [];
-  let cursor = dateOnly(event.startDate);
-  if (!rule.count) {
-    const earliest = dateOnly(rangeStart);
-    earliest.setDate(earliest.getDate() - Math.max(0, endDayOffset));
-    if (earliest > cursor) cursor = earliest;
+  const candidateStarts = new Map<number, Date>();
+  if (rule) {
+    let cursor = dateOnly(event.startDate);
+    if (!rule.count) {
+      const earliest = dateOnly(rangeStart);
+      earliest.setDate(earliest.getDate() - Math.max(0, endDayOffset));
+      if (earliest > cursor) cursor = earliest;
+    }
+    const endDate = dateOnly(rangeEnd);
+    let occurrenceIndex = 0;
+    let scanned = 0;
+    while (cursor <= endDate && scanned < 20000) {
+      scanned += 1;
+      if (matchesRecurrenceDate(cursor, event, rule)) {
+        occurrenceIndex += 1;
+        const occurrenceStart = new Date(
+          cursor.getFullYear(), cursor.getMonth(), cursor.getDate(),
+          event.startDate.getHours(), event.startDate.getMinutes(),
+          event.startDate.getSeconds(), event.startDate.getMilliseconds(),
+        );
+        if (rule.until && occurrenceStart.getTime() > rule.until.getTime()) break;
+        if (rule.count && occurrenceIndex > rule.count) break;
+        candidateStarts.set(occurrenceStart.getTime(), occurrenceStart);
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+  } else {
+    candidateStarts.set(event.startDate.getTime(), new Date(event.startDate));
   }
-  const endDate = dateOnly(rangeEnd);
-  let occurrenceIndex = 0;
-  let scanned = 0;
-  while (cursor <= endDate && scanned < 20000) {
-    scanned += 1;
-    if (matchesRecurrenceDate(cursor, event, rule)) {
-      occurrenceIndex += 1;
-      const occurrenceStart = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(),
-        event.startDate.getHours(), event.startDate.getMinutes(), event.startDate.getSeconds(), event.startDate.getMilliseconds());
-      if (rule.until && occurrenceStart.getTime() > rule.until.getTime()) break;
-      if (rule.count && occurrenceIndex > rule.count) break;
+
+  // RDATE adds explicit recurrence instances, including dates outside the RRULE pattern.
+  recurrenceDates.forEach((date) => candidateStarts.set(date.getTime(), new Date(date)));
+
+  const excluded = new Set(exceptionDates.map((date) => date.getTime()));
+  return [...candidateStarts.values()]
+    .filter((occurrenceStart) => !excluded.has(occurrenceStart.getTime()))
+    .sort((a, b) => a.getTime() - b.getTime())
+    .flatMap((occurrenceStart) => {
       const occurrenceEnd = new Date(occurrenceStart);
       occurrenceEnd.setDate(occurrenceEnd.getDate() + endDayOffset);
-      occurrenceEnd.setHours(event.endDate.getHours(), event.endDate.getMinutes(), event.endDate.getSeconds(), event.endDate.getMilliseconds());
+      occurrenceEnd.setHours(
+        event.endDate.getHours(), event.endDate.getMinutes(),
+        event.endDate.getSeconds(), event.endDate.getMilliseconds(),
+      );
       const overlapsStart = allDayLocalInclusive
         ? dateOnly(occurrenceEnd).getTime() >= startLimit
         : occurrenceEnd.getTime() > startLimit;
-      if (overlapsStart && occurrenceStart.getTime() < endExclusive) {
-        const suffix = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
-        occurrences.push({ ...event, id: String(event.id ?? 'event') + '@' + suffix, recurrenceMasterId: event.id, startDate: occurrenceStart, endDate: occurrenceEnd });
-      }
-    }
-    cursor.setDate(cursor.getDate() + 1);
-  }
-  return occurrences;
+      if (!overlapsStart || occurrenceStart.getTime() >= endExclusive) return [];
+
+      const suffix = occurrenceStart.getFullYear() + '-' +
+        String(occurrenceStart.getMonth() + 1).padStart(2, '0') + '-' +
+        String(occurrenceStart.getDate()).padStart(2, '0');
+      return [{
+        ...event,
+        id: String(event.id ?? 'event') + '@' + suffix,
+        recurrenceMasterId: event.id,
+        startDate: occurrenceStart,
+        endDate: occurrenceEnd,
+      }];
+    });
 }
 export function getCalendarEventsForDate(date: Date) {
   return getCalendarEventsForRange(date, date);
