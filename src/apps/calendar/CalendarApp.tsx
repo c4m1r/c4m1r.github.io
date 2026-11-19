@@ -166,7 +166,7 @@ export function CalendarApp() {
         startDate: allDay ? fromLocalDateInput(startValue) : fromLocalInput(startValue),
         endDate: allDay ? fromLocalDateInput(endValue) : fromLocalInput(endValue),
         recurrenceRule,
-      }, activeEvent?.source === 'local' ? activeEvent.id : undefined);
+      }, activeEvent?.source === 'local' ? (activeEvent.recurrenceMasterId ?? activeEvent.id) : undefined);
       selectCalendarDate(saved.startDate);
       setActiveEvent(saved); setEditorOpen(false); setFormError('');
     } catch (cause) {
@@ -310,7 +310,7 @@ export function CalendarApp() {
           <span>{activeEvent.startDate.toLocaleString(locale)} – {activeEvent.endDate.toLocaleString(locale)}</span>
           {activeEvent.location && <span>{activeEvent.location}</span>}
           {activeEvent.description && <p>{activeEvent.description}</p>}
-          {activeEvent.source === 'local' && <div className="flex gap-2"><button type="button" onClick={() => openEditEvent(activeEvent)}>{isRu ? 'Изменить' : 'Edit'}</button><button type="button" onClick={() => { if (activeEvent.id) deleteCalendarEvent(activeEvent.id); setActiveEvent(null); }}>{isRu ? 'Удалить' : 'Delete'}</button></div>}
+          {activeEvent.source === 'local' && <div className="flex gap-2"><button type="button" onClick={() => openEditEvent(activeEvent)}>{isRu ? 'Изменить' : 'Edit'}</button><button type="button" onClick={() => { if (activeEvent.id) deleteCalendarEvent(activeEvent.recurrenceMasterId ?? activeEvent.id); setActiveEvent(null); }}>{isRu ? 'Удалить' : 'Delete'}</button></div>}
           {activeEvent.source !== 'local' && <small>{isRu ? 'Событие из календаря (только чтение)' : 'Imported calendar event (read-only)'}</small>}
         </aside>
       )}
