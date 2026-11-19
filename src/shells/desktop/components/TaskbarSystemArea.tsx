@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type RefObject } from 'react';
 import { type Language } from '../../../i18n/translations';
 import { useApp } from '../../../contexts/useApp';
 import { SystemActionMenu } from '../../../system/actions/SystemActionMenu';
+import { moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
 
 export interface TaskbarSystemAreaProps {
   language: Language;
@@ -23,6 +24,7 @@ export interface TaskbarSystemAreaProps {
   fullscreenIconSrc?: string;
   notificationIconSrc?: string;
   trayExpandIconSrc?: string;
+  onOpenCalendar?: () => void;
 }
 
 interface TrayLabels {
@@ -54,8 +56,9 @@ function areSameDay(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
-function ClockCalendarPopup({ language, time, labels }: { language: Language; time: Date; labels: TrayLabels }) {
-  const [monthCursor, setMonthCursor] = useState(() => new Date(time.getFullYear(), time.getMonth(), 1));
+function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { language: Language; time: Date; labels: TrayLabels; onOpenCalendar?: () => void }) {
+  const { visibleMonth, selectedDate } = useCalendarCenter();
+  const monthCursor = visibleMonth;
   const weekStartsOnMonday = language === 'ru' || language === 'fr' || language === 'es';
   const weekStart = weekStartsOnMonday ? 1 : 0;
 
@@ -98,15 +101,17 @@ function ClockCalendarPopup({ language, time, labels }: { language: Language; ti
       <div className="xp-clock-popup__digital">{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
       <div className="xp-clock-popup__calendar">
         <div className="xp-clock-popup__month-row">
-          <button type="button" onClick={() => setMonthCursor((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))} aria-label={labels.previousMonth} title={labels.previousMonth}>‹</button>
+          <button type="button" onClick={() => moveCalendarMonth(-1)} aria-label={labels.previousMonth} title={labels.previousMonth}>‹</button>
           <span>{monthLabel}</span>
-          <button type="button" onClick={() => setMonthCursor((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))} aria-label={labels.nextMonth} title={labels.nextMonth}>›</button>
+          <button type="button" onClick={() => moveCalendarMonth(1)} aria-label={labels.nextMonth} title={labels.nextMonth}>›</button>
         </div>
         <div className="xp-clock-popup__weekdays">{weekdayLabels.map((weekday, index) => <span key={`${weekday}-${index}`}>{weekday}</span>)}</div>
         <div className="xp-clock-popup__days">
           {calendarCells.map((date, index) => date ? (
-            <span key={date.toISOString()} className={areSameDay(date, time) ? 'is-today' : ''} title={areSameDay(date, time) ? labels.today : undefined}>{date.getDate()}</span>
+            <button type="button" key={date.toISOString()} className={`${areSameDay(date, time) ? 'is-today' : ''} ${areSameDay(date, selectedDate) ? 'is-selected' : ''}`} title={areSameDay(date, time) ? labels.today : date.toLocaleDateString(language)} aria-pressed={areSameDay(date, selectedDate)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }}>{date.getDate()}</button>
           ) : <span key={`empty-${index}`} aria-hidden="true" />)}
+        </div>
+        <button type="button" className="xp-clock-popup__open-calendar" onClick={onOpenCalendar}>{language === 'ru' ? 'Открыть календарь' : 'Open Calendar'}</button>
         </div>
       </div>
     </div>
@@ -133,6 +138,7 @@ export function TaskbarSystemArea({
   fullscreenIconSrc,
   notificationIconSrc,
   trayExpandIconSrc,
+  onOpenCalendar,
 }: TaskbarSystemAreaProps) {
   const { theme } = useApp();
   const isWin7 = theme === 'win7';
@@ -246,7 +252,7 @@ export function TaskbarSystemArea({
         <button type="button" onClick={handleClockToggle} className={`taskbar-tray-time ${showClockPanel ? 'is-open' : ''}`} aria-label={labels.dateTime} aria-expanded={showClockPanel} title={labels.dateTime}>
           <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' })}</span>
         </button>
-        {showClockPanel && <ClockCalendarPopup language={language} time={time} labels={labels} />}
+        {showClockPanel && <ClockCalendarPopup language={language} time={time} labels={labels} onOpenCalendar={onOpenCalendar} />}
       </div>
     </div>
   );
