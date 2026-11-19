@@ -192,7 +192,7 @@ export function StartMenu7({
             type="button"
             className="win7-start-menu__all-programs"
             onClick={() => {
-              onLaunchApp?.('all-programs');
+              onOpenPath?.('C:\\Program Files\\Programs');
               onClose();
             }}
             onMouseEnter={onHover}
