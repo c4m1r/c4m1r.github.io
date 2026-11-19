@@ -1,14 +1,14 @@
 import { useSyncExternalStore } from 'react';
 export type CountryCode = 'RU' | 'KZ' | 'BY' | 'CN' | 'JP' | 'KR' | 'GB';
 
-export const NATIONAL_COUNTRIES: Array<{ code: CountryCode; flag: string; names: Record<'ru' | 'en' | 'fr', string> }> = [
-  { code: 'RU', flag: '🇷🇺', names: { ru: 'Россия', en: 'Russia', fr: 'Russie' } },
-  { code: 'KZ', flag: '🇰🇿', names: { ru: 'Казахстан', en: 'Kazakhstan', fr: 'Kazakhstan' } },
-  { code: 'BY', flag: '🇧🇾', names: { ru: 'Беларусь', en: 'Belarus', fr: 'Biélorussie' } },
-  { code: 'CN', flag: '🇨🇳', names: { ru: 'Китай', en: 'China', fr: 'Chine' } },
-  { code: 'JP', flag: '🇯🇵', names: { ru: 'Япония', en: 'Japan', fr: 'Japon' } },
-  { code: 'KR', flag: '🇰🇷', names: { ru: 'Корея', en: 'Korea', fr: 'Corée' } },
-  { code: 'GB', flag: '🇬🇧', names: { ru: 'Великобритания', en: 'United Kingdom', fr: 'Royaume-Uni' } },
+export const NATIONAL_COUNTRIES: Array<{ code: CountryCode; flag: string; names: Record<'ru' | 'en' | 'fr' | 'es' | 'zh' | 'ja' | 'ko', string> }> = [
+  { code: 'RU', flag: '🇷🇺', names: { ru: 'Россия', en: 'Russia', fr: 'Russie', es: 'Rusia', zh: '俄罗斯', ja: 'ロシア', ko: '러시아' } },
+  { code: 'KZ', flag: '🇰🇿', names: { ru: 'Казахстан', en: 'Kazakhstan', fr: 'Kazakhstan', es: 'Kazajistán', zh: '哈萨克斯坦', ja: 'カザフスタン', ko: '카자흐스탄' } },
+  { code: 'BY', flag: '🇧🇾', names: { ru: 'Беларусь', en: 'Belarus', fr: 'Biélorussie', es: 'Bielorrusia', zh: '白俄罗斯', ja: 'ベラルーシ', ko: '벨라루스' } },
+  { code: 'CN', flag: '🇨🇳', names: { ru: 'Китай', en: 'China', fr: 'Chine', es: 'China', zh: '中国', ja: '中国', ko: '중국' } },
+  { code: 'JP', flag: '🇯🇵', names: { ru: 'Япония', en: 'Japan', fr: 'Japon', es: 'Japón', zh: '日本', ja: '日本', ko: '일본' } },
+  { code: 'KR', flag: '🇰🇷', names: { ru: 'Корея', en: 'Korea', fr: 'Corée', es: 'Corea', zh: '韩国', ja: '韓国', ko: '한국' } },
+  { code: 'GB', flag: '🇬🇧', names: { ru: 'Великобритания', en: 'United Kingdom', fr: 'Royaume-Uni', es: 'Reino Unido', zh: '英国', ja: 'イギリス', ko: '영국' } },
 ];
 
 export interface NationalHoliday {
