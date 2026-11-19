@@ -2582,3 +2582,83 @@
 .os-win11 .apple-widget-gallery__panel > header { background: rgba(255,255,255,.55); border-bottom-color: rgba(80,95,115,.14); }
 .os-win11 .apple-widget-gallery__panel > header > button { border: 0; border-radius: 7px; background: #1768b5; color: #fff; padding: 7px 15px; }
 .os-win11 .apple-widget-gallery__item { border-radius: 10px; background: rgba(255,255,255,.78); }
+
+
+/* Shared widget-gallery header actions and user-selectable night palette. */
+.apple-widget-gallery__header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+}
+.apple-widget-gallery__header-actions > button {
+  min-height: 28px;
+  padding: 0 11px;
+  border: 1px solid rgba(90,105,125,.32);
+  border-radius: 6px;
+  background: rgba(255,255,255,.72);
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font: inherit;
+  cursor: pointer;
+}
+.apple-widget-gallery__header-actions > .apple-widget-gallery__night-toggle {
+  width: 30px;
+  min-width: 30px;
+  padding: 0;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__panel {
+  border-color: #3a4658 !important;
+  background: rgba(22,27,37,.97) !important;
+  color: #edf2f8 !important;
+  box-shadow: 0 24px 72px rgba(0,0,0,.58), inset 0 1px rgba(255,255,255,.06) !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__panel > header {
+  background: #202a39 !important;
+  border-bottom-color: #3a4658 !important;
+  color: #f4f7fb !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__panel > header small,
+.apple-widget-gallery.is-night .apple-widget-gallery__list small {
+  color: #aab7c7 !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__header-actions > button {
+  border-color: #53647a !important;
+  background: #2b394b !important;
+  color: #edf2f8 !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__item {
+  border-color: #3b4b60 !important;
+  background: #263345 !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__toggle {
+  background: transparent !important;
+  color: #edf2f8 !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__toggle:hover {
+  background: #34465d !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__glyph {
+  border-color: #53677f !important;
+  background: #354b64 !important;
+  color: #c8e4ff !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__toggle i {
+  background: #3a4a5e !important;
+  color: #d5e1ee !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__item.is-enabled .apple-widget-gallery__toggle i {
+  background: #267b61 !important;
+  color: #fff !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__preset {
+  color: #c5d1df !important;
+}
+.apple-widget-gallery.is-night .apple-widget-gallery__preset select {
+  border-color: #53677f !important;
+  background: #182230 !important;
+  color: #edf2f8 !important;
+}
