@@ -32,7 +32,7 @@ export const CITIES: CityConfig[] = [
   { id: 'birmingham', countryCode: 'GB', flag: '🇬🇧', nameRu: 'Бирмингем', nameEn: 'Birmingham', lat: 52.4862, lon: -1.8904 },
   // Additional language defaults for Français and Español
   { id: 'paris', countryCode: 'FR', flag: '🇫🇷', nameRu: 'Париж', nameEn: 'Paris', lat: 48.8566, lon: 2.3522 },
-  { id: 'lyon', countryCode: 'FR', flag: '🇫🇷', nameRu: 'Лион', nameEn: 'Lyon', lat: 45.7640, lon: 4.8357 },
+  { id: 'marseille', countryCode: 'FR', flag: '🇫🇷', nameRu: 'Марсель', nameEn: 'Marseille', lat: 43.2965, lon: 5.3698 },
   { id: 'madrid', countryCode: 'ES', flag: '🇪🇸', nameRu: 'Мадрид', nameEn: 'Madrid', lat: 40.4168, lon: -3.7038 },
   { id: 'barcelona', countryCode: 'ES', flag: '🇪🇸', nameRu: 'Барселона', nameEn: 'Barcelona', lat: 41.3874, lon: 2.1686 },
 ];
