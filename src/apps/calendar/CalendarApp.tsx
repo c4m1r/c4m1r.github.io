@@ -27,6 +27,10 @@ import {
 
 type CalendarView = 'month' | 'week' | 'day' | 'list';
 const countryFlags: Record<CountryCode, string> = { RU: flagRu, KZ: flagKz, BY: flagBy, CN: flagCn, JP: flagJp, KR: flagKr, GB: flagGb };
+function dayOffLabel(locale: string) {
+  const labels: Record<string, string> = { ru: 'Выходной', en: 'Day off', fr: 'Jour de repos', es: 'Día libre', zh: '休息日', ja: '休日', ko: '휴일' };
+  return labels[locale.split('-')[0]] ?? labels.en;
+}
 function countryName(code: CountryCode, locale: string) {
   const language = locale.split('-')[0];
   const country = NATIONAL_COUNTRIES.find((item) => item.code === code)!;
@@ -203,7 +207,7 @@ export function CalendarApp() {
                       {holidays.slice(0, 2).map(renderHoliday)}
                       {dayEvents.slice(0, Math.max(0, 3 - holidays.length)).map(renderEvent)}
                       {dayEvents.length + holidays.length > 3 && <button type="button" className="calendar-app__more-events" onClick={() => { selectCalendarDate(date); setView('day'); }}>+{dayEvents.length + holidays.length - 3}</button>}
-                      {weekend && <small className="calendar-app__weekend-label">{isRu ? 'Выходной' : locale.startsWith('fr') ? 'Repos' : 'Day off'}</small>}
+                      {weekend && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}
                     </div>
                   </div>;
                 })}
@@ -216,7 +220,7 @@ export function CalendarApp() {
                 <button type="button" onClick={() => selectCalendarDate(date)} className="calendar-app__week-date">{date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}</button>
                 {getHolidaysForDate(date).map(renderHoliday)}
                 {getCalendarEventsForDate(date).map(renderEvent)}
-                {isSelectedCountryWeekend(date, labourCountries) && <small className="calendar-app__weekend-label">{isRu ? 'Выходной' : 'Day off'}</small>}
+                {isSelectedCountryWeekend(date, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}
                 <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(date)}>{isRu ? '+ Добавить' : '+ Add'}</button>
               </section>)}
             </div>
