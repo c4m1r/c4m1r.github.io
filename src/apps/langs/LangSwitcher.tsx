@@ -9,7 +9,7 @@ import flagJp from './flag-jp.svg';
 import flagKr from './flag-kr.svg';
 import flagEs from './flag-es.svg';
 
-const languageOrder: Language[] = ['en', 'ru', 'fr', 'es', 'zh', 'ja', 'ko'];
+const languageOrder: Language[] = ['en', 'ru', 'be', 'kk', 'fr', 'es', 'zh', 'ja', 'ko'];
 
 const languageMeta: Record<Language, { code: string; title: string; icon?: string }> = {
   en: { code: 'EN', title: 'English', icon: flagEn },
@@ -19,6 +19,8 @@ const languageMeta: Record<Language, { code: string; title: string; icon?: strin
   zh: { code: '中文', title: '中文', icon: flagCn },
   ja: { code: 'JP', title: '日本語', icon: flagJp },
   ko: { code: 'KR', title: '한국어', icon: flagKr },
+  be: { code: 'BE', title: 'Беларуская' },
+  kk: { code: 'KZ', title: 'Қазақша' },
 };
 
 interface LangSwitcherProps {
