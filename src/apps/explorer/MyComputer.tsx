@@ -377,7 +377,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   const getTreeItemPath = (parentPath: string, item: FileSystemItem) => {
     if (parentPath === 'My Computer' && item.type === 'drive') return 'C:\\';
     if (parentPath === 'My Computer') return item.name;
-    return parentPath.replace(/\\\\$/, '') + '\\\\' + item.name;
+    const basePath = parentPath.endsWith('\\') ? parentPath.slice(0, -1) : parentPath;
+    return basePath + '\\' + item.name;
   };
 
   const renderFolderTree = (node: FileSystemItem, nodePath: string, depth: number): React.ReactNode => {
