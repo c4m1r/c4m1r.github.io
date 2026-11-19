@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { parseICS, type CalendarEvent } from './icsParser';
+import { parseICS, type CalendarEvent, type CalendarRecurrenceRule } from './icsParser';
 
 const CALENDAR_FILES: Record<string, string> = {
   en: new URL('./assets/calendar-en.ics', import.meta.url).toString(),
@@ -18,7 +18,7 @@ export interface CalendarCenterState {
 }
 
 export type CalendarEventInput = Pick<CalendarEvent, 'summary' | 'startDate' | 'endDate'> &
-  Partial<Pick<CalendarEvent, 'location' | 'description'>>;
+  Partial<Pick<CalendarEvent, 'location' | 'description' | 'recurrenceRule'>>;
 
 function dateOnly(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -64,6 +64,19 @@ function readLocalEvents(): CalendarEvent[] {
         location: typeof event.location === 'string' ? event.location : '',
         description: typeof event.description === 'string' ? event.description : '',
         startDate, endDate,
+        recurrenceRule: (() => {
+          const rule = event.recurrenceRule as Record<string, unknown> | undefined;
+          if (!rule || !['DAILY','WEEKLY','MONTHLY','YEARLY'].includes(String(rule.freq))) return undefined;
+          const until = typeof rule.until === 'string' ? new Date(rule.until) : undefined;
+          return {
+            freq: rule.freq as CalendarRecurrenceRule['freq'],
+            interval: Math.max(1, Math.min(365, Number(rule.interval) || 1)),
+            count: typeof rule.count === 'number' ? rule.count : undefined,
+            until: until && !Number.isNaN(until.getTime()) ? until : undefined,
+            byDay: Array.isArray(rule.byDay) ? rule.byDay.filter((day): day is number => Number.isInteger(day) && day >= 0 && day <= 6) : undefined,
+            byMonthDay: Array.isArray(rule.byMonthDay) ? rule.byMonthDay.filter((day): day is number => Number.isInteger(day) && day >= 1 && day <= 31) : undefined,
+          };
+        })(),
       }];
     });
   } catch {
@@ -196,31 +209,77 @@ export async function ensureCalendarEvents(locale: string) {
   return request;
 }
 
-export function getCalendarEventsForDate(date: Date) {
-  const target = dateOnly(date).getTime();
-  return state.events.filter((event) => {
-    const start = dateOnly(event.startDate).getTime();
-    const end = dateOnly(event.endDate).getTime();
-    if (event.source === 'local') return target >= start && target <= end;
-    // RFC 5545 treats all-day DTEND as exclusive; timed events also appear on their final calendar day.
-    if (target === start) return true;
-    if (end <= start || target <= start) return false;
-    const isAllDayExclusive = event.startDate.getHours() === 0 && event.startDate.getMinutes() === 0 &&
-      event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
-    return isAllDayExclusive ? target < end : target <= end;
-  });
+function calendarDayNumber(date: Date) {
+  return Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
 }
-
-export function getCalendarEventsForRange(startDate: Date, endDate: Date) {
-  const start = dateOnly(startDate).getTime();
-  const end = dateOnly(endDate).getTime();
-  return state.events.filter((event) => {
+function mondayWeekNumber(date: Date) {
+  const day = calendarDayNumber(date);
+  const weekday = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getDay();
+  return Math.floor((day - ((weekday + 6) % 7)) / 7);
+}
+function matchesRecurrenceDate(date: Date, event: CalendarEvent, rule: CalendarRecurrenceRule) {
+  const start = event.startDate;
+  const dayDiff = calendarDayNumber(date) - calendarDayNumber(start);
+  const monthDiff = (date.getFullYear() - start.getFullYear()) * 12 + date.getMonth() - start.getMonth();
+  const yearDiff = date.getFullYear() - start.getFullYear();
+  if (dayDiff < 0) return false;
+  if (rule.freq === 'DAILY') return dayDiff % rule.interval === 0;
+  if (rule.freq === 'WEEKLY') {
+    const weekDiff = mondayWeekNumber(date) - mondayWeekNumber(start);
+    const weekdays = rule.byDay?.length ? rule.byDay : [start.getDay()];
+    return weekDiff >= 0 && weekDiff % rule.interval === 0 && weekdays.includes(date.getDay());
+  }
+  if (rule.freq === 'MONTHLY') {
+    if (monthDiff < 0 || monthDiff % rule.interval !== 0) return false;
+    if (rule.byMonthDay?.length) return rule.byMonthDay.includes(date.getDate());
+    if (rule.byDay?.length) return rule.byDay.includes(date.getDay());
+    return date.getDate() === start.getDate();
+  }
+  if (yearDiff < 0 || yearDiff % rule.interval !== 0 || date.getMonth() !== start.getMonth()) return false;
+  if (rule.byMonthDay?.length) return rule.byMonthDay.includes(date.getDate());
+  return date.getDate() === start.getDate();
+}
+function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: Date): CalendarEvent[] {
+  const startLimit = dateOnly(rangeStart).getTime();
+  const endLimit = dateOnly(rangeEnd).getTime();
+  if (!event.recurrenceRule) {
     const eventStart = dateOnly(event.startDate).getTime();
     const eventEnd = dateOnly(event.endDate).getTime();
-    const isAllDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
+    const allDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
       event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
-    return eventStart <= end && (isAllDayExclusive ? eventEnd > start : eventEnd >= start);
-  });
+    return eventStart <= endLimit && (allDayExclusive ? eventEnd > startLimit : eventEnd >= startLimit) ? [event] : [];
+  }
+  const rule = event.recurrenceRule;
+  const duration = event.endDate.getTime() - event.startDate.getTime();
+  const occurrences: CalendarEvent[] = [];
+  const cursor = dateOnly(event.startDate);
+  const endDate = dateOnly(rangeEnd);
+  let occurrenceIndex = 0;
+  let scanned = 0;
+  while (cursor <= endDate && scanned < 20000) {
+    scanned += 1;
+    if (matchesRecurrenceDate(cursor, event, rule)) {
+      occurrenceIndex += 1;
+      const occurrenceStart = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(),
+        event.startDate.getHours(), event.startDate.getMinutes(), event.startDate.getSeconds(), event.startDate.getMilliseconds());
+      if (rule.until && occurrenceStart.getTime() > rule.until.getTime()) break;
+      if (rule.count && occurrenceIndex > rule.count) break;
+      const occurrenceEnd = new Date(occurrenceStart.getTime() + duration);
+      if (occurrenceEnd.getTime() >= startLimit && occurrenceStart.getTime() <= endLimit + 86400000 - 1) {
+        const suffix = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
+        occurrences.push({ ...event, id: String(event.id ?? 'event') + '@' + suffix, startDate: occurrenceStart, endDate: occurrenceEnd });
+      }
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return occurrences;
+}
+export function getCalendarEventsForDate(date: Date) {
+  return getCalendarEventsForRange(date, date);
+}
+export function getCalendarEventsForRange(startDate: Date, endDate: Date) {
+  return state.events.flatMap((event) => expandCalendarEvent(event, startDate, endDate))
+    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 }
 
 export function saveCalendarEvent(input: CalendarEventInput, eventId?: string) {
@@ -234,6 +293,7 @@ export function saveCalendarEvent(input: CalendarEventInput, eventId?: string) {
     id, source: 'local', summary, location: input.location?.trim() ?? '',
     description: input.description?.trim() ?? '',
     startDate: new Date(input.startDate), endDate: new Date(input.endDate),
+    recurrenceRule: input.recurrenceRule ? { ...input.recurrenceRule, until: input.recurrenceRule.until ? new Date(input.recurrenceRule.until) : undefined } : undefined,
   };
   localEvents = eventId
     ? localEvents.map((item) => item.id === eventId ? event : item)
