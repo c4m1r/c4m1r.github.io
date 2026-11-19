@@ -142,6 +142,7 @@ Percentages are working estimates, not test results. The previous task registry 
 ### CONTROL-01 — Control Panel category architecture
 - Provide OS-appropriate categories: System/Performance, Appearance & Themes/Personalization, Network & Internet, Hardware & Sound, Programs/Applications, User Accounts and Accessibility. Adapt names, grouping and layout to each OS rather than forcing a modern generic panel.
 - Task Manager belongs under System/Performance and remains accessible in Classic View.
+- Category cards and classic applets now route Programs to the canonical Program Files folder, User Accounts to the Users profile root, Network to Network Neighborhood, Date/Time to Calendar, Task Manager to its registered window and Widgets to the existing gallery. Hardware/Sound/Windows Accessibility currently fall back to System & Device Info; dedicated settings surfaces remain open.
 - Categories must navigate to functioning settings/apps; no dead placeholder cards.
 
 ### CONTROL-02 — Desktop shortcuts and canonical settings surfaces
@@ -202,7 +203,7 @@ Percentages are working estimates, not test results. The previous task registry 
 ### PROFILE-FS-02 — User account and media associations
 - Expose both `C:\\Documents and Settings\\User` and `C:\\Users\\User` as the same second profile, alongside C4m1r.
 - My Music exposes all 58 existing Winamp playlist tracks as real `.mp3` virtual files with Winamp artwork. Double-click selects that track in the shared Winamp controller, starts playback from the user gesture, and opens/focuses Winamp.
-- Project Markdown files in My Projects use parsed frontmatter titles, stable slug IDs and deduplication; double-click opens a rendered article reader rather than raw Markdown text.
+- My Projects mirrors the canonical project loader: standard projects take precedence, About/Projects articles fill remaining filename IDs, and file bodies are loaded lazily only when opened. Double-click renders the localized frontmatter body as an article.
 - Both `C:\\Documents and Settings\\User` and `C:\\Users\\User` resolve to the second User profile; C4m1r remains the default profile.
 
 ### APP-UNIFY-01 — Reusable application surfaces
