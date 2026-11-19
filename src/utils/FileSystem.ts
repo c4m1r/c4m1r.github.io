@@ -49,7 +49,10 @@ const videoModules = import.meta.glob('../content/videos/**/*.{mp4,webm,mov,m4v}
 }) as Record<string, string>;
 
 const musicChildren: FileSystemChildren = PROJECT_PLAYLIST.reduce((children, track) => {
-    const fileName = `${track.artist} - ${track.title}.mp3`;
+    const baseName = `${track.artist} - ${track.title}`.replace(/[\\/:*?"<>|]/g, '-').trim();
+    const fileName = children[`${baseName}.mp3`]
+        ? `${baseName} (${track.id.slice(0, 6)}).mp3`
+        : `${baseName}.mp3`;
     children[fileName] = {
         id: `music:${track.id}`,
         name: fileName,
