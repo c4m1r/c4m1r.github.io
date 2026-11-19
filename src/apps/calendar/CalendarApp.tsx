@@ -29,6 +29,7 @@ function toLocalInput(date: Date) {
   const pad = (value: number) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
+function isAllDayEvent(event: CalendarEvent) { return event.startDate.getHours() === 0 && event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0; }
 function fromLocalInput(value: string) {
   const [datePart, timePart = '00:00'] = value.split('T');
   const [year, month, day] = datePart.split('-').map(Number);
@@ -110,7 +111,7 @@ export function CalendarApp() {
 
   const renderEvent = (event: CalendarEvent) => (
     <button type="button" key={event.id ?? `${event.summary}-${event.startDate.toISOString()}`} className={`calendar-app__event-chip ${event.source === 'local' ? 'is-local' : 'is-readonly'}`} onClick={() => openEditEvent(event)} title={event.location || event.summary}>
-      <span>{event.startDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span>
+      <span>{isAllDayEvent(event) ? (isRu ? 'Весь день' : 'All day') : event.startDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span>
       <strong>{event.summary}</strong>
       {event.location && <small>{event.location}</small>}
     </button>
