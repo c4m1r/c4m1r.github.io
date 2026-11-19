@@ -27,14 +27,14 @@ export interface DoomVariant {
   };
 }
 
-const desktopIcon = (_name: string) => doomIcon;
+const desktopIcon = () => doomIcon;
 
 export const doomVariants: DoomVariant[] = [
   {
     id: 'doom1',
     title: 'Doom (1993)',
     subtitle: 'Ultimate Doom',
-    icon: desktopIcon('doom1'),
+    icon: desktopIcon(),
     homepage: `${EMUPEDIA_BASE}/emupedia-game-doom1/`,
     description: {
       ru: 'Классический Doom с поддержкой ASM.js и WebAssembly портов wasm-doom.',
@@ -60,7 +60,7 @@ export const doomVariants: DoomVariant[] = [
   {
     id: 'doom2',
     title: 'Doom II: Hell on Earth',
-    icon: desktopIcon('doom2'),
+    icon: desktopIcon(),
     homepage: `${EMUPEDIA_BASE}/emupedia-game-doom2/`,
     description: {
       ru: 'Продолжение Doom с поддержкой wasm-doom. Доступны ASM.js и WebAssembly версии.',
@@ -86,7 +86,7 @@ export const doomVariants: DoomVariant[] = [
   {
     id: 'doom3',
     title: 'Doom 3 Demo (WIP)',
-    icon: desktopIcon('doom3'),
+    icon: desktopIcon(),
     homepage: `${EMUPEDIA_BASE}/emupedia-game-doom3/`,
     description: {
       ru: 'Демонстрационная сборка Doom 3 на WebAssembly. Проект отмечен Emupedia как Work in Progress.',

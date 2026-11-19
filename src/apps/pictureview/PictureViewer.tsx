@@ -54,6 +54,19 @@ export function PictureViewer({ initialImage, images, initialIndex = 0, initialV
   const [rotation, setRotation] = useState(0);
   const [isPlayingSlideshow, setIsPlayingSlideshow] = useState(false);
 
+  useEffect(() => {
+    let interval: number | undefined;
+    if (isPlayingSlideshow && viewMode === 'viewer' && imageList.length > 1) {
+      interval = window.setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % imageList.length);
+      }, 3000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlayingSlideshow, imageList.length, viewMode]);
+
+
   const currentImage = imageList[currentIndex]?.src || initialImage;
   const toggleGallery = () => {
     if (viewMode === 'viewer' && currentImage) {
@@ -85,18 +98,6 @@ export function PictureViewer({ initialImage, images, initialIndex = 0, initialV
       </div>
     );
   }
-
-  useEffect(() => {
-    let interval: number | undefined;
-    if (isPlayingSlideshow && viewMode === 'viewer' && imageList.length > 1) {
-      interval = window.setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % imageList.length);
-      }, 3000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isPlayingSlideshow, imageList.length, viewMode]);
 
   const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.25, 4));
   const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.25, 0.25));
