@@ -246,13 +246,16 @@ function matchesRecurrenceDate(date: Date, event: CalendarEvent, rule: CalendarR
 }
 function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: Date): CalendarEvent[] {
   const startLimit = dateOnly(rangeStart).getTime();
-  const endLimit = dateOnly(rangeEnd).getTime();
+  const endExclusive = new Date(rangeEnd.getFullYear(), rangeEnd.getMonth(), rangeEnd.getDate() + 1).getTime();
+  const isAllDay = event.startDate.getHours() === 0 && event.startDate.getMinutes() === 0 &&
+    event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
+  const allDayLocalInclusive = event.source === 'local' && isAllDay;
   if (!event.recurrenceRule) {
-    const eventStart = dateOnly(event.startDate).getTime();
-    const eventEnd = dateOnly(event.endDate).getTime();
-    const allDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
-      event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
-    return eventStart <= endLimit && (allDayExclusive ? eventEnd > startLimit : eventEnd >= startLimit) ? [event] : [];
+    const startsBeforeRangeEnd = event.startDate.getTime() < endExclusive;
+    const endsAfterRangeStart = allDayLocalInclusive
+      ? dateOnly(event.endDate).getTime() >= startLimit
+      : event.endDate.getTime() > startLimit;
+    return startsBeforeRangeEnd && endsAfterRangeStart ? [event] : [];
   }
   const rule = event.recurrenceRule;
   const endDayOffset = calendarDayNumber(event.endDate) - calendarDayNumber(event.startDate);
@@ -277,10 +280,10 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
       const occurrenceEnd = new Date(occurrenceStart);
       occurrenceEnd.setDate(occurrenceEnd.getDate() + endDayOffset);
       occurrenceEnd.setHours(event.endDate.getHours(), event.endDate.getMinutes(), event.endDate.getSeconds(), event.endDate.getMilliseconds());
-      const allDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
-        event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
-      const overlapsStart = allDayExclusive ? occurrenceEnd.getTime() > startLimit : occurrenceEnd.getTime() >= startLimit;
-      if (overlapsStart && occurrenceStart.getTime() <= endLimit + 86400000 - 1) {
+      const overlapsStart = allDayLocalInclusive
+        ? dateOnly(occurrenceEnd).getTime() >= startLimit
+        : occurrenceEnd.getTime() > startLimit;
+      if (overlapsStart && occurrenceStart.getTime() < endExclusive) {
         const suffix = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
         occurrences.push({ ...event, id: String(event.id ?? 'event') + '@' + suffix, recurrenceMasterId: event.id, startDate: occurrenceStart, endDate: occurrenceEnd });
       }
