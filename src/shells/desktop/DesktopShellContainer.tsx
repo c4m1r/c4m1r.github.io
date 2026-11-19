@@ -938,7 +938,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       : localizedFolderNames[pathName] ?? pathName;
 
     openWindow({
-      id: `explorer:${normalizedPath}`,
+      id: initialSearchOpen ? `explorer:search-${Date.now()}` : `explorer:${normalizedPath}`,
       title,
       icon: normalizedPath === 'My Computer' ? themeAssets.computerIcon : themeAssets.folderIcon,
       width: 720,
