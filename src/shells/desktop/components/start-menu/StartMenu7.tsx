@@ -25,9 +25,9 @@ type Win7MenuEntry = {
 // The UI presents Windows 7 library names, while the shared virtual filesystem
 // still stores the user's content under its historical XP-era paths. Keeping the
 // adapter here preserves all existing files without duplicating or migrating data.
-const DOCUMENTS_PATH = 'C:\\Users\\C4m1r\\Documents';
-const PICTURES_PATH = 'C:\\Users\\C4m1r\\Pictures';
-const MUSIC_PATH = 'C:\\Users\\C4m1r\\Music';
+const DOCUMENTS_PATH = 'C:\\Users\\C4m1r\\My Documents';
+const PICTURES_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Pictures';
+const MUSIC_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Music';
 
 export function StartMenu7({
   onClose,
