@@ -580,3 +580,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - winamp.css makes the root transparent/non-interactive outside the actual player surfaces. Verify no full-screen overlay blocks desktop pointer input.
 - The Widget Gallery already exposes the compact “Winamp Now Playing” widget. Keep this distinct from the full classic player until a separate visibility preference is intentionally added; do not silently replace the compact widget.
 - Webamp reference: https://github.com/captbaritone/webamp. Its documented features include independent main/EQ/playlist windows, skin support, windowshade and double-size mode. Current implementation is only a first structural step, not feature parity. Remaining acceptance: independent dragging on touch, persistence, .wsz skin loading, file drop/import, EQ preset persistence, keyboard accessibility, responsive behavior and playback metadata.
+
+
+### Explorer / Picture Viewer source pass — 2026-11-19
+- Windows7Explorer.tsx now accepts `onOpenSlideshow` from MyComputerProps, filters supported image files from the current directory, and offers a slideshow action when there are at least two images. DesktopShellContainer passes the existing shared slideshow callback.
+- Thumbnail mode displays `item.content` for image files rather than the generic file icon. The shared PictureViewer remains the only slideshow implementation.
+- Verify paths under `C:\Users\C4m1r\Pictures` (resolved by FileSystem modern-profile aliases), mixed folders, nested directories, single-image folders, and all supported formats. Browser acceptance is not yet done.
