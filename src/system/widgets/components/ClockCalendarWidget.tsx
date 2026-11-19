@@ -99,9 +99,9 @@ export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () =>
               const dayOffTitle = weekend ? (language === 'ru' ? 'Выходной' : 'Day off') : '';
               const makeupWorkTitle = makeupWork ? (language === 'ru' ? 'Рабочий день' : 'Working day') : '';
               return (
-                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={[dayOffTitle, makeupWorkTitle, holidayTitle, ...getCalendarEventsForDate(date).map((event) => event.summary)].filter(Boolean).join(' · ') || date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${weekend ? 'bg-red-500/20 text-red-100' : ''} ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'}`}>
+                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={[dayOffTitle, makeupWorkTitle, holidayTitle, ...getCalendarEventsForDate(date).map((event) => event.summary)].filter(Boolean).join(' · ') || date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${weekend ? 'bg-red-500/20 text-red-100' : ''} ${makeupWork ? 'ring-1 ring-emerald-400/70' : ''} ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'}`}>
                   {date.getDate()}
-                  {hasEvents && <i aria-hidden="true" className={`absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${holidays.length ? 'bg-red-300' : 'bg-cyan-300'}`} />}
+                  {hasEvents && <i aria-hidden="true" className={`absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${holidays.length ? 'bg-red-300' : makeupWork ? 'bg-emerald-300' : 'bg-cyan-300'}`} />}
                 </button>
               );
             })}
