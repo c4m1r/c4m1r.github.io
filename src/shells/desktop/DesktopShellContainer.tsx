@@ -917,7 +917,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       height,
     });
     playLaunchSound();
-  }, [openWindow, playErrorSound, playLaunchSound, themeKey]);
+  }, [openWindow, playErrorSound, playLaunchSound, themeKey, language]);
 
   const handleOpenPictureSlideshow = useCallback((items: FileSystemItem[]) => {
     const images = items.flatMap((item) => (
