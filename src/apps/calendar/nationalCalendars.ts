@@ -50,37 +50,122 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   if (cached) return cached;
   const result: NationalHoliday[]=[];
   for (const country of NATIONAL_COUNTRIES) {
+    if (country.code === 'JP') continue;
     for (const [month,day,title,kind] of fixed[country.code]) {
       result.push({ id:`holiday-${country.code}-${year}-${month}-${day}`, date:new Date(year,month-1,day), country:country.code, title, kind });
     }
   }
   const add=(country:CountryCode,date:Date,title:string,kind:NationalHoliday['kind']='public')=>result.push({id:`holiday-${country}-${dateKey(date)}-${title}`,date,country,title,kind});
   const easter=easterSunday(year);
+  // Japan: Cabinet Office annual national-holiday lists (2026/2027), including substitute/citizen holidays.
+  if (year === 2026) {
+    const jp: Array<[number,number,string]> = [
+      [1,1,'元日 · Новый год'],[1,12,'成人の日 · День совершеннолетия'],[2,11,'建国記念の日 · День основания государства'],
+      [2,23,'天皇誕生日 · День рождения Императора'],[3,20,'春分の日 · День весеннего равноденствия'],
+      [4,29,'昭和の日 · День Сёва'],[5,3,'憲法記念日 · День Конституции'],[5,4,'みどりの日 · День зелени'],
+      [5,5,'こどもの日 · День детей'],[5,6,'振替休日 · Перенесённый выходной'],[7,20,'海の日 · День моря'],
+      [8,11,'山の日 · День гор'],[9,21,'敬老の日 · День почитания старших'],[9,22,'国民の休日 · Дополнительный государственный выходной'],
+      [9,23,'秋分の日 · День осеннего равноденствия'],[10,12,'スポーツの日 · День спорта'],
+      [11,3,'文化の日 · День культуры'],[11,23,'勤労感謝の日 · День благодарности труду'],
+    ];
+    jp.forEach(([month,day,title])=>add('JP',new Date(year,month-1,day),title));
+  } else if (year === 2027) {
+    const jp: Array<[number,number,string]> = [
+      [1,1,'元日 · Новый год'],[1,11,'成人の日 · День совершеннолетия'],[2,11,'建国記念の日 · День основания государства'],
+      [2,23,'天皇誕生日 · День рождения Императора'],[3,21,'春分の日 · День весеннего равноденствия'],
+      [3,22,'振替休日 · Перенесённый выходной'],[4,29,'昭和の日 · День Сёва'],[5,3,'憲法記念日 · День Конституции'],
+      [5,4,'みどりの日 · День зелени'],[5,5,'こどもの日 · День детей'],[7,19,'海の日 · День моря'],
+      [8,11,'山の日 · День гор'],[9,20,'敬老の日 · День почитания старших'],[9,23,'秋分の日 · День осеннего равноденствия'],
+      [10,11,'スポーツの日 · День спорта'],[11,3,'文化の日 · День культуры'],[11,23,'勤労感謝の日 · День благодарности труду'],
+    ];
+    jp.forEach(([month,day,title])=>add('JP',new Date(year,month-1,day),title));
+  } else {
+    add('JP',nthWeekday(year,1,1,2),'成人の日 · День совершеннолетия');
+    add('JP',new Date(year,2,equinoxDay(year,true)),'春分の日 · День весеннего равноденствия');
+    add('JP',nthWeekday(year,7,1,3),'海の日 · День моря');
+    add('JP',nthWeekday(year,9,1,3),'敬老の日 · День почитания старших');
+    add('JP',new Date(year,8,equinoxDay(year,false)),'秋分の日 · День осеннего равноденствия');
+    add('JP',nthWeekday(year,10,1,2),'スポーツの日 · День спорта');
+  }
   add('GB',new Date(year,easter.getMonth(),easter.getDate()-2),'Good Friday');
   add('GB',easter,'Easter Sunday','cultural');
   add('GB',new Date(year,easter.getMonth(),easter.getDate()+1),'Easter Monday');
   add('GB',lastWeekday(year,5,1),'Spring bank holiday');
   add('GB',lastWeekday(year,8,1),'Summer bank holiday');
-  add('JP',nthWeekday(year,1,1,2),'成人の日 · День совершеннолетия');
-  add('JP',new Date(year,2,equinoxDay(year,true)),'春分の日 · День весеннего равноденствия');
-  add('JP',nthWeekday(year,7,1,3),'海の日 · День моря');
-  add('JP',nthWeekday(year,9,1,3),'敬老の日 · День почитания старших');
-  add('JP',new Date(year,8,equinoxDay(year,false)),'秋分の日 · День осеннего равноденствия');
-  add('JP',nthWeekday(year,10,1,2),'スポーツの日 · День спорта');
-  // Lunar-calendar holidays are intentionally labelled as indicative until official annual dates are loaded.
+  // China: official State Council holiday arrangements for 2026 and 2027.
+  const addRange=(country:CountryCode,startMonth:number,startDay:number,endMonth:number,endDay:number,title:string,kind:NationalHoliday['kind']='public')=>{
+    const cursor=new Date(year,startMonth-1,startDay); const end=new Date(year,endMonth-1,endDay);
+    while(cursor<=end){add(country,new Date(cursor),title,kind);cursor.setDate(cursor.getDate()+1);}
+  };
   if (year===2026) {
-    add('CN',new Date(2026,1,17),'春节 · Китайский Новый год');
-    add('CN',new Date(2026,5,19),'端午节 · Праздник драконьих лодок');
-    add('CN',new Date(2026,8,25),'中秋节 · Праздник середины осени','cultural');
-    add('KR',new Date(2026,1,17),'설날 · Соллаль (Лунный Новый год)');
-    add('KR',new Date(2026,8,25),'추석 · Чхусок');
+    addRange('CN',1,1,1,3,'元旦 · Новый год');
+    addRange('CN',2,15,2,23,'春节 · Китайский Новый год');
+    addRange('CN',4,4,4,6,'清明节 · Праздник Цинмин');
+    addRange('CN',5,1,5,5,'劳动节 · День труда');
+    addRange('CN',6,19,6,21,'端午节 · Праздник драконьих лодок');
+    addRange('CN',9,25,9,27,'中秋节 · Праздник середины осени','cultural');
+    addRange('CN',10,1,10,7,'国庆节 · День образования КНР');
+  } else if (year===2027) {
+    addRange('CN',1,1,1,3,'元旦 · Новый год');
+    addRange('CN',2,5,2,13,'春节 · Китайский Новый год');
+    addRange('CN',4,3,4,5,'清明节 · Праздник Цинмин');
+    addRange('CN',5,1,5,5,'劳动节 · День труда');
+    add('CN',new Date(year,5,9),'端午节 · Праздник драконьих лодок');
+    add('CN',new Date(year,8,15),'中秋节 · Праздник середины осени','cultural');
+    addRange('CN',10,1,10,7,'国庆节 · День образования КНР');
   }
-  if (year===2027) {
-    add('CN',new Date(2027,1,6),'春节 · Китайский Новый год');
-    add('CN',new Date(2027,5,9),'端午节 · Праздник драконьих лодок');
-    add('CN',new Date(2027,8,15),'中秋节 · Праздник середины осени','cultural');
-    add('KR',new Date(2027,1,6),'설날 · Соллаль (Лунный Новый год)');
-    add('KR',new Date(2027,8,15),'추석 · Чхусок');
+  // South Korea: public holiday dates and substitute days for 2026/2027.
+  if (year===2026) {
+    addRange('KR',2,16,2,18,'설날 · Соллаль (Лунный Новый год)');
+    add('KR',new Date(year,2,1),'삼일절 · День движения за независимость');
+    add('KR',new Date(year,2,2),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,4,1),'노동절 · День труда');
+    add('KR',new Date(year,4,5),'어린이날 · День детей');
+    add('KR',new Date(year,4,24),'부처님오신날 · День рождения Будды');
+    add('KR',new Date(year,4,25),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,5,3),'지방선거일 · День местных выборов');
+    add('KR',new Date(year,5,6),'현충일 · День памяти','memorial');
+    add('KR',new Date(year,6,17),'제헌절 · День Конституции');
+    add('KR',new Date(year,7,15),'광복절 · День освобождения');
+    add('KR',new Date(year,7,17),'대체공휴일 · Перенесённый выходной');
+    addRange('KR',9,24,9,26,'추석 · Чхусок');
+    add('KR',new Date(year,9,3),'개천절 · День основания Кореи');
+    add('KR',new Date(year,9,5),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,9,9),'한글날 · День хангыля');
+    add('KR',new Date(year,11,25),'성탄절 · Рождество');
+  } else if (year===2027) {
+    add('KR',new Date(year,0,1),'신정 · Новый год');
+    addRange('KR',2,6,2,8,'설날 · Соллаль (Лунный Новый год)');
+    add('KR',new Date(year,1,9),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,2,1),'삼일절 · День движения за независимость');
+    add('KR',new Date(year,4,1),'노동절 · День труда');
+    add('KR',new Date(year,4,3),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,4,5),'어린이날 · День детей');
+    add('KR',new Date(year,4,13),'부처님오신날 · День рождения Будды');
+    add('KR',new Date(year,5,6),'현충일 · День памяти','memorial');
+    add('KR',new Date(year,6,17),'제헌절 · День Конституции');
+    add('KR',new Date(year,6,19),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,7,15),'광복절 · День освобождения');
+    add('KR',new Date(year,7,16),'대체공휴일 · Перенесённый выходной');
+    addRange('KR',9,14,9,16,'추석 · Чхусок');
+    add('KR',new Date(year,9,3),'개천절 · День основания Кореи');
+    add('KR',new Date(year,9,4),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,9,9),'한글날 · День хангыля');
+    add('KR',new Date(year,9,11),'대체공휴일 · Перенесённый выходной');
+    add('KR',new Date(year,11,25),'성탄절 · Рождество');
+    add('KR',new Date(year,11,27),'대체공휴일 · Перенесённый выходной');
+  }
+  // UK bank holidays: England and Wales baseline (regional calendars differ).
+  add('GB',new Date(year, easter.getMonth(), easter.getDate()-2),'Good Friday');
+  add('GB',new Date(year, easter.getMonth(), easter.getDate()+1),'Easter Monday');
+  add('GB',nthWeekday(year,5,1,1),'Early May bank holiday');
+  add('GB',lastWeekday(year,5,1),'Spring bank holiday');
+  add('GB',lastWeekday(year,8,1),'Summer bank holiday');
+  if(year===2026){
+    add('GB',new Date(year,11,28),'Boxing Day (substitute day)');
+  } else if(year===2027){
+    add('GB',new Date(year,11,27),'Christmas Day (substitute day)');
+    add('GB',new Date(year,11,28),'Boxing Day (substitute day)');
   }
   result.sort((a,b)=>a.date.getTime()-b.date.getTime());
   nationalHolidayCache.set(year, result);
