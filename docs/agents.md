@@ -434,3 +434,18 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Added generic substitute-day derivation for future Russian statutory holidays (excluding 1–8 January, which require the annual government schedule), Japanese Sunday national holidays, UK bank-holiday substitutes, and Kazakhstan public holidays under the next-working-day rule. These are statutory-rule fallbacks only; annual decrees still take precedence when published.
 - Corrected France weather pair to Paris/Marseille; Spain remains Madrid/Barcelona. Country names, holiday names and new calendar editor/source controls are localized across EN/RU/FR/ES/ZH/JA/KO.
 - **Current limitation:** UK calendar is still England/Wales baseline; Scotland and Northern Ireland have distinct regional bank holidays. Kazakhstan 2027 Qurban Ait date and any annual transfer schedule should be refreshed from official sources when issued.
+
+
+### OS-native clock and calendar surfaces — 2026-11-19
+- Replaced the static macOS Notification Center month grid with an interactive view backed by Calendar Center: month navigation, selected date, national holiday flags, labour-calendar weekend/make-up workday indicators, ICS/local event dots and selected-day event summary.
+- macOS menu-bar clock continues to open the native Notification Center surface; its Calendar button closes the panel and launches/focuses the existing Calendar app.
+- iOS Notification Center calendar now uses the same shared calendar state and date/event data. The system status-bar gesture/control remains the native entry point rather than introducing a desktop-style clock popup.
+- Taskbar clock flyout now receives the active ThemeId and applies distinct presentation rules:
+  - Windows 98/2000/XP: classic compact flyout/controls.
+  - Windows 7: Aero glass calendar flyout.
+  - Windows 10/11: modern dark date/time calendar flyout without an unnecessary analog clock.
+  - Ubuntu: dark Yaru/GNOME-like calendar panel.
+  - Arch: dark GTK-like calendar panel with blue accent.
+  - WebOS: glassmorphic clock/calendar panel.
+- All taskbar flyouts continue using shared selected date/month, holiday/workday/event data, and open/focus the single Calendar app when a date or Open Calendar action is selected.
+- Automated GitHub Actions build for the macOS Notification Center integration completed with Typecheck, Lint, Build and build-output verification all successful (run 44487688956). The subsequent OS-specific CSS and iOS styling commits are queued for their own latest-main validation; no browser/device visual acceptance has been performed yet.
