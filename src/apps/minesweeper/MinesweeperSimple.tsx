@@ -305,8 +305,6 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
                 content = <div className="minesweeper-cell-sprite minesweeper-sprite-mine-wrong" aria-label="Incorrect flag" />;
               } else if (isRevealed && neighborMines > 0) {
                 content = <div className={`minesweeper-cell-sprite minesweeper-sprite-${neighborMines}`} />;
-              } else if (isRevealed) {
-                content = <div className="minesweeper-cell-sprite minesweeper-sprite-0" />;
               } else if (isFlagged) {
                 content = <div className="minesweeper-cell-sprite minesweeper-sprite-flag" />;
               } else if (cell.isQuestioned) {
