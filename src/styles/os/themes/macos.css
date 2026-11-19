@@ -2538,3 +2538,47 @@
 .os-macos .apple-widget-gallery__toggle i { background: rgba(118,118,128,.1); color: rgba(60,60,67,.58); }
 .os-macos .apple-widget-gallery__item.is-enabled .apple-widget-gallery__toggle i { background: #34c759; color: #fff; }
 .os-macos .apple-widget-gallery__preset select { border: 1px solid rgba(60,60,67,.16); border-radius: 7px; background: rgba(255,255,255,.86); color: #1d1d1f; }
+
+
+/* Modern Windows 10/11 gallery surfaces: distinct Fluent-era presentation. */
+.os-win10 .apple-widget-gallery__panel,
+.os-win11 .apple-widget-gallery__panel {
+  border: 1px solid rgba(90,105,125,.55);
+  border-radius: 10px;
+  background: rgba(248,249,251,.97);
+  color: #202124;
+  box-shadow: 0 20px 58px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.9);
+  font: 12px "Segoe UI Variable", "Segoe UI", sans-serif;
+}
+.os-win10 .apple-widget-gallery__panel > header {
+  background: #f2f4f7;
+  border-bottom: 1px solid #d9dee7;
+}
+.os-win10 .apple-widget-gallery__panel > header > button {
+  border: 1px solid #c6cfdb; border-radius: 4px; background: #fff; color: #174f9b; padding: 6px 14px;
+}
+.os-win10 .apple-widget-gallery__item,
+.os-win11 .apple-widget-gallery__item {
+  border: 1px solid #e0e4ea; border-radius: 7px; background: #fff;
+}
+.os-win10 .apple-widget-gallery__toggle,
+.os-win11 .apple-widget-gallery__toggle { border: 0; background: transparent; color: #202124; }
+.os-win10 .apple-widget-gallery__toggle:hover,
+.os-win11 .apple-widget-gallery__toggle:hover { background: #f0f5fb; }
+.os-win10 .apple-widget-gallery__glyph,
+.os-win11 .apple-widget-gallery__glyph { border-radius: 8px; background: #e8f1fb; color: #1768b5; }
+.os-win10 .apple-widget-gallery__toggle i,
+.os-win11 .apple-widget-gallery__toggle i { background: #eef1f5; color: #526171; }
+.os-win10 .apple-widget-gallery__item.is-enabled .apple-widget-gallery__toggle i,
+.os-win11 .apple-widget-gallery__item.is-enabled .apple-widget-gallery__toggle i { background: #1768b5; color: #fff; }
+.os-win10 .apple-widget-gallery__preset select,
+.os-win11 .apple-widget-gallery__preset select { border: 1px solid #c7d0dc; border-radius: 4px; background: #fff; color: #202124; }
+.os-win11 .apple-widget-gallery__panel {
+  border-radius: 16px;
+  background: rgba(245,247,250,.88);
+  backdrop-filter: blur(28px) saturate(1.35);
+  box-shadow: 0 26px 72px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.9);
+}
+.os-win11 .apple-widget-gallery__panel > header { background: rgba(255,255,255,.55); border-bottom-color: rgba(80,95,115,.14); }
+.os-win11 .apple-widget-gallery__panel > header > button { border: 0; border-radius: 7px; background: #1768b5; color: #fff; padding: 7px 15px; }
+.os-win11 .apple-widget-gallery__item { border-radius: 10px; background: rgba(255,255,255,.78); }
