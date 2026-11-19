@@ -89,6 +89,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [peaks, setPeaks] = useState<number[]>(() => Array(19).fill(2));
   const rafRef = useRef<number | null>(null);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist';
+  const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
   const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>({
     main: { x: 24, y: 48 }, equalizer: { x: 24, y: 174 }, playlist: { x: 24, y: 292 },
   });
@@ -97,6 +98,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     if ((event.target as HTMLElement).closest('button')) return;
     event.preventDefault();
     const origin = windowPositions[key];
+    setActiveWindow(key);
     dragRef.current = { key, pointerX: event.clientX, pointerY: event.clientY, originX: origin.x, originY: origin.y };
   };
   useEffect(() => {
@@ -257,7 +259,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       {/* 1. MAIN PLAYER WINDOW                                        */}
       {/* ============================================================ */}
-      <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.main.x, top: windowPositions.main.y, zIndex: 80 }}>
+      <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.main.x, top: windowPositions.main.y, zIndex: activeWindow === 'main' ? 90 : 80 }} onMouseDown={() => setActiveWindow('main')}>
         {/* Title Bar */}
         <div className="wa-titlebar" onMouseDown={(event) => startWindowDrag(event, 'main')}>
           <div className="wa-titlebar__left">
@@ -500,7 +502,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* 2. WINAMP EQUALIZER WINDOW                                   */}
       {/* ============================================================ */}
       {showEq && (
-        <div className={`wa-window wa-equalizer ${eqShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.equalizer.x, top: windowPositions.equalizer.y, zIndex: 79 }}>
+        <div className={`wa-window wa-equalizer ${eqShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.equalizer.x, top: windowPositions.equalizer.y, zIndex: activeWindow === 'equalizer' ? 90 : 80 }} onMouseDown={() => setActiveWindow('equalizer')}>
           <div className="wa-titlebar" onMouseDown={(event) => startWindowDrag(event, 'equalizer')}>
             <span className="wa-titlebar__title">WINAMP EQUALIZER</span>
             <div className="wa-titlebar__controls">
@@ -637,7 +639,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* 3. WINAMP PLAYLIST WINDOW                                    */}
       {/* ============================================================ */}
       {showPl && (
-        <div className={`wa-window wa-playlist ${plShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.playlist.x, top: windowPositions.playlist.y, zIndex: 78 }}>
+        <div className={`wa-window wa-playlist ${plShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.playlist.x, top: windowPositions.playlist.y, zIndex: activeWindow === 'playlist' ? 90 : 80 }} onMouseDown={() => setActiveWindow('playlist')}>
           <div className="wa-titlebar" onMouseDown={(event) => startWindowDrag(event, 'playlist')}>
             <span className="wa-titlebar__title">WINAMP PLAYLIST</span>
             <div className="wa-titlebar__controls">
