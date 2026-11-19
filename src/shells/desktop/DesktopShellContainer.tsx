@@ -948,7 +948,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} />,
     });
     playLaunchSound();
-  }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon]);
+  }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon, themeKey]);
 
   const openDoomVariant = useCallback((variantId: DoomVariantId) => {
     const variant = doomVariantMap[variantId];
