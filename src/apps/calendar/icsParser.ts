@@ -75,10 +75,11 @@ function parseProperty(line: string): ICSProperty | null {
 
 const WEEKDAY_CODES: Record<string, number> = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
 function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined {
-  const fields = Object.fromEntries(value.split(';').map((part) => {
+  const fields: Record<string, string> = {};
+  value.split(';').forEach((part) => {
     const separator = part.indexOf('=');
-    return separator > 0 ? [part.slice(0, separator).toUpperCase(), part.slice(separator + 1)] : ['', ''];
-  }).filter(([key]) => key));
+    if (separator > 0) fields[part.slice(0, separator).toUpperCase()] = part.slice(separator + 1);
+  });
   const freq = fields.FREQ?.toUpperCase();
   if (!['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'].includes(freq)) return undefined;
   const interval = Math.min(365, Math.max(1, Number(fields.INTERVAL) || 1));
