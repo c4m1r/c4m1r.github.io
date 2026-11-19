@@ -46,7 +46,7 @@ function displayLocation(path: string, isRu: boolean) {
     .join(' > ');
 }
 
-export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: MyComputerProps) {
+export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOpenSlideshow }: MyComputerProps) {
   const { language } = useApp();
   const isRu = language === 'ru';
   const assets = THEME_ASSETS.win7;
@@ -98,6 +98,10 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
   const selectedFileSystemItem = useMemo(
     () => rawItems.find((item) => item.name === selectedItem) ?? null,
     [rawItems, selectedItem],
+  );
+  const pictureItems = useMemo(
+    () => items.filter((item) => item.type === 'file' && typeof item.content === 'string' && /\\.(png|jpe?g|gif|webp)$/i.test(item.name)),
+    [items],
   );
 
   const handleBack = () => {
@@ -237,6 +241,9 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
         </button>
         <button type="button">{isRu ? 'Общий доступ' : 'Share with'} <ChevronDown size={10} /></button>
         <button type="button" disabled>{isRu ? 'Электронная почта' : 'E-mail'}</button>
+        {pictureItems.length > 1 && onOpenSlideshow ? (
+          <button type="button" onClick={() => onOpenSlideshow(pictureItems)}>{isRu ? 'Слайд-шоу' : 'Slide show'}</button>
+        ) : null}
         <button type="button" disabled><FolderPlus size={14} /> {isRu ? 'Новая папка' : 'New folder'}</button>
         <div className="win7-explorer__commandbar-spacer" />
         <button type="button" className="win7-explorer__view-button" onClick={() => setViewMode((current) => current === 'icons' ? 'thumbnails' : current === 'thumbnails' ? 'details' : 'icons')} title={isRu ? 'Изменить представление' : 'Change your view'}>
@@ -320,7 +327,11 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
                   onClick={(event) => { event.stopPropagation(); setSelectedItem(item.name); }}
                   onDoubleClick={() => handleOpen(item)}
                 >
-                  <img src={getFileIcon(item) as string} alt="" />
+                  <img
+                    src={viewMode === 'thumbnails' && typeof item.content === 'string' && /\\.(png|jpe?g|gif|webp)$/i.test(item.name) ? item.content : getFileIcon(item) as string}
+                    alt=""
+                    loading="lazy"
+                  />
                   <span>{item.name}</span>
                 </button>
               ))}
