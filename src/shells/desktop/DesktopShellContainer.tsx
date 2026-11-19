@@ -1008,7 +1008,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       width: 720,
       height: 520,
       content: themeKey === 'win7'
-        ? <Windows7Explorer currentPath={normalizedPath} onOpenItem={handleOpenFile} />
+        ? <Windows7Explorer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} />
         : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} initialSearchOpen={initialSearchOpen} />,
     });
     playLaunchSound();
