@@ -2,6 +2,18 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useApp } from '../../contexts/useApp';
 import type { CalendarEvent } from './icsParser';
 import {
+  NATIONAL_COUNTRIES, getHolidaysForDate, isSelectedCountryWeekend,
+  loadSelectedLabourCountries, saveSelectedLabourCountries,
+  type CountryCode,
+} from './nationalCalendars';
+import flagRu from '../langs/flag-ru.svg';
+import flagKz from '../langs/flag-kz.svg';
+import flagBy from '../langs/flag-by.svg';
+import flagCn from '../langs/flag-cn.svg';
+import flagJp from '../langs/flag-jp.svg';
+import flagKr from '../langs/flag-kr.svg';
+import flagGb from '../langs/flag-en.webp';
+import {
   deleteCalendarEvent,
   ensureCalendarEvents,
   getCalendarEventsForDate,
@@ -14,6 +26,12 @@ import {
 } from './calendarCenter';
 
 type CalendarView = 'month' | 'week' | 'day' | 'list';
+const countryFlags: Record<CountryCode, string> = { RU: flagRu, KZ: flagKz, BY: flagBy, CN: flagCn, JP: flagJp, KR: flagKr, GB: flagGb };
+function countryName(code: CountryCode, locale: string) {
+  const language = locale.split('-')[0];
+  const country = NATIONAL_COUNTRIES.find((item) => item.code === code)!;
+  return country.names[language === 'fr' ? 'fr' : language === 'ru' ? 'ru' : 'en'];
+}
 
 function sameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -51,6 +69,21 @@ export function CalendarApp() {
   const [startValue, setStartValue] = useState('');
   const [endValue, setEndValue] = useState('');
   const [formError, setFormError] = useState('');
+  const [labourCountries, setLabourCountries] = useState<CountryCode[]>(() => loadSelectedLabourCountries());
+  const toggleLabourCountry = (code: CountryCode) => {
+    setLabourCountries((current) => {
+      const next = current.includes(code) ? current.filter((item) => item !== code) : [...current, code];
+      saveSelectedLabourCountries(next);
+      return next;
+    });
+  };
+  const renderHoliday = (holiday: ReturnType<typeof getHolidaysForDate>[number]) => {
+    const country = NATIONAL_COUNTRIES.find((item) => item.code === holiday.country)!;
+    return <div key={holiday.id} className={`calendar-app__holiday calendar-app__holiday--${holiday.kind}`} title={`${countryName(holiday.country, locale)} · ${holiday.title}`}>
+      <img src={countryFlags[holiday.country]} alt={country.flag} />
+      <strong>{holiday.title}</strong>
+    </div>;
+  };
 
   useEffect(() => { void ensureCalendarEvents(locale); }, [locale]);
 
@@ -136,6 +169,19 @@ export function CalendarApp() {
         </div>
       </div>
 
+      <div className="calendar-app__labour-country-picker" aria-label={isRu ? 'Трудовые календари стран' : 'Country labour calendars'}>
+        <span>{isRu ? 'Выходные:' : locale.startsWith('fr') ? 'Week-ends :' : 'Weekends:'}</span>
+        {NATIONAL_COUNTRIES.map((country) => (
+          <button type="button" key={country.code} onClick={() => toggleLabourCountry(country.code)}
+            aria-pressed={labourCountries.includes(country.code)}
+            title={countryName(country.code, locale)}
+            className={labourCountries.includes(country.code) ? 'is-active' : ''}>
+            <img src={countryFlags[country.code]} alt={country.flag} />
+            <span>{countryName(country.code, locale)}</span>
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <div className="calendar-app__loading flex flex-1 items-center justify-center">{isRu ? 'Загрузка календаря…' : 'Loading calendar…'}</div>
       ) : error ? (
@@ -151,10 +197,17 @@ export function CalendarApp() {
               <div className="calendar-app__month-grid grid min-h-0 flex-1 grid-cols-7 gap-1">
                 {monthDays.map((date) => {
                   const dayEvents = getCalendarEventsForDate(date);
+                  const holidays = getHolidaysForDate(date);
+                  const weekend = isSelectedCountryWeekend(date, labourCountries);
                   const inMonth = date.getMonth() === visibleMonth.getMonth();
-                  return <div key={date.toISOString()} className={`calendar-app__month-cell ${!inMonth ? 'is-outside' : ''} ${sameDay(date, selectedDate) ? 'is-selected' : ''} ${sameDay(date, new Date()) ? 'is-today' : ''}`}>
+                  return <div key={date.toISOString()} className={`calendar-app__month-cell ${!inMonth ? 'is-outside' : ''} ${sameDay(date, selectedDate) ? 'is-selected' : ''} ${sameDay(date, new Date()) ? 'is-today' : ''} ${weekend ? 'is-labour-weekend' : ''}`}>
                     <button type="button" className="calendar-app__date-button" onClick={() => selectCalendarDate(date)} aria-pressed={sameDay(date, selectedDate)}>{date.getDate()}</button>
-                    <div className="calendar-app__cell-events">{dayEvents.slice(0, 3).map(renderEvent)}{dayEvents.length > 3 && <button type="button" className="calendar-app__more-events" onClick={() => { selectCalendarDate(date); setView('day'); }}>+{dayEvents.length - 3}</button>}</div>
+                    <div className="calendar-app__cell-events">
+                      {holidays.slice(0, 2).map(renderHoliday)}
+                      {dayEvents.slice(0, Math.max(0, 3 - holidays.length)).map(renderEvent)}
+                      {dayEvents.length + holidays.length > 3 && <button type="button" className="calendar-app__more-events" onClick={() => { selectCalendarDate(date); setView('day'); }}>+{dayEvents.length + holidays.length - 3}</button>}
+                      {weekend && <small className="calendar-app__weekend-label">{isRu ? 'Выходной' : locale.startsWith('fr') ? 'Repos' : 'Day off'}</small>}
+                    </div>
                   </div>;
                 })}
               </div>
@@ -164,7 +217,9 @@ export function CalendarApp() {
             <div className="calendar-app__week-grid grid min-h-0 flex-1 grid-cols-7 gap-1">
               {weekDays.map((date) => <section key={date.toISOString()} className={`calendar-app__week-column ${sameDay(date, selectedDate) ? 'is-selected' : ''}`}>
                 <button type="button" onClick={() => selectCalendarDate(date)} className="calendar-app__week-date">{date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}</button>
+                {getHolidaysForDate(date).map(renderHoliday)}
                 {getCalendarEventsForDate(date).map(renderEvent)}
+                {isSelectedCountryWeekend(date, labourCountries) && <small className="calendar-app__weekend-label">{isRu ? 'Выходной' : 'Day off'}</small>}
                 <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(date)}>{isRu ? '+ Добавить' : '+ Add'}</button>
               </section>)}
             </div>
@@ -172,6 +227,8 @@ export function CalendarApp() {
           {view === 'day' && (
             <section className="calendar-app__day-view">
               <h3>{selectedDate.toLocaleDateString(locale, { dateStyle: 'full' })}</h3>
+              {getHolidaysForDate(selectedDate).map(renderHoliday)}
+              {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{isRu ? 'Выходной' : 'Day off'}</small>}
               {getCalendarEventsForDate(selectedDate).map(renderEvent)}
               {getCalendarEventsForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
               <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(selectedDate)}>{isRu ? '+ Добавить событие' : '+ Add event'}</button>
@@ -187,7 +244,7 @@ export function CalendarApp() {
             </div>
           )}
           <div className="calendar-app__selection-summary mt-2 border-t border-gray-200 pt-2 text-xs">
-            {selectedDate.toLocaleDateString(locale, { dateStyle: 'full' })} · {getCalendarEventsForDate(selectedDate).length} {isRu ? 'событий' : 'events'}
+            {selectedDate.toLocaleDateString(locale, { dateStyle: 'full' })} · {getCalendarEventsForDate(selectedDate).length + getHolidaysForDate(selectedDate).length} {isRu ? 'событий' : 'events'}
           </div>
         </div>
       )}
