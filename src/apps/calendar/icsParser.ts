@@ -16,6 +16,7 @@ export interface CalendarEvent {
   startDate: Date;
   endDate: Date;
   recurrenceRule?: CalendarRecurrenceRule;
+  recurrenceMasterId?: string;
 }
 
 function decodeICSText(value: string) {
