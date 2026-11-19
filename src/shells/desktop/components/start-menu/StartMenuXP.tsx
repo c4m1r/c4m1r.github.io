@@ -104,7 +104,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       id: 'games-folder',
       title: gamesTitle,
       icon: themeAssets.gamesFolderIcon ?? startMenuIcons.games ?? themeAssets.gamesIcon,
-      appId: 'games-folder',
+      path: 'C:\\Program Files\\Games',
     },
     {
       id: 'calculator',
