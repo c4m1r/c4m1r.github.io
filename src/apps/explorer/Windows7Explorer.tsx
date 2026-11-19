@@ -242,7 +242,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
         <button type="button">{isRu ? 'Общий доступ' : 'Share with'} <ChevronDown size={10} /></button>
         <button type="button" disabled>{isRu ? 'Электронная почта' : 'E-mail'}</button>
         {pictureItems.length > 1 && onOpenSlideshow ? (
-          <button type="button" onClick={() => onOpenSlideshow(pictureItems)}>{isRu ? 'Слайд-шоу' : 'Slide show'}</button>
+          <button type="button" onClick={() => onOpenSlideshow(pictureItems, path)}>{isRu ? 'Слайд-шоу' : 'Slide show'}</button>
         ) : null}
         <button type="button" disabled><FolderPlus size={14} /> {isRu ? 'Новая папка' : 'New folder'}</button>
         <div className="win7-explorer__commandbar-spacer" />
