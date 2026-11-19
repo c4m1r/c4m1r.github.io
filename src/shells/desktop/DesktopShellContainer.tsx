@@ -1212,6 +1212,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       case 'my-documents':
         openExplorerWindow('C:\\Documents and Settings\\C4m1r\\My Documents');
         return;
+      case 'programs-folder':
+        openExplorerWindow('C:\\Program Files\\Programs');
+        return;
       case 'recycle-bin':
         playErrorSound();
         setErrorWindow({
