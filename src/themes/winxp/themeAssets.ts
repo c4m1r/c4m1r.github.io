@@ -17,7 +17,6 @@ import paintIconXp from './assets/icons/paint.png';
 import controlPanelIconXp from './assets/icons/hardware.png';
 import notepadIconXp from './assets/icons/Notepad.png';
 import richTextIconXp from './assets/icons/filetypes/rich-text.png';
-import gamesFolderIconXp from './assets/icons/filetypes/folder-favorites.png';
 import volumeIconXp from './assets/icons/Volume.png';
 import muteIconXp from './assets/icons/Mute.png';
 import fullscreenIconXp from './assets/icons/full-screen-icon-sm.webp';
@@ -80,7 +79,7 @@ export const WINXP_ASSETS: WinXPAssets = {
   mailIcon: mailIconXp,
   mediaPlayerIcon: mediaPlayerIconXp,
   gamesIcon: gamesIconXp,
-  gamesFolderIcon: gamesFolderIconXp,
+  gamesFolderIcon: projectsIconXp,
   projectsIcon: projectsIconXp,
   minesweeperIcon: minesweeperIconXp,
   calculatorIcon: calculatorIconXp,
