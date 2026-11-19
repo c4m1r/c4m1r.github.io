@@ -90,7 +90,7 @@ export function AppleDesktopWidgets({
   );
   const calendar = (
     <section className="apple-widget apple-widget--calendar">
-      <header className="apple-widget-calendar__header"><button type="button" onClick={() => moveCalendarMonth(-1)} aria-label={language === 'ru' ? 'Предыдущий месяц' : 'Previous month'}>‹</button><span>{visibleMonth.toLocaleDateString(language, { month: 'long', year: 'numeric' })}</span><button type="button" onClick={() => moveCalendarMonth(1)} aria-label={language === 'ru' ? 'Следующий месяц' : 'Next month'}>›</button><button type="button" onClick={() => { selectCalendarDate(new Date()); onOpenCalendar?.(); }} aria-label={language === 'ru' ? 'Сегодня' : 'Today'}>•</button></header>
+      <header className="apple-widget-calendar__header"><button type="button" onClick={() => moveCalendarMonth(-1)} aria-label={language === 'ru' ? 'Предыдущий месяц' : 'Previous month'}>‹</button><span>{visibleMonth.toLocaleDateString(language, { month: 'long', year: 'numeric' })}</span><button type="button" onClick={() => moveCalendarMonth(1)} aria-label={language === 'ru' ? 'Следующий месяц' : 'Next month'}>›</button><button type="button" onClick={() => { selectCalendarDate(new Date()); onOpenCalendar?.(); }} aria-label={language === 'ru' ? 'Сегодня' : 'Today'}>{language === 'ru' ? 'Сегодня' : 'Today'}</button></header>
       <div className="apple-widget-calendar__weekdays">{weekdayLabels.map((label, index) => <span key={`${label}-${index}`}>{label}</span>)}</div>
       <div className="apple-widget-calendar__days">{calendarDays.map((day) => {
         const isToday = day.getFullYear() === time.getFullYear() && day.getMonth() === time.getMonth() && day.getDate() === time.getDate();
