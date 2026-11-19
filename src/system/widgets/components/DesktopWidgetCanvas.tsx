@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode, type PointerEvent } from 'react';
 
 export interface DesktopWidgetPreset {
   id: string;
@@ -49,7 +49,10 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   const canvasRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ id: string; pointerId: number; startX: number; startY: number; originX: number; originY: number } | null>(null);
   const storageKey = STORAGE_PREFIX + themeKey;
-  const itemIds = useMemo(() => items.map((item) => item.id), [items]);
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
+  const itemIds = items.map((item) => item.id).join('|');
+  const layoutSignature = items.map((item) => `${item.id}:${item.defaultPreset}:${item.presets.map((preset) => `${preset.id}-${preset.width}x${preset.height}`).join(',')}`).join('|');
   const [placements, setPlacements] = useState<Record<string, Placement>>(() => readPlacements(storageKey));
 
   const getPreset = useCallback((item: DesktopWidgetItem, placement?: Placement) => (
@@ -91,25 +94,40 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   const normalizePlacements = useCallback((current: Record<string, Placement>, bounds: DOMRect) => {
     const next: Record<string, Placement> = {};
     const occupied: Rect[] = [];
-    const ordered = [...items].sort((a, b) => {
+    const layoutItems = itemsRef.current;
+    const ordered = [...layoutItems].sort((a, b) => {
       const pa = current[a.id]; const pb = current[b.id];
       if (Boolean(pa) !== Boolean(pb)) return pa ? -1 : 1;
       return (pa?.y ?? 0) - (pb?.y ?? 0) || (pa?.x ?? 0) - (pb?.x ?? 0);
     });
-    const columnBottoms = [12, 12];
+    const baseWidth = Math.min(...layoutItems.map((item) => {
+      const compact = item.presets.find((option) => option.id === 'compact');
+      return compact?.width ?? item.presets[0]?.width ?? 260;
+    }));
+    const columnCount = Math.max(1, Math.min(4, Math.floor((bounds.width - 24 + GAP) / (baseWidth + GAP))));
+    const columnWidth = (bounds.width - 24) / columnCount;
+    const columnBottoms = Array.from({ length: columnCount }, () => 12);
     ordered.forEach((item) => {
       const saved = current[item.id];
-      const preset = getPreset(item, saved);
+      let preset = getPreset(item, saved);
       if (!preset) return;
+      if (!saved && (bounds.width < 760 || layoutItems.length > 7)) {
+        preset = item.presets.find((option) => option.id === 'compact') ?? preset;
+      }
+      if (preset.width > bounds.width || preset.height + HANDLE_HEIGHT > bounds.height) {
+        const compact = item.presets.find((option) => option.id === 'compact');
+        if (compact && compact.width <= bounds.width && compact.height + HANDLE_HEIGHT <= bounds.height) preset = compact;
+      }
       let placement: Placement;
       if (saved) {
         placement = saved;
-        const column = saved.x < bounds.width / 2 ? 0 : 1;
+        const column = Math.max(0, Math.min(columnCount - 1, Math.floor(Math.max(0, saved.x - 12) / columnWidth)));
         columnBottoms[column] = Math.max(columnBottoms[column], saved.y + preset.height + HANDLE_HEIGHT + GAP);
       } else {
-        const column = columnBottoms[0] <= columnBottoms[1] ? 0 : 1;
+        const column = columnBottoms.indexOf(Math.min(...columnBottoms));
+        const preferredX = 12 + column * columnWidth;
         placement = {
-          x: column === 0 ? 12 : Math.max(12, bounds.width - preset.width - 12),
+          x: Math.max(0, Math.min(preferredX, bounds.width - preset.width)),
           y: columnBottoms[column],
           preset: preset.id,
         };
@@ -117,15 +135,13 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
       }
       const size = getSize(item, placement, bounds);
       const position = findFreePosition(placement, size, bounds, occupied);
-      const safePosition = position ?? {
-        x: Math.max(0, Math.min(placement.x, bounds.width - size.width)),
-        y: Math.max(0, Math.min(placement.y, bounds.height - size.height)),
-      };
-      next[item.id] = { ...placement, ...safePosition, preset: preset.id };
-      occupied.push({ ...safePosition, ...size });
+      // Never force a widget into an occupied rectangle when the desktop is full.
+      if (!position) return;
+      next[item.id] = { ...placement, ...position, preset: preset.id };
+      occupied.push({ ...position, ...size });
     });
     return next;
-  }, [findFreePosition, getPreset, getSize, items]);
+  }, [findFreePosition, getPreset, getSize]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -138,7 +154,7 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
     });
   // IDs, not freshly-created ReactNode props, determine the widget set.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemIds.join('|'), normalizePlacements]);
+  }, [itemIds, layoutSignature, normalizePlacements]);
 
   useEffect(() => {
     try { localStorage.setItem(storageKey, JSON.stringify(placements)); } catch { /* storage may be unavailable */ }
@@ -189,7 +205,13 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   };
 
   const endDrag = (event: PointerEvent<HTMLDivElement>) => {
-    if (dragRef.current?.pointerId === event.pointerId) dragRef.current = null;
+    if (dragRef.current?.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const bounds = canvas.getBoundingClientRect();
+      setPlacements((current) => normalizePlacements(current, bounds));
+    }
   };
 
   const changePreset = useCallback((item: DesktopWidgetItem, presetId: string) => {
@@ -201,7 +223,7 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
       const previous = current[item.id] ?? { x: 8, y: 8, preset: item.defaultPreset };
       const proposed = { ...previous, preset: presetId };
       const size = getSize(item, proposed, bounds);
-      const occupied = items.flatMap((other) => {
+      const occupied = itemsRef.current.flatMap((other) => {
         if (other.id === item.id || !current[other.id]) return [];
         return [{ ...current[other.id], ...getSize(other, current[other.id], bounds) }];
       });
@@ -209,18 +231,18 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
       if (!position) return current;
       return { ...current, [item.id]: { ...proposed, ...position } };
     });
-  }, [findFreePosition, getSize, items]);
+  }, [findFreePosition, getSize]);
 
   useEffect(() => {
     const handlePresetRequest = (event: Event) => {
       const detail = (event as CustomEvent<{ widgetId: string; presetId: string }>).detail;
       if (!detail) return;
-      const item = items.find((entry) => entry.id === detail.widgetId);
+      const item = itemsRef.current.find((entry) => entry.id === detail.widgetId);
       if (item) changePreset(item, detail.presetId);
     };
     window.addEventListener('desktop-widget-preset-change', handlePresetRequest);
     return () => window.removeEventListener('desktop-widget-preset-change', handlePresetRequest);
-  }, [changePreset, items]);
+  }, [changePreset]);
 
   return (
     <div ref={canvasRef} className="desktop-widget-canvas" aria-label="Desktop widgets">
@@ -232,8 +254,25 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
         const width = Math.min(preset.width, canvasRef.current?.clientWidth ?? preset.width);
         const height = Math.min(preset.height + HANDLE_HEIGHT, canvasRef.current?.clientHeight ?? preset.height + HANDLE_HEIGHT);
         return (
-          <section key={item.id} className="desktop-widget-canvas__item" style={{ left: placement.x, top: placement.y, width, height }}>
-            <div className="desktop-widget-canvas__handle"
+          <section key={item.id} data-widget-id={item.id} className="desktop-widget-canvas__item" style={{ left: placement.x, top: placement.y, width, height }}>
+            <div className="desktop-widget-canvas__handle" role="group" aria-label={`Move ${item.title}`} tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.target !== event.currentTarget || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+                event.preventDefault();
+                const delta = event.shiftKey ? 48 : 12;
+                const dx = event.key === 'ArrowLeft' ? -delta : event.key === 'ArrowRight' ? delta : 0;
+                const dy = event.key === 'ArrowUp' ? -delta : event.key === 'ArrowDown' ? delta : 0;
+                const bounds = canvasRef.current?.getBoundingClientRect();
+                if (!bounds) return;
+                const nextX = Math.max(0, Math.min(placement.x + dx, bounds.width - width));
+                const nextY = Math.max(0, Math.min(placement.y + dy, bounds.height - height));
+                const candidate = { x: nextX, y: nextY, width, height };
+                const blocked = items.some((other) => {
+                  if (other.id === item.id || !placements[other.id]) return false;
+                  return intersects(candidate, { ...placements[other.id], ...getSize(other, placements[other.id], bounds) });
+                });
+                if (!blocked) setPlacements((current) => ({ ...current, [item.id]: { ...current[item.id], x: nextX, y: nextY } }));
+              }}
               onPointerDown={(event) => {
                 if ((event.target as HTMLElement).closest('select,button')) return;
                 event.currentTarget.setPointerCapture(event.pointerId);

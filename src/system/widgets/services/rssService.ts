@@ -65,6 +65,7 @@ const STORE_SOURCES = 'sources';
 const SOURCES_STORAGE_KEY = 'webos_rss_sources_config_v1';
 const RSS_LAST_REFRESH_KEY = 'webos_rss_last_refresh_v1';
 const RSS_CACHE_TTL_MS = 15 * 60 * 1000;
+const RSS_PARTIAL_RETRY_MS = 2 * 60 * 1000;
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -178,8 +179,22 @@ function normalizePublicationDate(value: unknown): string {
   if (typeof value !== 'string' && typeof value !== 'number' && !(value instanceof Date)) {
     return UNKNOWN_PUBLICATION_DATE;
   }
-  const timestamp = new Date(value).getTime();
-  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : UNKNOWN_PUBLICATION_DATE;
+  const timestamp = typeof value === 'number'
+    ? (Math.abs(value) < 1_000_000_000_000 ? value * 1000 : value)
+    : new Date(value).getTime();
+  return Number.isFinite(timestamp) && timestamp > 0
+    ? new Date(timestamp).toISOString()
+    : UNKNOWN_PUBLICATION_DATE;
+}
+
+function resolveFeedUrl(value: unknown, baseUrl: string): string | undefined {
+  if (typeof value !== 'string' || !value.trim()) return undefined;
+  try {
+    const resolved = new URL(value.trim(), baseUrl);
+    return resolved.protocol === 'http:' || resolved.protocol === 'https:' ? resolved.href : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function extractImage(htmlString: string): string | undefined {
@@ -193,7 +208,7 @@ function cleanHtml(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&#8217;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
 }
 
-export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]> {
+export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[] | null> {
   const articles: RssArticle[] = [];
 
   // Method 1: Try rss2json API
@@ -209,20 +224,22 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
           const img = item.thumbnail || item.enclosure?.link || extractImage(rawContent) || extractImage(rawDesc);
           const cleanDesc = cleanHtml(rawDesc).slice(0, 320);
 
+          const itemLink = resolveFeedUrl(item.link, source.url) || source.url;
+          const itemImage = resolveFeedUrl(img, source.url);
           articles.push({
-            id: item.guid || item.link || `${source.id}_${Math.random()}`,
+            id: `${source.id}:${item.guid || itemLink || item.title || Math.random()}`,
             title: item.title || 'Новость',
             description: cleanDesc,
-            link: item.link || source.url,
+            link: itemLink,
             pubDate: normalizePublicationDate(item.pubDate || item.isoDate || item.date_published),
             category: source.category,
             sourceTitle: source.title,
             sourceUrl: source.url,
-            imageUrl: img,
+            imageUrl: itemImage,
             content: typeof rawContent === 'string' ? rawContent : '',
           });
         }
-        if (articles.length > 0) return articles;
+        return articles;
       }
     }
   } catch {
@@ -235,9 +252,10 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
     const res = await fetch(proxyUrl);
     if (res.ok) {
       const wrapper = await res.json();
-      if (wrapper.contents) {
+      if (typeof wrapper.contents === 'string' && wrapper.contents.trim()) {
         const parser = new DOMParser();
         const xml = parser.parseFromString(wrapper.contents, 'text/xml');
+        if (xml.querySelector('parsererror')) throw new Error('Invalid RSS XML');
         const items = xml.querySelectorAll('item, entry');
 
         items.forEach((elem) => {
@@ -255,10 +273,10 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
             fullContent ||
             '';
           const pubDate =
-            elem.querySelector('pubDate')?.textContent ||
-            elem.querySelector('published')?.textContent ||
-            elem.querySelector('dc\\:date, date')?.textContent ||
-            elem.querySelector('updated')?.textContent ||
+            elem.getElementsByTagName('pubDate')[0]?.textContent ||
+            elem.getElementsByTagNameNS('*', 'published')[0]?.textContent ||
+            elem.getElementsByTagNameNS('*', 'date')[0]?.textContent ||
+            elem.getElementsByTagNameNS('*', 'updated')[0]?.textContent ||
             '';
 
           const img =
@@ -267,16 +285,18 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
             elem.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') ||
             extractImage(descRaw);
 
+          const absoluteLink = resolveFeedUrl(link, source.url) || source.url;
+          const absoluteImage = resolveFeedUrl(img, source.url);
           articles.push({
-            id: link || `${source.id}_${Math.random()}`,
+            id: `${source.id}:${absoluteLink || Math.random()}`,
             title,
             description: cleanHtml(descRaw).slice(0, 320),
-            link,
+            link: absoluteLink,
             pubDate: normalizePublicationDate(pubDate),
             category: source.category,
             sourceTitle: source.title,
             sourceUrl: source.url,
-            imageUrl: img,
+            imageUrl: absoluteImage,
             content: fullContent || descRaw,
           });
         });
@@ -286,11 +306,11 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
     // Feed fetch failed
   }
 
-  return articles;
+  // null means both transport/parser paths failed; [] is a valid empty feed.
+  return null;
 }
 
 async function replaceSourceArticles(sourceUrl: string, articles: RssArticle[]): Promise<void> {
-  if (!articles.length) return;
   const db = await openDatabase();
   await new Promise<void>((resolve, reject) => {
     const tx = db.transaction(STORE_ARTICLES, 'readwrite');
@@ -354,21 +374,28 @@ export async function saveArticlesToDatabase(articles: RssArticle[]): Promise<vo
 export async function getCachedArticlesFromDatabase(category?: string): Promise<RssArticle[]> {
   try {
     const db = await openDatabase();
-    return new Promise((resolve) => {
+    return await new Promise((resolve) => {
       const tx = db.transaction(STORE_ARTICLES, 'readonly');
-      const store = tx.objectStore(STORE_ARTICLES);
-      const req = store.getAll();
-
+      const req = tx.objectStore(STORE_ARTICLES).getAll();
       req.onsuccess = () => {
-        let list: RssArticle[] = req.result || [];
+        const enabledUrls = new Set(getRssSources().filter((source) => source.enabled).map((source) => source.url));
+        let list: RssArticle[] = (req.result || []).filter((item: RssArticle) => enabledUrls.has(item.sourceUrl));
         if (category && category !== 'Все' && category !== '#Все') {
-          const target = category.replace('#', '');
+          const target = category.replace(/^#/, '');
           list = list.filter((item) => item.category === target);
         }
-        list.sort((a, b) => normalizePublicationDate(b.pubDate).localeCompare(normalizePublicationDate(a.pubDate)));
+        list.sort((a, b) => {
+          const aTime = new Date(a.pubDate).getTime();
+          const bTime = new Date(b.pubDate).getTime();
+          const safeA = Number.isFinite(aTime) && aTime > 0 ? aTime : 0;
+          const safeB = Number.isFinite(bTime) && bTime > 0 ? bTime : 0;
+          return safeB - safeA;
+        });
         resolve(list);
       };
       req.onerror = () => resolve([]);
+      tx.oncomplete = () => db.close();
+      tx.onerror = () => { db.close(); resolve([]); };
     });
   } catch {
     return [];
@@ -376,7 +403,7 @@ export async function getCachedArticlesFromDatabase(category?: string): Promise<
 }
 
 export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle[]> {
-  const sources = getRssSources().filter((s) => s.enabled);
+  const sources = getRssSources().filter((source) => source.enabled);
   if (!sources.length) return [];
 
   if (!forceRefresh) {
@@ -387,9 +414,7 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     }
   }
 
-  // Refresh each source independently. Replace stale rows only when that source
-  // returned usable articles; a failed feed must not erase its last good cache.
-  const allArticles: RssArticle[] = [];
+  let succeeded = 0;
   const chunkSize = 5;
   for (let i = 0; i < sources.length; i += chunkSize) {
     const chunk = sources.slice(i, i + chunkSize);
@@ -397,32 +422,26 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
       source,
       articles: await fetchFeedArticles(source),
     })));
+
     for (const result of results) {
-      if (result.status !== 'fulfilled' || result.value.articles.length === 0) continue;
-      allArticles.push(...result.value.articles);
+      if (result.status !== 'fulfilled' || result.value.articles === null) continue;
       try {
         await replaceSourceArticles(result.value.source.url, result.value.articles);
+        succeeded += 1;
       } catch {
-        // Keep the previous cache if IndexedDB replacement fails.
+        // Preserve the last good cache if IndexedDB replacement fails.
       }
     }
   }
 
-  const seen = new Set<string>();
-  const uniqueArticles: RssArticle[] = [];
-  for (const article of allArticles) {
-    const key = article.link || article.id;
-    if (!seen.has(key)) {
-      seen.add(key);
-      uniqueArticles.push(article);
-    }
-  }
-  uniqueArticles.sort((a, b) => normalizePublicationDate(b.pubDate).localeCompare(normalizePublicationDate(a.pubDate)));
-  if (uniqueArticles.length > 0 && typeof localStorage !== 'undefined') {
-    try { localStorage.setItem(RSS_LAST_REFRESH_KEY, String(Date.now())); } catch { /* storage can be unavailable */ }
+  if (succeeded > 0 && typeof localStorage !== 'undefined') {
+    try {
+      // Partial failures retry soon; a complete refresh uses the normal cache TTL.
+      const partial = succeeded < sources.length;
+      localStorage.setItem(RSS_LAST_REFRESH_KEY, String(Date.now() - (partial ? RSS_CACHE_TTL_MS - RSS_PARTIAL_RETRY_MS : 0)));
+    } catch { /* storage can be unavailable */ }
   }
 
-  if (uniqueArticles.length === 0) return getCachedArticlesFromDatabase();
-  const refreshedCache = await getCachedArticlesFromDatabase();
-  return refreshedCache.length > 0 ? refreshedCache : uniqueArticles;
+  return getCachedArticlesFromDatabase();
 }
+

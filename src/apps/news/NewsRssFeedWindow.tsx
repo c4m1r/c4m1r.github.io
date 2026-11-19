@@ -33,10 +33,14 @@ function sanitizeArticleHtml(html: string, baseUrl?: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('script,style,iframe,object,embed,form,button, input,meta,link').forEach((node) => node.remove());
   doc.body.querySelectorAll('*').forEach((node) => {
+    if (node instanceof HTMLImageElement && !node.getAttribute('src')) {
+      const lazySource = node.getAttribute('data-src') || node.getAttribute('data-original') || node.getAttribute('data-lazy-src');
+      if (lazySource) node.setAttribute('src', lazySource);
+    }
     Array.from(node.attributes).forEach((attr) => {
       const name = attr.name.toLowerCase();
       const value = attr.value.trim();
-      if (name.startsWith('on') || name === 'srcdoc' || name === 'srcset' || ((name === 'href' || name === 'src') && /^\s*(javascript|vbscript|data):/i.test(value))) {
+      if (name.startsWith('on') || name === 'srcdoc' || name === 'srcset' || name === 'style' || ((name === 'href' || name === 'src') && /^\s*(javascript|vbscript|data):/i.test(value))) {
         node.removeAttribute(attr.name);
       } else if (baseUrl && (name === 'href' || name === 'src') && value) {
         try {
@@ -52,6 +56,23 @@ function sanitizeArticleHtml(html: string, baseUrl?: string): string {
     }
   });
   return doc.body.innerHTML;
+}
+
+function markdownArticleToHtml(markdown: string): string {
+  const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const blocks = markdown.replace(/\r/g, '').split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);
+  return blocks.map((block) => {
+    const heading = block.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      const level = heading[1].length;
+      return `<h${level}>${escapeHtml(heading[2])}</h${level}>`;
+    }
+    const lines = block.split('\n').map((line) => escapeHtml(line)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '<img src="$2" alt="$1">')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2">$1</a>'));
+    return `<p>${lines.join('<br>')}</p>`;
+  }).join('');
 }
 
 export function NewsRssFeedWindow() {
@@ -100,16 +121,29 @@ export function NewsRssFeedWindow() {
     try {
       const articleUrl = new URL(article.link);
       if (articleUrl.protocol !== 'http:' && articleUrl.protocol !== 'https:') throw new Error('Unsupported article URL');
-      const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(articleUrl.href));
-      if (!response.ok) throw new Error('Article proxy request failed');
-      const wrapper = await response.json() as { contents?: string };
-      if (!wrapper.contents) throw new Error('Article page is unavailable');
-      const document = new DOMParser().parseFromString(wrapper.contents, 'text/html');
-      const source = document.querySelector('[itemprop="articleBody"], article, .article-content, .post-content, .entry-content, main') ?? document.body;
-      const extracted = source.cloneNode(true) as HTMLElement;
-      extracted.querySelectorAll('script,style,iframe,object,embed,form,button,nav,footer,aside').forEach((node) => node.remove());
-      if ((extracted.textContent ?? '').trim().length < 160) throw new Error('No readable article body found');
-      const safeHtml = sanitizeArticleHtml(extracted.innerHTML, articleUrl.href);
+      let safeHtml = '';
+      try {
+        const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(articleUrl.href));
+        if (!response.ok) throw new Error('Article proxy request failed');
+        const wrapper = await response.json() as { contents?: string };
+        if (!wrapper.contents) throw new Error('Article page is unavailable');
+        const document = new DOMParser().parseFromString(wrapper.contents, 'text/html');
+        const candidates = Array.from(document.querySelectorAll('[itemprop="articleBody"], article, .article-content, .post-content, .entry-content, main'))
+          .filter((element) => (element.textContent ?? '').trim().length > 180)
+          .sort((a, b) => (b.textContent ?? '').length - (a.textContent ?? '').length);
+        const source = candidates[0] ?? document.body;
+        const extracted = source.cloneNode(true) as HTMLElement;
+        extracted.querySelectorAll('script,style,iframe,object,embed,form,button,nav,header,footer,aside').forEach((node) => node.remove());
+        if ((extracted.textContent ?? '').trim().length < 160) throw new Error('No readable article body found');
+        safeHtml = sanitizeArticleHtml(extracted.innerHTML, articleUrl.href);
+      } catch {
+        const readerUrl = `https://r.jina.ai/${articleUrl.protocol}//${articleUrl.host}${articleUrl.pathname}${articleUrl.search}`;
+        const readerResponse = await fetch(readerUrl);
+        if (!readerResponse.ok) throw new Error('Reader proxy request failed');
+        const markdownText = await readerResponse.text();
+        if (markdownText.trim().length < 180) throw new Error('No readable article body found');
+        safeHtml = sanitizeArticleHtml(markdownArticleToHtml(markdownText), articleUrl.href);
+      }
       if (activeArticleId.current === article.id) setPageContent(safeHtml);
     } catch {
       if (activeArticleId.current === article.id) setArticleFetchFailed(true);
@@ -180,7 +214,7 @@ export function NewsRssFeedWindow() {
         <main className="flex-1 min-w-0 overflow-y-auto p-3 sm:p-4">
           {errorMsg && <div className="mb-3 p-3 bg-amber-950/50 border border-amber-700/50 rounded-lg text-amber-200 text-xs">{errorMsg}</div>}
           {selectedArticle ? (
-            <article className="max-w-4xl mx-auto">
+            <article className="w-full max-w-none">
               <div className="sticky top-0 z-10 -mx-1 px-1 py-2 mb-3 bg-gray-950/90 backdrop-blur flex items-center justify-between border-b border-gray-800">
                 <button type="button" onClick={() => { activeArticleId.current = null; setSelectedArticle(null); setPageContent(null); }} className="flex items-center gap-1.5 text-xs text-blue-300 hover:text-white"><ChevronLeft size={15}/>{isRu ? 'К ленте' : 'Back to feed'}</button>
                 <a href={selectedArticle.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-blue-300 hover:text-white">{isRu ? 'Оригинал' : 'Original'}<ExternalLink size={12}/></a>

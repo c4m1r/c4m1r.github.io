@@ -72,17 +72,20 @@
 .desktop-widget-canvas {
   position: absolute;
   inset: 16px 18px 76px;
-  z-index: 14;
+  z-index: 24;
   overflow: hidden;
   pointer-events: none;
+  isolation: isolate;
 }
 .desktop-widget-canvas__item {
   position: absolute;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
   max-width: calc(100% - 4px);
   pointer-events: auto;
+  box-sizing: border-box;
   border-radius: 13px;
   overflow: hidden;
   filter: drop-shadow(0 8px 20px rgba(0,0,0,.22));
@@ -101,9 +104,13 @@
   cursor: grab;
   user-select: none;
   touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
   font: 11px/1 system-ui, sans-serif;
 }
 .desktop-widget-canvas__handle:active { cursor: grabbing; }
+.desktop-widget-canvas__handle:focus-visible { outline: 2px solid #60a5fa; outline-offset: -2px; }
+.desktop-widget-canvas__handle select:focus-visible { outline: 2px solid #60a5fa; outline-offset: 1px; }
 .desktop-widget-canvas__grip { color: rgba(255,255,255,.48); font-size: 16px; }
 .desktop-widget-canvas__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
 .desktop-widget-canvas__handle select {
@@ -130,6 +137,8 @@
   scrollbar-width: thin;
 }
 .desktop-widget-canvas__content > * { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
+.desktop-widget-canvas__content > .glass-widget { height: 100% !important; min-height: 0 !important; width: 100% !important; max-width: 100% !important; }
+.desktop-widget-canvas__content .glass-widget > * { min-width: 0; }
 .desktop-widget-canvas__content .glass-widget { height: 100%; min-height: 0; border: 0; border-radius: 0 0 12px 12px; box-shadow: none; }
 .apple-clock-calendar-combo { display: flex; align-items: stretch; gap: 8px; width: 100%; height: 100%; padding: 8px; background: rgba(24,27,32,.88); }
 .apple-clock-calendar-combo .apple-widget { flex: 1 1 0; min-width: 0; box-shadow: none; background: rgba(255,255,255,.045); }
@@ -140,6 +149,8 @@
   .desktop-widget-canvas { inset: 72px 8px 68px; }
   .desktop-widget-canvas__handle { height: 30px; min-height: 30px; }
   .desktop-widget-canvas__handle select { max-width: 92px; min-width: 74px; }
+  .desktop-widget-canvas__item { max-width: calc(100% - 2px); }
+  .desktop-widget-canvas__content { overscroll-behavior: contain; }
 }
 
 /* RSS reader article content: keep feed HTML readable and constrained to the mini-window. */

@@ -73,13 +73,28 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
           <button type="button" onClick={onClose}>{isRu ? 'Готово' : 'Done'}</button>
         </header>
         <div className="apple-widget-gallery__list">
-          {widgets.filter((widget) => themeKey !== 'webos' || (widget.key !== 'battery' && widget.key !== 'calendar')).map((widget) => {
+          {widgets.filter((widget) => {
+            if (themeKey === 'webos') return widget.key !== 'battery' && widget.key !== 'calendar';
+            if (visibility.clock && visibility.calendar && widget.key === 'calendar') return false;
+            return true;
+          }).map((widget) => {
+            const isCombinedClock = widget.key === 'clock' && (themeKey === 'webos' ? Boolean(webosVisibility.clock) : visibility.clock && visibility.calendar);
             const isEnabled = themeKey === 'webos' ? Boolean(webosVisibility[widget.key as keyof DesktopWidgetsVisibility]) : Boolean(visibility[widget.key]);
+            const displayTitle = isCombinedClock ? (isRu ? 'Часы и календарь' : 'Clock & calendar') : (isRu ? widget.titleRu : widget.title);
+            const displayDescription = isCombinedClock ? (isRu ? 'Комбинированный виджет времени и календаря' : 'Combined time and calendar widget') : (isRu ? widget.descriptionRu : widget.description);
+            const toggleWidget = () => {
+              if (isCombinedClock && themeKey !== 'webos') {
+                onToggle('clock');
+                onToggle('calendar');
+              } else {
+                onToggle(widget.key);
+              }
+            };
             return (
               <div className={`apple-widget-gallery__item ${isEnabled ? 'is-enabled' : ''}`} key={widget.key}>
-                <button type="button" className="apple-widget-gallery__toggle" onClick={() => onToggle(widget.key)} aria-pressed={isEnabled}>
+                <button type="button" className="apple-widget-gallery__toggle" onClick={toggleWidget} aria-pressed={isEnabled}>
                   <span className="apple-widget-gallery__glyph">{widget.glyph}</span>
-                  <span><strong>{isRu ? widget.titleRu : widget.title}</strong><small>{isRu ? widget.descriptionRu : widget.description}</small></span>
+                  <span><strong>{displayTitle}</strong><small>{displayDescription}</small></span>
                   <i>{isEnabled ? (isRu ? 'Вкл' : 'On') : (isRu ? 'Выкл' : 'Off')}</i>
                 </button>
                 <label className="apple-widget-gallery__preset">

@@ -1499,24 +1499,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         onOpenHelp={() => launchApp('help')}
       />
 
-      {themeKey !== 'webos' && Object.values(appleWidgetVisibility).some(Boolean) && (
-        <AppleDesktopWidgets
-          time={time}
-          language={language}
-          visibility={appleWidgetVisibility}
-          themeKey={themeKey}
-          onOpenNews={() => launchApp('news')}
-          onOpenGalleryImage={() => launchApp('pictures')}
-        />
-      )}
-
-      {themeKey === 'webos' && (
-        <WebosDesktopWidgets
-          onOpenFeed={() => launchApp('news')}
-          onOpenGalleryImage={() => launchApp('pictures')}
-        />
-      )}
-
       <AppleWidgetGallery
         themeKey={themeKey}
         open={showAppleWidgetGallery}
@@ -1746,6 +1728,24 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         selectionBox={selectionBox}
         themeKey={themeKey}
       />
+
+      {themeKey !== 'webos' && Object.values(appleWidgetVisibility).some(Boolean) && (
+        <AppleDesktopWidgets
+          time={time}
+          language={language}
+          visibility={appleWidgetVisibility}
+          themeKey={themeKey}
+          onOpenNews={() => launchApp('news')}
+          onOpenGalleryImage={() => launchApp('pictures')}
+        />
+      )}
+
+      {themeKey === 'webos' && (
+        <WebosDesktopWidgets
+          onOpenFeed={() => launchApp('news')}
+          onOpenGalleryImage={() => launchApp('pictures')}
+        />
+      )}
 
       {windows.map((window) => {
         return (
