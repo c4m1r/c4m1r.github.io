@@ -1015,6 +1015,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           openExplorerWindow('My Computer');
           recordRecentApp('my-computer');
           break;
+        case 'network-neighborhood':
+          openExplorerWindow('Network Neighborhood');
+          recordRecentApp('network-neighborhood');
+          break;
         case 'games-folder':
           openExplorerWindow('C:\\Program Files\\Games');
           recordRecentApp('games-folder');
@@ -1220,7 +1224,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         openExplorerWindow('C:\\Program Files\\Games');
         return;
       case 'programs-folder':
-        openExplorerWindow('C:\\Program Files\\Программы');
+        openExplorerWindow('C:\\Program Files\\Programs');
         return;
       case 'recycle-bin':
         playErrorSound();
