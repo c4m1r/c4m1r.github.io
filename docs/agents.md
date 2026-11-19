@@ -282,3 +282,14 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 ### Explorer sidebar skin note
 - `src/styles/os/themes/explorer-os-adapters.css` now styles the new shared folder tree separately for Win98/2000, Ubuntu, Arch and WebOS.
 - Updated body selectors to target the stable `.flex-1` body wrapper instead of relying on its child index, because the optional Search row adds a sibling before the body and otherwise breaks theme selectors when search is open.
+
+
+### Session handoff — 2026-11-19 Explorer follow-through
+- Current branch remains `main`; no feature branch created.
+- Latest verified HEAD before this handoff update: `2f14fb64405977f09e09a609b54842144f3cc09a`.
+- Work in this pass: current-folder search; C: root normalization and child-path separator fix; case-insensitive address path resolution; duplicate adjacent history suppression; recursive virtual folder tree for non-XP/non-Apple Legacy Explorer; per-profile tree sidebar CSS for Win98/2000, Ubuntu, Arch and WebOS.
+- Relevant implementation files: `src/apps/explorer/MyComputer.tsx`, `src/styles/os/themes/explorer-os-adapters.css`; task tracking in `docs/tasks.md`.
+- The folder tree reads the existing `initialFileSystem` and does not maintain a parallel filesystem. Search filters only the current folder. Apple Finder and XP task-pane paths remain separate.
+- CSS selectors for the Explorer body now target its stable `.flex-1` wrapper rather than positional child index; the optional search row otherwise shifts body position and can break skin targeting.
+- Remaining gaps: no recursive/global search; XP does not yet expose a classic left folder tree; tree/sidebar needs visual and mobile-width review; full Win98/2000 toolbar bitmap fidelity remains incomplete; Linux interaction model is not full Nautilus/Thunar parity.
+- Verification: GitHub combined status returned `statuses: []`; no local npm scripts or browser session were available/run. Do not infer CI success. Run `npm run verify`, `npm run typecheck`, `npm run lint`, `npm run build` and `git diff --check` before declaring this work verified.
