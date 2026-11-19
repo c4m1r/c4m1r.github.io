@@ -1016,7 +1016,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           recordRecentApp('games-folder');
           break;
         case 'all-programs':
-          openExplorerWindow('C:\\Program Files');
+          openExplorerWindow('C:\\Program Files\\Programs');
           recordRecentApp('all-programs');
           break;
         case 'doom1':
