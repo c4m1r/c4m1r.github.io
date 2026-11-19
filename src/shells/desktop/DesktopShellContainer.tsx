@@ -741,7 +741,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     }
   };
 
-  const desktopItems = getItemsFromPath(DESKTOP_PATH);
+  // Games and Programs have dedicated canonical desktop icons above; the FileSystem also
+  // exposes legacy targetPath shortcuts for compatibility, so do not render those twice.
+  const desktopItems = getItemsFromPath(DESKTOP_PATH).filter(
+    (item) => !['игры', 'программы'].includes(item.name.trim().toLocaleLowerCase()),
+  );
 
   const initialDesktopIcons: DesktopIcon[] = [
     ...(themeKey === 'macos-26'
