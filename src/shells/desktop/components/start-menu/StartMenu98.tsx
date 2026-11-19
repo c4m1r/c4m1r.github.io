@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Folder, Star, FileText, Settings, Search, HelpCircle, Play, LogOut, Power } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
 import { getActiveEdition } from '../../../os/osEditions';
@@ -12,7 +13,7 @@ export interface StartMenu98Props {
 
 type ClassicMenuItem = {
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   appId?: string;
   path?: string;
   action?: 'logoff' | 'shutdown';
