@@ -17,7 +17,7 @@ import { MyComputer } from '../../apps/explorer';
 import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
 import { Folder, HardDrive, Trash2, LayoutGrid } from 'lucide-react';
-import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileSystem';
+import { getItemsFromPath, getFileIcon, FileSystemItem, loadProjectMarkdown } from '../../utils/FileSystem';
 import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
 import { winampController } from '../../system/audio/winampController';
 import { markdownToHtml } from '../../domain/content/markdown';
@@ -860,7 +860,13 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     if (lowerName.endsWith('.md') && item.id.startsWith('project:')) {
       let markdown = typeof item.content === 'string' ? item.content : '';
       if (markdown.endsWith('.md') && !markdown.includes('\n')) {
-        markdown = await loadMarkdownContent(markdown);
+        try {
+          markdown = await loadProjectMarkdown(markdown);
+        } catch (error) {
+          console.warn('Failed to load project article:', error);
+          playErrorSound();
+          return;
+        }
       }
       const parsed = parseFrontmatter(markdown, language);
       content = (
