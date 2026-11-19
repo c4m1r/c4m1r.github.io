@@ -39,6 +39,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     isMyPictures ? 'thumbnails' : 'icons'
   );
   const [showSidebar, setShowSidebar] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [quickLookOpen, setQuickLookOpen] = useState(false);
   const [appleSearchQuery, setAppleSearchQuery] = useState('');
   const [showApplePathBar, setShowApplePathBar] = useState(() => {
@@ -90,6 +92,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   }, [path]);
 
   const items = useMemo(() => getItemsFromPath(path), [path]);
+  const visibleItems = useMemo(() => {
+    const needle = searchQuery.trim().toLocaleLowerCase();
+    return needle ? items.filter(item => item.name.toLocaleLowerCase().includes(needle)) : items;
+  }, [items, searchQuery]);
   const selectedFile = useMemo(
     () => items.find((item) => item.name === selectedItem) ?? null,
     [items, selectedItem]
@@ -198,13 +204,14 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
 
   const navigateToPath = useCallback(
     (targetPath: string, recordHistory: boolean = true) => {
-      const normalized = targetPath.replace('Local Disk (C:)', 'C:');
+      const normalized = targetPath.replace('Local Disk (C:)', 'C:').replace(/^C:$/i, 'C:\\');
       setPath(normalized);
+      setSearchQuery('');
       setSelectedItem(null);
 
       if (recordHistory) {
-        const newHistory = history.slice(0, historyIndex + 1);
-        newHistory.push(normalized);
+        const currentHistory = history.slice(0, historyIndex + 1);
+        const newHistory = currentHistory[currentHistory.length - 1] === normalized ? currentHistory : [...currentHistory, normalized];
         setHistory(newHistory);
         setHistoryIndex(newHistory.length - 1);
       }
@@ -217,10 +224,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
       let newPath = path;
       if (item.name === 'Local Disk (C:)') newPath = 'C:';
       else if (path === 'My Computer') newPath = item.name === 'Local Disk (C:)' ? 'C:' : item.name;
-      else if (path.endsWith('\\') || path.endsWith(':')) newPath += item.name;
+      else if (path.endsWith('\\') || path.endsWith(':')) newPath += (path.endsWith(':') ? '\\' : '') + item.name;
       else newPath += '\\' + item.name;
 
-      newPath = newPath.replace('Local Disk (C:)', 'C:');
+      newPath = newPath.replace('Local Disk (C:)', 'C:').replace(/^C:$/i, 'C:\\');
       navigateToPath(newPath);
     } else if (item.type === 'file') {
       if (onOpenItem) {
@@ -246,19 +253,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   };
 
   const handleUp = () => {
-    let newPath = path;
-
-    if (path === 'C:' || path === 'C:\\') {
-      newPath = 'My Computer';
-    } else if (path !== 'My Computer') {
-      const parts = path.split('\\');
-      parts.pop();
-      newPath = parts.join('\\') || 'My Computer';
-    } else {
-      return;
-    }
-
-    navigateToPath(newPath);
+    if (path === 'My Computer') return;
+    const parts = path.split('\\').filter(Boolean);
+    parts.pop();
+    const parent = parts.join('\\') || 'My Computer';
+    navigateToPath(parent === 'C:' ? 'C:\\' : parent);
   };
 
   const resolveNodeByPath = (target: string): FileSystemItem | null => {
@@ -266,7 +265,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
       return initialFileSystem['My Computer'];
     }
 
-    const normalized = target.replace('Local Disk (C:)', 'C:').replace(/\//g, '\\');
+    const normalized = target.replace('Local Disk (C:)', 'C:').replace(/\//g, '\\').replace(/^C:$/i, 'C:\\');
     const parts = normalized.split('\\').filter(Boolean);
     let current: FileSystemItem | undefined = initialFileSystem['My Computer'];
 
@@ -275,12 +274,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         return null;
       }
 
-      if (current.children[part]) {
-        current = current.children[part];
+      const keyedMatch = Object.entries(current.children).find(([key]) => key.toLocaleLowerCase() === part.toLocaleLowerCase());
+      if (keyedMatch) {
+        current = keyedMatch[1];
         continue;
       }
 
-      const match: FileSystemItem | undefined = Object.values(current.children).find(child => child.name === part);
+      const match: FileSystemItem | undefined = Object.values(current.children).find(child => child.name.toLocaleLowerCase() === part.toLocaleLowerCase());
       if (!match) {
         return null;
       }
@@ -292,7 +292,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
 
   const pathExists = (target: string) => {
     if (target === 'My Computer') return true;
-    const normalized = target.replace(/\//g, '\\');
+    const normalized = target.replace(/\//g, '\\').replace(/^C:$/i, 'C:\\');
     return Boolean(resolveNodeByPath(normalized));
   };
 
@@ -307,7 +307,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
       return;
     }
 
-    const normalized = target.replace(/\//g, '\\');
+    const normalized = target.replace(/\//g, '\\').replace(/^C:$/i, 'C:\\');
     const node = resolveNodeByPath(normalized);
 
     if (!node) {
@@ -687,7 +687,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
             <span>{isRu ? 'Вверх' : 'Up'}</span>
           </button>
           <div className="w-px h-6 bg-gray-400 mx-1" />
-          <button className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent">
+          <button onClick={() => { setSearchOpen(value => !value); setSearchQuery(''); }} aria-pressed={searchOpen} className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent">
             {isClassicWindows ? <img src={win98SearchIcon} alt="" className="w-4 h-4 object-contain" /> : <img src={searchIconXp} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Поиск' : 'Search'}</span>
           </button>
@@ -738,6 +738,14 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           </button>
         </div>
       </div>
+      {searchOpen && (
+        <div className="flex items-center gap-2 px-2 py-1 border-b border-[#aca899] bg-white">
+          <Search size={14} aria-hidden="true" />
+          <input autoFocus value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') { setSearchQuery(''); setSearchOpen(false); } }} placeholder={isRu ? 'Найти в текущей папке…' : 'Search this folder…'} aria-label={isRu ? 'Поиск в текущей папке' : 'Search this folder'} className="min-w-0 flex-1 bg-transparent outline-none text-xs text-black" />
+          <span className="text-[10px] text-gray-500">{visibleItems.length}/{items.length}</span>
+          <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} className="border-0 bg-transparent text-xs">{isRu ? 'Закрыть' : 'Close'}</button>
+        </div>
+      )}
 
       {/* Body */}
       <div className="flex-1 flex overflow-hidden h-0">
@@ -763,7 +771,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                   <div className="bg-[#d6dff7] p-2 flex flex-col gap-1.5 border-x border-b border-white/50 text-[11px]">
                     <button
                       onClick={() => {
-                        const pictureItems = items.filter(i => /\.(png|jpg|jpeg|gif)$/i.test(i.name));
+                        const pictureItems = visibleItems.filter(i => /\.(png|jpg|jpeg|gif)$/i.test(i.name));
                         if (pictureItems.length > 0 && onOpenItem) {
                           onOpenItem(pictureItems[0], path);
                         }
@@ -868,7 +876,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
         <div className="flex-1 bg-white p-4 overflow-y-auto" onClick={() => setSelectedItem(null)}>
           {viewMode === 'thumbnails' ? (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4">
-              {items.map((item, i) => (
+              {visibleItems.map((item, i) => (
                 <div
                   key={i}
                   className={`flex flex-col items-center group cursor-pointer p-2 border ${
@@ -902,14 +910,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
           ) : viewMode === 'icons' ? (
             path === 'My Computer' ? (
               <div className="space-y-6">
-                {items.filter((i) => i.type === 'folder').length > 0 && (
+                {visibleItems.filter((i) => i.type === 'folder').length > 0 && (
                   <div>
                     <div className="flex items-center gap-2 mb-2 pb-1 border-b border-[#003c74]/20 font-bold text-[#003c74] text-xs">
                       <span>{isRu ? 'Файлы, хранящиеся на этом компьютере' : 'Files Stored on This Computer'}</span>
                     </div>
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-4">
-                      {items
-                        .filter((i) => i.type === 'folder')
+                      {visibleItems.filter((i) => i.type === 'folder')
                         .map((item, i) => (
                           <div
                             key={i}
@@ -940,14 +947,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                   </div>
                 )}
 
-                {items.filter((i) => i.type === 'drive').length > 0 && (
+                {visibleItems.filter((i) => i.type === 'drive').length > 0 && (
                   <div>
                     <div className="flex items-center gap-2 mb-2 pb-1 border-b border-[#003c74]/20 font-bold text-[#003c74] text-xs">
                       <span>{isRu ? 'Жесткие диски' : 'Hard Disk Drives'}</span>
                     </div>
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-4">
-                      {items
-                        .filter((i) => i.type === 'drive')
+                      {visibleItems.filter((i) => i.type === 'drive')
                         .map((item, i) => (
                           <div
                             key={i}
@@ -980,7 +986,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
               </div>
             ) : (
               <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4">
-                {items.map((item, i) => (
+                {visibleItems.map((item, i) => (
                   <div
                     key={i}
                     className={`flex flex-col items-center group cursor-pointer border border-transparent p-1 ${selectedItem === item.name ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
@@ -1018,7 +1024,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
                 </tr>
               </thead>
               <tbody>
-                {items.map((item, i) => (
+                {visibleItems.map((item, i) => (
                   <tr
                     key={i}
                     className={`cursor-pointer text-sm ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'hover:bg-[#e2ecff]'}`}
@@ -1061,7 +1067,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
       {/* Status Bar */}
       <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
         <div className="flex gap-4">
-          <span>{items.length} {isRu ? 'объектов' : 'objects'}</span>
+          <span>{visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
           {selectedItem && <span>{isRu ? 'Выбрано:' : 'Selected:'} {selectedItem}</span>}
         </div>
         {detailsForSelection && (
