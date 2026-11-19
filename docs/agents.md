@@ -604,3 +604,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - `clampAll` now compares the normalized preset as well as x/y. Previously a resize could select the compact preset but discard that state update when coordinates stayed unchanged.
 - Rendered widget height now matches the placement size calculation on fixed-height non-WebOS canvases. WebOS keeps full preset heights because its canvas is vertically scrollable and deliberately expands to fit its two-column widget layout.
 - No local checkout, npm commands or browser runtime were available in this connector session. CI for the follow-up documentation commit must be checked; do not claim the code is build-verified until that run passes. Browser acceptance remains outstanding for viewport resize/orientation, all three size classes, WebOS eight-widget placement and Winamp controls.
+
+
+### Latest implementation handoff — Picture Viewer list changes (2026-11-19)
+- Commit `51b99fd8587218c3d3838635983fbb9632dbcdf8` updates `src/apps/pictureview/PictureViewer.tsx`.
+- The selected image index is now synchronized when the supplied image inventory changes. If `initialImage` is present it is focused; otherwise the index is clamped to the new list, including the empty-list case. This covers switching folders/libraries where the previous index may no longer exist.
+- No browser test was run. Verify opening a single image, switching between folders with different image counts, empty inventory, gallery-to-viewer selection and slideshow stop/restart.
