@@ -284,3 +284,10 @@
     transition: none !important;
   }
 }
+
+.xp-clock-popup__days button{display:flex;align-items:center;justify-content:center;min-width:0;min-height:20px;padding:0;border:1px solid transparent;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.xp-clock-popup__days button.is-today{border-color:#0a246a;background:#316ac5;color:#fff;font-weight:700}
+.xp-clock-popup__days button.is-selected:not(.is-today){border-color:#316ac5;background:#dcecff;color:#102a43}
+.xp-clock-popup__days button:focus-visible{outline:1px dotted #003399;outline-offset:-2px}
+.xp-clock-popup__open-calendar{display:block;width:100%;min-height:24px;border:1px solid #7f9db9;background:#ece9d8;color:#003399;font:inherit;text-align:center}
+.xp-clock-popup__open-calendar:hover{background:#fff}
