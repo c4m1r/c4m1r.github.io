@@ -18,52 +18,60 @@
 .calendar-app__selection-summary { line-height: 1.5; }
 
 /* Windows XP: preserve the familiar light calendar surface and classic controls. */
-.winxp .calendar-app { background: #fff; color: #202020; font-family: Tahoma, "Segoe UI", sans-serif; }
-.winxp .calendar-app__toolbar { background: linear-gradient(180deg, #f7f5eb, #e7e3d3) !important; border-color: #c5c0ad !important; }
-.winxp .calendar-app__today-button,
-.winxp .calendar-app__retry-button { border-color: #7f9db9; background: linear-gradient(#fff, #ece9d8); color: #003399; }
-.winxp .calendar-app__day[aria-pressed="true"] { outline-color: #316ac5; background-color: #e7f1ff; }
+.os-winxp .calendar-app { background: #fff; color: #202020; font-family: Tahoma, "Segoe UI", sans-serif; }
+.os-winxp .calendar-app__toolbar { background: linear-gradient(180deg, #f7f5eb, #e7e3d3) !important; border-color: #c5c0ad !important; }
+.os-winxp .calendar-app__today-button,
+.os-winxp .calendar-app__retry-button { border-color: #7f9db9; background: linear-gradient(#fff, #ece9d8); color: #003399; }
+.os-winxp .calendar-app__day[aria-pressed="true"] { outline-color: #316ac5; background-color: #e7f1ff; }
 
 /* Windows 98 / 2000: compact classic grey controls and beveled grid. */
-.classic .calendar-app { background: #c0c0c0; color: #111; font-family: Tahoma, Arial, sans-serif; }
-.classic .calendar-app__toolbar { background: #c0c0c0 !important; border-color: #808080 !important; }
-.classic .calendar-app__nav-button,
-.classic .calendar-app__today-button,
-.classic .calendar-app__retry-button { border: 1px solid; border-color: #fff #404040 #404040 #fff; border-radius: 0 !important; background: #c0c0c0; color: #000080; }
-.classic .calendar-app__content { background: #d4d0c8; }
-.classic .calendar-app__day { border-radius: 0 !important; }
+.os-classic .calendar-app { background: #c0c0c0; color: #111; font-family: Tahoma, Arial, sans-serif; }
+.os-classic .calendar-app__toolbar { background: #c0c0c0 !important; border-color: #808080 !important; }
+.os-classic .calendar-app__nav-button,
+.os-classic .calendar-app__today-button,
+.os-classic .calendar-app__retry-button { border: 1px solid; border-color: #fff #404040 #404040 #fff; border-radius: 0 !important; background: #c0c0c0; color: #000080; }
+.os-classic .calendar-app__content { background: #d4d0c8; }
+.os-classic .calendar-app__day { border-radius: 0 !important; }
 
 /* Windows 7 / 10 / 11: translucent command surface and blue selection. */
-.win7 .calendar-app { background: #f4f8fc; color: #1c2b3a; font-family: "Segoe UI", sans-serif; }
-.win7 .calendar-app__toolbar { background: linear-gradient(#f9fcff, #dceaf6) !important; border-color: #b8cbdc !important; }
-.win7 .calendar-app__today-button,
-.win7 .calendar-app__retry-button { border: 1px solid #9bb8d0; background: linear-gradient(#fff, #e4f1fa); color: #174b75; }
-.win7 .calendar-app__day[aria-pressed="true"] { outline-color: #4b98cf; background-color: #e6f3fc; }
+.os-win7 .calendar-app { background: #f4f8fc; color: #1c2b3a; font-family: "Segoe UI", sans-serif; }
+.os-win7 .calendar-app__toolbar { background: linear-gradient(#f9fcff, #dceaf6) !important; border-color: #b8cbdc !important; }
+.os-win7 .calendar-app__today-button,
+.os-win7 .calendar-app__retry-button { border: 1px solid #9bb8d0; background: linear-gradient(#fff, #e4f1fa); color: #174b75; }
+.os-win7 .calendar-app__day[aria-pressed="true"] { outline-color: #4b98cf; background-color: #e6f3fc; }
 
 /* Ubuntu and Arch share the calendar engine but keep distinct desktop palettes. */
-.ubuntu .calendar-app { background: #faf8f6; color: #292522; font-family: Ubuntu, "Segoe UI", sans-serif; }
-.ubuntu .calendar-app__toolbar { background: #eee9e5 !important; border-color: #d5cbc4 !important; }
-.ubuntu .calendar-app__today-button,
-.ubuntu .calendar-app__retry-button { border: 1px solid #dd4814; background: #fff; color: #c43d12; }
-.ubuntu .calendar-app__day[aria-pressed="true"] { outline-color: #dd4814; background-color: #fff0e9; }
-.arch .calendar-app { background: #f4f7fa; color: #202a35; font-family: "Segoe UI", sans-serif; }
-.arch .calendar-app__toolbar { background: #e7eef5 !important; border-color: #c2d0de !important; }
-.arch .calendar-app__today-button,
-.arch .calendar-app__retry-button { border: 1px solid #1793d1; background: #fff; color: #126d9d; }
-.arch .calendar-app__day[aria-pressed="true"] { outline-color: #1793d1; background-color: #e8f6fc; }
+.os-ubuntu .calendar-app { background: #faf8f6; color: #292522; font-family: Ubuntu, "Segoe UI", sans-serif; }
+.os-ubuntu .calendar-app__toolbar { background: #eee9e5 !important; border-color: #d5cbc4 !important; }
+.os-ubuntu .calendar-app__today-button,
+.os-ubuntu .calendar-app__retry-button { border: 1px solid #dd4814; background: #fff; color: #c43d12; }
+.os-ubuntu .calendar-app__day[aria-pressed="true"] { outline-color: #dd4814; background-color: #fff0e9; }
+.os-arch .calendar-app { background: #f4f7fa; color: #202a35; font-family: "Segoe UI", sans-serif; }
+.os-arch .calendar-app__toolbar { background: #e7eef5 !important; border-color: #c2d0de !important; }
+.os-arch .calendar-app__today-button,
+.os-arch .calendar-app__retry-button { border: 1px solid #1793d1; background: #fff; color: #126d9d; }
+.os-arch .calendar-app__day[aria-pressed="true"] { outline-color: #1793d1; background-color: #e8f6fc; }
 
 /* WebOS: dark glass-like app surface consistent with its desktop widgets. */
-.webos .calendar-app { background: #111820; color: #e8f3fb; font-family: Inter, system-ui, sans-serif; }
-.webos .calendar-app__toolbar { background: rgba(31,43,56,.96) !important; border-color: rgba(255,255,255,.12) !important; }
-.webos .calendar-app__content { background: #111820; }
-.webos .calendar-app__day { border-color: rgba(255,255,255,.10) !important; background: rgba(255,255,255,.035) !important; color: #e8f3fb; }
-.webos .calendar-app__day.is-weekend { background: rgba(66,153,225,.07) !important; }
-.webos .calendar-app__day.is-today .calendar-app__day-number { color: #fff; }
-.webos .calendar-app__day[aria-pressed="true"] { outline-color: #38bdf8; background: rgba(56,189,248,.14) !important; }
-.webos .calendar-app__today-button,
-.webos .calendar-app__retry-button { border: 1px solid rgba(125,211,252,.45); background: rgba(56,189,248,.12); color: #bae6fd; }
+.os-webos .calendar-app { background: #111820; color: #e8f3fb; font-family: Inter, system-ui, sans-serif; }
+.os-webos .calendar-app__toolbar { background: rgba(31,43,56,.96) !important; border-color: rgba(255,255,255,.12) !important; }
+.os-webos .calendar-app__content { background: #111820; }
+.os-webos .calendar-app__day { border-color: rgba(255,255,255,.10) !important; background: rgba(255,255,255,.035) !important; color: #e8f3fb; }
+.os-webos .calendar-app__day.is-weekend { background: rgba(66,153,225,.07) !important; }
+.os-webos .calendar-app__day.is-today .calendar-app__day-number { color: #fff; }
+.os-webos .calendar-app__day[aria-pressed="true"] { outline-color: #38bdf8; background: rgba(56,189,248,.14) !important; }
+.os-webos .calendar-app__today-button,
+.os-webos .calendar-app__retry-button { border: 1px solid rgba(125,211,252,.45); background: rgba(56,189,248,.12); color: #bae6fd; }
 
 .os-ios .calendar-app__day { min-height: clamp(54px, 10vw, 76px) !important; padding: 4px !important; }
 .os-ios .calendar-app__event-location,
 .os-ios .calendar-app__empty { display: none; }
 .os-ios .calendar-app__event { overflow: hidden; max-height: 18px; text-overflow: ellipsis; }
+
+/* Native taskbar flyout selection treatment for the non-XP desktop shells. */
+.os-win7 .xp-clock-popup__days button.is-today { border: 1px solid #4b98cf; background: linear-gradient(#e8f6ff, #cdeafd); color: #123d5d; font-weight: 700; }
+.os-win7 .xp-clock-popup__days button.is-selected:not(.is-today) { border-color: #4b98cf; background: #e6f3fc; color: #123d5d; }
+.os-classic .xp-clock-popup__days button { border-radius: 0; }
+.os-ubuntu .xp-clock-popup__days button.is-selected { outline: 1px solid #dd4814; background: #fff0e9; }
+.os-arch .xp-clock-popup__days button.is-selected { outline: 1px solid #1793d1; background: #e8f6fc; }
+.os-webos .xp-clock-popup__days button.is-selected { outline: 1px solid #38bdf8; background: rgba(56,189,248,.16); color: #e8f3fb; }
