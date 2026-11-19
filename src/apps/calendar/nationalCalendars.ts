@@ -171,6 +171,7 @@ export function isSelectedCountryWeekend(date: Date, selected: CountryCode[]): b
 }
 
 const labourCountryListeners = new Set<() => void>();
+const EMPTY_COUNTRIES: CountryCode[] = [];
 let selectedLabourCountries: CountryCode[] = [];
 function emitLabourCountries() { labourCountryListeners.forEach((listener) => listener()); }
 export function subscribeLabourCountries(listener: () => void) {
@@ -178,7 +179,7 @@ export function subscribeLabourCountries(listener: () => void) {
   return () => labourCountryListeners.delete(listener);
 }
 export function useLabourCountries() {
-  return useSyncExternalStore(subscribeLabourCountries, () => selectedLabourCountries, () => []);
+  return useSyncExternalStore(subscribeLabourCountries, () => selectedLabourCountries, () => EMPTY_COUNTRIES);
 }
 export function setSelectedLabourCountries(countries: CountryCode[]) {
   selectedLabourCountries = countries.filter((value, index) => NATIONAL_COUNTRIES.some((country) => country.code === value) && countries.indexOf(value) === index);
