@@ -12,6 +12,7 @@ import { getEditionsForProfile, getActiveEdition, setSelectedEditionId } from '.
 
 type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus' | 'display';
 type CPDisplayMode = 'category' | 'classic';
+type GalleryFilter = 'all' | 'wallpapers' | 'pictures';
 
 export function ControlPanel() {
   const { theme, language } = useApp();
@@ -36,6 +37,7 @@ export function ControlPanel() {
   const [view, setView] = useState<CPView>('categories');
   const [displayMode, setDisplayMode] = useState<CPDisplayMode>(() => theme === 'win-98' ? 'classic' : 'category');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
+  const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('all');
   const [customActive, setCustomActive] = useState(() => {
     if (typeof window !== 'undefined') {
       return !!localStorage.getItem('desktop-custom-wallpaper');
@@ -295,6 +297,10 @@ export function ControlPanel() {
   };
 
   const { items: galleryImages, loading: wallpapersLoading } = useGallery();
+  const visibleGalleryImages = galleryImages.filter((item) =>
+    galleryFilter === 'all' ||
+    (galleryFilter === 'wallpapers' ? item.mediaType === 'wallpaper' : item.mediaType === 'picture'),
+  );
 
   // OS-specific visual theme map
   const isRu = language === 'ru';
@@ -1577,8 +1583,40 @@ export function ControlPanel() {
               <div className="text-center py-8 opacity-60">Loading gallery wallpapers...</div>
             ) : (
               <>
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                  {galleryImages.map((wp) => (
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap gap-2" role="group" aria-label={isRu ? 'Тип изображений' : 'Image type'}>
+                    {([
+                      { id: 'all' as const, label: isRu ? 'Все изображения' : 'All images' },
+                      { id: 'wallpapers' as const, label: isRu ? 'Обои' : 'Wallpapers' },
+                      { id: 'pictures' as const, label: isRu ? 'Изображения' : 'Pictures' },
+                    ]).map((filter) => (
+                      <button
+                        key={filter.id}
+                        type="button"
+                        aria-pressed={galleryFilter === filter.id}
+                        onClick={() => setGalleryFilter(filter.id)}
+                        className={`rounded border px-3 py-1.5 text-xs transition-colors ${
+                          galleryFilter === filter.id
+                            ? 'border-[#316ac5] bg-[#316ac5] text-white'
+                            : 'border-gray-500/30 hover:border-gray-500/60'
+                        }`}
+                      >
+                        {filter.label}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[11px] opacity-60">
+                    {visibleGalleryImages.length} {isRu ? 'изображений' : 'images'}
+                  </span>
+                </div>
+
+                {visibleGalleryImages.length === 0 ? (
+                  <div className="rounded border border-dashed border-gray-500/30 p-8 text-center text-sm opacity-60">
+                    {isRu ? 'В этой категории пока нет изображений.' : 'No images in this category yet.'}
+                  </div>
+                ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+                  {visibleGalleryImages.map((wp) => (
                     <div
                       key={wp.id}
                       onClick={() => setSelectedWallpaper(wp.imagePath)}
@@ -1595,6 +1633,7 @@ export function ControlPanel() {
                     </div>
                   ))}
                 </div>
+                )}
 
                 {/* Selected Wallpaper Actions */}
                 {(selectedWallpaper || customActive) && (
