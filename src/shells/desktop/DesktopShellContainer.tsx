@@ -1587,6 +1587,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         open={showAppleWidgetGallery}
         visibility={appleWidgetVisibility}
         webosVisibility={webosWidgetVisibility}
+        classicWinampOpen={windows.some((managedWindow) => managedWindow.id === 'app:winamp')}
+        onToggleClassicWinamp={() => {
+          if (windows.some((managedWindow) => managedWindow.id === 'app:winamp')) closeWindow('app:winamp');
+          else launchApp('winamp');
+        }}
         onClose={() => setShowAppleWidgetGallery(false)}
         onToggle={(key) => {
           if (themeKey === 'webos') {
