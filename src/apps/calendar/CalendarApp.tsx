@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useApp } from '../../contexts/useApp';
-import type { CalendarEvent } from './icsParser';
+import type { CalendarEvent, CalendarRecurrenceRule } from './icsParser';
 import {
   NATIONAL_COUNTRIES, getHolidaysForDate, getHolidayTitle, isSelectedCountryWeekend,
   setSelectedLabourCountries, useLabourCountries,
@@ -47,6 +47,14 @@ function startOfWeek(date: Date, monday: boolean) {
   day.setDate(day.getDate() - ((day.getDay() - (monday ? 1 : 0) + 7) % 7));
   return day;
 }
+function toLocalDateInput(date: Date) {
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+function fromLocalDateInput(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 function toLocalInput(date: Date) {
   const pad = (value: number) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -73,6 +81,11 @@ export function CalendarApp() {
   const [startValue, setStartValue] = useState('');
   const [endValue, setEndValue] = useState('');
   const [formError, setFormError] = useState('');
+  const [allDay, setAllDay] = useState(false);
+  const [recurrenceFreq, setRecurrenceFreq] = useState<'NONE' | CalendarRecurrenceRule['freq']>('NONE');
+  const [recurrenceInterval, setRecurrenceInterval] = useState(1);
+  const [recurrenceCount, setRecurrenceCount] = useState('');
+  const [recurrenceUntil, setRecurrenceUntil] = useState('');
   const labourCountries = useLabourCountries();
   const toggleLabourCountry = (code: CountryCode) => {
     const next = labourCountries.includes(code) ? labourCountries.filter((item) => item !== code) : [...labourCountries, code];
@@ -118,21 +131,38 @@ export function CalendarApp() {
     const end = new Date(start.getTime() + 60 * 60 * 1000);
     setActiveEvent(null);
     setTitle(''); setLocation(''); setDescription('');
+    setAllDay(false); setRecurrenceFreq('NONE'); setRecurrenceInterval(1); setRecurrenceCount(''); setRecurrenceUntil('');
     setStartValue(toLocalInput(start)); setEndValue(toLocalInput(end));
     setFormError(''); setEditorOpen(true);
   };
   const openEditEvent = (event: CalendarEvent) => {
     if (event.source !== 'local') { setActiveEvent(event); return; }
     setActiveEvent(event); setTitle(event.summary); setLocation(event.location ?? '');
-    setDescription(event.description ?? ''); setStartValue(toLocalInput(event.startDate));
-    setEndValue(toLocalInput(event.endDate)); setFormError(''); setEditorOpen(true);
+    setDescription(event.description ?? '');
+    const eventIsAllDay = isAllDayEvent(event);
+    setAllDay(eventIsAllDay);
+    setStartValue(eventIsAllDay ? toLocalDateInput(event.startDate) : toLocalInput(event.startDate));
+    setEndValue(eventIsAllDay ? toLocalDateInput(event.endDate) : toLocalInput(event.endDate));
+    setRecurrenceFreq(event.recurrenceRule?.freq ?? 'NONE');
+    setRecurrenceInterval(event.recurrenceRule?.interval ?? 1);
+    setRecurrenceCount(event.recurrenceRule?.count ? String(event.recurrenceRule.count) : '');
+    setRecurrenceUntil(event.recurrenceRule?.until ? toLocalDateInput(event.recurrenceRule.until) : '');
+    setFormError(''); setEditorOpen(true);
   };
   const submitEvent = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      const recurrenceRule: CalendarRecurrenceRule | undefined = recurrenceFreq === 'NONE' ? undefined : {
+        freq: recurrenceFreq,
+        interval: Math.max(1, Math.min(365, Math.floor(recurrenceInterval) || 1)),
+        count: recurrenceCount.trim() ? Math.max(1, Math.min(10000, Math.floor(Number(recurrenceCount)))) : undefined,
+        until: !recurrenceCount.trim() && recurrenceUntil ? (() => { const date = fromLocalDateInput(recurrenceUntil); date.setHours(23, 59, 59, 999); return date; })() : undefined,
+      };
       const saved = saveCalendarEvent({
         summary: title, location, description,
-        startDate: fromLocalInput(startValue), endDate: fromLocalInput(endValue),
+        startDate: allDay ? fromLocalDateInput(startValue) : fromLocalInput(startValue),
+        endDate: allDay ? fromLocalDateInput(endValue) : fromLocalInput(endValue),
+        recurrenceRule,
       }, activeEvent?.source === 'local' ? activeEvent.id : undefined);
       selectCalendarDate(saved.startDate);
       setActiveEvent(saved); setEditorOpen(false); setFormError('');
@@ -283,8 +313,34 @@ export function CalendarApp() {
             <header><strong>{activeEvent ? (isRu ? 'Изменить событие' : 'Edit event') : (isRu ? 'Новое событие' : 'New event')}</strong><button type="button" onClick={() => setEditorOpen(false)} aria-label={isRu ? 'Закрыть' : 'Close'}>×</button></header>
             <label>{isRu ? 'Название' : 'Title'}<input required value={title} onChange={(event) => setTitle(event.target.value)} maxLength={160} autoFocus /></label>
             <label>{isRu ? 'Место' : 'Location'}<input value={location} onChange={(event) => setLocation(event.target.value)} maxLength={200} /></label>
-            <label>{isRu ? 'Начало' : 'Starts'}<input required type="datetime-local" value={startValue} onChange={(event) => setStartValue(event.target.value)} /></label>
-            <label>{isRu ? 'Окончание' : 'Ends'}<input required type="datetime-local" value={endValue} onChange={(event) => setEndValue(event.target.value)} /></label>
+            <label className="calendar-app__all-day-toggle"><input type="checkbox" checked={allDay} onChange={(event) => {
+              const enabled = event.target.checked;
+              setAllDay(enabled);
+              if (enabled) {
+                setStartValue((value) => toLocalDateInput(value.includes('T') ? fromLocalInput(value) : fromLocalDateInput(value)));
+                setEndValue((value) => toLocalDateInput(value.includes('T') ? fromLocalInput(value) : fromLocalDateInput(value)));
+              } else {
+                setStartValue((value) => toLocalInput(fromLocalDateInput(value)));
+                setEndValue((value) => toLocalInput(fromLocalDateInput(value)));
+              }
+            }} />{isRu ? 'Весь день' : 'All day'}</label>
+            <label>{isRu ? 'Начало' : 'Starts'}<input required type={allDay ? 'date' : 'datetime-local'} value={startValue} onChange={(event) => setStartValue(event.target.value)} /></label>
+            <label>{isRu ? 'Окончание' : 'Ends'}<input required type={allDay ? 'date' : 'datetime-local'} value={endValue} onChange={(event) => setEndValue(event.target.value)} /></label>
+            <fieldset className="calendar-app__recurrence-fields">
+              <legend>{isRu ? 'Повторение' : 'Repeat'}</legend>
+              <label>{isRu ? 'Период' : 'Frequency'}<select value={recurrenceFreq} onChange={(event) => setRecurrenceFreq(event.target.value as typeof recurrenceFreq)}>
+                <option value="NONE">{isRu ? 'Не повторять' : 'Does not repeat'}</option>
+                <option value="DAILY">{isRu ? 'Ежедневно' : 'Daily'}</option>
+                <option value="WEEKLY">{isRu ? 'Еженедельно' : 'Weekly'}</option>
+                <option value="MONTHLY">{isRu ? 'Ежемесячно' : 'Monthly'}</option>
+                <option value="YEARLY">{isRu ? 'Ежегодно' : 'Yearly'}</option>
+              </select></label>
+              {recurrenceFreq !== 'NONE' && <>
+                <label>{isRu ? 'Каждые N периодов' : 'Every N intervals'}<input type="number" min="1" max="365" value={recurrenceInterval} onChange={(event) => setRecurrenceInterval(Number(event.target.value))} /></label>
+                <label>{isRu ? 'Количество повторов (необязательно)' : 'Occurrences (optional)'}<input type="number" min="1" max="10000" value={recurrenceCount} onChange={(event) => setRecurrenceCount(event.target.value)} placeholder={isRu ? 'Без ограничения' : 'Unlimited'} /></label>
+                {!recurrenceCount && <label>{isRu ? 'Повторять до даты' : 'Repeat until'}<input type="date" value={recurrenceUntil} onChange={(event) => setRecurrenceUntil(event.target.value)} /></label>}
+              </>}
+            </fieldset>
             <label>{isRu ? 'Описание' : 'Description'}<textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={3} maxLength={2000} /></label>
             {formError && <p role="alert">{formError}</p>}
             <footer><button type="button" onClick={() => setEditorOpen(false)}>{isRu ? 'Отмена' : 'Cancel'}</button><button type="submit">{isRu ? 'Сохранить' : 'Save'}</button></footer>
