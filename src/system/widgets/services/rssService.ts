@@ -90,7 +90,7 @@ const SOURCES_STORAGE_KEY = 'webos_rss_sources_config_v1';
 const RSS_LAST_REFRESH_KEY = 'webos_rss_last_refresh_v1';
 const RSS_CACHE_TTL_MS = 15 * 60 * 1000;
 const RSS_PARTIAL_RETRY_MS = 2 * 60 * 1000;
-const RSS_REQUEST_TIMEOUT_MS = 8000;
+const RSS_REQUEST_TIMEOUT_MS = 7000;
 
 async function fetchJsonWithTimeout<T>(url: string): Promise<{ response: Response; data: T | null }> {
   const controller = new AbortController();
@@ -253,7 +253,7 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
     const { response: res, data } = await fetchJsonWithTimeout<Rss2JsonPayload>(apiUrl);
     if (res.ok && data) {
-      if (data.status === 'ok' && Array.isArray(data.items)) {
+      if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
         for (const item of data.items) {
           const rawContent = item.content || item.content_encoded || item['content:encoded'] || item.description || '';
           const rawDesc = item.description || rawContent;
@@ -451,7 +451,7 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
   }
 
   let succeeded = 0;
-  const chunkSize = 5;
+  const chunkSize = 10;
   for (let i = 0; i < sources.length; i += chunkSize) {
     const chunk = sources.slice(i, i + chunkSize);
     const results = await Promise.allSettled(chunk.map(async (source) => ({
