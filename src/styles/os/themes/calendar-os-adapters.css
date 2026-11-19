@@ -269,3 +269,11 @@
 .xp-clock-popup__days button.is-labour-weekend{background:rgba(205,45,55,.14);color:#b32632}
 .xp-clock-popup__days button.has-national-holiday{font-weight:800;text-decoration:underline;text-decoration-color:#c93440;text-underline-offset:3px}
 .xp-clock-popup__holiday-dot{position:absolute;width:4px;height:4px;border-radius:50%;background:#c93440;bottom:1px;left:50%;transform:translateX(-50%)}
+
+.calendar-app__all-day-toggle{display:flex;align-items:center;gap:8px;font-weight:600}
+.calendar-app__all-day-toggle input{width:14px;height:14px;accent-color:#c93440}
+.calendar-app__recurrence-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;border:1px solid rgba(120,120,120,.3);border-radius:6px}
+.calendar-app__recurrence-fields legend{padding:0 5px;font-size:11px;font-weight:700}
+.calendar-app__recurrence-fields>label{display:flex;flex-direction:column;gap:4px;min-width:0;font-size:11px}
+.calendar-app__recurrence-fields input,.calendar-app__recurrence-fields select{min-width:0;width:100%;padding:5px;border:1px solid rgba(120,120,120,.35);border-radius:4px;background:var(--calendar-surface,#fff);color:inherit}
+@media(max-width:520px){.calendar-app__recurrence-fields{grid-template-columns:1fr}}
