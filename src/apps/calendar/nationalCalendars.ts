@@ -81,6 +81,63 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   return result.sort((a,b)=>a.date.getTime()-b.date.getTime());
 }
 
+
+const holidayTranslations: Record<string, Record<string, string>> = {
+  'Новый год': { en: 'New Year', fr: 'Nouvel An' },
+  'Рождество Христово': { en: 'Orthodox Christmas', fr: 'Noël orthodoxe' },
+  'Православное Рождество': { en: 'Orthodox Christmas', fr: 'Noël orthodoxe' },
+  'День защитника Отечества': { en: 'Defender of the Fatherland Day', fr: 'Jour du défenseur de la patrie' },
+  'Международный женский день': { en: 'International Women’s Day', fr: 'Journée internationale des femmes' },
+  'Праздник Весны и Труда': { en: 'Spring and Labour Day', fr: 'Fête du printemps et du travail' },
+  'День Победы': { en: 'Victory Day', fr: 'Jour de la Victoire' },
+  'День России': { en: 'Russia Day', fr: 'Jour de la Russie' },
+  'День народного единства': { en: 'Unity Day', fr: 'Jour de l’unité nationale' },
+  'Наурыз мейрамы': { en: 'Nauryz', fr: 'Nauryz' },
+  'Праздник единства народа Казахстана': { en: 'Unity Day of the People of Kazakhstan', fr: 'Fête de l’unité du peuple du Kazakhstan' },
+  'День столицы': { en: 'Capital City Day', fr: 'Jour de la capitale' },
+  'День Конституции': { en: 'Constitution Day', fr: 'Jour de la Constitution' },
+  'День Республики': { en: 'Republic Day', fr: 'Jour de la République' },
+  'День Независимости': { en: 'Independence Day', fr: 'Jour de l’indépendance' },
+  'День женщин': { en: 'Women’s Day', fr: 'Journée des femmes' },
+  'Праздник труда': { en: 'Labour Day', fr: 'Fête du travail' },
+  'День Октябрьской революции': { en: 'October Revolution Day', fr: 'Jour de la révolution d’Octobre' },
+  'Рождество Христово (православное)': { en: 'Orthodox Christmas', fr: 'Noël orthodoxe' },
+  'Рождество Христово (католическое)': { en: 'Catholic Christmas', fr: 'Noël catholique' },
+  'День основания государства': { en: 'National Foundation Day', fr: 'Jour de la fondation nationale' },
+  'День рождения Императора': { en: 'Emperor’s Birthday', fr: 'Anniversaire de l’empereur' },
+  'День Сёва': { en: 'Showa Day', fr: 'Jour de Shōwa' },
+  'День Конституции': { en: 'Constitution Day', fr: 'Jour de la Constitution' },
+  'День зелени': { en: 'Greenery Day', fr: 'Jour de la verdure' },
+  'День детей': { en: 'Children’s Day', fr: 'Fête des enfants' },
+  'День гор': { en: 'Mountain Day', fr: 'Jour de la montagne' },
+  'День культуры': { en: 'Culture Day', fr: 'Jour de la culture' },
+  'День благодарности труду': { en: 'Labour Thanksgiving Day', fr: 'Jour d’action de grâce au travail' },
+  'День движения за независимость': { en: 'Independence Movement Day', fr: 'Jour du mouvement d’indépendance' },
+  'День памяти': { en: 'Memorial Day', fr: 'Jour du souvenir' },
+  'День освобождения': { en: 'Liberation Day', fr: 'Jour de la libération' },
+  'День основания Кореи': { en: 'National Foundation Day', fr: 'Jour de la fondation nationale' },
+  'День хангыля': { en: 'Hangul Day', fr: 'Jour du hangeul' },
+  'Рождество': { en: 'Christmas Day', fr: 'Noël' },
+  'Китайский Новый год': { en: 'Lunar New Year', fr: 'Nouvel An lunaire' },
+  'Праздник драконьих лодок': { en: 'Dragon Boat Festival', fr: 'Fête des bateaux-dragons' },
+  'Праздник середины осени': { en: 'Mid-Autumn Festival', fr: 'Fête de la mi-automne' },
+  'Соллаль (Лунный Новый год)': { en: 'Seollal (Lunar New Year)', fr: 'Seollal (Nouvel An lunaire)' },
+  'Чхусок': { en: 'Chuseok', fr: 'Chuseok' },
+};
+export function getHolidayTitle(holiday: NationalHoliday, locale: string): string {
+  const language = locale.split('-')[0].toLowerCase();
+  if (language === 'ru') return holiday.title;
+  const separator = ' · ';
+  const russian = holiday.title.includes(separator) ? holiday.title.split(separator).slice(1).join(separator) : holiday.title;
+  const translated = holidayTranslations[russian]?.[language];
+  if (translated) {
+    const native = holiday.title.includes(separator) ? holiday.title.split(separator)[0] : '';
+    return native && ['CN','JP','KR'].includes(holiday.country) ? `${native} · ${translated}` : translated;
+  }
+  if (['CN','JP','KR'].includes(holiday.country) && holiday.title.includes(separator)) return holiday.title.split(separator)[0];
+  return holiday.title;
+}
+
 export function getHolidaysForDate(date: Date): NationalHoliday[] {
   const key=dateKey(date);
   return getNationalHolidays(date.getFullYear()).filter(item=>dateKey(item.date)===key);
