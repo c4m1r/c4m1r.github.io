@@ -383,6 +383,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   };
 
   const getAppleItemIcon = (item: FileSystemItem) => {
+    if (item.appId) return getFileIcon(item) as string;
     if (item.type === 'drive') return appleDriveIcon;
     if (item.type === 'folder') return appleFolderIcon;
     if (/\.(png|jpe?g|gif|webp)$/i.test(item.name)) return appleImageIcon;
