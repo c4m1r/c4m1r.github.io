@@ -304,6 +304,10 @@ const holidayTranslations: Record<string, Record<string, string>> = {
   'День труда': { en: 'Labour Day', fr: 'Fête du travail' },
 
   'Good Friday': { ru: 'Страстная пятница', fr: 'Vendredi saint' },
+  'Early May bank holiday': { ru: 'Ранний майский банковский выходной', fr: 'Jour férié du début mai' },
+  'New Year’s Day (substitute day)': { ru: 'Перенос выходного на Новый год', fr: 'Jour de remplacement du Nouvel An' },
+  'Christmas Day (substitute day)': { ru: 'Перенос выходного на Рождество', fr: 'Jour de remplacement de Noël' },
+  'Boxing Day (substitute day)': { ru: 'Перенос выходного на День подарков', fr: 'Jour de remplacement du lendemain de Noël' },
   'Easter Sunday': { ru: 'Пасхальное воскресенье', fr: 'Dimanche de Pâques' },
   'Easter Monday': { ru: 'Пасхальный понедельник', fr: 'Lundi de Pâques' },
   'Spring bank holiday': { ru: 'Весенний банковский выходной', fr: 'Jour férié de printemps' },
