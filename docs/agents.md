@@ -106,14 +106,9 @@ Every full desktop OS in `src/themes/` operates via a multi-phase state machine:
 ## 4. Authentication & Security Engine
 
 Credentials and account authorization are managed by `src/domain/auth/credentials.ts`:
-- **Primary account**: `c4m1r` (case-insensitive normalized).
-- **Password**: Obfuscated secret master password (verified strictly via XOR token cipher & SHA-256 digest in `credentials.ts`).
-- **Storage policy**: Passwords are **never** stored in plain text anywhere in source files, docs, or bundle outputs.
-  - **Obfuscation**: XOR cipher token with key `0x65` (`[0x54, 0x57, 0x56, 0x54, 0x57, 0x56]`).
-  - **Digest**: Salted SHA-256 hash (`ac0d0deae2a1d4e30a799234e867fc1d6f3f371d587924d8f327c4b74e82383b`).
-- **Validation**:
-  - `verifyAccountPassword(username, passwordAttempt)` (synchronous, zero-overhead).
-  - `verifyAccountPasswordAsync(username, passwordAttempt)` (Web Crypto API SHA-256).
+- Authentication implementation is in `src/domain/auth/credentials.ts`.
+- Never copy credential tokens, hashes, salts, password material or account-specific secrets into documentation, commit messages, issues or logs.
+- Client-side obfuscation is not a security boundary. Do not describe browser-bundled credentials as secure against a determined user; treat this as a demo gate, not production authentication.
 
 ---
 
@@ -159,3 +154,74 @@ npm run verify
 # 6. Check for git whitespace residue
 git diff --check
 ```
+
+
+---
+
+## 7. Current project handoff — 2026-11-19
+
+### Canonical documentation locations
+- Active task registry: [tasks.md](./tasks.md). Do not create or maintain a root-level `tasks.md`.
+- Historical task snapshots and superseded plans: [history.md](./history.md).
+- Operational handoff, research notes and source cache: this file.
+- System architecture: [architecture.md](./architecture.md).
+- OS-specific visual acceptance: [os-skin-visual-checklist.md](./os-skin-visual-checklist.md).
+- Donor source and licence audit: [donor-absorption-audit.md](./donor-absorption-audit.md) — note that parts of this document contain stale/overstated completion claims and must be corrected against the current repository tree.
+
+### Verified repository baseline
+- Branch: `main`.
+- Inspected head before documentation consolidation: `617b2ee75baef787b331965b79bcee6fa637c66f`.
+- No root `tasks.md` exists. The canonical file is `docs/tasks.md`.
+- `/eat/` is present in the Git tree. Do not repeat historical claims that all donor folders were removed.
+- Runtime stack from `package.json`: React 18, TypeScript, Vite 7, Tailwind 3.4. No Next.js runtime should be introduced to absorb donor components.
+- Available scripts: `npm run verify`, `npm run typecheck`, `npm run lint`, `npm run build`, `npm run clean`, `npm run build:clean`.
+
+### Verified code entry points
+- App registry: `src/shells/desktop/appRegistry.tsx`.
+- Desktop shortcuts: `src/shells/desktop/shortcutsRegistry.ts`.
+- OS skin rules and app naming/visibility: `src/shells/os/osSkins.ts`.
+- Doom player: `src/apps/doom/DoomPlayer.tsx`.
+- Doom variants and Emupedia URLs: `src/apps/doom/config.ts`.
+- Games folder surface: `src/apps/games/GamesFolder.tsx`.
+- Native games: `src/apps/games/SnakeGame.tsx`, `src/apps/games/MemoryGame.tsx`, `src/apps/minesweeper/`.
+- Existing chess audio assets: `src/assets/audio/chess/`.
+
+### Source and donor cache
+- `eat/alanagoyal-main`: MIT licence was found in prior audit. Candidate Chess/Solo Games source uses chess.js and includes Supabase-backed functionality. Reuse only isolated client-side logic after exact import/asset review; do not bring in API routes, Supabase or multiplayer backend. Audit sound and image assets separately.
+- `eat/windows7-ui-portfolio-main`: MIT licence was found in prior audit. Candidate `components/apps/Chess.tsx`, `Solitaire.tsx`; inspect exact imports, CSS, assets and dependencies before adaptation. Extract components, not the Next/React/Tailwind application.
+- `eat/Personal-Portfolio-main`: Memory/Snake donor files exist; no root licence was found in prior audit. Native implementations in `src/` remain canonical.
+- `eat/wins95Portfolio-main`: Minesweeper donor exists; native Minesweeper remains canonical. Check source and asset terms before reuse.
+- `eat/98.portfolio-main`: custom Three.js game branded 98.DOOM; not id Software DOOM. No root licence was found in prior audit. Do not port code/art without permission.
+- The earlier task registry contains a source audit snapshot; see [history.md](./history.md). Audit findings are leads, not legal clearance.
+
+### DOOM integration warning
+- Current `DoomPlayer` embeds remote Emupedia pages. An iframe `load` event only means navigation completed; it does not prove the engine initialized or gameplay works. `onError` does not reliably report remote HTTP errors, CSP/X-Frame-Options blocking or in-page failures.
+- Do not use iframe load state as a playable-success signal. Show the direct external launch path and explicitly communicate that embedded availability is unverified.
+- Doom 3 is WIP and must remain unavailable/unverified until manual gameplay verification.
+- Manual verification checklist: gameplay starts; keyboard/mouse input; pointer lock acquire/release; sound; resize; restart; failure recovery; tested browser/device and selected build.
+
+### Multi-OS design implementation rule
+Build one application contract and share state/behavior, but render through OS-specific presentation layers. For each surface, check:
+1. Window chrome/titlebar and controls.
+2. Toolbar/address/navigation/sidebar conventions.
+3. Typography, font metrics, spacing and density.
+4. Native iconography and file/folder affordances.
+5. Menus, context menus, selection and focus behavior.
+6. Loading, empty, error and disabled states.
+7. Responsive constraints and keyboard/touch input.
+
+Do not solve cross-OS styling by applying one generic frame. Keep explicit visual acceptance per Windows XP, Windows 98/2000, Windows 7, macOS, Ubuntu/Arch and WebOS. Refer to `os-skin-visual-checklist.md`.
+
+### Work sequence / handoff
+1. Keep the active registry in `docs/tasks.md` aligned with user requirements.
+2. Repair DOOM launch truthfulness and error/recovery UX before adding another unverified engine.
+3. Review Chess/Solitaire donor components and licenses, then integrate the smallest suitable self-contained game.
+4. Make Games a normal virtual folder with active OS Explorer rendering.
+5. Complete My Documents and My Pictures/Viewer around canonical shared inventories.
+6. Complete Control Panel and Widgets shortcuts, then run the full OS visual matrix.
+7. Run all repository quality gates; record exact results and commit SHA here and in the active registry.
+
+### Research/cache hygiene
+- Record only verified findings. For each external/donor source include URL/path, retrieval date, licence file and copyright holder, files actually reused, dependencies, and unresolved questions.
+- Re-check URLs and remote host behavior before relying on them; do not treat old cache entries as current availability.
+- Never cache credentials, personal secrets, access tokens or raw user data in this file.
