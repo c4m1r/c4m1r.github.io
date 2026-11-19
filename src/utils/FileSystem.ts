@@ -48,7 +48,7 @@ const musicChildren: FileSystemChildren = PROJECT_PLAYLIST.reduce((children, tra
         id: `music:${track.id}`,
         name: fileName,
         type: 'file',
-        icon: WINXP_ASSETS.mediaPlayerIcon ?? WINXP_ASSETS.richTextIcon ?? textIcon,
+        icon: winampIcon,
         content: track.src,
         mediaTrackId: track.id,
     };
