@@ -168,6 +168,16 @@ export function formatSourcesToText(sources: RssSource[]): string {
   return chunks.join('\n');
 }
 
+const UNKNOWN_PUBLICATION_DATE = new Date(0).toISOString();
+
+function normalizePublicationDate(value: unknown): string {
+  if (typeof value !== 'string' && typeof value !== 'number' && !(value instanceof Date)) {
+    return UNKNOWN_PUBLICATION_DATE;
+  }
+  const timestamp = new Date(value).getTime();
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : UNKNOWN_PUBLICATION_DATE;
+}
+
 function extractImage(htmlString: string): string | undefined {
   if (!htmlString) return undefined;
   const match = htmlString.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -199,7 +209,7 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
             title: item.title || 'Новость',
             description: cleanDesc,
             link: item.link || source.url,
-            pubDate: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
+            pubDate: normalizePublicationDate(item.pubDate || item.isoDate || item.date_published),
             category: source.category,
             sourceTitle: source.title,
             sourceUrl: source.url,
@@ -238,8 +248,9 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
           const pubDate =
             elem.querySelector('pubDate')?.textContent ||
             elem.querySelector('published')?.textContent ||
+            elem.querySelector('dc\\:date, date')?.textContent ||
             elem.querySelector('updated')?.textContent ||
-            new Date().toISOString();
+            '';
 
           const img =
             elem.querySelector('enclosure[type^="image"]')?.getAttribute('url') ||
@@ -252,7 +263,7 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
             title,
             description: cleanHtml(descRaw).slice(0, 320),
             link,
-            pubDate: new Date(pubDate).toISOString(),
+            pubDate: normalizePublicationDate(pubDate),
             category: source.category,
             sourceTitle: source.title,
             sourceUrl: source.url,
@@ -309,7 +320,7 @@ export async function getCachedArticlesFromDatabase(category?: string): Promise<
           const target = category.replace('#', '');
           list = list.filter((item) => item.category === target);
         }
-        list.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+        list.sort((a, b) => normalizePublicationDate(b.pubDate).localeCompare(normalizePublicationDate(a.pubDate)));
         resolve(list);
       };
       req.onerror = () => resolve([]);
@@ -353,7 +364,7 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     }
   }
 
-  uniqueArticles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+  uniqueArticles.sort((a, b) => normalizePublicationDate(b.pubDate).localeCompare(normalizePublicationDate(a.pubDate)));
   await saveArticlesToDatabase(uniqueArticles);
 
   return uniqueArticles.length > 0 ? uniqueArticles : await getCachedArticlesFromDatabase();
