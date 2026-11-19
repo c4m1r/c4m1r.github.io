@@ -1582,6 +1582,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           time={time}
           language={language}
           onClose={() => setShowNotificationPanel(false)}
+          onOpenCalendar={() => launchApp('calendar')}
         />
       )}
 
