@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type RefObject } from 'react';
 import { type Language } from '../../../i18n/translations';
+import { type ThemeId } from '../../../contexts/appContextTypes';
 import { useApp } from '../../../contexts/useApp';
 import { SystemActionMenu } from '../../../system/actions/SystemActionMenu';
 import { ensureCalendarEvents, getCalendarEventsForDate, moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
@@ -57,7 +58,7 @@ function areSameDay(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
-function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { language: Language; time: Date; labels: TrayLabels; onOpenCalendar?: () => void }) {
+function ClockCalendarPopup({ language, time, labels, theme, onOpenCalendar }: { language: Language; time: Date; labels: TrayLabels; theme: ThemeId; onOpenCalendar?: () => void }) {
   const { visibleMonth, selectedDate } = useCalendarCenter();
   const labourCountries = useLabourCountries();
   const monthCursor = visibleMonth;
@@ -87,20 +88,20 @@ function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { langua
   const secondRotation = time.getSeconds() * 6;
 
   return (
-    <div className="xp-clock-popup" role="dialog" aria-label={labels.dateTime} onClick={(event) => event.stopPropagation()}>
-      <div className="xp-clock-popup__header">
+    <div className={`xp-clock-popup xp-clock-popup--${theme}`} role="dialog" aria-label={labels.dateTime} onClick={(event) => event.stopPropagation()}>
+      <div className={`xp-clock-popup__header ${['win10','win11'].includes(theme) ? 'is-modern-windows' : ''}`}>
         <div>
           <div className="xp-clock-popup__title">{labels.dateTime}</div>
           <div className="xp-clock-popup__date">{new Intl.DateTimeFormat(language, { dateStyle: 'full' }).format(time)}</div>
         </div>
-        <div className="xp-analog-clock" aria-hidden="true">
+        {!['win10','win11','ubuntu','arch','webos'].includes(theme) && <div className="xp-analog-clock" aria-hidden="true">
           <span className="xp-analog-clock__center" />
           <span className="xp-analog-clock__hand xp-analog-clock__hand--hour" style={{ transform: `translateX(-50%) rotate(${hourRotation}deg)` }} />
           <span className="xp-analog-clock__hand xp-analog-clock__hand--minute" style={{ transform: `translateX(-50%) rotate(${minuteRotation}deg)` }} />
           <span className="xp-analog-clock__hand xp-analog-clock__hand--second" style={{ transform: `translateX(-50%) rotate(${secondRotation}deg)` }} />
-        </div>
+        </div>}
       </div>
-      <div className="xp-clock-popup__digital">{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
+      <div className={`xp-clock-popup__digital ${['win10','win11','ubuntu','arch','webos'].includes(theme) ? 'is-primary-time' : ''}`}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
       <div className="xp-clock-popup__calendar">
         <div className="xp-clock-popup__month-row">
           <button type="button" onClick={() => moveCalendarMonth(-1)} aria-label={labels.previousMonth} title={labels.previousMonth}>‹</button>
@@ -260,7 +261,7 @@ export function TaskbarSystemArea({
         <button type="button" onClick={handleClockToggle} className={`taskbar-tray-time ${showClockPanel ? 'is-open' : ''}`} aria-label={labels.dateTime} aria-expanded={showClockPanel} title={labels.dateTime}>
           <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' })}</span>
         </button>
-        {showClockPanel && <ClockCalendarPopup language={language} time={time} labels={labels} onOpenCalendar={onOpenCalendar} />}
+        {showClockPanel && <ClockCalendarPopup language={language} time={time} labels={labels} theme={theme} onOpenCalendar={onOpenCalendar} />}
       </div>
     </div>
   );
