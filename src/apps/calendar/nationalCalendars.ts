@@ -124,13 +124,21 @@ const holidayTranslations: Record<string, Record<string, string>> = {
   'Праздник середины осени': { en: 'Mid-Autumn Festival', fr: 'Fête de la mi-automne' },
   'Соллаль (Лунный Новый год)': { en: 'Seollal (Lunar New Year)', fr: 'Seollal (Nouvel An lunaire)' },
   'Чхусок': { en: 'Chuseok', fr: 'Chuseok' },
+  'Good Friday': { ru: 'Страстная пятница', fr: 'Vendredi saint' },
+  'Easter Sunday': { ru: 'Пасхальное воскресенье', fr: 'Dimanche de Pâques' },
+  'Easter Monday': { ru: 'Пасхальный понедельник', fr: 'Lundi de Pâques' },
+  'Spring bank holiday': { ru: 'Весенний банковский выходной', fr: 'Jour férié de printemps' },
+  'Summer bank holiday': { ru: 'Летний банковский выходной', fr: 'Jour férié d’été' },
+  'New Year’s Day': { ru: 'Новый год', fr: 'Jour de l’An' },
+  'Christmas Day': { ru: 'Рождество', fr: 'Jour de Noël' },
+  'Boxing Day': { ru: 'День подарков', fr: 'Lendemain de Noël' },
 };
 export function getHolidayTitle(holiday: NationalHoliday, locale: string): string {
   const language = locale.split('-')[0].toLowerCase();
-  if (language === 'ru') return holiday.title;
   const separator = ' · ';
   const russian = holiday.title.includes(separator) ? holiday.title.split(separator).slice(1).join(separator) : holiday.title;
   const translated = holidayTranslations[russian]?.[language];
+  if (language === 'ru') return holiday.title.includes(separator) ? russian : holidayTranslations[holiday.title]?.ru ?? holiday.title;
   if (translated) {
     const native = holiday.title.includes(separator) ? holiday.title.split(separator)[0] : '';
     return native && ['CN','JP','KR'].includes(holiday.country) ? `${native} · ${translated}` : translated;
