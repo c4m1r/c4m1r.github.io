@@ -28,6 +28,7 @@ type Win7MenuEntry = {
 const DOCUMENTS_PATH = 'C:\\Users\\C4m1r\\My Documents';
 const PICTURES_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Pictures';
 const MUSIC_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Music';
+const VIDEOS_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Videos';
 
 export function StartMenu7({
   onClose,
@@ -144,6 +145,12 @@ export function StartMenu7({
       label: isRu ? 'Музыка' : 'Music',
       path: MUSIC_PATH,
       icon: assets.placesIcons.myMusic ?? assets.folderIcon,
+    },
+    {
+      id: 'videos',
+      label: isRu ? 'Видео' : 'Videos',
+      path: VIDEOS_PATH,
+      icon: assets.folderIcon,
     },
     {
       id: 'computer',
