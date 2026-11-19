@@ -72,6 +72,7 @@ import { IosAssistiveTouch } from './components/IosAssistiveTouch';
 import { AppleDesktopViewOptions } from './components/AppleDesktopViewOptions';
 import { IosHomeScreen } from './components/IosHomeScreen';
 import { getDesktopOsAttributes } from './runtime/desktopOsAttributes';
+import { getSystemSettings, subscribeSystemSettings } from '../../system/settings/settingsStore';
 import { useDesktopSystemActionBridge } from './runtime/useDesktopSystemActionBridge';
 import { MACOS_APP_ICON_BY_ID, MACOS_DOCK_ITEMS, type AppleDockAsset } from './appleIconAssets';
 
@@ -114,6 +115,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showRunDialog, setShowRunDialog] = useState(false);
   const [showTaskManager, setShowTaskManager] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; items: ContextMenuItem[] } | null>(null);
+  const [desktopColorScheme, setDesktopColorScheme] = useState<'light' | 'dark'>(() => getSystemSettings().perOs?.[theme]?.colorScheme ?? 'dark');
   const [volumeLevel, setVolumeLevel] = useState(70);
   const [iosBrightnessLevel, setIosBrightnessLevel] = useState(() => {
     if (typeof window === 'undefined') return 78;
@@ -411,6 +413,14 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const trayRef = useRef<HTMLDivElement | null>(null);
 
   const themeKey: ThemeId = theme;
+
+  useEffect(() => {
+    const syncColorScheme = () => {
+      setDesktopColorScheme(getSystemSettings().perOs?.[themeKey]?.colorScheme ?? 'dark');
+    };
+    syncColorScheme();
+    return subscribeSystemSettings(syncColorScheme);
+  }, [themeKey]);
   const themeAssets = (THEME_ASSETS as Record<string, typeof THEME_ASSETS.webos>)[themeKey] ?? THEME_ASSETS.webos;
   const fallbackAssets = THEME_ASSETS.webos;
   const resolveAssetPath = (primary?: string, secondary?: string) => primary ?? secondary ?? '';
@@ -1370,6 +1380,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     <div
       ref={desktopRef}
       {...osAttributes}
+      data-color-scheme={themeKey === 'webos' ? desktopColorScheme : undefined}
       className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
       style={{
         backgroundImage: customWallpaper
