@@ -121,6 +121,7 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
   }
   // South Korea: public holiday dates and substitute days for 2026/2027.
   if (year===2026) {
+    add('KR',new Date(year,0,1),'신정 · Новый год');
     addRange('KR',2,16,2,18,'설날 · Соллаль (Лунный Новый год)');
     add('KR',new Date(year,2,1),'삼일절 · День движения за независимость');
     add('KR',new Date(year,2,2),'대체공휴일 · Перенесённый выходной');
