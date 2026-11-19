@@ -767,12 +767,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             type: 'system' as const,
           },
           {
-            id: 'recycle-bin',
-            icon: getIconElement('recycle'),
-            label: getOsSystemLabel('recycleBin', t.recycleBin, themeKey, language),
-            type: 'system' as const,
-          },
-          {
             id: 'my-documents',
             icon: getIconElement('folder'),
             label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
@@ -795,6 +789,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             ),
             label: gamesLabel,
             type: 'system' as const,
+          },
+          {
+            id: 'programs-folder',
+            icon: <img src={resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon)} alt={language === 'ru' ? 'Программы' : 'Programs'} className="w-12 h-12 drop-shadow" />,
+            label: language === 'ru' ? 'Программы' : 'Programs',
+            type: 'folder' as const,
           },
           ...applicationShortcuts,
         ]),
