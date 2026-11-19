@@ -59,7 +59,8 @@ export const doomVariants: DoomVariant[] = [
   },
   {
     id: 'doom2',
-    title: 'Doom II: Hell on Earth',
+    title: 'Doom II',
+    subtitle: 'Hell on Earth',
     icon: desktopIcon(),
     homepage: `${EMUPEDIA_BASE}/emupedia-game-doom2/`,
     description: {
