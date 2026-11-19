@@ -262,3 +262,11 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Removed the earlier Win98/WebOS adapter block from `winxp-explorer-fidelity.css` so that file is again XP-specific.
 - Important limitation: the shared Legacy Explorer still does not implement a Linux tree/sidebar or a fully native Nautilus/Thunar interaction model; the current Linux work is a theme adapter, not full parity. Win98/2000 toolbar icons are still vector controls rather than a complete historical bitmap toolbar.
 - No runtime, typecheck, lint or build verification was performed in this connector-only change. Keep task progress conservative until browser checks cover all OS profiles and narrow layouts.
+
+
+### Latest implementation note — Explorer search and path correction
+- `src/apps/explorer/MyComputer.tsx`: Search toolbar action toggles a current-folder filter row. It filters the same virtual filesystem items in icon/thumbnail/details modes; it does not mutate data. Escape closes search.
+- Canonical C: root is normalized to `C:\\`; navigating into a child from a drive root now inserts the path separator. Up navigation returns from C: root to My Computer and from a first-level C: folder to C:\\.
+- Address lookup now compares path keys/names case-insensitively. Adjacent duplicate navigation history entries are suppressed.
+- This pass did not implement the shared folder tree yet. Do not claim tree/sidebar completion. Search is current-folder-only, not recursive/global.
+- No tests/build/browser verification were run. Next agent should inspect the final diff and run quality gates before extending the Explorer tree.
