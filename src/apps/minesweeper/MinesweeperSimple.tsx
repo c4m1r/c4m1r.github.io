@@ -105,7 +105,8 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
       const newBoard = board.map((r) => r.map((c) => ({ ...c })));
       let cell = newBoard[row][col];
 
-      if (cell.isRevealed || cell.isFlagged || cell.isQuestioned) return;
+      if (cell.isRevealed || cell.isFlagged) return;
+      // A left click opens a question-marked cell, matching classic Minesweeper.
 
       // Classic Minesweeper never ends on the opening click: move that mine
       // to a free square and rebuild all neighbor counts before revealing.
@@ -143,6 +144,7 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
       }
 
       cell.isRevealed = true;
+      cell.isQuestioned = false;
 
       // Если мина - проигрыш
       if (cell.isMine) {
@@ -181,6 +183,7 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
                 !newBoard[nr][nc].isFlagged
               ) {
                 newBoard[nr][nc].isRevealed = true;
+                newBoard[nr][nc].isQuestioned = false;
                 if (newBoard[nr][nc].neighborMines === 0) {
                   queue.push([nr, nc]);
                 }
@@ -237,6 +240,7 @@ export function Minesweeper({ rows = 9, cols = 9, mines = 10 }: MinesweeperProps
 
   const handleCellRightClick = (e: React.MouseEvent, row: number, col: number) => {
     e.preventDefault();
+    e.stopPropagation();
     toggleFlag(row, col);
   };
 
