@@ -91,7 +91,7 @@ export async function fetchWeather(cityId = 'almaty', language = 'ru'): Promise<
   const city = CITIES.find((c) => c.id === cityId) ?? CITIES[0];
 
   // Try cached data if fresh (< 20 mins)
-  const cacheKey = `${WEATHER_CACHE_KEY_PREFIX}${city.id}`;
+  const cacheKey = `${WEATHER_CACHE_KEY_PREFIX}${city.id}_${language}`;
   if (typeof window !== 'undefined') {
     const raw = localStorage.getItem(cacheKey);
     if (raw) {
