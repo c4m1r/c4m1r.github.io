@@ -933,7 +933,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                     <img
                       src={getExplorerItemIcon(item)}
                       alt={item.name}
-                      className="max-w-full max-h-full object-contain"
+                      className="h-full w-full object-contain"
                       onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                   </div>
@@ -966,11 +966,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                               handleNavigate(item);
                             }}
                           >
-                            <div className="w-12 h-12 flex items-center justify-center mb-1">
+                            <div className="w-16 h-16 flex items-center justify-center mb-1">
                               <img
                                 src={getFileIcon(item) as string}
                                 alt={item.name}
-                                className={`max-w-full max-h-full drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
+                                className={`h-full w-full object-contain drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
                                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
                               />
                             </div>
