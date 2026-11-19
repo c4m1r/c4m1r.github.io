@@ -155,7 +155,7 @@ export function StartMenu7({
     {
       id: 'network',
       label: isRu ? 'Сетевое окружение' : 'Network',
-      path: 'Network Neighborhood',
+      path: 'My Computer\\\\Network Neighborhood',
       icon: assets.placesIcons.connectTo ?? assets.computerIcon,
     },
     {
