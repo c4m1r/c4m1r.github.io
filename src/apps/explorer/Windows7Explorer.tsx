@@ -15,11 +15,13 @@ import type { MyComputerProps } from './MyComputer';
 const PATHS = {
   desktop: 'C:\\Documents and Settings\\C4m1r\\Desktop',
   documents: 'C:\\Documents and Settings\\C4m1r\\My Documents',
-  pictures: 'C:\\Documents and Settings\\C4m1r\\My Pictures',
+  pictures: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures',
   music: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music',
 } as const;
 
-type Win7ViewMode = 'icons' | 'details';
+type Win7ViewMode = 'icons' | 'details' | 'thumbnails';
+
+const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки/i.test(value);
 
 function joinWindowsPath(parent: string, child: string) {
   if (!parent || parent === 'My Computer') return child;
@@ -49,7 +51,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
   const [historyIndex, setHistoryIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<Win7ViewMode>('icons');
+  const [viewMode, setViewMode] = useState<Win7ViewMode>(isPicturesFolderPath(currentPath) ? 'thumbnails' : 'icons');
   const [addressEditing, setAddressEditing] = useState(false);
   const [addressInput, setAddressInput] = useState(currentPath);
 
@@ -60,12 +62,14 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
     setSearchQuery('');
     setSelectedItem(null);
     setAddressInput(currentPath);
+    setViewMode(isPicturesFolderPath(currentPath) ? 'thumbnails' : 'icons');
   }, [currentPath]);
 
   useEffect(() => {
     setAddressInput(path);
     setSearchQuery('');
     setSelectedItem(null);
+    if (isPicturesFolderPath(path)) setViewMode('thumbnails');
   }, [path]);
 
   const navigateToPath = useCallback((targetPath: string, recordHistory = true) => {
@@ -225,7 +229,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
         <button type="button" disabled>{isRu ? 'Электронная почта' : 'E-mail'}</button>
         <button type="button" disabled><FolderPlus size={14} /> {isRu ? 'Новая папка' : 'New folder'}</button>
         <div className="win7-explorer__commandbar-spacer" />
-        <button type="button" className="win7-explorer__view-button" onClick={() => setViewMode((current) => current === 'icons' ? 'details' : 'icons')} title={isRu ? 'Изменить представление' : 'Change your view'}>
+        <button type="button" className="win7-explorer__view-button" onClick={() => setViewMode((current) => current === 'icons' ? 'thumbnails' : current === 'thumbnails' ? 'details' : 'icons')} title={isRu ? 'Изменить представление' : 'Change your view'}>
           <LayoutGrid size={15} />
           <ChevronDown size={9} />
         </button>
@@ -297,7 +301,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
               ))}
             </div>
           ) : (
-            <div className="win7-explorer__icons">
+            <div className={`win7-explorer__icons ${viewMode === 'thumbnails' ? 'win7-explorer__icons--thumbnails' : ''}`}>
               {items.map((item) => (
                 <button
                   key={item.id}
