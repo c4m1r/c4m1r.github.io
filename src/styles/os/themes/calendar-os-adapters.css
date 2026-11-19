@@ -265,3 +265,7 @@
 .calendar-app__holiday--cultural{background:rgba(190,130,25,.13);color:inherit}
 .calendar-app__list-row .calendar-app__holiday{flex:1}
 @media(max-width:640px){.calendar-app__labour-country-picker button span{display:none}.calendar-app__labour-country-picker button{padding:4px}.calendar-app__labour-country-picker img{width:20px;height:14px}.calendar-app__month-cell.is-labour-weekend{background:linear-gradient(145deg,rgba(255,255,255,.92) 0 55%,rgba(220,48,58,.22) 55% 100%)}}
+
+.xp-clock-popup__days button.is-labour-weekend{background:rgba(205,45,55,.14);color:#b32632}
+.xp-clock-popup__days button.has-national-holiday{font-weight:800;text-decoration:underline;text-decoration-color:#c93440;text-underline-offset:3px}
+.xp-clock-popup__holiday-dot{position:absolute;width:4px;height:4px;border-radius:50%;background:#c93440;bottom:1px;left:50%;transform:translateX(-50%)}
