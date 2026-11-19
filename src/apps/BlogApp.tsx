@@ -281,7 +281,7 @@ export function BlogApp() {
           ) : (
             <div className="mx-auto max-w-4xl p-6 lg:p-10">
               <h1 className="mb-2 text-2xl font-semibold">{isRu ? 'Справка и документация' : 'Help and Documentation'}</h1>
-              <p className="mb-6 text-sm opacity-70">{isRu ? 'Выберите категорию или статью слева. Здесь собраны страницы Wiki и публикации блога из Markdown-файлов сайта.' : 'Choose a category or article on the left. This library includes the site Wiki pages and blog posts sourced from Markdown files.'}</p>
+              <p className="mb-6 text-sm opacity-70">{isRu ? 'Выберите категорию или статью слева. Здесь собраны Wiki, блог, приложения, проекты, новости и страницы о сайте из Markdown-файлов.' : 'Choose a category or article on the left. This library includes the site Wiki, Blog, app, project, news and about pages sourced from Markdown files.'}</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded border p-4"><div className="text-2xl font-semibold">{wikiDocuments.length}</div><div className="text-xs opacity-65">{isRu ? 'страниц базы знаний' : 'knowledge-base pages'}</div></div>
                 <div className="rounded border p-4"><div className="text-2xl font-semibold">{blogDocuments.length + siteDocuments.length}</div><div className="text-xs opacity-65">{isRu ? 'статей и страниц сайта' : 'blog and site pages'}</div></div>
