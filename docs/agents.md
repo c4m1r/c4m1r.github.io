@@ -328,3 +328,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Windows 7 Explorer now recognizes English and Russian My Pictures path text and enters a thumbnail view. The view control cycles Icons → Thumbnails → Details; styles are in src/styles/os/themes/windows-shell-fidelity-final.css.
 - Desktop shortcuts: src/shells/desktop/shortcutsRegistry.ts no longer places Projects, Wiki, Notepad or About as standalone desktop app shortcuts because these entries already live inside My Documents. Blog remains a desktop app shortcut because it is separate from the My Documents canonical set. The app registry and Start Menu routes remain intact.
 - These are source-level changes only. Confirm click navigation, thumbnail loading, file opening and Windows 7 responsive layout in a browser before increasing task completion estimates.
+
+
+### XP Explorer Pictures navigation follow-through — 2026-11-19
+- src/apps/explorer/MyComputer.tsx now includes My Pictures / Мои рисунки in the Windows XP task pane's Other Places group, using the same canonical nested path under My Documents.
+- The XP Picture Tasks filter now includes WebP as well as PNG/JPEG/GIF. The image file association already supports WebP in DesktopShellContainer.
+- Remaining limitation: the XP task-pane action labeled “View as a slide show” currently opens the first matching image; it does not yet start the viewer slideshow automatically. Do not describe that action as a verified slideshow until it is wired to a real start-slideshow option and tested.
+- Latest source implementation commit: 3b28ee4d60c6f84222f93dde4b4a75a000d34560. No local build/typecheck/lint/browser tests were run.
