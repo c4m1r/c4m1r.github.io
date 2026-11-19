@@ -87,11 +87,6 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
     add('JP',new Date(year,8,equinoxDay(year,false)),'秋分の日 · День осеннего равноденствия');
     add('JP',nthWeekday(year,10,1,2),'スポーツの日 · День спорта');
   }
-  add('GB',new Date(year,easter.getMonth(),easter.getDate()-2),'Good Friday');
-  add('GB',easter,'Easter Sunday','cultural');
-  add('GB',new Date(year,easter.getMonth(),easter.getDate()+1),'Easter Monday');
-  add('GB',lastWeekday(year,5,1),'Spring bank holiday');
-  add('GB',lastWeekday(year,8,1),'Summer bank holiday');
   // Annual memorial markers remain separate from labour-day status.
   add('CN',new Date(year,11,13),'国家公祭日 · День памяти жертв Нанкинской резни','memorial');
   add('GB',new Date(year,10,11),'Remembrance Day · День поминовения','memorial');
@@ -158,8 +153,22 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
     add('KR',new Date(year,11,25),'성탄절 · Рождество');
     add('KR',new Date(year,11,27),'대체공휴일 · Перенесённый выходной');
   }
+  // Annual transferred days are shown as separate markers so the reason for a weekday closure is visible.
+  if(year===2026){
+    [['RU','2026-01-09'],['RU','2026-03-09'],['RU','2026-05-11'],['RU','2026-12-31'],
+     ['KZ','2026-03-09'],['KZ','2026-03-24'],['KZ','2026-03-25'],['KZ','2026-05-11'],['KZ','2026-10-26']]
+      .forEach(([country,key])=>{const [y,m,d]=key.split('-').map(Number);add(country as CountryCode,new Date(y,m-1,d),'Перенесённый выходной');});
+    add('BY',new Date(year,3,21),'Радуница');
+  }
+  if(year===2027){
+    [['RU','2027-02-22'],['RU','2027-11-05'],['RU','2027-12-31']]
+      .forEach(([country,key])=>{const [y,m,d]=key.split('-').map(Number);add(country as CountryCode,new Date(y,m-1,d),'Перенесённый выходной');});
+    add('BY',new Date(year,4,10),'Перенесённый выходной');
+    add('BY',new Date(year,4,11),'Радуница');
+  }
   // UK bank holidays: England and Wales baseline (regional calendars differ).
   add('GB',new Date(year, easter.getMonth(), easter.getDate()-2),'Good Friday');
+  add('GB',easter,'Easter Sunday','cultural');
   add('GB',new Date(year, easter.getMonth(), easter.getDate()+1),'Easter Monday');
   add('GB',nthWeekday(year,5,1,1),'Early May bank holiday');
   add('GB',lastWeekday(year,5,1),'Spring bank holiday');
@@ -235,6 +244,13 @@ const holidayTranslations: Record<string, Record<string, string>> = {
   'День памяти Нагасаки': { en: 'Nagasaki Memorial Day', fr: 'Journée commémorative de Nagasaki' },
   'День окончания войны': { en: 'End of the War Memorial Day', fr: 'Jour commémoratif de la fin de la guerre' },
   'День поминовения': { en: 'Remembrance Day', fr: 'Jour du Souvenir' },
+  'Перенесённый выходной': { en: 'Substitute day off', fr: 'Jour de repos de remplacement' },
+  'Дополнительный государственный выходной': { en: 'Additional public holiday', fr: 'Jour férié supplémentaire' },
+  'Праздник Цинмин': { en: 'Qingming Festival', fr: 'Fête de Qingming' },
+  'День местных выборов': { en: 'Local Election Day', fr: 'Jour des élections locales' },
+  'День рождения Будды': { en: 'Buddha’s Birthday', fr: 'Anniversaire de Bouddha' },
+  'День труда': { en: 'Labour Day', fr: 'Fête du travail' },
+
   'Good Friday': { ru: 'Страстная пятница', fr: 'Vendredi saint' },
   'Easter Sunday': { ru: 'Пасхальное воскресенье', fr: 'Dimanche de Pâques' },
   'Easter Monday': { ru: 'Пасхальный понедельник', fr: 'Lundi de Pâques' },
