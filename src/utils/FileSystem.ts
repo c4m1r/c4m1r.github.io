@@ -120,6 +120,14 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
         name: 'My Computer',
         type: 'system',
         children: {
+            'Network Neighborhood': {
+                id: 'network-neighborhood',
+                name: 'Network Neighborhood',
+                type: 'folder',
+                children: {
+                    'Entire Network': { id: 'entire-network', name: 'Entire Network', type: 'folder', children: {} }
+                }
+            },
             'C:': {
                 id: 'c-drive',
                 name: 'Local Disk (C:)',
