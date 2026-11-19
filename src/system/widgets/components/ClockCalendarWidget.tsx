@@ -7,7 +7,7 @@ import {
   selectCalendarDate,
   useCalendarCenter,
 } from '../../../apps/calendar/calendarCenter';
-import { getHolidaysForDate, isSelectedCountryWeekend, NATIONAL_COUNTRIES, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
+import { getHolidaysForDate, isSelectedCountryWeekend, isMakeupWorkday, NATIONAL_COUNTRIES, useLabourCountries } from '../../../apps/calendar/nationalCalendars';
 
 export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () => void }) {
   const { language } = useApp();
@@ -94,10 +94,12 @@ export function ClockCalendarWidget({ onOpenCalendar }: { onOpenCalendar?: () =>
               const holidays = getHolidaysForDate(date);
               const hasEvents = getCalendarEventsForDate(date).length > 0 || holidays.length > 0;
               const weekend = isSelectedCountryWeekend(date, labourCountries);
+              const makeupWork = isMakeupWorkday(date, labourCountries);
               const holidayTitle = holidays.map((holiday) => `${NATIONAL_COUNTRIES.find((country) => country.code === holiday.country)?.flag ?? ''} ${holiday.title}`).join(', ');
               const dayOffTitle = weekend ? (language === 'ru' ? 'Выходной' : 'Day off') : '';
+              const makeupWorkTitle = makeupWork ? (language === 'ru' ? 'Рабочий день' : 'Working day') : '';
               return (
-                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={[dayOffTitle, holidayTitle, ...getCalendarEventsForDate(date).map((event) => event.summary)].filter(Boolean).join(' · ') || date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${weekend ? 'bg-red-500/20 text-red-100' : ''} ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'}`}>
+                <button type="button" key={date.toISOString()} aria-pressed={sameDay} title={[dayOffTitle, makeupWorkTitle, holidayTitle, ...getCalendarEventsForDate(date).map((event) => event.summary)].filter(Boolean).join(' · ') || date.toLocaleDateString(language)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }} className={`relative py-0.5 rounded-full ${weekend ? 'bg-red-500/20 text-red-100' : ''} ${sameDay ? 'bg-red-500 text-white font-bold' : today ? 'ring-1 ring-red-400 text-white' : 'text-gray-300'}`}>
                   {date.getDate()}
                   {hasEvents && <i aria-hidden="true" className={`absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${holidays.length ? 'bg-red-300' : 'bg-cyan-300'}`} />}
                 </button>
