@@ -240,7 +240,7 @@ export function getNationalHolidays(year: number): NationalHoliday[] {
 }
 
 
-const holidayTranslations: Record<string, Record<string, string>> = {
+const holidayTranslations: Record<string, Partial<Record<'ru' | 'en' | 'fr' | 'es' | 'zh' | 'ja' | 'ko', string>>> = {
   'Новый год': { en: 'New Year', fr: 'Nouvel An' },
   'Рождество Христово': { en: 'Orthodox Christmas', fr: 'Noël orthodoxe' },
   'Православное Рождество': { en: 'Orthodox Christmas', fr: 'Noël orthodoxe' },
@@ -316,18 +316,97 @@ const holidayTranslations: Record<string, Record<string, string>> = {
   'Christmas Day': { ru: 'Рождество', fr: 'Jour de Noël' },
   'Boxing Day': { ru: 'День подарков', fr: 'Lendemain de Noël' },
 };
+
+const additionalHolidayTranslations: Record<string, Partial<Record<'ru' | 'en' | 'fr' | 'es' | 'zh' | 'ja' | 'ko', string>>> = {
+  'Новый год': { es: 'Año Nuevo', zh: '元旦', ja: '元日', ko: '새해' },
+  'Рождество Христово': { es: 'Navidad ortodoxa', zh: '东正教圣诞节', ja: '正教会のクリスマス', ko: '정교회 성탄절' },
+  'Православное Рождество': { es: 'Navidad ortodoxa', zh: '东正教圣诞节', ja: '正教会のクリスマス', ko: '정교회 성탄절' },
+  'День защитника Отечества': { es: 'Día del Defensor de la Patria', zh: '祖国保卫者日', ja: '祖国防衛の日', ko: '조국 수호자의 날' },
+  'Международный женский день': { es: 'Día Internacional de la Mujer', zh: '国际妇女节', ja: '国際女性デー', ko: '세계 여성의 날' },
+  'Праздник Весны и Труда': { es: 'Fiesta de la Primavera y del Trabajo', zh: '春季和劳动节', ja: '春と労働の祝日', ko: '봄과 노동절' },
+  'День Победы': { es: 'Día de la Victoria', zh: '胜利日', ja: '戦勝記念日', ko: '전승기념일' },
+  'День России': { es: 'Día de Rusia', zh: '俄罗斯日', ja: 'ロシアの日', ko: '러시아의 날' },
+  'День народного единства': { es: 'Día de la Unidad Nacional', zh: '民族团结日', ja: '国民団結の日', ko: '국민 단결의 날' },
+  'Наурыз мейрамы': { es: 'Fiesta de Nauryz', zh: '纳乌鲁兹节', ja: 'ナウルーズ祭', ko: '나우루즈 축제' },
+  'Праздник единства народа Казахстана': { es: 'Día de la Unidad del Pueblo de Kazajistán', zh: '哈萨克斯坦人民团结日', ja: 'カザフスタン人民統一の日', ko: '카자흐스탄 국민 단결의 날' },
+  'День столицы': { es: 'Día de la Capital', zh: '首都日', ja: '首都の日', ko: '수도의 날' },
+  'День Конституции': { es: 'Día de la Constitución', zh: '宪法日', ja: '憲法記念日', ko: '헌법 기념일' },
+  'День Республики': { es: 'Día de la República', zh: '共和国日', ja: '共和国記念日', ko: '공화국의 날' },
+  'День Независимости': { es: 'Día de la Independencia', zh: '独立日', ja: '独立記念日', ko: '독립기념일' },
+  'День женщин': { es: 'Día de la Mujer', zh: '妇女节', ja: '女性の日', ko: '여성의 날' },
+  'Праздник труда': { es: 'Día del Trabajo', zh: '劳动节', ja: 'メーデー', ko: '노동절' },
+  'День Октябрьской революции': { es: 'Día de la Revolución de Octubre', zh: '十月革命纪念日', ja: '十月革命記念日', ko: '10월 혁명 기념일' },
+  'Рождество Христово (православное)': { es: 'Navidad ortodoxa', zh: '东正教圣诞节', ja: '正教会のクリスマス', ko: '정교회 성탄절' },
+  'Рождество Христово (католическое)': { es: 'Navidad católica', zh: '天主教圣诞节', ja: 'カトリックのクリスマス', ko: '가톨릭 성탄절' },
+  'День основания государства': { es: 'Día de la Fundación Nacional', zh: '建国纪念日', ja: '建国記念の日', ko: '건국기념일' },
+  'День рождения Императора': { es: 'Cumpleaños del Emperador', zh: '天皇诞生日', ja: '天皇誕生日', ko: '천황 탄생일' },
+  'День Сёва': { es: 'Día de Shōwa', zh: '昭和之日', ja: '昭和の日', ko: '쇼와의 날' },
+  'День зелени': { es: 'Día de la Naturaleza', zh: '绿之日', ja: 'みどりの日', ko: '녹색의 날' },
+  'День детей': { es: 'Día del Niño', zh: '儿童节', ja: 'こどもの日', ko: '어린이날' },
+  'День гор': { es: 'Día de la Montaña', zh: '山之日', ja: '山の日', ko: '산의 날' },
+  'День культуры': { es: 'Día de la Cultura', zh: '文化之日', ja: '文化の日', ko: '문화의 날' },
+  'День благодарности труду': { es: 'Día de Acción de Gracias al Trabajo', zh: '勤劳感谢日', ja: '勤労感謝の日', ko: '근로감사의 날' },
+  'День движения за независимость': { es: 'Día del Movimiento de Independencia', zh: '三一运动纪念日', ja: '三一節', ko: '삼일절' },
+  'День памяти': { es: 'Día de Conmemoración', zh: '纪念日', ja: '慰霊の日', ko: '추모일' },
+  'День освобождения': { es: 'Día de la Liberación', zh: '解放日', ja: '解放記念日', ko: '광복절' },
+  'День основания Кореи': { es: 'Día de la Fundación de Corea', zh: '开天节', ja: '開天節', ko: '개천절' },
+  'День хангыля': { es: 'Día del Hangul', zh: '韩文日', ja: 'ハングルの日', ko: '한글날' },
+  'Рождество': { es: 'Navidad', zh: '圣诞节', ja: 'クリスマス', ko: '성탄절' },
+  'Китайский Новый год': { es: 'Año Nuevo Lunar', zh: '春节', ja: '旧正月', ko: '설날' },
+  'Праздник драконьих лодок': { es: 'Festival del Bote del Dragón', zh: '端午节', ja: '端午の節句', ko: '단오' },
+  'Праздник середины осени': { es: 'Festival del Medio Otoño', zh: '中秋节', ja: '中秋節', ko: '추석' },
+  'Соллаль (Лунный Новый год)': { es: 'Seollal (Año Nuevo Lunar)', zh: '春节', ja: 'ソルラル', ko: '설날' },
+  'Чхусок': { es: 'Chuseok', zh: '秋夕', ja: '秋夕', ko: '추석' },
+  'День совершеннолетия': { es: 'Día de la Mayoría de Edad', zh: '成人节', ja: '成人の日', ko: '성인의 날' },
+  'День весеннего равноденствия': { es: 'Día del Equinoccio de Primavera', zh: '春分日', ja: '春分の日', ko: '춘분' },
+  'День моря': { es: 'Día del Mar', zh: '海之日', ja: '海の日', ko: '바다의 날' },
+  'День почитания старших': { es: 'Día del Respeto a los Mayores', zh: '敬老日', ja: '敬老の日', ko: '경로의 날' },
+  'День осеннего равноденствия': { es: 'Día del Equinoccio de Otoño', zh: '秋分日', ja: '秋分の日', ko: '추분' },
+  'День спорта': { es: 'Día del Deporte', zh: '体育日', ja: 'スポーツの日', ko: '스포츠의 날' },
+  'День подарков': { es: 'Día de las Cajas', zh: '节礼日', ja: 'ボクシング・デー', ko: '박싱 데이' },
+  'День памяти и скорби': { es: 'Día del Recuerdo y el Dolor', zh: '悲伤纪念日', ja: '記憶と悲しみの日', ko: '추모와 애도의 날' },
+  'День Героев Отечества': { es: 'Día de los Héroes de la Patria', zh: '祖国英雄日', ja: '祖国英雄の日', ko: '조국 영웅의 날' },
+  'День памяти жертв политических репрессий и голода': { es: 'Día de Recuerdo de las Víctimas de la Represión y la Hambruna', zh: '政治镇压和饥荒受害者纪念日', ja: '政治弾圧と飢饉の犠牲者追悼日', ko: '정치적 탄압과 기근 희생자 추모일' },
+  'День всенародной памяти жертв Великой Отечественной войны': { es: 'Día Nacional de Recuerdo de las Víctimas de la Gran Guerra Patria', zh: '卫国战争遇难者纪念日', ja: '大祖国戦争犠牲者追悼日', ko: '대조국전쟁 희생자 추모일' },
+  'День памяти жертв Нанкинской резни': { es: 'Día Conmemorativo de la Masacre de Nankín', zh: '南京大屠杀死难者国家公祭日', ja: '南京事件犠牲者追悼日', ko: '난징 대학살 추모일' },
+  'День памяти Хиросимы': { es: 'Día Conmemorativo de Hiroshima', zh: '广岛和平纪念日', ja: '広島平和記念日', ko: '히로시마 평화기념일' },
+  'День памяти Нагасаки': { es: 'Día Conmemorativo de Nagasaki', zh: '长崎原爆纪念日', ja: '長崎原爆の日', ko: '나가사키 원폭의 날' },
+  'День окончания войны': { es: 'Día Conmemorativo del Fin de la Guerra', zh: '终战纪念日', ja: '終戦の日', ko: '종전 기념일' },
+  'День поминовения': { es: 'Día del Recuerdo', zh: '阵亡将士纪念日', ja: '追悼の日', ko: '현충일' },
+  'Перенесённый выходной': { es: 'Día festivo trasladado', zh: '调休假日', ja: '振替休日', ko: '대체공휴일' },
+  'Дополнительный государственный выходной': { es: 'Festivo público adicional', zh: '额外公共假日', ja: '追加の祝日', ko: '추가 공휴일' },
+  'Праздник Цинмин': { es: 'Festival Qingming', zh: '清明节', ja: '清明節', ko: '청명절' },
+  'День местных выборов': { es: 'Día de Elecciones Locales', zh: '地方选举日', ja: '地方選挙日', ko: '지방선거일' },
+  'День рождения Будды': { es: 'Cumpleaños de Buda', zh: '佛诞日', ja: '花祭り', ko: '부처님오신날' },
+  'День труда': { es: 'Día del Trabajo', zh: '劳动节', ja: 'メーデー', ko: '노동절' },
+  'Good Friday': { es: 'Viernes Santo', zh: '耶稣受难日', ja: '聖金曜日', ko: '성금요일' },
+  'Easter Sunday': { es: 'Domingo de Pascua', zh: '复活节主日', ja: '復活祭の日曜日', ko: '부활절 일요일' },
+  'Easter Monday': { es: 'Lunes de Pascua', zh: '复活节星期一', ja: 'イースターマンデー', ko: '부활절 월요일' },
+  'Early May bank holiday': { es: 'Festivo bancario de principios de mayo', zh: '五月初银行假日', ja: '5月初めのバンクホリデー', ko: '5월 초 은행 공휴일' },
+  'Spring bank holiday': { es: 'Festivo bancario de primavera', zh: '春季银行假日', ja: '春のバンクホリデー', ko: '봄 은행 공휴일' },
+  'Summer bank holiday': { es: 'Festivo bancario de verano', zh: '夏季银行假日', ja: '夏のバンクホリデー', ko: '여름 은행 공휴일' },
+  'New Year’s Day': { es: 'Año Nuevo', zh: '元旦', ja: '元日', ko: '새해 첫날' },
+  'Christmas Day': { es: 'Día de Navidad', zh: '圣诞节', ja: 'クリスマス', ko: '성탄절' },
+  'Boxing Day': { es: 'Día de las Cajas', zh: '节礼日', ja: 'ボクシング・デー', ko: '박싱 데이' },
+  'New Year’s Day (substitute day)': { es: 'Festivo sustitutorio de Año Nuevo', zh: '元旦补休日', ja: '元日振替休日', ko: '새해 대체공휴일' },
+  'Christmas Day (substitute day)': { es: 'Festivo sustitutorio de Navidad', zh: '圣诞节补休日', ja: 'クリスマス振替休日', ko: '성탄절 대체공휴일' },
+  'Boxing Day (substitute day)': { es: 'Festivo sustitutorio del Día de las Cajas', zh: '节礼日补休日', ja: 'ボクシング・デー振替休日', ko: '박싱 데이 대체공휴일' },
+};
+for (const [title, translations] of Object.entries(additionalHolidayTranslations)) {
+  holidayTranslations[title] = { ...holidayTranslations[title], ...translations };
+}
+
 export function getHolidayTitle(holiday: NationalHoliday, locale: string): string {
   const language = locale.split('-')[0].toLowerCase();
   const separator = ' · ';
   const russian = holiday.title.includes(separator) ? holiday.title.split(separator).slice(1).join(separator) : holiday.title;
   const translated = holidayTranslations[russian]?.[language] ?? holidayTranslations[russian]?.en;
+  const native = holiday.title.includes(separator) ? holiday.title.split(separator)[0] : '';
+  const nativeLanguage: Partial<Record<CountryCode, string>> = { CN: 'zh', JP: 'ja', KR: 'ko' };
   if (language === 'ru') return holiday.title.includes(separator) ? russian : holidayTranslations[holiday.title]?.ru ?? holiday.title;
-  if (translated) {
-    const native = holiday.title.includes(separator) ? holiday.title.split(separator)[0] : '';
-    return native && ['CN','JP','KR'].includes(holiday.country) ? `${native} · ${translated}` : translated;
-  }
-  if (['CN','JP','KR'].includes(holiday.country) && holiday.title.includes(separator)) return holiday.title.split(separator)[0];
-  return holiday.title;
+  if (native && nativeLanguage[holiday.country] === language) return native;
+  if (translated) return native ? (native === translated ? native : `${native} · ${translated}`) : translated;
+  return native || holiday.title;
 }
 
 export function getHolidaysForDate(date: Date): NationalHoliday[] {
