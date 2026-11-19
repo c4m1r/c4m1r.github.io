@@ -422,5 +422,7 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     try { localStorage.setItem(RSS_LAST_REFRESH_KEY, String(Date.now())); } catch { /* storage can be unavailable */ }
   }
 
-  return uniqueArticles.length > 0 ? uniqueArticles : await getCachedArticlesFromDatabase();
+  if (uniqueArticles.length === 0) return getCachedArticlesFromDatabase();
+  const refreshedCache = await getCachedArticlesFromDatabase();
+  return refreshedCache.length > 0 ? refreshedCache : uniqueArticles;
 }
