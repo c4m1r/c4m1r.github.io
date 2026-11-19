@@ -75,3 +75,88 @@
 .os-ubuntu .xp-clock-popup__days button.is-selected { outline: 1px solid #dd4814; background: #fff0e9; }
 .os-arch .xp-clock-popup__days button.is-selected { outline: 1px solid #1793d1; background: #e8f6fc; }
 .os-webos .xp-clock-popup__days button.is-selected { outline: 1px solid #38bdf8; background: rgba(56,189,248,.16); color: #e8f3fb; }
+
+/* Date flyout shells: shared calendar behavior, native shell chrome. */
+.os-classic .xp-clock-popup {
+  border: 2px solid #808080;
+  border-radius: 0;
+  background: #c0c0c0;
+  color: #111;
+  font-family: Tahoma, Arial, sans-serif;
+  box-shadow: 2px 2px 0 rgba(0,0,0,.35);
+}
+.os-classic .xp-clock-popup__header,
+.os-classic .xp-clock-popup__month-row { background: #d4d0c8; border-color: #808080; }
+.os-classic .xp-clock-popup__calendar { border-color: #808080; }
+.os-classic .xp-clock-popup__month-row button,
+.os-classic .xp-clock-popup__open-calendar { border: 1px solid; border-color: #fff #404040 #404040 #fff; border-radius: 0; background: #c0c0c0; color: #000080; }
+
+.os-win7 .xp-clock-popup {
+  border: 1px solid rgba(105,145,180,.8);
+  border-radius: 7px;
+  background: rgba(244,249,253,.97);
+  color: #1c2b3a;
+  font-family: "Segoe UI", sans-serif;
+  box-shadow: 0 8px 28px rgba(0,0,0,.24);
+}
+.os-win7 .xp-clock-popup__header,
+.os-win7 .xp-clock-popup__month-row { background: linear-gradient(#fff, #e5f1fa); border-color: #c5d8e8; }
+.os-win7 .xp-clock-popup__title,
+.os-win7 .xp-clock-popup__month-row > span { color: #174b75; }
+.os-win7 .xp-clock-popup__calendar { border-color: #b8cbdc; }
+.os-win7 .xp-clock-popup__month-row button,
+.os-win7 .xp-clock-popup__open-calendar { border: 1px solid #9bb8d0; border-radius: 4px; background: #fff; color: #174b75; }
+
+.os-ubuntu .xp-clock-popup {
+  border: 1px solid #b9a59b;
+  border-radius: 8px;
+  background: #faf8f6;
+  color: #292522;
+  font-family: Ubuntu, sans-serif;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.os-ubuntu .xp-clock-popup__header,
+.os-ubuntu .xp-clock-popup__month-row { background: #eee9e5; border-color: #d5cbc4; }
+.os-ubuntu .xp-clock-popup__title,
+.os-ubuntu .xp-clock-popup__month-row > span { color: #772953; }
+.os-ubuntu .xp-clock-popup__calendar { border-color: #d5cbc4; }
+.os-ubuntu .xp-clock-popup__month-row button,
+.os-ubuntu .xp-clock-popup__open-calendar { border: 1px solid #dd4814; border-radius: 5px; background: #fff; color: #c43d12; }
+
+.os-arch .xp-clock-popup {
+  border: 1px solid #a9bfd0;
+  border-radius: 8px;
+  background: #f4f7fa;
+  color: #202a35;
+  font-family: "Segoe UI", sans-serif;
+  box-shadow: 0 10px 30px rgba(0,0,0,.22);
+}
+.os-arch .xp-clock-popup__header,
+.os-arch .xp-clock-popup__month-row { background: #e7eef5; border-color: #c2d0de; }
+.os-arch .xp-clock-popup__title,
+.os-arch .xp-clock-popup__month-row > span { color: #126d9d; }
+.os-arch .xp-clock-popup__calendar { border-color: #c2d0de; }
+.os-arch .xp-clock-popup__month-row button,
+.os-arch .xp-clock-popup__open-calendar { border: 1px solid #1793d1; border-radius: 5px; background: #fff; color: #126d9d; }
+
+.os-webos .xp-clock-popup {
+  border: 1px solid rgba(125,211,252,.28);
+  border-radius: 12px;
+  background: rgba(14,23,33,.96);
+  color: #e8f3fb;
+  font-family: Inter, system-ui, sans-serif;
+  box-shadow: 0 16px 40px rgba(0,0,0,.42);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+}
+.os-webos .xp-clock-popup__header,
+.os-webos .xp-clock-popup__month-row { background: rgba(31,43,56,.96); border-color: rgba(255,255,255,.10); }
+.os-webos .xp-clock-popup__title,
+.os-webos .xp-clock-popup__month-row > span { color: #bae6fd; }
+.os-webos .xp-clock-popup__date,
+.os-webos .xp-clock-popup__weekdays { color: rgba(232,243,251,.62); }
+.os-webos .xp-clock-popup__digital,
+.os-webos .xp-clock-popup__calendar { border-color: rgba(125,211,252,.22); background: rgba(255,255,255,.045); color: #e8f3fb; }
+.os-webos .xp-clock-popup__month-row button,
+.os-webos .xp-clock-popup__open-calendar { border: 1px solid rgba(125,211,252,.35); border-radius: 6px; background: rgba(56,189,248,.12); color: #bae6fd; }
+.os-webos .xp-clock-popup__days button.is-today { border-color: #38bdf8; background: #0284c7; color: #fff; font-weight: 700; }
