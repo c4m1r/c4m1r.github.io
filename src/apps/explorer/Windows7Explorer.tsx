@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../contexts/useApp';
 import { THEME_ASSETS } from '../../themes/webos/themeAssets';
-import { getFileIcon, getItemsFromPath, type FileSystemItem } from '../../utils/FileSystem';
+import { getFileIcon, getFileSystemItemFromPath, getItemsFromPath, type FileSystemItem } from '../../utils/FileSystem';
 import type { MyComputerProps } from './MyComputer';
 
 const PATHS = {
@@ -17,6 +17,8 @@ const PATHS = {
   documents: 'C:\\Documents and Settings\\C4m1r\\My Documents',
   pictures: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures',
   music: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music',
+  videos: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Videos',
+  downloads: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Downloads',
 } as const;
 
 type Win7ViewMode = 'icons' | 'details' | 'thumbnails';
@@ -36,6 +38,8 @@ function displayLocation(path: string, isRu: boolean) {
   if (path === PATHS.documents) return isRu ? 'Документы' : 'Documents';
   if (path === PATHS.pictures) return isRu ? 'Изображения' : 'Pictures';
   if (path === PATHS.music) return isRu ? 'Музыка' : 'Music';
+  if (path === PATHS.videos) return isRu ? 'Видео' : 'Videos';
+  if (path === PATHS.downloads) return isRu ? 'Загрузки' : 'Downloads';
   return path
     .replace('C:\\', `${isRu ? 'Локальный диск' : 'Local Disk'} (C:) > `)
     .split('\\')
@@ -142,7 +146,13 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
     if (event.key !== 'Enter') return;
     const target = addressInput.trim();
     if (!target) return;
-    navigateToPath(target);
+    const normalizedTarget = target.replace(/\\//g, '\\\\');
+    if (!getFileSystemItemFromPath(normalizedTarget)) {
+      setAddressInput(path);
+      setAddressEditing(false);
+      return;
+    }
+    navigateToPath(normalizedTarget);
     setAddressEditing(false);
   };
 
@@ -151,7 +161,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
       title: isRu ? 'Избранное' : 'Favorites',
       entries: [
         { id: 'desktop', label: isRu ? 'Рабочий стол' : 'Desktop', path: PATHS.desktop, icon: '🖥️' },
-        { id: 'downloads', label: isRu ? 'Загрузки' : 'Downloads', path: PATHS.documents, icon: '⬇️' },
+        { id: 'downloads', label: isRu ? 'Загрузки' : 'Downloads', path: PATHS.downloads, icon: '⬇️' },
         { id: 'recent', label: isRu ? 'Недавние места' : 'Recent Places', path: PATHS.desktop, icon: '🕘' },
       ],
     },
@@ -161,7 +171,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem }: My
         { id: 'documents', label: isRu ? 'Документы' : 'Documents', path: PATHS.documents, icon: '📄' },
         { id: 'music', label: isRu ? 'Музыка' : 'Music', path: PATHS.music, icon: '🎵' },
         { id: 'pictures', label: isRu ? 'Изображения' : 'Pictures', path: PATHS.pictures, icon: '🖼️' },
-        { id: 'videos', label: isRu ? 'Видео' : 'Videos', path: PATHS.documents, icon: '🎞️' },
+        { id: 'videos', label: isRu ? 'Видео' : 'Videos', path: PATHS.videos, icon: '🎞️' },
       ],
     },
   ];
