@@ -40,7 +40,7 @@ type MenuItem = {
 type PrimaryShortcut = MenuItem & { tag: string };
 
 const MY_DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
-const MY_DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
+const MY_RECENT_PATH = 'C:\\Documents and Settings\\C4m1r\\Recent';
 const MY_PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures';
 const MY_MUSIC_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music';
 
@@ -149,7 +149,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       id: 'recent-documents',
       title: isRu ? 'Недавние документы' : 'My Recent Documents',
       icon: placeIcons.recentDocuments ?? recentDocIcon,
-      path: MY_DESKTOP_PATH,
+      path: MY_RECENT_PATH,
     },
     {
       id: 'my-pictures',
