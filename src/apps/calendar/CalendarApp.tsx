@@ -270,7 +270,7 @@ export function CalendarApp() {
             <section className="calendar-app__day-view">
               <h3>{selectedDate.toLocaleDateString(locale, { dateStyle: 'full' })}</h3>
               {getHolidaysForDate(selectedDate).map(renderHoliday)}
-              {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{isRu ? 'Выходной' : 'Day off'}</small>}
+              {isSelectedCountryWeekend(selectedDate, labourCountries) && <small className="calendar-app__weekend-label">{dayOffLabel(locale)}</small>}
               {getCalendarEventsForDate(selectedDate).map(renderEvent)}
               {getCalendarEventsForDate(selectedDate).length === 0 && getHolidaysForDate(selectedDate).length === 0 && <p>{isRu ? 'На этот день событий нет.' : 'No events for this day.'}</p>}
               <button type="button" className="calendar-app__quick-add" onClick={() => openNewEvent(selectedDate)}>{isRu ? '+ Добавить событие' : '+ Add event'}</button>
