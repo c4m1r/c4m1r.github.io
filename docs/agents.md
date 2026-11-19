@@ -297,7 +297,7 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 
 ### User-reported desktop / Start Menu / Pictures regression pass — 2026-11-19
 - Branch: main; no feature branch.
-- Source baseline inspected: 0fc60199c127ae52b06e2b65c499f22ca24a5b91. Latest implementation commit at the end of this pass: f6bc699452ad794102637e0ae3f254b40800021d.
+- Source baseline inspected: 0fc60199c127ae52b06e2b65c499f22ca24a5b91. Latest implementation commit at the end of the first fix pass: f6bc699452ad794102637e0ae3f254b40800021d. Subsequent Windows 7 Explorer and desktop-shortcut follow-through is committed at fe600bcde840f3efe09ade1b04e87d0fee2f8449.
 - Widget defaults:
   - src/system/widgets/types.ts: DEFAULT_WIDGETS_VISIBILITY is now all false; WEBOS_DEFAULT_WIDGETS_VISIBILITY is all true and is used only by the WebOS widget canvas/storage reader.
   - src/shells/desktop/DesktopShellContainer.tsx: Apple/non-WebOS widget visibility moved from storage key desktop-apple-widget-visibility-v1 to v2. This intentionally ignores old v1 values left by the prior behavior; all non-WebOS widgets start off unless explicitly enabled under v2.
@@ -321,3 +321,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
   - Check that the current image selected from the Explorer thumbnail view opens in the expected viewer window and that Back/Forward and slideshow remain coherent.
 - Verification: no local npm run verify, npm run typecheck, npm run lint, npm run build, or browser/manual OS matrix was run in this connector-only pass. GitHub combined status was not queried for the final commit. Do not claim CI success.
 - Next work: continue Explorer behavior/fidelity (especially XP task pane and classic folder tree), then complete Picture Viewer inventory parity and appearance integration; continue Control Panel and widget shortcut unification. Keep docs/tasks.md and this handoff updated after each meaningful pass.
+
+
+### Follow-through — Windows 7 Pictures and desktop shortcut cleanup — 2026-11-19
+- Windows 7 has its own Explorer implementation, so changing the shared XP-era Start Menu path was not sufficient. src/apps/explorer/Windows7Explorer.tsx had a separate PATHS.pictures value pointing to the old sibling folder. It now points to My Documents/My Pictures, matching the canonical virtual filesystem.
+- Windows 7 Explorer now recognizes English and Russian My Pictures path text and enters a thumbnail view. The view control cycles Icons → Thumbnails → Details; styles are in src/styles/os/themes/windows-shell-fidelity-final.css.
+- Desktop shortcuts: src/shells/desktop/shortcutsRegistry.ts no longer places Projects, Wiki, Notepad or About as standalone desktop app shortcuts because these entries already live inside My Documents. Blog remains a desktop app shortcut because it is separate from the My Documents canonical set. The app registry and Start Menu routes remain intact.
+- These are source-level changes only. Confirm click navigation, thumbnail loading, file opening and Windows 7 responsive layout in a browser before increasing task completion estimates.
