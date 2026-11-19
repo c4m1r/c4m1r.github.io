@@ -100,7 +100,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
     [rawItems, selectedItem],
   );
   const pictureItems = useMemo(
-    () => items.filter((item) => item.type === 'file' && typeof item.content === 'string' && /\\.(png|jpe?g|gif|webp)$/i.test(item.name)),
+    () => items.filter((item) => item.type === 'file' && typeof item.content === 'string' && /\.(png|jpe?g|gif|webp)$/i.test(item.name)),
     [items],
   );
 
@@ -328,7 +328,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
                   onDoubleClick={() => handleOpen(item)}
                 >
                   <img
-                    src={viewMode === 'thumbnails' && typeof item.content === 'string' && /\\.(png|jpe?g|gif|webp)$/i.test(item.name) ? item.content : getFileIcon(item) as string}
+                    src={viewMode === 'thumbnails' && typeof item.content === 'string' && /\.(png|jpe?g|gif|webp)$/i.test(item.name) ? item.content : getFileIcon(item) as string}
                     alt=""
                     loading="lazy"
                   />
