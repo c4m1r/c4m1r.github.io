@@ -20,13 +20,13 @@ export interface NationalHoliday {
 }
 
 const fixed: Record<CountryCode, Array<[number, number, string, NationalHoliday['kind']]>> = {
-  RU: [[1,1,'Новый год','public'],[1,7,'Рождество Христово','public'],[2,23,'День защитника Отечества','public'],[3,8,'Международный женский день','public'],[5,1,'Праздник Весны и Труда','public'],[5,9,'День Победы','public'],[6,12,'День России','public'],[11,4,'День народного единства','public']],
-  KZ: [[1,1,'Новый год','public'],[1,2,'Новый год','public'],[1,7,'Православное Рождество','public'],[3,8,'Международный женский день','public'],[3,21,'Наурыз мейрамы','public'],[3,22,'Наурыз мейрамы','public'],[3,23,'Наурыз мейрамы','public'],[5,1,'Праздник единства народа Казахстана','public'],[5,7,'День защитника Отечества','public'],[5,9,'День Победы','public'],[7,6,'День столицы','public'],[8,30,'День Конституции','public'],[10,25,'День Республики','public'],[12,16,'День Независимости','public']],
-  BY: [[1,1,'Новый год','public'],[1,7,'Рождество Христово (православное)','public'],[3,8,'День женщин','public'],[5,1,'Праздник труда','public'],[5,9,'День Победы','public'],[7,3,'День Независимости','public'],[11,7,'День Октябрьской революции','public'],[12,25,'Рождество Христово (католическое)','public']],
-  CN: [[1,1,'元旦 · Новый год','public'],[5,1,'劳动节 · День труда','public'],[10,1,'国庆节 · День образования КНР','public']],
-  JP: [[1,1,'元日 · Новый год','public'],[2,11,'建国記念の日 · День основания государства','public'],[2,23,'天皇誕生日 · День рождения Императора','public'],[4,29,'昭和の日 · День Сёва','public'],[5,3,'憲法記念日 · День Конституции','public'],[5,4,'みどりの日 · День зелени','public'],[5,5,'こどもの日 · День детей','public'],[8,11,'山の日 · День гор','public'],[11,3,'文化の日 · День культуры','public'],[11,23,'勤労感謝の日 · День благодарности труду','public']],
+  RU: [[1,1,'Новый год','public'],[1,7,'Рождество Христово','public'],[2,23,'День защитника Отечества','public'],[3,8,'Международный женский день','public'],[5,1,'Праздник Весны и Труда','public'],[5,9,'День Победы','public'],[6,12,'День России','public'],[6,22,'День памяти и скорби','memorial'],[11,4,'День народного единства','public'],[12,9,'День Героев Отечества','memorial']],
+  KZ: [[1,1,'Новый год','public'],[1,2,'Новый год','public'],[1,7,'Православное Рождество','public'],[3,8,'Международный женский день','public'],[3,21,'Наурыз мейрамы','public'],[3,22,'Наурыз мейрамы','public'],[3,23,'Наурыз мейрамы','public'],[5,1,'Праздник единства народа Казахстана','public'],[5,7,'День защитника Отечества','public'],[5,9,'День Победы','public'],[5,31,'День памяти жертв политических репрессий и голода','memorial'],[7,6,'День столицы','public'],[8,30,'День Конституции','public'],[10,25,'День Республики','public'],[12,16,'День Независимости','public']],
+  BY: [[1,1,'Новый год','public'],[1,7,'Рождество Христово (православное)','public'],[3,8,'День женщин','public'],[5,1,'Праздник труда','public'],[5,9,'День Победы','public'],[6,22,'День всенародной памяти жертв Великой Отечественной войны','memorial'],[7,3,'День Независимости','public'],[11,7,'День Октябрьской революции','public'],[12,25,'Рождество Христово (католическое)','public']],
+  CN: [[1,1,'元旦 · Новый год','public'],[5,1,'劳动节 · День труда','public'],[10,1,'国庆节 · День образования КНР','public'],[12,13,'国家公祭日 · День памяти жертв Нанкинской резни','memorial']],
+  JP: [[1,1,'元日 · Новый год','public'],[2,11,'建国記念の日 · День основания государства','public'],[2,23,'天皇誕生日 · День рождения Императора','public'],[4,29,'昭和の日 · День Сёва','public'],[5,3,'憲法記念日 · День Конституции','public'],[5,4,'みどりの日 · День зелени','public'],[5,5,'こどもの日 · День детей','public'],[8,6,'広島平和記念日 · День памяти Хиросимы','memorial'],[8,9,'長崎原爆の日 · День памяти Нагасаки','memorial'],[8,11,'山の日 · День гор','public'],[8,15,'終戦の日 · День окончания войны','memorial'],[11,3,'文化の日 · День культуры','public'],[11,23,'勤労感謝の日 · День благодарности труду','public']],
   KR: [[1,1,'신정 · Новый год','public'],[3,1,'삼일절 · День движения за независимость','public'],[5,5,'어린이날 · День детей','public'],[6,6,'현충일 · День памяти','memorial'],[8,15,'광복절 · День освобождения','public'],[10,3,'개천절 · День основания Кореи','public'],[10,9,'한글날 · День хангыля','public'],[12,25,'성탄절 · Рождество','public']],
-  GB: [[1,1,'New Year’s Day · Новый год','public'],[12,25,'Christmas Day · Рождество','public'],[12,26,'Boxing Day · День подарков','public']],
+  GB: [[1,1,'New Year’s Day · Новый год','public'],[11,11,'Remembrance Day · День поминовения','memorial'],[12,25,'Christmas Day · Рождество','public'],[12,26,'Boxing Day · День подарков','public']],
 };
 
 function easterSunday(year: number): Date {
@@ -135,6 +135,15 @@ const holidayTranslations: Record<string, Record<string, string>> = {
   'День осеннего равноденствия': { en: 'Autumnal Equinox Day', fr: 'Jour de l’équinoxe d’automne' },
   'День спорта': { en: 'Sports Day', fr: 'Jour du sport' },
   'День подарков': { en: 'Boxing Day', fr: 'Lendemain de Noël' },
+  'День памяти и скорби': { en: 'Day of Remembrance and Sorrow', fr: 'Jour du souvenir et du chagrin' },
+  'День Героев Отечества': { en: 'Fatherland Heroes Day', fr: 'Jour des héros de la patrie' },
+  'День памяти жертв политических репрессий и голода': { en: 'Day of Remembrance for Victims of Political Repression and Famine', fr: 'Jour du souvenir des victimes de la répression politique et de la famine' },
+  'День всенародной памяти жертв Великой Отечественной войны': { en: 'National Remembrance Day for Victims of the Great Patriotic War', fr: 'Jour national du souvenir des victimes de la Grande Guerre patriotique' },
+  'День памяти жертв Нанкинской резни': { en: 'Nanjing Massacre Memorial Day', fr: 'Journée commémorative du massacre de Nankin' },
+  'День памяти Хиросимы': { en: 'Hiroshima Peace Memorial Day', fr: 'Journée commémorative d’Hiroshima' },
+  'День памяти Нагасаки': { en: 'Nagasaki Memorial Day', fr: 'Journée commémorative de Nagasaki' },
+  'День окончания войны': { en: 'End of the War Memorial Day', fr: 'Jour commémoratif de la fin de la guerre' },
+  'День поминовения': { en: 'Remembrance Day', fr: 'Jour du Souvenir' },
   'Good Friday': { ru: 'Страстная пятница', fr: 'Vendredi saint' },
   'Easter Sunday': { ru: 'Пасхальное воскресенье', fr: 'Dimanche de Pâques' },
   'Easter Monday': { ru: 'Пасхальный понедельник', fr: 'Lundi de Pâques' },
