@@ -290,12 +290,13 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
                 const dy = event.key === 'ArrowUp' ? -delta : event.key === 'ArrowDown' ? delta : 0;
                 const bounds = canvasRef.current?.getBoundingClientRect();
                 if (!bounds) return;
-                const nextX = Math.max(0, Math.min(placement.x + dx, bounds.width - width));
-                const nextY = Math.max(0, Math.min(placement.y + dy, bounds.height - height));
+                const layoutBounds = getPlacementBounds(bounds, placements);
+                const nextX = Math.max(0, Math.min(placement.x + dx, layoutBounds.width - width));
+                const nextY = Math.max(0, Math.min(placement.y + dy, layoutBounds.height - height));
                 const candidate = { x: nextX, y: nextY, width, height };
                 const blocked = items.some((other) => {
                   if (other.id === item.id || !placements[other.id]) return false;
-                  return intersects(candidate, { ...placements[other.id], ...getSize(other, placements[other.id], bounds) });
+                  return intersects(candidate, { ...placements[other.id], ...getSize(other, placements[other.id], layoutBounds) });
                 });
                 if (!blocked) setPlacements((current) => ({ ...current, [item.id]: { ...current[item.id], x: nextX, y: nextY } }));
               }}
