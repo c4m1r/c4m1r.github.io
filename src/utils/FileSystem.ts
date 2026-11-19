@@ -256,7 +256,19 @@ export const getFileSystemItemFromPath = (path: string): FileSystemItem | null =
         .replace(/^Local Disk \(C:\)$/i, 'C:')
         .replace(/[\\/]+/g, '/')
         .replace(/\/+$/g, '');
-    const parts = normalizedPath.split('/').filter(Boolean);
+    const usesModernProfile = /^C:\/Users(?:\/|$)/i.test(normalizedPath);
+    const compatiblePath = normalizedPath.replace(/^C:\/Users(?=\/|$)/i, 'C:/Documents and Settings');
+    const parts = compatiblePath.split('/').filter(Boolean).map((part, index) => {
+        if (!usesModernProfile || index < 3) return part;
+        const modernFolderAliases: Record<string, string> = {
+            documents: 'My Documents',
+            pictures: 'My Pictures',
+            music: 'My Music',
+            videos: 'My Videos',
+            downloads: 'My Downloads',
+        };
+        return modernFolderAliases[part.toLocaleLowerCase()] ?? part;
+    });
     if (parts.length > 0 && isComputerRootPath(parts[0])) parts.shift();
 
     let current: FileSystemItem = initialFileSystem['My Computer'];
@@ -276,11 +288,41 @@ export const getItemsFromPath = (path: string): FileSystemItem[] => {
     return node?.children ? Object.values(node.children) : [];
 };
 
+const APP_ICON_KEYS: Record<string, keyof typeof WINXP_ASSETS> = {
+    'internet-explorer': 'internetExplorerIcon',
+    outlook: 'mailIcon',
+    'windows-media-player': 'mediaPlayerIcon',
+    winamp: 'winampIcon',
+    paint: 'paintIcon',
+    pictures: 'folderPicturesIcon',
+    calendar: 'calendarIcon',
+    news: 'newsIcon',
+    currency: 'currencyIcon',
+    wiki: 'richTextIcon',
+    notepad: 'notepadIcon',
+    'projects-grid': 'projectsIcon',
+    help: 'helpIcon',
+    'task-manager': 'controlPanelIcon',
+    calculator: 'calculatorIcon',
+    'control-panel': 'controlPanelIcon',
+    terminal: 'terminalIcon',
+    blog: 'richTextIcon',
+    loops: 'loopsIcon',
+    minesweeper: 'minesweeperIcon',
+    snake: 'gamesIcon',
+    memory: 'gamesIcon',
+    doom1: 'gamesIcon',
+    doom2: 'gamesIcon',
+};
+
 export const getFileIcon = (item: FileSystemItem) => {
     if (item.icon && typeof item.icon === 'string') return item.icon;
-    if (item.type === 'folder') return folderIcon;
-    if (item.name.endsWith('.txt') || item.name.endsWith('.md')) {
-        return defaultTextIcon;
+    if (item.appId) {
+        const iconKey = APP_ICON_KEYS[item.appId];
+        const appIcon = iconKey ? WINXP_ASSETS[iconKey] : undefined;
+        if (typeof appIcon === 'string') return appIcon;
     }
-    return folderIcon; // Fallback
+    if (item.type === 'folder') return folderIcon;
+    if (item.name.endsWith('.txt') || item.name.endsWith('.md')) return defaultTextIcon;
+    return folderIcon;
 };
