@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDeviceBattery } from '../hooks/useDeviceBattery';
 import { type Language } from '../../../i18n/translations';
-import { ensureCalendarEvents, moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
+import { ensureCalendarEvents, getCalendarEventsForDate, moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
 import { WeatherWidget } from '../../../system/widgets/components/WeatherWidget';
 import { WinampWidget } from '../../../system/widgets/components/WinampWidget';
 import { QuotesWidget } from '../../../system/widgets/components/QuotesWidget';
@@ -94,8 +94,9 @@ export function AppleDesktopWidgets({
       <div className="apple-widget-calendar__weekdays">{weekdayLabels.map((label, index) => <span key={`${label}-${index}`}>{label}</span>)}</div>
       <div className="apple-widget-calendar__days">{calendarDays.map((day) => {
         const isToday = day.getFullYear() === time.getFullYear() && day.getMonth() === time.getMonth() && day.getDate() === time.getDate();
-        const inMonth = day.getMonth() === time.getMonth();
-        return <button type="button" key={day.toISOString()} aria-pressed={day.getFullYear() === selectedDate.getFullYear() && day.getMonth() === selectedDate.getMonth() && day.getDate() === selectedDate.getDate()} onClick={() => { selectCalendarDate(day); onOpenCalendar?.(); }} className={`${isToday ? 'is-today' : ''} ${!inMonth ? 'is-outside' : ''} ${day.getFullYear() === selectedDate.getFullYear() && day.getMonth() === selectedDate.getMonth() && day.getDate() === selectedDate.getDate() ? 'is-selected' : ''}`}>{day.getDate()}</button>;
+        const inMonth = day.getMonth() === visibleMonth.getMonth() && day.getFullYear() === visibleMonth.getFullYear();
+        const hasEvents = getCalendarEventsForDate(day).length > 0;
+        return <button type="button" key={day.toISOString()} aria-pressed={day.getFullYear() === selectedDate.getFullYear() && day.getMonth() === selectedDate.getMonth() && day.getDate() === selectedDate.getDate()} onClick={() => { selectCalendarDate(day); onOpenCalendar?.(); }} className={`${isToday ? 'is-today' : ''} ${!inMonth ? 'is-outside' : ''} ${hasEvents ? 'has-events' : ''} ${day.getFullYear() === selectedDate.getFullYear() && day.getMonth() === selectedDate.getMonth() && day.getDate() === selectedDate.getDate() ? 'is-selected' : ''}`}>{day.getDate()}</button>;
       })}</div>
     </section>
   );
