@@ -374,3 +374,12 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Main implementation commits include `25f731ee` (Calendar Core), `9fd597cd` (Calendar app), `b3c39e6f` (taskbar flyout), `69857e77` / `57281294` (desktop widget), `03b00122` / `8ba981f3` (WebOS widget), and `c401f35d` / `4d09e614` / `17214914` / `b332a1b2` (OS adapters and styling). See `docs/tasks.md` under CALENDAR-01 for the active specification and remaining acceptance.
 - Remaining work: richer app views (week/day/list), event detail and local CRUD backed by a defined model, multi-day event handling if desired, DST/timezone audit, small-screen layout and visual checks across every shell. Keep existing ICS events and locale fallback intact.
 - Verification limitation: no local repository checkout or npm environment was available; `git clone` could not resolve GitHub from the runtime. Latest combined commit status returned an empty statuses array and no workflow runs. Do not report typecheck/lint/build/verify or browser/manual acceptance as passing.
+
+
+### Calendar Center implementation pass 2 — 2026-11-19
+- Expanded `CalendarApp.tsx` with month/week/day/list modes, event details, and a local event editor. User-owned events support create/edit/delete and persist separately from bundled ICS data in `calendar-center-local-events-v1`; imported ICS events remain read-only.
+- Added shared range queries for week/day/month views and multi-day events. Local events use inclusive date ranges; RFC 5545 all-day `DTEND` remains exclusive.
+- Improved `icsParser.ts`: unfolded continuation lines, escaped text decoding, UID identity, UTC timestamps, local floating date-times and TZID-aware conversion. Removed the old future-only event filter; past events are now available when navigating historical dates. Existing EN/RU ICS files are preserved.
+- Added responsive view/editor/event-detail styling in `calendar-os-adapters.css`, including compact mobile layout and initial classic/Windows/WebOS variants.
+- Remaining known format gap: recurring `RRULE` instances are not expanded. Calendar source visibility/colour management and an all-day editor toggle are not yet implemented. DST edge cases and actual visual acceptance across every OS still need testing.
+- Verification limitation unchanged: container could not resolve `github.com`, so no npm install, typecheck, lint, build, verify or browser tests were run. Treat all source changes as unverified until those gates pass.
