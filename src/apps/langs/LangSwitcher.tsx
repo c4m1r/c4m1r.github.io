@@ -7,6 +7,7 @@ import flagRu from './flag-ru.svg';
 import flagCn from './flag-cn.svg';
 import flagJp from './flag-jp.svg';
 import flagKr from './flag-kr.svg';
+import flagEs from './flag-es.svg';
 
 const languageOrder: Language[] = ['en', 'ru', 'fr', 'es', 'zh', 'ja', 'ko'];
 
@@ -14,7 +15,7 @@ const languageMeta: Record<Language, { code: string; title: string; icon?: strin
   en: { code: 'EN', title: 'English', icon: flagEn },
   ru: { code: 'RU', title: 'Русский', icon: flagRu },
   fr: { code: 'FR', title: 'Français', icon: flagFr },
-  es: { code: 'ES', title: 'Español' },
+  es: { code: 'ES', title: 'Español', icon: flagEs },
   zh: { code: '中文', title: '中文', icon: flagCn },
   ja: { code: 'JP', title: '日本語', icon: flagJp },
   ko: { code: 'KR', title: '한국어', icon: flagKr },
