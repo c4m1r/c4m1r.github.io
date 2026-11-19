@@ -1982,7 +1982,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
       <div
         className="pointer-events-auto"
-        onMouseDownCapture={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
         onClick={(event) => event.stopPropagation()}
       >
