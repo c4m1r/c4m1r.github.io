@@ -188,6 +188,20 @@ Percentages are working estimates, not test results. The previous task registry 
 - No app should inherit a Windows XP/98 frame or generic white card in macOS/Linux/WebOS unless intentionally part of that OS.
 - Maintain visual checklist in [os-skin-visual-checklist.md](./os-skin-visual-checklist.md).
 
+### GAME-03 — DOOM compact game chrome
+- DOOM and DOOM II keep title, smaller subtitle (e.g. Ultimate Doom), one-line project description and build/external-launch controls on a single compact header row. Controls stay right-aligned; the iframe receives the remaining window height.
+- The old Emupedia/wasm-doom footer, success tip and duplicate iframe-loaded overlay are not part of the player. An error-only fallback may remain. Actual gameplay still requires manual verification.
+
+### EXPLORER-04 — Desktop shortcuts and application sizing
+- Desktop Games and Programs are shortcut folders only; their targets resolve to the canonical `C:\\Program Files\\Games` and `C:\\Program Files\\Programs` folders. Do not maintain duplicate app trees.
+- Explorer icon view must scale app shortcuts to fill the selected icon size; thumbnails and other view modes retain their own size contracts. Use appId icon mappings before generic document icons.
+- Program Files remains the only canonical installed-program/game directory, grouped by publisher/author.
+
+### PROFILE-FS-02 — User account and media associations
+- Expose both `C:\\Documents and Settings\\User` and `C:\\Users\\User` as the same second profile, alongside C4m1r.
+- My Music exposes the same Winamp playlist tracks as real `.mp3` virtual files. Double-click selects that track in the shared Winamp controller, starts playback from the user gesture, and opens/focuses Winamp.
+- Project Markdown files in My Projects use parsed frontmatter titles, stable slug IDs and deduplication; double-click opens a rendered article reader rather than raw Markdown text.
+
 ### APP-UNIFY-01 — Reusable application surfaces
 - Consolidate duplicate galleries, file viewers, settings managers and launch flows into canonical implementations.
 - Keep domain logic and state shared; skin presentation via theme tokens/components. Avoid duplicate code paths and per-OS forks.
