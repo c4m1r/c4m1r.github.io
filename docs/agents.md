@@ -333,5 +333,12 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 ### XP Explorer Pictures navigation follow-through — 2026-11-19
 - src/apps/explorer/MyComputer.tsx now includes My Pictures / Мои рисунки in the Windows XP task pane's Other Places group, using the same canonical nested path under My Documents.
 - The XP Picture Tasks filter now includes WebP as well as PNG/JPEG/GIF. The image file association already supports WebP in DesktopShellContainer.
-- Remaining limitation: the XP task-pane action labeled “View as a slide show” currently opens the first matching image; it does not yet start the viewer slideshow automatically. Do not describe that action as a verified slideshow until it is wired to a real start-slideshow option and tested.
-- Latest source implementation commit: 3b28ee4d60c6f84222f93dde4b4a75a000d34560. No local build/typecheck/lint/browser tests were run.
+- At this handoff point, the XP task-pane slideshow action was still opening only the first matching image; see the subsequent slideshow wiring note below.
+- Latest source implementation commit before slideshow wiring: 3b28ee4d60c6f84222f93dde4b4a75a000d34560. No local build/typecheck/lint/browser tests were run.
+
+
+### Picture Viewer slideshow wiring — 2026-11-19
+- src/apps/pictureview/PictureViewer.tsx now accepts startSlideshow and initializes its existing slideshow state from that prop.
+- src/apps/explorer/MyComputer.tsx exposes onOpenSlideshow and passes all current-folder image files (PNG/JPEG/GIF/WebP with resolved content URLs) to the callback from the XP Picture Tasks action.
+- src/shells/desktop/DesktopShellContainer.tsx creates a normal resizable Picture Viewer window with the folder image list and startSlideshow enabled. The action now starts the existing 3-second slideshow timer; it does not create a second viewer implementation.
+- Latest source implementation commit: 8e1f8cb0ff6594ea6b2a8fa169e9d99e0720de05. No local typecheck/lint/build/browser tests were run; manually verify pause/resume, next/previous, closing the slideshow window and a one-image folder.
