@@ -591,3 +591,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 ### Desktop shortcut layout — 2026-11-19
 - DesktopShellContainer.tsx no longer renders the desktopShortcuts list as individual desktop icons. Keep app launchers inside Start / Programs. The desktop's standard non-macOS layout now contains My Computer, My Documents, Games and Programs; the WebOS widget gallery shortcut remains non-Windows.
 - games-folder opens C:\Program Files\Games; programs-folder opens C:\Program Files\Programs. The latter is handled directly in the desktop icon double-click switch. Keep Start Menu launch paths aligned with these canonical locations.
+
+
+### CI/typecheck follow-up — 2026-11-19
+- CI for commit 9a25a195 exposed: Windows7Explorer slideshow callback needed `(items, path)`; Winamp titlebar handlers still used mouse event types after drag logic moved to Pointer Events; three desktop icon imports were unused after removing app shortcuts. These are fixed in main: Windows7Explorer passes `pictureItems, path`; Winamp titlebars and z-order use pointer handlers; unused imports removed.
+- DesktopShellContainer filters the FileSystem's legacy Games/Programs targetPath aliases from desktop icon rendering to avoid duplicate icons while preserving aliases for path compatibility.
+- Re-run CI and inspect typecheck/lint/build after the final batch. Do not mark browser acceptance complete without runtime testing.
