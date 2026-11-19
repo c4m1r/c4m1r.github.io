@@ -21,21 +21,23 @@ export function WeatherWidget() {
     } catch { return defaultCity; }
   });
   const previousLanguage = useRef(languageCode);
+  const weatherRequest = useRef(0);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCityPicker, setShowCityPicker] = useState<boolean>(false);
 
   const loadData = useCallback(async (targetCity: string) => {
+    const requestId = ++weatherRequest.current;
     setLoading(true);
     try {
-      const data = await fetchWeather(targetCity, isRu ? 'ru' : 'en');
-      setWeather(data);
+      const data = await fetchWeather(targetCity, language);
+      if (requestId === weatherRequest.current) setWeather(data);
     } catch {
-      // Keep previous
+      // Keep the last successful reading.
     } finally {
-      setLoading(false);
+      if (requestId === weatherRequest.current) setLoading(false);
     }
-  }, [isRu]);
+  }, [language]);
 
   useEffect(() => {
     if (previousLanguage.current !== languageCode) {
@@ -64,7 +66,7 @@ export function WeatherWidget() {
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/15 text-xs font-semibold tracking-wide transition-colors cursor-pointer"
           >
             <MapPin size={12} className="text-blue-400" />
-            <span>{isRu ? activeCity.nameRu : activeCity.nameEn}</span>
+            <span>{activeCity.flag} {isRu ? activeCity.nameRu : activeCity.nameEn}</span>
             <ChevronDown size={11} className="opacity-70" />
           </button>
 
