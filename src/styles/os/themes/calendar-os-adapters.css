@@ -246,3 +246,6 @@
   .calendar-app__week-grid { overflow-x: auto; }
   .calendar-app__toolbar { align-items: flex-start; }
 }
+
+.calendar-app { position: relative; isolation: isolate; }
+.calendar-app__month-cell:focus-within,.calendar-app__week-column:focus-within { border-color: #2685d2; }
