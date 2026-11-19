@@ -119,7 +119,6 @@ function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { langua
           })() : <span key={`empty-${index}`} aria-hidden="true" />)}
         </div>
         <button type="button" className="xp-clock-popup__open-calendar" onClick={onOpenCalendar}>{language === 'ru' ? 'Открыть календарь' : 'Open Calendar'}</button>
-        </div>
       </div>
     </div>
   );
