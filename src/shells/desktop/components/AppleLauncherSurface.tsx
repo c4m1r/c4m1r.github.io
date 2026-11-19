@@ -28,7 +28,9 @@ const APP_IDS = [
   'about',
 ] as const;
 
-const localizedTitle = (en: string, ru: string): Record<Language, string> => ({
+type LocalizedAppTitle = Partial<Record<Language, string>> & Pick<Record<Language, string>, 'en'>;
+
+const localizedTitle = (en: string, ru: string): LocalizedAppTitle => ({
   en,
   ru,
   fr: en,
@@ -36,9 +38,11 @@ const localizedTitle = (en: string, ru: string): Record<Language, string> => ({
   zh: en,
   ja: en,
   ko: en,
+  be: ru,
+  kk: en,
 });
 
-const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], Record<Language, string>> = {
+const DEFAULT_TITLES: Record<(typeof APP_IDS)[number], LocalizedAppTitle> = {
   'internet-explorer': localizedTitle('Safari', 'Safari'),
   outlook: localizedTitle('Mail', 'Почта'),
   'windows-media-player': localizedTitle('Music', 'Музыка'),
