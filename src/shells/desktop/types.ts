@@ -4,7 +4,7 @@ import { ContentKind } from '../../domain/content/types';
 
 export interface DesktopAppDefinition {
   id: string;
-  title: Record<Language, string>;
+  title: Partial<Record<Language, string>> & Pick<Record<Language, string>, 'en'>;
   iconKey?: string; // key of ThemeAssets or standard asset key
   customIcon?: string; // direct path to import
   contentKinds?: ContentKind[];
