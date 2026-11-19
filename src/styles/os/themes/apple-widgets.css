@@ -30,3 +30,13 @@
 .apple-widget-calendar__days span.is-outside{color:rgba(255,255,255,.28)}
 .apple-widget-calendar__days span.is-today{background:#ff453a;color:#fff}
 @media(max-width:760px){.apple-desktop-widgets{top:12px;right:12px;width:min(212px,calc(100vw - 24px))}}
+
+.apple-widget-calendar__header{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.apple-widget-calendar__header button{min-width:18px;min-height:18px;padding:0 3px;border:0;border-radius:5px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.apple-widget-calendar__header button:hover{background:rgba(255,255,255,.12)}
+.apple-widget-calendar__days button{display:grid;min-width:0;aspect-ratio:1;place-items:center;border:0;border-radius:50%;background:transparent;color:inherit;font-size:10px;cursor:pointer}
+.apple-widget-calendar__days button.is-outside{color:rgba(255,255,255,.28)}
+.apple-widget-calendar__days button.is-today{background:#ff453a;color:#fff}
+.apple-widget-calendar__days button.is-selected{outline:1px solid #0a84ff;outline-offset:1px}
+.apple-widget-calendar__days button.has-events{box-shadow:inset 0 -2px rgba(48,209,88,.9)}
+.apple-widget-calendar__days button:focus-visible{outline:2px solid #0a84ff;outline-offset:1px}
