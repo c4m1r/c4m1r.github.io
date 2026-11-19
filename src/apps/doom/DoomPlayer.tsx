@@ -34,17 +34,19 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
 
   return (
     <div className="doom-player flex h-full w-full flex-col bg-[#000] text-white font-tahoma text-xs">
-      <header className="doom-player__chrome px-3 py-2 border-b border-[#272727] bg-[#101010]">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <div>
-            <h1 className="text-lg font-semibold tracking-wide text-[#f44336] drop-shadow">
-              {variant.title}
-            </h1>
-            {variant.subtitle && (
-              <p className="text-[#e0e0e0] text-[11px]">{variant.subtitle}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
+      <header className="doom-player__chrome flex min-h-0 shrink-0 items-center justify-between gap-3 border-b border-[#272727] bg-[#101010] px-3 py-1.5">
+        <div className="flex min-w-0 flex-1 items-baseline gap-2 overflow-hidden">
+          <h1 className="shrink-0 text-base font-semibold tracking-wide text-[#f44336] drop-shadow">
+            {variant.title}
+          </h1>
+          {variant.subtitle && (
+            <span className="shrink-0 text-[10px] text-[#bcbcbc]">{variant.subtitle}</span>
+          )}
+          <p className="min-w-0 truncate text-[10px] text-[#bcbcbc]" title={isRu ? variant.description.ru : variant.description.en}>
+            {isRu ? variant.description.ru : variant.description.en}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
             {variant.builds.map((build) => (
               <button
                 key={build.id}
@@ -68,9 +70,6 @@ export function DoomPlayer({ variantId }: DoomPlayerProps) {
             </a>
           </div>
         </div>
-        <p className="text-[#bcbcbc] mt-2">
-          {isRu ? variant.description.ru : variant.description.en}
-        </p>
       </header>
 
       <div className="doom-player__stage flex-1 relative bg-black overflow-hidden">
