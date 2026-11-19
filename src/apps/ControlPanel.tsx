@@ -489,6 +489,32 @@ export function ControlPanel() {
     [isRu]
   );
 
+  const openExplorerPath = (path: string) => {
+    window.dispatchEvent(new CustomEvent('explorer:open-path', { detail: { path } }));
+  };
+
+  const openCategory = (categoryId: string) => {
+    if (categoryId === 'appearance') {
+      setView(isMac || isIos ? 'display' : 'wallpaper');
+    } else if (categoryId === 'network') {
+      if (isMac || isIos) setView('network');
+      else openExplorerPath('My Computer\\Network Neighborhood');
+    } else if (categoryId === 'programs') {
+      openExplorerPath('C:\\Program Files\\Programs');
+    } else if (categoryId === 'user-accounts') {
+      openExplorerPath('C:\\Users');
+    } else if (categoryId === 'date-time') {
+      window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'calendar' } }));
+    } else if (categoryId === 'accessibility') {
+      if (isMac || isIos) setView('accessibility');
+      else setView('systemInfo');
+    } else if (categoryId === 'focus' && (isMac || isIos)) {
+      setView('focus');
+    } else {
+      setView('systemInfo');
+    }
+  };
+
   const renderCategoryIcon = (categoryId: string, fallback: string) => {
     const appleIconPath = useModernAppleSettingsIcons
       ? APPLE_SETTINGS_CATEGORY_ICONS[categoryId]
@@ -1149,14 +1175,7 @@ export function ControlPanel() {
                 <div
                   key={index}
                   className={`${cardClass} p-4 cursor-pointer transition-colors`}
-                  onClick={() => {
-                    if (category.id === 'appearance' && (isMac || isIos)) setView('display');
-                    else if (category.id === 'appearance') setView('wallpaper');
-                    else if (category.id === 'maintenance') setView('systemInfo');
-                    else if (category.id === 'accessibility' && (isIos || isMac)) setView('accessibility');
-                    else if (category.id === 'network' && (isIos || isMac)) setView('network');
-                    else if (category.id === 'focus' && (isIos || isMac)) setView('focus');
-                  }}
+                  onClick={() => openCategory(category.id)}
                 >
                   <div className="flex items-start gap-3 mb-2">
                     <div className="flex-shrink-0">
@@ -1177,12 +1196,21 @@ export function ControlPanel() {
                               type="button"
                               className="block w-full text-left hover:underline cursor-pointer"
                               onClick={(event) => {
+                                event.stopPropagation();
                                 if (isTaskManagerItem) {
-                                  event.stopPropagation();
                                   window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'task-manager' } }));
                                 } else if (isWidgetItem) {
-                                  event.stopPropagation();
                                   window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
+                                } else if (normalized.includes('дата и время') || normalized.includes('date & time') || normalized.includes('date and time')) {
+                                  window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'calendar' } }));
+                                } else if (normalized.includes('сетев') || normalized.includes('network')) {
+                                  openExplorerPath('My Computer\\Network Neighborhood');
+                                } else if (normalized.includes('программ') || normalized.includes('program') || normalized.includes('installed apps')) {
+                                  openExplorerPath('C:\\Program Files\\Programs');
+                                } else if (normalized.includes('учетн') || normalized.includes('пользовател') || normalized.includes('account') || normalized.includes('user')) {
+                                  openExplorerPath('C:\\Users');
+                                } else {
+                                  openCategory(category.id);
                                 }
                               }}
                             >
@@ -1215,10 +1243,9 @@ export function ControlPanel() {
                   key={index}
                   className={`${cardClass} p-3 flex flex-col items-center text-center cursor-pointer hover:scale-[1.02] transition-transform`}
                   onClick={() => {
-                    if (applet.id === 'appearance') setView('wallpaper');
-                    else if (applet.id === 'maintenance') setView('systemInfo');
-                    else if (applet.id === 'task-manager') window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'task-manager' } }));
+                    if (applet.id === 'task-manager') window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'task-manager' } }));
                     else if (applet.id === 'widgets') window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
+                    else openCategory(applet.id);
                   }}
                 >
                   <div className="mb-2">
