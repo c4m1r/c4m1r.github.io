@@ -89,6 +89,46 @@ const STORE_ARTICLES = 'articles';
 const STORE_SOURCES = 'sources';
 const SOURCES_STORAGE_KEY = 'webos_rss_sources_config_v1';
 const RSS_LAST_REFRESH_KEY = 'webos_rss_last_refresh_v1';
+const RSS_REFRESH_META_KEY = 'webos_rss_refresh_meta_v1';
+
+export interface RssRefreshMetadata {
+  status: 'never' | 'refreshing' | 'success' | 'partial' | 'failed' | 'disabled';
+  lastAttemptAt: number;
+  lastSuccessAt: number;
+  succeededSources: number;
+  failedSources: number;
+}
+
+const EMPTY_RSS_REFRESH_META: RssRefreshMetadata = {
+  status: 'never',
+  lastAttemptAt: 0,
+  lastSuccessAt: 0,
+  succeededSources: 0,
+  failedSources: 0,
+};
+
+export function getRssRefreshMetadata(): RssRefreshMetadata {
+  if (typeof localStorage === 'undefined') return EMPTY_RSS_REFRESH_META;
+  try {
+    const parsed = JSON.parse(localStorage.getItem(RSS_REFRESH_META_KEY) || 'null') as Partial<RssRefreshMetadata> | null;
+    if (!parsed) return EMPTY_RSS_REFRESH_META;
+    const allowed = ['never', 'refreshing', 'success', 'partial', 'failed', 'disabled'] as const;
+    return {
+      status: allowed.includes(parsed.status as typeof allowed[number]) ? parsed.status as RssRefreshMetadata['status'] : 'never',
+      lastAttemptAt: Number.isFinite(parsed.lastAttemptAt) ? Number(parsed.lastAttemptAt) : 0,
+      lastSuccessAt: Number.isFinite(parsed.lastSuccessAt) ? Number(parsed.lastSuccessAt) : 0,
+      succeededSources: Number.isFinite(parsed.succeededSources) ? Number(parsed.succeededSources) : 0,
+      failedSources: Number.isFinite(parsed.failedSources) ? Number(parsed.failedSources) : 0,
+    };
+  } catch {
+    return EMPTY_RSS_REFRESH_META;
+  }
+}
+
+function saveRssRefreshMetadata(metadata: RssRefreshMetadata): void {
+  if (typeof localStorage === 'undefined') return;
+  try { localStorage.setItem(RSS_REFRESH_META_KEY, JSON.stringify(metadata)); } catch { /* storage unavailable */ }
+}
 const RSS_CACHE_TTL_MS = 15 * 60 * 1000;
 const RSS_PARTIAL_RETRY_MS = 2 * 60 * 1000;
 const RSS_REQUEST_TIMEOUT_MS = 7000;
@@ -345,8 +385,13 @@ function articleIdentity(article: RssArticle): string {
   if (link !== canonicalArticleLink(article.sourceUrl)) return `url:${link}`;
   const guid = article.guid?.trim();
   if (guid) {
-    try { return `guid:${canonicalArticleLink(new URL(guid, article.sourceUrl).href)}`; }
-    catch { return `guid:${guid.toLocaleLowerCase()}`; }
+    try {
+      const parsedGuid = new URL(guid);
+      if (parsedGuid.protocol === 'http:' || parsedGuid.protocol === 'https:') return `guid:${canonicalArticleLink(parsedGuid.href)}`;
+    } catch {
+      // Opaque RSS GUIDs are identifiers, not relative URLs.
+    }
+    return `guid:${guid.toLocaleLowerCase()}`;
   }
   return `source:${canonicalArticleLink(article.sourceUrl)}|${article.title.trim().toLocaleLowerCase()}`;
 }
@@ -423,7 +468,11 @@ export async function getCachedArticlesFromDatabase(category?: string): Promise<
 
 export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle[]> {
   const sources = getRssSources().filter((source) => source.enabled);
-  if (!sources.length) return [];
+  if (!sources.length) {
+    const previous = getRssRefreshMetadata();
+    saveRssRefreshMetadata({ ...previous, status: 'disabled', lastAttemptAt: Date.now(), succeededSources: 0, failedSources: 0 });
+    return [];
+  }
 
   if (!forceRefresh) {
     const cached = await getCachedArticlesFromDatabase();
@@ -433,6 +482,15 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
       return cached;
     }
   }
+
+  const previousMeta = getRssRefreshMetadata();
+  saveRssRefreshMetadata({
+    ...previousMeta,
+    status: 'refreshing',
+    lastAttemptAt: Date.now(),
+    succeededSources: 0,
+    failedSources: 0,
+  });
 
   let succeeded = 0;
   const chunkSize = 10;
@@ -454,6 +512,21 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     }
   }
 
+  const failed = sources.length - succeeded;
+  const status: RssRefreshMetadata['status'] = succeeded === 0
+    ? 'failed'
+    : succeeded < sources.length
+      ? 'partial'
+      : 'success';
+  const lastSuccessAt = succeeded > 0 ? Date.now() : previousMeta.lastSuccessAt;
+  saveRssRefreshMetadata({
+    status,
+    lastAttemptAt: Date.now(),
+    lastSuccessAt,
+    succeededSources: succeeded,
+    failedSources: failed,
+  });
+
   if (succeeded > 0 && typeof localStorage !== 'undefined') {
     try {
       // Partial failures retry soon; a complete refresh uses the normal cache TTL.
@@ -464,4 +537,3 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
 
   return getCachedArticlesFromDatabase();
 }
-
