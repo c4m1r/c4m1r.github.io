@@ -93,17 +93,15 @@ export async function fetchWeather(cityId = 'almaty', language = 'ru'): Promise<
   // Try cached data if fresh (< 20 mins)
   const cacheKey = `${WEATHER_CACHE_KEY_PREFIX}${city.id}_${language}`;
   if (typeof window !== 'undefined') {
-    const raw = localStorage.getItem(cacheKey);
-    if (raw) {
-      try {
+    try {
+      const raw = localStorage.getItem(cacheKey);
+      if (raw) {
         const cached = JSON.parse(raw) as WeatherData;
         const diff = Date.now() - new Date(cached.updatedAt).getTime();
-        if (diff < 20 * 60 * 1000) {
-          return cached;
-        }
-      } catch {
-        // Continue to fresh fetch
+        if (diff >= 0 && diff < 20 * 60 * 1000) return cached;
       }
+    } catch {
+      // Storage unavailable or cache malformed; continue to fresh fetch.
     }
   }
 
