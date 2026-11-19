@@ -432,18 +432,21 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           {/* Separator */}
           <div className="start-menu-separator" />
 
-          {/* All Programs */}
-          <button
-            className="start-menu-item start-menu-item--footer"
-            aria-expanded={allProgramsOpen}
-            onClick={() => setAllProgramsOpen((open) => !open)}
-            onMouseEnter={handleHover}
-          >
-            <span>{allProgramsLabel}</span>
-            <ChevronsRight size={14} className="opacity-70" />
-          </button>
+          {/* All Programs opens as a native XP-style fly-out panel above the footer row. */}
+          <div className="relative">
+            <button
+              type="button"
+              className="start-menu-item start-menu-item--footer"
+              aria-expanded={allProgramsOpen}
+              aria-controls="xp-start-menu-all-programs"
+              onClick={() => setAllProgramsOpen((open) => !open)}
+              onMouseEnter={handleHover}
+            >
+              <span>{allProgramsLabel}</span>
+              <ChevronsRight size={14} className="opacity-70" />
+            </button>
           {allProgramsOpen && (
-            <div className="start-menu-all-programs mt-1 max-h-56 overflow-y-auto border border-[#7f9db9] bg-white text-[#111] shadow-lg">
+            <div id="xp-start-menu-all-programs" className="start-menu-all-programs absolute bottom-full left-0 z-[100001] mb-1 max-h-[min(60vh,420px)] w-full overflow-y-auto border border-[#7f9db9] bg-white text-[#111] shadow-xl">
               <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#555]">
                 {isRu ? 'Установленные программы' : 'Installed programs'}
               </div>
@@ -461,6 +464,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               ))}
             </div>
           )}
+          </div>
         </div>
 
         {/* Right Menu - Places */}
