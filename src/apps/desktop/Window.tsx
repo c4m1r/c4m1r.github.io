@@ -49,7 +49,8 @@ export function Window({
   minimized = false,
   maximized = false,
   zIndex = 50,
-  focused = true
+  focused = true,
+  id
 }: WindowProps) {
   const { theme } = useApp();
   const [position, setPosition] = useState({ x: initialX, y: initialY });
@@ -204,6 +205,9 @@ export function Window({
   if (minimized) {
     return null;
   }
+
+  // Winamp owns its classic independent windows and drag handles; skip OS chrome.
+  if (id === 'app:winamp') return <>{children}</>;
 
   // XP/Vista/7/WebOS family styles
   if (isXpFamily) {
