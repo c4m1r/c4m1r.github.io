@@ -17,6 +17,7 @@ export interface SystemSettings {
     {
       showFrozenSettings?: boolean;
       reducedMotion?: boolean;
+      colorScheme?: 'light' | 'dark';
     }
   >;
 }
