@@ -409,19 +409,28 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
   - South Korea: 2026/2027 lunar holidays, substitute days, Labour Day and Constitution Day.
   - UK: England/Wales bank holiday baseline for 2026/2027; regional Scotland/Northern Ireland calendars are not yet selectable.
 - Labour calendar status now distinguishes ordinary days off from transferred working days. Full Calendar month/week/day/list views show both; taskbar and WebOS clock tooltips include selected-country rest-day labels and national holiday flags.
-- Weather widget catalogue now has two cities per seven requested countries, plus Paris/Lyon and Madrid/Barcelona to satisfy French/Spanish language-country defaults. Current defaults are EN London, RU Almaty, FR Paris, ES Madrid, ZH Beijing, JA Tokyo, KO Seoul. City names show flags; manual choices persist per language; switching language resets the default. Weather cache is locale-specific and stale request results are ignored.
+- Weather widget catalogue now has two cities per seven requested countries, plus Paris/Marseille and Madrid/Barcelona to satisfy French/Spanish language-country defaults. Current defaults are EN London, RU Almaty, FR Paris, ES Madrid, ZH Beijing, JA Tokyo, KO Seoul. City names show flags; manual choices persist per language; switching language resets the default. Weather cache is locale-specific and stale request results are ignored.
 - Source references used:
-  - Russia 2026 transfer decree: https://www.consultant.ru/document/cons_doc_LAW_515170/
-  - Russia 2027 transfer decree: https://www.consultant.ru/document/cons_doc_LAW_544706/
+  - Russia 2026 transfer decree: https://static.government.ru/media/files/4jeB8hNKm69ggOa9yDiYOli6YoAyM21i.pdf
+  - Russia 2027 transfer decree: https://publication.pravo.gov.ru/document/0001202609180037
   - Kazakhstan 2026 production calendar: https://www.gov.kz/article/16887?lang=ru
-  - Kazakhstan 2026 constitutional change / 15 March holiday: https://www.gov.kz/org/maslihat-zhambyl/press/news/details/1183102?lang=ru
+  - Kazakhstan 2026 constitutional change / 15 March holiday: https://www.gov.kz/org/maslihat-zhambyl/press/news/details/1183102?lang=ru; https://www.gov.kz/article/16887?lang=ru
   - Belarus 2026 transfer: https://otdelkadrov.by/number/2025/8/Novosti_zakonodatelstva_082025/
-  - Belarus 2027 transfer: https://t.me/s/DGITbelarus?before=7847 (Ministry of Labour announcement quoting Resolution No. 499)
+  - Belarus 2027 transfer: https://normativka.by/lib/news/73260 (Resolution No. 499, 10 May → 8 May transfer; Ministry of Labour notice)
   - China 2026: https://en.bjhd.gov.cn/workinginhaidian/supportingservices/publicholidays/202512/t20251211_4797062.shtml
-  - China 2027: https://english.www.gov.cn/policies/latestreleases/202611/06/content_WS6aed74dcc6d00ca5f9a0e22e.html
+  - China 2027: https://www.gov.cn/zhengce/content/202611/content_7085101.htm (State Council notice with make-up workdays); https://english.www.gov.cn/policies/latestreleases/202611/06/content_WS6aed74dcc6d00ca5f9a0e22e.html (English holiday summary)
   - Japan 2026/2027: https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
   - South Korea 2026: https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=140038
   - South Korea 2027 lunar/observed dates cross-checked against KASA 2027 calendar guidelines: https://www.kasa.go.kr/prog/plcyBrf/brief/kor/sub01_01_04/view.do?plcyBrfNo=431
   - UK bank holidays: https://www.gov.uk/bank-holidays
   - City population references: UN World Cities 2025 data (https://population.un.org/wup/assets/Publications/undesa_pd_2025_wup2025_summary_of_results_final.pdf), UN Demographic Yearbook city table (https://unstats.un.org/unsd/demographic-social/products/dyb/documents/DYB2025/table08.pdf), and national statistical sources; city pairs use city-proper population where available rather than metro-area ranking.
 - **Verification remains outstanding:** connector writes are not equivalent to a build. No local checkout or browser runtime was available in this pass; typecheck/lint/build/verify, automated date tests and visual cross-OS checks are not confirmed. The annual labour data should not be presented as payroll/legal advice.
+
+
+### Calendar follow-up — source controls and annual-rule review — 2026-11-19
+- Added persistent source visibility switches for imported ICS calendars and personal events. National holidays/memorial dates are deliberately not hidden by these switches, preserving the always-visible country holiday requirement.
+- Added independent source color selectors (ICS and personal events) with local persistence and palette styling.
+- Added day-off and make-up workday entries to list view; taskbar and WebOS clock calendar tooltips now show flags, day-off text and make-up-work text.
+- Added generic substitute-day derivation for future Russian statutory holidays (excluding 1–8 January, which require the annual government schedule), Japanese Sunday national holidays, UK bank-holiday substitutes, and Kazakhstan public holidays under the next-working-day rule. These are statutory-rule fallbacks only; annual decrees still take precedence when published.
+- Corrected France weather pair to Paris/Marseille; Spain remains Madrid/Barcelona.
+- **Current limitation:** UK calendar is still England/Wales baseline; Scotland and Northern Ireland have distinct regional bank holidays. Kazakhstan 2027 Qurban Ait date and any annual transfer schedule should be refreshed from official sources when issued.
