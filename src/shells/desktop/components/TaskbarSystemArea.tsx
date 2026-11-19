@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type RefObject } from 'react';
 import { type Language } from '../../../i18n/translations';
 import { useApp } from '../../../contexts/useApp';
 import { SystemActionMenu } from '../../../system/actions/SystemActionMenu';
-import { moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
+import { ensureCalendarEvents, getCalendarEventsForDate, moveCalendarMonth, selectCalendarDate, useCalendarCenter } from '../../../apps/calendar/calendarCenter';
 
 export interface TaskbarSystemAreaProps {
   language: Language;
@@ -108,7 +108,7 @@ function ClockCalendarPopup({ language, time, labels, onOpenCalendar }: { langua
         <div className="xp-clock-popup__weekdays">{weekdayLabels.map((weekday, index) => <span key={`${weekday}-${index}`}>{weekday}</span>)}</div>
         <div className="xp-clock-popup__days">
           {calendarCells.map((date, index) => date ? (
-            <button type="button" key={date.toISOString()} className={`${areSameDay(date, time) ? 'is-today' : ''} ${areSameDay(date, selectedDate) ? 'is-selected' : ''}`} title={areSameDay(date, time) ? labels.today : date.toLocaleDateString(language)} aria-pressed={areSameDay(date, selectedDate)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }}>{date.getDate()}</button>
+            <button type="button" key={date.toISOString()} className={`${areSameDay(date, time) ? 'is-today' : ''} ${areSameDay(date, selectedDate) ? 'is-selected' : ''}`} title={getCalendarEventsForDate(date).map((event) => event.summary).join(', ') || (areSameDay(date, time) ? labels.today : date.toLocaleDateString(language))} aria-pressed={areSameDay(date, selectedDate)} onClick={() => { selectCalendarDate(date); onOpenCalendar?.(); }}>{date.getDate()}</button>
           ) : <span key={`empty-${index}`} aria-hidden="true" />)}
         </div>
         <button type="button" className="xp-clock-popup__open-calendar" onClick={onOpenCalendar}>{language === 'ru' ? 'Открыть календарь' : 'Open Calendar'}</button>
@@ -146,6 +146,8 @@ export function TaskbarSystemArea({
   const [hiddenTrayExpanded, setHiddenTrayExpanded] = useState(false);
   const [showClockPanel, setShowClockPanel] = useState(false);
   const labels = TRAY_LABELS[language] ?? TRAY_LABELS.en;
+
+  useEffect(() => { void ensureCalendarEvents(language); }, [language]);
 
   useEffect(() => {
     const handleClickAway = (event: MouseEvent) => {
