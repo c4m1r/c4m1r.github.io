@@ -160,11 +160,26 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
     const target = addressInput.trim();
     if (!target) return;
     const normalizedTarget = target.split('/').join('\\');
-    if (!getFileSystemItemFromPath(normalizedTarget)) {
+    const targetNode = getFileSystemItemFromPath(normalizedTarget);
+    if (!targetNode) {
       setAddressInput(path);
       setAddressEditing(false);
       return;
     }
+
+    if (targetNode.type === 'file') {
+      const parts = normalizedTarget.split('\\').filter(Boolean);
+      const fileName = parts.pop();
+      const parentPath = parts.join('\\') || 'My Computer';
+      const fileItem = getItemsFromPath(parentPath).find((item) =>
+        item.name.toLocaleLowerCase() === fileName?.toLocaleLowerCase()
+      );
+      if (fileItem) onOpenItem?.(fileItem, parentPath);
+      setAddressEditing(false);
+      setAddressInput(path);
+      return;
+    }
+
     navigateToPath(normalizedTarget);
     setAddressEditing(false);
   };
