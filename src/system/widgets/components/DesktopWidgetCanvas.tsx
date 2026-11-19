@@ -54,6 +54,15 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   const layoutSignature = items.map((item) => `${item.id}:${item.defaultPreset}:${item.presets.map((preset) => `${preset.id}-${preset.width}x${preset.height}`).join(',')}`).join('|');
   const [placements, setPlacements] = useState<Record<string, Placement>>(() => readPlacements(storageKey));
   const [expandedControls, setExpandedControls] = useState<Record<string, boolean>>({});
+  const activeStorageKeyRef = useRef(storageKey);
+  const skipNextPersistRef = useRef(false);
+
+  useEffect(() => {
+    if (activeStorageKeyRef.current === storageKey) return;
+    activeStorageKeyRef.current = storageKey;
+    skipNextPersistRef.current = true;
+    setPlacements(readPlacements(storageKey));
+  }, [storageKey]);
 
   const getPreset = useCallback((item: DesktopWidgetItem, placement?: Placement) => (
     item.presets.find((preset) => preset.id === placement?.preset) ??
@@ -174,6 +183,12 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   }, [itemIds, layoutSignature, normalizePlacements]);
 
   useEffect(() => {
+    // A theme switch first restores that OS's own layout. Do not overwrite it
+    // with the previous OS's positions during the same render cycle.
+    if (skipNextPersistRef.current) {
+      skipNextPersistRef.current = false;
+      return;
+    }
     try {
       localStorage.setItem(storageKey, JSON.stringify(placements));
       window.dispatchEvent(new CustomEvent('desktop-widget-layout-updated', { detail: { themeKey } }));
