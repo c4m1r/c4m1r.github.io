@@ -90,7 +90,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - All other application shortcuts live in the canonical `C:\\Program Files\\Programs` virtual folder; games remain in `C:\\Program Files\\Games`. Both are ordinary folders opened by the active OS Explorer.
 - My Documents is the canonical user folder and exposes the standard user folders (My Music, My Pictures, My Videos, My Documents/Downloads as appropriate) plus existing personal shortcuts. Keep folder identity distinct from viewer applications.
 - Windows Blog shortcut is presented as `Блог.chm` / `Blog.chm`; non-Windows shells retain the Blog label. The shared Blog app behaves as a CHM/HTML Help-style viewer with category tree, article list, search and in-app Markdown rendering.
-- The help library aggregates all site Wiki Markdown pages (including category index pages) and Blog Markdown articles, preserving their category hierarchy. Do not load only the Operating Systems subset.
+- The help library aggregates all Wiki Markdown pages (including category index pages), Blog articles and Markdown-backed site pages from news, projects, about/legal and app catalogue content. Preserve Wiki hierarchy and group other sources by their content category; do not load only the Operating Systems subset.
 - Acceptance: double-click every desktop item; open Programs/Games and launch representative entries; verify user folders and all media associations; search and open articles from multiple Wiki categories and Blog categories without leaving the help window.
 
 - Games is a normal virtual filesystem folder. It opens in the active OS Explorer, not a bespoke DOOM collection screen.
