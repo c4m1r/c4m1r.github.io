@@ -2,7 +2,9 @@ import { useState, type ReactNode } from 'react';
 import { Folder, Star, FileText, Settings, Search, HelpCircle, Play, LogOut, Power } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
 import { getActiveEdition } from '../../../os/osEditions';
-import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
+import ieClassicIcon from '../../../../themes/win98/assets/icons/homepage-0.png';
+import outlookClassicIcon from '../../../../themes/win98/assets/icons/mailbox_world-0.png';
+import mediaPlayerClassicIcon from '../../../../themes/win98/assets/icons/media_player-0.png';
 
 export interface StartMenu98Props {
   onClose: () => void;
@@ -31,13 +33,12 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const isWin2000 = theme === 'win2000';
   const [programsOpen, setProgramsOpen] = useState(false);
   const activeEdition = getActiveEdition(theme);
-  const themeAssets = THEME_ASSETS[theme as keyof typeof THEME_ASSETS] ?? THEME_ASSETS.webos;
   const menuItems: ClassicMenuItem[] = [
     { label: isRu ? 'Программы' : 'Programs', icon: <Folder size={16} />, submenu: [
-      { label: 'Internet Explorer', icon: <img src={themeAssets.internetExplorerIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'internet-explorer' },
-      { label: 'Outlook Express', icon: <img src={themeAssets.mailIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'outlook' },
-      { label: 'Windows Media Player', icon: <img src={themeAssets.mediaPlayerIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'windows-media-player' },
-      { label: 'Winamp', icon: <img src={themeAssets.winampIcon ?? themeAssets.mediaPlayerIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'winamp' },
+      { label: 'Internet Explorer', icon: <img src={ieClassicIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'internet-explorer' },
+      { label: 'Outlook Express', icon: <img src={outlookClassicIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'outlook' },
+      { label: 'Windows Media Player', icon: <img src={mediaPlayerClassicIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'windows-media-player' },
+      { label: 'Winamp', icon: <img src={mediaPlayerClassicIcon} alt="" className="h-4 w-4 object-contain" />, appId: 'winamp' },
       { label: isRu ? 'Блокнот' : 'Notepad', icon: <FileText size={16} />, appId: 'notepad' },
       { label: isRu ? 'Калькулятор' : 'Calculator', icon: <FileText size={16} />, appId: 'calculator' },
       { label: isRu ? 'Панель управления' : 'Control Panel', icon: <Settings size={16} />, appId: 'control-panel' },
