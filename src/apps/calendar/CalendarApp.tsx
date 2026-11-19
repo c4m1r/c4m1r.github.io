@@ -141,12 +141,14 @@ export function CalendarApp() {
   ).flat(), [visibleMonth]);
   const getMonthEventsForDate = (date: Date) => {
     const target = dayStart(date).getTime();
+    const nextDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1).getTime();
     return monthEvents.filter((event) => {
-      const start = dayStart(event.startDate).getTime();
-      const end = dayStart(event.endDate).getTime();
-      const allDayExclusive = event.source !== 'local' && event.startDate.getHours() === 0 &&
-        event.startDate.getMinutes() === 0 && event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
-      return target >= start && (allDayExclusive ? target < end : target <= end);
+      const isAllDay = event.startDate.getHours() === 0 && event.startDate.getMinutes() === 0 &&
+        event.endDate.getHours() === 0 && event.endDate.getMinutes() === 0;
+      const allDayLocalInclusive = event.source === 'local' && isAllDay;
+      const startsBeforeNextDay = event.startDate.getTime() < nextDay;
+      const endsAfterStart = allDayLocalInclusive ? dayStart(event.endDate).getTime() >= target : event.endDate.getTime() > target;
+      return startsBeforeNextDay && endsAfterStart;
     });
   };
   const listEntries = useMemo(() => [
