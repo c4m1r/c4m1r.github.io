@@ -147,8 +147,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - Categories must navigate to functioning settings/apps; no dead placeholder cards.
 
 ### CONTROL-02 — Desktop shortcuts and canonical settings surfaces
-- Provide a desktop shortcut to Control Panel and a separate shortcut to the existing Widgets/Widget Gallery manager.
-- The Control Panel shortcut opens the canonical settings surface. Widget entry points are OS-native rather than universal: Windows 7 uses the desktop context-menu item `Gadgets`, macOS uses `Edit Widgets…`, and non-Windows/non-macOS desktop shells expose the shared Widgets shortcut. No duplicate manager or divergent settings state.
+- Provide a desktop shortcut to Control Panel. Widget entry points are OS-native rather than universal: Windows 7 uses the desktop context-menu item `Gadgets` (no desktop icon), macOS uses `Edit Widgets…`, and non-Windows/non-macOS desktop shells expose the shared Widgets shortcut.
+- All entry points open the same canonical manager and shared visibility/preset state; no duplicate manager or divergent settings state.
 
 ### CONTROL-03 — OS-native Explorer and Control Panel fidelity
 - Restore authentic OS-specific window chrome, typography, icons, toolbar/address/navigation, menus, category layouts, spacing and responsive behavior.
@@ -162,8 +162,9 @@ Percentages are working estimates, not test results. The previous task registry 
 
 ### WIDGET-GALLERY-02 — Canonical OS-native Widget Gallery
 - Shared widget catalogue, visibility toggles and size presets remain one implementation; presentation is adapted to Windows 98/2000, XP, 7, 10/11, Ubuntu, Arch, macOS and WebOS.
-- Current source pass replaces emoji glyphs with consistent vector icons, fixes the gallery's nested item/toggle/preset selectors, adds OS-family classes and dedicated skin treatments. The stylesheet is imported globally through `src/styles/os/index.css`.
-- Acceptance remains open: verify actual appearance, contrast, focus/keyboard behavior, scroll containment, narrow viewport layout and toggle/preset persistence on every OS family.
+- Entry points follow OS conventions: Windows 7 Gadgets via desktop context menu; macOS Edit Widgets via desktop context menu; non-Windows/non-macOS desktop shells expose a Widgets shortcut. Windows Vista Sidebar behavior is documented as a platform reference but no Vista theme exists yet.
+- Widget Gallery has a persisted night palette and nine-locale widget/control copy (en/ru/fr/es/zh/ja/ko/be/kk). Existing OS-family skins remain in the globally imported src/styles/os/themes/macos.css.
+- The non-Windows desktop shortcut currently uses a generic vector glyph; exact native icon fidelity remains open. Acceptance: verify visual identity, contrast, focus/keyboard behavior, scroll containment, narrow viewport layout and toggle/preset/night-mode persistence on every OS family.
 
 ### APP-ICONS-02 — Restore application icons in virtual folders
 - Explorer file entries with an `appId` resolve the application icon before falling back to the generic file/document icon.
