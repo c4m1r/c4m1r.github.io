@@ -21,6 +21,8 @@ import win98FolderIcon from '../../themes/win98/assets/icons/directory_closed-0.
 import win98DriveIcon from '../../themes/win98/assets/icons/hard_disk_drive-0.png';
 import win98SearchIcon from '../../themes/win98/assets/icons/search_computer-0.png';
 
+const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки/i.test(value);
+
 export interface MyComputerProps {
   currentPath?: string;
   onOpenItem?: (item: FileSystemItem, parentPath: string) => void;
@@ -34,7 +36,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
   const [historyIndex, setHistoryIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [addressInput, setAddressInput] = useState(currentPath);
-  const isMyPictures = path.toLowerCase().includes('picture');
+  const isMyPictures = isPicturesFolderPath(path);
   const [viewMode, setViewMode] = useState<'thumbnails' | 'tiles' | 'icons' | 'list' | 'details'>(
     isMyPictures ? 'thumbnails' : 'icons'
   );
@@ -80,14 +82,14 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem }: MyComputerProps
     setAddressInput(currentPath);
     setSelectedItem(null);
     setAppleSearchQuery('');
-    if (currentPath.toLowerCase().includes('picture')) {
+    if (isPicturesFolderPath(currentPath)) {
       setViewMode('thumbnails');
     }
   }, [currentPath]);
 
   useEffect(() => {
     setAddressInput(path);
-    if (path.toLowerCase().includes('picture')) {
+    if (isPicturesFolderPath(path)) {
       setViewMode('thumbnails');
     }
   }, [path]);
