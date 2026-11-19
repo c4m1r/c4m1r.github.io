@@ -49,6 +49,13 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
   } as Record<string, { title: string; done: string; nightMode: string; lightMode: string; on: string; off: string; size: string; compact: string; standard: string; wide: string; clockCalendar: string; combinedDescription: string; widgets: string[][] }>)[language] ?? ({
     title: 'Desktop Widgets', done: 'Done', nightMode: 'Night mode', lightMode: 'Light mode', on: 'On', off: 'Off', size: 'View / size', compact: 'Compact', standard: 'Standard', wide: 'Wide', clockCalendar: 'Clock & calendar', combinedDescription: 'Combined time and calendar widget', widgets: [['Clock', 'Current time and date'], ['Calendar', 'Current month calendar'], ['Battery', 'Device battery status'], ['Weather', 'Current weather forecast'], ['Winamp Now Playing', 'Compact music player'], ['Quotes', 'Quotes and sayings'], ['Market Rates', 'Currency and market rates'], ['System Monitor', 'CPU, memory and disk usage'], ['News RSS', 'RSS news headlines'], ['Art Gallery', 'Selected artwork']],
   });
+  const galleryTitle = themeKey === 'win7'
+    ? ({
+        en: 'Desktop Gadget Gallery', ru: 'Галерея гаджетов', fr: 'Galerie des gadgets', es: 'Galería de gadgets',
+        zh: '桌面小工具库', ja: 'デスクトップ ガジェット ギャラリー', ko: '데스크톱 가젯 갤러리',
+        be: 'Галерэя гаджэтаў', kk: 'Жұмыс үстелі гаджеттерінің галереясы',
+      } as Record<string, string>)[language] ?? 'Desktop Gadget Gallery'
+    : locale.title;
   const [nightMode, setNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     try { return window.localStorage.getItem('desktop-widget-gallery-night-mode') === 'true'; } catch { return false; }
@@ -110,11 +117,11 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
             : 'generic';
 
   return (
-    <div className={`apple-widget-gallery apple-widget-gallery--${osFamily} ${nightMode ? 'is-night' : ''}`} role="dialog" aria-label={locale.title}>
+    <div className={`apple-widget-gallery apple-widget-gallery--${osFamily} ${nightMode ? 'is-night' : ''}`} role="dialog" aria-label={galleryTitle}>
       <button type="button" className="apple-widget-gallery__backdrop" aria-label={locale.done} onClick={onClose} />
       <section className="apple-widget-gallery__panel" onClick={(event) => event.stopPropagation()}>
         <header>
-          <div><strong>{locale.title}</strong><small>{themeKey === 'webos' ? 'WebOS' : themeKey === 'win7' ? 'Windows 7' : themeKey.startsWith('win') ? 'Windows' : themeKey.startsWith('macos') ? 'macOS' : themeKey === 'ubuntu' ? 'Ubuntu' : themeKey === 'arch' ? 'Arch Linux' : 'Linux'}</small></div>
+          <div><strong>{galleryTitle}</strong><small>{themeKey === 'webos' ? 'WebOS' : themeKey === 'win7' ? 'Windows 7' : themeKey.startsWith('win') ? 'Windows' : themeKey.startsWith('macos') ? 'macOS' : themeKey === 'ubuntu' ? 'Ubuntu' : themeKey === 'arch' ? 'Arch Linux' : 'Linux'}</small></div>
           <div className="apple-widget-gallery__header-actions">
             <button type="button" className="apple-widget-gallery__night-toggle" aria-label={nightMode ? locale.lightMode : locale.nightMode} aria-pressed={nightMode} onClick={() => setNightMode((current) => { const next = !current; try { window.localStorage.setItem('desktop-widget-gallery-night-mode', String(next)); } catch { /* Keep the session preference. */ } return next; })}>{nightMode ? <Sun size={15} /> : <Moon size={15} />}</button>
             <button type="button" onClick={onClose}>{locale.done}</button>
