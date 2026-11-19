@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Settings } from 'lucide-react';
 import { useApp } from '../contexts/useApp';
 import type { ThemeAssetId } from '../themes/webos/themeAssets';
 import { THEME_ASSETS } from '../themes/webos/themeAssets';
@@ -39,6 +40,28 @@ export function ControlPanel() {
   const [displayMode, setDisplayMode] = useState<CPDisplayMode>(() => theme === 'win-98' ? 'classic' : 'category');
   const [selectedWallpaper, setSelectedWallpaper] = useState<string | null>(null);
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>('all');
+  const [galleryColumns, setGalleryColumns] = useState<2 | 3>(() => {
+    if (typeof window === 'undefined') return 3;
+    try {
+      return window.localStorage.getItem('control-panel-gallery-columns') === '2' ? 2 : 3;
+    } catch {
+      return 3;
+    }
+  });
+  const [showGalleryOptions, setShowGalleryOptions] = useState(false);
+  const galleryText = ({
+    en: { all: 'All images', wallpapers: 'Wallpapers', pictures: 'Pictures', type: 'Image sources', count: 'images', empty: 'No images in this category yet.', preview: 'Preview', placement: 'Placement', fill: 'Fill', fit: 'Fit', stretch: 'Stretch', tile: 'Tile', center: 'Center', apply: 'Apply', cancel: 'Cancel', restore: '{galleryText.restore}', columns: 'Gallery columns', three: '3 columns', two: '2 columns', loading: 'Loading gallery wallpapers...' },
+    ru: { all: 'Все изображения', wallpapers: 'Обои', pictures: 'Изображения', type: 'Источники изображений', count: 'изображений', empty: 'В этой категории пока нет изображений.', preview: 'Предпросмотр', placement: 'Размещение', fill: 'Заполнить', fit: 'По размеру', stretch: 'Растянуть', tile: 'Замостить', center: 'По центру', apply: 'Применить', cancel: 'Отмена', restore: 'Восстановить по умолчанию', columns: 'Столбцы галереи', three: '3 столбика', two: '2 столбика', loading: 'Загрузка обоев...' },
+    fr: { all: 'Toutes les images', wallpapers: 'Fonds d’écran', pictures: 'Images', type: 'Sources d’images', count: 'images', empty: 'Aucune image dans cette catégorie.', preview: 'Aperçu', placement: 'Disposition', fill: 'Remplir', fit: 'Adapter', stretch: 'Étirer', tile: 'Mosaïque', center: 'Centrer', apply: 'Appliquer', cancel: 'Annuler', restore: 'Restaurer par défaut', columns: 'Colonnes de la galerie', three: '3 colonnes', two: '2 colonnes', loading: 'Chargement des fonds d’écran...' },
+    es: { all: 'Todas las imágenes', wallpapers: 'Fondos', pictures: 'Imágenes', type: 'Fuentes de imágenes', count: 'imágenes', empty: 'No hay imágenes en esta categoría.', preview: 'Vista previa', placement: 'Ajuste', fill: 'Rellenar', fit: 'Ajustar', stretch: 'Estirar', tile: 'Mosaico', center: 'Centrar', apply: 'Aplicar', cancel: 'Cancelar', restore: 'Restaurar valores', columns: 'Columnas de galería', three: '3 columnas', two: '2 columnas', loading: 'Cargando fondos...' },
+    zh: { all: '全部图片', wallpapers: '壁纸', pictures: '图片', type: '图片来源', count: '张图片', empty: '此类别暂无图片。', preview: '预览', placement: '显示方式', fill: '填充', fit: '适应', stretch: '拉伸', tile: '平铺', center: '居中', apply: '应用', cancel: '取消', restore: '恢复默认', columns: '图库列数', three: '3 列', two: '2 列', loading: '正在加载壁纸...' },
+    ja: { all: 'すべての画像', wallpapers: '壁紙', pictures: '画像', type: '画像ソース', count: '枚', empty: 'このカテゴリに画像はありません。', preview: 'プレビュー', placement: '配置', fill: '塗りつぶし', fit: '全体表示', stretch: '引き伸ばす', tile: '並べて表示', center: '中央', apply: '適用', cancel: 'キャンセル', restore: '初期設定に戻す', columns: 'ギャラリーの列数', three: '3 列', two: '2 列', loading: '壁紙を読み込み中...' },
+    ko: { all: '모든 이미지', wallpapers: '배경 화면', pictures: '사진', type: '이미지 소스', count: '개 이미지', empty: '이 카테고리에 이미지가 없습니다.', preview: '미리 보기', placement: '배치', fill: '채우기', fit: '맞춤', stretch: '늘이기', tile: '바둑판식', center: '가운데', apply: '적용', cancel: '취소', restore: '기본값 복원', columns: '갤러리 열 수', three: '3열', two: '2열', loading: '배경 화면을 불러오는 중...' },
+    be: { all: 'Усе выявы', wallpapers: 'Шпалеры', pictures: 'Выявы', type: 'Крыніцы выяў', count: 'выяў', empty: 'У гэтай катэгорыі пакуль няма выяў.', preview: 'Папярэдні прагляд', placement: 'Размяшчэнне', fill: 'Запоўніць', fit: 'Па памеры', stretch: 'Расцягнуць', tile: 'Замасціць', center: 'Па цэнтры', apply: 'Ужыць', cancel: 'Скасаваць', restore: 'Аднавіць стандартныя', columns: 'Слупкі галерэі', three: '3 слупкі', two: '2 слупкі', loading: 'Загрузка шпалер...' },
+    kk: { all: 'Барлық суреттер', wallpapers: 'Түсқағаздар', pictures: 'Суреттер', type: 'Сурет көздері', count: 'сурет', empty: 'Бұл санатта әзірге сурет жоқ.', preview: 'Алдын ала қарау', placement: 'Орналастыру', fill: 'Толтыру', fit: 'Өлшемге келтіру', stretch: 'Созу', tile: 'Өрнек', center: 'Ортаға', apply: 'Қолдану', cancel: 'Болдырмау', restore: 'Әдепкіге қайтару', columns: 'Галерея бағандары', three: '3 баған', two: '2 баған', loading: 'Түсқағаздар жүктелуде...' },
+  } as Record<string, { all: string; wallpapers: string; pictures: string; type: string; count: string; empty: string; preview: string; placement: string; fill: string; fit: string; stretch: string; tile: string; center: string; apply: string; cancel: string; restore: string; columns: string; three: string; two: string; loading: string }>)[language] ?? ({
+    all: 'All images', wallpapers: 'Wallpapers', pictures: 'Pictures', type: 'Image sources', count: 'images', empty: 'No images in this category yet.', preview: 'Preview', placement: 'Placement', fill: 'Fill', fit: 'Fit', stretch: 'Stretch', tile: 'Tile', center: 'Center', apply: 'Apply', cancel: 'Cancel', restore: 'Restore Default', columns: 'Gallery columns', three: '3 columns', two: '2 columns', loading: 'Loading gallery wallpapers...',
+  });
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>(() => {
     if (typeof window === 'undefined') return 'fill';
     try {
@@ -1594,11 +1617,23 @@ export function ControlPanel() {
             ) : (
               <>
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex flex-wrap gap-2" role="group" aria-label={isRu ? 'Тип изображений' : 'Image type'}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="relative">
+                      <button type="button" aria-label={galleryText.columns} aria-expanded={showGalleryOptions} onClick={() => setShowGalleryOptions((open) => !open)} className="inline-flex items-center gap-1.5 rounded border border-gray-500/30 px-2.5 py-1.5 text-xs hover:bg-gray-500/10">
+                        <Settings size={14} /> {galleryText.columns}
+                      </button>
+                      {showGalleryOptions && (
+                        <div className="absolute left-0 top-full z-20 mt-1 min-w-40 rounded border border-gray-500/30 bg-white p-1 text-black shadow-lg">
+                          <button type="button" onClick={() => { setGalleryColumns(3); localStorage.setItem('control-panel-gallery-columns', '3'); setShowGalleryOptions(false); }} className="block w-full rounded px-3 py-2 text-left text-xs hover:bg-blue-50" aria-pressed={galleryColumns === 3}>{galleryText.three}</button>
+                          <button type="button" onClick={() => { setGalleryColumns(2); localStorage.setItem('control-panel-gallery-columns', '2'); setShowGalleryOptions(false); }} className="block w-full rounded px-3 py-2 text-left text-xs hover:bg-blue-50" aria-pressed={galleryColumns === 2}>{galleryText.two}</button>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2" role="group" aria-label={galleryText.type}>
                     {([
-                      { id: 'all' as const, label: isRu ? 'Все изображения' : 'All images' },
-                      { id: 'wallpapers' as const, label: isRu ? 'Обои' : 'Wallpapers' },
-                      { id: 'pictures' as const, label: isRu ? 'Изображения' : 'Pictures' },
+                      { id: 'all' as const, label: galleryText.all },
+                      { id: 'wallpapers' as const, label: galleryText.wallpapers },
+                      { id: 'pictures' as const, label: galleryText.pictures },
                     ]).map((filter) => (
                       <button
                         key={filter.id}
@@ -1614,18 +1649,19 @@ export function ControlPanel() {
                         {filter.label}
                       </button>
                     ))}
+                    </div>
                   </div>
                   <span className="text-[11px] opacity-60">
-                    {visibleGalleryImages.length} {isRu ? 'изображений' : 'images'}
+                    {visibleGalleryImages.length} {galleryText.count}
                   </span>
                 </div>
 
                 {visibleGalleryImages.length === 0 ? (
                   <div className="rounded border border-dashed border-gray-500/30 p-8 text-center text-sm opacity-60">
-                    {isRu ? 'В этой категории пока нет изображений.' : 'No images in this category yet.'}
+                    {galleryText.empty}
                   </div>
                 ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+                <div className="grid gap-3 mb-6" style={{ gridTemplateColumns: "repeat(" + galleryColumns + ", minmax(0, 1fr))" }}>
                   {visibleGalleryImages.map((wp) => (
                     <div
                       key={wp.id}
@@ -1649,7 +1685,7 @@ export function ControlPanel() {
                 {(selectedWallpaper || customActive) && (
                   <div className={`p-4 ${cardClass} mb-4`}>
                     <p className={`text-sm font-semibold mb-3 ${titleClass}`}>
-                      Preview
+                      {galleryText.preview}
                     </p>
                     {selectedWallpaper && (
                       <div className="relative w-full max-w-xs mx-auto aspect-video rounded overflow-hidden border border-gray-500/30 shadow mb-3">
@@ -1666,7 +1702,7 @@ export function ControlPanel() {
                     )}
                     <div className="mx-auto mb-3 flex max-w-xs items-center gap-2">
                       <label htmlFor="control-panel-wallpaper-fit" className="shrink-0 text-xs opacity-70">
-                        {isRu ? 'Размещение' : 'Placement'}
+                        {galleryText.placement}
                       </label>
                       <select
                         id="control-panel-wallpaper-fit"
@@ -1679,11 +1715,11 @@ export function ControlPanel() {
                         }}
                         className="min-w-0 flex-1 rounded border border-gray-500/40 bg-white px-2 py-1 text-xs text-black"
                       >
-                        <option value="fill">{isRu ? 'Заполнить' : 'Fill'}</option>
-                        <option value="fit">{isRu ? 'По размеру' : 'Fit'}</option>
-                        <option value="stretch">{isRu ? 'Растянуть' : 'Stretch'}</option>
-                        <option value="tile">{isRu ? 'Замостить' : 'Tile'}</option>
-                        <option value="center">{isRu ? 'По центру' : 'Center'}</option>
+                        <option value="fill">{galleryText.fill}</option>
+                        <option value="fit">{galleryText.fit}</option>
+                        <option value="stretch">{galleryText.stretch}</option>
+                        <option value="tile">{galleryText.tile}</option>
+                        <option value="center">{galleryText.center}</option>
                       </select>
                     </div>
                     <div className="flex gap-2 max-w-xs mx-auto">
@@ -1698,14 +1734,14 @@ export function ControlPanel() {
                             }}
                             className="flex-1 py-1.5 px-3 rounded bg-[#316ac5] text-white hover:bg-[#255199] transition-colors text-xs font-semibold cursor-pointer"
                           >
-                            {isRu ? 'Применить' : 'Apply'}
+                            {galleryText.apply}
                           </button>
                           <button
                             type="button"
                             onClick={() => setSelectedWallpaper(null)}
                             className="flex-1 py-1.5 px-3 rounded border border-gray-500/40 hover:bg-gray-500/10 transition-colors text-xs font-semibold cursor-pointer"
                           >
-                            {isRu ? 'Отмена' : 'Cancel'}
+                            {galleryText.cancel}
                           </button>
                         </>
                       )}
