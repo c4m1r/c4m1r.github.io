@@ -502,3 +502,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Start Menu: XP All Programs is a fly-out; classic Windows submenu uses theme-native IE/Outlook/WMP/Winamp icons; Network Neighborhood paths point through My Computer. XP and Windows 7 path aliases for My Music/Pictures/Documents rely on the shared profile resolver.
 - Minesweeper sprite CSS now enforces block/flex dimensions and pixel rendering. If sprites remain missing in browser, inspect actual network asset responses and computed styles; no manual visual acceptance has been performed.
 - CI had a failed intermediate run for malformed JSX in the DOOM header. The unmatched closing `div` was removed in `6875f22f`. Check the latest GitHub Actions result; do not infer success from the commit.
+
+
+### Latest handoff — Control Panel and project index efficiency (2026-11-19)
+- Control Panel dispatches the shared `explorer:open-path` event; DesktopShellContainer resolves it through `openExplorerWindow`. Programs, User Accounts and Network categories use canonical virtual paths; Date/Time launches Calendar; Task Manager and Widgets use existing shared surfaces. Apple routes remain native; hardware/sound and non-Apple accessibility are still broad System & Device Info fallbacks, not finished device settings.
+- My Projects now indexes the same sources and deduplication precedence as `loadAllProjects()`: root `content/projects/*.md` first, then nested `content/about/projects/**/*.md` by filename ID. Globs are lazy; filesystem items hold a content path. Opening an article calls `loadMarkdownContent`, parses frontmatter for the active language and renders the body with `markdownToHtml`.
+- This avoids eagerly embedding the complete project Markdown corpus in the main application bundle. Preserve this lazy-loading approach when adding project sources.
+- Latest complete CI snapshot: commit `7f50b5ef` passed Typecheck, Lint, Build and Deploy. Later source changes (Control Panel routing, lazy project article reader and profile/filesystem updates) require the newest GitHub Actions run before acceptance.
