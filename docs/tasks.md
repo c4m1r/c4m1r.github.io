@@ -21,9 +21,9 @@ Repository source baseline inspected before this pass: `0fc60199c127ae52b06e2b65
 | Core desktop / shared shell | 60% | Unified shell exists; cross-OS visual and runtime consistency still needs systematic verification |
 | Widgets + 3 size classes | 70–75% | Existing widgets need fixed size contracts, responsive adaptation and final placement checks |
 | RSS | 60–65% | Cumulative cache/deduplication and refresh/filter behavior still need runtime proof |
-| DOOM | 30% | Current iframe integration cannot detect many remote failures; no verified local playable build |
-| Other games | 40% | Native Snake/Memory/Minesweeper exist; inventory and new games remain |
-| Explorer / Games folder | 55% | Games folder is routed through Explorer, but native OS presentation and XP folder icon need checking |
+| DOOM | 35% | Presentation cleaned; remote iframe remains unverified for actual gameplay |
+| Other games | 45% | Minesweeper vertical sprite mapping and per-game Explorer icons corrected in source; runtime acceptance pending |
+| Explorer / Games folder | 60% | Per-game app icon resolution restored; OS-native presentation and launch acceptance remain |
 | My Documents | 45% | Canonical virtual folder exists; duplicate shortcuts and navigation need cleanup/verification |
 | My Pictures | 40% | Gallery mapping is partial; complete file inventory and normal folder behavior remain |
 | Picture Viewer | 55% | Shared viewer direction exists; grid/single-image parity and file associations need completion |
@@ -64,6 +64,23 @@ Percentages are working estimates, not test results. The previous task registry 
 - Category filter lives inside the News RSS Feed application, not as a detached desktop widget/control.
 - Provide clear loading, stale-cache, refresh success/failure and empty states; show cache freshness and source errors honestly.
 - Acceptance: repeated refresh, duplicate feeds, partial feed outage, empty feed and category filtering do not destroy cached history.
+
+### STARTMENU-02 — Start Menu interaction and complete navigation (P0)
+- Root cause found for the reported dead menu items: the desktop-level `onMouseDown` handler closed the Start Menu on every bubbled left-button press, unmounting it before the item's `onClick` could execute. The Start Menu surface now stops `mousedown` propagation as well as `click` propagation.
+- Route menu destinations through the shared launcher / Explorer callbacks. Canonical user paths: My Documents, My Pictures, My Music and the shared `C:\\Users\\C4m1r` / `C:\\Documents and Settings\\C4m1r` profile. My Computer and Control Panel use their registered system routes.
+- Network Neighborhood now exists as a virtual folder under My Computer and has routes in classic, XP and Windows 7 Start Menus.
+- XP All Programs now expands an in-menu application list; Windows 7 All Programs toggles the complete program list; Windows 98/2000 Programs opens a classic cascading submenu. IE and Outlook Express now use the same row/icon sizing as the other XP pinned entries; special E-mail/Internet tags and oversized treatment were removed.
+- Desktop Programs shortcut and Start Menu folder references must resolve to `C:\\Program Files\\Programs` (not the localized display name).
+- Acceptance: test every item by mouse and keyboard on Windows 98/2000, XP, 7 and WebOS; verify folder paths resolve to populated folders and each app opens/focuses its window. Verify menu does not close on mousedown before click.
+
+### GAME-03 — Minesweeper sprite sheets and game/program icons (P0)
+- Audited the actual PNG IHDR dimensions: `cells.png` is 16×256, `digits.png` is 13×276 and `smileys.png` is 24×120. The CSS incorrectly treated all three vertical sprite sheets as horizontal strips; background sizes and per-sprite offsets are now vertical.
+- Explorer icon resolution now maps app IDs to actual assets before generic file fallbacks. DOOM uses its game icon, Minesweeper its dedicated icon, and Snake/Memory have dedicated lightweight SVG icons. Program Files app entries retain their own app icons.
+- Acceptance: verify numbers 0–8, mine, exploded mine, flag, question marker, smiley states and both counters in Minesweeper. Verify game/program icons in every Explorer view and OS skin; ensure missing assets do not silently hide icons.
+
+### GAME-01 follow-up — DOOM / DOOM II clean game surface
+- Removed the Emupedia/wasm-doom footer, the warning tip and the duplicate iframe-loaded status/link overlay. The selected build's external-launch action remains in the header, and an error-only fallback remains if iframe navigation fails.
+- An iframe load is still not proof of playable gameplay. Keyboard, mouse, pointer lock, audio, resize, restart and browser compatibility require manual acceptance for both DOOM and DOOM II.
 
 ### GAME-01 — DOOM: repair the launch experience and verify actual gameplay
 - Audit `src/apps/doom/`, app registration and launch routes. Current `DoomPlayer` embeds Emupedia URLs; iframe `onLoad`/ `onError` cannot establish that the game engine booted or that gameplay is available.
