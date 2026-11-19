@@ -21,6 +21,7 @@ import { getItemsFromPath, getFileIcon, FileSystemItem } from '../../utils/FileS
 import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
 import { winampController } from '../../system/audio/winampController';
 import { markdownToHtml } from '../../domain/content/markdown';
+import { parseFrontmatter } from '../../domain/content/frontmatter';
 import { useDesktopWindowManager } from './runtime/useDesktopWindowManager';
 import { useDesktopIconGridState } from './runtime/useDesktopIconGridState';
 import { DoomPlayer } from '../../apps/doom/DoomPlayer';
@@ -857,13 +858,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
     const lowerName = item.name.toLowerCase();
     if (lowerName.endsWith('.md') && item.id.startsWith('project:')) {
-      const markdown = typeof item.content === 'string' ? item.content : '';
+      let markdown = typeof item.content === 'string' ? item.content : '';
+      if (markdown.endsWith('.md') && !markdown.includes('\n')) {
+        markdown = await loadMarkdownContent(markdown);
+      }
+      const parsed = parseFrontmatter(markdown, language);
       content = (
         <div className="h-full overflow-auto bg-white px-6 py-5 text-slate-900">
-          <article className="prose prose-sm mx-auto max-w-4xl" dangerouslySetInnerHTML={{ __html: markdownToHtml(markdown) }} />
+          <article className="prose prose-sm mx-auto max-w-4xl" dangerouslySetInnerHTML={{ __html: markdownToHtml(parsed.body) }} />
         </div>
       );
-      title = item.name.replace(/\\.md$/i, '');
+      title = parsed.metadata.title || item.name.replace(/\.md$/i, '');
       width = 820;
       height = 620;
     } else if (lowerName.endsWith('.txt') || lowerName.endsWith('.md')) {
