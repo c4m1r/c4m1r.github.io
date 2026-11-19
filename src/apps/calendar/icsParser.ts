@@ -82,7 +82,9 @@ function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined 
     if (separator > 0) fields[part.slice(0, separator).toUpperCase()] = part.slice(separator + 1);
   });
   const freq = fields.FREQ?.toUpperCase();
-  if (!freq || !['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'].includes(freq)) return undefined;
+  const supportedFields = new Set(['FREQ', 'INTERVAL', 'COUNT', 'UNTIL', 'BYDAY', 'BYMONTHDAY', 'WKST']);
+  if (!freq || !['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'].includes(freq) ||
+      Object.keys(fields).some((key) => !supportedFields.has(key)) || (fields.WKST && fields.WKST !== 'MO')) return undefined;
   const interval = Math.min(365, Math.max(1, Number(fields.INTERVAL) || 1));
   const countValue = Number(fields.COUNT);
   const count = Number.isFinite(countValue) && countValue > 0 ? Math.min(10000, Math.floor(countValue)) : undefined;
@@ -91,8 +93,12 @@ function parseRecurrenceRule(value: string): CalendarRecurrenceRule | undefined 
     if (parsed && fields.UNTIL.length === 8) parsed.setHours(23, 59, 59, 999);
     return parsed ?? undefined;
   })() : undefined;
-  const byDay = fields.BYDAY?.split(',').filter((value: string) => value.length === 2).map((value: string) => WEEKDAY_CODES[value]).filter((day: number | undefined): day is number => day !== undefined);
-  const byMonthDay = fields.BYMONTHDAY?.split(',').map(Number).filter((day: number) => Number.isInteger(day) && day >= 1 && day <= 31);
+  const dayTokens = fields.BYDAY?.split(',') ?? [];
+  if (dayTokens.some((value) => value.length !== 2 || WEEKDAY_CODES[value] === undefined)) return undefined;
+  const byDay = dayTokens.length ? dayTokens.map((value) => WEEKDAY_CODES[value]) : undefined;
+  const monthDayTokens = fields.BYMONTHDAY?.split(',').map(Number) ?? [];
+  if (monthDayTokens.some((day) => !Number.isInteger(day) || day < 1 || day > 31)) return undefined;
+  const byMonthDay = monthDayTokens.length ? monthDayTokens : undefined;
   return { freq: freq as CalendarRecurrenceRule['freq'], interval, count, until, byDay, byMonthDay };
 }
 
@@ -124,7 +130,7 @@ export function parseICS(icsData: string): CalendarEvent[] {
       description,
       startDate,
       endDate,
-      recurrenceRule: recurrenceProperty ? parseRecurrenceRule(recurrenceProperty.value) : undefined,
+      recurrenceRule: recurrenceProperty && !get('RDATE') && !get('EXDATE') ? parseRecurrenceRule(recurrenceProperty.value) : undefined,
     });
   });
 
