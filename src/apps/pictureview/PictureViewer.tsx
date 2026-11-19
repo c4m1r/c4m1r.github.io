@@ -39,8 +39,11 @@ export function PictureViewer({ initialImage, images, initialIndex = 0, initialV
   const imageList: PictureViewerImage[] = useMemo(() => {
     if (images?.length) return images;
     const library = galleryItems.map((item) => ({ src: item.imagePath, name: item.title }));
+    if (initialImage && !library.some((image) => image.src === initialImage)) {
+      library.unshift({ src: initialImage, name: initialImage.split('/').pop() || 'Image' });
+    }
     if (library.length) return library;
-    return initialImage ? [{ src: initialImage, name: 'Image' }] : [];
+    return [];
   }, [galleryItems, images, initialImage]);
 
   const [viewMode, setViewMode] = useState<'viewer' | 'gallery'>(initialView);
