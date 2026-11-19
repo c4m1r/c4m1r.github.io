@@ -1,7 +1,7 @@
 # Repository Consolidation & OS Engineering Master Task Registry
 
 ## Executive Summary: Retro OS Reconstruction, Absorption & Fidelity Roadmap
-Проект `c4m1r.github.io` разрабатывается как некоммерческая, фанатская интерактивная ретро-среда для восстановления эстетики и ностальгии по культовым операционным системам прошлого. Все графические материалы, звуки, стили и фрагменты кода из донорских репозиториев `/eat/` используются исключительно в демонстрационных и образовательно-ностальгических целях для достижения максимального визуального и функционального соответствия оригинальным ОС (Windows XP, Windows 98, Windows 7, Ubuntu, Arch Linux, WebOS, macOS, iOS). Проект достиг полной независимости сборки (0 runtime-зависимостей от внешних папок). Полностью поглощённые и неактуальные доноры могут быть безопасно удалены или архивированы. Текущий этап сфокусирован на последовательной глубокой проработке каждой системы: аутентичные звуковые схемы, высокоточные эмуляции классических программ (Winamp 2.x, 0chan Loop, Outlook, Explorer, Media Player), реактивная анимация элементов управления и визуализаторов, и адаптивный UX.
+Проект `c4m1r.github.io` разрабатывается как некоммерческая, фанатская интерактивная ретро-среда для восстановления эстетики и ностальгии по культовым операционным системам прошлого. Все графические материалы, звуки, стили и фрагменты кода из донорских репозиториев `/eat/` используются исключительно в демонстрационных и образовательно-ностальгических целях для достижения максимального визуального и функционального соответствия оригинальным ОС (Windows XP, Windows 98, Windows 7, Ubuntu, Arch Linux, WebOS, macOS, iOS). Сборка не должна иметь runtime-зависимостей от /eat/, однако донорские исходники всё ещё присутствуют для аудита и выборочного переноса. Нельзя считать /eat/ пустой или удалять оставшиеся материалы до проверки исходников, лицензий и зависимостей. Текущий этап сфокусирован на последовательной глубокой проработке каждой системы: аутентичные звуковые схемы, высокоточные эмуляции классических программ (Winamp 2.x, 0chan Loop, Outlook, Explorer, Media Player), реактивная анимация элементов управления и визуализаторов, и адаптивный UX.
 
 ---
 
@@ -272,7 +272,7 @@
 
 | ID | Workstream | Progress | Current state |
 |---|---|---:|---|
-| WIDGET-01 | Widget startup policy and WebOS placement | 75% | Code updated: only WebOS defaults to all widgets enabled; other OS widget visibility defaults off; WebOS initial layout is compact, right-aligned, two columns. Browser verification pending. |
+| WEBOS-DESKTOP-01 | WebOS desktop identity and shell fidelity | 60% | Requirements retained: pure black desktop, Arch Linux identity instead of Windows branding, Russian UI, one clock only and Linux-like bottom panel. Existing theme/shell implementation needs a complete visual audit and final polish. |\n| WIDGET-01 | Widget startup policy and WebOS placement | 75% | Code updated: only WebOS defaults to all widgets enabled; other OS widget visibility defaults off; WebOS initial layout is compact, right-aligned, two columns. Browser verification pending. |
 | WIDGET-02 | Unified widget size system and adaptive contents | 70% | Three shared dimensions now replace per-widget dimensions; canvas no longer reserves a permanent title bar; responsive sizing and Winamp controls updated. Remaining widget-specific overflow/layout polish and QA. |
 | WIDGET-03 | Hover-only widget controls | 75% | Name, drag handle and size selector are now an overlay revealed on hover/focus instead of consuming permanent widget space. Accessibility and touch behavior still require QA. |
 | RSS-01 | Restore historical IndexedDB cache | 65% | Refresh now merges/upserts new entries instead of deleting all records from a source; old entries remain inside the existing 14-day retention window. Cache TTL optimization retained. |
@@ -292,6 +292,14 @@
 
 ## Detailed requirements and acceptance criteria
 
+### WEBOS-DESKTOP-01 — WebOS desktop identity
+- Keep the WebOS desktop background completely black.
+- Use the Arch Linux identity/icon instead of Windows branding on the WebOS desktop.
+- Keep desktop labels and shell controls in Russian.
+- Render exactly one clock; do not duplicate the clock in both the desktop widget and system panel.
+- Keep the Linux-like bottom panel and preserve the WebOS-specific widget area on the right.
+- Do not enable the desktop widgets by default in other OS themes.
+
 ### WIDGET-01 — Widget defaults and WebOS layout
 - Only WebOS starts with widgets enabled by default.
 - WebOS starts with all available widgets visible, arranged at the right side of the desktop in exactly two columns on desktop-sized screens.
@@ -310,6 +318,13 @@
 - Show these controls as an overlay only while hovering or focusing the widget.
 - Keep the current visual style intact when controls are hidden.
 - Touch users must still have a discoverable way to reveal and operate widget controls.
+
+### RSS-03 — News RSS Feed interaction
+- Keep the category filter as a left-side slide-out panel inside the News RSS Feed window, not as a separate desktop widget.
+- Each article's “Подробнее” action expands the reader across the available window width and keeps the title/toolbar usable while the article body scrolls.
+- Display article images and the full content actually available from the feed or a readable publisher page.
+- Distinguish a complete RSS article from a short excerpt; never label an excerpt as a full publisher article.
+- Preserve the original article link as a fallback when publisher CORS, paywalls or proxy restrictions prevent full-page extraction.
 
 ### RSS-01/02 — Historical cache and deduplication
 - Preserve the existing IndexedDB-based cache and 15-minute freshness window; do not replace it with a full source wipe on refresh.
