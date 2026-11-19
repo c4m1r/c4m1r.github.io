@@ -1969,7 +1969,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       </div>
       </div>
 
-      <div onClick={(e) => e.stopPropagation()}>
+      <div
+        onMouseDown={(event) => event.stopPropagation()}
+        onClick={(event) => event.stopPropagation()}
+      >
         <DesktopStartMenuSurface
           isOpen={showStartMenu}
           onClose={closeStartMenu}
