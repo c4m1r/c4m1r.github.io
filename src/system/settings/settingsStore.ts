@@ -41,9 +41,10 @@ export class BrowserLocalStorageSettingsAdapter implements SettingsStorageAdapte
 
       // Legacy fallback read
       const legacyLang = window.localStorage.getItem(LEGACY_LANGUAGE_KEY);
+      const supportedLanguages: readonly Language[] = ['en', 'ru', 'fr', 'es', 'zh', 'ja', 'ko', 'be', 'kk'];
       const initialLang: Language =
-        legacyLang === 'en' || legacyLang === 'ru'
-          ? legacyLang
+        legacyLang && supportedLanguages.includes(legacyLang as Language)
+          ? legacyLang as Language
           : detectLanguage();
 
       return {
