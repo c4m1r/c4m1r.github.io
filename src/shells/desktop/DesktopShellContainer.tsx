@@ -1761,6 +1761,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           themeKey={themeKey}
           onOpenNews={() => launchApp('news')}
           onOpenGalleryImage={() => launchApp('pictures')}
+          onOpenCalendar={() => launchApp('calendar')}
         />
       )}
 
@@ -1768,6 +1769,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         <WebosDesktopWidgets
           onOpenFeed={() => launchApp('news')}
           onOpenGalleryImage={() => launchApp('pictures')}
+          onOpenCalendar={() => launchApp('calendar')}
         />
       )}
 
