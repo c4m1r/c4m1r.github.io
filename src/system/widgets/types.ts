@@ -44,3 +44,12 @@ export function saveStoredWidgetsVisibility(val: DesktopWidgetsVisibility): void
     // Ignore
   }
 }
+
+// Shared dimensions across all widget types.
+export function createDesktopWidgetPresets() {
+  return [
+    { id: 'compact', label: 'Компактный', width: 280, height: 140 },
+    { id: 'standard', label: 'Стандартный', width: 340, height: 200 },
+    { id: 'wide', label: 'Широкий', width: 420, height: 260 },
+  ];
+}

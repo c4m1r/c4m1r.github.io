@@ -35,11 +35,11 @@ export function WinampWidget() {
   }, [state.track]);
 
   return (
-    <div className="glass-widget p-3 flex flex-col justify-between w-full sm:w-[310px] min-h-[140px]">
+    <div className="glass-widget p-2 flex flex-col justify-between w-full h-full min-h-0">
       <div className="glass-widget__ambient" />
 
       {/* Header Tag */}
-      <div className="flex items-center justify-between text-[10px] font-bold tracking-wider text-gray-400 z-10 mb-1">
+      <div className="flex items-center justify-between text-[9px] font-bold tracking-wider text-gray-400 z-10 mb-0 shrink-0">
         <span className="flex items-center gap-1 text-blue-300">
           <Music size={11} className={state.isPlaying ? 'animate-pulse text-green-400' : ''} />
           {isRu ? 'СЕЙЧАС ИГРАЕТ' : 'NOW PLAYING'}
@@ -59,10 +59,10 @@ export function WinampWidget() {
       </div>
 
       {/* Main Track Info */}
-      <div className="flex items-center gap-3 z-10 my-1">
+      <div className="flex items-center gap-2 z-10 my-1 min-h-0">
         {/* Album Artwork / Vinyl */}
         <div
-          className={`w-14 h-14 rounded-xl shrink-0 flex items-center justify-center shadow-lg border border-white/20 relative overflow-hidden transition-all duration-300 ${
+          className={`w-11 h-11 rounded-lg shrink-0 flex items-center justify-center shadow-lg border border-white/20 relative overflow-hidden transition-all duration-300 ${
             state.isPlaying ? 'ring-2 ring-blue-400/40' : ''
           }`}
           style={{
@@ -70,7 +70,7 @@ export function WinampWidget() {
           }}
         >
           <div className="absolute inset-2 rounded-full border border-white/20 opacity-50" />
-          <div className="text-xl filter drop-shadow">🎵</div>
+          <div className="text-lg filter drop-shadow">🎵</div>
         </div>
 
         {/* Track / Artist */}
@@ -89,7 +89,7 @@ export function WinampWidget() {
       </div>
 
       {/* Progress & Controls */}
-      <div className="z-10 mt-1">
+      <div className="z-10 mt-0 shrink-0">
         {/* Progress Slider */}
         <div
           onClick={(e) => {
@@ -106,11 +106,11 @@ export function WinampWidget() {
         </div>
 
         {/* Control Buttons */}
-        <div className="flex items-center justify-center gap-4 mt-2">
+        <div className="flex items-center justify-center gap-3 mt-1">
           <button
             type="button"
             onClick={() => winampController.prev()}
-            className="p-1.5 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors cursor-pointer"
+            className="p-1 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors cursor-pointer"
             title={isRu ? 'Предыдущий трек' : 'Previous'}
           >
             <SkipBack size={14} />
@@ -119,7 +119,7 @@ export function WinampWidget() {
           <button
             type="button"
             onClick={() => winampController.toggle()}
-            className="w-8 h-8 rounded-full bg-white text-gray-900 hover:bg-blue-100 flex items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer"
+            className="w-7 h-7 rounded-full bg-white text-gray-900 hover:bg-blue-100 flex items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer"
             title={state.isPlaying ? (isRu ? 'Пауза' : 'Pause') : (isRu ? 'Воспроизведение' : 'Play')}
           >
             {state.isPlaying ? <Pause size={14} className="fill-current" /> : <Play size={14} className="fill-current ml-0.5" />}

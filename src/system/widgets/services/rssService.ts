@@ -88,7 +88,6 @@ const STORE_ARTICLES = 'articles';
 const STORE_SOURCES = 'sources';
 const SOURCES_STORAGE_KEY = 'webos_rss_sources_config_v1';
 const RSS_LAST_REFRESH_KEY = 'webos_rss_last_refresh_v1';
-const RSS_CACHE_VERSION_KEY = 'webos_rss_cache_version_v2';
 const RSS_CACHE_TTL_MS = 15 * 60 * 1000;
 const RSS_PARTIAL_RETRY_MS = 2 * 60 * 1000;
 const RSS_REQUEST_TIMEOUT_MS = 7000;
@@ -264,7 +263,7 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
           const itemLink = resolveFeedUrl(item.link, source.url) || source.url;
           const itemImage = resolveFeedUrl(img, source.url);
           articles.push({
-            id: `${source.id}:${item.guid || itemLink || item.title || Math.random()}`,
+            id: `${source.id}:${itemLink}`,
             title: item.title || 'Новость',
             description: cleanDesc,
             link: itemLink,
@@ -324,7 +323,7 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
           const absoluteLink = resolveFeedUrl(link, source.url) || source.url;
           const absoluteImage = resolveFeedUrl(img, source.url);
           articles.push({
-            id: `${source.id}:${absoluteLink || Math.random()}`,
+            id: `${source.id}:${absoluteLink}`,
             title,
             description: cleanHtml(descRaw).slice(0, 320),
             link: absoluteLink,
@@ -346,67 +345,48 @@ export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[]
   return null;
 }
 
-async function replaceSourceArticles(sourceUrl: string, articles: RssArticle[]): Promise<void> {
+function canonicalArticleLink(value: string): string {
+  try { const url = new URL(value); url.hash = ''; for (const key of Array.from(url.searchParams.keys())) { if (/^(utm_.+|fbclid|gclid|yclid|_ga)$/i.test(key)) url.searchParams.delete(key); } return url.href; }
+  catch { return value.trim(); }
+}
+function articleIdentity(article: RssArticle): string {
+  const link = canonicalArticleLink(article.link);
+  return link === canonicalArticleLink(article.sourceUrl) ? `${link}|${article.title.trim().toLowerCase()}` : link;
+}
+function newerArticle(a: RssArticle, b: RssArticle): RssArticle {
+  const aTime = new Date(a.pubDate).getTime(), bTime = new Date(b.pubDate).getTime();
+  return (Number.isFinite(aTime) ? aTime : 0) >= (Number.isFinite(bTime) ? bTime : 0) ? a : b;
+}
+/** Merge current feed entries into historical cache; never erase stories omitted from a short feed window. */
+export async function saveArticlesToDatabase(articles: RssArticle[]): Promise<void> {
   const db = await openDatabase();
   await new Promise<void>((resolve, reject) => {
-    const tx = db.transaction(STORE_ARTICLES, 'readwrite');
-    const store = tx.objectStore(STORE_ARTICLES);
-    const request = store.openCursor();
-
-    request.onsuccess = () => {
-      const cursor = request.result;
-      if (cursor) {
-        if ((cursor.value as RssArticle).sourceUrl === sourceUrl) cursor.delete();
-        cursor.continue();
-        return;
+    const tx = db.transaction(STORE_ARTICLES, 'readwrite'), store = tx.objectStore(STORE_ARTICLES), existingRequest = store.getAll();
+    existingRequest.onsuccess = () => {
+      const byIdentity = new Map<string, RssArticle>();
+      for (const existing of (existingRequest.result || []) as RssArticle[]) {
+        const identity = articleIdentity(existing), previous = byIdentity.get(identity);
+        if (!previous) byIdentity.set(identity, existing);
+        else { const keep = newerArticle(previous, existing); store.delete((keep === previous ? existing : previous).id); byIdentity.set(identity, keep); }
       }
-
-      // Delete + insert happen in one IndexedDB transaction. If any write fails,
-      // the browser rolls the transaction back and the previous cache survives.
-      for (const article of articles) store.put(article);
-
+      for (const article of articles) {
+        const identity = articleIdentity(article), previous = byIdentity.get(identity);
+        if (previous && previous.id !== article.id) store.delete(previous.id);
+        const newest = previous ? newerArticle(previous, article) : article;
+        const merged = { ...newest, id: article.id, title: article.title || newest.title, description: article.description || newest.description, content: article.content || newest.content, imageUrl: article.imageUrl || newest.imageUrl };
+        store.put(merged); byIdentity.set(identity, merged);
+      }
       const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
       store.index('pubDate').openCursor(IDBKeyRange.upperBound(cutoff)).onsuccess = (event) => {
-        const oldRecord = (event.target as IDBRequest<IDBCursorWithValue>).result;
-        if (oldRecord) {
-          if ((oldRecord.value as RssArticle).pubDate !== UNKNOWN_PUBLICATION_DATE) oldRecord.delete();
-          oldRecord.continue();
-        }
+        const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+        if (cursor) { if ((cursor.value as RssArticle).pubDate !== UNKNOWN_PUBLICATION_DATE) cursor.delete(); cursor.continue(); }
       };
     };
-
     tx.oncomplete = () => { db.close(); resolve(); };
-    tx.onerror = () => { db.close(); reject(tx.error ?? new Error('RSS cache transaction failed')); };
-    tx.onabort = () => { db.close(); reject(tx.error ?? new Error('RSS cache transaction aborted')); };
+    tx.onerror = () => { db.close(); reject(tx.error ?? new Error('RSS cache merge failed')); };
+    tx.onabort = () => { db.close(); reject(tx.error ?? new Error('RSS cache merge aborted')); };
   });
 }
-export async function saveArticlesToDatabase(articles: RssArticle[]): Promise<void> {
-  if (!articles.length) return;
-  try {
-    const db = await openDatabase();
-    const tx = db.transaction(STORE_ARTICLES, 'readwrite');
-    const store = tx.objectStore(STORE_ARTICLES);
-
-    for (const art of articles) {
-      store.put(art);
-    }
-
-    // Prune articles older than 14 days
-    const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-    const index = store.index('pubDate');
-    const range = IDBKeyRange.upperBound(fourteenDaysAgo);
-    index.openCursor(range).onsuccess = (e) => {
-      const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
-      if (cursor) {
-        if ((cursor.value as RssArticle).pubDate !== UNKNOWN_PUBLICATION_DATE) cursor.delete();
-        cursor.continue();
-      }
-    };
-  } catch {
-    // Storage unavailable
-  }
-}
-
 export async function getCachedArticlesFromDatabase(category?: string): Promise<RssArticle[]> {
   try {
     const db = await openDatabase();
@@ -415,7 +395,13 @@ export async function getCachedArticlesFromDatabase(category?: string): Promise<
       const req = tx.objectStore(STORE_ARTICLES).getAll();
       req.onsuccess = () => {
         const enabledUrls = new Set(getRssSources().filter((source) => source.enabled).map((source) => source.url));
-        let list: RssArticle[] = (req.result || []).filter((item: RssArticle) => enabledUrls.has(item.sourceUrl));
+        const rawList: RssArticle[] = (req.result || []).filter((item: RssArticle) => enabledUrls.has(item.sourceUrl));
+        const unique = new Map<string, RssArticle>();
+        for (const item of rawList) {
+          const identity = articleIdentity(item), previous = unique.get(identity);
+          unique.set(identity, previous ? newerArticle(previous, item) : item);
+        }
+        let list: RssArticle[] = Array.from(unique.values());
         if (category && category !== 'Все' && category !== '#Все') {
           const target = category.replace(/^#/, '');
           list = list.filter((item) => item.category === target);
@@ -438,24 +424,9 @@ export async function getCachedArticlesFromDatabase(category?: string): Promise<
   }
 }
 
-function migrateRssCacheMarker(): void {
-  if (typeof localStorage === 'undefined') return;
-  try {
-    if (localStorage.getItem(RSS_CACHE_VERSION_KEY) !== '2') {
-      // Force one refresh after the publication-date/cache replacement fix.
-      // Individual source caches are replaced only after that source succeeds.
-      localStorage.removeItem(RSS_LAST_REFRESH_KEY);
-      localStorage.setItem(RSS_CACHE_VERSION_KEY, '2');
-    }
-  } catch {
-    // Private browsing or storage restrictions must not break feed loading.
-  }
-}
-
 export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle[]> {
   const sources = getRssSources().filter((source) => source.enabled);
   if (!sources.length) return [];
-  migrateRssCacheMarker();
 
   if (!forceRefresh) {
     const cached = await getCachedArticlesFromDatabase();
@@ -478,7 +449,7 @@ export async function fetchAllRssFeeds(forceRefresh = false): Promise<RssArticle
     for (const result of results) {
       if (result.status !== 'fulfilled' || result.value.articles === null) continue;
       try {
-        await replaceSourceArticles(result.value.source.url, result.value.articles);
+        await saveArticlesToDatabase(result.value.articles);
         succeeded += 1;
       } catch {
         // Preserve the last good cache if IndexedDB replacement fails.

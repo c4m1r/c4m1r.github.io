@@ -21,9 +21,8 @@ interface DesktopWidgetCanvasProps { themeKey: string; items: DesktopWidgetItem[
 
 const GAP = 10;
 const SNAP = 18;
-const HANDLE_HEIGHT = 28;
 const STEP = 12;
-const STORAGE_PREFIX = 'desktop-widget-layout-v2:';
+const STORAGE_PREFIX = 'desktop-widget-layout-v3:';
 
 function intersects(a: Rect, b: Rect): boolean {
   return a.x < b.x + b.width + GAP &&
@@ -62,7 +61,7 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
 
   const getSize = useCallback((item: DesktopWidgetItem, placement: Placement, bounds: DOMRect) => {
     const preset = getPreset(item, placement);
-    return { width: Math.min(preset.width, bounds.width), height: Math.min(preset.height + HANDLE_HEIGHT, bounds.height) };
+    return { width: Math.min(preset.width, bounds.width), height: Math.min(preset.height, bounds.height) };
   }, [getPreset]);
 
   const findFreePosition = useCallback((preferred: { x: number; y: number }, size: { width: number; height: number }, bounds: DOMRect, occupied: Rect[]) => {
@@ -104,34 +103,34 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
       const compact = item.presets.find((option) => option.id === 'compact');
       return compact?.width ?? item.presets[0]?.width ?? 260;
     }));
-    const columnCount = Math.max(1, Math.min(4, Math.floor((bounds.width - 24 + GAP) / (baseWidth + GAP))));
+    const columnCount = themeKey === 'webos' ? (bounds.width >= 2 * (baseWidth + GAP) + 24 ? 2 : 1) : Math.max(1, Math.min(4, Math.floor((bounds.width - 24 + GAP) / (baseWidth + GAP))));
     const columnWidth = (bounds.width - 24) / columnCount;
-    const columnBottoms = Array.from({ length: columnCount }, () => 12);
+    const columnBottoms = Array.from({ length: columnCount }, () => 8);
     ordered.forEach((item) => {
       const saved = current[item.id];
       let preset = getPreset(item, saved);
       if (!preset) return;
-      if (!saved && (bounds.width < 760 || layoutItems.length > 7)) {
+      if (!saved && (themeKey === 'webos' || bounds.width < 760 || layoutItems.length > 7)) {
         preset = item.presets.find((option) => option.id === 'compact') ?? preset;
       }
-      if (preset.width > bounds.width || preset.height + HANDLE_HEIGHT > bounds.height) {
+      if (preset.width > bounds.width || preset.height > bounds.height) {
         const compact = item.presets.find((option) => option.id === 'compact');
-        if (compact && compact.width <= bounds.width && compact.height + HANDLE_HEIGHT <= bounds.height) preset = compact;
+        if (compact && compact.width <= bounds.width && compact.height <= bounds.height) preset = compact;
       }
       let placement: Placement;
       if (saved) {
         placement = saved;
         const column = Math.max(0, Math.min(columnCount - 1, Math.floor(Math.max(0, saved.x - 12) / columnWidth)));
-        columnBottoms[column] = Math.max(columnBottoms[column], saved.y + preset.height + HANDLE_HEIGHT + GAP);
+        columnBottoms[column] = Math.max(columnBottoms[column], saved.y + preset.height + GAP);
       } else {
         const column = columnBottoms.indexOf(Math.min(...columnBottoms));
-        const preferredX = 12 + column * columnWidth;
+        const preferredX = themeKey === 'webos' ? bounds.width - 8 - (columnCount - column - 1) * (baseWidth + GAP) - preset.width : 12 + column * columnWidth;
         placement = {
           x: Math.max(0, Math.min(preferredX, bounds.width - preset.width)),
           y: columnBottoms[column],
           preset: preset.id,
         };
-        columnBottoms[column] += preset.height + HANDLE_HEIGHT + GAP;
+        columnBottoms[column] += preset.height + GAP;
       }
       const size = getSize(item, placement, bounds);
       const position = findFreePosition(placement, size, bounds, occupied);
@@ -141,7 +140,7 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
       occupied.push({ ...position, ...size });
     });
     return next;
-  }, [findFreePosition, getPreset, getSize]);
+  }, [findFreePosition, getPreset, getSize, themeKey]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -249,14 +248,14 @@ export function DesktopWidgetCanvas({ themeKey, items }: DesktopWidgetCanvasProp
   }, [changePreset]);
 
   return (
-    <div ref={canvasRef} className="desktop-widget-canvas" aria-label="Desktop widgets">
+    <div ref={canvasRef} className="desktop-widget-canvas" data-theme-key={themeKey} aria-label="Desktop widgets">
       {items.map((item) => {
         const placement = placements[item.id];
         if (!placement) return null;
         const preset = getPreset(item, placement);
         if (!preset) return null;
         const width = Math.min(preset.width, canvasRef.current?.clientWidth ?? preset.width);
-        const height = Math.min(preset.height + HANDLE_HEIGHT, canvasRef.current?.clientHeight ?? preset.height + HANDLE_HEIGHT);
+        const height = Math.min(preset.height, canvasRef.current?.clientHeight ?? preset.height);
         return (
           <section key={item.id} data-widget-id={item.id} className="desktop-widget-canvas__item" style={{ left: placement.x, top: placement.y, width, height }}>
             <div className="desktop-widget-canvas__handle" role="group" aria-label={`Move ${item.title}`} tabIndex={0}

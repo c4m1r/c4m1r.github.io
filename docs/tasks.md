@@ -261,3 +261,104 @@
 
 - **Check Suite**: `npm run verify` && `npm run typecheck` && `npm run lint` && `npm run build` && `git diff --check`.
 - **Status**: ALL GATES PASSING.
+
+---
+
+# 6. Current User-Requested Workstream — Desktop, Explorer, Games & Widgets
+
+> **Progress convention:** percentages estimate implementation coverage visible in the repository, not QA confidence. Anything requiring browser interaction or user acceptance remains unverified until tested. This section supersedes older blanket statements above where current inspection shows unfinished work.
+
+## Live progress overview
+
+| ID | Workstream | Progress | Current state |
+|---|---|---:|---|
+| WIDGET-01 | Widget startup policy and WebOS placement | 75% | Code updated: only WebOS defaults to all widgets enabled; other OS widget visibility defaults off; WebOS initial layout is compact, right-aligned, two columns. Browser verification pending. |
+| WIDGET-02 | Unified widget size system and adaptive contents | 70% | Three shared dimensions now replace per-widget dimensions; canvas no longer reserves a permanent title bar; responsive sizing and Winamp controls updated. Remaining widget-specific overflow/layout polish and QA. |
+| WIDGET-03 | Hover-only widget controls | 75% | Name, drag handle and size selector are now an overlay revealed on hover/focus instead of consuming permanent widget space. Accessibility and touch behavior still require QA. |
+| RSS-01 | Restore historical IndexedDB cache | 65% | Refresh now merges/upserts new entries instead of deleting all records from a source; old entries remain inside the existing 14-day retention window. Cache TTL optimization retained. |
+| RSS-02 | RSS duplicate prevention and chronological sorting | 60% | Stable article-link IDs, tracking-parameter normalization and cross-source URL deduplication added; publication-date sorting remains. Needs live-feed validation. |
+| RSS-03 | RSS collection, category drawer and article reader | 65% | Feed parser, category controls and article reader exist; proxy availability and publisher-specific extraction still need validation. |
+| GAME-01 | Repair the existing DOOM implementation | 10% | Existing launcher currently points to an unreliable external implementation. /eat/98.portfolio-main contains a separate Three.js DOOM implementation and engine files; port and runtime integration not completed. |
+| GAME-02 | Audit /eat/ and add other working games | 10% | Donor source inventory started. Need identify usable games, licenses/assets, dependencies and integrate only selected self-contained implementations. |
+| EXPLORER-01 | Game folder as a native folder with tree icon | 10% | Existing Explorer/FileSystem infrastructure identified. Need use the current OS folder view and replace the game folder's current icon with the Windows XP tree-folder asset where that theme is active. |
+| DOCS-01 | Create “Мои документы” and reorganize personal apps | 10% | Existing Wiki, Notepad, About and Projects surfaces identified; filesystem placement and launch routing not yet implemented. |
+| PICTURES-01 | Create “Мои изображения” and expose gallery media as files | 10% | Gallery data source and image viewer exist. Need enumerate all gallery images as filesystem entries, include bliss.jpg, and remove the desktop wallpaper file shortcut. |
+| PICTURES-02 | Merge Picture Viewer and gallery browsing | 20% | Both existing app surfaces identified. Need add a compact gallery/library toggle in Picture Viewer and share one image collection/navigation model. |
+| CONTROL-01 | Control Panel desktop shortcut and native categories | 20% | Control Panel and Task Manager registrations exist, but Task Manager is incorrectly mapped to Control Panel in current app registry. Need repair routing and group system tools into authentic OS-style categories. |
+| CONTROL-02 | Restore Explorer/Control Panel styling per OS | 20% | Existing theme-specific Explorer styles/assets identified. Need complete per-OS fidelity and verify all shell variants. |
+| CONTROL-03 | Widget shortcut and remaining system settings | 15% | Widget gallery exists. Need expose it from Control Panel and provide consistent links to relevant desktop/system settings. |
+| THEMES-01 | Add all gallery images to Appearance & Themes | 10% | Gallery collection exists, but its complete image inventory is not yet available in the theme picker. |
+| DOCS-02 | Maintain an accurate task register | 90% | This active workstream and implementation percentages are now documented. Keep percentages synchronized with actual commits and do not mark browser-only behavior complete before user verification. |
+
+## Detailed requirements and acceptance criteria
+
+### WIDGET-01 — Widget defaults and WebOS layout
+- Only WebOS starts with widgets enabled by default.
+- WebOS starts with all available widgets visible, arranged at the right side of the desktop in exactly two columns on desktop-sized screens.
+- Other operating systems start with all widgets disabled; users explicitly enable them through the widget gallery.
+- Preserve each user's manual arrangement after the initial layout.
+- On narrow screens, degrade gracefully to one column rather than clipping widgets off-screen.
+
+### WIDGET-02 — One size scale for all widgets
+- Every widget uses the same three preset dimensions: Compact, Standard and Wide.
+- Widget internals must adapt to the actual available width and height; no hard-coded minimum width/height may force overflow.
+- Winamp Compact must show previous, play/pause and next controls, as well as its progress control.
+- Verify Clock/Calendar, Weather, Quotes, Currency, System Monitor, News, Gallery and Winamp at all three sizes.
+
+### WIDGET-03 — Invisible chrome until interaction
+- Widget title, drag grip and size selector must not occupy permanent layout space.
+- Show these controls as an overlay only while hovering or focusing the widget.
+- Keep the current visual style intact when controls are hidden.
+- Touch users must still have a discoverable way to reveal and operate widget controls.
+
+### RSS-01/02 — Historical cache and deduplication
+- Preserve the existing IndexedDB-based cache and 15-minute freshness window; do not replace it with a full source wipe on refresh.
+- New publications are merged into the historical cache. A shorter feed response must never delete older still-valid cached stories.
+- Keep the existing rolling 14-day retention policy unless explicitly changed later.
+- Deduplicate by canonical article URL across feeds, removing tracking parameters and fragments; use a safe title/source fallback only when a feed item has no article URL.
+- Both RSS parser paths must generate the same stable identity for the same article.
+- Always sort by original publication date descending; unknown dates belong at the end.
+- The compact News widget must display the cached list immediately and still trigger a TTL-aware refresh so stale caches do not remain indefinitely.
+- Failed feeds must not erase cached records; partial failures must not block successful feeds.
+- A successful empty feed response does not erase historical entries.
+
+### GAME-01/02 — Games and DOOM
+- Audit actual source code and assets under /eat/; do not assume /eat/ has already been cleared.
+- Repair DOOM as a native app with working initialization, rendering, keyboard/mouse controls, audio handling and cleanup when the window closes.
+- Prefer self-contained implementations already present in /eat/ over external iframe links.
+- Add other games only after verifying that their source, assets and runtime dependencies can be integrated cleanly.
+- Document donor source, license status, copied assets, runtime dependencies and selected integration path for every added game.
+
+### EXPLORER-01 / DOCS-01 — Native folder structure
+- Game folder must be a normal filesystem folder opened by the current OS Explorer, not a custom application window.
+- Use the Windows XP tree/folder icon for the Game folder in the XP theme, with appropriate theme-specific icon fallback elsewhere.
+- Add “Мои документы” as a real folder in the virtual filesystem.
+- Move Wiki, “Мой блок” (Notepad), “Обо мне” and “Мои проекты” into “Мои документы”.
+- Opening those entries must launch the existing native content/application surfaces through the current OS Explorer.
+
+### PICTURES-01/02 — Unified picture library
+- Add “Мои изображения” as a real folder.
+- Every image from the site's gallery must appear as an individual file entry, including the current gallery media collection.
+- Move bliss.jpg into “Мои изображения” and remove its standalone desktop shortcut.
+- Picture Viewer gains a small mode toggle to switch between single-image viewing and a gallery/grid view of all available images.
+- Gallery and Picture Viewer must share the same image inventory and navigation state rather than maintaining two separate pseudo-applications.
+
+### CONTROL-01/02/03 — Control Panel
+- Add a desktop shortcut to Control Panel in each relevant OS.
+- Restore native Explorer-style presentation and visual language for each OS theme.
+- Organize settings into recognizable categories (e.g. System and Security, Appearance and Personalization, Network and Internet, Hardware and Sound, Programs, User Accounts, Accessibility); adapt names/layout to the active OS rather than forcing one Windows version everywhere.
+- Put Task Manager under the System category and repair its app ID/launcher mapping so it opens Task Manager, not Control Panel.
+- Add a direct shortcut to the Widget Gallery and links to the other relevant system settings.
+
+### THEMES-01 — Appearance and Themes
+- Include all images from the site's gallery as available desktop backgrounds/theme imagery.
+- Preserve grouping, preview thumbnails, current wallpaper selection and per-OS visual styling.
+- Do not add broken or remote-only image paths; all selected media must resolve from repository assets.
+
+## Audit correction: /eat/ status
+An earlier section in this document claims that /eat/ was completely cleared and that all donor repositories had been removed. That statement is stale and is **not currently accurate**: the current repository tree still contains /eat/98.portfolio-main/, including src/components/programs/DOOM/ engine/source files (doom.tsx, doom-game.tsx, game-engine.ts, constants.ts, textures.ts, sprite-data.ts, chunks.ts, audio.ts, rng.ts, types.ts). Do not delete this donor until the selected DOOM implementation and any required assets have been audited and integrated. Re-run the full donor inventory before claiming /eat/ is empty.
+
+## Verification status
+- Code-level edits in the widget and RSS workstreams are committed only after review of the resulting diffs.
+- No browser interaction, manual gameplay, live RSS publisher verification or visual QA is represented as complete by the percentages above.
+- CI status must be reported per exact commit SHA; a prior successful workflow does not prove later commits pass.

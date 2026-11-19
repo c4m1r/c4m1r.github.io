@@ -9,6 +9,7 @@ import { SystemMonitorWidget } from '../../../system/widgets/components/SystemMo
 import { NewsWidget } from '../../../system/widgets/components/NewsWidget';
 import { GalleryWidget } from '../../../system/widgets/components/GalleryWidget';
 import { DesktopWidgetCanvas, type DesktopWidgetItem } from '../../../system/widgets/components/DesktopWidgetCanvas';
+import { createDesktopWidgetPresets } from '../../../system/widgets/types';
 import '../../../system/widgets/widgets.css';
 
 export interface AppleWidgetVisibility {
@@ -33,11 +34,7 @@ interface AppleDesktopWidgetsProps {
   themeKey?: string;
 }
 
-const presets = (compact: [number, number], standard: [number, number], wide: [number, number]) => [
-  { id: 'compact', label: 'Компактный', width: compact[0], height: compact[1] },
-  { id: 'standard', label: 'Стандартный', width: standard[0], height: standard[1] },
-  { id: 'wide', label: 'Широкий', width: wide[0], height: wide[1] },
-];
+const presets = createDesktopWidgetPresets;
 
 export function AppleDesktopWidgets({
   time, language, visibility, onOpenNews, onOpenGalleryImage, themeKey = 'desktop',
@@ -105,19 +102,19 @@ export function AppleDesktopWidgets({
 
   const items: DesktopWidgetItem[] = [
     ...(visibility.clock && visibility.calendar
-      ? [{ id: 'clockCalendar', title: 'Часы и календарь', content: <div className="apple-clock-calendar-combo">{clock}{calendar}</div>, presets: presets([270, 160], [320, 205], [420, 230]), defaultPreset: 'standard' }]
+      ? [{ id: 'clockCalendar', title: 'Часы и календарь', content: <div className="apple-clock-calendar-combo">{clock}{calendar}</div>, presets: presets(), defaultPreset: 'standard' }]
       : [
-          ...(visibility.clock ? [{ id: 'clock', title: 'Часы', content: clock, presets: presets([220, 88], [250, 100], [320, 110]), defaultPreset: 'standard' }] : []),
-          ...(visibility.calendar ? [{ id: 'calendar', title: 'Календарь', content: calendar, presets: presets([220, 180], [250, 210], [320, 230]), defaultPreset: 'standard' }] : []),
+          ...(visibility.clock ? [{ id: 'clock', title: 'Часы', content: clock, presets: presets(), defaultPreset: 'standard' }] : []),
+          ...(visibility.calendar ? [{ id: 'calendar', title: 'Календарь', content: calendar, presets: presets(), defaultPreset: 'standard' }] : []),
         ]),
-    ...(visibility.battery ? [{ id: 'battery', title: 'Батарея', content: battery, presets: presets([180, 70], [210, 82], [280, 90]), defaultPreset: 'standard' }] : []),
-    ...(visibility.weather ? [{ id: 'weather', title: 'Погода', content: <WeatherWidget />, presets: presets([250, 150], [280, 190], [360, 210]), defaultPreset: 'standard' }] : []),
-    ...(visibility.winamp ? [{ id: 'winamp', title: 'Winamp', content: <WinampWidget />, presets: presets([230, 105], [280, 130], [360, 145]), defaultPreset: 'standard' }] : []),
-    ...(visibility.quotes ? [{ id: 'quotes', title: 'Цитаты', content: <QuotesWidget />, presets: presets([230, 110], [280, 145], [360, 160]), defaultPreset: 'standard' }] : []),
-    ...(visibility.currency ? [{ id: 'currency', title: 'Курсы валют', content: <CurrencyWidget />, presets: presets([250, 150], [280, 190], [360, 220]), defaultPreset: 'standard' }] : []),
-    ...(visibility.monitor ? [{ id: 'monitor', title: 'Монитор системы', content: <SystemMonitorWidget />, presets: presets([250, 130], [280, 170], [360, 190]), defaultPreset: 'standard' }] : []),
-    ...(visibility.news ? [{ id: 'news', title: 'Новости RSS', content: <NewsWidget onOpenFeed={onOpenNews} />, presets: presets([250, 150], [280, 190], [360, 230]), defaultPreset: 'standard' }] : []),
-    ...(visibility.gallery ? [{ id: 'gallery', title: 'Галерея', content: <GalleryWidget onOpenOriginal={onOpenGalleryImage} />, presets: presets([250, 180], [280, 230], [360, 260]), defaultPreset: 'standard' }] : []),
+    ...(visibility.battery ? [{ id: 'battery', title: 'Батарея', content: battery, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.weather ? [{ id: 'weather', title: 'Погода', content: <WeatherWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.winamp ? [{ id: 'winamp', title: 'Winamp', content: <WinampWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.quotes ? [{ id: 'quotes', title: 'Цитаты', content: <QuotesWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.currency ? [{ id: 'currency', title: 'Курсы валют', content: <CurrencyWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.monitor ? [{ id: 'monitor', title: 'Монитор системы', content: <SystemMonitorWidget />, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.news ? [{ id: 'news', title: 'Новости RSS', content: <NewsWidget onOpenFeed={onOpenNews} />, presets: presets(), defaultPreset: 'standard' }] : []),
+    ...(visibility.gallery ? [{ id: 'gallery', title: 'Галерея', content: <GalleryWidget onOpenOriginal={onOpenGalleryImage} />, presets: presets(), defaultPreset: 'standard' }] : []),
   ];
 
   return <DesktopWidgetCanvas themeKey={themeKey} items={items} />;

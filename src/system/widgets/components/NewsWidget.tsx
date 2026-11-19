@@ -37,13 +37,13 @@ export function NewsWidget({ onOpenFeed }: NewsWidgetProps) {
   useEffect(() => {
     let active = true;
     getCachedArticlesFromDatabase().then((cached) => {
-      if (active && cached.length > 0) {
-        setArticles(cached);
-      } else {
-        fetchAllRssFeeds(false).then((fetched) => {
-          if (active && fetched.length > 0) setArticles(fetched);
-        });
-      }
+      if (active && cached.length > 0) setArticles(cached);
+    });
+    // Serve the cache immediately when fresh; otherwise refresh and merge without deleting history.
+    fetchAllRssFeeds(false).then((fetched) => {
+      if (active) setArticles(fetched);
+    }).catch(() => {
+      // Keep the last successfully loaded cache visible.
     });
 
     return () => {
