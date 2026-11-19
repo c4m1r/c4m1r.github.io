@@ -509,3 +509,8 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - My Projects now indexes the same sources and deduplication precedence as `loadAllProjects()`: root `content/projects/*.md` first, then nested `content/about/projects/**/*.md` by filename ID. Globs are lazy; filesystem items hold a content path. Opening an article calls `loadMarkdownContent`, parses frontmatter for the active language and renders the body with `markdownToHtml`.
 - This avoids eagerly embedding the complete project Markdown corpus in the main application bundle. Preserve this lazy-loading approach when adding project sources.
 - Latest complete CI snapshot: commit `7f50b5ef` passed Typecheck, Lint, Build and Deploy. Later source changes (Control Panel routing, lazy project article reader and profile/filesystem updates) require the newest GitHub Actions run before acceptance.
+
+
+### Gallery inventory handoff (2026-11-19)
+- `src/domain/gallery/gallery.loader.ts` now treats the wallpaper subtree as a distinct media type. `loadPictures()` skips `/wallpapers/`; `loadWallpapers()` includes nested files using `**/*`. IDs are relative paths rather than basenames to avoid cross-folder collisions.
+- `My Pictures` still indexes the full `src/content/pictures/**/*` tree. The shared Gallery, Picture Viewer and Theme wallpaper picker consume `loadGalleryItems()`; manually verify that every image appears exactly once in the appropriate view.
