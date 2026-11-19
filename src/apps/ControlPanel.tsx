@@ -1656,7 +1656,11 @@ export function ControlPanel() {
                         <img
                           src={selectedWallpaper}
                           alt="Wallpaper preview"
-                          className="w-full h-full object-cover"
+                          className={`w-full h-full ${
+                            wallpaperFit === 'fit' || wallpaperFit === 'center' || wallpaperFit === 'tile'
+                              ? 'object-contain'
+                              : wallpaperFit === 'stretch' ? 'object-fill' : 'object-cover'
+                          }`}
                         />
                       </div>
                     )}
@@ -1684,17 +1688,26 @@ export function ControlPanel() {
                     </div>
                     <div className="flex gap-2 max-w-xs mx-auto">
                       {selectedWallpaper && (
-                        <button
-                          onClick={() => {
-                            localStorage.setItem('desktop-custom-wallpaper', selectedWallpaper);
-                            window.dispatchEvent(new CustomEvent('wallpaper-changed', { detail: selectedWallpaper }));
-                            window.dispatchEvent(new CustomEvent('wallpaper-fit-changed', { detail: wallpaperFit }));
-                            setCustomActive(true);
-                          }}
-                          className="flex-1 py-1.5 px-3 rounded bg-[#316ac5] text-white hover:bg-[#255199] transition-colors text-xs font-semibold cursor-pointer"
-                        >
-                          Apply
-                        </button>
+                        <>
+                          <button
+                            onClick={() => {
+                              localStorage.setItem('desktop-custom-wallpaper', selectedWallpaper);
+                              window.dispatchEvent(new CustomEvent('wallpaper-changed', { detail: selectedWallpaper }));
+                              window.dispatchEvent(new CustomEvent('wallpaper-fit-changed', { detail: wallpaperFit }));
+                              setCustomActive(true);
+                            }}
+                            className="flex-1 py-1.5 px-3 rounded bg-[#316ac5] text-white hover:bg-[#255199] transition-colors text-xs font-semibold cursor-pointer"
+                          >
+                            {isRu ? 'Применить' : 'Apply'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedWallpaper(null)}
+                            className="flex-1 py-1.5 px-3 rounded border border-gray-500/40 hover:bg-gray-500/10 transition-colors text-xs font-semibold cursor-pointer"
+                          >
+                            {isRu ? 'Отмена' : 'Cancel'}
+                          </button>
+                        </>
                       )}
                       {customActive && (
                         <button
