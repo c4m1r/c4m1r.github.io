@@ -1504,6 +1504,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           time={time}
           language={language}
           visibility={appleWidgetVisibility}
+          themeKey={themeKey}
           onOpenNews={() => launchApp('news')}
           onOpenGalleryImage={() => launchApp('pictures')}
         />
