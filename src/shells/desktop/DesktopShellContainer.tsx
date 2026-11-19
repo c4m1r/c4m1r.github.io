@@ -1117,6 +1117,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       content = <Component onClose={() => closeWindow(MINESWEEPER_WINDOW_ID)} />;
     } else if (appId === 'pictures') {
       content = <Component onOpenImage={handleOpenPictureFromGallery} />;
+    } else if (appId === 'winamp') {
+      content = <Component onClose={() => closeWindow(config.windowId)} />;
     } else if (appId === 'notepad') {
       openWindow({
         id: config.windowId,
