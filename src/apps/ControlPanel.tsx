@@ -50,7 +50,7 @@ export function ControlPanel() {
   });
   const [showGalleryOptions, setShowGalleryOptions] = useState(false);
   const galleryText = ({
-    en: { all: 'All images', wallpapers: 'Wallpapers', pictures: 'Pictures', type: 'Image sources', count: 'images', empty: 'No images in this category yet.', preview: 'Preview', placement: 'Placement', fill: 'Fill', fit: 'Fit', stretch: 'Stretch', tile: 'Tile', center: 'Center', apply: 'Apply', cancel: 'Cancel', restore: '{galleryText.restore}', columns: 'Gallery columns', three: '3 columns', two: '2 columns', loading: 'Loading gallery wallpapers...' },
+    en: { all: 'All images', wallpapers: 'Wallpapers', pictures: 'Pictures', type: 'Image sources', count: 'images', empty: 'No images in this category yet.', preview: 'Preview', placement: 'Placement', fill: 'Fill', fit: 'Fit', stretch: 'Stretch', tile: 'Tile', center: 'Center', apply: 'Apply', cancel: 'Cancel', restore: '{galleryText.restore}', columns: 'Gallery columns', three: '3 columns', two: '2 columns', loading: '{galleryText.loading}' },
     ru: { all: 'Все изображения', wallpapers: 'Обои', pictures: 'Изображения', type: 'Источники изображений', count: 'изображений', empty: 'В этой категории пока нет изображений.', preview: 'Предпросмотр', placement: 'Размещение', fill: 'Заполнить', fit: 'По размеру', stretch: 'Растянуть', tile: 'Замостить', center: 'По центру', apply: 'Применить', cancel: 'Отмена', restore: 'Восстановить по умолчанию', columns: 'Столбцы галереи', three: '3 столбика', two: '2 столбика', loading: 'Загрузка обоев...' },
     fr: { all: 'Toutes les images', wallpapers: 'Fonds d’écran', pictures: 'Images', type: 'Sources d’images', count: 'images', empty: 'Aucune image dans cette catégorie.', preview: 'Aperçu', placement: 'Disposition', fill: 'Remplir', fit: 'Adapter', stretch: 'Étirer', tile: 'Mosaïque', center: 'Centrer', apply: 'Appliquer', cancel: 'Annuler', restore: 'Restaurer par défaut', columns: 'Colonnes de la galerie', three: '3 colonnes', two: '2 colonnes', loading: 'Chargement des fonds d’écran...' },
     es: { all: 'Todas las imágenes', wallpapers: 'Fondos', pictures: 'Imágenes', type: 'Fuentes de imágenes', count: 'imágenes', empty: 'No hay imágenes en esta categoría.', preview: 'Vista previa', placement: 'Ajuste', fill: 'Rellenar', fit: 'Ajustar', stretch: 'Estirar', tile: 'Mosaico', center: 'Centrar', apply: 'Aplicar', cancel: 'Cancelar', restore: 'Restaurar valores', columns: 'Columnas de galería', three: '3 columnas', two: '2 columnas', loading: 'Cargando fondos...' },
@@ -1688,7 +1688,7 @@ export function ControlPanel() {
                       {galleryText.preview}
                     </p>
                     {selectedWallpaper && (
-                      <div className="relative w-full max-w-xs mx-auto aspect-video rounded overflow-hidden border border-gray-500/30 shadow mb-3">
+                      <div className="relative w-full max-w-md mx-auto aspect-[4/3] rounded overflow-hidden border border-gray-500/30 shadow mb-3">
                         <img
                           src={selectedWallpaper}
                           alt="Wallpaper preview"
