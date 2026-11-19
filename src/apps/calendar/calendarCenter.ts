@@ -257,7 +257,12 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
   const rule = event.recurrenceRule;
   const endDayOffset = calendarDayNumber(event.endDate) - calendarDayNumber(event.startDate);
   const occurrences: CalendarEvent[] = [];
-  const cursor = dateOnly(event.startDate);
+  let cursor = dateOnly(event.startDate);
+  if (!rule.count) {
+    const earliest = dateOnly(rangeStart);
+    earliest.setDate(earliest.getDate() - Math.max(0, endDayOffset));
+    if (earliest > cursor) cursor = earliest;
+  }
   const endDate = dateOnly(rangeEnd);
   let occurrenceIndex = 0;
   let scanned = 0;
