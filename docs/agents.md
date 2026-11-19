@@ -347,3 +347,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 ### Explorer folder-title localization — 2026-11-19
 - src/shells/desktop/DesktopShellContainer.tsx now resolves Russian window titles for My Documents, My Pictures and My Music when Start Menu paths use the canonical English filesystem keys. The underlying paths remain unchanged; this is display-only localization.
 - Latest source implementation commit: 688e3d5d7d5e249b9c5e1e6c3584deb38e6ddbd4. The subsequent docs-only commit updates this handoff. No local typecheck/lint/build/browser verification was run.
+
+
+### Final source consistency note — 2026-11-19
+- src/shells/desktop/DesktopShellContainer.tsx now includes themeKey in openExplorerWindow dependencies. The callback chooses Windows7Explorer vs shared MyComputer using themeKey; keeping it in the dependency list prevents a stale shell renderer after an in-place theme change.
+- Latest source implementation commit: 0bdc4711d984243e7e8593a6d91facb48c7c884d. Docs-only follow-up commits may advance main afterward.
+- The source tree was reviewed for the canonical nested My Pictures path across XP, Windows 7 and Windows 98/2000 entry points. GitHub code-search excerpts can lag; direct main-branch file fetches are the source of truth.
+- Verification remains source-only: no local typecheck, lint, build, verify or browser/manual test was run.
