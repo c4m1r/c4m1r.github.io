@@ -250,7 +250,7 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
     return eventStart <= endLimit && (allDayExclusive ? eventEnd > startLimit : eventEnd >= startLimit) ? [event] : [];
   }
   const rule = event.recurrenceRule;
-  const duration = event.endDate.getTime() - event.startDate.getTime();
+  const endDayOffset = calendarDayNumber(event.endDate) - calendarDayNumber(event.startDate);
   const occurrences: CalendarEvent[] = [];
   const cursor = dateOnly(event.startDate);
   const endDate = dateOnly(rangeEnd);
@@ -264,7 +264,9 @@ function expandCalendarEvent(event: CalendarEvent, rangeStart: Date, rangeEnd: D
         event.startDate.getHours(), event.startDate.getMinutes(), event.startDate.getSeconds(), event.startDate.getMilliseconds());
       if (rule.until && occurrenceStart.getTime() > rule.until.getTime()) break;
       if (rule.count && occurrenceIndex > rule.count) break;
-      const occurrenceEnd = new Date(occurrenceStart.getTime() + duration);
+      const occurrenceEnd = new Date(occurrenceStart);
+      occurrenceEnd.setDate(occurrenceEnd.getDate() + endDayOffset);
+      occurrenceEnd.setHours(event.endDate.getHours(), event.endDate.getMinutes(), event.endDate.getSeconds(), event.endDate.getMilliseconds());
       if (occurrenceEnd.getTime() >= startLimit && occurrenceStart.getTime() <= endLimit + 86400000 - 1) {
         const suffix = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
         occurrences.push({ ...event, id: String(event.id ?? 'event') + '@' + suffix, startDate: occurrenceStart, endDate: occurrenceEnd });
