@@ -96,6 +96,12 @@ export function Window({
   const currentWidth = maximized ? window.innerWidth : savedSize.width;
   const currentHeight = maximized ? window.innerHeight - 30 : savedSize.height;
 
+  // App windows own their pointer interactions; the OS desktop context menu is desktop-only.
+  const handleWindowContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (onFocus) onFocus();
     if (maximized || minimized) return;
@@ -225,6 +231,7 @@ export function Window({
         onMouseDownCapture={() => {
           if (onFocus) onFocus();
         }}
+        onContextMenu={handleWindowContextMenu}
       >
         <div className="xp-window__frame">
           <div 
@@ -321,6 +328,7 @@ export function Window({
       onMouseDownCapture={() => {
         if (onFocus) onFocus();
       }}
+      onContextMenu={handleWindowContextMenu}
     >
       <div className="win98-titlebar cursor-move select-none os-titlebar" onMouseDown={handleMouseDown}>
         {icon && <img src={icon} alt="" className="win98-titlebar__icon" />}
