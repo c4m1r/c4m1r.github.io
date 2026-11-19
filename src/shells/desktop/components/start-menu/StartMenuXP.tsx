@@ -41,7 +41,7 @@ type PrimaryShortcut = MenuItem & { tag: string };
 
 const MY_DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
 const MY_DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
-const MY_PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Pictures';
+const MY_PICTURES_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures';
 const MY_MUSIC_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music';
 
 export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand, appearance = 'webos', onHover }: StartMenuXPProps) {
