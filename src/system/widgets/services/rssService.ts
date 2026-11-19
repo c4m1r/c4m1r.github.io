@@ -32,6 +32,7 @@ interface AllOriginsPayload {
 
 export interface RssArticle {
   id: string;
+  guid?: string;
   title: string;
   description: string;
   link: string;
@@ -246,103 +247,93 @@ function cleanHtml(html: string): string {
 }
 
 export async function fetchFeedArticles(source: RssSource): Promise<RssArticle[] | null> {
-  const articles: RssArticle[] = [];
-
-  // Method 1: Try rss2json API
+  // null = transport/parser failure; [] = a valid feed with no current entries.
   try {
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
-    const { response: res, data } = await fetchJsonWithTimeout<Rss2JsonPayload>(apiUrl);
-    if (res.ok && data) {
-      if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
-        for (const item of data.items) {
-          const rawContent = item.content || item.content_encoded || item['content:encoded'] || item.description || '';
-          const rawDesc = item.description || rawContent;
-          const img = item.thumbnail || item.enclosure?.link || extractImage(rawContent) || extractImage(rawDesc);
-          const cleanDesc = cleanHtml(rawDesc).slice(0, 320);
-
-          const itemLink = resolveFeedUrl(item.link, source.url) || source.url;
-          const itemImage = resolveFeedUrl(img, source.url);
-          articles.push({
-            id: `${source.id}:${itemLink}`,
-            title: item.title || 'Новость',
-            description: cleanDesc,
-            link: itemLink,
-            pubDate: normalizePublicationDate(item.pubDate || item.isoDate || item.date_published),
-            category: source.category,
-            sourceTitle: source.title,
-            sourceUrl: source.url,
-            imageUrl: itemImage,
-            content: typeof rawContent === 'string' ? rawContent : '',
-          });
-        }
-        return articles;
-      }
+    const { response, data } = await fetchJsonWithTimeout<Rss2JsonPayload>(apiUrl);
+    if (response.ok && data?.status === 'ok' && Array.isArray(data.items)) {
+      return data.items.map((item) => {
+        const rawContent = item.content || item.content_encoded || item['content:encoded'] || item.description || '';
+        const rawDescription = item.description || rawContent;
+        const image = item.thumbnail || item.enclosure?.link || extractImage(rawContent) || extractImage(rawDescription);
+        const link = resolveFeedUrl(item.link, source.url) || source.url;
+        return {
+          id: `${source.id}:${link}`,
+          guid: item.guid?.trim() || undefined,
+          title: item.title || 'Новость',
+          description: cleanHtml(rawDescription).slice(0, 320),
+          link,
+          pubDate: normalizePublicationDate(item.pubDate || item.isoDate || item.date_published),
+          category: source.category,
+          sourceTitle: source.title,
+          sourceUrl: source.url,
+          imageUrl: resolveFeedUrl(image, source.url),
+          content: typeof rawContent === 'string' ? rawContent : '',
+        };
+      });
     }
   } catch {
-    // Continue to AllOrigins proxy
+    // Continue to the XML proxy.
   }
 
-  // Method 2: Try AllOrigins proxy
   try {
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(source.url)}`;
-    const { response: res, data: wrapper } = await fetchJsonWithTimeout<AllOriginsPayload>(proxyUrl);
-    if (res.ok && wrapper) {
-      if (typeof wrapper.contents === 'string' && wrapper.contents.trim()) {
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(wrapper.contents, 'text/xml');
-        if (xml.querySelector('parsererror')) throw new Error('Invalid RSS XML');
-        const items = xml.querySelectorAll('item, entry');
+    const { response, data } = await fetchJsonWithTimeout<AllOriginsPayload>(proxyUrl);
+    if (!response.ok || typeof data?.contents !== 'string' || !data.contents.trim()) return null;
 
-        items.forEach((elem) => {
-          const title = elem.querySelector('title')?.textContent || 'Без названия';
-          const link =
-            elem.querySelector('link')?.getAttribute('href') ||
-            elem.querySelector('link')?.textContent ||
-            source.url;
-          const encodedContent = elem.getElementsByTagNameNS('*', 'encoded')[0]?.textContent || '';
-          const contentElement = elem.getElementsByTagNameNS('*', 'content')[0];
-          const fullContent = encodedContent || contentElement?.textContent || '';
-          const descRaw =
-            elem.querySelector('description')?.textContent ||
-            elem.querySelector('summary')?.textContent ||
-            fullContent ||
-            '';
-          const pubDate =
-            elem.getElementsByTagName('pubDate')[0]?.textContent ||
-            elem.getElementsByTagNameNS('*', 'published')[0]?.textContent ||
-            elem.getElementsByTagNameNS('*', 'date')[0]?.textContent ||
-            elem.getElementsByTagNameNS('*', 'updated')[0]?.textContent ||
-            '';
+    const xml = new DOMParser().parseFromString(data.contents, 'text/xml');
+    if (xml.querySelector('parsererror')) return null;
+    const rootName = xml.documentElement?.localName?.toLowerCase() ?? '';
+    const isFeedDocument = rootName === 'rss' || rootName === 'feed' || rootName === 'rdf' || Boolean(xml.querySelector('channel'));
+    if (!isFeedDocument) return null;
 
-          const img =
-            elem.querySelector('enclosure[type^="image"]')?.getAttribute('url') ||
-            elem.querySelector('media\\:content, content')?.getAttribute('url') ||
-            elem.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') ||
-            extractImage(descRaw);
-
-          const absoluteLink = resolveFeedUrl(link, source.url) || source.url;
-          const absoluteImage = resolveFeedUrl(img, source.url);
-          articles.push({
-            id: `${source.id}:${absoluteLink}`,
-            title,
-            description: cleanHtml(descRaw).slice(0, 320),
-            link: absoluteLink,
-            pubDate: normalizePublicationDate(pubDate),
-            category: source.category,
-            sourceTitle: source.title,
-            sourceUrl: source.url,
-            imageUrl: absoluteImage,
-            content: fullContent || descRaw,
-          });
-        });
-      }
-    }
+    const items = Array.from(xml.querySelectorAll('item, entry'));
+    return items.map((element) => {
+      const title = element.querySelector('title')?.textContent?.trim() || 'Без названия';
+      const rawLink =
+        element.querySelector('link[rel="alternate"]')?.getAttribute('href') ||
+        element.querySelector('link')?.getAttribute('href') ||
+        element.querySelector('link')?.textContent ||
+        source.url;
+      const guid = element.querySelector('guid')?.textContent?.trim() ||
+        element.querySelector('id')?.textContent?.trim() || undefined;
+      const encodedContent = element.getElementsByTagNameNS('*', 'encoded')[0]?.textContent || '';
+      const contentElement = element.getElementsByTagNameNS('*', 'content')[0];
+      const fullContent = encodedContent || contentElement?.textContent || '';
+      const rawDescription =
+        element.querySelector('description')?.textContent ||
+        element.querySelector('summary')?.textContent ||
+        fullContent ||
+        '';
+      const publicationDate =
+        element.getElementsByTagName('pubDate')[0]?.textContent ||
+        element.getElementsByTagNameNS('*', 'published')[0]?.textContent ||
+        element.getElementsByTagNameNS('*', 'date')[0]?.textContent ||
+        element.getElementsByTagNameNS('*', 'updated')[0]?.textContent ||
+        '';
+      const image =
+        element.querySelector('enclosure[type^="image"]')?.getAttribute('url') ||
+        element.querySelector('media\\:content, content')?.getAttribute('url') ||
+        element.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') ||
+        extractImage(rawDescription);
+      const link = resolveFeedUrl(rawLink, source.url) || source.url;
+      return {
+        id: `${source.id}:${link}`,
+        guid,
+        title,
+        description: cleanHtml(rawDescription).slice(0, 320),
+        link,
+        pubDate: normalizePublicationDate(publicationDate),
+        category: source.category,
+        sourceTitle: source.title,
+        sourceUrl: source.url,
+        imageUrl: resolveFeedUrl(image, source.url),
+        content: fullContent || rawDescription,
+      };
+    });
   } catch {
-    // Feed fetch failed
+    return null;
   }
-
-  // null means both transport/parser paths failed; [] is a valid empty feed.
-  return null;
 }
 
 function canonicalArticleLink(value: string): string {
@@ -351,7 +342,13 @@ function canonicalArticleLink(value: string): string {
 }
 function articleIdentity(article: RssArticle): string {
   const link = canonicalArticleLink(article.link);
-  return link === canonicalArticleLink(article.sourceUrl) ? `${link}|${article.title.trim().toLowerCase()}` : link;
+  if (link !== canonicalArticleLink(article.sourceUrl)) return `url:${link}`;
+  const guid = article.guid?.trim();
+  if (guid) {
+    try { return `guid:${canonicalArticleLink(new URL(guid, article.sourceUrl).href)}`; }
+    catch { return `guid:${guid.toLocaleLowerCase()}`; }
+  }
+  return `source:${canonicalArticleLink(article.sourceUrl)}|${article.title.trim().toLocaleLowerCase()}`;
 }
 function newerArticle(a: RssArticle, b: RssArticle): RssArticle {
   const aTime = new Date(a.pubDate).getTime(), bTime = new Date(b.pubDate).getTime();
