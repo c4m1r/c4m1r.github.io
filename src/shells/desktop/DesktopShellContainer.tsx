@@ -16,7 +16,7 @@ import { ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
 import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
-import { Folder, HardDrive, Trash2, LayoutGrid } from 'lucide-react';
+import { Folder, HardDrive, Trash2, PanelsTopLeft } from 'lucide-react';
 import { getItemsFromPath, getFileIcon, FileSystemItem, loadProjectMarkdown } from '../../utils/FileSystem';
 import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
 import { winampController } from '../../system/audio/winampController';
@@ -795,16 +795,27 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             type: 'system' as const,
           },
           ...applicationShortcuts,
-          {
+          ...(!themeKey.startsWith('win') ? [{
             id: 'widget-gallery',
-            icon: <LayoutGrid size={48} />,
+            icon: <PanelsTopLeft size={48} strokeWidth={1.8} />,
             label: language === 'ru' ? 'Виджеты' : 'Widgets',
             type: 'system' as const,
-          },
+          }] : []),
         ]),
     ...desktopItems.map(item => ({
       id: item.id,
-      icon: item.icon && typeof item.icon === 'string' ? (
+      icon: item.appId ? (
+        <img
+          src={getFileIcon(item) as string}
+          alt=""
+          className="w-16 h-16 object-contain drop-shadow"
+          onError={(e) => {
+            e.currentTarget.src = item.type === 'folder'
+              ? resolveAssetPath(themeAssets.folderIcon, fallbackAssets.folderIcon)
+              : textDocumentIcon;
+          }}
+        />
+      ) : item.icon && typeof item.icon === 'string' ? (
         <img
           src={item.icon}
           alt=""
