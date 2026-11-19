@@ -292,22 +292,22 @@ const APP_ICON_KEYS: Record<string, keyof typeof WINXP_ASSETS> = {
     'internet-explorer': 'internetExplorerIcon',
     outlook: 'mailIcon',
     'windows-media-player': 'mediaPlayerIcon',
-    winamp: 'winampIcon',
+    winamp: 'mediaPlayerIcon',
     paint: 'paintIcon',
-    pictures: 'folderPicturesIcon',
-    calendar: 'calendarIcon',
-    news: 'newsIcon',
-    currency: 'currencyIcon',
+    pictures: 'projectsIcon',
+    calendar: 'notepadIcon',
+    news: 'richTextIcon',
+    currency: 'calculatorIcon',
     wiki: 'richTextIcon',
     notepad: 'notepadIcon',
     'projects-grid': 'projectsIcon',
-    help: 'helpIcon',
+    help: 'richTextIcon',
     'task-manager': 'controlPanelIcon',
     calculator: 'calculatorIcon',
     'control-panel': 'controlPanelIcon',
-    terminal: 'terminalIcon',
+    terminal: 'notepadIcon',
     blog: 'richTextIcon',
-    loops: 'loopsIcon',
+    loops: 'mediaPlayerIcon',
     minesweeper: 'minesweeperIcon',
     snake: 'gamesIcon',
     memory: 'gamesIcon',
@@ -316,12 +316,12 @@ const APP_ICON_KEYS: Record<string, keyof typeof WINXP_ASSETS> = {
 };
 
 export const getFileIcon = (item: FileSystemItem) => {
-    if (item.icon && typeof item.icon === 'string') return item.icon;
     if (item.appId) {
         const iconKey = APP_ICON_KEYS[item.appId];
         const appIcon = iconKey ? WINXP_ASSETS[iconKey] : undefined;
         if (typeof appIcon === 'string') return appIcon;
     }
+    if (item.icon && typeof item.icon === 'string') return item.icon;
     if (item.type === 'folder') return folderIcon;
     if (item.name.endsWith('.txt') || item.name.endsWith('.md')) return defaultTextIcon;
     return folderIcon;
