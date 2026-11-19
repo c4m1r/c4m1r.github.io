@@ -277,3 +277,6 @@
 .calendar-app__recurrence-fields>label{display:flex;flex-direction:column;gap:4px;min-width:0;font-size:11px}
 .calendar-app__recurrence-fields input,.calendar-app__recurrence-fields select{min-width:0;width:100%;padding:5px;border:1px solid rgba(120,120,120,.35);border-radius:4px;background:var(--calendar-surface,#fff);color:inherit}
 @media(max-width:520px){.calendar-app__recurrence-fields{grid-template-columns:1fr}}
+
+.calendar-app__month-cell.is-makeup-workday{border-color:rgba(30,145,90,.5);background:linear-gradient(145deg,rgba(255,255,255,.94) 0 58%,rgba(30,145,90,.13) 58% 100%)}
+.calendar-app__makeup-work-label{display:block;color:#16804d;font-size:9px;font-weight:800;line-height:1.2}
