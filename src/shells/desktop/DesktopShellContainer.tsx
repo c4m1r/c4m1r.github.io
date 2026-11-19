@@ -814,7 +814,18 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
             type: 'system' as const,
           },
-          ...applicationShortcuts,
+          {
+            id: 'games-folder',
+            icon: getIconElement('folder'),
+            label: language === 'ru' ? 'Игры' : 'Games',
+            type: 'system' as const,
+          },
+          {
+            id: 'programs-folder',
+            icon: getIconElement('folder'),
+            label: language === 'ru' ? 'Программы' : 'Programs',
+            type: 'system' as const,
+          },
           ...(!themeKey.startsWith('win') ? [{
             id: 'widget-gallery',
             icon: <PanelsTopLeft size={48} strokeWidth={1.8} />,
@@ -1291,6 +1302,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         return;
       case 'my-documents':
         openExplorerWindow('C:\\Documents and Settings\\C4m1r\\My Documents');
+        return;
+      case 'programs-folder':
+        openExplorerWindow('C:\\Program Files\\Programs');
         return;
       case 'widget-gallery':
         window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
