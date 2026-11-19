@@ -114,7 +114,7 @@ export function StartMenu7({
     { id: 'control-panel', label: isRu ? 'Панель управления' : 'Control Panel', appId: 'control-panel', icon: assets.controlPanelIcon },
     { id: 'task-manager', label: isRu ? 'Диспетчер задач' : 'Task Manager', appId: 'task-manager', icon: assets.controlPanelIcon },
     { id: 'wiki', label: 'Wiki', appId: 'wiki', icon: assets.projectsIcon },
-    { id: 'help', label: isRu ? 'Справка и поддержка' : 'Help and Support', appId: 'help', icon: assets.helpIcon },
+    { id: 'help', label: isRu ? 'Справка и поддержка' : 'Help and Support', appId: 'help', icon: assets.folderIcon },
     { id: 'terminal', label: isRu ? 'Терминал' : 'Terminal', appId: 'terminal', icon: assets.terminalIcon },
     { id: 'loops', label: 'Loops', appId: 'loops', icon: assets.mediaPlayerIcon },
     { id: 'minesweeper', label: isRu ? 'Сапёр' : 'Minesweeper', appId: 'minesweeper', icon: assets.minesweeperIcon },
@@ -156,7 +156,7 @@ export function StartMenu7({
       id: 'network',
       label: isRu ? 'Сетевое окружение' : 'Network',
       path: 'Network Neighborhood',
-      icon: assets.placesIcons.network ?? assets.computerIcon,
+      icon: assets.placesIcons.connectTo ?? assets.computerIcon,
     },
     {
       id: 'control-panel',
