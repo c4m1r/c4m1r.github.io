@@ -29,7 +29,7 @@ function formatRelativeTime(isoString: string, isRu: boolean): string {
 }
 
 function sanitizeArticleHtml(html: string): string {
-  if (typeof DOMParser === 'undefined') return html.replace(/<script[\\s\\S]*?<\\/script>/gi, '');
+  if (typeof DOMParser === 'undefined') return '';
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('script,style,iframe,object,embed,form,button, input,meta,link').forEach((node) => node.remove());
   doc.body.querySelectorAll('*').forEach((node) => {
