@@ -310,6 +310,11 @@ export function saveCalendarEvent(input: CalendarEventInput, eventId?: string) {
   return event;
 }
 
+export function getCalendarEventMaster(event: CalendarEvent): CalendarEvent {
+  if (!event.recurrenceMasterId) return event;
+  return state.events.find((candidate) => candidate.id === event.recurrenceMasterId) ?? event;
+}
+
 export function deleteCalendarEvent(eventId: string) {
   localEvents = localEvents.filter((event) => event.id !== eventId);
   persistLocalEvents();
