@@ -45,7 +45,7 @@ function getThemeAssets(theme: ThemeId): IconThemeAssets {
   const assets = THEME_ASSETS[themeKey];
   // Windows 2000 currently has no independent semantic icon registry; use the
   // shared XP/WebOS base explicitly until the Win2000 bank is curated.
-  return assets.folderIcon || themeKey === 'win2000' ? assets : { ...THEME_ASSETS.webos, ...assets };
+  return assets.folderIcon ? assets : themeKey === 'win2000' ? { ...THEME_ASSETS.webos, ...assets } : assets;
 }
 
 /**
