@@ -5,9 +5,9 @@
  * separate from XP: a missing role should remain visibly missing during audit
  * rather than silently inheriting a later Windows generation's glossy icon.
  */
-import computerIcon from './assets/icons/computer_2_cool-0.png';
-import folderIcon from './assets/icons/directory_closed-0.png';
-import internetExplorerIcon from './assets/icons/msie1-0.png';
+import computerIcon from './assets/icons/computer_2_cool-3.png';
+import folderIcon from './assets/icons/directory_closed-4.png';
+import internetExplorerIcon from './assets/icons/msie1-2.png';
 import mailIcon from './assets/icons/mailbox_world-0.png';
 import mediaPlayerIcon from './assets/icons/media_player-0.png';
 import calculatorIcon from './assets/icons/calculator-0.png';
@@ -21,8 +21,8 @@ import notepadIcon from './assets/icons/document-0.png';
 import networkIcon from './assets/icons/directory_network_conn-0.png';
 import volumeIcon from './assets/icons/loudspeaker_rays-0.png';
 import soundIcon from './assets/icons/computer_sound-0.png';
-import recycleIcon from './assets/icons/recycle_bin_empty-0.png';
-import recycleFullIcon from './assets/icons/recycle_bin_full-0.png';
+import recycleIcon from './assets/icons/recycle_bin_empty-4.png';
+import recycleFullIcon from './assets/icons/recycle_bin_full-2.png';
 import myDocumentsIcon from './assets/icons/directory_open_file_mydocs-0.png';
 import searchIcon from './assets/icons/search_computer-0.png';
 import paintIcon from './assets/icons/paint_old-0.png';
