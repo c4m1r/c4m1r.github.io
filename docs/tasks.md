@@ -381,7 +381,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - [ ] Extend launch-context support for audio/video/archive/document types only when the target app can consume a selected file; do not dispatch an app ID without passing usable file context.
 - [ ] Complete independent native registries for Windows 98, Windows 2000, Windows 7, WebOS, Ubuntu, Arch and iOS 5; eliminate unintended XP inheritance.
 - [ ] Finish generation-specific iOS icon coverage and validate macOS/iOS icon roles at rendered sizes.
-- [ ] Inventory real pixel dimensions, alpha channels, formats and display-size suitability; generate contact sheets for Win98 variants and Win7 numeric assets.
+- [x] Add a dependency-free `npm run audit:icons` scanner for theme image dimensions, alpha/transparency metadata, ICO variants, file hashes and exact duplicates.
+- [ ] Run the inventory locally and review the report; GitHub connector cannot execute the script against the checkout. Generate contact sheets for Win98 variants and Win7 numeric assets.
 - [ ] Complete the per-OS visual matrix and run `verify`, typecheck, lint, build and browser checks.
 - Verification status: source edits are committed, but no local test/build/browser run was performed in this connector-only pass. Do not mark acceptance complete until CI and manual visual checks pass.
 
