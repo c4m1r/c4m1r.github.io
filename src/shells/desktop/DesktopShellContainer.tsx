@@ -19,6 +19,7 @@ import { RunDialog } from './components/RunDialog';
 import { Folder, HardDrive, Trash2, PanelsTopLeft } from 'lucide-react';
 import { getItemsFromPath, FileSystemItem, loadProjectMarkdown } from '../../utils/FileSystem';
 import { resolveFileIcon } from '../../themes/iconResolver';
+import { getFileAssociation } from '../../themes/fileAssociations';
 import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
 import { winampController } from '../../system/audio/winampController';
 import { markdownToHtml } from '../../domain/content/markdown';
@@ -881,6 +882,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     }
 
     const lowerName = item.name.toLowerCase();
+    const fileAssociation = getFileAssociation(item.name);
     if (lowerName.endsWith('.md') && item.id.startsWith('project:')) {
       let markdown = typeof item.content === 'string' ? item.content : '';
       if (markdown.endsWith('.md') && !markdown.includes('\n')) {
@@ -901,7 +903,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       title = parsed.metadata.title || item.name.replace(/\.md$/i, '');
       width = 820;
       height = 620;
-    } else if (lowerName.endsWith('.txt') || lowerName.endsWith('.md')) {
+    } else if (lowerName.endsWith('.md') || ['text', 'code', 'data'].includes(fileAssociation?.category ?? '')) {
       let fileContent = item.content || '';
 
       if (typeof fileContent === 'string' && fileContent.endsWith('.md') && !fileContent.includes('\n')) {
@@ -920,7 +922,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         : themeKey.startsWith('ios-')
           ? `${item.name} - Notes`
           : `${item.name} - Notepad`;
-    } else if (/\.(png|jpg|jpeg|gif|webp)$/i.test(lowerName)) {
+    } else if (fileAssociation?.category === 'image' || /\.(png|jpg|jpeg|gif|webp)$/i.test(lowerName)) {
       if (typeof item.content === 'string') {
         content = <PictureViewer initialImage={item.content} />;
         title = themeKey === 'macos-26'
