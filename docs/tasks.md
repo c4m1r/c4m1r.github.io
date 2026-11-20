@@ -390,7 +390,8 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Create a dedicated Win98 semantic icon module and wire core shell / Start / Places / Control Panel roles to it (first pass).
 - [ ] Visually validate the selected Win98 artwork against contact sheets and finish generic file-type role mapping. Browser and Recycle Bin semantic assets are mapped; dimensions/alpha have been sampled for the selected bank, but visual acceptance remains pending.
-- [ ] Build a Win2000 bank from verified source assets; current Win2000 asset folder contains only `sideBar.png` and `start.png`.
+- [x] Add a partial Win2000 shell registry using explicitly named `_2k` computer, My Documents and Recycle Bin assets (all 48×48 with transparency).
+- [ ] Complete the Win2000 bank: identify the remaining roles, generic folder and app icons; review numbered donor ICOs and their provenance before importing.
 - [x] Create and wire a dedicated Win7 semantic registry for the five clearly named shell assets (Computer, Folder, IE, Mail, Volume) and Start/Places roles.
 - [ ] Generate a contact sheet for the 535-or-so numeric Win7 image entries, identify them visually, and expand app/file role coverage; then remove XP-derived fallbacks where native assets exist.
 - [ ] Remove XP-derived icon role inheritance from WebOS; build native WebOS role mapping.
