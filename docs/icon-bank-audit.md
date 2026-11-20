@@ -39,6 +39,17 @@ The following counts are file counts under the named asset roots, not counts of 
 - This is a concrete implementation priority, not a visual acceptance claim. Refactor toward a theme-aware icon resolver (or a shared semantic icon descriptor resolved by the active skin) without making the virtual filesystem itself depend on UI theme assets. Preserve file association identity and explicit file-type/folder/drive handling. Add tests for representative app IDs and file types across Windows 98/2000, XP, Windows 7, macOS/iOS, Ubuntu/Arch and WebOS.
 - Avoid a quick fix that only changes folder icons: app shortcuts, files, drives, thumbnails, tree navigation and address-bar icons must all use a coherent theme-aware contract.
 
+### Theme asset registry findings (2026-11-20)
+
+- `src/themes/webos/themeAssets.ts` defines `sharedWebosAssets` by importing the bulk of its system/app icons from `../winxp/assets/icons/`. The source comment explicitly says WebOS uses XP theme assets. This may be an intentional compatibility/placeholder choice, but it means the current WebOS icon identity is not an independently curated icon bank.
+- `win7ThemeAssets` spreads `sharedWebosAssets` first and overrides only a subset (folder, computer, Start orb, wallpaper/avatar, IE, Mail, volume and a few menu/place icons). Other inherited fields such as Media Player, Winamp, games, calculator, Paint, Control Panel, Notepad, calendar, terminal and several system places remain XP artwork unless overridden elsewhere.
+- The `win-98` theme entry also spreads `sharedWebosAssets`, then clears Start Menu and Places icon sets; this is a deliberate/partial state but does not provide a complete independent Windows 98 semantic icon registry.
+- The `win2000` theme entry currently contains sound/UI metadata and empty Start Menu/Places sets, without a complete icon asset set.
+- Windows 7 Explorer imports `THEME_ASSETS.win7` but uses the global `getFileIcon(item)` for listed files. Therefore merely improving `THEME_ASSETS.win7` does not fix its per-file icons.
+- `appleIconAssets.ts` already contains explicit macOS, modern iOS and iOS 9 app maps, but `MyComputer.tsx` uses the XP-global `getFileIcon` for Apple app shortcuts rather than consistently consulting the Apple maps. iOS 5 currently uses glyphs for its dock rather than a complete app icon map.
+
+These findings confirm that the next source change should introduce one theme-aware presentation icon contract and wire each Explorer surface to it. Do not duplicate app logic or put theme-specific image URLs into the virtual filesystem model.
+
 ### Existing mapping observations
 
 - `src/themes/winxp/themeAssets.ts` already centralizes key XP assets: folder, My Computer, Recycle Bin, Internet Explorer, Outlook, Media Player, Pinball, Calculator, Paint, Control Panel, Notepad, volume and notification icons. It currently points Minesweeper at the app's shared sprite/icon asset.
