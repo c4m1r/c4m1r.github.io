@@ -17,7 +17,8 @@ import { MyComputer } from '../../apps/explorer';
 import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
 import { Folder, HardDrive, Trash2, PanelsTopLeft } from 'lucide-react';
-import { getItemsFromPath, getFileIcon, FileSystemItem, loadProjectMarkdown } from '../../utils/FileSystem';
+import { getItemsFromPath, FileSystemItem, loadProjectMarkdown } from '../../utils/FileSystem';
+import { resolveFileIcon } from '../../themes/iconResolver';
 import { PROJECT_PLAYLIST } from '../../apps/mediaplayer/playlist';
 import { winampController } from '../../system/audio/winampController';
 import { markdownToHtml } from '../../domain/content/markdown';
@@ -799,7 +800,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       id: item.id,
       icon: item.appId ? (
         <img
-          src={getFileIcon(item) as string}
+          src={resolveFileIcon(item, theme)}
           alt=""
           className="w-16 h-16 object-contain drop-shadow"
           onError={(e) => {
@@ -935,7 +936,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       return;
     }
 
-    const iconPath = getFileIcon(item);
+    const iconPath = resolveFileIcon(item, theme);
 
     openWindow({
       id: `file:${fullPath}`,
