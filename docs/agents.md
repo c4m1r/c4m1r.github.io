@@ -631,3 +631,12 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Known limitations are intentional and must not be hidden: Windows 2000 has no complete independent registry and currently falls back to WebOS/XP base assets; Windows 98 registry also inherits the shared XP base outside existing explicit Explorer overrides; Windows 7 and WebOS still inherit XP icons for unmapped roles; Ubuntu/Arch/Halloween currently resolve through WebOS base; iOS 5 has no complete dedicated map. Do not claim generation-accurate icon coverage until these registries are completed.
 - `src/utils/FileSystem.ts:getFileIcon` remains as a legacy XP-global compatibility helper. The three primary surfaces above no longer call it; search for any new consumers before removing it.
 - Verification required: inspect latest GitHub Actions run for commit `4dde623cfce9258b9699990b09263a18f7c726f7` and subsequent documentation commit; run the full required quality gates. Browser review is still required across Win98, Win2000, XP, Win7, WebOS, macOS and each iOS generation. No browser test was performed in this connector session.
+
+
+### File association catalogue handoff — 2026-11-20
+
+- Added `src/themes/fileAssociations.ts`: a shared extension-to-category catalogue for text/documents/web/data/source code/images/audio/video/archives/fonts. Entries carry MIME family, optional existing app ID and semantic theme asset key.
+- `src/themes/iconResolver.ts` now uses the catalogue for file-type icon selection after preserving higher-priority cases (app shortcuts, system/drive/folder nodes, media tracks and content-backed image thumbnails). Apple icon maps are consulted for supported macOS/iOS generations before theme asset fallback.
+- Do not treat this as full file-opening behavior: the optional app ID is association metadata only until the file-open dispatcher consumes it. Unknown types intentionally retain a neutral fallback.
+- No local runtime, TypeScript, ESLint, Vite build or browser checks were available in this connector-only pass. Check GitHub Actions for the latest source commit and visually inspect all OS profiles.
+- Current blockers remain the incomplete native icon registries: Win98/Win2000, Win7 inherited XP roles, WebOS XP-derived roles, Ubuntu/Arch, and iOS 5. The icon pixel-dimension/alpha/contact-sheet audit is also outstanding.
