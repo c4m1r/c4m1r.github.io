@@ -66,12 +66,13 @@ export function resolveFileIcon(item: FileSystemItem, theme: ThemeId): string {
     if (typeof themedIcon === 'string') return themedIcon;
   }
 
-  if (item.icon && typeof item.icon === 'string') return item.icon;
   if (item.type === 'folder' || item.type === 'drive' || item.type === 'system') {
     if (APPLE_THEMES.has(theme)) return MACOS_SYSTEM_ICON_BY_ID[item.id] ?? MACOS_APP_ICON_BY_ID['projects-grid'] ?? getThemeAssets(theme).folderIcon ?? '';
     if (IOS_THEMES.has(theme)) return getIosIconMap(theme)['my-computer'] ?? getThemeAssets(theme).folderIcon ?? '';
     return getThemeAssets(theme).folderIcon ?? '';
   }
+  if (item.mediaTrackId) return getThemeAssets(theme).winampIcon ?? getThemeAssets(theme).mediaPlayerIcon ?? '';
+  if (item.content && item.icon === item.content && /\.(png|jpe?g|gif|webp|svg)$/i.test(item.name)) return item.icon;
   const extension = item.name.split('.').pop()?.toLocaleLowerCase();
   if (extension === 'txt' || extension === 'md' || extension === 'rtf') {
     return getThemeAssets(theme).richTextIcon ?? getThemeAssets(theme).notepadIcon ?? '';
