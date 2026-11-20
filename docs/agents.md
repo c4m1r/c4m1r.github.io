@@ -167,6 +167,7 @@ git diff --check
 ### Canonical documentation locations
 - Active task registry: [tasks.md](./tasks.md). Do not create or maintain a root-level `tasks.md`.
 - OS icon bank inventory, provenance and quality audit: [icon-bank-audit.md](./icon-bank-audit.md).
+- Source-trace finding (2026-11-20): the shared `getFileIcon` resolver in `src/utils/FileSystem.ts` is XP-global and is used by Windows 7 and Apple Explorer paths. Treat Explorer icon theming as a known cross-OS defect; keep filesystem records theme-neutral and resolve presentation icons from the active skin.
 - Historical task snapshots and superseded plans: [history.md](./history.md).
 - Operational handoff, research notes and source cache: this file.
 - System architecture: [architecture.md](./architecture.md).
