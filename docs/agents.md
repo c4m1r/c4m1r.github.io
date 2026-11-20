@@ -665,3 +665,10 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - `src/shells/desktop/DesktopShellContainer.tsx`: `handleOpenFile` now calls `getFileAssociation(item.name)`. The existing Notepad window handles `text`, `code` and `data` categories; the shared Picture Viewer handles image-category entries with string-backed content. Project Markdown remains on its dedicated frontmatter renderer.
 - Deliberately not dispatching audio/video/archive/default document app IDs yet: `app:launch` currently receives only `appId`, not the selected file path/content, so an automatic launch would not open the chosen file. Next architectural step is a typed file-open launch context or dedicated handlers for each category.
 - Commit: `a391adc1d9b6faf6784c252418d9ecdaa892dea5`. Check Actions before treating the source change as build-verified. No local/browser tests were run.
+
+
+### Windows 98 icon bank refinement — 2026-11-20
+- Expanded `src/themes/win98/iconAssets.ts` to use named native roles for browser (`msie1`), empty/full Recycle Bin, My Documents, Find and Paint; corrected My Computer/folder roles and switched the Start button to `assets/icons/start98.png`.
+- Chose transparent 48×48 PNG variants where inspected: computer `computer_2_cool-3`, folder `directory_closed-4`, IE `msie1-2`, Recycle Bin empty `recycle_bin_empty-4`, full `recycle_bin_full-2`. Transparency was confirmed in PNG palette `tRNS` chunks. `start98.png` is 32×32 with palette transparency. This is pixel-header metadata only; no contact sheet or rendered visual acceptance has been done.
+- A 16×16 `computer_explorer` icon was rejected for desktop use; it remains suitable only for compact Explorer navigation. Do not upscale 48px art to pretend it is high-DPI. Larger source variants should be sought if available.
+- Win98 source commits: `307b517`, `a7ee978`, `5ef2095`, `3b3278e`. `themeAssets.ts` has the corresponding Start/Places/Recycle role integration.
