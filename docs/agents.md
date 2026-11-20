@@ -115,7 +115,11 @@ Credentials and account authorization are managed by `src/domain/auth/credential
 ## 5. Standard Operating Rules for AI Agents
 
 1. **Do Not Poll**: When running background commands or timers, allow reactive notification wakeups. Do not poll in busy loops.
-2. **Never Import from `/eat/`**:
+2. **OS reference and icon asset quality**:
+   - Inspect the closest matching `/eat/` references and `docs/os-skin-visual-checklist.md` before changing an OS-specific UI surface. Match the named OS generation, not a generic approximation.
+   - Maintain a curated, explicitly OS/version-mapped icon bank. Prefer authentic vector/original high-resolution assets and multi-resolution ICO/ICNS/PNG variants; inspect intrinsic dimensions and appearance at target sizes. Do not upscale low-resolution artwork as a substitute for a proper source.
+   - Track each adopted asset's donor path, target OS/version, dimensions/variants and provenance/licence. Deduplicate and retain the best-quality canonical copy; do not replace distinctive native icons with generic Lucide glyphs where a native asset exists.
+3. **Never Import from `/eat/`**:
    - `eat/` is gitignored and contains reference donor repos.
    - When absorbing assets, copy them to `src/themes/<theme>/assets/` or `src/apps/<app>/assets/` and import them locally.
 3. **Preserve Comments & Docstrings**: Never strip existing Russian or English explanatory comments in unaffected regions.
