@@ -388,7 +388,7 @@ Percentages are working estimates, not test results. The previous task registry 
 ## Icon bank continuation — 2026-11-20
 
 - [x] Create a dedicated Win98 semantic icon module and wire core shell / Start / Places / Control Panel roles to it (first pass).
-- [ ] Validate the selected Win98 artwork against contact sheets; replace approximate browser/file-role mappings and find a proper recycle-bin icon.
+- [ ] Visually validate the selected Win98 artwork against contact sheets and finish generic file-type role mapping. Browser and Recycle Bin semantic assets are now mapped; visual acceptance remains pending.
 - [ ] Build a Win2000 bank from verified source assets; current Win2000 asset folder contains only `sideBar.png` and `start.png`.
 - [ ] Expand Win7 semantic role coverage using the numeric image bank only after identifying each asset visually.
 - [ ] Remove XP-derived icon role inheritance from WebOS; build native WebOS role mapping.
