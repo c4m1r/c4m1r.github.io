@@ -3,11 +3,7 @@ import type { FileSystemItem } from '../utils/FileSystem';
 import { THEME_ASSETS, type ThemeAssetId, type ThemeAssets } from './webos/themeAssets';
 import { MACOS_APP_ICON_BY_ID, MACOS_SYSTEM_ICON_BY_ID, getIosIconMap } from '../shells/desktop/appleIconAssets';
 
-type IconThemeAssets = ThemeAssets & {
-  userAvatar?: string;
-  terminalIcon?: string;
-  helpIcon?: string;
-};
+type IconThemeAssets = ThemeAssets & { userAvatar?: string };
 
 const APP_ASSET_KEYS: Readonly<Record<string, keyof IconThemeAssets>> = {
   about: 'userAvatar',
@@ -16,15 +12,15 @@ const APP_ASSET_KEYS: Readonly<Record<string, keyof IconThemeAssets>> = {
   'windows-media-player': 'mediaPlayerIcon',
   winamp: 'winampIcon',
   paint: 'paintIcon',
-  pictures: 'richTextIcon',
+  pictures: 'picturesIcon',
   calendar: 'calendarIcon',
   news: 'newsIcon',
   currency: 'currencyIcon',
   wiki: 'richTextIcon',
   notepad: 'notepadIcon',
   'projects-grid': 'projectsIcon',
-  help: 'richTextIcon',
-  'task-manager': 'computerIcon',
+  help: 'helpIcon',
+  'task-manager': 'performanceMonitorIcon',
   calculator: 'calculatorIcon',
   'control-panel': 'controlPanelIcon',
   terminal: 'terminalIcon',
