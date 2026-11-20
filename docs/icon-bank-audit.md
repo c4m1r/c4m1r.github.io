@@ -146,3 +146,10 @@ A first integration pass has been committed:
 - Donor assets were not copied into production: individual image licensing/provenance is not confirmed, and numbered ICOs need visual identification before assignment. This is now a concrete source for the Win2000 contact-sheet and role-mapping pass.
 - The donor Start-menu source is only a visual reference; its menu rows use local click-state and do not supply a production-ready interaction model.
 - CI for the prior commit `f2e5486` failed due duplicate `startMenuIcons` / `placesIcons` keys. The duplicate keys were removed in `63ca2f4`; its workflow is currently running.
+
+
+### File-open association follow-up — 2026-11-20
+
+- `DesktopShellContainer.handleOpenFile` now reads `getFileAssociation(item.name)` from the shared catalogue. Text, code and structured-data extensions open through the existing Notepad surface; image-category extensions route to the shared Picture Viewer when the virtual file has a string content URL. Project Markdown keeps its frontmatter/article rendering path and takes precedence over the generic text handler.
+- This connects the association catalogue to real file-open behavior for the supported viewer categories. Audio/video/archive and rich-document associations remain icon/metadata only: the current app-launch event does not carry a selected file payload, so blindly dispatching `defaultAppId` would open an app without loading the file. Add a typed launch context before enabling those associations.
+- No local TypeScript/lint/build/browser run was available through the GitHub connector. Check Actions for commit `a391adc1d9b6faf6784c252418d9ecdaa892dea5`; verify .rtf/.ini/.json/code, uppercase/multi-dot names, all image extensions supported by the browser/runtime, missing image content and project Markdown.
