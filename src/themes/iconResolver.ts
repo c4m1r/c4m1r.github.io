@@ -42,7 +42,10 @@ function getThemeAssets(theme: ThemeId): IconThemeAssets {
   const themeKey: ThemeAssetId = theme === 'win-98' || theme === 'win-xp' || theme === 'win2000' || theme === 'win7' || theme === 'webos'
     ? theme
     : 'webos';
-  return THEME_ASSETS[themeKey];
+  const assets = THEME_ASSETS[themeKey];
+  // Windows 2000 currently has no independent semantic icon registry; use the
+  // shared XP/WebOS base explicitly until the Win2000 bank is curated.
+  return assets.folderIcon || themeKey === 'win2000' ? assets : { ...THEME_ASSETS.webos, ...assets };
 }
 
 /**
@@ -66,9 +69,14 @@ export function resolveFileIcon(item: FileSystemItem, theme: ThemeId): string {
     if (typeof themedIcon === 'string') return themedIcon;
   }
 
-  if (item.type === 'folder' || item.type === 'drive' || item.type === 'system') {
-    if (APPLE_THEMES.has(theme)) return MACOS_SYSTEM_ICON_BY_ID[item.id] ?? MACOS_APP_ICON_BY_ID['projects-grid'] ?? getThemeAssets(theme).folderIcon ?? '';
-    if (IOS_THEMES.has(theme)) return getIosIconMap(theme)['my-computer'] ?? getThemeAssets(theme).folderIcon ?? '';
+  if (item.type === 'system') {
+    if (APPLE_THEMES.has(theme)) return MACOS_SYSTEM_ICON_BY_ID[item.id] ?? MACOS_APP_ICON_BY_ID['projects-grid'] ?? '';
+    if (IOS_THEMES.has(theme)) return getIosIconMap(theme)['my-computer'] ?? '';
+    return getThemeAssets(theme).computerIcon ?? getThemeAssets(theme).folderIcon ?? '';
+  }
+  if (item.type === 'drive') return getThemeAssets(theme).computerIcon ?? getThemeAssets(theme).folderIcon ?? '';
+  if (item.type === 'folder') {
+    if (APPLE_THEMES.has(theme)) return MACOS_APP_ICON_BY_ID['projects-grid'] ?? getThemeAssets(theme).folderIcon ?? '';
     return getThemeAssets(theme).folderIcon ?? '';
   }
   if (item.mediaTrackId) return getThemeAssets(theme).winampIcon ?? getThemeAssets(theme).mediaPlayerIcon ?? '';
