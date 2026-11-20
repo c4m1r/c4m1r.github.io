@@ -133,7 +133,7 @@ function inspect(filePath) {
   else if (extension === '.webp') metadata = webpInfo(buffer);
   else if (extension === '.svg') metadata = svgInfo(buffer);
   else if (extension === '.ico') metadata = icoInfo(buffer);
-  else if (extension === '.bmp' && buffer.length >= 26) {
+  else if (extension === '.bmp' && buffer.length >= 30) {
     metadata = { width: Math.abs(buffer.readInt32LE(18)), height: Math.abs(buffer.readInt32LE(22)), bitDepth: buffer.readUInt16LE(28), alpha: buffer.readUInt16LE(28) === 32 };
   }
   return {
