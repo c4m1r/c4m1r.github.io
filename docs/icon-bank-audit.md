@@ -164,3 +164,10 @@ A first integration pass has been committed:
 - Production source changes: `src/themes/win98/iconAssets.ts`, `src/themes/webos/themeAssets.ts`; the Win98 Start button now references the semantically named `assets/icons/start98.png`.
 
 - Additional inspected variants: Outlook Express `mailbox_world-2.png` 48×48 with palette transparency; Calendar `calendar-0.png` 48×48 with palette transparency; Help `help_book_computer-4.png` 48×48 with palette transparency; Network Connections `directory_network_conn-5.png` 48×48 with palette transparency. The remaining mapped roles currently use 32px or smaller variants where a 48px transparent variant was not established in this pass.
+
+
+### Reusable image inventory tool — 2026-11-20
+
+- Added `scripts/audit-theme-icons.js` and `npm run audit:icons`. The script recursively inventories supported image assets under `src/themes`, recording dimensions, format, byte size, SHA-256 and exact duplicate groups. It parses PNG palette transparency (`tRNS`), ICO embedded size variants, JPEG/GIF/WebP/BMP dimensions and basic SVG width/height/viewBox metadata.
+- Optional JSON export: `npm run audit:icons -- --json docs/icon-bank-inventory.json`. The report is generated on demand and is not committed by default.
+- Alpha detection for SVG is heuristic; GIF transparency is detected from the presence of a graphics-control extension; ICO alpha uses the directory bit-depth declaration. Treat unusual/animated formats and malformed assets as candidates for manual inspection. The tool has not yet been executed in this connector-only session; first execution and review remain open.
