@@ -383,3 +383,16 @@ Percentages are working estimates, not test results. The previous task registry 
 - [ ] Inventory real pixel dimensions, alpha channels, formats and display-size suitability; generate contact sheets for Win98 variants and Win7 numeric assets.
 - [ ] Complete the per-OS visual matrix and run `verify`, typecheck, lint, build and browser checks.
 - Verification status: source edits are committed, but no local test/build/browser run was performed in this connector-only pass. Do not mark acceptance complete until CI and manual visual checks pass.
+
+## Icon bank continuation — 2026-11-20
+
+- [x] Create a dedicated Win98 semantic icon module and wire core shell / Start / Places / Control Panel roles to it (first pass).
+- [ ] Validate the selected Win98 artwork against contact sheets; replace approximate browser/file-role mappings and find a proper recycle-bin icon.
+- [ ] Build a Win2000 bank from verified source assets; current Win2000 asset folder contains only `sideBar.png` and `start.png`.
+- [ ] Expand Win7 semantic role coverage using the numeric image bank only after identifying each asset visually.
+- [ ] Remove XP-derived icon role inheritance from WebOS; build native WebOS role mapping.
+- [ ] Create independent Ubuntu and Arch semantic banks; those theme folders are not currently present under `src/themes`.
+- [ ] Complete iOS 5 generation-specific icon coverage (current dock uses glyph placeholders and `getIosIconMap('ios-5')` returns an empty map).
+- [x] Shared file-association catalogue and theme-aware icon lookup are implemented; actual open/launch dispatch is still outstanding.
+- [ ] Inventory image dimensions, formats, alpha and duplicates; produce per-OS contact sheets and visual acceptance matrix.
+- Verification: no local typecheck/lint/build or browser checks were run during this GitHub-only pass. Check Actions for latest main commits.
