@@ -42,6 +42,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - Measure actual intrinsic pixel dimensions and alpha/format; Git file byte size alone is not a resolution metric. Never upscale small artwork as a quality fix.
 - Replace opaque numeric icon references with semantic mappings where practical; preserve native size variants and state/frame families.
 - Audit runtime icon resolution across desktop, Start Menu, Explorer, file types, widgets and app launchers. Confirm each OS uses the intended generation-specific artwork.
+- Priority defect identified 2026-11-20: `src/utils/FileSystem.ts:getFileIcon` uses a global Windows XP icon map, consumed by the shared Explorer and Windows 7 Explorer (including Apple app shortcuts). Replace it with a theme-aware presentation resolver while keeping filesystem/domain data theme-neutral; cover app IDs, file types, folders and drives across OS families.
 - Donor assets in `/eat/` are reference-only until exact provenance/licence is checked. Never import from `/eat/` or introduce it as a runtime/build dependency.
 - Acceptance: dimension/format inventory, semantic mapping, source/provenance record, no unintended duplicates, no low-resolution upscaling, cross-OS visual review, and all required quality gates.
 
