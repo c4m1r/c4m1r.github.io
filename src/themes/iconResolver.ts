@@ -2,6 +2,7 @@ import type { ThemeId } from '../contexts/appContextTypes';
 import type { FileSystemItem } from '../utils/FileSystem';
 import { THEME_ASSETS, type ThemeAssetId, type ThemeAssets } from './webos/themeAssets';
 import { MACOS_APP_ICON_BY_ID, MACOS_SYSTEM_ICON_BY_ID, getIosIconMap } from '../shells/desktop/appleIconAssets';
+import { getFileAssociation } from './fileAssociations';
 
 type IconThemeAssets = ThemeAssets & { userAvatar?: string };
 
@@ -77,9 +78,18 @@ export function resolveFileIcon(item: FileSystemItem, theme: ThemeId): string {
   }
   if (item.mediaTrackId) return getThemeAssets(theme).winampIcon ?? getThemeAssets(theme).mediaPlayerIcon ?? '';
   if (item.content && item.icon === item.content && /\.(png|jpe?g|gif|webp|svg)$/i.test(item.name)) return item.icon;
-  const extension = item.name.split('.').pop()?.toLocaleLowerCase();
-  if (extension === 'txt' || extension === 'md' || extension === 'rtf') {
-    return getThemeAssets(theme).richTextIcon ?? getThemeAssets(theme).notepadIcon ?? '';
+  const association = getFileAssociation(item.name);
+  if (association) {
+    if (APPLE_THEMES.has(theme) && association.defaultAppId) {
+      const appleIcon = MACOS_APP_ICON_BY_ID[association.defaultAppId];
+      if (appleIcon) return appleIcon;
+    }
+    if (IOS_THEMES.has(theme) && association.defaultAppId) {
+      const iosIcon = getIosIconMap(theme)[association.defaultAppId];
+      if (iosIcon) return iosIcon;
+    }
+    const associatedIcon = getThemeAssets(theme)[association.iconAsset];
+    if (typeof associatedIcon === 'string') return associatedIcon;
   }
   return getThemeAssets(theme).richTextIcon ?? getThemeAssets(theme).folderIcon ?? '';
 }
