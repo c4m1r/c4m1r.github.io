@@ -369,3 +369,17 @@ Percentages are working estimates, not test results. The previous task registry 
 
 
 - 2026-11-20 implementation handoff: theme-aware icon resolution is now wired into `MyComputer.tsx`, `Windows7Explorer.tsx` and `DesktopShellContainer.tsx`. This is a first integration pass, not completion of ICONBANK-01: Windows 98/2000 still rely on incomplete/shared theme registries, Windows 7 inherits XP assets for unmapped app roles, WebOS is still XP-derived, Linux themes currently fall back to the WebOS registry, and iOS 5 has no complete dedicated map. The resolver deliberately keeps virtual filesystem records as the input contract and does not import donor files from `/eat/`. CI was triggered for the latest source commit; inspect its result before recording build/type/lint success. Browser visual acceptance and image-dimension inventory remain outstanding.
+
+
+## Latest implementation update — 2026-11-20
+
+### ICONBANK-01 follow-up: semantic file association catalogue
+
+- [x] Add a shared extension/category/MIME/default-app/semantic-icon catalogue in `src/themes/fileAssociations.ts`.
+- [x] Route ordinary Explorer file icons through the active theme's semantic asset role in `src/themes/iconResolver.ts`, preserving app shortcut, folder, drive, system, media-track and content-thumbnail precedence.
+- [ ] Wire association metadata into the actual file-open dispatcher where supported; icon selection alone is not proof of automatic file launching.
+- [ ] Complete independent native registries for Windows 98, Windows 2000, Windows 7, WebOS, Ubuntu, Arch and iOS 5; eliminate unintended XP inheritance.
+- [ ] Finish generation-specific iOS icon coverage and validate macOS/iOS icon roles at rendered sizes.
+- [ ] Inventory real pixel dimensions, alpha channels, formats and display-size suitability; generate contact sheets for Win98 variants and Win7 numeric assets.
+- [ ] Complete the per-OS visual matrix and run `verify`, typecheck, lint, build and browser checks.
+- Verification status: source edits are committed, but no local test/build/browser run was performed in this connector-only pass. Do not mark acceptance complete until CI and manual visual checks pass.
