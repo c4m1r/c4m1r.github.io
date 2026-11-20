@@ -171,3 +171,10 @@ A first integration pass has been committed:
 - Added `scripts/audit-theme-icons.js` and `npm run audit:icons`. The script recursively inventories supported image assets under `src/themes`, recording dimensions, format, byte size, SHA-256 and exact duplicate groups. It parses PNG palette transparency (`tRNS`), ICO embedded size variants, JPEG/GIF/WebP/BMP dimensions and basic SVG width/height/viewBox metadata.
 - Optional JSON export: `npm run audit:icons -- --json docs/icon-bank-inventory.json`. The report is generated on demand and is not committed by default.
 - Alpha detection for SVG is heuristic; GIF transparency is detected from the presence of a graphics-control extension; ICO alpha uses the directory bit-depth declaration. Treat unusual/animated formats and malformed assets as candidates for manual inspection. The tool has not yet been executed in this connector-only session; first execution and review remain open.
+
+
+### Windows 7 named icon roles — 2026-11-20
+
+- Added `src/themes/win7/iconAssets.ts` and connected it to `THEME_ASSETS.win7`. It maps only named, unambiguous source assets: Computer (256×256 RGBA PNG), generic folder (512×512 RGBA PNG), Internet Explorer (2000×2000 RGBA PNG), Mail (839×854 RGBA PNG), Volume (860×803 RGBA PNG), Start orb/hover, wallpaper and user avatar. Start Menu maps IE and Mail; Places maps Computer and My Documents.
+- The `src/themes/win7/assets/icons` tree contains 541 icon files. Only six have descriptive filenames (`computer.png`, `folder.png`, `internet-explorer.png`, `mail.png`, `volume.png`, `vista-orb.ico`); the remaining files are numeric and must be identified visually before assigning app/file roles. `vista-orb.ico` has one directory-declared 16×16 entry in its ICO header and is not substituted for the existing Start orb image.
+- This makes the five named high-resolution PNGs available through a dedicated semantic registry, but the theme still inherits unfilled app roles from the shared XP-derived baseline. The numeric bank contact sheet and XP-inheritance removal remain open. High pixel dimensions do not guarantee correct appearance; inspect at native shell display sizes.
