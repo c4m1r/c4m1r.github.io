@@ -3,43 +3,60 @@
 Build the canonical Windows icon collection used by the Windows-family skins.
 
 Output: src/themes/windows-icons/
-  <family>/<role>/<size>.png   one PNG per standard Windows size that the source allows
+  <family>/<role>/<size>.png   one PNG per size the OS shipped (see FAMILY_SIZES)
   <family>/<role>/icon.ico     multi-size ICO containing the same sizes
-  manifest.json                role -> app -> source -> produced/skipped sizes
+  manifest.json                role -> app -> source -> per-size method and provenance
+
+Method, per role and per size (in order of preference):
+  1. native   a file in the source's icon family (same base name, e.g.
+              computer_2_cool-0..5) that is already drawn at exactly that size.
+              When several candidates share the size, the one whose artwork
+              best matches the role's reference is chosen (see match_error).
+  2. derived  no native artwork exists for that size: the best larger native
+              is downscaled with LANCZOS. Upscaling is never performed.
+  3. (none)   no native artwork at or above the size: the size is omitted and
+              recorded in the manifest.
 
 Rules (see docs/icon-bank-audit.md and docs/agents.md):
   * Sources are the existing canonical copies under src/themes/*. Nothing is
     imported from eat/ and no donor artwork is added here.
-  * Images are only DOWNSCALED. A size larger than the source's longest edge is
-    recorded as skipped in the manifest; it is never produced by upscaling.
-  * Transparency is preserved (RGBA, LANCZOS resampling, centred on a square canvas).
+  * Transparency is preserved (RGBA, centred on a square canvas).
 
 Run: python3 scripts/build-windows-icons.py
-Requires: Pillow (numpy and scipy only for the white-background knockout step)
+Requires: Pillow; numpy and scipy only for the white-background knockout step.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+import numpy as np
+from PIL import Image, ImageDraw  # noqa: F401  (ImageDraw kept for future fills)
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 OUT = SRC / "themes" / "windows-icons"
 
-SIZES = [16, 24, 32, 48, 64, 128, 256]
+# Sizes each OS generation actually shipped. Windows 98 through XP shipped
+# 16/32/48 px shell icons; Windows 7 added 256 px "jumbo" icons.
+FAMILY_SIZES = {
+    "win98": [16, 32, 48],
+    "win2000": [16, 32, 48],
+    "winxp": [16, 32, 48],
+    "win7": [16, 24, 32, 48, 64, 128, 256],
+}
 
 W98 = "themes/win98/assets/icons"
-W2K = "themes/win98/assets/icons"  # Windows 2000 variants live in the 98 archive as *_2k-4.png
+W2K = "themes/win98/assets/icons"  # Windows 2000 variants live in the 98 archive as *_2k-N.png
 XP = "themes/winxp/assets/icons"
 W7 = "themes/win7/assets/icons"
 
-# (family, role, app, source relative to src/)
+# (family, role, app, reference source relative to src/)
 ROLES: list[tuple[str, str, str, str]] = [
-    # ---- Windows 98 (16/32-bit era shell artwork, native 32/48 px) ----
+    # ---- Windows 98 ----
     ("win98", "computer", "My Computer", f"{W98}/computer_2_cool-3.png"),
     ("win98", "folder", "Folder", f"{W98}/directory_closed-4.png"),
     ("win98", "recycle-empty", "Recycle Bin (empty)", f"{W98}/recycle_bin_empty-4.png"),
@@ -62,13 +79,14 @@ ROLES: list[tuple[str, str, str, str]] = [
     ("win98", "sound", "Sounds", f"{W98}/computer_sound-0.png"),
     ("win98", "paint", "Paint", f"{W98}/paint_old-0.png"),
 
-    # ---- Windows 2000 (native 48 px *_2k variants only; partial by design) ----
+    # ---- Windows 2000 (*_2k variants) ----
     ("win2000", "computer", "My Computer", f"{W2K}/computer_explorer_2k-4.png"),
     ("win2000", "my-documents", "My Documents", f"{W2K}/directory_open_file_mydocs_2k-4.png"),
     ("win2000", "recycle-empty", "Recycle Bin (empty)", f"{W2K}/recycle_bin_empty_2k-4.png"),
     ("win2000", "recycle-full", "Recycle Bin (full)", f"{W2K}/recycle_bin_full_2k-4.png"),
 
-    # ---- Windows XP Luna (32/48 native; several 1024 px sources) ----
+    # ---- Windows XP Luna (named sources; 1024 px originals are downscaled
+    #      only where no native pool exists) ----
     ("winxp", "folder", "Folder", f"{XP}/folder_plain.png"),
     ("winxp", "computer", "My Computer", f"{XP}/mycomputer.png"),
     ("winxp", "recycle-bin", "Recycle Bin", f"{XP}/recycling_bin.png"),
@@ -109,17 +127,26 @@ ROLES: list[tuple[str, str, str, str]] = [
     ("win7", "volume", "Volume", f"{W7}/volume.png"),
 ]
 
-
 # Source defects where the background is opaque (near-white) instead of transparent.
-# Only near-white regions that touch the image edge are removed, so white
-# highlights enclosed by the artwork are preserved.
 KNOCKOUT_WHITE_BACKGROUND = {("win7", "volume")}
 KNOCKOUT_MIN_CHANNEL = 230
 
+# Maximum mean error (0..1 scale) accepted when matching a native candidate to the reference.
+MATCH_ERROR_LIMIT = 0.12
+
+
+def base_name(path: Path) -> str:
+    """Icon family key: file stem without a trailing -N variant index."""
+    return re.sub(r"-\d+$", "", path.stem)
+
+
+def load_rgba(path: Path) -> Image.Image:
+    with Image.open(path) as opened:
+        return opened.convert("RGBA")
+
 
 def knockout_white_background(img: Image.Image) -> Image.Image:
-    """Make the edge-connected near-white background transparent (needs numpy + scipy)."""
-    import numpy as np
+    """Make the edge-connected near-white background transparent."""
     from scipy import ndimage
 
     rgba = np.array(img)
@@ -144,6 +171,44 @@ def square_canvas(img: Image.Image, size: int) -> Image.Image:
     return canvas
 
 
+def match_error(candidate: Image.Image, reference: Image.Image) -> float:
+    """Mean error between a native candidate and the reference scaled to the candidate's size.
+
+    Compares premultiplied colour and alpha on a 0..1 scale, so transparent
+    background pixels do not dominate the score.
+    """
+    size = candidate.size[0]
+    ref = square_canvas(reference, size)
+    c = np.asarray(candidate, dtype=np.float64) / 255.0
+    r = np.asarray(ref, dtype=np.float64) / 255.0
+    c_pm = c[:, :, :3] * c[:, :, 3:4]
+    r_pm = r[:, :, :3] * r[:, :, 3:4]
+    return float(np.mean((c_pm - r_pm) ** 2) + np.mean((c[:, :, 3] - r[:, :, 3]) ** 2)) / 2.0
+
+
+def native_pool(source: Path) -> list[Path]:
+    """All files in the source's directory that share its base name (the same icon family)."""
+    key = base_name(source)
+    return sorted(p for p in source.parent.glob("*.png") if base_name(p) == key)
+
+
+def choose_native(source: Path, reference: Image.Image, size: int) -> tuple[Path, float] | None:
+    """Best native candidate drawn at exactly `size`, or None."""
+    best: tuple[Path, float] | None = None
+    for candidate_path in native_pool(source):
+        candidate = load_rgba(candidate_path)
+        if candidate.size != (size, size):
+            continue
+        if candidate_path == source:
+            return candidate_path, 0.0
+        error = match_error(candidate, reference)
+        if best is None or error < best[1]:
+            best = (candidate_path, error)
+    if best is not None and best[1] > MATCH_ERROR_LIMIT:
+        return None
+    return best
+
+
 def main() -> None:
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -162,50 +227,68 @@ def main() -> None:
         if not source.exists():
             raise SystemExit(f"missing source for {family}/{role}: {rel}")
 
-        with Image.open(source) as opened:
-            img = opened.convert("RGBA")
-        if (family, role) in KNOCKOUT_WHITE_BACKGROUND:
-            img = knockout_white_background(img)
-        longest = max(img.size)
+        reference = load_rgba(source)
+        if key in KNOCKOUT_WHITE_BACKGROUND:
+            reference = knockout_white_background(reference)
+        longest_reference = max(reference.size)
 
-        produced: list[int] = []
-        skipped: list[dict] = []
-        files: dict[str, str] = {}
         role_dir = OUT / family / role
         role_dir.mkdir(parents=True, exist_ok=True)
 
-        for size in SIZES:
-            if size > longest:
-                skipped.append({"size": size, "reason": f"source longest edge {longest}px; upscaling is not allowed"})
+        sizes_out: dict[str, dict] = {}
+        produced: list[int] = []
+        skipped: list[dict] = []
+        ico_base: Image.Image | None = None
+
+        for size in FAMILY_SIZES[family]:
+            native = choose_native(source, reference, size)
+            if native is not None:
+                path, error = native
+                image = load_rgba(path)
+                if key in KNOCKOUT_WHITE_BACKGROUND:
+                    image = knockout_white_background(image)
+                method = "native" if path != source else "reference"
+                info = {"method": method, "from": f"src/{path.relative_to(SRC).as_posix()}",
+                        "matchError": round(error, 5)}
+            elif size <= longest_reference:
+                image = square_canvas(reference, size)
+                method = "derived"
+                info = {"method": "derived", "from": f"src/{rel}", "matchError": None}
+            else:
+                skipped.append({"size": size, "reason": f"no native artwork at {size}px and upscaling is not allowed"})
                 continue
-            canvas = square_canvas(img, size)
+
+            canvas = image if image.size == (size, size) else square_canvas(image, size)
             target = role_dir / f"{size}.png"
             canvas.save(target, optimize=True)
             produced.append(size)
-            files[str(size)] = target.relative_to(OUT).as_posix()
+            info["file"] = target.relative_to(OUT).as_posix()
+            sizes_out[str(size)] = info
+            if ico_base is None or size > ico_base.size[0]:
+                ico_base = canvas
 
         ico_path = role_dir / "icon.ico"
-        base = square_canvas(img, max(produced))
-        base.save(ico_path, format="ICO", sizes=[(s, s) for s in produced])
+        if ico_base is not None:
+            ico_base.save(ico_path, format="ICO", sizes=[(s, s) for s in produced])
 
         entries.append({
             "family": family,
             "role": role,
             "app": app,
             "source": f"src/{rel}",
-            "sourceSize": list(img.size),
-            "produced": produced,
+            "sourceSize": list(load_rgba(source).size),
+            "sizes": sizes_out,
             "skipped": skipped,
-            "files": files,
-            "ico": ico_path.relative_to(OUT).as_posix(),
+            "ico": ico_path.relative_to(OUT).as_posix() if ico_base is not None else None,
             "notes": ["edge-connected white background knocked out (opaque source)"]
-            if (family, role) in KNOCKOUT_WHITE_BACKGROUND else [],
+            if key in KNOCKOUT_WHITE_BACKGROUND else [],
         })
 
     manifest = {
         "generator": "scripts/build-windows-icons.py",
-        "sizes": SIZES,
-        "policy": "downscale-only; no upscaling; transparency preserved",
+        "familySizes": FAMILY_SIZES,
+        "policy": "native artwork first; derived only by downscaling; never upscaled; transparency preserved",
+        "matchErrorLimit": MATCH_ERROR_LIMIT,
         "families": sorted({e["family"] for e in entries}),
         "count": len(entries),
         "entries": entries,
@@ -215,7 +298,11 @@ def main() -> None:
     print(f"Wrote {len(entries)} roles to {OUT.relative_to(ROOT)}")
     for family in manifest["families"]:
         fam = [e for e in entries if e["family"] == family]
-        print(f"  {family}: {len(fam)} roles")
+        methods = {}
+        for e in fam:
+            for info in e["sizes"].values():
+                methods[info["method"]] = methods.get(info["method"], 0) + 1
+        print(f"  {family}: {len(fam)} roles, sizes {methods}")
 
 
 if __name__ == "__main__":

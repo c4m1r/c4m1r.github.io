@@ -423,3 +423,11 @@ Percentages are working estimates, not test results. The previous task registry 
 - [ ] Wire the collection into the Windows theme registries (currently the registries still point at the original source files).
 - [ ] Identify the 530+ numeric Win7 assets and add their app roles to the manifest.
 - [ ] Browser visual check of each Windows skin at native desktop scale.
+
+## Windows icon collection v2 (native-first matching) — 2026-11-20
+
+- [x] Replace the downscale-only v1 method. Each role/size now prefers native artwork from the same icon family (same base name, e.g. `computer_2_cool-0..5`), chosen by visual match to the reference. Downscaling is used only when no native size exists, and every file is tagged `native`, `reference` or `derived` in `manifest.json`.
+- [x] Per-OS size sets follow what each generation shipped: Windows 98, 2000 and XP use 16/32/48 px; Windows 7 uses 16–256 px.
+- [x] Contact-sheet review of Windows 98 and 2000 role sizes.
+- [ ] Review Windows XP sizes: the named 1024 px sources are still downscaled where no 16/32 px native exists; the numbered XP bank (`winxp/assets/icons/NNN(16x16|32x32|48x48).png`) needs a visual role mapping.
+- [ ] Windows 98 Computer, Help, MS-DOS: no native 16 px variant matched the reference within the threshold; the 16 px files are derived and should be reviewed.
