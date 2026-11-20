@@ -51,7 +51,7 @@ import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import win98Startup from '../win98/assets/audio/windows-98-startup.mp3';
-import win98StartIcon from '../win98/assets/95icon.png';
+import win98StartIcon from '../win98/assets/icons/start98.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
 
 type StartMenuIconSet = {
@@ -86,6 +86,7 @@ export interface ThemeAssets {
   folderIcon?: string;
   computerIcon?: string;
   recycleIcon?: string;
+  recycleFullIcon?: string;
   startButtonIcon?: string;
   startButtonHoverIcon?: string;
   trayExpandIcon?: string;
@@ -279,7 +280,7 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
       paint: WIN98_ICON_ASSETS.paintIcon,
     },
     placesIcons: {
-      myDocuments: WIN98_ICON_ASSETS.folderIcon,
+      myDocuments: WIN98_ICON_ASSETS.myDocumentsIcon, 
       myPictures: WIN98_ICON_ASSETS.picturesIcon,
       myMusic: WIN98_ICON_ASSETS.mediaPlayerIcon,
       myComputer: WIN98_ICON_ASSETS.computerIcon,
@@ -288,7 +289,7 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
       programAccess: WIN98_ICON_ASSETS.folderIcon,
       connectTo: WIN98_ICON_ASSETS.networkIcon,
       help: WIN98_ICON_ASSETS.helpIcon,
-      search: WIN98_ICON_ASSETS.computerIcon,
+      search: WIN98_ICON_ASSETS.searchIcon,
       run: WIN98_ICON_ASSETS.terminalIcon,
     },
     controlPanelIcons: {
