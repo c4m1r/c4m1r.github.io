@@ -688,3 +688,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 
 - Reference provenance: `eat/Eshwar-win7-master/README.md` has no accompanying LICENSE; its generic personal-use statement is not a clear license grant for copied assets. Keep it as a visual reference only. No assets copied from it.
 - CI refresh: workflow `44782276753` for the Win98 duplicate-key fix completed successfully. For Win7, workflow `44792794149` on `16d3594` reported Typecheck, Lint, Build and Verify build output as successful; the job was still uploading its artifact at last check. The following `ad2033c` integration workflow was cancelled by newer commits; re-run/verify integration on the latest main revision.
+
+
+### Windows 2000 native icon role subset — 2026-11-20
+- Created `src/themes/win2000/iconAssets.ts` using explicit `_2k` source filenames from the shared vintage icon archive: Computer, My Documents, Recycle Bin empty/full. All selected `-4` variants are 48×48 with palette transparency confirmed from PNG chunks.
+- Wired the module into `src/themes/webos/themeAssets.ts`; corrected the empty `placesIcons` map so the native Computer/My Documents roles are not silently overwritten. Win2000 `getThemeAssets` still merges the shared baseline for unfilled roles because the native registry is partial.
+- Do not mistake this for the complete Windows 2000 bank. Numbered ICO donor set remains unaudited and not imported. Commits: `fbb9a1f`, `c16220d`, `bb10047`.
