@@ -46,6 +46,7 @@ import rssNewsIcon from '../../assets/icons/rss-icon.svg';
 import currencyDollarIcon from '../../assets/icons/currency-dollar-icon.svg';
 import runIconWebos from '../winxp/assets/icons/run.png';
 import helpIconWebos from '../winxp/assets/icons/help.png';
+import performanceMonitorIconWebos from '../winxp/assets/icons/Performance Monitor.png';
 import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
@@ -102,6 +103,8 @@ export interface ThemeAssets {
   controlPanelIcon?: string;
   notepadIcon?: string;
   picturesIcon?: string;
+  helpIcon?: string;
+  performanceMonitorIcon?: string;
   richTextIcon?: string;
   bootLogo?: string;
   bootProgress?: string;
@@ -157,6 +160,8 @@ const sharedWebosAssets: ThemeAssets = {
   doomIcon: doomIconWebos,
   notepadIcon: notepadIconWebos,
   picturesIcon: picturesIconWebos,
+  helpIcon: helpIconWebos,
+  performanceMonitorIcon: performanceMonitorIconWebos,
   richTextIcon: richTextIconWebos,
   bootLogo: bootLogoWebos,
   bootProgress: bootProgressWebos,
