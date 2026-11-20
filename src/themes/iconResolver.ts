@@ -77,7 +77,7 @@ export function resolveFileIcon(item: FileSystemItem, theme: ThemeId): string {
     return getThemeAssets(theme).folderIcon ?? '';
   }
   if (item.mediaTrackId) return getThemeAssets(theme).winampIcon ?? getThemeAssets(theme).mediaPlayerIcon ?? '';
-  if (item.content && item.icon === item.content && /\.(png|jpe?g|gif|webp|svg|bmp|tiff?|avif|heic|ico)$/i.test(item.name)) return item.icon;
+  if (item.content && typeof item.icon === 'string' && item.icon === item.content && /\.(png|jpe?g|gif|webp|svg|bmp|tiff?|avif|heic|ico)$/i.test(item.name)) return item.icon;
   const association = getFileAssociation(item.name);
   if (association) {
     if (APPLE_THEMES.has(theme) && association.defaultAppId) {
