@@ -51,6 +51,7 @@ import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
+import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
 import win98Startup from '../win98/assets/audio/windows-98-startup.mp3';
 import win98StartIcon from '../win98/assets/icons/start98.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
@@ -302,6 +303,7 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     },
   },
   win2000: {
+    ...WIN2000_ICON_ASSETS,
     startupSound: '/sounds/system/win2000-startup.mp3',
     shutdownSound: '/sounds/system/win2000-shutdown.mp3',
     logoffSound: '/sounds/system/win98-logoff.mp3',
