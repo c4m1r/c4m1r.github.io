@@ -659,3 +659,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Inspected `eat/windows2000-main`: it contains a numbered ICO bank (200+ files) and Start-menu role references in its StartMenu component. The donor maps IDs for Shutdown 151, Run 135, Help 129, Search 123, Settings 115, Documents 109, Programs 104, Accessories 102 and Windows Update 228. These numeric files still require a contact sheet before semantic mapping.
 - Do not import donor ICOs until image license/provenance is checked. The donor is a visual/source lead, not yet a validated production asset set.
 - The previous CI failure was caused by duplicate Win98 object keys; fixed in commit `63ca2f4`. Verify the current workflow before further code changes.
+
+
+### File association dispatch follow-up — 2026-11-20
+- `src/shells/desktop/DesktopShellContainer.tsx`: `handleOpenFile` now calls `getFileAssociation(item.name)`. The existing Notepad window handles `text`, `code` and `data` categories; the shared Picture Viewer handles image-category entries with string-backed content. Project Markdown remains on its dedicated frontmatter renderer.
+- Deliberately not dispatching audio/video/archive/default document app IDs yet: `app:launch` currently receives only `appId`, not the selected file path/content, so an automatic launch would not open the chosen file. Next architectural step is a typed file-open launch context or dedicated handlers for each category.
+- Commit: `a391adc1d9b6faf6784c252418d9ecdaa892dea5`. Check Actions before treating the source change as build-verified. No local/browser tests were run.
