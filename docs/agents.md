@@ -651,3 +651,11 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - No local tests or browser QA were run. Check GitHub Actions for latest commit and keep visual acceptance pending.
 
 - Follow-up: Win98 Start button now uses the era-specific `src/themes/win98/assets/95icon.png` rather than inheriting the XP logo. GitHub Actions exposed a TypeScript narrowing issue in the content-thumbnail branch of `iconResolver.ts`; fixed by explicitly checking `typeof item.icon === 'string'`. The fix is on main; new workflow run is pending.
+
+
+### Windows 2000 source findings and Win98 map correction — 2026-11-20
+
+- Removed duplicate trailing empty `startMenuIcons` and `placesIcons` properties from the Win98 theme object. They previously erased the new role maps at runtime.
+- Inspected `eat/windows2000-main`: it contains a numbered ICO bank (200+ files) and Start-menu role references in its StartMenu component. The donor maps IDs for Shutdown 151, Run 135, Help 129, Search 123, Settings 115, Documents 109, Programs 104, Accessories 102 and Windows Update 228. These numeric files still require a contact sheet before semantic mapping.
+- Do not import donor ICOs until image license/provenance is checked. The donor is a visual/source lead, not yet a validated production asset set.
+- The previous CI failure was caused by duplicate Win98 object keys; fixed in commit `63ca2f4`. Verify the current workflow before further code changes.
