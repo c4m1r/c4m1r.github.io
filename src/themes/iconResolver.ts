@@ -16,15 +16,15 @@ const APP_ASSET_KEYS: Readonly<Record<string, keyof IconThemeAssets>> = {
   'windows-media-player': 'mediaPlayerIcon',
   winamp: 'winampIcon',
   paint: 'paintIcon',
-  pictures: 'picturesIcon',
+  pictures: 'richTextIcon',
   calendar: 'calendarIcon',
   news: 'newsIcon',
   currency: 'currencyIcon',
   wiki: 'richTextIcon',
   notepad: 'notepadIcon',
   'projects-grid': 'projectsIcon',
-  help: 'helpIcon',
-  'task-manager': 'performanceMonitorIcon',
+  help: 'richTextIcon',
+  'task-manager': 'computerIcon',
   calculator: 'calculatorIcon',
   'control-panel': 'controlPanelIcon',
   terminal: 'terminalIcon',
@@ -33,11 +33,6 @@ const APP_ASSET_KEYS: Readonly<Record<string, keyof IconThemeAssets>> = {
   minesweeper: 'minesweeperIcon',
   doom1: 'doomIcon',
   doom2: 'doomIcon',
-};
-
-const APP_FALLBACKS: Readonly<Record<string, string>> = {
-  snake: '/assets/icons/snake-icon.svg',
-  memory: '/assets/icons/memory-icon.svg',
 };
 
 const APPLE_THEMES = new Set<ThemeId>(['macos-26']);
@@ -69,7 +64,6 @@ export function resolveFileIcon(item: FileSystemItem, theme: ThemeId): string {
     const assetKey = APP_ASSET_KEYS[item.appId];
     const themedIcon = assetKey ? assets[assetKey] : undefined;
     if (typeof themedIcon === 'string') return themedIcon;
-    if (APP_FALLBACKS[item.appId]) return APP_FALLBACKS[item.appId];
   }
 
   if (item.icon && typeof item.icon === 'string') return item.icon;
