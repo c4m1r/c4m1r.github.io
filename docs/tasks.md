@@ -413,3 +413,13 @@ Percentages are working estimates, not test results. The previous task registry 
 - CI: duplicate Win98 object-key failure was fixed in `63ca2f4`; workflow `44782276753` completed successfully.
 
 - 2026-11-20 Win7 icon follow-up: named source assets are mapped in `src/themes/win7/iconAssets.ts`; numeric assets remain intentionally unmapped until visual identification. Latest source commit `ad2033c` integrates the registry. Workflow `44792794149` for preceding registry module `16d3594` completed Typecheck, Lint, Build and Verify build output successfully; integration commit still needs a fresh completed CI run and visual rendering.
+
+## Windows icon collection (canonical multi-size set) — 2026-11-20
+
+- [x] Build a single canonical Windows icon collection under `src/themes/windows-icons/` (families: win98, win2000, winxp, win7; 61 roles) with per-role PNGs at 16/24/32/48/64/128/256 and multi-size `icon.ico`, plus `manifest.json` (role → app → source → produced/skipped sizes).
+- [x] Generator `scripts/build-windows-icons.py` is downscale-only: sizes above a source's longest edge are recorded as skipped instead of upscaled.
+- [x] Fix opaque white background in the Win7 volume source (edge-connected near-white knockout) and verify transparency on a contact sheet.
+- [x] Gates: `verify`, `typecheck`, `lint` (0 errors), `build` pass.
+- [ ] Wire the collection into the Windows theme registries (currently the registries still point at the original source files).
+- [ ] Identify the 530+ numeric Win7 assets and add their app roles to the manifest.
+- [ ] Browser visual check of each Windows skin at native desktop scale.
