@@ -50,6 +50,7 @@ import performanceMonitorIconWebos from '../winxp/assets/icons/Performance Monit
 import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
+import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import win98Startup from '../win98/assets/audio/windows-98-startup.mp3';
 import win98StartIcon from '../win98/assets/icons/start98.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
@@ -233,27 +234,15 @@ const xpThemeAssets: ThemeAssets = {
 
 const win7ThemeAssets: ThemeAssets = {
   ...sharedWebosAssets,
-  folderIcon: WIN7_ASSETS.folderIcon,
-  computerIcon: WIN7_ASSETS.computerIcon,
-  startButtonIcon: WIN7_ASSETS.startOrb,
-  startButtonHoverIcon: WIN7_ASSETS.startOrbHover,
-  wallpaper: WIN7_ASSETS.desktopWallpaper,
-  userAvatar: WIN7_ASSETS.userAvatar,
-  internetExplorerIcon: WIN7_ASSETS.internetExplorerIcon,
-  mailIcon: WIN7_ASSETS.mailIcon,
-  volumeIcon: WIN7_ASSETS.volumeIcon,
+  ...WIN7_ICON_ASSETS,
   startupSound: WIN7_ASSETS.startupSound,
   startMenuIcons: {
     ...sharedWebosAssets.startMenuIcons,
-    internetExplorer: WIN7_ASSETS.internetExplorerIcon,
-    outlook: WIN7_ASSETS.mailIcon,
+    ...WIN7_ICON_ASSETS.startMenuIcons,
   },
   placesIcons: {
     ...sharedWebosAssets.placesIcons,
-    myComputer: WIN7_ASSETS.computerIcon,
-    myDocuments: WIN7_ASSETS.folderIcon,
-    myPictures: WIN7_ASSETS.folderIcon,
-    myMusic: WIN7_ASSETS.folderIcon,
+    ...WIN7_ICON_ASSETS.placesIcons,
   },
 };
 
