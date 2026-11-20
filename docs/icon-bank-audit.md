@@ -137,3 +137,12 @@ A first integration pass has been committed:
 - Windows 2000 remains without its own icon directory/semantic bank; only its two existing shell assets were present in the inspected `src/themes/win2000/assets` directory.
 
 - Win98 Start button role was switched to the local period-specific `95icon.png`. A GitHub Actions TypeScript failure in the prior file-thumbnail resolver commit was identified and fixed by narrowing `item.icon` to string before returning it; latest workflow is pending.
+
+
+## Windows 98 follow-up and Windows 2000 donor audit — 2026-11-20
+
+- Fixed an accidental duplicate-property override in the Win98 theme object: the trailing empty `startMenuIcons` and `placesIcons` maps had been overriding the newly curated maps. The maps now survive object construction.
+- The Win2000 donor `eat/windows2000-main` was inspected. It contains a 200+ item numbered `.ico` bank under `src/assets/ICON`, plus Start-menu references in `StartMenu.tsx`: Shutdown=151, Run=135, Help=129, Search=123, Settings=115, Documents=109, Programs=104, Accessories=102, Windows Update=228. These are donor project IDs, not yet verified semantic image labels.
+- Donor assets were not copied into production: individual image licensing/provenance is not confirmed, and numbered ICOs need visual identification before assignment. This is now a concrete source for the Win2000 contact-sheet and role-mapping pass.
+- The donor Start-menu source is only a visual reference; its menu rows use local click-state and do not supply a production-ready interaction model.
+- CI for the prior commit `f2e5486` failed due duplicate `startMenuIcons` / `placesIcons` keys. The duplicate keys were removed in `63ca2f4`; its workflow is currently running.
