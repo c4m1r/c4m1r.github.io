@@ -86,21 +86,22 @@ function webpInfo(buffer) {
 
 function svgInfo(buffer) {
   const source = buffer.toString('utf8', 0, Math.min(buffer.length, 8192));
-  const tag = source.match(/<svg\\b[^>]*>/i)?.[0] || '';
-  const readLength = (name) => {
-    const value = tag.match(new RegExp('\\\\b' + name + '=["\\\\']([^"\\\\']+)["\\\\']', 'i'))?.[1];
+  const tag = source.match(/<svg\b[^>]*>/i)?.[0] || '';
+  const attributes = Object.fromEntries(
+    [...tag.matchAll(/([a-zA-Z]+)\s*=\s*["']([^"']+)["']/g)].map((match) => [match[1].toLowerCase(), match[2]])
+  );
+  const readLength = (value) => {
     const parsed = value ? Number.parseFloat(value) : NaN;
     return Number.isFinite(parsed) ? parsed : undefined;
   };
-  const viewBox = tag.match(/\\bviewBox=["']([\\d. -]+)["']/i)?.[1]?.trim().split(/[\\s,]+/).map(Number);
+  const viewBox = attributes.viewbox?.trim().split(/[\s,]+/).map(Number);
   return {
-    width: readLength('width') ?? (viewBox?.length === 4 ? viewBox[2] : undefined),
-    height: readLength('height') ?? (viewBox?.length === 4 ? viewBox[3] : undefined),
+    width: readLength(attributes.width) ?? (viewBox?.length === 4 ? viewBox[2] : undefined),
+    height: readLength(attributes.height) ?? (viewBox?.length === 4 ? viewBox[3] : undefined),
     vector: true,
     alpha: /opacity|fill=["']none["']|fill-opacity/i.test(source),
   };
 }
-
 function icoInfo(buffer) {
   if (buffer.length < 22) return {};
   const count = buffer.readUInt16LE(4);
@@ -175,7 +176,7 @@ console.log('Formats:', report.formats);
 console.log(`Exact duplicate groups: ${duplicates.length}`);
 if (outputPath) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\\n`);
+  fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Wrote ${path.relative(rootDir, outputPath)}`);
 } else {
   for (const group of duplicates) console.log('Duplicate:', group.join(' | '));
