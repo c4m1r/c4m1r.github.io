@@ -409,6 +409,6 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Locate a concrete Windows 2000 donor bank: 200+ numbered ICOs and Start-menu role references found in `eat/windows2000-main`.
 - [ ] Generate a contact sheet and visually identify the numbered Win2000 ICOs before importing/assigning them.
 - [ ] Confirm license/provenance for donor images before copying them into production assets.
-- CI: previous run failed on duplicate Win98 object keys; fix committed as `63ca2f4`, workflow pending.
+- CI: duplicate Win98 object-key failure was fixed in `63ca2f4`; workflow `44782276753` completed successfully.
 
-- 2026-11-20 Win7 icon follow-up: named source assets are mapped in `src/themes/win7/iconAssets.ts`; numeric assets remain intentionally unmapped until visual identification. Latest source commit `ad2033c` integrates the registry. Verify CI and visual rendering.
+- 2026-11-20 Win7 icon follow-up: named source assets are mapped in `src/themes/win7/iconAssets.ts`; numeric assets remain intentionally unmapped until visual identification. Latest source commit `ad2033c` integrates the registry. Workflow `44792794149` for preceding registry module `16d3594` completed Typecheck, Lint, Build and Verify build output successfully; integration commit still needs a fresh completed CI run and visual rendering.
