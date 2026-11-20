@@ -127,3 +127,11 @@ A first integration pass has been committed:
 - This is a first association catalogue, not a claim of complete OS-level open/launch behavior. The app ID is descriptive metadata; a separate launch/open dispatch still needs to consume the association contract if automatic file opening is required.
 - Known limitation: theme registries remain incomplete and several themes still fall back to WebOS/XP assets. The new catalogue improves consistency but does not itself create native icons or prove visual fidelity.
 - Verification pending: typecheck, lint, build and browser checks across each theme. Add tests for multi-dot filenames, uppercase extensions, unknown extensions, content-backed images, media tracks, and all listed association categories.
+
+## Windows 98 semantic bank — 2026-11-20
+
+- Added `src/themes/win98/iconAssets.ts` and routed the Win98 theme through its own imported asset roles in `src/themes/webos/themeAssets.ts`.
+- Roles currently mapped from the existing Win98 icon directory: computer, folder/navigation, HTML/browser placeholder, mail, media player, calculator, calendar, Kodak Imaging, Control Panel, Help, MS-DOS, Minesweeper, document/text, network, volume/sound and Paint.
+- The Win98 shell now overrides Start-menu, Places and Control Panel icon roles instead of inheriting those role mappings unchanged from the XP-derived shared set.
+- This is a first semantic pass, not a completed native Win98 inventory. Several role matches are approximate (notably browser, recycle bin, and generic file-type roles); do not call them canonical until the contact sheet and dimensions/alpha review confirms the exact assets. No Win98 recycle-bin role was found in the inspected directory listing.
+- Windows 2000 remains without its own icon directory/semantic bank; only its two existing shell assets were present in the inspected `src/themes/win2000/assets` directory.
