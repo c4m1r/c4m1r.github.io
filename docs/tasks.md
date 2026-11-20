@@ -396,3 +396,5 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Shared file-association catalogue and theme-aware icon lookup are implemented; actual open/launch dispatch is still outstanding.
 - [ ] Inventory image dimensions, formats, alpha and duplicates; produce per-OS contact sheets and visual acceptance matrix.
 - Verification: no local typecheck/lint/build or browser checks were run during this GitHub-only pass. Check Actions for latest main commits.
+
+- [x] Fix TypeScript narrowing in content-backed image icon resolution; add explicit string guard. Latest CI run for the fix is pending.
