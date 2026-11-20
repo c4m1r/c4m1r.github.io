@@ -51,6 +51,7 @@ import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import win98Startup from '../win98/assets/audio/windows-98-startup.mp3';
+import win98StartIcon from '../win98/assets/95icon.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
 
 type StartMenuIconSet = {
@@ -262,6 +263,7 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   'win-98': {
     ...sharedWebosAssets,
     ...WIN98_ICON_ASSETS,
+    startButtonIcon: win98StartIcon,
     winampIcon: WIN98_ICON_ASSETS.mediaPlayerIcon,
     richTextIcon: WIN98_ICON_ASSETS.notepadIcon,
     gamesIcon: WIN98_ICON_ASSETS.minesweeperIcon,
