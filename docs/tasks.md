@@ -43,6 +43,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - Replace opaque numeric icon references with semantic mappings where practical; preserve native size variants and state/frame families.
 - Audit runtime icon resolution across desktop, Start Menu, Explorer, file types, widgets and app launchers. Confirm each OS uses the intended generation-specific artwork.
 - Priority defect identified 2026-11-20: `src/utils/FileSystem.ts:getFileIcon` uses a global Windows XP icon map, consumed by the shared Explorer and Windows 7 Explorer (including Apple app shortcuts). Replace it with a theme-aware presentation resolver while keeping filesystem/domain data theme-neutral; cover app IDs, file types, folders and drives across OS families.
+- Follow-up source trace: WebOS currently inherits most XP artwork; Windows 7 overrides only a subset of the inherited XP icon set; Windows 98/2000 theme asset registries do not yet expose complete independent icon sets. Apple app maps exist but Explorer does not consistently use them. See the detailed source-path notes in `docs/icon-bank-audit.md`.
 - Donor assets in `/eat/` are reference-only until exact provenance/licence is checked. Never import from `/eat/` or introduce it as a runtime/build dependency.
 - Acceptance: dimension/format inventory, semantic mapping, source/provenance record, no unintended duplicates, no low-resolution upscaling, cross-OS visual review, and all required quality gates.
 
