@@ -10,7 +10,8 @@ import backIcon from '../../themes/winxp/assets/toolbar/back.png';
 import forwardIcon from '../../themes/winxp/assets/toolbar/forward.png';
 import upIcon from '../../themes/winxp/assets/toolbar/folder.png';
 import goIcon from '../../themes/winxp/assets/toolbar/go.png';
-import { getItemsFromPath, getFileIcon, getFileSystemItemFromPath, FileSystemItem, initialFileSystem } from '../../utils/FileSystem';
+import { getItemsFromPath, getFileSystemItemFromPath, FileSystemItem, initialFileSystem } from '../../utils/FileSystem';
+import { resolveFileIcon } from '../../themes/iconResolver';
 import appleFolderIcon from '../../themes/apple/assets/icons/folder-generic.png';
 import appleDocumentIcon from '../../themes/apple/assets/sf-icons/document.svg';
 import appleImageIcon from '../../themes/apple/assets/sf-icons/image.svg';
@@ -346,7 +347,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       if (item.type === 'drive') return win98DriveIcon;
       if (item.type === 'folder') return win98FolderIcon;
     }
-    return getFileIcon(item) as string;
+    return resolveFileIcon(item, theme);
   };
 
   const getAddressIcon = () => {
@@ -385,7 +386,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   };
 
   const getAppleItemIcon = (item: FileSystemItem) => {
-    if (item.appId) return getFileIcon(item) as string;
+    if (item.appId) return resolveFileIcon(item, theme);
     if (item.type === 'drive') return appleDriveIcon;
     if (item.type === 'folder') return appleFolderIcon;
     if (/\.(png|jpe?g|gif|webp)$/i.test(item.name)) return appleImageIcon;
@@ -971,7 +972,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                           >
                             <div className="w-16 h-16 flex items-center justify-center mb-1">
                               <img
-                                src={getFileIcon(item) as string}
+                                src={resolveFileIcon(item, theme)}
                                 alt={item.name}
                                 className={`h-full w-full object-contain drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
                                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -1008,7 +1009,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                           >
                             <div className="w-16 h-16 flex items-center justify-center mb-1">
                               <img
-                                src={getFileIcon(item) as string}
+                                src={resolveFileIcon(item, theme)}
                                 alt={item.name}
                                 className={`w-full h-full object-contain drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
                                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -1040,7 +1041,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                   >
                     <div className="w-16 h-16 flex items-center justify-center mb-1">
                       <img
-                        src={getFileIcon(item) as string}
+                        src={resolveFileIcon(item, theme)}
                         alt={item.name}
                         className={`w-full h-full object-contain drop-shadow-md ${selectedItem === item.name ? 'opacity-80' : ''}`}
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -1078,7 +1079,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                   >
                     <td className="px-3 py-1.5 flex items-center gap-2">
                       <img
-                        src={getFileIcon(item) as string}
+                        src={resolveFileIcon(item, theme)}
                         alt={item.name}
                         className="w-5 h-5"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
