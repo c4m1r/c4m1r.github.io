@@ -649,3 +649,5 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Inspected `src/themes/win2000/assets`: only `sideBar.png` and `start.png` are present. Do not fabricate a Win2000 bank from those two shell images; source verified icons first.
 - Next: visual asset inventory (dimensions/alpha/contact sheets), then Win7 numeric icon mapping; build distinct WebOS, Ubuntu and Arch role banks; fill iOS 5 map; wire file association defaultAppId into open dispatch.
 - No local tests or browser QA were run. Check GitHub Actions for latest commit and keep visual acceptance pending.
+
+- Follow-up: Win98 Start button now uses the era-specific `src/themes/win98/assets/95icon.png` rather than inheriting the XP logo. GitHub Actions exposed a TypeScript narrowing issue in the content-thumbnail branch of `iconResolver.ts`; fixed by explicitly checking `typeof item.icon === 'string'`. The fix is on main; new workflow run is pending.
