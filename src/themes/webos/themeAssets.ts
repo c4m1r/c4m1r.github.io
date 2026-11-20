@@ -51,6 +51,7 @@ import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import win98Startup from '../win98/assets/audio/windows-98-startup.mp3';
+import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
 
 type StartMenuIconSet = {
   internetExplorer?: string;
@@ -260,6 +261,11 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   win7: win7ThemeAssets,
   'win-98': {
     ...sharedWebosAssets,
+    ...WIN98_ICON_ASSETS,
+    winampIcon: WIN98_ICON_ASSETS.mediaPlayerIcon,
+    richTextIcon: WIN98_ICON_ASSETS.notepadIcon,
+    gamesIcon: WIN98_ICON_ASSETS.minesweeperIcon,
+    gamesFolderIcon: WIN98_ICON_ASSETS.folderIcon,
     startupSound: win98Startup,
     shutdownSound: '/sounds/system/win98-shutdown.mp3',
     logoffSound: '/sounds/system/win98-logoff.mp3',
