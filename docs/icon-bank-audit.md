@@ -135,3 +135,5 @@ A first integration pass has been committed:
 - The Win98 shell now overrides Start-menu, Places and Control Panel icon roles instead of inheriting those role mappings unchanged from the XP-derived shared set.
 - This is a first semantic pass, not a completed native Win98 inventory. Several role matches are approximate (notably browser, recycle bin, and generic file-type roles); do not call them canonical until the contact sheet and dimensions/alpha review confirms the exact assets. No Win98 recycle-bin role was found in the inspected directory listing.
 - Windows 2000 remains without its own icon directory/semantic bank; only its two existing shell assets were present in the inspected `src/themes/win2000/assets` directory.
+
+- Win98 Start button role was switched to the local period-specific `95icon.png`. A GitHub Actions TypeScript failure in the prior file-thumbnail resolver commit was identified and fixed by narrowing `item.icon` to string before returning it; latest workflow is pending.
