@@ -640,3 +640,12 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Do not treat this as full file-opening behavior: the optional app ID is association metadata only until the file-open dispatcher consumes it. Unknown types intentionally retain a neutral fallback.
 - No local runtime, TypeScript, ESLint, Vite build or browser checks were available in this connector-only pass. Check GitHub Actions for the latest source commit and visually inspect all OS profiles.
 - Current blockers remain the incomplete native icon registries: Win98/Win2000, Win7 inherited XP roles, WebOS XP-derived roles, Ubuntu/Arch, and iOS 5. The icon pixel-dimension/alpha/contact-sheet audit is also outstanding.
+
+### Latest implementation handoff — Windows 98 icon registry first pass (2026-11-20)
+
+- Added `src/themes/win98/iconAssets.ts`, importing existing Win98-specific PNGs for computer, folder/navigation, HTML/browser placeholder, mail, media player, calculator, calendar, Kodak Imaging, Control Panel, Help, MS-DOS, Minesweeper, document/text, network, volume/sound and Paint.
+- `src/themes/webos/themeAssets.ts` now spreads this registry into `THEME_ASSETS['win-98']` and overrides Win98 Start-menu, Places and Control Panel role maps. XP's shared asset object is no longer the source of those mapped Win98 roles.
+- This is deliberately a partial semantic bank. Browser icon is currently an HTML asset proxy; no recycle-bin artwork was identified in the inspected directory. Review the contact sheet before calling the selected images canonical.
+- Inspected `src/themes/win2000/assets`: only `sideBar.png` and `start.png` are present. Do not fabricate a Win2000 bank from those two shell images; source verified icons first.
+- Next: visual asset inventory (dimensions/alpha/contact sheets), then Win7 numeric icon mapping; build distinct WebOS, Ubuntu and Arch role banks; fill iOS 5 map; wire file association defaultAppId into open dispatch.
+- No local tests or browser QA were run. Check GitHub Actions for latest commit and keep visual acceptance pending.
