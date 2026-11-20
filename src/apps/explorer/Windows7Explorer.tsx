@@ -9,7 +9,8 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../contexts/useApp';
 import { THEME_ASSETS } from '../../themes/webos/themeAssets';
-import { getFileIcon, getFileSystemItemFromPath, getItemsFromPath, type FileSystemItem } from '../../utils/FileSystem';
+import { getFileSystemItemFromPath, getItemsFromPath, type FileSystemItem } from '../../utils/FileSystem';
+import { resolveFileIcon } from '../../themes/iconResolver';
 import type { MyComputerProps } from './MyComputer';
 
 const PATHS = {
@@ -47,7 +48,7 @@ function displayLocation(path: string, isRu: boolean) {
 }
 
 export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOpenSlideshow }: MyComputerProps) {
-  const { language } = useApp();
+  const { language, theme } = useApp();
   const isRu = language === 'ru';
   const assets = THEME_ASSETS.win7;
   const [path, setPath] = useState(currentPath);
@@ -334,7 +335,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
                   onClick={(event) => { event.stopPropagation(); setSelectedItem(item.name); }}
                   onDoubleClick={() => handleOpen(item)}
                 >
-                  <span className="win7-explorer__details-name"><img src={getFileIcon(item) as string} alt="" />{item.name}</span>
+                  <span className="win7-explorer__details-name"><img src={resolveFileIcon(item, theme)} alt="" />{item.name}</span>
                   <span>—</span>
                   <span>{item.type === 'folder' ? (isRu ? 'Папка с файлами' : 'File folder') : item.type === 'drive' ? (isRu ? 'Локальный диск' : 'Local Disk') : (isRu ? 'Файл' : 'File')}</span>
                   <span>{item.size ?? ''}</span>
@@ -352,7 +353,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
                   onDoubleClick={() => handleOpen(item)}
                 >
                   <img
-                    src={viewMode === 'thumbnails' && typeof item.content === 'string' && /\.(png|jpe?g|gif|webp)$/i.test(item.name) ? item.content : getFileIcon(item) as string}
+                    src={viewMode === 'thumbnails' && typeof item.content === 'string' && /\.(png|jpe?g|gif|webp)$/i.test(item.name) ? item.content : resolveFileIcon(item, theme)}
                     alt=""
                     loading="lazy"
                   />
