@@ -118,3 +118,12 @@ A first integration pass has been committed:
 4. Inventory actual pixel dimensions, alpha and format for production banks; generate contact sheets for numeric Windows 7 and Windows 98 variant families.
 5. Verify Linux icon sources and add Ubuntu/Arch registries; keep macOS and iOS generation maps separate.
 6. Run required quality gates and browser visual checks for every OS family.
+
+
+## Follow-up implementation — semantic file associations (2026-11-20)
+
+- Added `src/themes/fileAssociations.ts` with a centralized extension catalogue covering text, documents, web, structured data, source code, images, audio, video, archives and fonts. Each entry records extensions, category, MIME family, optional existing default app ID and a semantic theme asset role.
+- `src/themes/iconResolver.ts` now resolves ordinary file icons through this catalogue after app shortcuts, folders, drives, system nodes, media tracks and content-backed image thumbnails. macOS and supported iOS generations first consult their own app icon maps for associated viewer/player roles; other themes resolve the semantic asset key against the active theme registry.
+- This is a first association catalogue, not a claim of complete OS-level open/launch behavior. The app ID is descriptive metadata; a separate launch/open dispatch still needs to consume the association contract if automatic file opening is required.
+- Known limitation: theme registries remain incomplete and several themes still fall back to WebOS/XP assets. The new catalogue improves consistency but does not itself create native icons or prove visual fidelity.
+- Verification pending: typecheck, lint, build and browser checks across each theme. Add tests for multi-dot filenames, uppercase extensions, unknown extensions, content-backed images, media tracks, and all listed association categories.
