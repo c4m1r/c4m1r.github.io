@@ -377,7 +377,8 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Add a shared extension/category/MIME/default-app/semantic-icon catalogue in `src/themes/fileAssociations.ts`.
 - [x] Route ordinary Explorer file icons through the active theme's semantic asset role in `src/themes/iconResolver.ts`, preserving app shortcut, folder, drive, system, media-track and content-thumbnail precedence.
-- [ ] Wire association metadata into the actual file-open dispatcher where supported; icon selection alone is not proof of automatic file launching.
+- [x] Use the shared association catalogue in `DesktopShellContainer.handleOpenFile` for supported text/code/data files (Notepad) and image formats (Picture Viewer), retaining the project-Markdown special case and content-backed image requirement.
+- [ ] Extend launch-context support for audio/video/archive/document types only when the target app can consume a selected file; do not dispatch an app ID without passing usable file context.
 - [ ] Complete independent native registries for Windows 98, Windows 2000, Windows 7, WebOS, Ubuntu, Arch and iOS 5; eliminate unintended XP inheritance.
 - [ ] Finish generation-specific iOS icon coverage and validate macOS/iOS icon roles at rendered sizes.
 - [ ] Inventory real pixel dimensions, alpha channels, formats and display-size suitability; generate contact sheets for Win98 variants and Win7 numeric assets.
