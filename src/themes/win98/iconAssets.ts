@@ -5,7 +5,7 @@
  * separate from XP: a missing role should remain visibly missing during audit
  * rather than silently inheriting a later Windows generation's glossy icon.
  */
-import computerIcon from './assets/icons/computer_explorer-0.png';
+import computerIcon from './assets/icons/computer_2_cool-0.png';
 import folderIcon from './assets/icons/directory_closed-0.png';
 import internetExplorerIcon from './assets/icons/msie1-0.png';
 import mailIcon from './assets/icons/mailbox_world-0.png';
