@@ -67,6 +67,22 @@ This report details the visual hallmarks, architectural constraints, and safety 
 
 ---
 
+## OS-native icon bank acceptance
+
+The curated asset inventory, current mapping observations and outstanding gaps live in [icon-bank-audit.md](./icon-bank-audit.md). For every UI surface, verify icons at the actual rendered size and on the correct OS generation.
+
+- **Windows 98 / 2000:** classic 16/32px-era shell artwork, pixel edges, recognizable Control Panel/drive/folder/system icons; do not substitute XP Luna or modern Fluent artwork. Windows 2000 may share classic assets only when the original visual identity is consistent.
+- **Windows XP:** Luna-era shell32-style artwork; use the matching 16/32/48px source variants when present. Desktop, Start Menu and Explorer may use different native sizes of the same icon.
+- **Windows 7:** Aero-era icons and shell artwork; resolve the numbered bank through a semantic manifest rather than scattering numeric filenames in components.
+- **macOS:** use the correct era-specific application icons and Finder/folder artwork; preserve ICNS/retina variants where provenance permits.
+- **iOS:** keep iOS 5/6, iOS 9, iOS 16 and modern iOS icon families visually distinct; do not route older systems through modern icon fallbacks by convenience.
+- **Ubuntu / Arch:** use the appropriate Yaru/GNOME and Arch/Papirus conventions where they are actually the target shell style; avoid a single generic Linux icon set if the skins differ.
+- **WebOS:** retain its own visual identity and use dedicated assets where the design calls for them.
+
+A source file's byte size does not prove its pixel resolution. Inspect intrinsic dimensions, alpha channel, sharpness and appearance at intended UI sizes. Do not mark icon fidelity accepted until browser review is completed.
+
+---
+
 ## Verification Standards
 
 - **Static Checks**: `npm run verify`, `npm run typecheck`, `npm run lint`, `npm run build`, `git diff --check`.
