@@ -398,3 +398,12 @@ Percentages are working estimates, not test results. The previous task registry 
 - Verification: no local typecheck/lint/build or browser checks were run during this GitHub-only pass. Check Actions for latest main commits.
 
 - [x] Fix TypeScript narrowing in content-backed image icon resolution; add explicit string guard. Latest CI run for the fix is pending.
+
+
+## Windows icon-bank audit follow-up — 2026-11-20
+
+- [x] Remove duplicate empty Win98 Start-menu / Places maps that silently overrode the curated icon roles.
+- [x] Locate a concrete Windows 2000 donor bank: 200+ numbered ICOs and Start-menu role references found in `eat/windows2000-main`.
+- [ ] Generate a contact sheet and visually identify the numbered Win2000 ICOs before importing/assigning them.
+- [ ] Confirm license/provenance for donor images before copying them into production assets.
+- CI: previous run failed on duplicate Win98 object keys; fix committed as `63ca2f4`, workflow pending.
