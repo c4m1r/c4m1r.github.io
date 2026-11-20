@@ -316,6 +316,6 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
       error: '/sounds/ui/win98-error.mp3',
     },
     startMenuIcons: {},
-    placesIcons: {},
+    placesIcons: { ...WIN2000_ICON_ASSETS.placesIcons },
   },
 };
