@@ -90,3 +90,31 @@ The donor inventory is a research lead, not an adoption or licence approval. The
 - [ ] Inspect donor assets visually and check exact licences/provenance before selective adoption.
 - [ ] Replace low-quality/generic fallbacks only when a better verified asset is available; update mappings and visual acceptance notes.
 - [ ] Run `npm run verify`, `npm run typecheck`, `npm run lint`, `npm run build`, `git diff --check`, then browser visual checks. Do not claim visual acceptance from CI alone.
+
+
+## Theme-aware resolver implementation — 2026-11-20
+
+A first integration pass has been committed:
+
+- New `src/themes/iconResolver.ts` resolves a `FileSystemItem` for a supplied active `ThemeId` at the presentation layer. The filesystem model remains the input contract; theme-specific URLs are not added to the domain model.
+- Shared Explorer (`MyComputer.tsx`), Windows 7 Explorer (`Windows7Explorer.tsx`) and desktop icon rendering (`DesktopShellContainer.tsx`) now use `resolveFileIcon(item, theme)` rather than the XP-global `getFileIcon` helper.
+- macOS and iOS mappings reuse the existing Apple icon registries. Windows-family/WebOS resolution uses the current `THEME_ASSETS` contract. System, drive and folder roles are distinguished; content-backed image files retain their content URL, and music tracks use the active theme's Winamp/Media Player artwork.
+- The old `getFileIcon` export remains in `FileSystem.ts` for compatibility, but these three primary surfaces no longer consume it. Search for additional consumers before removal.
+
+### Limitations after the first integration
+
+- This is a routing correction, not a completed icon-bank rebuild. The theme registries themselves still have coverage gaps.
+- Windows 2000 has no complete independent icon registry and currently uses the shared WebOS/XP base fallback. Windows 98 also inherits the shared base outside its explicit Explorer overrides.
+- Windows 7 overrides only selected semantic roles; many app roles still inherit the XP base. WebOS remains substantially XP-derived.
+- Ubuntu, Arch and Halloween themes currently route through the WebOS base registry. iOS 5 has no complete dedicated icon map.
+- The current resolver uses the existing theme asset contract; it does not yet expose a complete per-file-extension association catalogue or a semantic manifest for the Windows 7 numeric icon bank.
+- No browser visual review or pixel-dimension inventory was performed as part of this pass. CI must be checked separately; a successful build does not prove visual fidelity.
+
+### Next implementation sequence
+
+1. Complete semantic per-theme icon registries, starting with Windows 98/2000 and Windows 7, without importing unlicensed donor assets.
+2. Add explicit app IDs for missing roles (Picture Viewer, file manager/system tools, widgets and game shortcuts) and ensure no generic rich-text icon is used as a misleading substitute.
+3. Add a dedicated file-type/association resolver and tests for folders, drives, system nodes, text, images, audio, video, archives and unknown files.
+4. Inventory actual pixel dimensions, alpha and format for production banks; generate contact sheets for numeric Windows 7 and Windows 98 variant families.
+5. Verify Linux icon sources and add Ubuntu/Arch registries; keep macOS and iOS generation maps separate.
+6. Run required quality gates and browser visual checks for every OS family.
