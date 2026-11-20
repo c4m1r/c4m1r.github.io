@@ -21,6 +21,7 @@ import calculatorIconWebos from '../winxp/assets/icons/calc.png';
 import paintIconWebos from '../winxp/assets/icons/paint.png';
 import controlPanelIconWebos from '../winxp/assets/icons/hardware.png';
 import notepadIconWebos from '../winxp/assets/icons/Notepad.png';
+import picturesIconWebos from '../winxp/assets/icons/Windows Picture and Fax Viewer.png';
 import richTextIconWebos from '../winxp/assets/icons/filetypes/rich-text.png';
 import bootLogoWebos from './assets/boot/boot-windows-logo.png';
 import bootProgressWebos from '../winxp/assets/boot/boot-progress.png';
@@ -100,6 +101,7 @@ export interface ThemeAssets {
   paintIcon?: string;
   controlPanelIcon?: string;
   notepadIcon?: string;
+  picturesIcon?: string;
   richTextIcon?: string;
   bootLogo?: string;
   bootProgress?: string;
@@ -154,6 +156,7 @@ const sharedWebosAssets: ThemeAssets = {
   controlPanelIcon: controlPanelIconWebos,
   doomIcon: doomIconWebos,
   notepadIcon: notepadIconWebos,
+  picturesIcon: picturesIconWebos,
   richTextIcon: richTextIconWebos,
   bootLogo: bootLogoWebos,
   bootProgress: bootProgressWebos,
