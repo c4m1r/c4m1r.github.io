@@ -127,6 +127,27 @@ ROLES: list[tuple[str, str, str, str]] = [
     ("win7", "volume", "Volume", f"{W7}/volume.png"),
 ]
 
+# Curated native variants for Windows XP. Each file was identified visually on a
+# labelled contact sheet of the numbered XP bank (winxp/assets/icons/NNN(WxW).png)
+# and, where a reference exists, confirmed numerically. The automatic matcher is
+# not used for XP because the 16 px candidates are not discriminative there.
+# Roles not listed here keep their named source and downscaled sizes.
+CURATED_NATIVE: dict[tuple[str, str], dict[int, str]] = {
+    ("winxp", "computer"): {32: f"{XP}/676(32x32).png"},
+    ("winxp", "recycle-bin"): {32: f"{XP}/360(32x32).png"},
+    ("winxp", "internet-explorer"): {16: f"{XP}/896(16x16).png"},
+    ("winxp", "outlook-express"): {16: f"{XP}/887(16x16).png", 32: f"{XP}/887(32x32).png"},
+    ("winxp", "media-player"): {16: f"{XP}/846(16x16).png", 32: f"{XP}/846(32x32).png"},
+    ("winxp", "calculator"): {16: f"{XP}/74(16x16).png", 32: f"{XP}/74(32x32).png"},
+    ("winxp", "paint"): {16: f"{XP}/680(16x16).png", 32: f"{XP}/680(32x32).png"},
+    ("winxp", "notepad"): {16: f"{XP}/327(16x16).png", 32: f"{XP}/327(32x32).png"},
+    ("winxp", "terminal"): {16: f"{XP}/56(16x16).png"},
+    ("winxp", "help"): {16: f"{XP}/747(16x16).png", 32: f"{XP}/747(32x32).png"},
+    ("winxp", "search"): {32: f"{XP}/299(32x32).png"},
+    ("winxp", "sound"): {16: f"{XP}/690(16x16).png"},
+    ("winxp", "volume"): {16: f"{XP}/690(16x16).png"},
+}
+
 # Source defects where the background is opaque (near-white) instead of transparent.
 KNOCKOUT_WHITE_BACKGROUND = {("win7", "volume")}
 KNOCKOUT_MIN_CHANNEL = 230
@@ -240,9 +261,12 @@ def main() -> None:
         skipped: list[dict] = []
         ico_base: Image.Image | None = None
 
+        curated = CURATED_NATIVE.get(key, {})
         for size in FAMILY_SIZES[family]:
-            native = choose_native(source, reference, size)
-            if native is not None:
+            if size in curated:
+                image = load_rgba(SRC / curated[size])
+                info = {"method": "curated", "from": f"src/{curated[size]}", "matchError": None}
+            elif (native := choose_native(source, reference, size)) is not None:
                 path, error = native
                 image = load_rgba(path)
                 if key in KNOCKOUT_WHITE_BACKGROUND:
@@ -252,7 +276,6 @@ def main() -> None:
                         "matchError": round(error, 5)}
             elif size <= longest_reference:
                 image = square_canvas(reference, size)
-                method = "derived"
                 info = {"method": "derived", "from": f"src/{rel}", "matchError": None}
             else:
                 skipped.append({"size": size, "reason": f"no native artwork at {size}px and upscaling is not allowed"})
@@ -287,7 +310,7 @@ def main() -> None:
     manifest = {
         "generator": "scripts/build-windows-icons.py",
         "familySizes": FAMILY_SIZES,
-        "policy": "native artwork first; derived only by downscaling; never upscaled; transparency preserved",
+        "policy": "curated or matched native artwork first; derived only by downscaling; never upscaled; transparency preserved",
         "matchErrorLimit": MATCH_ERROR_LIMIT,
         "families": sorted({e["family"] for e in entries}),
         "count": len(entries),

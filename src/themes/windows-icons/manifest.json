@@ -26,7 +26,7 @@
       256
     ]
   },
-  "policy": "native artwork first; derived only by downscaling; never upscaled; transparency preserved",
+  "policy": "curated or matched native artwork first; derived only by downscaling; never upscaled; transparency preserved",
   "matchErrorLimit": 0.12,
   "families": [
     "win2000",
@@ -901,9 +901,9 @@
           "file": "winxp/computer/16.png"
         },
         "32": {
-          "method": "reference",
-          "from": "src/themes/winxp/assets/icons/mycomputer.png",
-          "matchError": 0.0,
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/676(32x32).png",
+          "matchError": null,
           "file": "winxp/computer/32.png"
         }
       },
@@ -933,8 +933,8 @@
           "file": "winxp/recycle-bin/16.png"
         },
         "32": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/recycling_bin.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/360(32x32).png",
           "matchError": null,
           "file": "winxp/recycle-bin/32.png"
         },
@@ -960,8 +960,8 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/ie.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/896(16x16).png",
           "matchError": null,
           "file": "winxp/internet-explorer/16.png"
         },
@@ -992,15 +992,15 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/outlook.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/887(16x16).png",
           "matchError": null,
           "file": "winxp/outlook-express/16.png"
         },
         "32": {
-          "method": "reference",
-          "from": "src/themes/winxp/assets/icons/outlook.png",
-          "matchError": 0.0,
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/887(32x32).png",
+          "matchError": null,
           "file": "winxp/outlook-express/32.png"
         }
       },
@@ -1024,14 +1024,14 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/mediaplayer.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/846(16x16).png",
           "matchError": null,
           "file": "winxp/media-player/16.png"
         },
         "32": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/mediaplayer.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/846(32x32).png",
           "matchError": null,
           "file": "winxp/media-player/32.png"
         },
@@ -1156,15 +1156,15 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/calc.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/74(16x16).png",
           "matchError": null,
           "file": "winxp/calculator/16.png"
         },
         "32": {
-          "method": "reference",
-          "from": "src/themes/winxp/assets/icons/calc.png",
-          "matchError": 0.0,
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/74(32x32).png",
+          "matchError": null,
           "file": "winxp/calculator/32.png"
         }
       },
@@ -1188,15 +1188,15 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/paint.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/680(16x16).png",
           "matchError": null,
           "file": "winxp/paint/16.png"
         },
         "32": {
-          "method": "reference",
-          "from": "src/themes/winxp/assets/icons/paint.png",
-          "matchError": 0.0,
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/680(32x32).png",
+          "matchError": null,
           "file": "winxp/paint/32.png"
         }
       },
@@ -1253,14 +1253,14 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/Notepad.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/327(16x16).png",
           "matchError": null,
           "file": "winxp/notepad/16.png"
         },
         "32": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/Notepad.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/327(32x32).png",
           "matchError": null,
           "file": "winxp/notepad/32.png"
         },
@@ -1318,8 +1318,8 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/Volume.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/690(16x16).png",
           "matchError": null,
           "file": "winxp/volume/16.png"
         },
@@ -1450,8 +1450,8 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/cmd.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/56(16x16).png",
           "matchError": null,
           "file": "winxp/terminal/16.png"
         },
@@ -1515,15 +1515,15 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/help.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/747(16x16).png",
           "matchError": null,
           "file": "winxp/help/16.png"
         },
         "32": {
-          "method": "reference",
-          "from": "src/themes/winxp/assets/icons/help.png",
-          "matchError": 0.0,
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/747(32x32).png",
+          "matchError": null,
           "file": "winxp/help/32.png"
         }
       },
@@ -1553,9 +1553,9 @@
           "file": "winxp/search/16.png"
         },
         "32": {
-          "method": "reference",
-          "from": "src/themes/winxp/assets/icons/search.png",
-          "matchError": 0.0,
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/299(32x32).png",
+          "matchError": null,
           "file": "winxp/search/32.png"
         }
       },
@@ -1677,8 +1677,8 @@
       ],
       "sizes": {
         "16": {
-          "method": "derived",
-          "from": "src/themes/winxp/assets/icons/sound.png",
+          "method": "curated",
+          "from": "src/themes/winxp/assets/icons/690(16x16).png",
           "matchError": null,
           "file": "winxp/sound/16.png"
         },
