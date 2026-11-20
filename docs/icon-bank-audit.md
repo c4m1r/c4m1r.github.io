@@ -180,3 +180,10 @@ A first integration pass has been committed:
 - This makes the five named high-resolution PNGs available through a dedicated semantic registry, but the theme still inherits unfilled app roles from the shared XP-derived baseline. The numeric bank contact sheet and XP-inheritance removal remain open. High pixel dimensions do not guarantee correct appearance; inspect at native shell display sizes.
 
 - Additional `/eat/` reference check: `eat/Eshwar-win7-master/README.md` describes a Windows 7 portfolio and its public asset locations, but the repository has no `LICENSE` file; the README's generic personal-use statement is not a formal license grant for copied assets. Use it for visual/UI comparison only; do not copy its images into production.
+
+
+### Windows 2000 generation-specific shell roles — 2026-11-20
+
+- Added `src/themes/win2000/iconAssets.ts` and wired it into `THEME_ASSETS.win2000`. It uses explicitly named Windows 2000 variants from the existing icon archive: `computer_explorer_2k-4.png`, `directory_open_file_mydocs_2k-4.png`, `recycle_bin_empty_2k-4.png`, and `recycle_bin_full_2k-4.png`.
+- All four selected variants were verified as 48×48 indexed PNGs with palette transparency (`tRNS`). The computer icon is now used for the system computer role and Start/Places' My Computer; My Documents is mapped in Places; empty/full Recycle Bin are exposed as dedicated theme roles.
+- This is a partial Win2000 semantic bank, not a complete one. Generic folder and unverified application roles still fall back to the shared baseline; the 200+ numbered ICOs in `eat/windows2000-main` remain unimported pending contact-sheet identification and provenance review.
