@@ -679,3 +679,9 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 ### Theme icon inventory utility — 2026-11-20
 - Added `scripts/audit-theme-icons.js` plus package command `npm run audit:icons`. It scans `src/themes` image files without dependencies, extracts dimensions/alpha/format metadata, hashes files and reports exact duplicate groups. Run with `npm run audit:icons -- --json docs/icon-bank-inventory.json` to emit a JSON report.
 - Script execution is still pending because this connector session has no local checkout/runtime. CI lint/typecheck/build must validate the new script/package edit; execute the command locally before using its output as a completed inventory.
+
+
+### Windows 7 semantic icon registry — 2026-11-20
+- Created `src/themes/win7/iconAssets.ts`; it exports a semantic registry using only the clearly named Win7 source assets. `src/themes/webos/themeAssets.ts` now spreads that registry into `win7ThemeAssets`, while retaining the current shared baseline for unmapped roles.
+- Verified PNG headers: computer 256×256 RGBA; folder 512×512 RGBA; Internet Explorer 2000×2000 RGBA; Mail 839×854 RGBA; Volume 860×803 RGBA. The Win7 icons directory contains 541 files, of which six have descriptive names; numeric entries require contact-sheet identification before semantic assignment. `vista-orb.ico` contains a 16×16 entry, so it is not used as a replacement for the higher-quality Start orb.
+- Remaining: visual contact sheet, map numeric bank, reduce XP inheritance, CI and browser review. Source commit `ad2033c9381663aa43a46d1f99dd2b149d424fc3`.
