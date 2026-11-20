@@ -36,6 +36,15 @@ Repository source baseline inspected before this pass: `0fc60199c127ae52b06e2b65
 
 Percentages are working estimates, not test results. The previous task registry and audit snapshot are preserved in [history.md](./history.md).
 
+### ICONBANK-01 — OS-native icon bank quality and provenance (P0)
+- Maintain a curated icon bank per OS family and generation. Use authentic Windows 98/2000/XP/7, macOS/iOS generations, Ubuntu, Arch and WebOS assets rather than generic cross-platform substitutes where native iconography is available.
+- Consult `docs/icon-bank-audit.md` for the production inventory, donor reference findings, known gaps and next audit sequence. Keep this document updated with findings, mappings, dimensions, provenance/licence decisions and implementation outcomes.
+- Measure actual intrinsic pixel dimensions and alpha/format; Git file byte size alone is not a resolution metric. Never upscale small artwork as a quality fix.
+- Replace opaque numeric icon references with semantic mappings where practical; preserve native size variants and state/frame families.
+- Audit runtime icon resolution across desktop, Start Menu, Explorer, file types, widgets and app launchers. Confirm each OS uses the intended generation-specific artwork.
+- Donor assets in `/eat/` are reference-only until exact provenance/licence is checked. Never import from `/eat/` or introduce it as a runtime/build dependency.
+- Acceptance: dimension/format inventory, semantic mapping, source/provenance record, no unintended duplicates, no low-resolution upscaling, cross-OS visual review, and all required quality gates.
+
 ## P0 — Current implementation priorities
 
 ### CALENDAR-01 — Unified Calendar Center (P0)
