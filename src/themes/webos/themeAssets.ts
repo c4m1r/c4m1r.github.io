@@ -310,8 +310,6 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
       restore: '/sounds/ui/win98-restore.mp3',
       error: '/sounds/ui/win98-error.mp3',
     },
-    startMenuIcons: {},
-    placesIcons: {},
   },
   win2000: {
     startupSound: '/sounds/system/win2000-startup.mp3',
