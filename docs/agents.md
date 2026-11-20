@@ -674,3 +674,8 @@ Do not solve cross-OS styling by applying one generic frame. Keep explicit visua
 - Win98 source commits: `307b517`, `a7ee978`, `5ef2095`, `3b3278e`. `themeAssets.ts` has the corresponding Start/Places/Recycle role integration.
 
 - Follow-up variant inventory: Outlook Express `mailbox_world-2`, Calendar `calendar-0`, Help `help_book_computer-4` and Network Connections `directory_network_conn-5` were confirmed as 48×48 indexed PNGs with palette transparency. Other mapped roles retain their best currently identified 32px variants; the complete per-role size matrix remains open.
+
+
+### Theme icon inventory utility — 2026-11-20
+- Added `scripts/audit-theme-icons.js` plus package command `npm run audit:icons`. It scans `src/themes` image files without dependencies, extracts dimensions/alpha/format metadata, hashes files and reports exact duplicate groups. Run with `npm run audit:icons -- --json docs/icon-bank-inventory.json` to emit a JSON report.
+- Script execution is still pending because this connector session has no local checkout/runtime. CI lint/typecheck/build must validate the new script/package edit; execute the command locally before using its output as a completed inventory.
