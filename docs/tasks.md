@@ -391,11 +391,12 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Create a dedicated Win98 semantic icon module and wire core shell / Start / Places / Control Panel roles to it (first pass).
 - [ ] Visually validate the selected Win98 artwork against contact sheets and finish generic file-type role mapping. Browser and Recycle Bin semantic assets are mapped; dimensions/alpha have been sampled for the selected bank, but visual acceptance remains pending.
 - [ ] Build a Win2000 bank from verified source assets; current Win2000 asset folder contains only `sideBar.png` and `start.png`.
-- [ ] Expand Win7 semantic role coverage using the numeric image bank only after identifying each asset visually.
+- [x] Create and wire a dedicated Win7 semantic registry for the five clearly named shell assets (Computer, Folder, IE, Mail, Volume) and Start/Places roles.
+- [ ] Generate a contact sheet for the 535-or-so numeric Win7 image entries, identify them visually, and expand app/file role coverage; then remove XP-derived fallbacks where native assets exist.
 - [ ] Remove XP-derived icon role inheritance from WebOS; build native WebOS role mapping.
 - [ ] Create independent Ubuntu and Arch semantic banks; those theme folders are not currently present under `src/themes`.
 - [ ] Complete iOS 5 generation-specific icon coverage (current dock uses glyph placeholders and `getIosIconMap('ios-5')` returns an empty map).
-- [x] Shared file-association catalogue and theme-aware icon lookup are implemented; actual open/launch dispatch is still outstanding.
+- [x] Shared file-association catalogue and theme-aware icon lookup are implemented; Notepad and Picture Viewer open paths consume the catalogue. File-context launch support for audio/video/archive/rich documents remains outstanding.
 - [ ] Inventory image dimensions, formats, alpha and duplicates; produce per-OS contact sheets and visual acceptance matrix.
 - Verification: no local typecheck/lint/build or browser checks were run during this GitHub-only pass. Check Actions for latest main commits.
 
@@ -409,3 +410,5 @@ Percentages are working estimates, not test results. The previous task registry 
 - [ ] Generate a contact sheet and visually identify the numbered Win2000 ICOs before importing/assigning them.
 - [ ] Confirm license/provenance for donor images before copying them into production assets.
 - CI: previous run failed on duplicate Win98 object keys; fix committed as `63ca2f4`, workflow pending.
+
+- 2026-11-20 Win7 icon follow-up: named source assets are mapped in `src/themes/win7/iconAssets.ts`; numeric assets remain intentionally unmapped until visual identification. Latest source commit `ad2033c` integrates the registry. Verify CI and visual rendering.
