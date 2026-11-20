@@ -7,6 +7,8 @@
 - Work directly on `main`; do not create a feature branch unless explicitly requested.
 - One shared application/domain implementation where possible; adapt presentation through OS-specific skins and shell integrations. Do not fork app logic just to change appearance.
 - Authentic OS identity is a requirement, not decorative polish: window chrome, typography, spacing, icons, menus, toolbars, taskbar/dock/panel, focus/hover/disabled states and navigation must match the active OS.
+- Before implementing or restyling an OS-specific surface, inspect the closest matching references under `/eat/` and the existing OS skin checklist; compare the actual target OS/version rather than borrowing a generic look. Treat `/eat/` as a visual/technical donor library, not a production import path.
+- Maintain and improve a curated OS icon bank: choose the most authentic icon for the active OS/version and role; prefer original high-resolution/vector or multi-resolution ICO/ICNS/PNG assets over small raster or generic glyph substitutes. Record source path, dimensions/variants, target OS/version and provenance/licence; inspect image dimensions and visual quality before adoption, avoid duplicates, and keep per-OS mappings explicit. Never upscale a tiny icon and call it high resolution.
 - Never claim a game is playable because an iframe or route loads. Verify actual gameplay.
 - Never import from `/eat/` into production. Donor code/assets require independent provenance and licence review; absence of a licence is not permission.
 - Update progress only after inspecting source and distinguishing implemented, partial, blocked and manually verified work.
