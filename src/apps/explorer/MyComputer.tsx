@@ -373,7 +373,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   };
 
   const renderFolderTree = (node: FileSystemItem, nodePath: string, depth: number): React.ReactNode => {
-    const children = Object.values(node.children ?? {}).filter(child => child.type === 'folder' || child.type === 'drive');
+    // Windows 98 places Network Neighborhood beside My Computer on the desktop, not under it.
+    // The path itself stays valid, so Start menu and Control Panel links still resolve.
+    const children = Object.values(node.children ?? {}).filter(child =>
+      (child.type === 'folder' || child.type === 'drive')
+      && !(theme === 'win-98' && nodePath === 'My Computer' && child.name === 'Network Neighborhood'));
     const expanded = Boolean(expandedTreePaths[nodePath]);
     const current = path.toLocaleLowerCase() === nodePath.toLocaleLowerCase();
     return (
