@@ -10,6 +10,7 @@ import { Paint } from '../../apps/paint/Paint';
 import { ControlPanel } from '../../apps/ControlPanel';
 import { AboutApp } from '../../apps/AboutApp';
 import { CalendarApp } from '../../apps/calendar';
+import { AlarmApp } from '../../apps/alarm';
 import { Terminal } from '../../apps/Terminal';
 import { ProjectsGrid } from '../../apps/ProjectsGrid';
 import { NewsRssFeedWindow } from '../../apps/news/NewsRssFeedWindow';
@@ -329,6 +330,23 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     defaultWindow: { width: 840, height: 600 },
     showInStartMenu: true,
     showOnDesktop: true,
+  },
+  'alarm': {
+    id: 'alarm',
+    title: {
+      en: 'Alarm',
+      ru: 'Будильник',
+      fr: 'Alarme',
+      es: 'Alarma',
+      zh: '闹钟',
+      ja: 'アラーム',
+      ko: '알람',
+    },
+    iconKey: 'alarmIcon',
+    component: AlarmApp,
+    defaultWindow: { width: 380, height: 420 },
+    showInStartMenu: true,
+    showOnDesktop: false,
   },
   'terminal': {
     id: 'terminal',

@@ -15,6 +15,8 @@ import mediaPlayerIcon from './icons/media/video-player-doc.png';
 import terminalIcon from './icons/apps/terminal-black.png';
 import minesweeperIcon from './icons/apps/mine.png';
 import calendarIcon from './icons/apps/calendar.png';
+// Generic Windows 7 application icon (window with title bar): no native alarm icon in the set.
+import alarmIcon from './icons/apps/window-run.png';
 import helpIcon from './icons/system/help-circle.png';
 import controlPanelIcon from './icons/system/gears-window.png';
 import recycleIcon from './icons/system/recycle-bin-empty.png';
@@ -52,6 +54,7 @@ export const WIN7_ICON_ASSETS = {
   terminalIcon,
   minesweeperIcon,
   calendarIcon,
+  alarmIcon,
   helpIcon,
   controlPanelIcon,
   recycleIcon,

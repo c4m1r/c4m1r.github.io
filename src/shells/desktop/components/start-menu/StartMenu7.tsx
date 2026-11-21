@@ -109,6 +109,7 @@ export function StartMenu7({
     ...programs,
     { id: 'pictures-viewer', label: isRu ? 'Просмотр изображений' : 'Picture Viewer', appId: 'pictures', icon: assets.folderIcon },
     { id: 'calendar', label: isRu ? 'Календарь' : 'Calendar', appId: 'calendar', icon: assets.notepadIcon },
+    { id: 'alarm', label: isRu ? 'Будильник' : 'Alarm', appId: 'alarm', icon: assets.alarmIcon ?? assets.notepadIcon },
     { id: 'control-panel', label: isRu ? 'Панель управления' : 'Control Panel', appId: 'control-panel', icon: assets.controlPanelIcon },
     { id: 'task-manager', label: isRu ? 'Диспетчер задач' : 'Task Manager', appId: 'task-manager', icon: assets.controlPanelIcon },
     { id: 'wiki', label: 'Wiki', appId: 'wiki', icon: assets.projectsIcon },

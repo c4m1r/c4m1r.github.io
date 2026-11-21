@@ -13,6 +13,8 @@ import mailIcon from './icons/network/mailbox-world/48x48-2.png';
 import mediaPlayerIcon from './icons/media/media-player/32x32-0.png';
 import calculatorIcon from './icons/apps/calculator/32x32-0.png';
 import calendarIcon from './icons/apps/calendar/48x48-0.png';
+// Generic Windows 98 application icon: no native alarm clock exists in the set.
+import alarmIcon from './icons/apps/installer-generic-old/32x32-0.png';
 import picturesIcon from './icons/media/kodak-imaging/32x32-0.png';
 import controlPanelIcon from './icons/folders/directory-control-panel/48x48-0.png';
 import helpIcon from './icons/devices/help-book-computer/48x48-4.png';
@@ -41,6 +43,7 @@ export const WIN98_ICON_ASSETS = {
   mediaPlayerIcon,
   calculatorIcon,
   calendarIcon,
+  alarmIcon,
   picturesIcon,
   controlPanelIcon,
   helpIcon,
