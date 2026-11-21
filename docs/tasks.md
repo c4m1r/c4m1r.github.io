@@ -631,3 +631,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Menu bar colours follow the OS: Win98 `#c0c0c0` with `#000080` selection; Win2000 `#d4d0c8` with `#0a246a` selection; XP keeps Luna beige and blue. Checked in the browser on Windows 98 (`rgb(192,192,192)`).
 - [x] Win2000 menu labels confirmed against a primary-style source: File, Edit, View, Favorites, Tools, Help (no Go menu; Go To sits under View).
 - [ ] Win98 menu labels are still File, Edit, View, Favorites, Tools, Help. Win98 probably has a Go menu instead of Tools; not confirmed. Check against the Win98 Explorer screenshot (`eat/screens/oc/win98/`).
+
+## Explorer: Views menu (Win98, Win2000)
+
+- [x] Views opens a menu (Large Icons, List, Details) on Win98 and Win2000 instead of cycling view modes; the current mode is shown in bold. Checked in the browser on Windows 98. XP and other OSes keep the cycle until their Views menus are confirmed.
+- [ ] Small Icons (Win98 and Win2000 Views menu) is not modelled: the explorer has only icons, list and details modes.

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Eye, Grid, List, Search } from 'lucide-react';
 import folderIcon from '../../themes/winxp/assets/icons/folder_plain.png';
@@ -82,6 +82,17 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   });
   const isWindowsXp = theme === 'win-xp';
   const isClassicWindows = theme === 'win-98' || theme === 'win2000';
+  // Classic Windows (98, 2000) open a Views menu instead of cycling the view modes.
+  const [viewsMenuOpen, setViewsMenuOpen] = useState(false);
+  const viewsMenuRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!viewsMenuOpen) return;
+    const closeOnOutside = (event: MouseEvent) => {
+      if (viewsMenuRef.current && !viewsMenuRef.current.contains(event.target as Node)) setViewsMenuOpen(false);
+    };
+    document.addEventListener('mousedown', closeOnOutside);
+    return () => document.removeEventListener('mousedown', closeOnOutside);
+  }, [viewsMenuOpen]);
   const isAppleExplorer = theme === 'macos-26' || theme.startsWith('ios-');
   const isIosExplorer = theme.startsWith('ios-');
 
@@ -753,18 +764,46 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             <span>{isRu ? 'Папки' : 'Folders'}</span>
           </button>
           <div className="w-px h-6 bg-gray-400 mx-1" />
-          <button
-            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent"
-            onClick={() => {
-              const modes: Array<'thumbnails' | 'icons' | 'details'> = ['thumbnails', 'icons', 'details'];
-              const currentMode = (viewMode === 'thumbnails' || viewMode === 'icons' || viewMode === 'details') ? viewMode : 'icons';
-              const nextIndex = (modes.indexOf(currentMode) + 1) % modes.length;
-              setViewMode(modes[nextIndex]);
-            }}
-          >
-            {isClassicWindows ? <Grid size={15} /> : <img src={viewThumbnailIcon} alt="" className="w-4 h-4 object-contain" />}
-            <span>{isRu ? 'Виды' : 'Views'}</span>
-          </button>
+          <div className="relative" ref={viewsMenuRef}>
+            <button
+              className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent"
+              aria-haspopup={isClassicWindows ? 'menu' : undefined}
+              aria-expanded={isClassicWindows ? viewsMenuOpen : undefined}
+              onClick={() => {
+                if (isClassicWindows) {
+                  setViewsMenuOpen((open) => !open);
+                  return;
+                }
+                const modes: Array<'thumbnails' | 'icons' | 'details'> = ['thumbnails', 'icons', 'details'];
+                const currentMode = (viewMode === 'thumbnails' || viewMode === 'icons' || viewMode === 'details') ? viewMode : 'icons';
+                const nextIndex = (modes.indexOf(currentMode) + 1) % modes.length;
+                setViewMode(modes[nextIndex]);
+              }}
+            >
+              {isClassicWindows ? <Grid size={15} /> : <img src={viewThumbnailIcon} alt="" className="w-4 h-4 object-contain" />}
+              <span>{isRu ? 'Виды' : 'Views'}</span>
+            </button>
+            {isClassicWindows && viewsMenuOpen && (
+              <div role="menu" className="absolute left-0 top-full z-50 min-w-[140px] border border-[#808080] bg-[#c0c0c0] py-0.5 text-xs text-black shadow-[2px_2px_0_#404040]">
+                {([
+                  { mode: 'icons', label: isRu ? 'Крупные значки' : 'Large Icons' },
+                  { mode: 'list', label: isRu ? 'Список' : 'List' },
+                  { mode: 'details', label: isRu ? 'Таблица' : 'Details' },
+                ] as const).map((entry) => (
+                  <button
+                    key={entry.mode}
+                    role="menuitemradio"
+                    aria-checked={viewMode === entry.mode}
+                    type="button"
+                    onClick={() => { setViewMode(entry.mode); setViewsMenuOpen(false); }}
+                    className={`block w-full px-4 py-0.5 text-left ${viewMode === entry.mode ? 'font-bold' : ''} hover:bg-[#000080] hover:text-white bg-transparent border-0`}
+                  >
+                    {entry.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Address Bar */}
