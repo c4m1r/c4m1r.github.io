@@ -36,6 +36,7 @@ import {
   DESKTOP_PATH,
   MINESWEEPER_WINDOW_ID,
   XP_FAMILY_THEMES,
+  WINDOWS_IMAGE_ICON_THEMES,
 } from './desktopConstants';
 import { type DesktopIcon, type DesktopShellProps } from './desktopTypes';
 import { getStoredCustomWallpaper } from './runtime/desktopStorage';
@@ -446,6 +447,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   );
   const themeStyles = (THEME_STYLES as Record<string, (typeof THEME_STYLES)['webos']>)[themeKey] ?? THEME_STYLES.webos;
   const isXpFamily = isThemeInFamily(themeKey, XP_FAMILY_THEMES);
+  // Windows-family desktops draw their own pixel-art shell icons. Win98, 2000
+  // and 7 used the Lucide fallback before, which is not period-correct.
+  const usesThemeImageIcons = isThemeInFamily(themeKey, WINDOWS_IMAGE_ICON_THEMES);
+  // Native size per generation: Windows 98/2000 desktops used 32 px icons,
+  // Windows 7 used 48 px. XP and WebOS keep their current sizing.
+  const desktopIconImageClass = themeKey === 'win7'
+    ? 'w-12 h-12'
+    : themeKey === 'win-98' || themeKey === 'win2000'
+      ? 'w-8 h-8'
+      : 'w-16 h-16';
   const osClassName = getDesktopOsClassName(themeKey);
   const startLabel = getOsSystemLabel('startButton', t.start ?? 'Start', themeKey, language);
   const startupSound = resolveAssetPath(themeAssets.startupSound, fallbackAssets.startupSound);
@@ -734,16 +745,24 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const getIconElement = (iconType: 'folder' | 'computer' | 'recycle') => {
-    if (isXpFamily) {
+  const getIconElement = (iconType: 'folder' | 'computer' | 'recycle' | 'documents') => {
+    // Win98, 2000 and 7 have a dedicated My Documents picture; XP keeps its folder.
+    if (iconType === 'documents' && ['win-98', 'win2000', 'win7'].includes(themeKey)) {
+      const documentsPath = themeAssets.placesIcons?.myDocuments ?? themeAssets.folderIcon;
+      if (documentsPath) {
+        return <img src={documentsPath} alt="" className={desktopIconImageClass} onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
+      }
+    }
+    if (usesThemeImageIcons) {
       const icons = {
         folder: themeAssets.folderIcon,
+        documents: themeAssets.folderIcon,
         computer: themeAssets.computerIcon,
         recycle: themeAssets.recycleIcon,
       };
       const iconPath = icons[iconType];
       if (iconPath) {
-        return <img src={iconPath} alt="" className="w-16 h-16" onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
+        return <img src={iconPath} alt="" className={desktopIconImageClass} onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
       }
     }
     switch (iconType) {
@@ -774,7 +793,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           },
           {
             id: 'my-documents',
-            icon: getIconElement('folder'),
+            icon: getIconElement('documents'),
             label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
             type: 'system' as const,
           },

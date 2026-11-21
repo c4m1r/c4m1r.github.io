@@ -470,3 +470,14 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Windows 7 login: the User tile keeps the Win7 default picture (`win7/assets/images/user-avatar.png`); the C4m1r tile uses the same picture.
 - [ ] C4m1r tile on XP still shows the trophy animation `user.gif`; to change this a picture must be chosen for the C4m1r account.
 - [ ] Windows 98/2000 login dialogs and the WebOS login card have no account picture for User; Apple login has no User account.
+
+## Desktop icon fidelity pass (Win98, 2000, 7) — 2026-11-21
+
+- [x] Desktop icons for Win98, Win2000 and Win7 now come from their theme image registries instead of the Lucide fallback (`WINDOWS_IMAGE_ICON_THEMES` in `desktopConstants.ts`). XP and WebOS keep their existing rendering.
+- [x] Icon sizes follow the generation: Win98 and Win2000 use 32 px, Win7 uses 48 px.
+- [x] Win7 folder roles use the standardized Win7 folder set: plain folder for generic folders, folder with documents for My Documents, folder with pictures for Pictures. The previous named `folder.png` did not match the original Win7 folder.
+- [x] Win98 and Win7 My Documents desktop icon uses its dedicated picture.
+- [x] Verified by screenshots after login as User: Win7 and Win98 desktops.
+- [ ] Win7 taskbar lacks the default pinned programs (Internet Explorer, Explorer, Media Player) and the clock shows no date line.
+- [ ] XP desktop has no Recycle Bin icon and the Games/Programs folders are custom; decide whether to keep them.
+- [ ] Win98 taskbar, start menu and Explorer windows have not been compared with period screenshots yet.

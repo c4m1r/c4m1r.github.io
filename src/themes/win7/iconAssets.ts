@@ -23,11 +23,14 @@ import picturesIcon from './icons/media/image-picture.png';
 import performanceMonitorIcon from './icons/system/monitor-pulse.png';
 import searchIcon from './icons/system/search.png';
 import gamesIcon from './icons/apps/cards-spade.png';
+import folderPlainIcon from './icons/folders/folder-plain.png';
+import folderDocumentsIcon from './icons/folders/folder-documents.png';
+import folderPicturesIcon from './icons/folders/folder-pictures.png';
 import printersIcon from './icons/devices/printer-2.png';
 
 export const WIN7_ICON_ASSETS = {
   computerIcon: WIN7_ASSETS.computerIcon,
-  folderIcon: WIN7_ASSETS.folderIcon,
+  folderIcon: folderPlainIcon,
   internetExplorerIcon: WIN7_ASSETS.internetExplorerIcon,
   mailIcon: WIN7_ASSETS.mailIcon,
   volumeIcon: WIN7_ASSETS.volumeIcon,
@@ -61,8 +64,8 @@ export const WIN7_ICON_ASSETS = {
   },
   placesIcons: {
     myComputer: WIN7_ASSETS.computerIcon,
-    myDocuments: WIN7_ASSETS.folderIcon,
-    myPictures: picturesIcon,
+    myDocuments: folderDocumentsIcon,
+    myPictures: folderPicturesIcon,
     controlPanel: controlPanelIcon,
     help: helpIcon,
     search: searchIcon,
