@@ -490,3 +490,10 @@ Percentages are working estimates, not test results. The previous task registry 
 - [ ] Recycle Bin contents: there is no deletion/trash model in the file system yet, so the bin is always empty. Needs a design decision before adding trash behaviour.
 - [ ] Win2000 roles still unidentified (calculator, notepad, paint, media player, Outlook, games, Run, sound) — current contact sheets are in the scratchpad and should be annotated before wiring.
 - [ ] Win2000 Explorer, taskbar and start menu not yet compared against period screenshots.
+
+## Windows 98 window chrome and Explorer comparison — 2026-11-21
+
+- [x] Win98 title bar minimize / maximize / restore / close buttons were blank: the theme had no glyph artwork. Added 1–2 px black stroke glyphs for `.theme-98 .win98-control-button--*` in `src/themes/winxp/xp.css`, sized to the 16×14 control. Verified by a control-strip screenshot.
+- [ ] Win98 My Computer content does not match Windows 98: it shows the Windows 2000/XP-style "Files Stored on This Computer" heading and only Network Neighborhood plus Local Disk (C:). Windows 98 lists the drive icons (3½ Floppy, C:, CD-ROM) and system items (Control Panel, Printers, Dial-Up Networking, Scheduled Tasks, Web Folders). Needs a Win98-specific content layout in `MyComputer.tsx`.
+- [ ] Win98 Start menu did not open reliably in automated capture; re-check the menu's stacking order against the open Explorer window.
+- [ ] Win98 Explorer toolbar, address bar and tree pane are close to the classic layout; compare icon sizes and status bar text with a period screenshot before closing this item.

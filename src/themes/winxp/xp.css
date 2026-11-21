@@ -1995,3 +1995,16 @@
   0% { opacity: 0; transform: translateY(4px); }
   100% { opacity: 1; transform: translateY(0); }
 }
+/* Windows 98 title bar glyphs: 1–2px black strokes drawn inside the 16×14 control,
+   matching the classic minimize / maximize / restore / close marks. */
+.theme-98 .win98-control-button { position: relative; }
+.theme-98 .win98-control-button::before,
+.theme-98 .win98-control-button::after { content: ''; position: absolute; box-sizing: border-box; }
+.theme-98 .win98-control-button--minimize::before { left: 4px; top: 9px; width: 6px; height: 2px; background: #000; }
+.theme-98 .win98-control-button--maximize::before { left: 3px; top: 2px; width: 10px; height: 9px; border: 1px solid #000; border-top-width: 2px; }
+.theme-98 .win98-control-button--restore::before { left: 5px; top: 2px; width: 8px; height: 7px; border: 1px solid #000; border-top-width: 2px; }
+.theme-98 .win98-control-button--restore::after { left: 3px; top: 5px; width: 8px; height: 7px; border: 1px solid #000; border-top-width: 2px; background: #c0c0c0; }
+.theme-98 .win98-control-button--close::before,
+.theme-98 .win98-control-button--close::after { left: 3px; top: 6px; width: 10px; height: 2px; background: #000; }
+.theme-98 .win98-control-button--close::before { transform: rotate(45deg); }
+.theme-98 .win98-control-button--close::after { transform: rotate(-45deg); }
