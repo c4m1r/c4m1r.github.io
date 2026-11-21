@@ -38,7 +38,9 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   const [history, setHistory] = useState<string[]>([currentPath]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [addressInput, setAddressInput] = useState(currentPath);
+  // The Recycle Bin is a shell object: its address bar reads "Recycle Bin", not the internal path.
+  const addressTextFor = (value: string) => (value === 'C:\\$Recycle.Bin' ? (isRu ? 'Корзина' : 'Recycle Bin') : value);
+  const [addressInput, setAddressInput] = useState(addressTextFor(currentPath));
   const isMyPictures = isPicturesFolderPath(path);
   const [viewMode, setViewMode] = useState<'thumbnails' | 'tiles' | 'icons' | 'list' | 'details'>(
     isMyPictures ? 'thumbnails' : 'icons'
@@ -82,7 +84,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
     setPath(currentPath);
     setHistory([currentPath]);
     setHistoryIndex(0);
-    setAddressInput(currentPath);
+    setAddressInput(addressTextFor(currentPath));
     setSelectedItem(null);
     setSearchOpen(initialSearchOpen);
     setSearchQuery('');
@@ -93,7 +95,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   }, [currentPath, initialSearchOpen]);
 
   useEffect(() => {
-    setAddressInput(path);
+    setAddressInput(addressTextFor(path));
     if (isPicturesFolderPath(path)) {
       setViewMode('thumbnails');
     }
@@ -897,7 +899,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
               </div>
               {expandedGroups.details && (
                 <div className="bg-[#d6dff7] p-2 flex flex-col gap-1 border-x border-b border-white/50 text-[#215dc6] text-[11px]">
-                  <div className="font-bold">{path === 'My Computer' ? (isRu ? 'Мой компьютер' : 'My Computer') : path.split('\\').pop()}</div>
+                  <div className="font-bold">{path === 'My Computer' ? (isRu ? 'Мой компьютер' : 'My Computer') : addressTextFor(path).split('\\').pop()}</div>
                   <div>{isRu ? 'Системная папка' : 'System Folder'}</div>
                 </div>
               )}

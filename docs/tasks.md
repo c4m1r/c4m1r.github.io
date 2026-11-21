@@ -478,6 +478,15 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Win7 folder roles use the standardized Win7 folder set: plain folder for generic folders, folder with documents for My Documents, folder with pictures for Pictures. The previous named `folder.png` did not match the original Win7 folder.
 - [x] Win98 and Win7 My Documents desktop icon uses its dedicated picture.
 - [x] Verified by screenshots after login as User: Win7 and Win98 desktops.
-- [ ] Win7 taskbar lacks the default pinned programs (Internet Explorer, Explorer, Media Player) and the clock shows no date line.
-- [ ] XP desktop has no Recycle Bin icon and the Games/Programs folders are custom; decide whether to keep them.
+- [x] Win7 taskbar pinned programs (Internet Explorer, Explorer, Media Player) and the two-line clock with date — done 2026-11-21, verified by screenshot.
+- [x] Recycle Bin desktop icon added for XP, Win98, Win2000 and Win7 (native icon per theme); double-click opens an Explorer window titled "Recycle Bin" in the empty state (no deletion model exists yet). Verified by screenshots. See the 2026-11-21 Recycle Bin section.
+- [ ] Games/Programs desktop folders are custom on XP; decide whether to keep them.
 - [ ] Win98 taskbar, start menu and Explorer windows have not been compared with period screenshots yet.
+
+## Windows 2000 native icon roles and Recycle Bin — 2026-11-21
+
+- [x] Win2000 folder, network, Internet Explorer, printers, control panel, help, search, fonts and security roles now come from the native Windows 2000 ICO set in `eat/windows2000-main/src/assets/ICON`, extracted at native size into `src/themes/win2000/icons/` (no upscaling). Provenance: the user confirmed `/eat/` assets may be used for this demo project; the donor-licence rule in this file still applies to any future redistribution review.
+- [x] Recycle Bin: `recycle-bin` desktop icon now appears on XP, Win98, Win2000 and Win7 (bottom-right corner anchored as before). Opening it shows an Explorer window titled "Recycle Bin" / "Корзина", address reads "Recycle Bin", state is empty. Other themes keep the previous behaviour.
+- [ ] Recycle Bin contents: there is no deletion/trash model in the file system yet, so the bin is always empty. Needs a design decision before adding trash behaviour.
+- [ ] Win2000 roles still unidentified (calculator, notepad, paint, media player, Outlook, games, Run, sound) — current contact sheets are in the scratchpad and should be annotated before wiring.
+- [ ] Win2000 Explorer, taskbar and start menu not yet compared against period screenshots.

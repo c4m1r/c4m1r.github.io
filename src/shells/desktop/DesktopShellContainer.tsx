@@ -804,6 +804,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
             type: 'system' as const,
           },
+          ...(['win-xp', 'win-98', 'win2000', 'win7'].includes(themeKey) ? [{
+            id: 'recycle-bin',
+            icon: getIconElement('recycle'),
+            label: getOsSystemLabel('recycleBin', language === 'ru' ? 'Корзина' : 'Recycle Bin', themeKey, language),
+            type: 'system' as const,
+          }] : []),
           {
             id: 'games-folder',
             icon: getIconElement('folder'),
@@ -997,8 +1003,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     const normalizedPath = path || 'My Computer';
     const pathName = normalizedPath.split('\\').filter(Boolean).pop() || normalizedPath;
     const localizedFolderNames: Record<string, string> = language === 'ru'
-      ? { 'My Documents': 'Мои документы', 'My Pictures': 'Мои рисунки', 'My Music': 'Моя музыка' }
-      : {};
+      ? { 'My Documents': 'Мои документы', 'My Pictures': 'Мои рисунки', 'My Music': 'Моя музыка', '$Recycle.Bin': 'Корзина' }
+      : { '$Recycle.Bin': 'Recycle Bin' };
     const title = normalizedPath === 'My Computer'
       ? t.myComputer
       : localizedFolderNames[pathName] ?? pathName;
@@ -1006,7 +1012,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     openWindow({
       id: initialSearchOpen ? `explorer:search-${Date.now()}` : `explorer:${normalizedPath}`,
       title,
-      icon: normalizedPath === 'My Computer' ? themeAssets.computerIcon : themeAssets.folderIcon,
+      icon: normalizedPath === 'My Computer'
+        ? themeAssets.computerIcon
+        : normalizedPath === 'C:\\$Recycle.Bin' ? themeAssets.recycleIcon : themeAssets.folderIcon,
       width: 720,
       height: 520,
       content: themeKey === 'win7'
@@ -1014,7 +1022,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} initialSearchOpen={initialSearchOpen} />,
     });
     playLaunchSound();
-  }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon, themeKey]);
+  }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon, themeAssets.recycleIcon, themeKey]);
 
   const openDoomVariant = useCallback((variantId: DoomVariantId) => {
     const variant = doomVariantMap[variantId];
@@ -1301,6 +1309,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
         return;
       case 'recycle-bin':
+        if (['win-xp', 'win-98', 'win2000', 'win7'].includes(themeKey)) {
+          openExplorerWindow('C:\\$Recycle.Bin');
+          return;
+        }
         playErrorSound();
         setErrorWindow({
           id: `error-${Date.now()}`,

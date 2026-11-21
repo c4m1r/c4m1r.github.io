@@ -41,6 +41,7 @@ function displayLocation(path: string, isRu: boolean) {
   if (path === PATHS.music) return isRu ? 'Музыка' : 'Music';
   if (path === PATHS.videos) return isRu ? 'Видео' : 'Videos';
   if (path === PATHS.downloads) return isRu ? 'Загрузки' : 'Downloads';
+  if (path === 'C:\\$Recycle.Bin') return isRu ? 'Корзина' : 'Recycle Bin';
   return path
     .replace('C:\\', `${isRu ? 'Локальный диск' : 'Local Disk'} (C:) > `)
     .split('\\')
