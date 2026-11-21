@@ -463,3 +463,10 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] `C4m1r` is the second account and keeps its existing password check (`verifyAccountPassword`, unchanged).
 - [x] Verified in headless Chrome: Win98 default login reaches the desktop without a password; C4m1r with the correct password reaches the desktop; a wrong password is rejected.
 - [ ] Apple/iOS login screens have no account selection in this change.
+
+## Default profile picture for User — 2026-11-21
+
+- [x] Windows XP login: the User tile uses the XP built-in picture `winxp/assets/avatars/user4.png` (blue butterfly). Previously both tiles showed `user.gif`, which is an animated trophy, not an account picture. Verified on the rendered login screen.
+- [x] Windows 7 login: the User tile keeps the Win7 default picture (`win7/assets/images/user-avatar.png`); the C4m1r tile uses the same picture.
+- [ ] C4m1r tile on XP still shows the trophy animation `user.gif`; to change this a picture must be chosen for the C4m1r account.
+- [ ] Windows 98/2000 login dialogs and the WebOS login card have no account picture for User; Apple login has no User account.

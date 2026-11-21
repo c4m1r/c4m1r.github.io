@@ -3,6 +3,8 @@ import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
 import shutdownIcon from './assets/icons/shutdown.png';
 import userAvatar from './assets/user.gif';
+// Default account picture for the User account (Windows XP built-in set).
+import userDefaultPicture from './assets/avatars/user4.png';
 import { XP_IDENTITY_LOGO } from './xpIdentityLogo';
 import { verifyAccountPassword } from '../../domain/auth/credentials';
 import './xp.css';
@@ -83,7 +85,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           >
             <div className="xp-welcome-screen__avatar-frame">
               <img
-                src={userAvatar}
+                src={userDefaultPicture}
                 alt="User"
                 className="xp-welcome-screen__avatar"
                 onError={(e) => {
