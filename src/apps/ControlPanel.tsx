@@ -580,7 +580,7 @@ export function ControlPanel() {
       else openExplorerPath('My Computer\\Network Neighborhood');
     } else if (categoryId === 'programs') {
       if (isMac || isIos) setView('systemInfo');
-      else openExplorerPath('C:\\Program Files\\Programs');
+      else openExplorerPath('C:\\Program Files');
     } else if (categoryId === 'user-accounts') {
       if (isMac || isIos) setView('systemInfo');
       else openExplorerPath('C:\\Users');

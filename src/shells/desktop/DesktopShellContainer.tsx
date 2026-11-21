@@ -1047,7 +1047,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   }, [openWindow, playLaunchSound, playErrorSound]);
 
   const openGamesFolder = useCallback(() => {
-    openExplorerWindow('C:\\Program Files\\Games');
+    openExplorerWindow('C:\\Users\\C4m1r\\Desktop\\Игры');
   }, [openExplorerWindow]);
 
   const recordRecentApp = useCallback((appId: string) => {
@@ -1098,11 +1098,11 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           recordRecentApp('network-neighborhood');
           break;
         case 'games-folder':
-          openExplorerWindow('C:\\Program Files\\Games');
+          openExplorerWindow('C:\\Users\\C4m1r\\Desktop\\Игры');
           recordRecentApp('games-folder');
           break;
         case 'all-programs':
-          openExplorerWindow('C:\\Program Files\\Programs');
+          openExplorerWindow('C:\\Program Files');
           recordRecentApp('all-programs');
           break;
         case 'doom1':
@@ -1307,7 +1307,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         openExplorerWindow('C:\\Documents and Settings\\C4m1r\\My Documents');
         return;
       case 'programs-folder':
-        openExplorerWindow('C:\\Program Files\\Programs');
+        openExplorerWindow('C:\\Users\\C4m1r\\Desktop\\Программы');
         return;
       case 'widget-gallery':
         window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));

@@ -26,7 +26,7 @@ import picturesIconWebos from '../winxp/assets/icons/Windows Picture and Fax Vie
 import richTextIconWebos from '../winxp/assets/icons/filetypes/rich-text.png';
 import bootLogoWebos from './assets/boot/boot-windows-logo.png';
 import bootProgressWebos from '../winxp/assets/boot/boot-progress.png';
-import doomIconWebos from '../../apps/doom/assets/doom-icon-sm.webp';
+import doomIconWebos from '../../apps/doom/assets/doom-icon-32.png';
 import gamesFolderIconWebos from '../winxp/assets/icons/filetypes/folder-favorites.png';
 import appearanceIconWebos from '../winxp/assets/icons/appearance.png';
 import networkIconWebos from '../winxp/assets/icons/internet.png';
@@ -313,6 +313,9 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     },
   },
   win2000: {
+    // Windows 2000 artwork first; any role the 2000 set does not cover falls back to
+    // the Windows 98 set, never to the XP artwork of the shared base.
+    ...WIN98_ICON_ASSETS,
     ...WIN2000_ICON_ASSETS,
     startupSound: OS_SOUNDS.win2000.startup,
     shutdownSound: OS_SOUNDS.win2000.shutdown,

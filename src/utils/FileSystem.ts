@@ -7,7 +7,7 @@ import documentsFolderIcon from '../themes/winxp/assets/icons/folder-documents.p
 import picturesFolderIcon from '../themes/winxp/assets/icons/folder-pictures.png';
 import pictureViewerIcon from '../themes/winxp/assets/icons/Windows Picture and Fax Viewer.png';
 import gamesFolderIcon from '../themes/winxp/assets/icons/My Games.png';
-import doomGameIcon from '../apps/doom/assets/doom-icon-sm.webp';
+import doomGameIcon from '../apps/doom/assets/doom-icon-32.png';
 import snakeGameIcon from '../apps/games/assets/snake-icon.svg';
 import memoryGameIcon from '../apps/games/assets/memory-icon.svg';
 import { PROJECT_PLAYLIST } from '../apps/mediaplayer/playlist';
@@ -260,89 +260,60 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                         id: 'program-files',
                         name: 'Program Files',
                         type: 'folder',
+                        // Only publisher folders, each holding its own applications named as executables.
                         children: {
-                            'Games': {
-                        id: 'games-folder',
-                        name: 'Игры',
-                        type: 'folder',
-                        icon: gamesFolderIcon,
-                        children: {
-                            'id Software': {
-                                id: 'games-id-software',
-                                name: 'id Software',
+                            'idtech': {
+                                id: 'publisher-idtech',
+                                name: 'idtech',
                                 type: 'folder',
                                 children: {
-                                    'DOOM': { id: 'games-doom1', name: 'DOOM (1993)', type: 'file', appId: 'doom1', icon: defaultTextIcon },
-                                    'DOOM II': { id: 'games-doom2', name: 'DOOM II', type: 'file', appId: 'doom2', icon: defaultTextIcon }
+                                'doom.exe': { id: 'app-doom1', name: 'doom.exe', type: 'file', appId: 'doom1', icon: doomGameIcon },
+                                'doom2.exe': { id: 'app-doom2', name: 'doom2.exe', type: 'file', appId: 'doom2', icon: doomGameIcon },
                                 }
                             },
-                            'Microsoft': {
-                                id: 'games-microsoft',
-                                name: 'Microsoft',
+                            'microsoft': {
+                                id: 'publisher-microsoft',
+                                name: 'microsoft',
                                 type: 'folder',
                                 children: {
-                                    'Minesweeper': { id: 'games-minesweeper', name: 'Сапёр', type: 'file', appId: 'minesweeper', icon: defaultTextIcon }
+                                'winmine.exe': { id: 'app-minesweeper', name: 'winmine.exe', type: 'file', appId: 'minesweeper', icon: defaultTextIcon },
+                                'iexplore.exe': { id: 'app-internet-explorer', name: 'iexplore.exe', type: 'file', appId: 'internet-explorer', icon: defaultTextIcon },
+                                'msimn.exe': { id: 'app-outlook', name: 'msimn.exe', type: 'file', appId: 'outlook', icon: defaultTextIcon },
+                                'wmplayer.exe': { id: 'app-windows-media-player', name: 'wmplayer.exe', type: 'file', appId: 'windows-media-player', icon: defaultTextIcon },
+                                'mspaint.exe': { id: 'app-paint', name: 'mspaint.exe', type: 'file', appId: 'paint', icon: defaultTextIcon },
+                                'shimgvw.exe': { id: 'app-pictures', name: 'shimgvw.exe', type: 'file', appId: 'pictures', icon: defaultTextIcon },
+                                'calendar.exe': { id: 'app-calendar', name: 'calendar.exe', type: 'file', appId: 'calendar', icon: defaultTextIcon },
+                                'notepad.exe': { id: 'app-notepad', name: 'notepad.exe', type: 'file', appId: 'notepad', icon: defaultTextIcon },
+                                'calc.exe': { id: 'app-calculator', name: 'calc.exe', type: 'file', appId: 'calculator', icon: defaultTextIcon },
+                                'control.exe': { id: 'app-control-panel', name: 'control.exe', type: 'file', appId: 'control-panel', icon: defaultTextIcon },
+                                'taskmgr.exe': { id: 'app-task-manager', name: 'taskmgr.exe', type: 'file', appId: 'task-manager', icon: defaultTextIcon },
+                                'hh.exe': { id: 'app-help', name: 'hh.exe', type: 'file', appId: 'help', icon: defaultTextIcon },
                                 }
                             },
-                            'C4m1r': {
-                                id: 'games-c4m1r',
-                                name: 'C4m1r',
+                            'nullsoft': {
+                                id: 'publisher-nullsoft',
+                                name: 'nullsoft',
                                 type: 'folder',
                                 children: {
-                                    'Snake': { id: 'games-snake', name: 'Змейка', type: 'file', appId: 'snake', icon: defaultTextIcon },
-                                    'Memory': { id: 'games-memory', name: 'Память', type: 'file', appId: 'memory', icon: defaultTextIcon }
+                                'winamp.exe': { id: 'app-winamp', name: 'winamp.exe', type: 'file', appId: 'winamp', icon: defaultTextIcon },
+                                }
+                            },
+                            'c4m1r': {
+                                id: 'publisher-c4m1r',
+                                name: 'c4m1r',
+                                type: 'folder',
+                                children: {
+                                'snake.exe': { id: 'app-snake', name: 'snake.exe', type: 'file', appId: 'snake', icon: defaultTextIcon },
+                                'memory.exe': { id: 'app-memory', name: 'memory.exe', type: 'file', appId: 'memory', icon: defaultTextIcon },
+                                'news.exe': { id: 'app-news', name: 'news.exe', type: 'file', appId: 'news', icon: defaultTextIcon },
+                                'market-rates.exe': { id: 'app-currency', name: 'market-rates.exe', type: 'file', appId: 'currency', icon: defaultTextIcon },
+                                'wiki.exe': { id: 'app-wiki', name: 'wiki.exe', type: 'file', appId: 'wiki', icon: defaultTextIcon },
+                                'projects.exe': { id: 'app-projects-grid', name: 'projects.exe', type: 'file', appId: 'projects-grid', icon: defaultTextIcon },
+                                'help-library.exe': { id: 'app-blog', name: 'help-library.exe', type: 'file', appId: 'blog', icon: defaultTextIcon },
+                                'terminal.exe': { id: 'app-terminal', name: 'terminal.exe', type: 'file', appId: 'terminal', icon: defaultTextIcon },
+                                'loops.exe': { id: 'app-loops', name: 'loops.exe', type: 'file', appId: 'loops', icon: defaultTextIcon },
                                 }
                             }
-                        }
-                    },
-                    'Programs': {
-                        id: 'programs-folder',
-                        name: 'Программы',
-                        type: 'folder',
-                        icon: folderIcon,
-                        children: {
-                            'Microsoft Corporation': {
-                                id: 'programs-microsoft',
-                                name: 'Microsoft Corporation',
-                                type: 'folder',
-                                children: {
-                                    'Internet Explorer': { id: 'program-internet-explorer', name: 'Internet Explorer', type: 'file', appId: 'internet-explorer', icon: defaultTextIcon },
-                                    'Outlook Express': { id: 'program-outlook', name: 'Outlook Express', type: 'file', appId: 'outlook', icon: defaultTextIcon },
-                                    'Windows Media Player': { id: 'program-wmp', name: 'Windows Media Player', type: 'file', appId: 'windows-media-player', icon: defaultTextIcon },
-                                    'Paint': { id: 'program-paint', name: 'Paint', type: 'file', appId: 'paint', icon: defaultTextIcon },
-                                    'Picture Viewer': { id: 'program-picture-viewer', name: 'Picture Viewer', type: 'file', appId: 'pictures', icon: defaultTextIcon },
-                                    'Calendar': { id: 'program-calendar', name: 'Calendar', type: 'file', appId: 'calendar', icon: defaultTextIcon },
-                                    'Notepad': { id: 'program-notepad', name: 'Notepad', type: 'file', appId: 'notepad', icon: defaultTextIcon },
-                                    'Calculator': { id: 'program-calculator', name: 'Calculator', type: 'file', appId: 'calculator', icon: defaultTextIcon },
-                                    'Control Panel': { id: 'program-control-panel', name: 'Control Panel', type: 'file', appId: 'control-panel', icon: defaultTextIcon },
-                                    'Task Manager': { id: 'program-task-manager', name: 'Task Manager', type: 'file', appId: 'task-manager', icon: defaultTextIcon },
-                                    'Help and Support': { id: 'program-help', name: 'Help and Support', type: 'file', appId: 'help', icon: defaultTextIcon }
-                                }
-                            },
-                            'Nullsoft': {
-                                id: 'programs-nullsoft',
-                                name: 'Nullsoft',
-                                type: 'folder',
-                                children: {
-                                    'Winamp': { id: 'program-winamp', name: 'Winamp', type: 'file', appId: 'winamp', icon: defaultTextIcon }
-                                }
-                            },
-                            'C4m1r': {
-                                id: 'programs-c4m1r',
-                                name: 'C4m1r',
-                                type: 'folder',
-                                children: {
-                                    'News RSS Feed': { id: 'program-news', name: 'News RSS Feed', type: 'file', appId: 'news', icon: defaultTextIcon },
-                                    'Market Rates': { id: 'program-currency', name: 'Market Rates', type: 'file', appId: 'currency', icon: defaultTextIcon },
-                                    'Wiki': { id: 'program-wiki', name: 'Wiki', type: 'file', appId: 'wiki', icon: defaultTextIcon },
-                                    'My Projects': { id: 'program-projects', name: 'My Projects', type: 'file', appId: 'projects-grid', icon: defaultTextIcon },
-                                    'Help Library': { id: 'program-blog', name: 'Help Library', type: 'file', appId: 'blog', icon: defaultTextIcon },
-                                    'Terminal': { id: 'program-terminal', name: 'Terminal', type: 'file', appId: 'terminal', icon: defaultTextIcon },
-                                    'Loops': { id: 'program-loops', name: 'Loops', type: 'file', appId: 'loops', icon: defaultTextIcon }
-                                }
-                            }
-                        }
-                        }
                         }
                     },
                     'WINDOWS': {
@@ -394,32 +365,38 @@ if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
         children: { 'C4m1r': c4m1rProfile, 'User': userProfile },
     };
     const desktop = c4m1rProfile.children?.['Desktop'];
-    if (desktop?.children) {
-        const programFiles = cDrive.children?.['Program Files'];
-        const gameFolder = programFiles?.children?.['Games'];
-        const programsFolder = programFiles?.children?.['Programs'];
-        const flattenPublisherShortcuts = (folder?: FileSystemItem): Record<string, FileSystemItem> => {
-            const shortcuts = Object.values(folder?.children ?? {}).flatMap((entry) =>
-                entry.type === 'folder' ? Object.values(entry.children ?? {}) : [entry]
-            ).filter((entry) => entry.type === 'file' && Boolean(entry.appId));
-            return Object.fromEntries(shortcuts.map((entry) => [entry.name, entry]));
+    // Games and Programs on the desktop hold flat shortcuts to the executables in
+    // Program Files, with no nested folders.
+    const gameAppIds = new Set(['doom1', 'doom2', 'minesweeper', 'snake', 'memory']);
+    const programFiles = cDrive.children?.['Program Files'];
+    const collectShortcuts = (predicate: (appId: string) => boolean): Record<string, FileSystemItem> => {
+        const found: FileSystemItem[] = [];
+        const walk = (folder?: FileSystemItem) => {
+            Object.values(folder?.children ?? {}).forEach((entry) => {
+                if (entry.type === 'folder') walk(entry);
+                else if (entry.appId && predicate(entry.appId)) found.push(entry);
+            });
         };
+        walk(programFiles);
+        return Object.fromEntries(found.map((entry) => [entry.name, entry]));
+    };
+    const gameShortcuts = collectShortcuts((appId) => gameAppIds.has(appId));
+    const programShortcuts = collectShortcuts((appId) => !gameAppIds.has(appId));
 
+    if (desktop?.children) {
         desktop.children['Игры'] = {
             id: 'desktop-games-shortcut',
             name: 'Игры',
             type: 'folder',
             icon: gamesFolderIcon,
-            targetPath: 'C:\\Program Files\\Games',
-            children: flattenPublisherShortcuts(gameFolder),
+            children: gameShortcuts,
         };
         desktop.children['Программы'] = {
             id: 'desktop-programs-shortcut',
             name: 'Программы',
             type: 'folder',
             icon: folderIcon,
-            targetPath: 'C:\\Program Files\\Programs',
-            children: flattenPublisherShortcuts(programsFolder),
+            children: programShortcuts,
         };
     }
 }

@@ -149,7 +149,7 @@ export function StartMenu7({
     {
       id: 'games',
       label: isRu ? 'Игры' : 'Games',
-      path: 'C:\\Program Files\\Games',
+      path: 'C:\\Program Files',
       icon: assets.gamesFolderIcon ?? assets.folderIcon,
     },
     {

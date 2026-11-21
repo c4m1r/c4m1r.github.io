@@ -1,4 +1,4 @@
-import doomIcon from './assets/doom-icon-lg.webp';
+import doomIcon from './assets/doom-icon-48.png';
 
 const EMUPEDIA_BASE = 'https://emupedia.net';
 
