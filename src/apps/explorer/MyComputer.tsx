@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
+import { nextCycledViewMode, usesViewsMenu, viewMenuEntries, type ExplorerViewMode } from './explorerViews';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Eye, Grid, List, Search } from 'lucide-react';
 import folderIcon from '../../themes/winxp/assets/icons/folder_plain.png';
 import computerIcon from '../../themes/winxp/assets/icons/mycomputer.png';
@@ -58,7 +59,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   const addressTextFor = (value: string) => (value === 'C:\\$Recycle.Bin' ? (isRu ? 'Корзина' : 'Recycle Bin') : value);
   const [addressInput, setAddressInput] = useState(addressTextFor(currentPath));
   const isMyPictures = isPicturesFolderPath(path);
-  const [viewMode, setViewMode] = useState<'thumbnails' | 'tiles' | 'icons' | 'list' | 'details'>(
+  const [viewMode, setViewMode] = useState<ExplorerViewMode>(
     isMyPictures ? 'thumbnails' : 'icons'
   );
   const [showSidebar, setShowSidebar] = useState(true);
@@ -82,7 +83,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   });
   const isWindowsXp = theme === 'win-xp';
   const isClassicWindows = theme === 'win-98' || theme === 'win2000';
-  // Classic Windows (98, 2000) open a Views menu instead of cycling the view modes.
+  // Classic Windows (98, 2000) and the Windows 10/11 drafts open a Views menu instead of cycling.
+  const viewsMenu = usesViewsMenu(theme) ? viewMenuEntries(isRu) : null;
   const [viewsMenuOpen, setViewsMenuOpen] = useState(false);
   const viewsMenuRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -710,6 +712,26 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
     );
   }
 
+  // Drives and system items in one flat grid for the classic (98, 2000) My Computer; Large and Small Icons share it.
+  const classicSystemEntries = path !== 'My Computer' || !isClassicWindows ? [] : theme === 'win2000' ? [
+                  { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: win2000FloppyIcon, open: undefined as (() => void) | undefined },
+                  ...visibleItems.filter((i) => i.name === 'Local Disk (C:)').map((item) => ({ key: item.name, label: isRu ? 'Локальный диск (C:)' : item.name, icon: win2000DriveIcon, open: () => handleNavigate(item) })),
+                  { key: 'CD-ROM (D:)', label: isRu ? 'Дисковод CD-ROM (D:)' : 'CD-ROM Drive (D:)', icon: win2000CdIcon, open: undefined },
+                  { key: 'Control Panel', label: isRu ? 'Панель управления' : 'Control Panel', icon: win2000ControlPanelIcon, open: () => window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'control-panel' } })) },
+                  { key: 'Printers', label: isRu ? 'Принтеры' : 'Printers', icon: win2000PrintersIcon, open: undefined },
+                  { key: 'Scheduled Tasks', label: isRu ? 'Запланированные задания' : 'Scheduled Tasks', icon: win2000ScheduledTasksIcon, open: undefined },
+                  { key: 'Web Folders', label: isRu ? 'Веб-папки' : 'Web Folders', icon: win2000WebFoldersIcon, open: undefined },
+                ] : [
+                  { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: win98FloppyIcon, open: undefined as (() => void) | undefined },
+                  ...visibleItems.filter((i) => i.name === 'Local Disk (C:)').map((item) => ({ key: item.name, label: isRu ? 'Локальный диск (C:)' : item.name, icon: win98DriveIcon, open: () => handleNavigate(item) })),
+                  { key: 'CD-ROM (D:)', label: isRu ? 'Дисковод CD-ROM (D:)' : 'CD-ROM Drive (D:)', icon: win98CdIcon, open: undefined },
+                  { key: 'Control Panel', label: isRu ? 'Панель управления' : 'Control Panel', icon: win98ControlPanelIcon, open: () => window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'control-panel' } })) },
+                  { key: 'Printers', label: isRu ? 'Принтеры' : 'Printers', icon: win98PrintersIcon, open: undefined },
+                  { key: 'Dial-Up Networking', label: isRu ? 'Удалённый доступ' : 'Dial-Up Networking', icon: win98DialupIcon, open: undefined },
+                  { key: 'Scheduled Tasks', label: isRu ? 'Запланированные задания' : 'Scheduled Tasks', icon: win98SchedTasksIcon, open: undefined },
+                  { key: 'Web Folders', label: isRu ? 'Веб-папки' : 'Web Folders', icon: win98WebFoldersIcon, open: undefined },
+                ];
+
   return (
     <div data-os-theme={theme} className={`file-explorer flex flex-col h-full min-h-0 bg-white font-tahoma text-xs select-none file-explorer--${theme}`}>
       {/* Toolbar */}
@@ -767,29 +789,22 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
           <div className="relative" ref={viewsMenuRef}>
             <button
               className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent"
-              aria-haspopup={isClassicWindows ? 'menu' : undefined}
-              aria-expanded={isClassicWindows ? viewsMenuOpen : undefined}
+              aria-haspopup={viewsMenu ? 'menu' : undefined}
+              aria-expanded={viewsMenu ? viewsMenuOpen : undefined}
               onClick={() => {
-                if (isClassicWindows) {
+                if (viewsMenu) {
                   setViewsMenuOpen((open) => !open);
                   return;
                 }
-                const modes: Array<'thumbnails' | 'icons' | 'details'> = ['thumbnails', 'icons', 'details'];
-                const currentMode = (viewMode === 'thumbnails' || viewMode === 'icons' || viewMode === 'details') ? viewMode : 'icons';
-                const nextIndex = (modes.indexOf(currentMode) + 1) % modes.length;
-                setViewMode(modes[nextIndex]);
+                setViewMode(nextCycledViewMode(viewMode));
               }}
             >
-              {isClassicWindows ? <Grid size={15} /> : <img src={viewThumbnailIcon} alt="" className="w-4 h-4 object-contain" />}
+              {viewsMenu ? <Grid size={15} /> : <img src={viewThumbnailIcon} alt="" className="w-4 h-4 object-contain" />}
               <span>{isRu ? 'Виды' : 'Views'}</span>
             </button>
-            {isClassicWindows && viewsMenuOpen && (
+            {viewsMenu && viewsMenuOpen && (
               <div role="menu" className="absolute left-0 top-full z-50 min-w-[140px] border border-[#808080] bg-[#c0c0c0] py-0.5 text-xs text-black shadow-[2px_2px_0_#404040]">
-                {([
-                  { mode: 'icons', label: isRu ? 'Крупные значки' : 'Large Icons' },
-                  { mode: 'list', label: isRu ? 'Список' : 'List' },
-                  { mode: 'details', label: isRu ? 'Таблица' : 'Details' },
-                ] as const).map((entry) => (
+                {viewsMenu.map((entry) => (
                   <button
                     key={entry.mode}
                     role="menuitemradio"
@@ -1012,29 +1027,56 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                 </div>
               ))}
             </div>
+          ) : viewMode === 'small' ? (
+            // Small Icons: 16px icon with the name beside it, filling the pane in rows.
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-x-2 gap-y-1">
+              {classicSystemEntries.length > 0
+                ? classicSystemEntries.map((entry) => (
+                  <div
+                    key={entry.key}
+                    className={`flex items-center gap-1.5 cursor-pointer px-1 py-0.5 min-w-0 ${selectedItem === entry.key ? 'bg-[#000080] text-white' : 'hover:bg-gray-100'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedItem(entry.key);
+                    }}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      entry.open?.();
+                    }}
+                  >
+                    <img src={entry.icon} alt="" className="h-4 w-4 shrink-0 object-contain" />
+                    <span className={`truncate text-xs ${selectedItem === entry.key ? 'text-white' : 'text-black'}`}>{entry.label}</span>
+                  </div>
+                ))
+                : visibleItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-1.5 cursor-pointer px-1 py-0.5 min-w-0 ${selectedItem === item.name ? 'bg-[#000080] text-white' : 'hover:bg-gray-100'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedItem(item.name);
+                    }}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      handleNavigate(item);
+                    }}
+                  >
+                    <img
+                      src={getExplorerItemIcon(item)}
+                      alt=""
+                      className="h-4 w-4 shrink-0 object-contain"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                    <span className={`truncate text-xs ${selectedItem === item.name ? 'text-white' : 'text-black'}`}>{item.name}</span>
+                  </div>
+                ))}
+            </div>
           ) : viewMode === 'icons' ? (
             path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (
               // Classic Windows (98 and 2000) list drives and system items in one flat grid.
               // Network Neighborhood is not under My Computer in either version.
               <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
-                {(theme === 'win2000' ? [
-                  { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: win2000FloppyIcon, open: undefined as (() => void) | undefined },
-                  ...visibleItems.filter((i) => i.name === 'Local Disk (C:)').map((item) => ({ key: item.name, label: isRu ? 'Локальный диск (C:)' : item.name, icon: win2000DriveIcon, open: () => handleNavigate(item) })),
-                  { key: 'CD-ROM (D:)', label: isRu ? 'Дисковод CD-ROM (D:)' : 'CD-ROM Drive (D:)', icon: win2000CdIcon, open: undefined },
-                  { key: 'Control Panel', label: isRu ? 'Панель управления' : 'Control Panel', icon: win2000ControlPanelIcon, open: () => window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'control-panel' } })) },
-                  { key: 'Printers', label: isRu ? 'Принтеры' : 'Printers', icon: win2000PrintersIcon, open: undefined },
-                  { key: 'Scheduled Tasks', label: isRu ? 'Запланированные задания' : 'Scheduled Tasks', icon: win2000ScheduledTasksIcon, open: undefined },
-                  { key: 'Web Folders', label: isRu ? 'Веб-папки' : 'Web Folders', icon: win2000WebFoldersIcon, open: undefined },
-                ] : [
-                  { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: win98FloppyIcon, open: undefined as (() => void) | undefined },
-                  ...visibleItems.filter((i) => i.name === 'Local Disk (C:)').map((item) => ({ key: item.name, label: isRu ? 'Локальный диск (C:)' : item.name, icon: win98DriveIcon, open: () => handleNavigate(item) })),
-                  { key: 'CD-ROM (D:)', label: isRu ? 'Дисковод CD-ROM (D:)' : 'CD-ROM Drive (D:)', icon: win98CdIcon, open: undefined },
-                  { key: 'Control Panel', label: isRu ? 'Панель управления' : 'Control Panel', icon: win98ControlPanelIcon, open: () => window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'control-panel' } })) },
-                  { key: 'Printers', label: isRu ? 'Принтеры' : 'Printers', icon: win98PrintersIcon, open: undefined },
-                  { key: 'Dial-Up Networking', label: isRu ? 'Удалённый доступ' : 'Dial-Up Networking', icon: win98DialupIcon, open: undefined },
-                  { key: 'Scheduled Tasks', label: isRu ? 'Запланированные задания' : 'Scheduled Tasks', icon: win98SchedTasksIcon, open: undefined },
-                  { key: 'Web Folders', label: isRu ? 'Веб-папки' : 'Web Folders', icon: win98WebFoldersIcon, open: undefined },
-                ]).map((entry) => (
+                {classicSystemEntries.map((entry) => (
                   <div
                     key={entry.key}
                     className={`flex flex-col items-center cursor-pointer border border-transparent p-1 ${selectedItem === entry.key ? 'bg-[#000080] text-white' : 'hover:bg-gray-100'}`}

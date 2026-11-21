@@ -636,3 +636,11 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Views opens a menu (Large Icons, List, Details) on Win98 and Win2000 instead of cycling view modes; the current mode is shown in bold. Checked in the browser on Windows 98. XP and other OSes keep the cycle until their Views menus are confirmed.
 - [ ] Small Icons (Win98 and Win2000 Views menu) is not modelled: the explorer has only icons, list and details modes.
+
+### EXPLORER-03 — Views model and Small Icons
+- Canonical view modes live in `src/apps/explorer/explorerViews.ts`: `thumbnails`, `tiles`, `icons` (Large Icons), `small` (Small Icons), `list`, `details`. The Views menu entries come from `viewMenuEntries()` and are shown for Windows 98, 2000 and the Vista/8/10/11 drafts (`usesViewsMenu`). XP and other skins keep the cycle (`nextCycledViewMode`).
+- Small Icons renders 16px icons with names in rows. On My Computer for Windows 98 and 2000 it shows the same system items as Large Icons (`classicSystemEntries`).
+- Verified in the browser: Windows 98 Views menu lists Large Icons, Small Icons, List, Details; selecting Small Icons renders the system items.
+- Not yet verified: the Windows 10 draft Views menu. Its login asks for a password, which the test run does not have.
+- Open: Windows 98/2000 Small Icons flows items row-wise; the native layout fills columns top to bottom. Confirm against `eat/screens/oc/win98/` once screenshots arrive.
+- Open: Tiles mode is in the type but has no render branch.
