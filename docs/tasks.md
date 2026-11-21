@@ -547,3 +547,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Log off reads "Log Off <account>..." with the account chosen at login.
 - [x] Sidebar label "Windows 2000 Professional" is vertical text and fits the strip.
 - [ ] Windows 2000 Start menu still needs identification of the remaining Win98 roles and a comparison with a period screenshot at native scale.
+
+## Windows 2000 Start menu icon search — 2026-11-21
+
+- [x] Contact sheets of the full native Windows 2000 ICO set (431 files, `eat/windows2000-main/src/assets/ICON/`) were checked for Calculator, Notepad, Paint, Outlook, Minesweeper and Media Player. The candidates in the ranges that look like app or accessory icons (104–131, 166–177, 292–311, 352–361) are folder, recycle-bin, help-book, printer or control-panel art, not those applications. The set has no confident match, so those roles keep the Windows 98 fallback. Do not assign them by eye without a period screenshot.
+- [ ] Find a period screenshot or the Windows 2000 app icon set (Calculator, Notepad, Paint, Outlook Express, Windows Media Player, Minesweeper) to replace the Windows 98 fallback in the Start menu.
