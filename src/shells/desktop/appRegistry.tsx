@@ -27,6 +27,7 @@ import { SolitaireGame } from '../../apps/games/solitaire';
 import { FreeCellGame } from '../../apps/games/freecell';
 import { HeartsGame } from '../../apps/games/hearts';
 import { SpiderGame } from '../../apps/games/spider';
+import { PinballGame } from '../../apps/games/pinball';
 import { ResumeApp } from './apps/resume/ResumeApp';
 import { TaskManager } from '../../apps/TaskManager';
 
@@ -462,6 +463,15 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'spiderIcon',
     component: SpiderGame,
     defaultWindow: { width: 760, height: 560 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
+  'pinball': {
+    id: 'pinball',
+    title: { en: '3D Pinball', ru: '3D Пинбол', fr: '3D Flipper', es: '3D Pinball', zh: '3D 弹球', ja: '3D ピンボール', ko: '3D 핀볼' },
+    iconKey: 'pinballIcon',
+    component: PinballGame,
+    defaultWindow: { width: 400, height: 720 },
     showInStartMenu: false,
     showOnDesktop: false,
   },

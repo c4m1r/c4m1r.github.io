@@ -12,7 +12,7 @@ Layouts and rules follow the public rule sets; code is written for this site, no
 | Minesweeper («Сапёр») | 3.1, 95, 98, 2000, XP, Vista, 7 | Exists: `src/apps/minesweeper` |
 | Hearts («Сердца») | 3.1, 95, 98, XP, Vista, 7 | Sketch: `src/apps/games/hearts` (pass, follow suit, heart-breaking, shooting the moon, 100-point game) |
 | Spider Solitaire («Паук») | XP, Vista, 7, 10 | Sketch: `src/apps/games/spider` (104 cards, one-suit build K→A, stock deals; default one suit) |
-| 3D Pinball – Space Cadet | 2000, XP | Not started |
+| 3D Pinball – Space Cadet | 2000, XP | Sketch: `src/apps/games/pinball` (canvas physics, flippers, bumpers, plunger held by time; three balls) |
 | Reversi | 3.1 | Not started |
 | Chess Titans | Vista, 7 | Not started (Chess sketch reference in `eat/`) |
 | Internet Backgammon | XP, 7 | Not started |
@@ -40,5 +40,12 @@ Layouts and rules follow the public rule sets; code is written for this site, no
 ## Next steps
 
 1. Spider: suit-count choice (2 and 4 suits) and the Win-style scoring/timer.
-2. Pinball and Chess as separate sketches once the card games are reviewed against the user's screenshots.
+2. Chess Titans next (reference: `eat/windows7-ui-portfolio-main/components/apps/Chess.tsx`), then Mahjong and Purble Place.
 3. Per-OS visual fidelity (card backs, felt colour, window chrome) after screenshots arrive in `eat/screens/oc/<os>/`.
+
+## Pinball notes
+
+- Physics is a simplified sketch: gravity, circle-vs-segment collisions, round bumpers (100 points), two flippers with a kick proportional to their swing speed.
+- Plunger strength grows while Space is held (full at 700 ms). The Windows 2000 and XP table layout is not reproduced yet.
+- Program Files name `pinball.exe` is not verified against the original file.
+- Icon: XP `pinball.png` is used for XP, Win98, Win7 and Win2000 until 2000-specific art is sourced.

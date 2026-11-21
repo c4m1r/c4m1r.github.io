@@ -48,6 +48,7 @@ import solitaireIconWebos from '../winxp/assets/icons/solitaire.png';
 import freecellIconWebos from '../winxp/assets/icons/freecell.png';
 import heartsIconWebos from '../winxp/assets/icons/Hearts.png';
 import spiderIconWebos from '../winxp/assets/icons/Spider Solitaire.png';
+import pinballIconWebos from '../winxp/assets/icons/pinball.png';
 import memoryIconAsset from '../../apps/games/assets/memory-icon.svg';
 import terminalIconWebos from '../winxp/assets/icons/cmd.png';
 import rssNewsIcon from '../../assets/icons/rss-icon.svg';
@@ -139,6 +140,7 @@ export interface ThemeAssets {
   freecellIcon?: string;
   heartsIcon?: string;
   spiderIcon?: string;
+  pinballIcon?: string;
   memoryIcon?: string;
   /** Terminal app icon (cmd.png) */
   terminalIcon?: string;
@@ -195,6 +197,7 @@ const sharedWebosAssets: ThemeAssets = {
   freecellIcon: freecellIconWebos,
   heartsIcon: heartsIconWebos,
   spiderIcon: spiderIconWebos,
+  pinballIcon: pinballIconWebos,
   memoryIcon: memoryIconAsset,
   terminalIcon: terminalIconWebos,
   newsIcon: rssNewsIcon,
@@ -341,6 +344,8 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     // Game icons are theme-neutral; Win2000 has its own asset object, so it lists them explicitly.
     snakeIcon: snakeIconAsset,
     memoryIcon: memoryIconAsset,
+    // No 2000 Pinball art in the set yet; XP art is used until it is sourced.
+    pinballIcon: pinballIconWebos,
     startupSound: OS_SOUNDS.win2000.startup,
     shutdownSound: OS_SOUNDS.win2000.shutdown,
     // No separate logoff sound in the reference set.

@@ -616,3 +616,6 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Spider Solitaire sketch (`src/apps/games/spider`): 104 cards, same-suit runs, stock deals; registered as `spider` (XP art; Win98 `game-spider`; Win7 Solitaire stand-in); Program Files `microsoft/spider.exe` (name not verified against the original).
 - [ ] 3D Pinball, Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.
+
+- [x] 3D Pinball sketch (`src/apps/games/pinball`): canvas physics, flippers, bumpers, plunger; registered as `pinball`; Program Files `pinball.exe` (name not verified). Icon is XP art on all OSes until 2000-specific art is sourced.
+- [ ] Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.
