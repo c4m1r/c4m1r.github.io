@@ -1,0 +1,374 @@
+[
+ {
+  "source": "111(32x32).png",
+  "path": "devices/cd-printer/32x32.png"
+ },
+ {
+  "source": "111(48x48).png",
+  "path": "devices/dvd-drive/48x48.png"
+ },
+ {
+  "source": "119(16x16).png",
+  "path": "system/control-window/16x16.png"
+ },
+ {
+  "source": "120(16x16).png",
+  "path": "system/file-cabinet/16x16.png"
+ },
+ {
+  "source": "127(16x16).png",
+  "path": "system/package/16x16.png"
+ },
+ {
+  "source": "128(16x16).png",
+  "path": "system/install/16x16.png"
+ },
+ {
+  "source": "147(32x32).png",
+  "path": "system/cancel/32x32.png"
+ },
+ {
+  "source": "153(16x16).png",
+  "path": "apps/notepad-pen/16x16.png"
+ },
+ {
+  "source": "156(16x16).png",
+  "path": "folders/folder-search/16x16.png"
+ },
+ {
+  "source": "159(16x16).png",
+  "path": "system/tools/16x16.png"
+ },
+ {
+  "source": "17(32x32).png",
+  "path": "devices/printer/32x32.png"
+ },
+ {
+  "source": "182(16x16).png",
+  "path": "network/network-computer/16x16.png"
+ },
+ {
+  "source": "214(16x16).png",
+  "path": "security/shield-windows/16x16.png"
+ },
+ {
+  "source": "227(16x16).png",
+  "path": "security/shield-ok/16x16.png"
+ },
+ {
+  "source": "227(32x32).png",
+  "path": "security/shield-ok/32x32.png"
+ },
+ {
+  "source": "229(16x16).png",
+  "path": "security/shield-error/16x16.png"
+ },
+ {
+  "source": "23(16x16).png",
+  "path": "system/backup-arrow/16x16.png"
+ },
+ {
+  "source": "234(16x16).png",
+  "path": "network/network-cable/16x16.png"
+ },
+ {
+  "source": "238(16x16).png",
+  "path": "network/folder-network/16x16.png"
+ },
+ {
+  "source": "288(32x32).png",
+  "path": "folders/folder-cd/32x32.png"
+ },
+ {
+  "source": "289(32x32).png",
+  "path": "folders/folder-mail/32x32.png"
+ },
+ {
+  "source": "299(32x32).png",
+  "path": "system/search/32x32.png"
+ },
+ {
+  "source": "300(16x16).png",
+  "path": "system/checklist/16x16.png"
+ },
+ {
+  "source": "300(32x32).png",
+  "path": "system/checklist/32x32.png"
+ },
+ {
+  "source": "301(32x32).png",
+  "path": "documents/document-clock/32x32.png"
+ },
+ {
+  "source": "302(16x16).png",
+  "path": "media/cd-copy/16x16.png"
+ },
+ {
+  "source": "307(32x32).png",
+  "path": "folders/folder-mail-2/32x32.png"
+ },
+ {
+  "source": "308(16x16).png",
+  "path": "devices/printer-document/16x16.png"
+ },
+ {
+  "source": "308(32x32).png",
+  "path": "devices/printer-document/32x32.png"
+ },
+ {
+  "source": "309(16x16).png",
+  "path": "network/network-plug/16x16.png"
+ },
+ {
+  "source": "309(32x32).png",
+  "path": "network/network-plug/32x32.png"
+ },
+ {
+  "source": "310(32x32).png",
+  "path": "system/shutdown/32x32.png"
+ },
+ {
+  "source": "318(16x16).png",
+  "path": "folders/folder-open/16x16.png"
+ },
+ {
+  "source": "318(32x32).png",
+  "path": "folders/folder-plain/32x32.png"
+ },
+ {
+  "source": "318(48x48).png",
+  "path": "folders/folder-open/48x48.png"
+ },
+ {
+  "source": "322(16x16).png",
+  "path": "system/windows-logo/16x16.png"
+ },
+ {
+  "source": "327(16x16).png",
+  "path": "apps/notepad/16x16.png"
+ },
+ {
+  "source": "327(32x32).png",
+  "path": "apps/notepad/32x32.png"
+ },
+ {
+  "source": "334(32x32).png",
+  "path": "devices/drive-hdd/32x32.png"
+ },
+ {
+  "source": "334(48x48).png",
+  "path": "devices/drive-hdd/48x48.png"
+ },
+ {
+  "source": "337(32x32).png",
+  "path": "folders/folder-plain-2/32x32.png"
+ },
+ {
+  "source": "357(16x16).png",
+  "path": "network/internet-mouse/16x16.png"
+ },
+ {
+  "source": "358(16x16).png",
+  "path": "folders/folder-desktop/16x16.png"
+ },
+ {
+  "source": "358(32x32).png",
+  "path": "folders/folder-desktop/32x32.png"
+ },
+ {
+  "source": "360(32x32).png",
+  "path": "system/recycle-bin-full/32x32.png"
+ },
+ {
+  "source": "367(16x16).png",
+  "path": "folders/folder-sync/16x16.png"
+ },
+ {
+  "source": "367(32x32).png",
+  "path": "folders/folder-sync/32x32.png"
+ },
+ {
+  "source": "374(16x16).png",
+  "path": "apps/paint/16x16.png"
+ },
+ {
+  "source": "392(16x16).png",
+  "path": "system/help-book/16x16.png"
+ },
+ {
+  "source": "394(16x16).png",
+  "path": "network/network-drive/16x16.png"
+ },
+ {
+  "source": "404(16x16).png",
+  "path": "network/network-computers/16x16.png"
+ },
+ {
+  "source": "505(16x16).png",
+  "path": "system/computer-info/16x16.png"
+ },
+ {
+  "source": "546(32x32).png",
+  "path": "security/key/32x32.png"
+ },
+ {
+  "source": "549(32x32).png",
+  "path": "devices/printer-folder/32x32.png"
+ },
+ {
+  "source": "550(32x32).png",
+  "path": "folders/folder-music/32x32.png"
+ },
+ {
+  "source": "551(32x32).png",
+  "path": "folders/folder-devices/32x32.png"
+ },
+ {
+  "source": "554(16x16).png",
+  "path": "system/help-book-2/16x16.png"
+ },
+ {
+  "source": "56(16x16).png",
+  "path": "apps/terminal/16x16.png"
+ },
+ {
+  "source": "57(32x32).png",
+  "path": "folders/folder-shared/32x32.png"
+ },
+ {
+  "source": "58(16x16).png",
+  "path": "system/keyboard/16x16.png"
+ },
+ {
+  "source": "663(16x16).png",
+  "path": "apps/picture-frames/16x16.png"
+ },
+ {
+  "source": "664(16x16).png",
+  "path": "system/home/16x16.png"
+ },
+ {
+  "source": "669(16x16).png",
+  "path": "devices/monitor-stand/16x16.png"
+ },
+ {
+  "source": "67(32x32).png",
+  "path": "security/firewall/32x32.png"
+ },
+ {
+  "source": "676(16x16).png",
+  "path": "devices/computer/16x16.png"
+ },
+ {
+  "source": "676(32x32).png",
+  "path": "devices/computer/32x32.png"
+ },
+ {
+  "source": "680(16x16).png",
+  "path": "apps/paint-pens/16x16.png"
+ },
+ {
+  "source": "680(32x32).png",
+  "path": "apps/paint-pens/32x32.png"
+ },
+ {
+  "source": "690(16x16).png",
+  "path": "media/volume/16x16.png"
+ },
+ {
+  "source": "693(16x16).png",
+  "path": "network/network-computer-2/16x16.png"
+ },
+ {
+  "source": "716(16x16).png",
+  "path": "folders/folder-tools/16x16.png"
+ },
+ {
+  "source": "74(16x16).png",
+  "path": "apps/calculator/16x16.png"
+ },
+ {
+  "source": "74(32x32).png",
+  "path": "apps/calculator/32x32.png"
+ },
+ {
+  "source": "743(32x32).png",
+  "path": "system/window-run/32x32.png"
+ },
+ {
+  "source": "744(32x32).png",
+  "path": "system/favorites/32x32.png"
+ },
+ {
+  "source": "747(16x16).png",
+  "path": "system/help/16x16.png"
+ },
+ {
+  "source": "747(32x32).png",
+  "path": "system/help/32x32.png"
+ },
+ {
+  "source": "81(16x16).png",
+  "path": "documents/document-blank/16x16.png"
+ },
+ {
+  "source": "817(16x16).png",
+  "path": "system/search-window/16x16.png"
+ },
+ {
+  "source": "846(16x16).png",
+  "path": "apps/media-player/16x16.png"
+ },
+ {
+  "source": "846(32x32).png",
+  "path": "apps/media-player/32x32.png"
+ },
+ {
+  "source": "853(32x32).png",
+  "path": "apps/messenger/32x32.png"
+ },
+ {
+  "source": "887(16x16).png",
+  "path": "apps/outlook-express/16x16.png"
+ },
+ {
+  "source": "887(32x32).png",
+  "path": "apps/outlook-express/32x32.png"
+ },
+ {
+  "source": "888(16x16).png",
+  "path": "games/spade/16x16.png"
+ },
+ {
+  "source": "889(16x16).png",
+  "path": "games/card-back/16x16.png"
+ },
+ {
+  "source": "890(16x16).png",
+  "path": "games/heart/16x16.png"
+ },
+ {
+  "source": "891(16x16).png",
+  "path": "games/club/16x16.png"
+ },
+ {
+  "source": "892(16x16).png",
+  "path": "games/dice/16x16.png"
+ },
+ {
+  "source": "894(16x16).png",
+  "path": "media/movie-maker/16x16.png"
+ },
+ {
+  "source": "896(16x16).png",
+  "path": "apps/internet-explorer/16x16.png"
+ },
+ {
+  "source": "897(16x16).png",
+  "path": "system/error/16x16.png"
+ },
+ {
+  "source": "897(32x32).png",
+  "path": "system/error/32x32.png"
+ }
+]

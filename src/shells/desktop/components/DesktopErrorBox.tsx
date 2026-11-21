@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useApp } from '../../../contexts/useApp';
 import { playXpError } from '../../../themes/winxp/xpSoundService';
-import legacyErrorIcon from '../../../themes/winxp/assets/icons/897(32x32).png';
+import legacyErrorIcon from '../../../themes/winxp/icons/system/error/32x32.png';
 import xpErrorIcon from '../../../themes/winxp/assets/dialog/error.png';
 
 export interface DesktopErrorBoxProps {
