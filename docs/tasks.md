@@ -592,8 +592,13 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Windows 2000 icon set falls back to the Windows 98 set, not XP.
 - [x] Alarm: one canonical app (appId `alarm`) for all OSes; icon per OS via `alarmIcon` (XP glyph base, Win7 window icon, Win98 generic application icon; Win2000 inherits Win98).
 - [ ] Alarm icons for Win98 / Win7 / XP still need visual check against the user's screenshots.
-- [ ] Winamp icon for `nullsoft/winamp.exe` (currently a document icon).
-- [ ] snake.exe and memory.exe icons (currently a document icon).
+- [x] Winamp icon for `nullsoft/winamp.exe`: `appId: 'winamp'` resolves to `winampIcon` (verify in screenshots).
+- [x] snake.exe and memory.exe icons: game artwork `snakeIcon` / `memoryIcon` (theme-neutral SVG; no OS-native originals exist for them).
 - [ ] Calculator, Outlook Express, Minesweeper native Win2000 icons (currently Win98 art).
 - [ ] Screenshot verification: user will place references in `eat/screens/oc/<os>/` (list in `eat/screens/README.md`); each one is a check of the existing build, differences go here.
 - [ ] Branch cleanup on the remote is blocked by the proxy (403); needs manual deletion or permission.
+
+## Alarm tones
+
+- [x] Alarm tone selection (chime, digital, siren, classic bell) per alarm and for new alarms, with preview; the chosen tone loops while an alarm rings.
+- [x] Tones are generated in-house by `scripts/gen-alarm-sounds.py` (no third-party samples, so no licence obligations). Freesound/CC0 samples were not used: the shell cannot download them from this environment.
