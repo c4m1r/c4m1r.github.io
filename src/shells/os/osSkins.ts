@@ -502,6 +502,26 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     },
   },
 
+  vista: {
+    theme: 'vista',
+    osClassName: 'os-vista',
+    displayName: 'Windows Vista',
+    appNames: {},
+    systemLabels: {
+      startButton: { en: 'Start', ru: 'Пуск' },
+    },
+  },
+
+  win8: {
+    theme: 'win8',
+    osClassName: 'os-win8',
+    displayName: 'Windows 8',
+    appNames: {},
+    systemLabels: {
+      startButton: { en: 'Start', ru: 'Пуск' },
+    },
+  },
+
   arch: {
     theme: 'arch',
     osClassName: 'os-arch',

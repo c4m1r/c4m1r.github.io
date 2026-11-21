@@ -9,6 +9,10 @@ export type OsProfileId =
   | 'win-98'
   | 'win2000'
   | 'win7'
+  | 'vista'
+  | 'win8'
+  | 'win10'
+  | 'win11'
   | 'ubuntu'
   | 'webos'
   | 'macos-26'
@@ -29,4 +33,6 @@ export interface OsBootProfile {
   order: number;
   enabled: boolean;
   defaultSelected?: boolean;
+  /** Placeholder entry: shown in the boot menu with a draft marker until its skin is complete. */
+  draft?: boolean;
 }

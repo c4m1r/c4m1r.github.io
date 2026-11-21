@@ -45,6 +45,7 @@ const IOS_THEMES = new Set<ThemeId>(['ios-5', 'ios-9', 'ios-16', 'ios-26']);
 
 function getThemeAssets(theme: ThemeId): IconThemeAssets {
   const themeKey: ThemeAssetId = theme === 'win-98' || theme === 'win-xp' || theme === 'win2000' || theme === 'win7' || theme === 'webos'
+    || theme === 'vista' || theme === 'win8' || theme === 'win10' || theme === 'win11'
     ? theme
     : 'webos';
   const assets = THEME_ASSETS[themeKey];

@@ -9,6 +9,8 @@ export type ThemeId =
   | 'win7'
   | 'win10'
   | 'win11'
+  | 'vista'
+  | 'win8'
   | 'ubuntu'
   | 'arch'
   | 'halloween'

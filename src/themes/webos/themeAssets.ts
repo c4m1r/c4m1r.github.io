@@ -91,7 +91,7 @@ type PlaceIconSet = {
   run?: string;
 };
 
-export type ThemeAssetId = 'webos' | 'win-xp' | 'win-98' | 'win7' | 'win2000';
+export type ThemeAssetId = 'webos' | 'win-xp' | 'win-98' | 'win7' | 'win2000' | 'vista' | 'win8' | 'win10' | 'win11';
 
 export interface ThemeAssets {
   folderIcon?: string;
@@ -283,6 +283,11 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   webos: sharedWebosAssets,
   'win-xp': xpThemeAssets,
   win7: win7ThemeAssets,
+  // Draft Windows versions reuse the Windows 7 asset set until their own sets exist.
+  vista: win7ThemeAssets,
+  win8: win7ThemeAssets,
+  win10: win7ThemeAssets,
+  win11: win7ThemeAssets,
   'win-98': {
     ...sharedWebosAssets,
     ...WIN98_ICON_ASSETS,

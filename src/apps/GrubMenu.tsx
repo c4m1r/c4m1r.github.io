@@ -56,6 +56,8 @@ export function GrubMenu() {
       else if (profile.id === 'terminal') base = t.terminal || profile.label;
       else if (profile.id === 'webos') base = t.webos || profile.label;
 
+      if (profile.draft) base = `${base} (${t.draftMarker ?? 'draft'})`;
+
       const editions = getEditionsForProfile(String(profile.id));
       if (editions.length === 0) return base;
 
