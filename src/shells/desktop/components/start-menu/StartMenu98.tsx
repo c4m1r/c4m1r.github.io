@@ -16,8 +16,8 @@ import logOffIcon from '../../../../themes/win98/icons/system/shut-down-cool/16x
 import shutDownClassicIcon from '../../../../themes/win98/icons/system/shut-down-cool/16x16-2.png';
 import accessoriesClassicIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-1.png';
 import calculatorIcon from '../../../../themes/win98/icons/apps/calculator/16x16-1.png';
-import notepadIcon from '../../../../themes/win98/icons/documents/notepad/16x16-0.png';
-import paintIcon from '../../../../themes/win98/icons/apps/paint-old/16x16-1.png';
+import notepadClassicIcon from '../../../../themes/win98/icons/documents/notepad/16x16-0.png';
+import paintClassicIcon from '../../../../themes/win98/icons/apps/paint-old/16x16-1.png';
 import minesweeperIcon from '../../../../themes/win98/icons/apps/game-mine-1/16x16-1.png';
 import documentIcon from '../../../../themes/win98/icons/documents/document/16x16-1.png';
 import win2000ProgramsIcon from '../../../../themes/win2000/icons/start-menu/programs-16.png';
@@ -30,6 +30,9 @@ import win2000RunIcon from '../../../../themes/win2000/icons/start-menu/run-16.p
 import win2000ShutDownIcon from '../../../../themes/win2000/icons/start-menu/shutdown-16.png';
 import win2000UpdateIcon from '../../../../themes/win2000/icons/start-menu/update-16.png';
 import win2000IeIcon from '../../../../themes/win2000/icons/start-menu/internet-explorer-16.png';
+import win2000NotepadIcon from '../../../../themes/win2000/icons/start-menu/notepad-16.png';
+import win2000PaintIcon from '../../../../themes/win2000/icons/start-menu/paint-16.png';
+import win2000MediaPlayerIcon from '../../../../themes/win2000/icons/start-menu/media-player-16.png';
 
 export interface StartMenu98Props {
   onClose: () => void;
@@ -76,6 +79,9 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const runIcon = isWin2000 ? win2000RunIcon : runClassicIcon;
   const shutDownIcon = isWin2000 ? win2000ShutDownIcon : shutDownClassicIcon;
   const ieIcon = isWin2000 ? win2000IeIcon : ieClassicIcon;
+  const notepadIcon = isWin2000 ? win2000NotepadIcon : notepadClassicIcon;
+  const paintIcon = isWin2000 ? win2000PaintIcon : paintClassicIcon;
+  const mediaPlayerIcon = isWin2000 ? win2000MediaPlayerIcon : mediaPlayerClassicIcon;
 
   const menuItems: ClassicMenuItem[] = [
     ...(isWin2000 ? [
@@ -91,9 +97,9 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         { label: isRu ? 'Paint' : 'Paint', icon: classicIcon(paintIcon), appId: 'paint' },
         { label: isRu ? 'Панель управления' : 'Control Panel', icon: classicIcon(settingsIcon), appId: 'control-panel' },
       ] },
-      { label: isRu ? 'Мультимедиа' : 'Entertainment', icon: classicIcon(mediaPlayerClassicIcon), submenu: [
-        { label: 'Windows Media Player', icon: classicIcon(mediaPlayerClassicIcon), appId: 'windows-media-player' },
-        { label: 'Winamp', icon: classicIcon(mediaPlayerClassicIcon), appId: 'winamp' },
+      { label: isRu ? 'Мультимедиа' : 'Entertainment', icon: classicIcon(mediaPlayerIcon), submenu: [
+        { label: 'Windows Media Player', icon: classicIcon(mediaPlayerIcon), appId: 'windows-media-player' },
+        { label: 'Winamp', icon: classicIcon(mediaPlayerIcon), appId: 'winamp' },
       ] },
       { label: isRu ? 'Игры' : 'Games', icon: classicIcon(minesweeperIcon), submenu: [
         { label: isRu ? 'Сапёр' : 'Minesweeper', icon: classicIcon(minesweeperIcon), appId: 'minesweeper' },

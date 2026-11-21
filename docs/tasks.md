@@ -552,3 +552,10 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Contact sheets of the full native Windows 2000 ICO set (431 files, `eat/windows2000-main/src/assets/ICON/`) were checked for Calculator, Notepad, Paint, Outlook, Minesweeper and Media Player. The candidates in the ranges that look like app or accessory icons (104–131, 166–177, 292–311, 352–361) are folder, recycle-bin, help-book, printer or control-panel art, not those applications. The set has no confident match, so those roles keep the Windows 98 fallback. Do not assign them by eye without a period screenshot.
 - [ ] Find a period screenshot or the Windows 2000 app icon set (Calculator, Notepad, Paint, Outlook Express, Windows Media Player, Minesweeper) to replace the Windows 98 fallback in the Start menu.
+
+## Windows 2000 Start menu application icons from WinClassic — 2026-11-21
+
+- [x] Notepad (`w2k_notepad_1`), Paint (`w2k_paint_2`) and Media Player (`w2k_mplayer32_1`, identified by eye) use native Windows 2000 16 px bitmaps from `Source Icons/w2k` in https://github.com/matthewmx86/WinClassic_icons. Stored in `src/themes/win2000/icons/start-menu/` with a README listing sources.
+- [x] The WinClassic repo publishes no SVG for these roles (its SVG set is the Linux Redmond97 theme). PNG is the stored format, as the task allows.
+- [ ] Calculator, Outlook Express and Minesweeper have no authentic Windows 2000 source in the repos checked (eat/, WinClassic, ClassicOS-2000-Icons, W-ICO). They keep Windows 98 artwork.
+- [ ] Confirm the Media Player icon against a Windows 2000 screenshot.
