@@ -261,7 +261,14 @@ export function TaskbarSystemArea({
 
       <div className="relative h-full">
         <button type="button" onClick={handleClockToggle} className={`taskbar-tray-time ${showClockPanel ? 'is-open' : ''}`} aria-label={labels.dateTime} aria-expanded={showClockPanel} title={labels.dateTime}>
-          <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' })}</span>
+          {theme === 'win7' ? (
+            <span className="win7-tray-clock flex flex-col items-center leading-tight text-[11px] font-semibold" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>
+              <span>{time.toLocaleTimeString(language, { hour: 'numeric', minute: '2-digit' })}</span>
+              <span>{time.toLocaleDateString(language, { month: 'numeric', day: 'numeric', year: 'numeric' })}</span>
+            </span>
+          ) : (
+            <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' })}</span>
+          )}
         </button>
         {showClockPanel && <ClockCalendarPopup language={language} time={time} labels={labels} theme={theme} onOpenCalendar={onOpenCalendar} />}
       </div>

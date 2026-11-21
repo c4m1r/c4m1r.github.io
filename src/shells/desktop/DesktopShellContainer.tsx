@@ -39,6 +39,13 @@ import {
   WINDOWS_IMAGE_ICON_THEMES,
 } from './desktopConstants';
 import { type DesktopIcon, type DesktopShellProps } from './desktopTypes';
+
+// Default Windows 7 taskbar pins: Internet Explorer, Windows Explorer, Media Player.
+const WIN7_PINNED_TASKBAR_APPS = [
+  { appId: 'internet-explorer', label: 'Internet Explorer', iconKey: 'internetExplorerIcon' },
+  { appId: 'my-computer', label: 'Windows Explorer', iconKey: 'folderIcon' },
+  { appId: 'windows-media-player', label: 'Windows Media Player', iconKey: 'mediaPlayerIcon' },
+] as const;
 import { getStoredCustomWallpaper } from './runtime/desktopStorage';
 import { resolveAppWindowConfig, resolveRunCommandTarget } from './runtime/desktopAppLauncher';
 import { getDesktopOsClassName, isThemeInFamily } from './runtime/shortcutFilters';
@@ -1997,6 +2004,26 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
           {/* Window List Area */}
           <div className="taskbar-windows flex-1 overflow-hidden">
+            {themeKey === 'win7' && WIN7_PINNED_TASKBAR_APPS.map((pinned) => (
+              <button
+                key={`pinned-${pinned.appId}`}
+                onClick={() => launchApp(pinned.appId)}
+                className="taskbar-button taskbar-button--pinned flex-shrink-0 select-none os-button"
+                title={pinned.label}
+                aria-label={pinned.label}
+              >
+                {themeAssets[pinned.iconKey] && (
+                  <img
+                    src={themeAssets[pinned.iconKey] as string}
+                    alt=""
+                    className="taskbar-button__icon"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                )}
+              </button>
+            ))}
             {windows.map((window) => (
               <button
                 key={window.id}
