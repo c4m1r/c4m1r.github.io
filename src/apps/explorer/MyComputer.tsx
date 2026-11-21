@@ -21,6 +21,8 @@ import win2000ComputerIcon from '../../themes/win98/icons/devices/computer-explo
 import win98FolderIcon from '../../themes/win98/icons/folders/directory-closed/32x32-0.png';
 import win98DriveIcon from '../../themes/win98/icons/devices/hard-disk-drive/32x32-0.png';
 import win98SearchIcon from '../../themes/win98/icons/devices/search-computer/32x32-0.png';
+import xpFloppyIcon from '../../themes/winxp/icons/devices/floppy-disk/32x32.png';
+import xpCdIcon from '../../themes/winxp/icons/devices/cd-rom/32x32.png';
 import win98FloppyIcon from '../../themes/win98/icons/devices/floppy-drive-3-5-cool/32x32-2.png';
 import win98CdIcon from '../../themes/win98/icons/devices/cd-drive/32x32-2.png';
 import win98ControlPanelIcon from '../../themes/win98/icons/folders/directory-control-panel/32x32-2.png';
@@ -1013,13 +1015,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
               </div>
             ) : path === 'My Computer' ? (
               <div className="space-y-6">
-                {visibleItems.filter((i) => i.type === 'folder').length > 0 && (
+                {visibleItems.filter((i) => i.type === 'folder' && i.name !== 'Network Neighborhood').length > 0 && (
                   <div>
                     <div className="flex items-center gap-2 mb-2 pb-1 border-b border-[#003c74]/20 font-bold text-[#003c74] text-xs">
                       <span>{isRu ? 'Файлы, хранящиеся на этом компьютере' : 'Files Stored on This Computer'}</span>
                     </div>
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-4">
-                      {visibleItems.filter((i) => i.type === 'folder')
+                      {visibleItems.filter((i) => i.type === 'folder' && i.name !== 'Network Neighborhood')
                         .map((item, i) => (
                           <div
                             key={i}
@@ -1086,6 +1088,33 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                     </div>
                   </div>
                 )}
+                <div>
+                  <div className="flex items-center gap-2 mb-2 pb-1 border-b border-[#003c74]/20 font-bold text-[#003c74] text-xs">
+                    <span>{isRu ? 'Устройства со съёмными носителями' : 'Devices with Removable Storage'}</span>
+                  </div>
+                  <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-4">
+                    {[
+                      { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: xpFloppyIcon },
+                      { key: 'CD Drive (D:)', label: isRu ? 'Дисковод CD (D:)' : 'CD Drive (D:)', icon: xpCdIcon },
+                    ].map((entry) => (
+                      <div
+                        key={entry.key}
+                        className={`flex flex-col items-center cursor-pointer border border-transparent p-1 ${selectedItem === entry.key ? 'bg-[#316ac5] bg-opacity-20 border-[#316ac5] border-opacity-30' : 'hover:bg-gray-100'}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedItem(entry.key);
+                        }}
+                      >
+                        <div className="w-8 h-8 flex items-center justify-center mb-1">
+                          <img src={entry.icon} alt="" className="w-8 h-8 object-contain" />
+                        </div>
+                        <span className={`text-center text-xs px-1 rounded break-words w-full ${selectedItem === entry.key ? 'bg-[#316ac5] text-white' : 'text-black'}`}>
+                          {entry.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4">
@@ -1170,7 +1199,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       {/* Status Bar */}
       <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
         <div className="flex gap-4">
-          <span>{path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (theme === 'win2000' ? 7 : 8) : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
+          <span>{path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (theme === 'win2000' ? 7 : 8) : path === 'My Computer' && theme === 'win-xp' ? 3 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
           {selectedItem && <span>{isRu ? 'Выбрано:' : 'Selected:'} {selectedItem}</span>}
         </div>
         {detailsForSelection && (

@@ -71,7 +71,7 @@ export function resolveFileIcon(item: FileSystemItem, theme: ThemeId): string {
     if (IOS_THEMES.has(theme)) return getIosIconMap(theme)['my-computer'] ?? '';
     return getThemeAssets(theme).computerIcon ?? getThemeAssets(theme).folderIcon ?? '';
   }
-  if (item.type === 'drive') return getThemeAssets(theme).computerIcon ?? getThemeAssets(theme).folderIcon ?? '';
+  if (item.type === 'drive') return getThemeAssets(theme).driveIcon ?? getThemeAssets(theme).computerIcon ?? getThemeAssets(theme).folderIcon ?? '';
   if (item.type === 'folder') {
     if (APPLE_THEMES.has(theme)) return MACOS_APP_ICON_BY_ID['projects-grid'] ?? getThemeAssets(theme).folderIcon ?? '';
     return getThemeAssets(theme).folderIcon ?? '';

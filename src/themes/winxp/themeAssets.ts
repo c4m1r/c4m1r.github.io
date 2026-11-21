@@ -6,6 +6,7 @@
 // Иконки
 import folderPlainXp from './assets/icons/folder_plain.png';
 import myComputerXp from './assets/icons/mycomputer.png';
+import driveXp from './icons/devices/drive-hdd/32x32.png';
 import recycleBinXp from './assets/icons/recycling_bin.png';
 import ieIconXp from './assets/icons/ie.png';
 import mailIconXp from './assets/icons/outlook.png';
@@ -42,6 +43,7 @@ import minesweeperIconXp from '../../apps/minesweeper/assets/icon.png';
 export interface WinXPAssets {
   folderIcon: string;
   computerIcon: string;
+  driveIcon?: string;
   recycleIcon: string;
   startButtonIcon: string;
   trayExpandIcon: string;
@@ -70,6 +72,7 @@ export interface WinXPAssets {
 export const WINXP_ASSETS: WinXPAssets = {
   folderIcon: folderPlainXp,
   computerIcon: myComputerXp,
+  driveIcon: driveXp,
   recycleIcon: recycleBinXp,
   startButtonIcon: windowsLogoXp,
   trayExpandIcon: trayExpandXp,

@@ -5,6 +5,7 @@ import shutdownIcon from './assets/icons/shutdown.png';
 import userAvatar from './assets/user.gif';
 // Default account picture for the User account (Windows XP built-in set).
 import userDefaultPicture from './assets/avatars/user4.png';
+import { setSessionAccount } from '../../domain/auth/session';
 import { XP_IDENTITY_LOGO } from './xpIdentityLogo';
 import { verifyAccountPassword } from '../../domain/auth/credentials';
 import './xp.css';
@@ -33,6 +34,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   };
 
   const handleUserClick = () => {
+    setSessionAccount('User');
     setLoggingInUser('user');
     setTimeout(onLogin, 1200);
   };
@@ -41,6 +43,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     if (e) e.preventDefault();
     if (verifyAccountPassword('c4m1r', password)) {
       setErrorMessage('');
+      setSessionAccount('C4m1r');
       setLoggingInUser('c4m1r');
       setTimeout(onLogin, 1500);
     } else {

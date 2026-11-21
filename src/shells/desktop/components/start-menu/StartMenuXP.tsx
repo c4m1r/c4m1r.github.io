@@ -5,6 +5,8 @@ import { ChevronsRight } from 'lucide-react';
 import { THEME_ASSETS, ThemeAssetId } from '../../../../themes/webos/themeAssets';
 import { appRegistry } from '../../appRegistry';
 import { getActiveEdition } from '../../../os/osEditions';
+import { getSessionAccount } from '../../../../domain/auth/session';
+import xpUserDefaultPicture from '../../../../themes/winxp/assets/avatars/user4.png';
 
 import logoffIcon from '../../../../themes/winxp/assets/icons/logoff.png';
 import shutdownIcon from '../../../../themes/winxp/assets/icons/shutdown.png';
@@ -54,6 +56,10 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const startMenuIcons = themeAssets.startMenuIcons;
   const placeIcons = themeAssets.placesIcons ?? {};
   const userAvatar = themeAssets.userAvatar;
+  // The header follows the account chosen at login: User gets its default picture,
+  // C4m1r keeps its animated avatar.
+  const sessionAccount = getSessionAccount();
+  const headerAvatar = sessionAccount === 'User' ? xpUserDefaultPicture : userAvatar;
   const fallbackIcon = themeAssets.folderIcon ?? themeAssets.projectsIcon;
   const handleHover = () => {
     onHover?.();
@@ -316,10 +322,10 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             boxShadow: 'inset 0 -1px 1px #0e60cb',
           }}
         />
-        {userAvatar && (
+        {headerAvatar && (
           <img
-            src={userAvatar}
-            alt="User"
+            src={headerAvatar}
+            alt={sessionAccount}
             className="w-[42px] h-[42px] mr-[5px] rounded-[3px] border-2"
             style={{
               borderColor: 'rgba(222, 222, 222, 0.8)',
@@ -337,7 +343,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               textShadow: '1px 1px rgba(0, 0, 0, 0.7)',
             }}
           >
-            {t.user}
+            {sessionAccount}
           </span>
           {activeEdition && (
             <span

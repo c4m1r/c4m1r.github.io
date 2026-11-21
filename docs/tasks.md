@@ -515,3 +515,13 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Windows 7 Start menu: the edition line overlapped the first place entry; the places list now clears the header.
 - [ ] Windows XP Explorer has no folder tree (the sidebar is XP-specific); XP Start menu user name and avatar still use the shared identity. Check against the account from `session.ts` and the XP tree/task pane.
 - [ ] Win2000 Start menu and Explorer toolbars not yet compared with period screenshots at native scale.
+
+## Windows XP Explorer and Start menu identity — 2026-11-21
+
+- [x] XP Start menu header shows the account chosen at login (User or C4m1r) instead of a fixed name; User gets its default picture (`avatars/user4.png`, same as the login tile), C4m1r keeps the animated `user.gif`. The XP login screen records the account via `src/domain/auth/session.ts`.
+- [x] XP My Computer matches Windows XP's grouping: "Hard Disk Drives" (Local Disk C:) and "Devices with Removable Storage" (3½ Floppy A:, CD Drive D:). Network Neighborhood is no longer listed under My Computer; it stays reachable through the Start menu and Places.
+- [x] XP status bar counts 3 objects. Floppy and CD icons are downscaled (LANCZOS, no upscale) from the 1024 px XP sources into `src/themes/winxp/icons/devices/`; a native 32 px variant would be better if one is found.
+- [x] Drives now resolve to their own theme icon (`driveIcon`) instead of the computer icon: XP uses the XP hard-disk icon, Win98 the Win98 hard-disk icon, Win2000 its 2000 drive icon.
+- [x] XP Explorer has no folder tree by design (XP uses the task pane); the earlier "tree root" item is closed as not applicable.
+- [ ] Windows 7 drives still use the computer icon: Win7 has no `driveIcon` registry entry yet; add one from the Win7 bank.
+- [ ] Windows XP Explorer detail/list views and the XP toolbar still need a comparison with a period screenshot at native scale.

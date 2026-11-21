@@ -6,6 +6,7 @@
  * rather than silently inheriting a later Windows generation's glossy icon.
  */
 import computerIcon from './icons/devices/computer-2-cool/48x48-3.png';
+import driveIcon from './icons/devices/hard-disk-drive/32x32-0.png';
 import folderIcon from './icons/folders/directory-closed/48x48-4.png';
 import internetExplorerIcon from './icons/network/msie1/48x48-2.png';
 import mailIcon from './icons/network/mailbox-world/48x48-2.png';
@@ -29,6 +30,7 @@ import paintIcon from './icons/apps/paint-old/32x32-0.png';
 
 export const WIN98_ICON_ASSETS = {
   computerIcon,
+  driveIcon,
   folderIcon,
   recycleIcon,
   recycleFullIcon,

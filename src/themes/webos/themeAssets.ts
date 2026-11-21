@@ -1,5 +1,6 @@
 // WebOS assets - используем assets из winxp темы
 import folderPlainWebos from '../winxp/assets/icons/folder_plain.png';
+import driveXpIcon from '../winxp/icons/devices/drive-hdd/32x32.png';
 import myComputerWebos from '../winxp/assets/icons/mycomputer.png';
 import recycleBinWebos from '../winxp/assets/icons/recycling_bin.png';
 import folderDocumentsWebos from '../winxp/assets/icons/folder-documents.png';
@@ -89,6 +90,7 @@ export interface ThemeAssets {
   computerIcon?: string;
   recycleIcon?: string;
   recycleFullIcon?: string;
+  driveIcon?: string;
   startButtonIcon?: string;
   startButtonHoverIcon?: string;
   trayExpandIcon?: string;
@@ -229,6 +231,7 @@ const sharedWebosAssets: ThemeAssets = {
 
 const xpThemeAssets: ThemeAssets = {
   ...sharedWebosAssets,
+  driveIcon: driveXpIcon,
   startMenuIcons: { ...sharedWebosAssets.startMenuIcons },
   placesIcons: { ...sharedWebosAssets.placesIcons },
 };
