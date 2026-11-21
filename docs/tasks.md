@@ -539,3 +539,11 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Right column follows the default Windows 7 order: Documents, Pictures, Music, Games, Computer, Control Panel, Devices and Printers, Default Programs, Help and Support, with separators after Music, Games and Devices and Printers. Videos and Network are removed; the edition subtitle is removed.
 - [x] The user picture sits fully inside the panel in the top-right corner and the account name is left-aligned at the top of the column (`desktop-fidelity.css`); the places list clears the header.
 - [ ] Full-scale comparison against a Windows 7 period screenshot still pending for the program list and the search row.
+
+## Windows 2000 Start menu — 2026-11-21
+
+- [x] Windows 2000 Start menu uses its own native shell icons from the 2000 ICO set (Programs, Accessories, Documents, Settings, Search, Help, Run, Shut Down, Windows Update, Internet Explorer), downscaled to 16 px (`src/themes/win2000/icons/start-menu/`). Win98 artwork remains only for roles not yet identified (Outlook, Calculator, Notepad, Paint, Media Player, Minesweeper, DOOM).
+- [x] "Windows Update" is the first item, followed by a separator, as in Windows 2000 Professional. It has no action yet.
+- [x] Log off reads "Log Off <account>..." with the account chosen at login.
+- [x] Sidebar label "Windows 2000 Professional" is vertical text and fits the strip.
+- [ ] Windows 2000 Start menu still needs identification of the remaining Win98 roles and a comparison with a period screenshot at native scale.

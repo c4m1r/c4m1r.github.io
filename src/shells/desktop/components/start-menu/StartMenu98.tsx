@@ -1,24 +1,35 @@
 import { useState, type ReactNode } from 'react';
 import { useApp } from '../../../../contexts/useApp';
 import { getActiveEdition } from '../../../os/osEditions';
+import { getSessionAccount } from '../../../../domain/auth/session';
 import ieClassicIcon from '../../../../themes/win98/icons/network/msie1/16x16-3.png';
 import outlookClassicIcon from '../../../../themes/win98/icons/network/mailbox-world/16x16-1.png';
 import mediaPlayerClassicIcon from '../../../../themes/win98/icons/media/media-player/16x16-1.png';
-import programsIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-1.png';
+import programsClassicIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-1.png';
 import favoritesIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-2.png';
-import documentsIcon from '../../../../themes/win98/icons/documents/directory-open-file-mydocs/16x16-2.png';
-import settingsIcon from '../../../../themes/win98/icons/folders/directory-control-panel/16x16-1.png';
-import findIcon from '../../../../themes/win98/icons/devices/search-computer/16x16-1.png';
-import helpIcon from '../../../../themes/win98/icons/devices/help-book-computer/16x16-1.png';
-import runIcon from '../../../../themes/win98/icons/apps/ms-dos/32x32-0.png';
+import documentsClassicIcon from '../../../../themes/win98/icons/documents/directory-open-file-mydocs/16x16-2.png';
+import settingsClassicIcon from '../../../../themes/win98/icons/folders/directory-control-panel/16x16-1.png';
+import findClassicIcon from '../../../../themes/win98/icons/devices/search-computer/16x16-1.png';
+import helpClassicIcon from '../../../../themes/win98/icons/devices/help-book-computer/16x16-1.png';
+import runClassicIcon from '../../../../themes/win98/icons/apps/ms-dos/32x32-0.png';
 import logOffIcon from '../../../../themes/win98/icons/system/shut-down-cool/16x16-3.png';
-import shutDownIcon from '../../../../themes/win98/icons/system/shut-down-cool/16x16-2.png';
-import accessoriesIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-1.png';
+import shutDownClassicIcon from '../../../../themes/win98/icons/system/shut-down-cool/16x16-2.png';
+import accessoriesClassicIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-1.png';
 import calculatorIcon from '../../../../themes/win98/icons/apps/calculator/16x16-1.png';
 import notepadIcon from '../../../../themes/win98/icons/documents/notepad/16x16-0.png';
 import paintIcon from '../../../../themes/win98/icons/apps/paint-old/16x16-1.png';
 import minesweeperIcon from '../../../../themes/win98/icons/apps/game-mine-1/16x16-1.png';
 import documentIcon from '../../../../themes/win98/icons/documents/document/16x16-1.png';
+import win2000ProgramsIcon from '../../../../themes/win2000/icons/start-menu/programs-16.png';
+import win2000AccessoriesIcon from '../../../../themes/win2000/icons/start-menu/accessories-16.png';
+import win2000DocumentsIcon from '../../../../themes/win2000/icons/start-menu/documents-16.png';
+import win2000SettingsIcon from '../../../../themes/win2000/icons/start-menu/settings-16.png';
+import win2000FindIcon from '../../../../themes/win2000/icons/start-menu/find-16.png';
+import win2000HelpIcon from '../../../../themes/win2000/icons/start-menu/help-16.png';
+import win2000RunIcon from '../../../../themes/win2000/icons/start-menu/run-16.png';
+import win2000ShutDownIcon from '../../../../themes/win2000/icons/start-menu/shutdown-16.png';
+import win2000UpdateIcon from '../../../../themes/win2000/icons/start-menu/update-16.png';
+import win2000IeIcon from '../../../../themes/win2000/icons/start-menu/internet-explorer-16.png';
 
 export interface StartMenu98Props {
   onClose: () => void;
@@ -52,10 +63,27 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const isWin2000 = theme === 'win2000';
   const [openChain, setOpenChain] = useState<string[]>([]);
   const activeEdition = getActiveEdition(theme);
+  const account = getSessionAccount();
+
+  // Windows 2000 gets its own shell icons for the roles the native ICO set covers;
+  // the rest fall back to the Windows 98 artwork until they are identified.
+  const programsIcon = isWin2000 ? win2000ProgramsIcon : programsClassicIcon;
+  const accessoriesIcon = isWin2000 ? win2000AccessoriesIcon : accessoriesClassicIcon;
+  const documentsIcon = isWin2000 ? win2000DocumentsIcon : documentsClassicIcon;
+  const settingsIcon = isWin2000 ? win2000SettingsIcon : settingsClassicIcon;
+  const findIcon = isWin2000 ? win2000FindIcon : findClassicIcon;
+  const helpIcon = isWin2000 ? win2000HelpIcon : helpClassicIcon;
+  const runIcon = isWin2000 ? win2000RunIcon : runClassicIcon;
+  const shutDownIcon = isWin2000 ? win2000ShutDownIcon : shutDownClassicIcon;
+  const ieIcon = isWin2000 ? win2000IeIcon : ieClassicIcon;
 
   const menuItems: ClassicMenuItem[] = [
+    ...(isWin2000 ? [
+      { label: 'Windows Update', icon: classicIcon(win2000UpdateIcon) },
+      { label: '', icon: null, separator: true },
+    ] : []),
     { label: isRu ? 'Программы' : 'Programs', icon: classicIcon(programsIcon), submenu: [
-      { label: 'Internet Explorer', icon: classicIcon(ieClassicIcon), appId: 'internet-explorer' },
+      { label: 'Internet Explorer', icon: classicIcon(ieIcon), appId: 'internet-explorer' },
       { label: 'Outlook Express', icon: classicIcon(outlookClassicIcon), appId: 'outlook' },
       { label: isRu ? 'Стандартные' : 'Accessories', icon: classicIcon(accessoriesIcon), submenu: [
         { label: isRu ? 'Калькулятор' : 'Calculator', icon: classicIcon(calculatorIcon), appId: 'calculator' },
@@ -84,7 +112,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     { label: isRu ? 'Справка' : 'Help', icon: classicIcon(helpIcon), appId: 'wiki' },
     { label: isRu ? 'Выполнить...' : 'Run...', icon: classicIcon(runIcon), appId: 'run' },
     { label: '', icon: null, separator: true },
-    { label: isRu ? 'Завершение сеанса...' : 'Log Off...', icon: classicIcon(logOffIcon), action: 'logoff' },
+    { label: isWin2000 ? (isRu ? `Завершение сеанса ${account}...` : `Log Off ${account}...`) : (isRu ? 'Завершение сеанса...' : 'Log Off...'), icon: classicIcon(logOffIcon), action: 'logoff' },
     { label: isRu ? 'Завершение работы...' : 'Shut Down...', icon: classicIcon(shutDownIcon), action: 'shutdown' },
   ];
 
@@ -166,8 +194,10 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         }}
       >
         <span
-          className="text-white font-bold text-lg transform -rotate-90 whitespace-nowrap tracking-widest origin-bottom-center"
-          style={{ fontFamily: 'MS Sans Serif, sans-serif' }}
+          className={`text-white font-bold whitespace-nowrap ${isWin2000 ? 'text-base' : 'transform -rotate-90 origin-bottom-center text-lg tracking-widest'}`}
+          style={isWin2000
+            ? { fontFamily: 'MS Sans Serif, sans-serif', writingMode: 'vertical-rl', transform: 'rotate(180deg)' }
+            : { fontFamily: 'MS Sans Serif, sans-serif' }}
         >
           {isWin2000 ? (
             <>Windows<span className="font-normal text-xs ml-1">{activeEdition?.label ?? '2000'}</span></>
