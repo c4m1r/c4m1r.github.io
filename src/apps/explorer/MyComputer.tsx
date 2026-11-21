@@ -21,6 +21,13 @@ import win2000ComputerIcon from '../../themes/win98/icons/devices/computer-explo
 import win98FolderIcon from '../../themes/win98/icons/folders/directory-closed/32x32-0.png';
 import win98DriveIcon from '../../themes/win98/icons/devices/hard-disk-drive/32x32-0.png';
 import win98SearchIcon from '../../themes/win98/icons/devices/search-computer/32x32-0.png';
+import win98FloppyIcon from '../../themes/win98/icons/devices/floppy-drive-3-5-cool/32x32-2.png';
+import win98CdIcon from '../../themes/win98/icons/devices/cd-drive/32x32-2.png';
+import win98ControlPanelIcon from '../../themes/win98/icons/folders/directory-control-panel/32x32-2.png';
+import win98PrintersIcon from '../../themes/win98/icons/devices/printer/32x32-2.png';
+import win98DialupIcon from '../../themes/win98/icons/network/directory-dial-up-networking/32x32-0.png';
+import win98SchedTasksIcon from '../../themes/win98/icons/apps/sched-tasks/32x32-0.png';
+import win98WebFoldersIcon from '../../themes/win98/icons/network/directory-net-web/32x32-0.png';
 
 const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки|(?:^|[\\/])pictures$/i.test(value);
 
@@ -950,7 +957,42 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
               ))}
             </div>
           ) : viewMode === 'icons' ? (
-            path === 'My Computer' ? (
+            path === 'My Computer' && theme === 'win-98' ? (
+              // Windows 98 lists drives and system folders in one flat grid; Network
+              // Neighborhood lives on the desktop, not under My Computer.
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
+                {([
+                  { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: win98FloppyIcon, open: undefined as (() => void) | undefined },
+                  ...visibleItems.filter((i) => i.name === 'Local Disk (C:)').map((item) => ({ key: item.name, label: isRu ? 'Локальный диск (C:)' : item.name, icon: win98DriveIcon, open: () => handleNavigate(item) })),
+                  { key: 'CD-ROM (D:)', label: isRu ? 'Дисковод CD-ROM (D:)' : 'CD-ROM Drive (D:)', icon: win98CdIcon, open: undefined },
+                  { key: 'Control Panel', label: isRu ? 'Панель управления' : 'Control Panel', icon: win98ControlPanelIcon, open: () => window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'control-panel' } })) },
+                  { key: 'Printers', label: isRu ? 'Принтеры' : 'Printers', icon: win98PrintersIcon, open: undefined },
+                  { key: 'Dial-Up Networking', label: isRu ? 'Удалённый доступ' : 'Dial-Up Networking', icon: win98DialupIcon, open: undefined },
+                  { key: 'Scheduled Tasks', label: isRu ? 'Запланированные задания' : 'Scheduled Tasks', icon: win98SchedTasksIcon, open: undefined },
+                  { key: 'Web Folders', label: isRu ? 'Веб-папки' : 'Web Folders', icon: win98WebFoldersIcon, open: undefined },
+                ]).map((entry) => (
+                  <div
+                    key={entry.key}
+                    className={`flex flex-col items-center cursor-pointer border border-transparent p-1 ${selectedItem === entry.key ? 'bg-[#000080] text-white' : 'hover:bg-gray-100'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedItem(entry.key);
+                    }}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      entry.open?.();
+                    }}
+                  >
+                    <div className="w-8 h-8 flex items-center justify-center mb-1">
+                      <img src={entry.icon} alt="" className="w-8 h-8 object-contain" />
+                    </div>
+                    <span className={`text-center text-xs px-1 break-words w-full ${selectedItem === entry.key ? 'text-white' : 'text-black'}`}>
+                      {entry.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : path === 'My Computer' ? (
               <div className="space-y-6">
                 {visibleItems.filter((i) => i.type === 'folder').length > 0 && (
                   <div>
@@ -1109,7 +1151,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       {/* Status Bar */}
       <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
         <div className="flex gap-4">
-          <span>{visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
+          <span>{path === 'My Computer' && theme === 'win-98' ? 8 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
           {selectedItem && <span>{isRu ? 'Выбрано:' : 'Selected:'} {selectedItem}</span>}
         </div>
         {detailsForSelection && (
