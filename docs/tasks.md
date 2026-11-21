@@ -533,3 +533,9 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Item count wording fixed ("1 item" / "2 items").
 - [ ] The DVD RW Drive (D:) entry is not in the filesystem model; it cannot be opened yet.
 - [ ] Windows 7 Start menu: program list and places compared against the Windows 7 default layout; site-specific entries (Wiki, Terminal, Loops, DOOM) remain as product content. A period screenshot comparison at native scale is still pending.
+
+## Windows 7 Start menu right column — 2026-11-21
+
+- [x] Right column follows the default Windows 7 order: Documents, Pictures, Music, Games, Computer, Control Panel, Devices and Printers, Default Programs, Help and Support, with separators after Music, Games and Devices and Printers. Videos and Network are removed; the edition subtitle is removed.
+- [x] The user picture sits fully inside the panel in the top-right corner and the account name is left-aligned at the top of the column (`desktop-fidelity.css`); the places list clears the header.
+- [ ] Full-scale comparison against a Windows 7 period screenshot still pending for the program list and the search row.

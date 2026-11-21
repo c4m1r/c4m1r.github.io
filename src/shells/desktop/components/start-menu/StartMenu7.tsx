@@ -3,7 +3,6 @@ import { ChevronRight, Search } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
 import { appRegistry } from '../../appRegistry';
 import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
-import { getActiveEdition } from '../../../os/osEditions';
 import { getSessionAccount } from '../../../../domain/auth/session';
 
 export interface StartMenu7Props {
@@ -29,7 +28,6 @@ type Win7MenuEntry = {
 const DOCUMENTS_PATH = 'C:\\Users\\C4m1r\\My Documents';
 const PICTURES_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Pictures';
 const MUSIC_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Music';
-const VIDEOS_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Videos';
 
 export function StartMenu7({
   onClose,
@@ -38,10 +36,9 @@ export function StartMenu7({
   onSystemCommand,
   onHover,
 }: StartMenu7Props) {
-  const { language, theme } = useApp();
+  const { language } = useApp();
   const isRu = language === 'ru';
   const assets = THEME_ASSETS.win7;
-  const activeEdition = getActiveEdition(theme);
   const [query, setQuery] = useState('');
   const [showAllPrograms, setShowAllPrograms] = useState(false);
 
@@ -128,6 +125,8 @@ export function StartMenu7({
     program.label.toLocaleLowerCase(language).includes(query.trim().toLocaleLowerCase(language)),
   );
 
+  // Default Windows 7 right column: libraries, Games, Computer, then the system
+  // entries. Separators follow the default grouping (libraries | Games | system).
   const places: Win7MenuEntry[] = [
     {
       id: 'documents',
@@ -148,10 +147,10 @@ export function StartMenu7({
       icon: assets.placesIcons.myMusic ?? assets.folderIcon,
     },
     {
-      id: 'videos',
-      label: isRu ? 'Видео' : 'Videos',
-      path: VIDEOS_PATH,
-      icon: assets.folderIcon,
+      id: 'games',
+      label: isRu ? 'Игры' : 'Games',
+      path: 'C:\\Program Files\\Games',
+      icon: assets.gamesFolderIcon ?? assets.folderIcon,
     },
     {
       id: 'computer',
@@ -160,16 +159,16 @@ export function StartMenu7({
       icon: assets.computerIcon,
     },
     {
-      id: 'network',
-      label: isRu ? 'Сетевое окружение' : 'Network',
-      path: 'My Computer\\\\Network Neighborhood',
-      icon: assets.placesIcons.connectTo ?? assets.computerIcon,
-    },
-    {
       id: 'control-panel',
       label: isRu ? 'Панель управления' : 'Control Panel',
       appId: 'control-panel',
       icon: assets.controlPanelIcon,
+    },
+    {
+      id: 'devices-printers',
+      label: isRu ? 'Устройства и принтеры' : 'Devices and Printers',
+      appId: 'control-panel',
+      icon: assets.placesIcons.printers ?? assets.controlPanelIcon,
     },
     {
       id: 'default-programs',
@@ -182,6 +181,7 @@ export function StartMenu7({
       appId: 'help',
     },
   ];
+  const separatorAfter = new Set(['music', 'games', 'devices-printers']);
 
   const activate = (entry: Win7MenuEntry) => {
     if (entry.disabled) return;
@@ -247,11 +247,6 @@ export function StartMenu7({
           </div>
           <div className="win7-start-menu__username">
             {getSessionAccount()}
-            {activeEdition && (
-              <span className="block text-[10px] font-normal text-blue-200/90 leading-tight">
-                Windows 7 {activeEdition.label}
-              </span>
-            )}
           </div>
 
           <div className="win7-start-menu__places" role="menu">
@@ -259,7 +254,7 @@ export function StartMenu7({
               <button
                 key={entry.id}
                 type="button"
-                className={`win7-start-menu__place ${entry.disabled ? 'is-disabled' : ''} ${index === 3 || index === 4 ? 'has-separator' : ''}`}
+                className={`win7-start-menu__place ${entry.disabled ? 'is-disabled' : ''} ${separatorAfter.has(places[index - 1]?.id ?? '') ? 'has-separator' : ''}`}
                 onClick={() => activate(entry)}
                 onMouseEnter={entry.disabled ? undefined : onHover}
                 disabled={entry.disabled}
