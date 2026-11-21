@@ -431,3 +431,12 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Contact-sheet review of Windows 98 and 2000 role sizes.
 - [ ] Review Windows XP sizes: the named 1024 px sources are still downscaled where no 16/32 px native exists; the numbered XP bank (`winxp/assets/icons/NNN(16x16|32x32|48x48).png`) needs a visual role mapping.
 - [ ] Windows 98 Computer, Help, MS-DOS: no native 16 px variant matched the reference within the threshold; the 16 px files are derived and should be reviewed.
+
+## Windows 7 icon bank standardization — 2026-11-21
+
+- [x] Visually reviewed all 533 numeric Windows 7 icons on labelled contact sheets and assigned each a `category/name` in `scripts/data/win7-icon-names.txt`.
+- [x] `scripts/organize-win7-icons.py` moves them to `src/themes/win7/icons/<category>/<name>.png`, collapses 27 byte-identical duplicates (aliases kept in `manifest.json`) and removes the numeric originals. Result: 508 unique icons.
+- [x] Random 48-icon sample checked against the map: names match artwork.
+- [x] Hand-named Windows 7 files (`computer.png`, `folder.png`, `internet-explorer.png`, `mail.png`, `volume.png`, `vista-orb.ico`) are unchanged because code imports them.
+- [ ] Apply the same category/name standard to the Windows XP (`NNN(WxW).png`, 93 numbered variants) and Windows 98 (`*-N.png` families) banks.
+- [ ] Point runtime theme registries at `src/themes/win7/icons/` where a role should use the standardized name.
