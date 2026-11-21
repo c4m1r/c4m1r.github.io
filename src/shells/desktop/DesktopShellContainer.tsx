@@ -544,7 +544,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       };
 
       if (!src) {
-        triggerFallback();
+        // Themes without an original sound stay silent rather than playing a synthesized tone.
         return;
       }
 

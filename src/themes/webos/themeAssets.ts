@@ -60,6 +60,11 @@ import win2000Shutdown from '../win2000/assets/audio/shutdown.wav';
 import xpStartup from '../winxp/assets/audio/startup.wav';
 import xpShutdown from '../winxp/assets/audio/shutdown.wav';
 import xpLogoff from '../winxp/assets/audio/logoff.wav';
+import xpUiLaunch from '../winxp/assets/audio/ui/launch.wav';
+import xpUiMenuOpen from '../winxp/assets/audio/ui/menu-open.wav';
+import xpUiMinimize from '../winxp/assets/audio/ui/minimize.wav';
+import xpUiRestore from '../winxp/assets/audio/ui/restore.wav';
+import xpUiError from '../winxp/assets/sounds/error.wav';
 import win98StartIcon from '../win98/icons/system/start98/32x32-0.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
 
@@ -192,13 +197,11 @@ const sharedWebosAssets: ThemeAssets = {
   shutdownSound: xpShutdown,
   logoffSound: xpLogoff,
   uiSounds: {
-    menuOpen: '/sounds/ui/xp-menu-open.mp3',
-    menuClose: '/sounds/ui/xp-menu-close.mp3',
-    menuHover: '/sounds/ui/xp-menu-hover.mp3',
-    launchApp: '/sounds/ui/xp-launch.mp3',
-    minimize: '/sounds/ui/xp-minimize.mp3',
-    restore: '/sounds/ui/xp-restore.mp3',
-    error: '/sounds/ui/xp-error.mp3',
+    menuOpen: xpUiMenuOpen,
+    launchApp: xpUiLaunch,
+    minimize: xpUiMinimize,
+    restore: xpUiRestore,
+    error: xpUiError,
   },
   startMenuIcons: {
     internetExplorer: ieIconWebos,
@@ -249,10 +252,10 @@ const win7ThemeAssets: ThemeAssets = {
   ...WIN7_ICON_ASSETS,
   startupSound: WIN7_ASSETS.startupSound,
   bootVideo: WIN7_ASSETS.bootVideo,
-  // Windows 7 shutdown and logoff sounds are not in the reference set yet; an
-  // empty string keeps the XP sounds from the shared base from leaking in.
-  shutdownSound: '',
-  logoffSound: '',
+  shutdownSound: WIN7_ASSETS.shutdownSound,
+  logoffSound: WIN7_ASSETS.logoffSound,
+  // Windows 7 UI events from its own default scheme; the XP set is not inherited.
+  uiSounds: { ...WIN7_ASSETS.uiSounds },
   startMenuIcons: {
     ...sharedWebosAssets.startMenuIcons,
     ...WIN7_ICON_ASSETS.startMenuIcons,
@@ -310,13 +313,15 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     shutdownSound: win98Shutdown,
     // Windows 98 has no logoff sound.
     logoffSound: '',
+    // No Windows 98/2000 UI sounds in the reference set; keep them silent.
     uiSounds: {
-      menuOpen: '/sounds/ui/win98-menu-open.mp3',
-      menuClose: '/sounds/ui/win98-menu-close.mp3',
-      launchApp: '/sounds/ui/win98-launch.mp3',
-      minimize: '/sounds/ui/win98-minimize.mp3',
-      restore: '/sounds/ui/win98-restore.mp3',
-      error: '/sounds/ui/win98-error.mp3',
+      menuOpen: '',
+      menuClose: '',
+      menuHover: '',
+      launchApp: '',
+      minimize: '',
+      restore: '',
+      error: '',
     },
   },
   win2000: {
@@ -325,13 +330,15 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     shutdownSound: win2000Shutdown,
     // No separate logoff sound in the reference set.
     logoffSound: '',
+    // No Windows 98/2000 UI sounds in the reference set; keep them silent.
     uiSounds: {
-      menuOpen: '/sounds/ui/win98-menu-open.mp3',
-      menuClose: '/sounds/ui/win98-menu-close.mp3',
-      launchApp: '/sounds/ui/win98-launch.mp3',
-      minimize: '/sounds/ui/win98-minimize.mp3',
-      restore: '/sounds/ui/win98-restore.mp3',
-      error: '/sounds/ui/win98-error.mp3',
+      menuOpen: '',
+      menuClose: '',
+      menuHover: '',
+      launchApp: '',
+      minimize: '',
+      restore: '',
+      error: '',
     },
     startMenuIcons: {},
     placesIcons: { ...WIN2000_ICON_ASSETS.placesIcons },

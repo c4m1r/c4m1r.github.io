@@ -1,6 +1,12 @@
 import bootVideo from './assets/boot/win7-boot-anim.mp4';
 import welcomeLoadingVideo from './assets/boot/win7-greetings-loading.webm';
-import startupSound from './assets/audio/windows-7-startup.mp3';
+import startupSound from './assets/audio/startup.wav';
+import shutdownSound from './assets/audio/shutdown.wav';
+import logoffSound from './assets/audio/logoff.wav';
+import uiMenuOpen from './assets/audio/menu-open.wav';
+import uiMinimize from './assets/audio/minimize.wav';
+import uiRestore from './assets/audio/restore.wav';
+import uiError from './assets/audio/error.wav';
 import loginBackground from './assets/images/login-background.jpg';
 import desktopWallpaper from './assets/images/desktop-wallpaper.jpg';
 import windowsLogo from './assets/images/windows-7-logo.png';
@@ -18,6 +24,14 @@ export const WIN7_ASSETS = {
   bootVideo,
   welcomeLoadingVideo,
   startupSound,
+  shutdownSound,
+  logoffSound,
+  uiSounds: {
+    menuOpen: uiMenuOpen,
+    minimize: uiMinimize,
+    restore: uiRestore,
+    error: uiError,
+  },
   loginBackground,
   desktopWallpaper,
   windowsLogo,

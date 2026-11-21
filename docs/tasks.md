@@ -566,5 +566,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] One boot layer (`src/themes/bootPreload.ts`) is used by every Windows-family theme. Choosing an OS in GRUB primes the wallpaper, boot logo, progress art and the Windows 7 boot video, and starts the startup sound inside the click or key press, so it plays before the boot screen appears, even with a cold cache.
 - [x] If the browser blocks autoplay (autoboot without a gesture), the sound is retried on the first pointer or key press.
 - [x] The desktop no longer plays the startup sound when the boot screen already did, so each boot plays it once. Checked: XP path through login and welcome plays one startup sound; Windows 98, 2000 and 7 each play their own.
-- [ ] Windows 7 shutdown and logoff sounds: not in the reference set yet; currently silent.
-- [ ] UI event sounds (`/sounds/ui/*`) still point to files that are not in the repository. Each needs an original source before they play.
+- [x] Windows 7 startup, shutdown and logoff use the original default-scheme files from the Windows 7 set.
+- [x] UI sounds use original files only where a matching event exists in that OS: XP (menu open, launch, minimize, restore, error), Windows 7 (menu open, minimize, restore, error). Windows 98 and 2000 have no matching UI sounds in the reference set, so those events stay silent. Missing tones are no longer synthesized in place of an original.
+- [x] Non-original sound files (previous Windows 7 and 98 startup mp3) moved to `eat/original/`, outside the app.
+- [ ] Verify the UI event mapping by ear against the Windows XP and Windows 7 sound schemes (launch and error names are the closest match).
