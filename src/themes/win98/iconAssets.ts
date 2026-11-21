@@ -18,6 +18,7 @@ import alarmIcon from './icons/apps/installer-generic-old/32x32-0.png';
 import solitaireIcon from './icons/apps/game-solitaire/32x32-0.png';
 import freecellIcon from './icons/apps/game-freecell/32x32-0.png';
 import heartsIcon from './icons/apps/game-hearts/32x32-0.png';
+import spiderIcon from './icons/apps/game-spider/32x32-0.png';
 import picturesIcon from './icons/media/kodak-imaging/32x32-0.png';
 import controlPanelIcon from './icons/folders/directory-control-panel/48x48-0.png';
 import helpIcon from './icons/devices/help-book-computer/48x48-4.png';
@@ -50,6 +51,7 @@ export const WIN98_ICON_ASSETS = {
   solitaireIcon,
   freecellIcon,
   heartsIcon,
+  spiderIcon,
   picturesIcon,
   controlPanelIcon,
   helpIcon,

@@ -613,3 +613,6 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Hearts sketch (`src/apps/games/hearts`): passing, rules, computer players, round and game scoring; registered as `hearts` with per-OS icons; Program Files `microsoft/mshearts.exe`.
 - [ ] Spider Solitaire, 3D Pinball, Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.
+
+- [x] Spider Solitaire sketch (`src/apps/games/spider`): 104 cards, same-suit runs, stock deals; registered as `spider` (XP art; Win98 `game-spider`; Win7 Solitaire stand-in); Program Files `microsoft/spider.exe` (name not verified against the original).
+- [ ] 3D Pinball, Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.

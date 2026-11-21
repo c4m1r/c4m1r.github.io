@@ -26,6 +26,7 @@ import { MemoryGame } from '../../apps/games/MemoryGame';
 import { SolitaireGame } from '../../apps/games/solitaire';
 import { FreeCellGame } from '../../apps/games/freecell';
 import { HeartsGame } from '../../apps/games/hearts';
+import { SpiderGame } from '../../apps/games/spider';
 import { ResumeApp } from './apps/resume/ResumeApp';
 import { TaskManager } from '../../apps/TaskManager';
 
@@ -452,6 +453,15 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'heartsIcon',
     component: HeartsGame,
     defaultWindow: { width: 640, height: 600 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
+  'spider': {
+    id: 'spider',
+    title: { en: 'Spider Solitaire', ru: 'Паук', fr: 'Spider', es: 'Spider', zh: '蜘蛛纸牌', ja: 'スパイダー', ko: '스파이더' },
+    iconKey: 'spiderIcon',
+    component: SpiderGame,
+    defaultWindow: { width: 760, height: 560 },
     showInStartMenu: false,
     showOnDesktop: false,
   },

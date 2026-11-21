@@ -11,7 +11,7 @@ Layouts and rules follow the public rule sets; code is written for this site, no
 | FreeCell («Свободная ячейка») | 3.1 (Win32s), 95, 98, 2000, XP, Vista, 7, 10 | Sketch: `src/apps/games/freecell` (4 cells, supermoves) |
 | Minesweeper («Сапёр») | 3.1, 95, 98, 2000, XP, Vista, 7 | Exists: `src/apps/minesweeper` |
 | Hearts («Сердца») | 3.1, 95, 98, XP, Vista, 7 | Sketch: `src/apps/games/hearts` (pass, follow suit, heart-breaking, shooting the moon, 100-point game) |
-| Spider Solitaire | XP, Vista, 7, 10 | Not started |
+| Spider Solitaire («Паук») | XP, Vista, 7, 10 | Sketch: `src/apps/games/spider` (104 cards, one-suit build K→A, stock deals; default one suit) |
 | 3D Pinball – Space Cadet | 2000, XP | Not started |
 | Reversi | 3.1 | Not started |
 | Chess Titans | Vista, 7 | Not started (Chess sketch reference in `eat/`) |
@@ -39,6 +39,6 @@ Layouts and rules follow the public rule sets; code is written for this site, no
 
 ## Next steps
 
-1. Spider Solitaire (same card model in `src/apps/games/cards`).
+1. Spider: suit-count choice (2 and 4 suits) and the Win-style scoring/timer.
 2. Pinball and Chess as separate sketches once the card games are reviewed against the user's screenshots.
 3. Per-OS visual fidelity (card backs, felt colour, window chrome) after screenshots arrive in `eat/screens/oc/<os>/`.

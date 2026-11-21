@@ -19,6 +19,8 @@ import calendarIcon from './icons/apps/calendar.png';
 import alarmIcon from './icons/apps/window-run.png';
 import solitaireIcon from './icons/apps/solitaire.png';
 import heartsIcon from './icons/apps/hearts-games.png';
+// Windows 7 has no separate Spider icon in the set; its Solitaire icon stands in.
+const spiderIcon = solitaireIcon;
 import helpIcon from './icons/system/help-circle.png';
 import controlPanelIcon from './icons/system/gears-window.png';
 import recycleIcon from './icons/system/recycle-bin-empty.png';
@@ -59,6 +61,7 @@ export const WIN7_ICON_ASSETS = {
   alarmIcon,
   solitaireIcon,
   heartsIcon,
+  spiderIcon,
   helpIcon,
   controlPanelIcon,
   recycleIcon,
