@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../contexts/useApp';
 import { THEME_ASSETS } from '../../themes/webos/themeAssets';
+import win7DvdIcon from '../../themes/win7/icons/devices/dvd-drive.png';
 import { getFileSystemItemFromPath, getItemsFromPath, type FileSystemItem } from '../../utils/FileSystem';
 import { resolveFileIcon } from '../../themes/iconResolver';
 import type { MyComputerProps } from './MyComputer';
@@ -91,12 +92,18 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
     });
   }, [historyIndex]);
 
-  const rawItems = useMemo(() => getItemsFromPath(path), [path]);
+  // Windows 7 Computer lists drives only; Network Neighborhood belongs to the Network node.
+  const rawItems = useMemo(
+    () => getItemsFromPath(path).filter((item) => !(path === 'My Computer' && item.name === 'Network Neighborhood')),
+    [path],
+  );
   const items = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase(language);
     if (!query) return rawItems;
     return rawItems.filter((item) => item.name.toLocaleLowerCase(language).includes(query));
   }, [language, rawItems, searchQuery]);
+  // Computer shows a static DVD entry beside the drives in its grouped icon view.
+  const itemCount = path === 'My Computer' && viewMode === 'icons' ? items.length + 1 : items.length;
   const selectedFileSystemItem = useMemo(
     () => rawItems.find((item) => item.name === selectedItem) ?? null,
     [rawItems, selectedItem],
@@ -311,7 +318,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
         <main className="win7-explorer__content" onClick={() => setSelectedItem(null)}>
           <div className="win7-explorer__content-heading">
             <h2>{locationTitle}</h2>
-            <span>{items.length} {isRu ? 'элем.' : items.length === 1 ? 'item' : 'items'}</span>
+            <span>{itemCount} {isRu ? 'элем.' : itemCount === 1 ? 'item' : 'items'}</span>
           </div>
 
           {items.length === 0 ? (
@@ -343,6 +350,35 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
                 </button>
               ))}
             </div>
+          ) : path === 'My Computer' && viewMode === 'icons' ? (
+            <div className="win7-explorer__groups">
+              <section>
+                <h3>{isRu ? 'Жесткие диски' : 'Hard Disk Drives'}</h3>
+                <div className="win7-explorer__icons">
+                  {items.filter((item) => item.type === 'drive').map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className={selectedItem === item.name ? 'is-selected' : ''}
+                      onClick={(event) => { event.stopPropagation(); setSelectedItem(item.name); }}
+                      onDoubleClick={() => handleOpen(item)}
+                    >
+                      <img src={resolveFileIcon(item, theme)} alt="" loading="lazy" />
+                      <span>{item.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+              <section>
+                <h3>{isRu ? 'Устройства со съемными носителями' : 'Devices with Removable Storage'}</h3>
+                <div className="win7-explorer__icons">
+                  <button type="button" className={selectedItem === 'DVD RW Drive (D:)' ? 'is-selected' : ''} onClick={(event) => { event.stopPropagation(); setSelectedItem('DVD RW Drive (D:)'); }}>
+                    <img src={win7DvdIcon} alt="" loading="lazy" />
+                    <span>{isRu ? 'Дисковод DVD RW (D:)' : 'DVD RW Drive (D:)'}</span>
+                  </button>
+                </div>
+              </section>
+            </div>
           ) : (
             <div className={`win7-explorer__icons ${viewMode === 'thumbnails' ? 'win7-explorer__icons--thumbnails' : ''}`}>
               {items.map((item) => (
@@ -367,7 +403,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
       </div>
 
       <div className="win7-explorer__statusbar">
-        <span>{items.length} {isRu ? 'элементов' : items.length === 1 ? 'item' : 'items'}</span>
+        <span>{itemCount} {isRu ? 'элементов' : itemCount === 1 ? 'item' : 'items'}</span>
         {selectedItem ? <span>{selectedItem}</span> : null}
       </div>
     </div>

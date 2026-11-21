@@ -525,3 +525,11 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] XP Explorer has no folder tree by design (XP uses the task pane); the earlier "tree root" item is closed as not applicable.
 - [ ] Windows 7 drives still use the computer icon: Win7 has no `driveIcon` registry entry yet; add one from the Win7 bank.
 - [ ] Windows XP Explorer detail/list views and the XP toolbar still need a comparison with a period screenshot at native scale.
+
+## Windows 7 drives and Computer view — 2026-11-21
+
+- [x] Windows 7 drives use the standardized bank: Local Disk (C:) with the Windows-logo system drive, DVD drive for removable storage (`src/themes/win7/icons/devices/`, 256 px sources shown at 48 px, no copies made). Registered as `driveIcon`, `floppyDriveIcon`, `cdDriveIcon` in `win7/iconAssets.ts`.
+- [x] Windows 7 Computer: window title "Computer" (not "My Computer"); Network Neighborhood no longer listed under Computer; drives are grouped under "Hard Disk Drives" and "Devices with Removable Storage" as in Windows 7. The DVD RW entry is a static item (no filesystem backing), like the Win98/2000/XP grids.
+- [x] Item count wording fixed ("1 item" / "2 items").
+- [ ] The DVD RW Drive (D:) entry is not in the filesystem model; it cannot be opened yet.
+- [ ] Windows 7 Start menu: program list and places compared against the Windows 7 default layout; site-specific entries (Wiki, Terminal, Loops, DOOM) remain as product content. A period screenshot comparison at native scale is still pending.

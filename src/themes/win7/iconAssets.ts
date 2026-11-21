@@ -27,9 +27,16 @@ import folderPlainIcon from './icons/folders/folder-plain.png';
 import folderDocumentsIcon from './icons/folders/folder-documents.png';
 import folderPicturesIcon from './icons/folders/folder-pictures.png';
 import printersIcon from './icons/devices/printer-2.png';
+// Windows 7 drives: system drive (Windows logo), floppy and CD, from the standardized bank.
+import driveIcon from './icons/devices/drive-small.png';
+import floppyDriveIcon from './icons/devices/floppy-drive.png';
+import cdDriveIcon from './icons/devices/cd-drive.png';
 
 export const WIN7_ICON_ASSETS = {
   computerIcon: WIN7_ASSETS.computerIcon,
+  driveIcon,
+  floppyDriveIcon,
+  cdDriveIcon,
   folderIcon: folderPlainIcon,
   internetExplorerIcon: WIN7_ASSETS.internetExplorerIcon,
   mailIcon: WIN7_ASSETS.mailIcon,

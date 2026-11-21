@@ -1006,7 +1006,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       ? { 'My Documents': 'Мои документы', 'My Pictures': 'Мои рисунки', 'My Music': 'Моя музыка', '$Recycle.Bin': 'Корзина' }
       : { '$Recycle.Bin': 'Recycle Bin' };
     const title = normalizedPath === 'My Computer'
-      ? t.myComputer
+      ? (themeKey === 'win7' ? (language === 'ru' ? 'Компьютер' : 'Computer') : t.myComputer)
       : localizedFolderNames[pathName] ?? pathName;
 
     openWindow({
