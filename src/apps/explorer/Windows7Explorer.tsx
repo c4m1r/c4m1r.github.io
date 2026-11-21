@@ -60,6 +60,8 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<Win7ViewMode>(isPicturesFolderPath(currentPath) ? 'thumbnails' : 'icons');
   const [addressEditing, setAddressEditing] = useState(false);
+  // Windows 7 reports an empty optical drive with a prompt instead of opening it.
+  const [discPromptOpen, setDiscPromptOpen] = useState(false);
   const [addressInput, setAddressInput] = useState(currentPath);
 
   useEffect(() => {
@@ -372,7 +374,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
               <section>
                 <h3>{isRu ? 'Устройства со съемными носителями' : 'Devices with Removable Storage'}</h3>
                 <div className="win7-explorer__icons">
-                  <button type="button" className={selectedItem === 'DVD RW Drive (D:)' ? 'is-selected' : ''} onClick={(event) => { event.stopPropagation(); setSelectedItem('DVD RW Drive (D:)'); }}>
+                  <button type="button" className={selectedItem === 'DVD RW Drive (D:)' ? 'is-selected' : ''} onClick={(event) => { event.stopPropagation(); setSelectedItem('DVD RW Drive (D:)'); }} onDoubleClick={() => setDiscPromptOpen(true)}>
                     <img src={win7DvdIcon} alt="" loading="lazy" />
                     <span>{isRu ? 'Дисковод DVD RW (D:)' : 'DVD RW Drive (D:)'}</span>
                   </button>
@@ -406,6 +408,27 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
         <span>{itemCount} {isRu ? 'элементов' : itemCount === 1 ? 'item' : 'items'}</span>
         {selectedItem ? <span>{selectedItem}</span> : null}
       </div>
+
+      {discPromptOpen ? (
+        <div className="win7-explorer__prompt" role="alertdialog" aria-labelledby="win7-disc-prompt-title">
+          <div className="win7-explorer__prompt-title" id="win7-disc-prompt-title">
+            {isRu ? 'Нет диска' : 'Drive is not ready'}
+          </div>
+          <div className="win7-explorer__prompt-body">
+            <span aria-hidden="true" className="win7-explorer__prompt-icon">!</span>
+            <span>
+              {isRu
+                ? 'Вставьте диск в дисковод DVD RW (D:).'
+                : 'Please insert a disc into DVD RW Drive (D:).'}
+            </span>
+          </div>
+          <div className="win7-explorer__prompt-actions">
+            <button type="button" onClick={() => setDiscPromptOpen(false)} autoFocus>
+              {isRu ? 'ОК' : 'OK'}
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

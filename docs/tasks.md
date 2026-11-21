@@ -531,7 +531,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Windows 7 drives use the standardized bank: Local Disk (C:) with the Windows-logo system drive, DVD drive for removable storage (`src/themes/win7/icons/devices/`, 256 px sources shown at 48 px, no copies made). Registered as `driveIcon`, `floppyDriveIcon`, `cdDriveIcon` in `win7/iconAssets.ts`.
 - [x] Windows 7 Computer: window title "Computer" (not "My Computer"); Network Neighborhood no longer listed under Computer; drives are grouped under "Hard Disk Drives" and "Devices with Removable Storage" as in Windows 7. The DVD RW entry is a static item (no filesystem backing), like the Win98/2000/XP grids.
 - [x] Item count wording fixed ("1 item" / "2 items").
-- [ ] The DVD RW Drive (D:) entry is not in the filesystem model; it cannot be opened yet.
+- [x] The DVD RW Drive (D:) entry opens the Windows 7 "Drive is not ready" prompt ("Please insert a disc into DVD RW Drive (D:).") instead of doing nothing. It still has no filesystem backing.
 - [ ] Windows 7 Start menu: program list and places compared against the Windows 7 default layout; site-specific entries (Wiki, Terminal, Loops, DOOM) remain as product content. A period screenshot comparison at native scale is still pending.
 
 ## Windows 7 Start menu right column — 2026-11-21
@@ -578,3 +578,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Windows Vista, 10 and 11 are stored for future themes; they are not yet bundled, because no theme imports them (Vite tree-shakes unused asset imports).
 - [ ] Windows 98 and 2000 UI events (menu, minimize, restore, error) still have no matching original sounds in their reference sets; they remain silent.
 - [ ] Recycle and notify sounds are stored but not yet wired to desktop events (empty recycle bin, balloon notifications).
+
+## Windows 2000 Start menu application icons — status — 2026-11-21
+
+- [x] Searched the remaining sources for authentic Windows 2000 Calculator, Outlook Express and Minesweeper icons. None found: the Windows 2000 bitmaps in the sound and icon repositories checked do not include them, and the only Calculator/Outlook icon pack found is Windows 11 (wrong era, not used).
+- [ ] These three keep Windows 98 artwork until a Windows 2000 screenshot or icon file is supplied.
