@@ -440,3 +440,10 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Hand-named Windows 7 files (`computer.png`, `folder.png`, `internet-explorer.png`, `mail.png`, `volume.png`, `vista-orb.ico`) are unchanged because code imports them.
 - [ ] Apply the same category/name standard to the Windows XP (`NNN(WxW).png`, 93 numbered variants) and Windows 98 (`*-N.png` families) banks.
 - [ ] Point runtime theme registries at `src/themes/win7/icons/` where a role should use the standardized name.
+
+## Windows 7 role wiring to standardized icons — 2026-11-21
+
+- [x] Wire 18 Windows 7 roles to `src/themes/win7/icons/` (Calculator, Paint, Notepad, Media Player, Terminal, Minesweeper, Calendar, Help, Control Panel, Recycle Bin empty/full, Pictures, Performance Monitor, Search, Games, Printers) and their Start Menu/Places slots. Each was checked on a labelled contact sheet before assignment.
+- [x] Users icon removed from Programs role: no visually matching asset yet.
+- [ ] Browser check of the Windows 7 desktop, Start menu and Explorer: blocked, because the Windows 7 login requires a password.
+- [ ] Same category/name standard for Windows XP (`NNN(WxW).png`) and Windows 98 (`*-N.png` families, 587 base names); requires updating import paths in `win98/iconAssets.ts`, `winxp/themeAssets.ts`, `webos/themeAssets.ts` and `win2000/iconAssets.ts`.
