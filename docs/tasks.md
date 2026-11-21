@@ -583,3 +583,17 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Searched the remaining sources for authentic Windows 2000 Calculator, Outlook Express and Minesweeper icons. None found: the Windows 2000 bitmaps in the sound and icon repositories checked do not include them, and the only Calculator/Outlook icon pack found is Windows 11 (wrong era, not used).
 - [ ] These three keep Windows 98 artwork until a Windows 2000 screenshot or icon file is supplied.
+
+## Program Files, desktop shortcuts, Win2000 fallback, Alarm (latest round)
+
+- [x] Program Files: only canonical publisher folders with .exe apps (idtech, microsoft, nullsoft, c4m1r); no games/programs paths.
+- [x] Desktop Игры / Программы: flat shortcut folders to doom.exe, doom2.exe, winamp.exe and the other pseudo-executables.
+- [x] DOOM icons regenerated at 32/48 px from the 256 px original.
+- [x] Windows 2000 icon set falls back to the Windows 98 set, not XP.
+- [x] Alarm: one canonical app (appId `alarm`) for all OSes; icon per OS via `alarmIcon` (XP glyph base, Win7 window icon, Win98 generic application icon; Win2000 inherits Win98).
+- [ ] Alarm icons for Win98 / Win7 / XP still need visual check against the user's screenshots.
+- [ ] Winamp icon for `nullsoft/winamp.exe` (currently a document icon).
+- [ ] snake.exe and memory.exe icons (currently a document icon).
+- [ ] Calculator, Outlook Express, Minesweeper native Win2000 icons (currently Win98 art).
+- [ ] Screenshot verification: user will place references in `eat/screens/oc/<os>/` (list in `eat/screens/README.md`); each one is a check of the existing build, differences go here.
+- [ ] Branch cleanup on the remote is blocked by the proxy (403); needs manual deletion or permission.
