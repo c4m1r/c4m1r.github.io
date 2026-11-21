@@ -4,7 +4,7 @@ Generates the generic alarm tones used by the Alarm app.
 
 The tones are synthesised here (sine and square waves, no samples), so they carry
 no third-party licence: they are original work of this project and free to use.
-Run from the repository root:  python3 scripts/gen-alarm-sounds.py
+Run from anywhere:  python3 eat/original/sound-generator/gen-alarm-sounds.py
 Output: src/assets/alarm-sounds/<key>.wav (mono, 16-bit, 22050 Hz).
 """
 import math
@@ -13,7 +13,9 @@ import struct
 import wave
 
 RATE = 22050
-OUT = os.path.join(os.path.dirname(__file__), '..', 'src', 'assets', 'alarm-sounds')
+# Repository root is three levels up from this folder (eat/original/sound-generator).
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+OUT = os.path.join(ROOT, 'src', 'assets', 'alarm-sounds')
 
 
 def tone(freq, dur, wave_kind='sine', volume=0.6, attack=0.005, release=0.04):
