@@ -456,3 +456,10 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Removed the superseded derived collection `src/themes/windows-icons/` and its builder `scripts/build-windows-icons.py`. Nothing imported them; the curated XP table is preserved in git history (commit `9018057`).
 - [ ] Category rules are heuristic: review `manifest.json` and correct any misfiled names by editing the rules.
 - [ ] Apply the same standard to the Windows XP numbered bank (`NNN(WxW).png`).
+
+## Login defaults: passwordless User first — 2026-11-21
+
+- [x] Login screens list the passwordless `User` account first and select it by default: WebOS-family dropdown (Win98, Win2000, WebOS), Windows XP and Windows 7 tiles.
+- [x] `C4m1r` is the second account and keeps its existing password check (`verifyAccountPassword`, unchanged).
+- [x] Verified in headless Chrome: Win98 default login reaches the desktop without a password; C4m1r with the correct password reaches the desktop; a wrong password is rejected.
+- [ ] Apple/iOS login screens have no account selection in this change.

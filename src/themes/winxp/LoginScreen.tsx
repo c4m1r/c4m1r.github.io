@@ -76,6 +76,29 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
         <div className="xp-welcome-screen__right">
           <div
+            onClick={handleUserClick}
+            className={`xp-welcome-screen__user-tile ${
+              loggingInUser === 'user' ? 'xp-welcome-screen__user-tile--logging-in' : ''
+            }`}
+          >
+            <div className="xp-welcome-screen__avatar-frame">
+              <img
+                src={userAvatar}
+                alt="User"
+                className="xp-welcome-screen__avatar"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+            <div className="xp-welcome-screen__user-details">
+              <span className="xp-welcome-screen__username">User</span>
+              <span className="xp-welcome-screen__user-status">
+                {loggingInUser === 'user' ? t.loggingIn : t.loginHint}
+              </span>
+            </div>
+          </div>
+          <div
             onClick={handleC4m1rClick}
             className={`xp-welcome-screen__user-tile ${
               loggingInUser === 'c4m1r' ? 'xp-welcome-screen__user-tile--logging-in' : ''
@@ -135,29 +158,6 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             </div>
           </div>
 
-          <div
-            onClick={handleUserClick}
-            className={`xp-welcome-screen__user-tile ${
-              loggingInUser === 'user' ? 'xp-welcome-screen__user-tile--logging-in' : ''
-            }`}
-          >
-            <div className="xp-welcome-screen__avatar-frame">
-              <img
-                src={userAvatar}
-                alt="User"
-                className="xp-welcome-screen__avatar"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-            <div className="xp-welcome-screen__user-details">
-              <span className="xp-welcome-screen__username">User</span>
-              <span className="xp-welcome-screen__user-status">
-                {loggingInUser === 'user' ? t.loggingIn : t.loginHint}
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 

@@ -64,7 +64,24 @@ export function LoginScreen({ onLogin, onRestart, onShutdown }: LoginScreenProps
     >
       <main className="win7-login-screen__center">
         <div className="flex items-start justify-center gap-12 flex-wrap">
-          {/* Account 1: C4m1r (Protected by password) */}
+          {/* Account 1: User (Password-free, default) */}
+          <div className="flex flex-col items-center">
+            <button
+              type="button"
+              className="win7-login-screen__user"
+              onClick={onLogin}
+              aria-label={isRu ? 'Войти как User' : 'Log on as User'}
+            >
+              <span className="win7-login-screen__avatar-frame">
+                <img src={WIN7_ASSETS.userAvatar} alt="" className="win7-login-screen__avatar" />
+              </span>
+              <span className="win7-login-screen__username">User</span>
+              <span className="win7-login-screen__prompt">
+                {isRu ? 'Вход без пароля' : 'Click to log on'}
+              </span>
+            </button>
+          </div>
+          {/* Account 2: C4m1r (Protected by password) */}
           <div className="flex flex-col items-center">
             <button
               type="button"
@@ -122,23 +139,6 @@ export function LoginScreen({ onLogin, onRestart, onShutdown }: LoginScreenProps
             )}
           </div>
 
-          {/* Account 2: User (Password-free) */}
-          <div className="flex flex-col items-center">
-            <button
-              type="button"
-              className="win7-login-screen__user"
-              onClick={onLogin}
-              aria-label={isRu ? 'Войти как User' : 'Log on as User'}
-            >
-              <span className="win7-login-screen__avatar-frame">
-                <img src={WIN7_ASSETS.userAvatar} alt="" className="win7-login-screen__avatar" />
-              </span>
-              <span className="win7-login-screen__username">User</span>
-              <span className="win7-login-screen__prompt">
-                {isRu ? 'Вход без пароля' : 'Click to log on'}
-              </span>
-            </button>
-          </div>
         </div>
       </main>
 

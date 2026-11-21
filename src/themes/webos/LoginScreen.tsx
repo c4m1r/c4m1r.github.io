@@ -21,7 +21,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
-  const [selectedUser98, setSelectedUser98] = useState<'c4m1r' | 'user'>('c4m1r');
+  const [selectedUser98, setSelectedUser98] = useState<'c4m1r' | 'user'>('user');
   const [errorMessage, setErrorMessage] = useState('');
   const [shake, setShake] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -121,8 +121,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                 }}
                 className="border-2 border-gray-400 border-b-white border-r-white px-2 py-0.5 text-sm os-input bg-white text-gray-900"
               >
-                <option value="c4m1r">C4m1r</option>
                 <option value="user">User</option>
+                <option value="c4m1r">C4m1r</option>
               </select>
 
               <label className="text-sm font-medium text-gray-800">Password:</label>
@@ -234,8 +234,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                   }}
                   className="border-2 border-gray-400 border-b-white border-r-white px-1 text-sm os-input bg-white text-gray-800"
                 >
-                  <option value="c4m1r">C4m1r</option>
                   <option value="user">User</option>
+                  <option value="c4m1r">C4m1r</option>
                 </select>
 
                 <label className="text-sm">Password:</label>
