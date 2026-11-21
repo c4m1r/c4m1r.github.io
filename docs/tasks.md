@@ -506,3 +506,12 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Windows 2000 shares `StartMenu98.tsx`; it keeps the Search label, the gradient sidebar and no Favorites entry. Verified by screenshot.
 - [ ] Per-OS adaptation of the shared XP Explorer and Start menu (`StartMenuXP.tsx`, `MyComputer.tsx`, `Windows7Explorer.tsx`): continue moving theme-specific layout into branches of the shared components, without forking app logic. Next candidates: Windows 2000 My Computer content, Windows 7 Start menu, XP tree root.
 - [ ] Win98 Start menu items that are display-only: Printers under Settings, Favorites folder contents, Documents submenu (currently opens the folder).
+
+## Per-OS Explorer and Start menu adaptation — 2026-11-21
+
+- [x] Windows 2000 My Computer uses its own flat grid: 3½ Floppy (A:), Local Disk (C:), CD-ROM Drive (D:), Control Panel, Printers, Scheduled Tasks, Web Folders, with native Windows 2000 32 px icons extracted from the 2000 ICO set (`src/themes/win2000/icons/`). Status reads 7 objects; Network Neighborhood is not listed under My Computer in the tree.
+- [x] Windows 2000 icons still unverified: Scheduled Tasks (ICON 335) is the closest native match found, not a confirmed original; Web Folders (ICON 381) is a close match. Re-check against a period screenshot.
+- [x] Windows 7 Start menu header showed the hard-coded name "C4m1r" while the session was logged in as User. The account chosen on the login screen is now recorded in `src/domain/auth/session.ts` and shown in the Start menu. Avatar unchanged.
+- [x] Windows 7 Start menu: the edition line overlapped the first place entry; the places list now clears the header.
+- [ ] Windows XP Explorer has no folder tree (the sidebar is XP-specific); XP Start menu user name and avatar still use the shared identity. Check against the account from `session.ts` and the XP tree/task pane.
+- [ ] Win2000 Start menu and Explorer toolbars not yet compared with period screenshots at native scale.

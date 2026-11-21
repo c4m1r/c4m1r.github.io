@@ -4,6 +4,7 @@ import { useApp } from '../../../../contexts/useApp';
 import { appRegistry } from '../../appRegistry';
 import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
 import { getActiveEdition } from '../../../os/osEditions';
+import { getSessionAccount } from '../../../../domain/auth/session';
 
 export interface StartMenu7Props {
   onClose: () => void;
@@ -245,7 +246,7 @@ export function StartMenu7({
             {assets.userAvatar ? <img src={assets.userAvatar} alt="" /> : null}
           </div>
           <div className="win7-start-menu__username">
-            C4m1r
+            {getSessionAccount()}
             {activeEdition && (
               <span className="block text-[10px] font-normal text-blue-200/90 leading-tight">
                 Windows 7 {activeEdition.label}

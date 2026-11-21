@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { setSessionAccount } from '../../domain/auth/session';
 import { useApp } from '../../contexts/useApp';
 import { WIN7_ASSETS } from './assets';
 import { verifyAccountPassword } from '../../domain/auth/credentials';
@@ -33,6 +34,7 @@ export function LoginScreen({ onLogin, onRestart, onShutdown }: LoginScreenProps
     if (e) e.preventDefault();
     if (verifyAccountPassword('c4m1r', password)) {
       setErrorMessage('');
+      setSessionAccount('C4m1r');
       onLogin();
     } else {
       triggerError();
@@ -69,7 +71,10 @@ export function LoginScreen({ onLogin, onRestart, onShutdown }: LoginScreenProps
             <button
               type="button"
               className="win7-login-screen__user"
-              onClick={onLogin}
+              onClick={() => {
+                setSessionAccount('User');
+                onLogin();
+              }}
               aria-label={isRu ? 'Войти как User' : 'Log on as User'}
             >
               <span className="win7-login-screen__avatar-frame">

@@ -13,11 +13,18 @@ import folderIcon from './icons/folders/folder-plain/48x48.png';
 import networkIcon from './icons/network/network-computers/48x48.png';
 import internetExplorerIcon from './icons/apps/internet-explorer/48x48.png';
 import printersIcon from './icons/devices/printer/48x48.png';
+import printers32Icon from './icons/devices/printer/32x32.png';
 import controlPanelIcon from './icons/system/control-panel/48x48.png';
+import controlPanel32Icon from './icons/system/control-panel/32x32.png';
 import helpIcon from './icons/system/help-book/48x48.png';
 import searchIcon from './icons/folders/folder-search/48x48.png';
 import fontsIcon from './icons/system/fonts/48x48.png';
 import securityIcon from './icons/security/key/48x48.png';
+import floppyDriveIcon from './icons/devices/floppy-drive/32x32.png';
+import driveIcon from './icons/devices/drive-hdd/32x32.png';
+import cdDriveIcon from './icons/devices/cd-drive/32x32.png';
+import scheduledTasksIcon from './icons/system/scheduled-tasks/32x32.png';
+import webFoldersIcon from './icons/network/web-folders/32x32.png';
 
 export const WIN2000_ICON_ASSETS = {
   computerIcon,
@@ -32,6 +39,14 @@ export const WIN2000_ICON_ASSETS = {
   searchIcon,
   fontsIcon,
   securityIcon,
+  // Classic My Computer grid (32 px).
+  floppyDriveIcon,
+  driveIcon,
+  cdDriveIcon,
+  controlPanel32Icon,
+  printers32Icon,
+  scheduledTasksIcon,
+  webFoldersIcon,
   placesIcons: {
     myComputer: computerIcon,
     myDocuments: myDocumentsIcon,

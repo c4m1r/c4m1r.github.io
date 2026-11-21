@@ -25,6 +25,13 @@ import win98FloppyIcon from '../../themes/win98/icons/devices/floppy-drive-3-5-c
 import win98CdIcon from '../../themes/win98/icons/devices/cd-drive/32x32-2.png';
 import win98ControlPanelIcon from '../../themes/win98/icons/folders/directory-control-panel/32x32-2.png';
 import win98PrintersIcon from '../../themes/win98/icons/devices/printer/32x32-2.png';
+import win2000FloppyIcon from '../../themes/win2000/icons/devices/floppy-drive/32x32.png';
+import win2000DriveIcon from '../../themes/win2000/icons/devices/drive-hdd/32x32.png';
+import win2000CdIcon from '../../themes/win2000/icons/devices/cd-drive/32x32.png';
+import win2000ControlPanelIcon from '../../themes/win2000/icons/system/control-panel/32x32.png';
+import win2000PrintersIcon from '../../themes/win2000/icons/devices/printer/32x32.png';
+import win2000ScheduledTasksIcon from '../../themes/win2000/icons/system/scheduled-tasks/32x32.png';
+import win2000WebFoldersIcon from '../../themes/win2000/icons/network/web-folders/32x32.png';
 import win98DialupIcon from '../../themes/win98/icons/network/directory-dial-up-networking/32x32-0.png';
 import win98SchedTasksIcon from '../../themes/win98/icons/apps/sched-tasks/32x32-0.png';
 import win98WebFoldersIcon from '../../themes/win98/icons/network/directory-net-web/32x32-0.png';
@@ -373,11 +380,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   };
 
   const renderFolderTree = (node: FileSystemItem, nodePath: string, depth: number): React.ReactNode => {
-    // Windows 98 places Network Neighborhood beside My Computer on the desktop, not under it.
+    // Windows 98 and 2000 place network entries beside My Computer on the desktop, not under it.
     // The path itself stays valid, so Start menu and Control Panel links still resolve.
     const children = Object.values(node.children ?? {}).filter(child =>
       (child.type === 'folder' || child.type === 'drive')
-      && !(theme === 'win-98' && nodePath === 'My Computer' && child.name === 'Network Neighborhood'));
+      && !((theme === 'win-98' || theme === 'win2000') && nodePath === 'My Computer' && child.name === 'Network Neighborhood'));
     const expanded = Boolean(expandedTreePaths[nodePath]);
     const current = path.toLocaleLowerCase() === nodePath.toLocaleLowerCase();
     return (
@@ -961,11 +968,19 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
               ))}
             </div>
           ) : viewMode === 'icons' ? (
-            path === 'My Computer' && theme === 'win-98' ? (
-              // Windows 98 lists drives and system folders in one flat grid; Network
-              // Neighborhood lives on the desktop, not under My Computer.
+            path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (
+              // Classic Windows (98 and 2000) list drives and system items in one flat grid.
+              // Network Neighborhood is not under My Computer in either version.
               <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
-                {([
+                {(theme === 'win2000' ? [
+                  { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: win2000FloppyIcon, open: undefined as (() => void) | undefined },
+                  ...visibleItems.filter((i) => i.name === 'Local Disk (C:)').map((item) => ({ key: item.name, label: isRu ? 'Локальный диск (C:)' : item.name, icon: win2000DriveIcon, open: () => handleNavigate(item) })),
+                  { key: 'CD-ROM (D:)', label: isRu ? 'Дисковод CD-ROM (D:)' : 'CD-ROM Drive (D:)', icon: win2000CdIcon, open: undefined },
+                  { key: 'Control Panel', label: isRu ? 'Панель управления' : 'Control Panel', icon: win2000ControlPanelIcon, open: () => window.dispatchEvent(new CustomEvent('app:launch', { detail: { appId: 'control-panel' } })) },
+                  { key: 'Printers', label: isRu ? 'Принтеры' : 'Printers', icon: win2000PrintersIcon, open: undefined },
+                  { key: 'Scheduled Tasks', label: isRu ? 'Запланированные задания' : 'Scheduled Tasks', icon: win2000ScheduledTasksIcon, open: undefined },
+                  { key: 'Web Folders', label: isRu ? 'Веб-папки' : 'Web Folders', icon: win2000WebFoldersIcon, open: undefined },
+                ] : [
                   { key: '3½ Floppy (A:)', label: isRu ? 'Дисковод 3½ (A:)' : '3½ Floppy (A:)', icon: win98FloppyIcon, open: undefined as (() => void) | undefined },
                   ...visibleItems.filter((i) => i.name === 'Local Disk (C:)').map((item) => ({ key: item.name, label: isRu ? 'Локальный диск (C:)' : item.name, icon: win98DriveIcon, open: () => handleNavigate(item) })),
                   { key: 'CD-ROM (D:)', label: isRu ? 'Дисковод CD-ROM (D:)' : 'CD-ROM Drive (D:)', icon: win98CdIcon, open: undefined },
@@ -1155,7 +1170,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       {/* Status Bar */}
       <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
         <div className="flex gap-4">
-          <span>{path === 'My Computer' && theme === 'win-98' ? 8 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
+          <span>{path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (theme === 'win2000' ? 7 : 8) : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
           {selectedItem && <span>{isRu ? 'Выбрано:' : 'Selected:'} {selectedItem}</span>}
         </div>
         {detailsForSelection && (
