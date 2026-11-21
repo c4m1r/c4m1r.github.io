@@ -1,4 +1,6 @@
-import errorSoundUrl from './assets/sounds/error.wav';
+import { OS_SOUNDS } from '../../assets/os-sounds';
+
+const errorSoundUrl = OS_SOUNDS.winxp.error;
 
 let audioCtx: AudioContext | null = null;
 

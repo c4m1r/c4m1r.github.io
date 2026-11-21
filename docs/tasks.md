@@ -570,3 +570,11 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] UI sounds use original files only where a matching event exists in that OS: XP (menu open, launch, minimize, restore, error), Windows 7 (menu open, minimize, restore, error). Windows 98 and 2000 have no matching UI sounds in the reference set, so those events stay silent. Missing tones are no longer synthesized in place of an original.
 - [x] Non-original sound files (previous Windows 7 and 98 startup mp3) moved to `eat/original/`, outside the app.
 - [ ] Verify the UI event mapping by ear against the Windows XP and Windows 7 sound schemes (launch and error names are the closest match).
+
+## Shared sound store for all Windows-family OSes — 2026-11-21
+
+- [x] Core original sounds for every OS are in `src/assets/os-sounds/<os>/` with one index (`index.ts`) that the theme registries read from. The set covers startup, shutdown, logon, logoff, navigation start, menu command, launch (XP), minimize, restore, error, critical stop, exclamation, notify, recycle and balloon. Rare sounds (speech, alarms, media, ring, proximity) are not kept.
+- [x] Windows XP, 7, Vista, 10 and 11 have their full core set; Windows 2000 and 98 have only the sounds their reference sets provide (startup, shutdown, logoff on 98, recycle, notify).
+- [x] Windows Vista, 10 and 11 are stored for future themes; they are not yet bundled, because no theme imports them (Vite tree-shakes unused asset imports).
+- [ ] Windows 98 and 2000 UI events (menu, minimize, restore, error) still have no matching original sounds in their reference sets; they remain silent.
+- [ ] Recycle and notify sounds are stored but not yet wired to desktop events (empty recycle bin, balloon notifications).

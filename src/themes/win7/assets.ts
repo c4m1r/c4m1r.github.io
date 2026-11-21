@@ -1,12 +1,6 @@
 import bootVideo from './assets/boot/win7-boot-anim.mp4';
 import welcomeLoadingVideo from './assets/boot/win7-greetings-loading.webm';
-import startupSound from './assets/audio/startup.wav';
-import shutdownSound from './assets/audio/shutdown.wav';
-import logoffSound from './assets/audio/logoff.wav';
-import uiMenuOpen from './assets/audio/menu-open.wav';
-import uiMinimize from './assets/audio/minimize.wav';
-import uiRestore from './assets/audio/restore.wav';
-import uiError from './assets/audio/error.wav';
+import { OS_SOUNDS } from '../../assets/os-sounds';
 import loginBackground from './assets/images/login-background.jpg';
 import desktopWallpaper from './assets/images/desktop-wallpaper.jpg';
 import windowsLogo from './assets/images/windows-7-logo.png';
@@ -23,14 +17,14 @@ import folderIcon from './assets/icons/folder.png';
 export const WIN7_ASSETS = {
   bootVideo,
   welcomeLoadingVideo,
-  startupSound,
-  shutdownSound,
-  logoffSound,
+  startupSound: OS_SOUNDS.win7.startup,
+  shutdownSound: OS_SOUNDS.win7.shutdown,
+  logoffSound: OS_SOUNDS.win7.logoff,
   uiSounds: {
-    menuOpen: uiMenuOpen,
-    minimize: uiMinimize,
-    restore: uiRestore,
-    error: uiError,
+    menuOpen: OS_SOUNDS.win7['nav-start'],
+    minimize: OS_SOUNDS.win7.minimize,
+    restore: OS_SOUNDS.win7.restore,
+    error: OS_SOUNDS.win7.error,
   },
   loginBackground,
   desktopWallpaper,

@@ -53,18 +53,7 @@ import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
-import win98Startup from '../win98/assets/audio/startup.wav';
-import win98Shutdown from '../win98/assets/audio/shutdown.wav';
-import win2000Startup from '../win2000/assets/audio/startup.wav';
-import win2000Shutdown from '../win2000/assets/audio/shutdown.wav';
-import xpStartup from '../winxp/assets/audio/startup.wav';
-import xpShutdown from '../winxp/assets/audio/shutdown.wav';
-import xpLogoff from '../winxp/assets/audio/logoff.wav';
-import xpUiLaunch from '../winxp/assets/audio/ui/launch.wav';
-import xpUiMenuOpen from '../winxp/assets/audio/ui/menu-open.wav';
-import xpUiMinimize from '../winxp/assets/audio/ui/minimize.wav';
-import xpUiRestore from '../winxp/assets/audio/ui/restore.wav';
-import xpUiError from '../winxp/assets/sounds/error.wav';
+import { OS_SOUNDS } from '../../assets/os-sounds';
 import win98StartIcon from '../win98/icons/system/start98/32x32-0.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
 
@@ -193,15 +182,15 @@ const sharedWebosAssets: ThemeAssets = {
   muteIcon: muteIconWebos,
   fullscreenIcon: fullscreenIconWebos,
   notificationIcon: notificationIconWebos,
-  startupSound: xpStartup,
-  shutdownSound: xpShutdown,
-  logoffSound: xpLogoff,
+  startupSound: OS_SOUNDS.winxp.startup,
+  shutdownSound: OS_SOUNDS.winxp.shutdown,
+  logoffSound: OS_SOUNDS.winxp.logoff,
   uiSounds: {
-    menuOpen: xpUiMenuOpen,
-    launchApp: xpUiLaunch,
-    minimize: xpUiMinimize,
-    restore: xpUiRestore,
-    error: xpUiError,
+    menuOpen: OS_SOUNDS.winxp['nav-start'],
+    launchApp: OS_SOUNDS.winxp.launch,
+    minimize: OS_SOUNDS.winxp.minimize,
+    restore: OS_SOUNDS.winxp.restore,
+    error: OS_SOUNDS.winxp.error,
   },
   startMenuIcons: {
     internetExplorer: ieIconWebos,
@@ -309,10 +298,9 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
       hardware: WIN98_ICON_ASSETS.computerIcon,
       accessibility: WIN98_ICON_ASSETS.helpIcon,
     },
-    startupSound: win98Startup,
-    shutdownSound: win98Shutdown,
-    // Windows 98 has no logoff sound.
-    logoffSound: '',
+    startupSound: OS_SOUNDS.win98.startup,
+    shutdownSound: OS_SOUNDS.win98.shutdown,
+    logoffSound: OS_SOUNDS.win98.logoff,
     // No Windows 98/2000 UI sounds in the reference set; keep them silent.
     uiSounds: {
       menuOpen: '',
@@ -326,8 +314,8 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   },
   win2000: {
     ...WIN2000_ICON_ASSETS,
-    startupSound: win2000Startup,
-    shutdownSound: win2000Shutdown,
+    startupSound: OS_SOUNDS.win2000.startup,
+    shutdownSound: OS_SOUNDS.win2000.shutdown,
     // No separate logoff sound in the reference set.
     logoffSound: '',
     // No Windows 98/2000 UI sounds in the reference set; keep them silent.
