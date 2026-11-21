@@ -7,6 +7,7 @@ import userAvatar from '../winxp/assets/user.gif';
 import '../winxp/xp.css';
 import { AppleLoginScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { verifyAccountPassword } from '../../domain/auth/credentials';
+import { setSessionAccount } from '../../domain/auth/session';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -39,6 +40,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     if (verifyAccountPassword('c4m1r', password)) {
       setErrorMessage('');
       setIsLoggingIn(true);
+      setSessionAccount('C4m1r');
       setTimeout(onLogin, 1500);
     } else {
       triggerError();
@@ -73,8 +75,10 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           onSubmit={(e) => {
             e.preventDefault();
             if (selectedUser98 === 'user') {
+              setSessionAccount('User');
               onLogin();
             } else if (verifyAccountPassword('c4m1r', password)) {
+              setSessionAccount('C4m1r');
               onLogin();
             } else {
               triggerError();
@@ -190,8 +194,10 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           onSubmit={(e) => {
             e.preventDefault();
             if (selectedUser98 === 'user') {
+              setSessionAccount('User');
               onLogin();
             } else if (verifyAccountPassword('c4m1r', password)) {
+              setSessionAccount('C4m1r');
               onLogin();
             } else {
               triggerError();
@@ -304,7 +310,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     );
   }
 
-  // WebOS theme: Strictly account C4m1r protected by password (as specified: "но не в последнюю WebOS ОС-тему")
+  // Generic desktop login: User (default, no password) and C4m1r (password 123123).
   return (
     <div className={`min-h-screen w-full login-screen-xp os-shell os-${osClassName}`}>
       <div className="login-screen__container">
@@ -312,7 +318,25 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           <h2 className="login-screen__title">{t.welcomeMessage || 'Для начала работы нажмите на имя пользователя'}</h2>
         </div>
 
-        <div className="login-screen__users">
+        <div className="login-screen__users flex flex-wrap justify-center gap-10">
+          <div className="login-screen__user-card os-button p-4 rounded-xl flex flex-col items-center gap-3 transition-all hover:bg-white/10">
+            <button
+              type="button"
+              onClick={() => {
+                setSessionAccount('User');
+                setIsLoggingIn(true);
+                setTimeout(onLogin, 1500);
+              }}
+              className="flex flex-col items-center gap-2 cursor-pointer focus:outline-none"
+            >
+              <div className="login-screen__user-avatar w-20 h-20 rounded-lg overflow-hidden border-2 border-white/60 shadow-md bg-white/20 flex items-center justify-center text-white text-3xl font-bold">
+                U
+              </div>
+              <div className="login-screen__user-name text-white font-bold text-lg drop-shadow">User</div>
+              <span className="text-xs text-blue-100">{isRu ? 'Без пароля' : 'No password'}</span>
+            </button>
+          </div>
+
           <div
             className={`login-screen__user-card os-button p-4 rounded-xl flex flex-col items-center gap-3 transition-all ${
               isPasswordPromptOpen ? 'bg-white/20 ring-2 ring-white/50' : 'hover:bg-white/10'

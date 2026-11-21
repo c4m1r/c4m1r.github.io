@@ -8,10 +8,52 @@ import {
   setWindowsBuildTextEnabled,
   supportsWindowsBuildText,
 } from '../shells/os/osBootOptions';
-import { type OsBootProfile } from '../shells/os/osTypes';
+import { type BootMenuGroup, type OsBootProfile } from '../shells/os/osTypes';
 import { primeBootTheme } from '../themes/bootPreload';
 
 const FAKE_COUNTDOWN_TICK_MS = 330;
+
+const GROUP_LABELS: Record<BootMenuGroup, string> = {
+  windows: 'Windows',
+  unix: 'Unix',
+  macos: 'MacOS',
+  mobile: 'Mobile',
+};
+
+type MenuScreen = 'main' | BootMenuGroup;
+
+type MenuEntry =
+  | { kind: 'profile'; profile: OsBootProfile }
+  | { kind: 'group'; group: BootMenuGroup }
+  | { kind: 'back' };
+
+/** Top level: ungrouped entries in boot order, with each submenu placed where its first entry sits. */
+function buildMainEntries(): MenuEntry[] {
+  const entries: MenuEntry[] = [];
+  const openedGroups = new Set<BootMenuGroup>();
+  for (const profile of enabledOsBootProfiles) {
+    if (!profile.group) {
+      entries.push({ kind: 'profile', profile });
+    } else if (!openedGroups.has(profile.group)) {
+      openedGroups.add(profile.group);
+      entries.push({ kind: 'group', group: profile.group });
+    }
+  }
+  return entries;
+}
+
+function buildGroupEntries(group: BootMenuGroup): MenuEntry[] {
+  const profiles = enabledOsBootProfiles.filter((profile) => profile.group === group);
+  return [...profiles.map((profile): MenuEntry => ({ kind: 'profile', profile })), { kind: 'back' }];
+}
+
+const MAIN_ENTRIES = buildMainEntries();
+const GROUP_ENTRIES: Record<BootMenuGroup, MenuEntry[]> = {
+  windows: buildGroupEntries('windows'),
+  unix: buildGroupEntries('unix'),
+  macos: buildGroupEntries('macos'),
+  mobile: buildGroupEntries('mobile'),
+};
 
 function loadEditionSelection(): Record<string, string> {
   if (typeof window === 'undefined') return {};
@@ -28,7 +70,12 @@ export function GrubMenu() {
   const t = translations[language].grub;
   const isRu = language === 'ru';
 
-  const defaultIndex = Math.max(0, enabledOsBootProfiles.findIndex((p) => p.defaultSelected));
+  const [menu, setMenu] = useState<MenuScreen>('main');
+  const entries = menu === 'main' ? MAIN_ENTRIES : GROUP_ENTRIES[menu];
+  const defaultIndex = Math.max(
+    0,
+    MAIN_ENTRIES.findIndex((entry) => entry.kind === 'profile' && entry.profile.defaultSelected)
+  );
   const [selectedIndex, setSelectedIndex] = useState(defaultIndex);
   const [countdown, setCountdown] = useState(3);
   const [autobootActive, setAutobootActive] = useState(true);
@@ -37,7 +84,8 @@ export function GrubMenu() {
   const [selectedEditions, setSelectedEditions] = useState<Record<string, string>>(loadEditionSelection);
   const [, refreshBuildOption] = useState(0);
 
-  const selectedProfile = enabledOsBootProfiles[selectedIndex];
+  const selectedEntry = entries[selectedIndex];
+  const selectedProfile = selectedEntry?.kind === 'profile' ? selectedEntry.profile : undefined;
   const selectedProfileEditions = useMemo(
     () => getEditionsForProfile(String(selectedProfile?.id ?? '')),
     [selectedProfile]
@@ -48,6 +96,8 @@ export function GrubMenu() {
   );
   const buildTextSupported = supportsWindowsBuildText(selectedProfile?.theme);
   const buildTextEnabled = isWindowsBuildTextEnabled(selectedProfile?.theme);
+
+  const backLabel = t.back || (isRu ? 'Назад' : 'Back');
 
   const getProfileLabel = useCallback(
     (profile: OsBootProfile) => {
@@ -65,7 +115,7 @@ export function GrubMenu() {
       const selectedEdition = editions.find((edition) => edition.id === selectedEditionId);
       return `${base}${selectedEdition ? ` ${selectedEdition.label}` : ''} *`;
     },
-    [selectedEditions, t.blogSite, t.terminal, t.webos]
+    [selectedEditions, t.blogSite, t.terminal, t.webos, t.draftMarker]
   );
 
   const handleBoot = useCallback(
@@ -82,6 +132,29 @@ export function GrubMenu() {
       setMode(profile.mode);
     },
     [selectedEditions, setMode, setTheme]
+  );
+
+  const openGroup = useCallback((group: BootMenuGroup) => {
+    setAutobootActive(false);
+    setMenu(group);
+    setSelectedIndex(0);
+  }, []);
+
+  const closeGroup = useCallback(() => {
+    if (menu === 'main') return;
+    const groupIndex = MAIN_ENTRIES.findIndex((entry) => entry.kind === 'group' && entry.group === menu);
+    setMenu('main');
+    setSelectedIndex(Math.max(0, groupIndex));
+  }, [menu]);
+
+  const activateEntry = useCallback(
+    (entry: MenuEntry | undefined) => {
+      if (!entry) return;
+      if (entry.kind === 'group') openGroup(entry.group);
+      else if (entry.kind === 'back') closeGroup();
+      else handleBoot(entry.profile);
+    },
+    [closeGroup, handleBoot, openGroup]
   );
 
   const openEditionMenu = useCallback(() => {
@@ -116,14 +189,16 @@ export function GrubMenu() {
       setCountdown((current) => {
         if (current <= 1) {
           window.clearInterval(timer);
-          handleBoot(enabledOsBootProfiles[selectedIndex]);
+          // Autoboot only starts a system; a submenu that is still open stays on screen.
+          const entry = entries[selectedIndex];
+          if (entry?.kind === 'profile') handleBoot(entry.profile);
           return 0;
         }
         return current - 1;
       });
     }, FAKE_COUNTDOWN_TICK_MS);
     return () => window.clearInterval(timer);
-  }, [autobootActive, editionProfileId, handleBoot, selectedIndex]);
+  }, [autobootActive, editionProfileId, entries, handleBoot, selectedIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -149,11 +224,15 @@ export function GrubMenu() {
       if (key === 'arrowup' || key === 'w') {
         e.preventDefault();
         setAutobootActive(false);
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : enabledOsBootProfiles.length - 1));
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : entries.length - 1));
       } else if (key === 'arrowdown' || key === 's') {
         e.preventDefault();
         setAutobootActive(false);
-        setSelectedIndex((prev) => (prev < enabledOsBootProfiles.length - 1 ? prev + 1 : 0));
+        setSelectedIndex((prev) => (prev < entries.length - 1 ? prev + 1 : 0));
+      } else if ((key === 'escape' || key === 'backspace' || key === 'a') && menu !== 'main') {
+        e.preventDefault();
+        setAutobootActive(false);
+        closeGroup();
       } else if (key === 'e' && selectedProfileEditions.length > 0) {
         e.preventDefault();
         openEditionMenu();
@@ -163,7 +242,7 @@ export function GrubMenu() {
       } else if (key === 'enter') {
         e.preventDefault();
         setAutobootActive(false);
-        handleBoot(enabledOsBootProfiles[selectedIndex]);
+        activateEntry(entries[selectedIndex]);
       }
     };
 
@@ -175,11 +254,14 @@ export function GrubMenu() {
       window.removeEventListener('touchstart', handleTouchStart);
     };
   }, [
+    activateEntry,
     buildTextSupported,
     chooseEdition,
+    closeGroup,
     editionMenuItems.length,
     editionProfileId,
-    handleBoot,
+    entries,
+    menu,
     openEditionMenu,
     selectedIndex,
     selectedProfileEditions.length,
@@ -224,14 +306,53 @@ export function GrubMenu() {
     );
   }
 
+  const rowClass = (isSelected: boolean) =>
+    `px-4 py-2 cursor-pointer select-none ${isSelected ? 'bg-white text-black' : 'bg-black text-white hover:bg-gray-800'}`;
+
   return (
     <div className="min-h-screen bg-black text-white font-mono p-8 flex flex-col">
-      <div className="mb-8"><div className="text-gray-400">{t.title || 'GRUB Boot Loader'}</div></div>
+      <div className="mb-8">
+        <div className="text-gray-400">{t.title || 'GRUB Boot Loader'}</div>
+        {menu !== 'main' && (
+          <div className="mt-1 text-sm text-gray-500">{`GNU GRUB ▸ ${GROUP_LABELS[menu]}`}</div>
+        )}
+      </div>
       <div className="flex-1 flex flex-col justify-center max-w-2xl">
         <div className="space-y-1 mb-8">
-          {enabledOsBootProfiles.map((profile, index) => {
-            const isWebos = profile.id === 'webos';
+          {entries.map((entry, index) => {
             const isSelected = index === selectedIndex;
+            const select = () => { setSelectedIndex(index); setAutobootActive(false); };
+
+            if (entry.kind === 'group') {
+              return (
+                <div
+                  key={`group-${entry.group}`}
+                  className={rowClass(isSelected)}
+                  onClick={() => { select(); openGroup(entry.group); }}
+                  onTouchStart={(e) => { e.preventDefault(); select(); openGroup(entry.group); }}
+                  style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+                >
+                  {`${GROUP_LABELS[entry.group]} ▸`}
+                </div>
+              );
+            }
+
+            if (entry.kind === 'back') {
+              return (
+                <div
+                  key="back"
+                  className={`mt-4 border-t border-gray-700 ${rowClass(isSelected)}`}
+                  onClick={() => { select(); closeGroup(); }}
+                  onTouchStart={(e) => { e.preventDefault(); select(); closeGroup(); }}
+                  style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
+                >
+                  {`← ${backLabel}`}
+                </div>
+              );
+            }
+
+            const profile = entry.profile;
+            const isWebos = profile.id === 'webos';
             return (
               <div
                 key={profile.id}
@@ -242,8 +363,8 @@ export function GrubMenu() {
                       ? 'bg-black text-black hover:bg-gray-900'
                       : 'bg-black text-white hover:bg-gray-800'
                 }`}
-                onClick={() => { setSelectedIndex(index); setAutobootActive(false); handleBoot(profile); }}
-                onTouchStart={(e) => { e.preventDefault(); setSelectedIndex(index); setAutobootActive(false); handleBoot(profile); }}
+                onClick={() => { select(); handleBoot(profile); }}
+                onTouchStart={(e) => { e.preventDefault(); select(); handleBoot(profile); }}
                 style={{
                   touchAction: 'manipulation',
                   WebkitTapHighlightColor: 'transparent',

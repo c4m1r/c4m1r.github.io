@@ -13,6 +13,12 @@ export type OsProfileId =
   | 'win8'
   | 'win10'
   | 'win11'
+  | 'win95'
+  | 'server2003'
+  | 'server2008'
+  | 'server2012'
+  | 'server2016'
+  | 'server2019'
   | 'ubuntu'
   | 'webos'
   | 'macos-26'
@@ -22,6 +28,9 @@ export type OsProfileId =
   | 'ios-5'
   | 'arch'
   | 'halloween';
+
+/** Submenus of the boot menu. Profiles without a group sit at the top level. */
+export type BootMenuGroup = 'windows' | 'unix' | 'macos' | 'mobile';
 
 export interface OsBootProfile {
   id: OsProfileId;
@@ -35,4 +44,6 @@ export interface OsBootProfile {
   defaultSelected?: boolean;
   /** Placeholder entry: shown in the boot menu with a draft marker until its skin is complete. */
   draft?: boolean;
+  /** Submenu the entry is listed under in the boot menu. */
+  group?: BootMenuGroup;
 }

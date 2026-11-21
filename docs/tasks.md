@@ -644,3 +644,9 @@ Percentages are working estimates, not test results. The previous task registry 
 - Not yet verified: the Windows 10 draft Views menu. Its login asks for a password, which the test run does not have.
 - Open: Windows 98/2000 Small Icons flows items row-wise; the native layout fills columns top to bottom. Confirm against `eat/screens/oc/win98/` once screenshots arrive.
 - Open: Tiles mode is in the type but has no render branch.
+
+### BOOT-02 — Boot menu groups, Windows order and accounts
+- GRUB top level: My Site, Windows ▸, Unix ▸, MacOS ▸, Mobile ▸, Halloween Edition, Terminal, WebOS (WebOS stays semi-hidden, black text). Each submenu opens its own list with a Back row at the bottom; Esc, Backspace or A also go back.
+- Windows order follows the release sequence: 95, 98, 2000, Server 2003, XP, Vista, Server 2008, 7, 8, Server 2012, 10, Server 2016, Server 2019, 11. Server and 95 entries are drafts that reuse the closest client skin until their own skin exists.
+- Accounts: the generic desktop login lists User (default, no password) and C4m1r (password 123123). Classic 98/2000 logins already defaulted to User. Chosen account is recorded for the session.
+- Open: Halloween Edition sits at the top level; the request did not name a group for it.

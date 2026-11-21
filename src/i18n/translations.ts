@@ -5,6 +5,7 @@ export const translations: Record<string, any> = {
     grub: {
       title: 'GNU GRUB  version 2.06',
       draftMarker: 'draft',
+      back: 'Back',
       blogSite: 'My Site',
       webos: 'WebOS',
       advanced: 'Advanced options for WebOS',
@@ -99,6 +100,7 @@ export const translations: Record<string, any> = {
     grub: {
       title: 'GNU GRUB  версия 2.06',
       draftMarker: 'черновик',
+      back: 'Назад',
       blogSite: 'Мой сайт',
       webos: 'WebOS',
       advanced: 'Дополнительные параметры для WebOS',
@@ -193,6 +195,7 @@ export const translations: Record<string, any> = {
     grub: {
       title: 'GNU GRUB  version 2.06',
       draftMarker: 'brouillon',
+      back: 'Retour',
       blogSite: 'Mon site',
       webos: 'WebOS',
       advanced: 'Options avancées pour WebOS',
@@ -287,6 +290,7 @@ export const translations: Record<string, any> = {
     grub: {
       title: 'GNU GRUB  versión 2.06',
       draftMarker: 'borrador',
+      back: 'Atrás',
       blogSite: 'Mi sitio',
       webos: 'WebOS',
       advanced: 'Opciones avanzadas para WebOS',
@@ -381,6 +385,7 @@ export const translations: Record<string, any> = {
     grub: {
       title: 'GNU GRUB  版本 2.06',
       draftMarker: '草稿',
+      back: '返回',
       blogSite: '我的网站',
       webos: 'WebOS',
       advanced: 'WebOS 的高级选项',
@@ -475,6 +480,7 @@ export const translations: Record<string, any> = {
     grub: {
       title: 'GNU GRUB  バージョン 2.06',
       draftMarker: '下書き',
+      back: '戻る',
       blogSite: '私のサイト',
       webos: 'WebOS',
       advanced: 'WebOSの詳細オプション',
@@ -569,6 +575,7 @@ export const translations: Record<string, any> = {
     grub: {
       title: 'GNU GRUB  버전 2.06',
       draftMarker: '초안',
+      back: '뒤로',
       blogSite: '내 사이트',
       webos: 'WebOS',
       advanced: 'WebOS 고급 옵션',

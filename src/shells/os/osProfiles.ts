@@ -1,4 +1,29 @@
-import { type OsBootProfile, type OsProfileId } from './osTypes';
+import { type BootMenuGroup, type OsBootProfile, type OsProfileId } from './osTypes';
+
+/**
+ * Boot menu entries. `order` sorts entries inside their group. Windows entries follow the
+ * release-based sequence of the Windows family; server editions are drafts that reuse the
+ * closest client skin until their own skin exists.
+ */
+function windows(
+  id: OsProfileId,
+  label: string,
+  theme: NonNullable<OsBootProfile['theme']>,
+  order: number,
+  draft = false,
+): OsBootProfile {
+  return {
+    id,
+    label,
+    kind: 'desktop',
+    mode: 'webos',
+    theme,
+    order,
+    enabled: true,
+    group: 'windows',
+    ...(draft ? { draft: true } : {}),
+  };
+}
 
 export const osBootProfiles: OsBootProfile[] = [
   {
@@ -10,60 +35,29 @@ export const osBootProfiles: OsBootProfile[] = [
     enabled: true,
     defaultSelected: true,
   },
-  {
-    id: 'win-xp' as OsProfileId,
-    label: 'Windows XP',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'win-xp' as const,
-    order: 10,
-    enabled: true,
-  },
-  {
-    id: 'win-98' as OsProfileId,
-    label: 'Windows 98',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'win-98' as const,
-    order: 20,
-    enabled: true,
-  },
-  {
-    id: 'win2000' as OsProfileId,
-    label: 'Windows 2000',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'win2000' as const,
-    order: 25,
-    enabled: true,
-  },
-  {
-    id: 'win7' as OsProfileId,
-    label: 'Windows 7',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'win7' as const,
-    order: 30,
-    enabled: true,
-  },
-  {
-    id: 'vista' as OsProfileId,
-    label: 'Windows Vista',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'vista' as const,
-    order: 28,
-    enabled: true,
-    draft: true,
-  },
+  windows('win95' as OsProfileId, 'Windows 95', 'win-98', 100, true),
+  windows('win-98' as OsProfileId, 'Windows 98', 'win-98', 101),
+  windows('win2000' as OsProfileId, 'Windows 2000', 'win2000', 102),
+  windows('server2003' as OsProfileId, 'Windows Server 2003', 'win-xp', 103, true),
+  windows('win-xp' as OsProfileId, 'Windows XP', 'win-xp', 104),
+  windows('vista' as OsProfileId, 'Windows Vista', 'vista', 105, true),
+  windows('server2008' as OsProfileId, 'Windows Server 2008', 'vista', 106, true),
+  windows('win7' as OsProfileId, 'Windows 7', 'win7', 107),
+  windows('win8' as OsProfileId, 'Windows 8', 'win8', 108, true),
+  windows('server2012' as OsProfileId, 'Windows Server 2012', 'win8', 109, true),
+  windows('win10' as OsProfileId, 'Windows 10', 'win10', 110, true),
+  windows('server2016' as OsProfileId, 'Windows Server 2016', 'win10', 111, true),
+  windows('server2019' as OsProfileId, 'Windows Server 2019', 'win10', 112, true),
+  windows('win11' as OsProfileId, 'Windows 11', 'win11', 113, true),
   {
     id: 'ubuntu' as OsProfileId,
     label: 'Ubuntu',
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'ubuntu' as const,
-    order: 40,
+    order: 200,
     enabled: true,
+    group: 'unix' as BootMenuGroup,
   },
   {
     id: 'arch' as OsProfileId,
@@ -71,38 +65,9 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'arch' as const,
-    order: 41,
+    order: 201,
     enabled: true,
-  },
-  {
-    id: 'win8' as OsProfileId,
-    label: 'Windows 8',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'win8' as const,
-    order: 35,
-    enabled: true,
-    draft: true,
-  },
-  {
-    id: 'win10' as OsProfileId,
-    label: 'Windows 10',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'win10' as const,
-    order: 36,
-    enabled: true,
-    draft: true,
-  },
-  {
-    id: 'win11' as OsProfileId,
-    label: 'Windows 11',
-    kind: 'desktop' as const,
-    mode: 'webos' as const,
-    theme: 'win11' as const,
-    order: 37,
-    enabled: true,
-    draft: true,
+    group: 'unix' as BootMenuGroup,
   },
   {
     id: 'macos-26' as OsProfileId,
@@ -110,8 +75,9 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'macos-26' as const,
-    order: 42,
+    order: 300,
     enabled: true,
+    group: 'macos' as BootMenuGroup,
   },
   {
     id: 'ios-26' as OsProfileId,
@@ -119,8 +85,9 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'ios-26' as const,
-    order: 43,
+    order: 400,
     enabled: true,
+    group: 'mobile' as BootMenuGroup,
   },
   {
     id: 'ios-16' as OsProfileId,
@@ -128,8 +95,9 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'ios-16' as const,
-    order: 44,
+    order: 401,
     enabled: true,
+    group: 'mobile' as BootMenuGroup,
   },
   {
     id: 'ios-9' as OsProfileId,
@@ -137,8 +105,9 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'ios-9' as const,
-    order: 46,
+    order: 402,
     enabled: true,
+    group: 'mobile' as BootMenuGroup,
   },
   {
     id: 'ios-5' as OsProfileId,
@@ -146,8 +115,9 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'ios-5' as const,
-    order: 48,
+    order: 403,
     enabled: true,
+    group: 'mobile' as BootMenuGroup,
   },
   {
     id: 'halloween' as OsProfileId,
@@ -155,7 +125,7 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'halloween' as const,
-    order: 49,
+    order: 500,
     enabled: true,
   },
   {
@@ -163,7 +133,7 @@ export const osBootProfiles: OsBootProfile[] = [
     label: 'Терминал',
     kind: 'terminal' as const,
     mode: 'terminal' as const,
-    order: 50,
+    order: 600,
     enabled: true,
   },
   {
@@ -172,7 +142,7 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'webos' as const,
-    order: 60,
+    order: 700,
     enabled: true,
   },
 ].sort((a, b) => a.order - b.order);
