@@ -447,3 +447,12 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Users icon removed from Programs role: no visually matching asset yet.
 - [ ] Browser check of the Windows 7 desktop, Start menu and Explorer: blocked, because the Windows 7 login requires a password.
 - [ ] Same category/name standard for Windows XP (`NNN(WxW).png`) and Windows 98 (`*-N.png` families, 587 base names); requires updating import paths in `win98/iconAssets.ts`, `winxp/themeAssets.ts`, `webos/themeAssets.ts` and `win2000/iconAssets.ts`.
+
+## Windows 98 icon bank standardization — 2026-11-21
+
+- [x] `scripts/organize-win98-icons.py` moves all 1758 Windows 98 icons to `src/themes/win98/icons/<category>/<name>/<WxH>-<N>.png` (kebab-case names, intrinsic size and original variant index in the file name). Categories are assigned by whole-word rules; the full mapping is in `src/themes/win98/icons/manifest.json`.
+- [x] Import paths updated in `win98/iconAssets.ts`, `win2000/iconAssets.ts`, `webos/themeAssets.ts`, `MyComputer.tsx` and `StartMenu98.tsx`. Original `assets/icons` folder removed.
+- [x] `typecheck`, `build`, `lint` (0 errors) and `verify` pass.
+- [x] Removed the superseded derived collection `src/themes/windows-icons/` and its builder `scripts/build-windows-icons.py`. Nothing imported them; the curated XP table is preserved in git history (commit `9018057`).
+- [ ] Category rules are heuristic: review `manifest.json` and correct any misfiled names by editing the rules.
+- [ ] Apply the same standard to the Windows XP numbered bank (`NNN(WxW).png`).

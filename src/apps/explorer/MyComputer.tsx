@@ -16,11 +16,11 @@ import appleFolderIcon from '../../themes/apple/assets/icons/folder-generic.png'
 import appleDocumentIcon from '../../themes/apple/assets/sf-icons/document.svg';
 import appleImageIcon from '../../themes/apple/assets/sf-icons/image.svg';
 import appleDriveIcon from '../../themes/apple/assets/sf-icons/hard-drive.svg';
-import win98ComputerIcon from '../../themes/win98/assets/icons/computer_explorer-0.png';
-import win2000ComputerIcon from '../../themes/win98/assets/icons/computer_explorer_2k-0.png';
-import win98FolderIcon from '../../themes/win98/assets/icons/directory_closed-0.png';
-import win98DriveIcon from '../../themes/win98/assets/icons/hard_disk_drive-0.png';
-import win98SearchIcon from '../../themes/win98/assets/icons/search_computer-0.png';
+import win98ComputerIcon from '../../themes/win98/icons/devices/computer-explorer/16x16-0.png';
+import win2000ComputerIcon from '../../themes/win98/icons/devices/computer-explorer-2k/32x32-0.png';
+import win98FolderIcon from '../../themes/win98/icons/folders/directory-closed/32x32-0.png';
+import win98DriveIcon from '../../themes/win98/icons/devices/hard-disk-drive/32x32-0.png';
+import win98SearchIcon from '../../themes/win98/icons/devices/search-computer/32x32-0.png';
 
 const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки|(?:^|[\\/])pictures$/i.test(value);
 

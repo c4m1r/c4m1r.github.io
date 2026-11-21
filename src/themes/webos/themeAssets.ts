@@ -53,7 +53,7 @@ import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
 import win98Startup from '../win98/assets/audio/windows-98-startup.mp3';
-import win98StartIcon from '../win98/assets/icons/start98.png';
+import win98StartIcon from '../win98/icons/system/start98/32x32-0.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
 
 type StartMenuIconSet = {

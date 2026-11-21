@@ -2,9 +2,9 @@ import { useState, type ReactNode } from 'react';
 import { Folder, Star, FileText, Settings, Search, HelpCircle, Play, LogOut, Power } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
 import { getActiveEdition } from '../../../os/osEditions';
-import ieClassicIcon from '../../../../themes/win98/assets/icons/homepage-0.png';
-import outlookClassicIcon from '../../../../themes/win98/assets/icons/mailbox_world-0.png';
-import mediaPlayerClassicIcon from '../../../../themes/win98/assets/icons/media_player-0.png';
+import ieClassicIcon from '../../../../themes/win98/icons/network/homepage/32x32-0.png';
+import outlookClassicIcon from '../../../../themes/win98/icons/network/mailbox-world/32x32-0.png';
+import mediaPlayerClassicIcon from '../../../../themes/win98/icons/media/media-player/32x32-0.png';
 
 export interface StartMenu98Props {
   onClose: () => void;
