@@ -619,3 +619,9 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] 3D Pinball sketch (`src/apps/games/pinball`): canvas physics, flippers, bumpers, plunger; registered as `pinball`; Program Files `pinball.exe` (name not verified). Icon is XP art on all OSes until 2000-specific art is sourced.
 - [ ] Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.
+
+## Control Panel: canonical Windows 98 applet list
+
+- [x] Win98 classic view now lists only Windows 98 applets (Accessibility Options, Add New Hardware, Add/Remove Programs, Date/Time, Desktop Themes, Display, Fonts, Game Controllers, Infrared, Internet, Keyboard, Modems, Mouse, Multimedia, Network, Passwords, Power Management, Printers, Regional Settings, Scanners and Cameras, Sounds, System, Telephony, Users). Source: Microsoft KB 149648 and the Win98 applet reference.
+- [ ] Win98 applet mapping to the closest existing category is a stand-in: dedicated views (Fonts, Desktop Themes, Modems) still need their own pages.
+- [ ] XP classic view still shows site extras (Task Manager, Desktop Widgets) and XP names not yet checked against a primary source.

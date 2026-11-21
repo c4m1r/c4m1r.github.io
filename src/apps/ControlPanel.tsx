@@ -568,6 +568,39 @@ export function ControlPanel() {
     [isRu]
   );
 
+  // Windows 98 Control Panel, as listed in the Win98 applet reference (Microsoft KB 149648 and
+  // Win98 Resource Kit). Only applets that exist in Windows 98 are shown; the target is the
+  // closest existing category of this app.
+  const win98Applets = useMemo(
+    () => [
+      { id: 'accessibility', title: isRu ? 'Специальные возможности' : 'Accessibility Options', emoji: '♿' },
+      { id: 'hardware', title: isRu ? 'Установка нового оборудования' : 'Add New Hardware', emoji: '🔧' },
+      { id: 'programs', title: isRu ? 'Установка и удаление программ' : 'Add/Remove Programs', emoji: '💿' },
+      { id: 'date-time', title: isRu ? 'Дата и время' : 'Date/Time', emoji: '🕒' },
+      { id: 'appearance', title: isRu ? 'Темы рабочего стола' : 'Desktop Themes', emoji: '🎨' },
+      { id: 'appearance', title: isRu ? 'Экран' : 'Display', emoji: '🖥️' },
+      { id: 'appearance', title: isRu ? 'Шрифты' : 'Fonts', emoji: '🔤' },
+      { id: 'hardware', title: isRu ? 'Игровые устройства' : 'Game Controllers', emoji: '🎮' },
+      { id: 'hardware', title: isRu ? 'Инфракрасная связь' : 'Infrared', emoji: '📡' },
+      { id: 'network', title: isRu ? 'Internet' : 'Internet', emoji: '🌐' },
+      { id: 'hardware', title: isRu ? 'Клавиатура' : 'Keyboard', emoji: '⌨️' },
+      { id: 'network', title: isRu ? 'Модемы' : 'Modems', emoji: '☎️' },
+      { id: 'hardware', title: isRu ? 'Мышь' : 'Mouse', emoji: '🖱️' },
+      { id: 'sounds', title: isRu ? 'Мультимедиа' : 'Multimedia', emoji: '🎵' },
+      { id: 'network', title: isRu ? 'Сеть' : 'Network', emoji: '🖧' },
+      { id: 'user-accounts', title: isRu ? 'Пароли' : 'Passwords', emoji: '🔑' },
+      { id: 'maintenance', title: isRu ? 'Управление питанием' : 'Power Management', emoji: '🔋' },
+      { id: 'hardware', title: isRu ? 'Принтеры' : 'Printers', emoji: '🖨️' },
+      { id: 'date-time', title: isRu ? 'Региональные параметры' : 'Regional Settings', emoji: '🌍' },
+      { id: 'hardware', title: isRu ? 'Сканеры и камеры' : 'Scanners and Cameras', emoji: '📷' },
+      { id: 'sounds', title: isRu ? 'Звуки' : 'Sounds', emoji: '🔊' },
+      { id: 'maintenance', title: isRu ? 'Система' : 'System', emoji: '💻' },
+      { id: 'network', title: isRu ? 'Телефония' : 'Telephony', emoji: '📞' },
+      { id: 'user-accounts', title: isRu ? 'Пользователи' : 'Users', emoji: '👤' },
+    ],
+    [isRu]
+  );
+
   const openExplorerPath = (path: string) => {
     window.dispatchEvent(new CustomEvent('explorer:open-path', { detail: { path } }));
   };
@@ -1319,7 +1352,7 @@ export function ControlPanel() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {classicApplets.map((applet, index) => (
+              {(isWin98 ? win98Applets : classicApplets).map((applet, index) => (
                 <div
                   key={index}
                   className={`${cardClass} p-3 flex flex-col items-center text-center cursor-pointer hover:scale-[1.02] transition-transform`}
