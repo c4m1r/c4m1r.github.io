@@ -9,6 +9,7 @@ import {
   supportsWindowsBuildText,
 } from '../shells/os/osBootOptions';
 import { type OsBootProfile } from '../shells/os/osTypes';
+import { primeBootTheme } from '../themes/bootPreload';
 
 const FAKE_COUNTDOWN_TICK_MS = 330;
 
@@ -68,6 +69,8 @@ export function GrubMenu() {
   const handleBoot = useCallback(
     (profile: OsBootProfile) => {
       if (profile.theme) {
+        // Runs inside the user's click or key press, so the startup sound may start now.
+        primeBootTheme(profile.theme);
         setTheme(profile.theme);
         const selectedId = selectedEditions[String(profile.id)] ?? selectedEditions[String(profile.theme)];
         if (selectedId) {

@@ -1,15 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { WIN7_ASSETS } from './assets';
+import { playBootStartup } from '../bootPreload';
 
 interface BootScreenProps {
   onComplete: () => void;
 }
 
 export function BootScreen({ onComplete }: BootScreenProps) {
-  const { language } = useApp();
+  const { language, theme } = useApp();
   const completedRef = useRef(false);
   const [videoFailed, setVideoFailed] = useState(false);
+
+  useEffect(() => {
+    playBootStartup(theme ?? 'win7');
+  }, [theme]);
 
   const complete = useCallback(() => {
     if (completedRef.current) return;

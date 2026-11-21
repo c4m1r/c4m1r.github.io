@@ -559,3 +559,12 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] The WinClassic repo publishes no SVG for these roles (its SVG set is the Linux Redmond97 theme). PNG is the stored format, as the task allows.
 - [ ] Calculator, Outlook Express and Minesweeper have no authentic Windows 2000 source in the repos checked (eat/, WinClassic, ClassicOS-2000-Icons, W-ICO). They keep Windows 98 artwork.
 - [ ] Confirm the Media Player icon against a Windows 2000 screenshot.
+
+## Boot screens, original system sounds and preloading — 2026-11-21
+
+- [x] System sounds are the original Windows files: XP startup, shutdown and logoff; Windows 2000 logon (startup) and logoff (shutdown); Windows 98 startup and exit. They live in each theme's `assets/audio/`. The old `/sounds/system/*` paths pointed to files that were never in the repository, so those sounds did not play.
+- [x] One boot layer (`src/themes/bootPreload.ts`) is used by every Windows-family theme. Choosing an OS in GRUB primes the wallpaper, boot logo, progress art and the Windows 7 boot video, and starts the startup sound inside the click or key press, so it plays before the boot screen appears, even with a cold cache.
+- [x] If the browser blocks autoplay (autoboot without a gesture), the sound is retried on the first pointer or key press.
+- [x] The desktop no longer plays the startup sound when the boot screen already did, so each boot plays it once. Checked: XP path through login and welcome plays one startup sound; Windows 98, 2000 and 7 each play their own.
+- [ ] Windows 7 shutdown and logoff sounds: not in the reference set yet; currently silent.
+- [ ] UI event sounds (`/sounds/ui/*`) still point to files that are not in the repository. Each needs an original source before they play.

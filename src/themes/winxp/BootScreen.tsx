@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { XP_IDENTITY_LOGO } from './xpIdentityLogo';
+import { useApp } from '../../contexts/useApp';
+import { playBootStartup } from '../bootPreload';
 import './xp.css';
 
 interface BootScreenProps {
@@ -8,6 +10,11 @@ interface BootScreenProps {
 
 export function BootScreen({ onComplete }: BootScreenProps) {
   const [fadeIn, setFadeIn] = useState(false);
+  const { theme } = useApp();
+
+  useEffect(() => {
+    playBootStartup(theme ?? 'win-xp');
+  }, [theme]);
 
   useEffect(() => {
     setFadeIn(true);

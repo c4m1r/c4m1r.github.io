@@ -53,7 +53,13 @@ import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
-import win98Startup from '../win98/assets/audio/windows-98-startup.mp3';
+import win98Startup from '../win98/assets/audio/startup.wav';
+import win98Shutdown from '../win98/assets/audio/shutdown.wav';
+import win2000Startup from '../win2000/assets/audio/startup.wav';
+import win2000Shutdown from '../win2000/assets/audio/shutdown.wav';
+import xpStartup from '../winxp/assets/audio/startup.wav';
+import xpShutdown from '../winxp/assets/audio/shutdown.wav';
+import xpLogoff from '../winxp/assets/audio/logoff.wav';
 import win98StartIcon from '../win98/icons/system/start98/32x32-0.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
 
@@ -115,6 +121,8 @@ export interface ThemeAssets {
   richTextIcon?: string;
   bootLogo?: string;
   bootProgress?: string;
+  /** Boot animation video, warmed into the HTTP cache at GRUB selection. */
+  bootVideo?: string;
   startupSound?: string;
   shutdownSound?: string;
   logoffSound?: string;
@@ -180,9 +188,9 @@ const sharedWebosAssets: ThemeAssets = {
   muteIcon: muteIconWebos,
   fullscreenIcon: fullscreenIconWebos,
   notificationIcon: notificationIconWebos,
-  startupSound: '/sounds/system/xp-startup.mp3',
-  shutdownSound: '/sounds/system/xp-shutdown.mp3',
-  logoffSound: '/sounds/system/xp-logoff.mp3',
+  startupSound: xpStartup,
+  shutdownSound: xpShutdown,
+  logoffSound: xpLogoff,
   uiSounds: {
     menuOpen: '/sounds/ui/xp-menu-open.mp3',
     menuClose: '/sounds/ui/xp-menu-close.mp3',
@@ -240,6 +248,11 @@ const win7ThemeAssets: ThemeAssets = {
   ...sharedWebosAssets,
   ...WIN7_ICON_ASSETS,
   startupSound: WIN7_ASSETS.startupSound,
+  bootVideo: WIN7_ASSETS.bootVideo,
+  // Windows 7 shutdown and logoff sounds are not in the reference set yet; an
+  // empty string keeps the XP sounds from the shared base from leaking in.
+  shutdownSound: '',
+  logoffSound: '',
   startMenuIcons: {
     ...sharedWebosAssets.startMenuIcons,
     ...WIN7_ICON_ASSETS.startMenuIcons,
@@ -294,8 +307,9 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
       accessibility: WIN98_ICON_ASSETS.helpIcon,
     },
     startupSound: win98Startup,
-    shutdownSound: '/sounds/system/win98-shutdown.mp3',
-    logoffSound: '/sounds/system/win98-logoff.mp3',
+    shutdownSound: win98Shutdown,
+    // Windows 98 has no logoff sound.
+    logoffSound: '',
     uiSounds: {
       menuOpen: '/sounds/ui/win98-menu-open.mp3',
       menuClose: '/sounds/ui/win98-menu-close.mp3',
@@ -307,9 +321,10 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   },
   win2000: {
     ...WIN2000_ICON_ASSETS,
-    startupSound: '/sounds/system/win2000-startup.mp3',
-    shutdownSound: '/sounds/system/win2000-shutdown.mp3',
-    logoffSound: '/sounds/system/win98-logoff.mp3',
+    startupSound: win2000Startup,
+    shutdownSound: win2000Shutdown,
+    // No separate logoff sound in the reference set.
+    logoffSound: '',
     uiSounds: {
       menuOpen: '/sounds/ui/win98-menu-open.mp3',
       menuClose: '/sounds/ui/win98-menu-close.mp3',

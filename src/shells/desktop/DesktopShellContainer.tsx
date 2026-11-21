@@ -51,6 +51,7 @@ import { resolveAppWindowConfig, resolveRunCommandTarget } from './runtime/deskt
 import { getDesktopOsClassName, isThemeInFamily } from './runtime/shortcutFilters';
 import { getViewportSize } from './runtime/windowGeometry';
 import { THEME_ASSETS } from '../../themes/webos/themeAssets';
+import { hasBootStartupPlayed } from '../../themes/bootPreload';
 import { THEME_STYLES } from '../../themes/webos/themeStyles';
 import { playXpClick } from '../../themes/winxp/xpSoundService';
 import { AsciiAurora } from '../../components/effects';
@@ -676,7 +677,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     }
 
     if (!startupPlayedRef.current[themeKey]) {
-      playSystemSound(startupSound, 0.5);
+      // The boot screen plays the startup sound; only play it here if it never started.
+      if (!hasBootStartupPlayed(themeKey)) {
+        playSystemSound(startupSound, 0.5);
+      }
       startupPlayedRef.current[themeKey] = true;
     }
   }, [startupSound, playSystemSound, themeKey]);
