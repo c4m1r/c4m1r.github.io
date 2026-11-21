@@ -17,6 +17,8 @@ const APP_ASSET_KEYS: Readonly<Record<string, keyof IconThemeAssets>> = {
   calendar: 'calendarIcon',
   alarm: 'alarmIcon',
   snake: 'snakeIcon',
+  solitaire: 'solitaireIcon',
+  freecell: 'freecellIcon',
   memory: 'memoryIcon',
   news: 'newsIcon',
   currency: 'currencyIcon',

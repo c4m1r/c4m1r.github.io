@@ -1,0 +1,1 @@
+export { SolitaireGame } from './SolitaireGame';

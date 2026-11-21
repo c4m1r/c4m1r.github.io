@@ -1,0 +1,1 @@
+export { FreeCellGame } from './FreeCellGame';

@@ -23,6 +23,8 @@ import { LoopsApp } from '../../apps/loops/LoopsApp';
 import { Minesweeper } from '../../apps/minesweeper';
 import { SnakeGame } from '../../apps/games/SnakeGame';
 import { MemoryGame } from '../../apps/games/MemoryGame';
+import { SolitaireGame } from '../../apps/games/solitaire';
+import { FreeCellGame } from '../../apps/games/freecell';
 import { ResumeApp } from './apps/resume/ResumeApp';
 import { TaskManager } from '../../apps/TaskManager';
 
@@ -422,6 +424,24 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'gamesIcon',
     component: SnakeGame,
     defaultWindow: { width: 620, height: 700 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
+  'solitaire': {
+    id: 'solitaire',
+    title: { en: 'Solitaire', ru: 'Косынка', fr: 'Solitaire', es: 'Solitario', zh: '纸牌', ja: 'ソリティア', ko: '솔리테어' },
+    iconKey: 'solitaireIcon',
+    component: SolitaireGame,
+    defaultWindow: { width: 620, height: 560 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
+  'freecell': {
+    id: 'freecell',
+    title: { en: 'FreeCell', ru: 'Свободная ячейка', fr: 'FreeCell', es: 'FreeCell', zh: '空当接龙', ja: 'フリーセル', ko: '프리셀' },
+    iconKey: 'freecellIcon',
+    component: FreeCellGame,
+    defaultWindow: { width: 680, height: 560 },
     showInStartMenu: false,
     showOnDesktop: false,
   },

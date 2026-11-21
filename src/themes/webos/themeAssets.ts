@@ -44,6 +44,8 @@ import notificationIconWebos from '../winxp/assets/icons/Information.png';
 import calendarIconWebos from '../winxp/assets/icons/Date and Time.png';
 import alarmIconWebos from '../winxp/assets/icons/Application Window.png';
 import snakeIconAsset from '../../apps/games/assets/snake-icon.svg';
+import solitaireIconWebos from '../winxp/assets/icons/solitaire.png';
+import freecellIconWebos from '../winxp/assets/icons/freecell.png';
 import memoryIconAsset from '../../apps/games/assets/memory-icon.svg';
 import terminalIconWebos from '../winxp/assets/icons/cmd.png';
 import rssNewsIcon from '../../assets/icons/rss-icon.svg';
@@ -131,6 +133,8 @@ export interface ThemeAssets {
   calendarIcon?: string;
   alarmIcon?: string;
   snakeIcon?: string;
+  solitaireIcon?: string;
+  freecellIcon?: string;
   memoryIcon?: string;
   /** Terminal app icon (cmd.png) */
   terminalIcon?: string;
@@ -183,6 +187,8 @@ const sharedWebosAssets: ThemeAssets = {
   calendarIcon: calendarIconWebos,
   alarmIcon: alarmIconWebos,
   snakeIcon: snakeIconAsset,
+  solitaireIcon: solitaireIconWebos,
+  freecellIcon: freecellIconWebos,
   memoryIcon: memoryIconAsset,
   terminalIcon: terminalIconWebos,
   newsIcon: rssNewsIcon,

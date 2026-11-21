@@ -602,3 +602,11 @@ Percentages are working estimates, not test results. The previous task registry 
 
 - [x] Alarm tone selection (chime, digital, siren, classic bell) per alarm and for new alarms, with preview; the chosen tone loops while an alarm rings.
 - [x] Tones are generated in-house by `scripts/gen-alarm-sounds.py` (no third-party samples, so no licence obligations). Freesound/CC0 samples were not used: the shell cannot download them from this environment.
+
+## Classic games (sketches, temporary)
+
+- [x] Inventory of games bundled with Windows by version: `docs/classic-games.md`.
+- [x] Klondike Solitaire sketch (`src/apps/games/solitaire`), registered as `solitaire` with per-OS icons; Program Files `microsoft/sol.exe`.
+- [x] FreeCell sketch (`src/apps/games/freecell`), registered as `freecell` with per-OS icons; Program Files `microsoft/freecell.exe`.
+- [ ] Hearts, Spider Solitaire, 3D Pinball, Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.
+- [ ] Win7 has no native FreeCell icon (XP art is used for now).
