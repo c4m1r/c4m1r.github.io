@@ -18,6 +18,7 @@ import calendarIcon from './icons/apps/calendar.png';
 // Generic Windows 7 application icon (window with title bar): no native alarm icon in the set.
 import alarmIcon from './icons/apps/window-run.png';
 import solitaireIcon from './icons/apps/solitaire.png';
+import heartsIcon from './icons/apps/hearts-games.png';
 import helpIcon from './icons/system/help-circle.png';
 import controlPanelIcon from './icons/system/gears-window.png';
 import recycleIcon from './icons/system/recycle-bin-empty.png';
@@ -57,6 +58,7 @@ export const WIN7_ICON_ASSETS = {
   calendarIcon,
   alarmIcon,
   solitaireIcon,
+  heartsIcon,
   helpIcon,
   controlPanelIcon,
   recycleIcon,

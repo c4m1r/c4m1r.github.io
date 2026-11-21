@@ -610,3 +610,6 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] FreeCell sketch (`src/apps/games/freecell`), registered as `freecell` with per-OS icons; Program Files `microsoft/freecell.exe`.
 - [ ] Hearts, Spider Solitaire, 3D Pinball, Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.
 - [ ] Win7 has no native FreeCell icon (XP art is used for now).
+
+- [x] Hearts sketch (`src/apps/games/hearts`): passing, rules, computer players, round and game scoring; registered as `hearts` with per-OS icons; Program Files `microsoft/mshearts.exe`.
+- [ ] Spider Solitaire, 3D Pinball, Reversi, Chess Titans, Internet Backgammon, Purble Place, Mahjong: not started.

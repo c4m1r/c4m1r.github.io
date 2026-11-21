@@ -290,6 +290,7 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                 'hh.exe': { id: 'app-help', name: 'hh.exe', type: 'file', appId: 'help', icon: defaultTextIcon },
                                 'sol.exe': { id: 'app-solitaire', name: 'sol.exe', type: 'file', appId: 'solitaire', icon: defaultTextIcon },
                                 'freecell.exe': { id: 'app-freecell', name: 'freecell.exe', type: 'file', appId: 'freecell', icon: defaultTextIcon },
+                                'mshearts.exe': { id: 'app-hearts', name: 'mshearts.exe', type: 'file', appId: 'hearts', icon: defaultTextIcon },
                                 }
                             },
                             'nullsoft': {
@@ -369,7 +370,7 @@ if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
     const desktop = c4m1rProfile.children?.['Desktop'];
     // Games and Programs on the desktop hold flat shortcuts to the executables in
     // Program Files, with no nested folders.
-    const gameAppIds = new Set(['doom1', 'doom2', 'minesweeper', 'solitaire', 'freecell', 'snake', 'memory']);
+    const gameAppIds = new Set(['doom1', 'doom2', 'minesweeper', 'solitaire', 'freecell', 'hearts', 'snake', 'memory']);
     const programFiles = cDrive.children?.['Program Files'];
     const collectShortcuts = (predicate: (appId: string) => boolean): Record<string, FileSystemItem> => {
         const found: FileSystemItem[] = [];

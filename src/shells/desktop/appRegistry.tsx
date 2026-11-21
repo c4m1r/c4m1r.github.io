@@ -25,6 +25,7 @@ import { SnakeGame } from '../../apps/games/SnakeGame';
 import { MemoryGame } from '../../apps/games/MemoryGame';
 import { SolitaireGame } from '../../apps/games/solitaire';
 import { FreeCellGame } from '../../apps/games/freecell';
+import { HeartsGame } from '../../apps/games/hearts';
 import { ResumeApp } from './apps/resume/ResumeApp';
 import { TaskManager } from '../../apps/TaskManager';
 
@@ -442,6 +443,15 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'freecellIcon',
     component: FreeCellGame,
     defaultWindow: { width: 680, height: 560 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
+  'hearts': {
+    id: 'hearts',
+    title: { en: 'Hearts', ru: 'Сердца', fr: 'Cœurs', es: 'Corazones', zh: '红心大战', ja: 'ハート', ko: '하트' },
+    iconKey: 'heartsIcon',
+    component: HeartsGame,
+    defaultWindow: { width: 640, height: 600 },
     showInStartMenu: false,
     showOnDesktop: false,
   },

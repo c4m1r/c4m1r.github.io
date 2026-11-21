@@ -10,7 +10,7 @@ Layouts and rules follow the public rule sets; code is written for this site, no
 | Solitaire (Klondike, «Косынка») | 3.1, 95, 98, 2000, XP, Vista, 7, 10 | Sketch: `src/apps/games/solitaire` (draw-one, click-to-move) |
 | FreeCell («Свободная ячейка») | 3.1 (Win32s), 95, 98, 2000, XP, Vista, 7, 10 | Sketch: `src/apps/games/freecell` (4 cells, supermoves) |
 | Minesweeper («Сапёр») | 3.1, 95, 98, 2000, XP, Vista, 7 | Exists: `src/apps/minesweeper` |
-| Hearts | 3.1, 95, 98, XP, Vista, 7 | Not started |
+| Hearts («Сердца») | 3.1, 95, 98, XP, Vista, 7 | Sketch: `src/apps/games/hearts` (pass, follow suit, heart-breaking, shooting the moon, 100-point game) |
 | Spider Solitaire | XP, Vista, 7, 10 | Not started |
 | 3D Pinball – Space Cadet | 2000, XP | Not started |
 | Reversi | 3.1 | Not started |
@@ -30,8 +30,15 @@ Layouts and rules follow the public rule sets; code is written for this site, no
 - `eat/wins95Portfolio-main/src/components/MineSweeper.jsx` (reference for Minesweeper, already implemented).
 - Native icons: XP `solitaire.png`, `freecell.png`; Win7 `solitaire.png`; Win98 `game-solitaire`, `game-freecell`. Win2000 inherits Win98 for these (its own set has no Solitaire icon). Win7 has no FreeCell icon, so it currently uses the XP one.
 
+## Hearts rules implemented
+
+- Pass three cards left, right, across, then none; the holder of 2♣ leads.
+- Follow suit; hearts cannot lead until a heart or the Queen of Spades is played.
+- No points on the first trick when another card is legal.
+- Scoring: hearts 1 each, Queen of Spades 13; shooting the moon gives 26 to the others. Game ends at 100.
+
 ## Next steps
 
-1. Hearts and Spider Solitaire (same card model in `src/apps/games/cards`).
+1. Spider Solitaire (same card model in `src/apps/games/cards`).
 2. Pinball and Chess as separate sketches once the card games are reviewed against the user's screenshots.
 3. Per-OS visual fidelity (card backs, felt colour, window chrome) after screenshots arrive in `eat/screens/oc/<os>/`.
