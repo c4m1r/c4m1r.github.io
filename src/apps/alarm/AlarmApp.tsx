@@ -1,26 +1,55 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useApp } from '../../contexts/useApp';
+import chimeSound from '../../assets/alarm-sounds/alarm-chime.wav';
+import digitalSound from '../../assets/alarm-sounds/alarm-digital.wav';
+import sirenSound from '../../assets/alarm-sounds/alarm-siren.wav';
+import classicSound from '../../assets/alarm-sounds/alarm-classic.wav';
 
 /**
  * One canonical Alarm app for every Windows-family OS. Its icon comes from the
  * active OS registry (alarmIcon); each OS without a native alarm icon uses its
- * generic .exe application icon.
+ * generic .exe application icon. Alarm tones are generated in-house by
+ * scripts/gen-alarm-sounds.py, so they carry no third-party licence.
  */
 
-type Alarm = { id: string; time: string; label: string; enabled: boolean };
+type AlarmSoundKey = 'chime' | 'digital' | 'siren' | 'classic';
+type Alarm = { id: string; time: string; label: string; enabled: boolean; sound: AlarmSoundKey };
+
+const ALARM_SOUNDS: Record<AlarmSoundKey, string> = {
+  chime: chimeSound,
+  digital: digitalSound,
+  siren: sirenSound,
+  classic: classicSound,
+};
+const SOUND_KEYS = Object.keys(ALARM_SOUNDS) as AlarmSoundKey[];
+const DEFAULT_SOUND: AlarmSoundKey = 'chime';
 
 const STORAGE_KEY = 'webos-alarms-v1';
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 
+const SOUND_NAMES: Record<string, Record<AlarmSoundKey, string>> = {
+  ru: { chime: 'Колокольчик', digital: 'Электронный', siren: 'Сирена', classic: 'Классический' },
+  en: { chime: 'Chime', digital: 'Digital', siren: 'Siren', classic: 'Classic bell' },
+  fr: { chime: 'Carillon', digital: 'Numérique', siren: 'Sirène', classic: 'Cloche classique' },
+  es: { chime: 'Campanilla', digital: 'Digital', siren: 'Sirena', classic: 'Campana clásica' },
+  zh: { chime: '风铃', digital: '电子', siren: '警笛', classic: '经典铃声' },
+  ja: { chime: 'チャイム', digital: 'デジタル', siren: 'サイレン', classic: 'クラシックベル' },
+  ko: { chime: '차임', digital: '디지털', siren: '사이렌', classic: '클래식 벨' },
+};
+
 const UI = {
-  ru: { title: 'Будильник', now: 'Текущее время', add: 'Добавить', time: 'Время', label: 'Название', defaultLabel: 'Будильник', empty: 'Будильников нет', remove: 'Удалить', invalid: 'Укажите время в формате ЧЧ:ММ', ringing: 'Сработал будильник', dismiss: 'Отключить звонок', repeat: 'Каждый день' },
-  en: { title: 'Alarm', now: 'Current time', add: 'Add', time: 'Time', label: 'Label', defaultLabel: 'Alarm', empty: 'No alarms', remove: 'Delete', invalid: 'Enter the time as HH:MM', ringing: 'Alarm is ringing', dismiss: 'Dismiss', repeat: 'Every day' },
-  fr: { title: 'Alarme', now: 'Heure actuelle', add: 'Ajouter', time: 'Heure', label: 'Libellé', defaultLabel: 'Alarme', empty: 'Aucune alarme', remove: 'Supprimer', invalid: 'Saisissez l’heure au format HH:MM', ringing: 'L’alarme sonne', dismiss: 'Arrêter', repeat: 'Tous les jours' },
-  es: { title: 'Alarma', now: 'Hora actual', add: 'Añadir', time: 'Hora', label: 'Nombre', defaultLabel: 'Alarma', empty: 'No hay alarmas', remove: 'Eliminar', invalid: 'Introduce la hora en formato HH:MM', ringing: 'La alarma está sonando', dismiss: 'Desactivar', repeat: 'Todos los días' },
-  zh: { title: '闹钟', now: '当前时间', add: '添加', time: '时间', label: '名称', defaultLabel: '闹钟', empty: '没有闹钟', remove: '删除', invalid: '请以 HH:MM 格式输入时间', ringing: '闹钟响了', dismiss: '关闭', repeat: '每天' },
-  ja: { title: 'アラーム', now: '現在時刻', add: '追加', time: '時刻', label: 'ラベル', defaultLabel: 'アラーム', empty: 'アラームはありません', remove: '削除', invalid: '時刻は HH:MM 形式で入力してください', ringing: 'アラームが鳴っています', dismiss: '停止', repeat: '毎日' },
-  ko: { title: '알람', now: '현재 시간', add: '추가', time: '시간', label: '이름', defaultLabel: '알람', empty: '알람이 없습니다', remove: '삭제', invalid: '시간을 HH:MM 형식으로 입력하세요', ringing: '알람이 울리고 있습니다', dismiss: '끄기', repeat: '매일' },
+  ru: { title: 'Будильник', now: 'Текущее время', add: 'Добавить', time: 'Время', label: 'Название', sound: 'Мелодия', play: 'Проиграть', defaultLabel: 'Будильник', empty: 'Будильников нет', remove: 'Удалить', invalid: 'Укажите время в формате ЧЧ:ММ', ringing: 'Сработал будильник', dismiss: 'Отключить звонок', repeat: 'Каждый день' },
+  en: { title: 'Alarm', now: 'Current time', add: 'Add', time: 'Time', label: 'Label', sound: 'Sound', play: 'Play', defaultLabel: 'Alarm', empty: 'No alarms', remove: 'Delete', invalid: 'Enter the time as HH:MM', ringing: 'Alarm is ringing', dismiss: 'Dismiss', repeat: 'Every day' },
+  fr: { title: 'Alarme', now: 'Heure actuelle', add: 'Ajouter', time: 'Heure', label: 'Libellé', sound: 'Son', play: 'Écouter', defaultLabel: 'Alarme', empty: 'Aucune alarme', remove: 'Supprimer', invalid: 'Saisissez l’heure au format HH:MM', ringing: 'L’alarme sonne', dismiss: 'Arrêter', repeat: 'Tous les jours' },
+  es: { title: 'Alarma', now: 'Hora actual', add: 'Añadir', time: 'Hora', label: 'Nombre', sound: 'Sonido', play: 'Reproducir', defaultLabel: 'Alarma', empty: 'No hay alarmas', remove: 'Eliminar', invalid: 'Introduce la hora en formato HH:MM', ringing: 'La alarma está sonando', dismiss: 'Desactivar', repeat: 'Todos los días' },
+  zh: { title: '闹钟', now: '当前时间', add: '添加', time: '时间', label: '名称', sound: '铃声', play: '试听', defaultLabel: '闹钟', empty: '没有闹钟', remove: '删除', invalid: '请以 HH:MM 格式输入时间', ringing: '闹钟响了', dismiss: '关闭', repeat: '每天' },
+  ja: { title: 'アラーム', now: '現在時刻', add: '追加', time: '時刻', label: 'ラベル', sound: 'サウンド', play: '再生', defaultLabel: 'アラーム', empty: 'アラームはありません', remove: '削除', invalid: '時刻は HH:MM 形式で入力してください', ringing: 'アラームが鳴っています', dismiss: '停止', repeat: '毎日' },
+  ko: { title: '알람', now: '현재 시간', add: '추가', time: '시간', label: '이름', sound: '소리', play: '재생', defaultLabel: '알람', empty: '알람이 없습니다', remove: '삭제', invalid: '시간을 HH:MM 형식으로 입력하세요', ringing: '알람이 울리고 있습니다', dismiss: '끄기', repeat: '매일' },
 } as const;
+
+function isSoundKey(value: unknown): value is AlarmSoundKey {
+  return typeof value === 'string' && (SOUND_KEYS as string[]).includes(value);
+}
 
 function loadAlarms(): Alarm[] {
   try {
@@ -28,9 +57,11 @@ function loadAlarms(): Alarm[] {
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((item): item is Alarm =>
-      typeof item?.id === 'string' && typeof item?.time === 'string' && TIME_PATTERN.test(item.time)
-      && typeof item?.label === 'string' && typeof item?.enabled === 'boolean');
+    return parsed
+      .filter((item): item is Alarm =>
+        typeof item?.id === 'string' && typeof item?.time === 'string' && TIME_PATTERN.test(item.time)
+        && typeof item?.label === 'string' && typeof item?.enabled === 'boolean')
+      .map((item) => ({ ...item, sound: isSoundKey(item.sound) ? item.sound : DEFAULT_SOUND }));
   } catch {
     return [];
   }
@@ -46,17 +77,34 @@ function saveAlarms(alarms: Alarm[]) {
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
+function playSound(key: AlarmSoundKey, loop: boolean): HTMLAudioElement | null {
+  try {
+    const audio = new Audio(ALARM_SOUNDS[key]);
+    audio.loop = loop;
+    audio.volume = 0.6;
+    void audio.play().catch(() => undefined);
+    return audio;
+  } catch {
+    return null;
+  }
+}
+
 export function AlarmApp() {
   const { language } = useApp();
-  const t = UI[language.split('-')[0] as keyof typeof UI] ?? UI.en;
+  const lang = language.split('-')[0];
+  const t = UI[lang as keyof typeof UI] ?? UI.en;
+  const soundNames = SOUND_NAMES[lang] ?? SOUND_NAMES.en;
 
   const [alarms, setAlarms] = useState<Alarm[]>(loadAlarms);
   const [now, setNow] = useState(() => new Date());
   const [ringing, setRinging] = useState<string[]>([]);
   const [time, setTime] = useState('07:00');
   const [label, setLabel] = useState('');
+  const [sound, setSound] = useState<AlarmSoundKey>(DEFAULT_SOUND);
   const [error, setError] = useState('');
   const firedAt = useRef<Record<string, string>>({});
+  const ringPlayer = useRef<HTMLAudioElement | null>(null);
+  const previewPlayer = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     saveAlarms(alarms);
@@ -78,6 +126,29 @@ export function AlarmApp() {
     return () => window.clearInterval(timer);
   }, [alarms]);
 
+  // Loops the sound of the first ringing alarm until every ringing alarm is dismissed.
+  const ringingAlarms = alarms.filter((alarm) => ringing.includes(alarm.id));
+  const ringingSound = ringingAlarms[0]?.sound;
+  useEffect(() => {
+    if (!ringingSound) {
+      ringPlayer.current?.pause();
+      ringPlayer.current = null;
+      return;
+    }
+    if (ringPlayer.current) return;
+    ringPlayer.current = playSound(ringingSound, true);
+  }, [ringingSound]);
+
+  useEffect(() => () => {
+    ringPlayer.current?.pause();
+    previewPlayer.current?.pause();
+  }, []);
+
+  const preview = (key: AlarmSoundKey) => {
+    previewPlayer.current?.pause();
+    previewPlayer.current = playSound(key, false);
+  };
+
   const onAdd = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!TIME_PATTERN.test(time)) {
@@ -86,19 +157,26 @@ export function AlarmApp() {
     }
     setError('');
     const id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
-    setAlarms((prev) => [...prev, { id, time, label: label.trim() || t.defaultLabel, enabled: true }]);
+    setAlarms((prev) => [...prev, { id, time, label: label.trim() || t.defaultLabel, enabled: true, sound }]);
     setLabel('');
   };
 
   const toggle = (id: string) => setAlarms((prev) => prev.map((alarm) => (alarm.id === id ? { ...alarm, enabled: !alarm.enabled } : alarm)));
+  const changeSound = (id: string, next: AlarmSoundKey) => setAlarms((prev) => prev.map((alarm) => (alarm.id === id ? { ...alarm, sound: next } : alarm)));
   const remove = (id: string) => {
     setAlarms((prev) => prev.filter((alarm) => alarm.id !== id));
     setRinging((prev) => prev.filter((ringingId) => ringingId !== id));
   };
-  const dismiss = (id: string) => setRinging((prev) => prev.filter((ringingId) => ringingId !== id));
+  const dismiss = (id: string) => setRinging((prev) => {
+    const next = prev.filter((ringingId) => ringingId !== id);
+    if (next.length === 0) {
+      ringPlayer.current?.pause();
+      ringPlayer.current = null;
+    }
+    return next;
+  });
 
   const clock = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  const ringingAlarms = alarms.filter((alarm) => ringing.includes(alarm.id));
 
   return (
     <div className="flex h-full flex-col gap-3 overflow-auto p-4 text-sm" data-app="alarm">
@@ -122,14 +200,20 @@ export function AlarmApp() {
       <ul className="flex flex-col gap-1">
         {alarms.length === 0 && <li className="opacity-70">{t.empty}</li>}
         {alarms.map((alarm) => (
-          <li key={alarm.id} className="flex items-center justify-between gap-2 rounded border border-transparent px-2 py-1">
+          <li key={alarm.id} className="flex flex-wrap items-center justify-between gap-2 rounded border border-transparent px-2 py-1">
             <label className="flex items-center gap-2">
               <input type="checkbox" checked={alarm.enabled} onChange={() => toggle(alarm.id)} />
               <span className="font-mono">{alarm.time}</span>
               <span>{alarm.label}</span>
               <span className="text-xs opacity-60">{t.repeat}</span>
             </label>
-            <button type="button" onClick={() => remove(alarm.id)}>{t.remove}</button>
+            <div className="flex items-center gap-2">
+              <select aria-label={t.sound} value={alarm.sound} onChange={(event) => changeSound(alarm.id, event.target.value as AlarmSoundKey)}>
+                {SOUND_KEYS.map((key) => <option key={key} value={key}>{soundNames[key]}</option>)}
+              </select>
+              <button type="button" onClick={() => preview(alarm.sound)}>{t.play}</button>
+              <button type="button" onClick={() => remove(alarm.id)}>{t.remove}</button>
+            </div>
           </li>
         ))}
       </ul>
@@ -143,6 +227,13 @@ export function AlarmApp() {
           <span>{t.label}</span>
           <input type="text" value={label} onChange={(event) => setLabel(event.target.value)} placeholder={t.defaultLabel} />
         </label>
+        <label className="flex flex-col gap-1">
+          <span>{t.sound}</span>
+          <select value={sound} onChange={(event) => setSound(event.target.value as AlarmSoundKey)}>
+            {SOUND_KEYS.map((key) => <option key={key} value={key}>{soundNames[key]}</option>)}
+          </select>
+        </label>
+        <button type="button" onClick={() => preview(sound)}>{t.play}</button>
         <button type="submit">{t.add}</button>
         {error && <p role="status" className="basis-full text-xs">{error}</p>}
       </form>
