@@ -43,6 +43,8 @@ import fullscreenIconWebos from '../winxp/assets/icons/full-screen-icon-sm.webp'
 import notificationIconWebos from '../winxp/assets/icons/Information.png';
 import calendarIconWebos from '../winxp/assets/icons/Date and Time.png';
 import alarmIconWebos from '../winxp/assets/icons/Application Window.png';
+import snakeIconAsset from '../../apps/games/assets/snake-icon.svg';
+import memoryIconAsset from '../../apps/games/assets/memory-icon.svg';
 import terminalIconWebos from '../winxp/assets/icons/cmd.png';
 import rssNewsIcon from '../../assets/icons/rss-icon.svg';
 import currencyDollarIcon from '../../assets/icons/currency-dollar-icon.svg';
@@ -128,6 +130,8 @@ export interface ThemeAssets {
   /** Calendar app icon (Date and Time.png) */
   calendarIcon?: string;
   alarmIcon?: string;
+  snakeIcon?: string;
+  memoryIcon?: string;
   /** Terminal app icon (cmd.png) */
   terminalIcon?: string;
   /** News app icon (RSS) */
@@ -178,6 +182,8 @@ const sharedWebosAssets: ThemeAssets = {
   bootProgress: bootProgressWebos,
   calendarIcon: calendarIconWebos,
   alarmIcon: alarmIconWebos,
+  snakeIcon: snakeIconAsset,
+  memoryIcon: memoryIconAsset,
   terminalIcon: terminalIconWebos,
   newsIcon: rssNewsIcon,
   currencyIcon: currencyDollarIcon,
@@ -320,6 +326,9 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     // the Windows 98 set, never to the XP artwork of the shared base.
     ...WIN98_ICON_ASSETS,
     ...WIN2000_ICON_ASSETS,
+    // Game icons are theme-neutral; Win2000 has its own asset object, so it lists them explicitly.
+    snakeIcon: snakeIconAsset,
+    memoryIcon: memoryIconAsset,
     startupSound: OS_SOUNDS.win2000.startup,
     shutdownSound: OS_SOUNDS.win2000.shutdown,
     // No separate logoff sound in the reference set.
