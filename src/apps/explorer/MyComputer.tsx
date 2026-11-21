@@ -359,6 +359,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   const menuItems = isRu
     ? ['Файл', 'Правка', 'Вид', 'Избранное', 'Сервис', 'Справка']
     : ['File', 'Edit', 'View', 'Favorites', 'Tools', 'Help'];
+  // Menu bar colours per OS: classic grey with navy selection on Win98 and Win2000,
+  // Luna beige with blue selection on XP.
+  const menuBarClass = theme === 'win-98' ? 'bg-[#c0c0c0]' : theme === 'win2000' ? 'bg-[#d4d0c8]' : 'bg-[#ece9d8]';
+  const menuItemHoverClass = theme === 'win-98' ? 'hover:bg-[#000080]' : theme === 'win2000' ? 'hover:bg-[#0a246a]' : 'hover:bg-[#316ac5]';
 
   const getExplorerItemIcon = (item: FileSystemItem): string => {
     if (theme === 'win-98' || theme === 'win2000') {
@@ -700,11 +704,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       {/* Toolbar */}
       <div className="flex flex-col border-b border-[#aca899]">
         {/* Menu Bar */}
-        <div className="flex items-center px-1 bg-[#ece9d8] border-b border-[#aca899]">
+        <div className={`flex items-center px-1 ${menuBarClass} border-b border-[#aca899]`}>
           {menuItems.map((item) => (
             <button
               key={item}
-              className="px-2 py-0.5 hover:bg-[#316ac5] hover:text-white transition-colors cursor-default text-black bg-transparent border-0"
+              className={`px-2 py-0.5 ${menuItemHoverClass} hover:text-white transition-colors cursor-default text-black bg-transparent border-0`}
             >
               {item}
             </button>

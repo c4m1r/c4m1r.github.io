@@ -625,3 +625,9 @@ Percentages are working estimates, not test results. The previous task registry 
 - [x] Win98 classic view now lists only Windows 98 applets (Accessibility Options, Add New Hardware, Add/Remove Programs, Date/Time, Desktop Themes, Display, Fonts, Game Controllers, Infrared, Internet, Keyboard, Modems, Mouse, Multimedia, Network, Passwords, Power Management, Printers, Regional Settings, Scanners and Cameras, Sounds, System, Telephony, Users). Source: Microsoft KB 149648 and the Win98 applet reference.
 - [ ] Win98 applet mapping to the closest existing category is a stand-in: dedicated views (Fonts, Desktop Themes, Modems) still need their own pages.
 - [ ] XP classic view still shows site extras (Task Manager, Desktop Widgets) and XP names not yet checked against a primary source.
+
+## Explorer: menu bar per OS
+
+- [x] Menu bar colours follow the OS: Win98 `#c0c0c0` with `#000080` selection; Win2000 `#d4d0c8` with `#0a246a` selection; XP keeps Luna beige and blue. Checked in the browser on Windows 98 (`rgb(192,192,192)`).
+- [x] Win2000 menu labels confirmed against a primary-style source: File, Edit, View, Favorites, Tools, Help (no Go menu; Go To sits under View).
+- [ ] Win98 menu labels are still File, Edit, View, Favorites, Tools, Help. Win98 probably has a Go menu instead of Tools; not confirmed. Check against the Win98 Explorer screenshot (`eat/screens/oc/win98/`).
