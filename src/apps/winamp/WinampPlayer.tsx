@@ -83,6 +83,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [preamp, setPreamp] = useState(() => winampController.getEqualizerState().preamp);
   const [eqBands, setEqBands] = useState<number[]>(() => winampController.getEqualizerState().bands);
   const [selectedEqPreset, setSelectedEqPreset] = useState('custom');
+
+  useEffect(() => {
+    const matchingPreset = EQ_PRESETS.find((preset) =>
+      preset.preamp === preamp && preset.bands.every((gain, index) => gain === eqBands[index])
+    );
+    setSelectedEqPreset(matchingPreset?.id ?? 'custom');
+  }, [eqBands, preamp]);
   const [playlistSelection, setPlaylistSelection] = useState<number[]>([]);
   const [playlistRevision, setPlaylistRevision] = useState(0);
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
