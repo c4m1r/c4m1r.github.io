@@ -142,7 +142,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         setEqfStatus('No presets found');
         return;
       }
-      const next = winampController.importCustomEqualizerPresets(imported);
+      const next = winampController.importCustomEqualizerPresets(imported.map((preset) => ({ label: preset.name, preamp: preset.preamp, bands: preset.bands })));
       setCustomEqPresets(next);
       setEqfStatus(`Imported ${imported.length} preset${imported.length === 1 ? '' : 's'}`);
     } catch (error) {
