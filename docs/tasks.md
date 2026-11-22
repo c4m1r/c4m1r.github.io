@@ -727,6 +727,7 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 ### REF-02 follow-up — Start menu round 2 (2026-11-22)
 - Windows 98 top-level icons are 32 px at a 33 px row pitch, as in the reference.
 - Windows 98 Programs: Accessories (with Entertainment and Games inside), MS-DOS Prompt (opens the terminal app), Windows Explorer (opens My Computer). Internet Explorer and Outlook Express are removed from the 98 list, as in the reference. Windows 2000 keeps its list.
-- Still open: 98lite and StartUp entries from the reference are not added (no matching apps). The 98 Suspend row has no handler yet.
+- Still open: 98lite and StartUp entries from the reference are not added (no matching apps).
 - Windows 2000 Start menu sits flush to the left edge (no 4 px inset), as in the reference.
 - Start menu for Windows 98 and 2000 sits directly on the taskbar (bottom offset equals the 28 px taskbar height). Before, there was a 4 px gap.
+- Suspend (Windows 98) now returns to the sign-in screen, the closest existing state for a machine that waits for the user. It keeps its place in the menu as in the reference.
