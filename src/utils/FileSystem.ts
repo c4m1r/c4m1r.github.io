@@ -238,7 +238,16 @@ export const initialFileSystem: Record<string, FileSystemItem> = {
                                         id: 'start-menu',
                                         name: 'Start Menu',
                                         type: 'folder',
-                                        children: {}
+                                        children: {
+                                            'Programs': {
+                                                id: 'start-menu-programs',
+                                                name: 'Programs',
+                                                type: 'folder',
+                                                children: {
+                                                    'StartUp': { id: 'start-menu-startup', name: 'StartUp', type: 'folder', children: {} },
+                                                },
+                                            },
+                                        }
                                     },
                                     'Recent': {
                                         id: 'recent-documents',
@@ -359,7 +368,21 @@ if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
                     'Мои проекты': { id: 'my-projects-user', name: 'Мои проекты', type: 'folder', icon: folderIcon, children: { ...projectChildren } },
                 },
             },
-            'Start Menu': { id: 'start-menu-user', name: 'Start Menu', type: 'folder', children: {} },
+            'Start Menu': {
+                id: 'start-menu-user',
+                name: 'Start Menu',
+                type: 'folder',
+                children: {
+                    'Programs': {
+                        id: 'start-menu-programs-user',
+                        name: 'Programs',
+                        type: 'folder',
+                        children: {
+                            'StartUp': { id: 'start-menu-startup-user', name: 'StartUp', type: 'folder', children: {} },
+                        },
+                    },
+                },
+            },
             'Recent': { id: 'recent-user', name: 'Recent', type: 'folder', children: {} },
         },
     };

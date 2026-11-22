@@ -1,5 +1,7 @@
 import { cloneElement, isValidElement, useState, type ReactElement, type ReactNode } from 'react';
 import { useApp } from '../../../../contexts/useApp';
+import { getSessionAccount } from '../../../../domain/auth/session';
+import { startMenuFolderNodes, startMenuProgramsPath, type StartMenuNode } from './startMenuModel';
 import { getActiveEdition } from '../../../os/osEditions';
 import ieClassicIcon from '../../../../themes/win98/icons/network/msie1/16x16-3.png';
 import outlookClassicIcon from '../../../../themes/win98/icons/network/mailbox-world/16x16-1.png';
@@ -40,15 +42,7 @@ export interface StartMenu98Props {
   onHover?: () => void;
 }
 
-type ClassicMenuItem = {
-  label: string;
-  icon: ReactNode;
-  appId?: string;
-  path?: string;
-  action?: 'logoff' | 'shutdown';
-  submenu?: ClassicMenuItem[];
-  separator?: boolean;
-};
+type ClassicMenuItem = StartMenuNode;
 
 const DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
 
@@ -59,6 +53,7 @@ const classicIcon = (src: string) => <img src={src} alt="" className="h-4 w-4 ob
 // Find / Help / Run, a separator, then Log Off and Shut Down.
 export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand, onHover }: StartMenu98Props) {
   const { theme, language } = useApp();
+  const account = getSessionAccount();
   const isRu = language === 'ru';
   const isWin2000 = theme === 'win2000';
   const [openChain, setOpenChain] = useState<string[]>([]);
@@ -78,6 +73,13 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const notepadIcon = isWin2000 ? win2000NotepadIcon : notepadClassicIcon;
   const paintIcon = isWin2000 ? win2000PaintIcon : paintClassicIcon;
   const mediaPlayerIcon = isWin2000 ? win2000MediaPlayerIcon : mediaPlayerClassicIcon;
+
+  // Entries the user placed in Start Menu\Programs (including the StartUp folder) come from the file system.
+  const userPrograms = startMenuFolderNodes(startMenuProgramsPath(account), {
+    folder: classicIcon(programsClassicIcon),
+    file: classicIcon(documentIcon),
+    image: classicIcon,
+  });
 
   const menuItems: ClassicMenuItem[] = [
     ...(isWin2000 ? [
@@ -102,6 +104,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         { label: 'DOOM', icon: classicIcon(documentIcon), appId: 'doom1' },
         { label: 'DOOM II', icon: classicIcon(documentIcon), appId: 'doom2' },
       ] },
+      ...userPrograms,
     ] : [
       // Windows 98 list as in the reference: Accessories (with Games and Entertainment inside),
       // MS-DOS Prompt, Windows Explorer.
@@ -120,6 +123,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           { label: 'DOOM II', icon: classicIcon(documentIcon), appId: 'doom2' },
         ] },
       ] },
+      ...userPrograms,
       { label: 'MS-DOS Prompt', icon: classicIcon(runClassicIcon), appId: 'terminal' },
       { label: 'Windows Explorer', icon: classicIcon(programsClassicIcon), path: 'My Computer' },
     ] },

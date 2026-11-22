@@ -735,6 +735,12 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 
 ## Start menu — deferred, with reasons (2026-11-22)
 - **98lite entry in Programs** (reference `eat/screens/oc/win98/01-…png`): 98lite is a third-party utility and its branding (name, company, URL) appears on that reference machine. We do not carry third-party apps or their branding, so this entry is not added.
-- **StartUp submenu** (Programs > StartUp): needs the Start menu to read the file system's `Start Menu` folder, which currently exists but is empty (`src/utils/FileSystem.ts`). Until the menu is built from that folder, a StartUp entry would be a fake folder. Deferred to the unified Start menu architecture below.
+- **StartUp submenu** — done in ARCH-01 below.
 - **Unified Start menu architecture** (needed for StartUp and for the rest of the menus): today the Windows 98/2000 menu is a hardcoded list in `StartMenu98.tsx`, while XP and 7 have their own lists in `StartMenuXP.tsx` and `StartMenu7.tsx`. The plan is one data source built from the file system's `Start Menu` folder and a single renderer per visual skin. This changes the menu for every Windows skin, so it is a separate, reviewed step and not part of the visual pass.
 - **Log Off** is not in the 98 or 2000 menus (per reference). Its function is reachable through Shut Down only. This is a deliberate choice, recorded here so it is not treated as a regression.
+
+## ARCH-01 — Unified Start menu model, step 1 (2026-11-22)
+- New `src/shells/desktop/components/start-menu/startMenuModel.ts`: one node type (`StartMenuNode`) and one builder that reads the profile's `Start Menu\Programs` folder from the file system. Folders become submenus (empty folders open in Explorer), shortcuts with an appId become items.
+- `FileSystem.ts`: both profiles (C4m1r, User) get `Start Menu\Programs\StartUp`. The path follows the signed-in account.
+- Windows 98 and 2000 read their user entries from this model. StartUp appears in Programs (98: after Accessories, as in the reference; 2000: at the end). Clicking it opens Explorer on the folder.
+- Next steps: Windows XP (`StartMenuXP.tsx`) and Windows 7 (`StartMenu7.tsx`) should read the same folder through the same model. They keep their own visual renderers, but their hardcoded entry lists move into shared builders. Each step needs a pixel check against the previous build.
