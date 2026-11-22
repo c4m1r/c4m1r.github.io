@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
+import { createM3uPlaylist, parseM3uPlaylist } from '../../system/audio/winampM3u';
 import './winamp.css';
 
 // 10 standard Winamp EQ bands in Hz
@@ -62,6 +63,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [draggedPlaylistIndex, setDraggedPlaylistIndex] = useState<number | null>(null);
   const [playlistRevision, setPlaylistRevision] = useState(0);
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
+  const m3uInputRef = useRef<HTMLInputElement | null>(null);
+  const [m3uStatus, setM3uStatus] = useState('');
 
   // Sync with global winampController
   useEffect(() => {
@@ -177,6 +180,36 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setEqfStatus(`Exported ${presets.length} presets to winamp.q1`);
   };
 
+
+  const importM3uFile = async (file?: File) => {
+    if (!file) return;
+    try {
+      const parsed = parseM3uPlaylist(await file.text());
+      if (!parsed.tracks.length) {
+        setM3uStatus(parsed.skippedEntries ? `No playable URLs; skipped ${parsed.skippedEntries} local/relative entries` : 'Playlist is empty');
+        return;
+      }
+      winampController.addTracks(parsed.tracks);
+      setM3uStatus(`Added ${parsed.tracks.length} tracks${parsed.skippedEntries ? `; skipped ${parsed.skippedEntries} local/relative entries` : ''}`);
+    } catch (error) {
+      setM3uStatus(error instanceof Error ? error.message : 'Unable to read M3U playlist');
+    }
+  };
+
+  const exportM3uFile = () => {
+    const result = createM3uPlaylist(playlist);
+    if (result.content === '#EXTM3U\n') {
+      setM3uStatus('No web-address tracks to export; local files need a portable path');
+      return;
+    }
+    const url = URL.createObjectURL(new Blob([result.content], { type: 'audio/x-mpegurl;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'winamp-playlist.m3u';
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setM3uStatus(`Exported playlist${result.skippedEntries ? `; skipped ${result.skippedEntries} local/unsupported tracks` : ''}`);
+  };
 
   const addLocalAudioFiles = (files: File[]) => {
     const audioFiles = files.filter((file) => file.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|m4a|aac|flac|opus|webm)$/i.test(file.name));
@@ -890,6 +923,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               </div>
 
               {/* Playlist Bottom Bar */}
+              {m3uStatus && <div className="wa-pl__import-status" role="status" aria-live="polite">{m3uStatus}</div>}
               <div className="wa-pl__footer">
                 <div className="wa-pl__actions">
                   <input
@@ -904,6 +938,18 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     }}
                   />
                   <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()}>+ ADD</button>
+                  <input
+                    ref={m3uInputRef}
+                    type="file"
+                    accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl"
+                    hidden
+                    onChange={(event) => {
+                      void importM3uFile(event.currentTarget.files?.[0]);
+                      event.currentTarget.value = '';
+                    }}
+                  />
+                  <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()} title="Import an M3U playlist">M3U IN</button>
+                  <button type="button" className="wa-btn-pl" onClick={exportM3uFile} title="Export web-address tracks as an M3U playlist">M3U OUT</button>
                   <button
                     type="button"
                     className="wa-btn-pl"
