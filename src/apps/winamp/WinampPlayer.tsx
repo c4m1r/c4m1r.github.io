@@ -150,17 +150,31 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
   };
 
-  const exportEqfFile = () => {
-    const selected = allEqPresets.find((preset) => preset.id === selectedEqPreset);
-    const label = selected?.label ?? 'My Winamp EQ';
-    const buffer = createWinampEqf([{ name: label, preamp, bands: [...eqBands] }]);
+  const downloadEqf = (presets: Array<{ name: string; preamp: number; bands: number[] }>, filename: string) => {
+    const buffer = createWinampEqf(presets);
     const url = URL.createObjectURL(new Blob([buffer], { type: 'application/octet-stream' }));
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${label.replace(/[^a-z0-9-_ ]/gi, '').trim() || 'winamp-eq'}.eqf`;
+    link.download = filename;
     link.click();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setEqfStatus('EQF exported');
+  };
+
+  const exportEqfFile = () => {
+    const selected = allEqPresets.find((preset) => preset.id === selectedEqPreset);
+    const label = selected?.label ?? 'My Winamp EQ';
+    downloadEqf([{ name: label, preamp, bands: [...eqBands] }], `${label.replace(/[^a-z0-9-_ ]/gi, '').trim() || 'winamp-eq'}.eqf`);
+    setEqfStatus('Current preset exported');
+  };
+
+  const exportEqfLibrary = () => {
+    const presets = allEqPresets.map((preset) => ({
+      name: preset.label,
+      preamp: preset.preamp,
+      bands: [...preset.bands],
+    }));
+    downloadEqf(presets, 'winamp.q1');
+    setEqfStatus(`Exported ${presets.length} presets to winamp.q1`);
   };
 
 
@@ -723,7 +737,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <input
                   ref={eqfInputRef}
                   type="file"
-                  accept=".eqf,application/octet-stream"
+                  accept=".eqf,.q1,application/octet-stream"
                   aria-label="Import Winamp EQF file"
                   style={{ display: 'none' }}
                   onChange={(event) => {
@@ -733,6 +747,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 />
                 <button type="button" className="wa-btn-mode" onClick={() => eqfInputRef.current?.click()} title="Import Winamp EQF library">EQF IN</button>
                 <button type="button" className="wa-btn-mode" onClick={exportEqfFile} title="Export selected equalizer as Winamp EQF">EQF OUT</button>
+                <button type="button" className="wa-btn-mode" onClick={exportEqfLibrary} title="Export built-in and custom presets as a Winamp Q1 library">Q1 OUT</button>
               </div>
               {eqfStatus && <span className="wa-eq__status" role="status" aria-live="polite">{eqfStatus}</span>}
 
