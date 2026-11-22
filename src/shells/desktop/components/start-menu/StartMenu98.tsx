@@ -133,7 +133,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     { label: isRu ? 'Справка' : 'Help', icon: classicIcon(helpIcon), appId: 'wiki' },
     { label: isRu ? 'Выполнить...' : 'Run...', icon: classicIcon(runIcon), appId: 'run' },
     { label: '', icon: null, separator: true },
-    // Windows 98 offers Suspend (no handler yet, so it only closes the menu); Windows 2000
+    // Windows 98 offers Suspend (goes to the sign-in screen); Windows 2000
     // ends with Shut Down alone, as in the reference screenshot.
     ...(isWin2000 ? [] : [{ label: isRu ? 'Приостановить' : 'Suspend', icon: classicIcon(logOffIcon), action: 'logoff' }]),
     { label: isRu ? 'Завершение работы...' : 'Shut Down...', icon: classicIcon(shutDownIcon), action: 'shutdown' },
