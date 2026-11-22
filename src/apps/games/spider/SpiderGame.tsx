@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CardView } from '../cards/CardView';
-import { rankLabel, SUITS, type Card, type Suit } from '../cards/cards';
+import { rankLabel, SUITS, type Card, type Suit, pileStep } from '../cards/cards';
 
 /**
  * Spider Solitaire (shipped with Windows XP–10), temporary sketch.
@@ -142,7 +142,7 @@ export function SpiderGame() {
   const deals = state.stock.length;
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-auto bg-[#0b6b3a] p-3 text-white" data-game="spider">
+    <div className="flex h-full flex-col gap-3 overflow-auto bg-[#008000] p-3 text-white" data-game="spider">
       <header className="flex items-center justify-between gap-2 text-sm">
         <span>
           Completed: <strong data-testid="completed">{state.completed}</strong>/8 · Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}
@@ -163,14 +163,14 @@ export function SpiderGame() {
 
       <div className="grid grid-cols-10 gap-1" data-testid="columns">
         {state.columns.map((column, col) => (
-          <div key={col} className="flex min-h-[72px] flex-col" data-testid={`column-${col}`}>
+          <div key={col} className="flex min-h-[86px] flex-col" data-testid={`column-${col}`}>
             {column.length === 0 && (
               <CardView placeholder=" " onClick={() => clickEmpty(col)} testId={`empty-${col}`} />
             )}
             {column.map((card, index) => {
               const inRun = selected && selected.col === col && index >= selected.index;
               return (
-                <div key={card.id} className={index === 0 ? '' : '-mt-[52px]'}>
+                <div key={card.id} style={{ marginTop: index === 0 ? 0 : pileStep(column[index - 1], card) }}>
                   <CardView
                     card={card}
                     selected={Boolean(inRun)}

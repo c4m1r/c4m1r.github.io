@@ -51,3 +51,18 @@ export function isAlternatingRun(cards: Card[]): boolean {
 }
 
 export const cardTitle = (card: Card) => `${rankLabel(card.rank)}${SUIT_SYMBOL[card.suit]}`;
+
+/** Classic deck proportions (card face 71×96 in Windows; scaled to fit the window). */
+export const CARD_WIDTH = 62;
+export const CARD_HEIGHT = 86;
+/** Vertical step between cards in a pile: face-up cards show their index corner, face-down cards show a strip. */
+export const PILE_STEP_FACE_UP = 22;
+export const PILE_STEP_FACE_DOWN = 12;
+
+/** Offset of `card` below `previous` in a pile. */
+export function pileStep(previous: Pick<Card, 'faceUp'>, card: Pick<Card, 'faceUp'>): number {
+  return previous.faceUp && card.faceUp ? PILE_STEP_FACE_UP : PILE_STEP_FACE_DOWN;
+}
+
+/** Classic table green (Windows Solitaire, Hearts and Spider felt). */
+export const FELT_GREEN = '#008000';

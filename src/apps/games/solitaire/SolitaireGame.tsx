@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CardView } from '../cards/CardView';
 import {
-  createDeck, isAlternatingRun, isRed, SUIT_SYMBOL, SUITS, type Card,
-} from '../cards/cards';
+  createDeck, isAlternatingRun, isRed, SUIT_SYMBOL, SUITS, type Card, pileStep } from '../cards/cards';
 
 /**
  * Klondike Solitaire (the default Windows "Solitaire"), draw-one, temporary sketch.
@@ -140,7 +139,7 @@ export function SolitaireGame() {
   const topWaste = state.waste[state.waste.length - 1];
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-auto bg-[#0b6b3a] p-3 text-white" data-game="solitaire">
+    <div className="flex h-full flex-col gap-3 overflow-auto bg-[#008000] p-3 text-white" data-game="solitaire">
       <header className="flex items-center justify-between text-sm">
         <span>Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}</span>
         <button type="button" onClick={newGame} className="rounded bg-white/15 px-3 py-1">New game</button>
@@ -178,12 +177,12 @@ export function SolitaireGame() {
 
       <div className="grid grid-cols-7 gap-2">
         {state.tableau.map((column, col) => (
-          <div key={col} className="flex min-h-[72px] flex-col" data-testid={`column-${col}`}>
+          <div key={col} className="flex min-h-[86px] flex-col" data-testid={`column-${col}`}>
             {column.length === 0 && (
               <CardView placeholder=" " onClick={() => attempt({ kind: 'tableau', col })} testId={`empty-${col}`} />
             )}
             {column.map((card, index) => (
-              <div key={card.id} className={index === 0 ? '' : '-mt-[52px]'}>
+              <div key={card.id} style={{ marginTop: index === 0 ? 0 : pileStep(column[index - 1], card) }}>
                 <CardView
                   card={card}
                   selected={isSelected({ kind: 'tableau', col, index })}

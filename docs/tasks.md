@@ -650,3 +650,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - Windows order follows the release sequence: 95, 98, 2000, Server 2003, XP, Vista, Server 2008, 7, 8, Server 2012, 10, Server 2016, Server 2019, 11. Server and 95 entries are drafts that reuse the closest client skin until their own skin exists.
 - Accounts: the generic desktop login lists User (default, no password) and C4m1r (password 123123). Classic 98/2000 logins already defaulted to User. Chosen account is recorded for the session.
 - Open: Halloween Edition sits at the top level; the request did not name a group for it.
+
+### GAMES-02 — Classic card look for the new card games
+- Cards: one classic size (62×86 on screen), white face with corner indices and centre suit, navy hatched back, dark outline empty slot. Pile spacing: 22 px for face-up cards, 12 px for face-down cards (`pileStep` in `cards/cards.ts`).
+- Table: classic green `#008000` on Solitaire, FreeCell, Spider and Hearts.
+- Not 1:1 yet: no Windows Game/Options menu bar (Draw One/Draw Three, Spider suit count), no score/time line, face-card art is letter-only, card back is an approximation. No reference screenshots exist in `eat/screens/oc/` yet, so pixel comparison is pending.
