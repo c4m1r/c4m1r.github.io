@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CardView } from '../cards/CardView';
+import { GameMenuBar } from '../GameMenuBar';
 import {
   createDeck, isAlternatingRun, isRed, SUIT_SYMBOL, SUITS, type Card, pileStep } from '../cards/cards';
 
@@ -142,7 +143,9 @@ export function FreeCellGame() {
   };
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-auto bg-[#008000] p-3 text-white" data-game="freecell">
+    <div className="flex h-full flex-col bg-[#008000] text-white">
+      <GameMenuBar menus={[{ label: 'Game', items: [{ label: 'New Game', onSelect: newGame }] }]} />
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-3" data-game="freecell">
       <header className="flex items-center justify-between text-sm">
         <span>Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}</span>
         <button type="button" onClick={newGame} className="rounded bg-white/15 px-3 py-1">New game</button>
@@ -193,6 +196,7 @@ export function FreeCellGame() {
       <p className="text-xs text-white/70">
         {selected ? 'Choose a target: a free cell, a foundation or a column.' : 'Click a card to select it (a run moves together), then a legal target.'}
       </p>
+    </div>
     </div>
   );
 }

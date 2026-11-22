@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CardView } from '../cards/CardView';
+import { GameMenuBar } from '../GameMenuBar';
 import type { Card } from '../cards/cards';
 import {
   applyPass, chooseComputerCard, chooseComputerPass, cardPoints, HUMAN, leaderOf, legalPlays,
@@ -135,7 +136,9 @@ export function HeartsGame() {
   const winner = state.totals.indexOf(Math.min(...state.totals));
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-auto bg-[#008000] p-3 text-white" data-game="hearts">
+    <div className="flex h-full flex-col bg-[#008000] text-white">
+      <GameMenuBar menus={[{ label: 'Game', items: [{ label: 'New Game', onSelect: newGame }] }]} />
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-3" data-game="hearts">
       <header className="flex flex-wrap items-center justify-between gap-2 text-sm">
         <span>Round {state.roundNo + 1} · Pass: {state.direction}{heartsBroken ? ' · hearts broken' : ''}</span>
         <span className="flex gap-3">
@@ -210,6 +213,7 @@ export function HeartsGame() {
           ? 'Choose three cards to give to the next player.'
           : turn === HUMAN ? 'Your turn: play a highlighted card.' : 'Waiting for the other players…'}
       </p>
+    </div>
     </div>
   );
 }

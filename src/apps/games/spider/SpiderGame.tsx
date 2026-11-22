@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CardView } from '../cards/CardView';
+import { GameMenuBar } from '../GameMenuBar';
 import { rankLabel, SUITS, type Card, type Suit, pileStep } from '../cards/cards';
 
 /**
@@ -114,6 +115,7 @@ function dealRow(state: SpiderState): SpiderState | null {
 export function SpiderGame() {
   const [state, setState] = useState<SpiderState>(() => deal());
   const [selected, setSelected] = useState<Selection>(null);
+  const [suitCount, setSuitCount] = useState<1 | 2 | 4>(1);
 
   const won = useMemo(() => state.completed === 8, [state.completed]);
 
@@ -135,14 +137,22 @@ export function SpiderGame() {
   };
 
   const newGame = () => {
-    setState(deal(state.suits.length));
+    setState(deal(suitCount));
+    setSelected(null);
+  };
+
+  const chooseSuits = (count: 1 | 2 | 4) => {
+    setSuitCount(count);
+    setState(deal(count));
     setSelected(null);
   };
 
   const deals = state.stock.length;
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-auto bg-[#008000] p-3 text-white" data-game="spider">
+    <div className="flex h-full flex-col bg-[#008000] text-white">
+      <GameMenuBar menus={[{ label: 'Game', items: [{ label: 'New Game', onSelect: newGame }] }, { label: 'Options', items: [{ label: 'One Suit', checked: suitCount === 1, onSelect: () => chooseSuits(1) }, { label: 'Two Suits', checked: suitCount === 2, onSelect: () => chooseSuits(2) }, { label: 'Four Suits', checked: suitCount === 4, onSelect: () => chooseSuits(4) }] }]} />
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-3" data-game="spider">
       <header className="flex items-center justify-between gap-2 text-sm">
         <span>
           Completed: <strong data-testid="completed">{state.completed}</strong>/8 · Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}
@@ -189,6 +199,7 @@ export function SpiderGame() {
           ? 'Choose a column: the run goes onto a card one rank higher, or into an empty column.'
           : `Select a same-suit run (${rankLabel(13)} to ${rankLabel(1)} in order) to move it.`}
       </p>
+    </div>
     </div>
   );
 }

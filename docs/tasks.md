@@ -654,4 +654,5 @@ Percentages are working estimates, not test results. The previous task registry 
 ### GAMES-02 — Classic card look for the new card games
 - Cards: one classic size (62×86 on screen), white face with corner indices and centre suit, navy hatched back, dark outline empty slot. Pile spacing: 22 px for face-up cards, 12 px for face-down cards (`pileStep` in `cards/cards.ts`).
 - Table: classic green `#008000` on Solitaire, FreeCell, Spider and Hearts.
-- Not 1:1 yet: no Windows Game/Options menu bar (Draw One/Draw Three, Spider suit count), no score/time line, face-card art is letter-only, card back is an approximation. No reference screenshots exist in `eat/screens/oc/` yet, so pixel comparison is pending.
+- Menu bar: classic `GameMenuBar` (`src/apps/games/GameMenuBar.tsx`) on Solitaire, FreeCell, Hearts (Game > New Game) and Spider (Game > New Game; Options > One/Two/Four Suits, which starts a new deal).
+- Not 1:1 yet: no Draw One/Draw Three option (Solitaire draws one card only), no score/time line, F2 shortcut not bound, face-card art is letter-only, card back is an approximation. No reference screenshots exist in `eat/screens/oc/` yet, so pixel comparison is pending.
