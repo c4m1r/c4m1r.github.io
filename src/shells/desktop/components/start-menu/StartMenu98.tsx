@@ -65,8 +65,10 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
                 fontFamily: 'MS Sans Serif, sans-serif',
                 fontSize: 12,
                 lineHeight: '16px',
+                // Rows are flat in the reference: no button border, so the row height is the pitch.
+                border: 0,
                 padding: depth === 0 ? (isWin2000 ? '6px 8px' : '0 8px') : '3px 8px',
-                minHeight: depth === 0 ? (isWin2000 ? 32 : 33) : 22,
+                minHeight: depth === 0 ? 32 : 22,
               }}
               onClick={() => (item.submenu ? openAt(depth, isOpen ? null : item.label) : activate(item))}
               onMouseEnter={() => {
