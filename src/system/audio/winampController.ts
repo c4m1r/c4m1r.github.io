@@ -465,6 +465,40 @@ class WinampControllerService {
     return next;
   }
 
+  public importCustomEqualizerPresets(imported: Array<{ label: string; preamp: number; bands: number[] }>): WinampEqualizerPreset[] {
+    const presets = this.getCustomEqualizerPresets();
+    const next = [...presets];
+    imported.forEach((item, index) => {
+      const label = item.label.trim().slice(0, 32);
+      if (
+        !label ||
+        !Number.isFinite(item.preamp) ||
+        !Array.isArray(item.bands) ||
+        item.bands.length !== this.eqGains.length ||
+        !item.bands.every((value) => Number.isFinite(value))
+      ) return;
+      const existing = next.find((preset) => preset.label.toLowerCase() === label.toLowerCase());
+      const preset: WinampEqualizerPreset = {
+        id: existing?.id ?? `custom-eqf-${Date.now().toString(36)}-${index}`,
+        label,
+        preamp: Math.max(-12, Math.min(12, item.preamp)),
+        bands: item.bands.map((value) => Math.max(-12, Math.min(12, value))),
+      };
+      const existingIndex = next.findIndex((candidate) => candidate.id === preset.id);
+      if (existingIndex >= 0) next[existingIndex] = preset;
+      else next.push(preset);
+    });
+    const limited = next.slice(-30);
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem('winamp:equalizer-presets:v1', JSON.stringify(limited));
+      } catch {
+        // Imported profiles remain usable for this session if storage is unavailable.
+      }
+    }
+    return limited;
+  }
+
   public deleteCustomEqualizerPreset(id: string): WinampEqualizerPreset[] {
     const next = this.getCustomEqualizerPresets().filter((preset) => preset.id !== id);
     if (typeof window !== 'undefined') {
