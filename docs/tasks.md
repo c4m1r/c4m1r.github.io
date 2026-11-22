@@ -760,3 +760,8 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - The Windows 7 lists (default programs, All Programs, places) and their path constants moved from `StartMenu7.tsx` to `startMenuWin7Lists.ts` (`buildWin7StartMenuLists`). The component memoises them and keeps search, flyouts and launching.
 - Checks: default menu differs from the previous build only in the taskbar clock; All Programs rows differ only by the added StartUp row.
 - Step 3 is complete for XP and 7. Next: the classic menus (98, 2000) already read their lists from the model and keep their own builders in `StartMenu98.tsx`; moving those into a shared builder is the remaining cleanup.
+
+## ARCH-01 step 4 — Windows 98 and 2000 list builder (2026-11-22)
+- The classic list (Windows Update, Programs with Accessories, Entertainment, Games, Favorites-free Windows 98 variant, Documents, Settings, Find, Help, Run, Suspend, Shut Down) and its icon choice per skin moved from `StartMenu98.tsx` to `startMenuClassicLists.tsx` (`buildClassicStartMenu`). The component renders the list and keeps the banner, activation and the 98/2000 geometry.
+- Checked against the previous build: Windows 98 and 2000, main menu and Programs, differ only in the taskbar clock.
+- Step 4 completes the planned architecture move: every Windows Start menu (98, 2000, XP, 7) now reads its user entries from `Start Menu\Programs` through `startMenuModel.ts`, and each has its fixed list in a builder module.
