@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../../../../contexts/useApp';
 import { translations } from '../../../../i18n/translations';
-import { ChevronsRight } from 'lucide-react';
+import { ChevronRight, ChevronsRight } from 'lucide-react';
 import { THEME_ASSETS, ThemeAssetId } from '../../../../themes/webos/themeAssets';
 import { appRegistry } from '../../appRegistry';
 import { getActiveEdition } from '../../../os/osEditions';
-import { startMenuFolderNodes, startMenuProgramsPath } from './startMenuModel';
+import { startMenuFolderNodes, startMenuProgramsPath, type StartMenuNode } from './startMenuModel';
+import { useFlyoutChain } from './startMenuFlyout';
+import { FlyoutPanel } from './StartMenuFlyoutPanel';
 import { getSessionAccount } from '../../../../domain/auth/session';
 import xpUserDefaultPicture from '../../../../themes/winxp/assets/avatars/user4.png';
 
@@ -31,6 +33,7 @@ export interface StartMenuXPProps {
 
 type MenuItem = {
   id: string;
+  submenu?: MenuItem[];
   title?: string;
   subtitle?: string;
   icon?: string;
@@ -66,6 +69,11 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     onHover?.();
   };
   const [allProgramsOpen, setAllProgramsOpen] = useState(false);
+  const flyout = useFlyoutChain<MenuItem>();
+  const resetFlyout = flyout.reset;
+  useEffect(() => {
+    if (!allProgramsOpen) resetFlyout();
+  }, [allProgramsOpen, resetFlyout]);
 
   const gamesTitle = t.games ?? (isRu ? 'Игры' : 'Games');
 
@@ -131,14 +139,37 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
   // User entries from Start Menu\Programs (StartUp included). The flat list shows each folder as a
   // row that opens it in Explorer; shortcuts launch their app.
+  const toProgramEntry = (node: StartMenuNode): MenuItem => ({
+    id: `user:${node.path ?? node.appId ?? node.label}`,
+    title: node.label,
+    icon: node.iconSrc ?? fallbackIcon,
+    appId: node.appId,
+    path: node.submenu ? undefined : node.path,
+    submenu: node.submenu?.map(toProgramEntry),
+  });
   const userProgramEntries: MenuItem[] = startMenuFolderNodes(startMenuProgramsPath(sessionAccount), () => null)
-    .map((node) => ({
-      id: `user-${node.label}`,
-      title: node.label,
-      icon: node.iconSrc ?? fallbackIcon,
-      appId: node.appId,
-      path: node.path,
-    }));
+    .map(toProgramEntry);
+
+  const renderProgramRow = (program: MenuItem, depth: number) => (
+    <button
+      key={program.id}
+      type="button"
+      className="flex w-full items-center gap-2 px-2 py-1 text-left text-xs hover:bg-[#316ac5] hover:text-white"
+      onClick={() => {
+        if (program.submenu) return;
+        handleMenuAction(program);
+        setAllProgramsOpen(false);
+      }}
+      onMouseEnter={(event) => {
+        handleHover();
+        flyout.hover(depth, program, event.currentTarget.getBoundingClientRect());
+      }}
+    >
+      {program.icon ? <img src={program.icon} alt="" className="h-5 w-5 object-contain" /> : <span className="h-5 w-5" />}
+      <span className="flex-1">{program.title}</span>
+      {program.submenu ? <ChevronRight size={12} className="opacity-70" /> : null}
+    </button>
+  );
 
   const frequentPrograms: MenuItem[] = [
     {
@@ -468,23 +499,21 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               <span>{allProgramsLabel}</span>
               <ChevronsRight size={14} className="opacity-70" />
             </button>
+          {allProgramsOpen && flyout.chain.map((level, index) => (
+            <FlyoutPanel
+              key={index}
+              level={level}
+              className="border border-[#7f9db9] bg-white py-0 text-[#111] shadow-xl min-w-[200px]"
+            >
+              {level.items.map((program) => renderProgramRow(program as MenuItem, index + 1))}
+            </FlyoutPanel>
+          ))}
           {allProgramsOpen && (
             <div id="xp-start-menu-all-programs" className="start-menu-all-programs absolute bottom-full left-0 z-[100001] mb-1 max-h-[min(60vh,420px)] w-full overflow-y-auto border border-[#7f9db9] bg-white text-[#111] shadow-xl">
               <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#555]">
                 {isRu ? 'Установленные программы' : 'Installed programs'}
               </div>
-              {[...allProgramsEntries, ...userProgramEntries].map((program) => (
-                <button
-                  key={program.id}
-                  type="button"
-                  className="flex w-full items-center gap-2 px-2 py-1 text-left text-xs hover:bg-[#316ac5] hover:text-white"
-                  onClick={() => { handleMenuAction(program); setAllProgramsOpen(false); }}
-                  onMouseEnter={handleHover}
-                >
-                  {program.icon ? <img src={program.icon} alt="" className="h-5 w-5 object-contain" /> : <span className="h-5 w-5" />}
-                  <span>{program.title}</span>
-                </button>
-              ))}
+              {[...allProgramsEntries, ...userProgramEntries].map((program) => renderProgramRow(program, 0))}
             </div>
           )}
           </div>

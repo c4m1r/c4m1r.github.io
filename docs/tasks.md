@@ -744,5 +744,6 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - `FileSystem.ts`: both profiles (C4m1r, User) get `Start Menu\Programs\StartUp`. The path follows the signed-in account.
 - Windows 98 and 2000 read their user entries from this model. StartUp appears in Programs (98: after Accessories, as in the reference; 2000: at the end). Clicking it opens Explorer on the folder.
 - Step 2 (done): Windows XP and Windows 7 read the same folder through the same model and append its entries to All Programs. The default menus are unchanged; a pixel check against the previous build differs only by the clock.
-- Deviation, recorded on purpose: in XP and 7 the StartUp folder appears as a flat row that opens it in Explorer. Real XP and 7 show a flyout. A flyout changes the XP and 7 renderers and their pixels, so it is a separate, reviewed step.
+- Flyouts (step 2b, 2026-11-22): in XP and 7 a folder with content opens a flyout panel to its right, and deeper folders stack. Shared logic is in `startMenuFlyout.ts` (chain state) and `StartMenuFlyoutPanel.tsx` (portal panel, so the slide-in transform does not move it). Empty folders stay rows that open Explorer. Verified with sample shortcuts in a temporary build (not committed): both menus show the flyout; the default menus are unchanged.
+- Open for flyouts: shortcuts without their own icon use the folder icon. Real shortcuts should carry app icons.
 - Step 3 (open): move the hardcoded lists (pinned, frequent, All Programs) of XP and 7 into shared builders. Each step needs a pixel check.

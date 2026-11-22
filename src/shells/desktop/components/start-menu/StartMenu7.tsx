@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronRight, Search } from 'lucide-react';
 import { useApp } from '../../../../contexts/useApp';
 import { appRegistry } from '../../appRegistry';
 import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
 import { getSessionAccount } from '../../../../domain/auth/session';
-import { startMenuFolderNodes, startMenuProgramsPath } from './startMenuModel';
+import { startMenuFolderNodes, startMenuProgramsPath, type StartMenuNode } from './startMenuModel';
+import { useFlyoutChain } from './startMenuFlyout';
+import { FlyoutPanel } from './StartMenuFlyoutPanel';
 
 export interface StartMenu7Props {
   onClose: () => void;
@@ -17,6 +19,7 @@ export interface StartMenu7Props {
 type Win7MenuEntry = {
   id: string;
   label: string;
+  submenu?: Win7MenuEntry[];
   appId?: string;
   path?: string;
   icon?: string;
@@ -123,16 +126,47 @@ export function StartMenu7({
     { id: 'doom1', label: 'DOOM', appId: 'doom1', icon: assets.doomIcon },
     { id: 'doom2', label: 'DOOM II', appId: 'doom2', icon: assets.doomIcon },
   ];
+  const renderProgramRow = (entry: Win7MenuEntry, depth: number) => (
+    <button
+      key={entry.id}
+      type="button"
+      className="win7-start-menu__program"
+      onClick={() => {
+        if (entry.submenu) return;
+        activate(entry);
+      }}
+      onMouseEnter={(event) => {
+        onHover?.();
+        flyout.hover(depth, entry, event.currentTarget.getBoundingClientRect());
+      }}
+      role="menuitem"
+      aria-haspopup={entry.submenu ? 'menu' : undefined}
+    >
+      <span className="win7-start-menu__program-icon">
+        {entry.icon ? <img src={entry.icon} alt="" /> : null}
+      </span>
+      <span className="flex-1">{entry.label}</span>
+      {entry.submenu ? <ChevronRight size={12} aria-hidden="true" /> : null}
+    </button>
+  );
+
   // User entries from Start Menu\Programs (StartUp included), shown after the built-in list.
   // A folder row opens the folder in Explorer.
+  const toUserEntry = (node: StartMenuNode): Win7MenuEntry => ({
+    id: `user:${node.path ?? node.appId ?? node.label}`,
+    label: node.label,
+    appId: node.appId,
+    path: node.submenu ? undefined : node.path,
+    icon: node.iconSrc ?? assets.folderIcon,
+    submenu: node.submenu?.map(toUserEntry),
+  });
   const userPrograms: Win7MenuEntry[] = startMenuFolderNodes(startMenuProgramsPath(getSessionAccount()), () => null)
-    .map((node) => ({
-      id: `user-${node.label}`,
-      label: node.label,
-      appId: node.appId,
-      path: node.path,
-      icon: node.iconSrc ?? assets.folderIcon,
-    }));
+    .map(toUserEntry);
+  const flyout = useFlyoutChain<Win7MenuEntry>();
+  const resetFlyout = flyout.reset;
+  useEffect(() => {
+    if (!showAllPrograms) resetFlyout();
+  }, [showAllPrograms, resetFlyout]);
   const filteredPrograms = (showAllPrograms ? [...allPrograms, ...userPrograms] : programs).filter((program) =>
     program.label.toLocaleLowerCase(language).includes(query.trim().toLocaleLowerCase(language)),
   );
@@ -209,20 +243,15 @@ export function StartMenu7({
       <div className="win7-start-menu__main">
         <div className="win7-start-menu__left">
           <div className="win7-start-menu__programs" role="menu">
-            {filteredPrograms.map((entry) => (
-              <button
-                key={entry.id}
-                type="button"
-                className="win7-start-menu__program"
-                onClick={() => activate(entry)}
-                onMouseEnter={onHover}
-                role="menuitem"
+            {filteredPrograms.map((entry) => renderProgramRow(entry, 0))}
+            {flyout.chain.map((level, index) => (
+              <FlyoutPanel
+                key={index}
+                level={level}
+                className="win7-start-menu__flyout min-w-[220px] max-h-[60vh] overflow-y-auto border border-[#7f9db9] bg-white py-1 text-[#111] shadow-xl"
               >
-                <span className="win7-start-menu__program-icon">
-                  {entry.icon ? <img src={entry.icon} alt="" /> : null}
-                </span>
-                <span>{entry.label}</span>
-              </button>
+                {level.items.map((entry) => renderProgramRow(entry as Win7MenuEntry, index + 1))}
+              </FlyoutPanel>
             ))}
             {filteredPrograms.length === 0 && (
               <div className="win7-start-menu__empty">
