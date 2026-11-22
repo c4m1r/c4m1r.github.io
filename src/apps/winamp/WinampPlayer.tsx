@@ -938,18 +938,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     }}
                   />
                   <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()}>+ ADD</button>
-                  <input
-                    ref={m3uInputRef}
-                    type="file"
-                    accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl"
-                    hidden
-                    onChange={(event) => {
-                      void importM3uFile(event.currentTarget.files?.[0]);
-                      event.currentTarget.value = '';
-                    }}
-                  />
-                  <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()} title="Import an M3U playlist">M3U IN</button>
-                  <button type="button" className="wa-btn-pl" onClick={exportM3uFile} title="Export web-address tracks as an M3U playlist">M3U OUT</button>
                   <button
                     type="button"
                     className="wa-btn-pl"
@@ -971,23 +959,40 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   >CLR SEL</button>
                 </div>
 
-                <div className="wa-pl__status">
-                  <span className="wa-pl__status-text">
-                    {formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}
-                  </span>
-                </div>
+                <div className="wa-pl__footer-tools">
+                  <input
+                    ref={m3uInputRef}
+                    type="file"
+                    accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl"
+                    hidden
+                    onChange={(event) => {
+                      void importM3uFile(event.currentTarget.files?.[0]);
+                      event.currentTarget.value = '';
+                    }}
+                  />
+                  <div className="wa-pl__actions">
+                    <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()} title="Import an M3U playlist">M3U IN</button>
+                    <button type="button" className="wa-btn-pl" onClick={exportM3uFile} title="Export web-address tracks as an M3U playlist">M3U OUT</button>
+                  </div>
 
-                <div className="wa-pl__mini-transport">
-                  <button type="button" className="wa-btn-pl-mini" onClick={previous} title="Prev">|◀</button>
-                  <button type="button" className="wa-btn-pl-mini" onClick={() => void play()} title="Play">▶</button>
-                  <button type="button" className="wa-btn-pl-mini" onClick={pause} title="Pause">❚❚</button>
-                  <button type="button" className="wa-btn-pl-mini" onClick={stop} title="Stop">■</button>
-                  <button type="button" className="wa-btn-pl-mini" onClick={next} title="Next">▶|</button>
-                </div>
+                  <div className="wa-pl__status">
+                    <span className="wa-pl__status-text">
+                      {formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}
+                    </span>
+                  </div>
 
-                <button type="button" className="wa-btn-pl wa-btn-pl--opts">
-                  LIST OPTS
-                </button>
+                  <div className="wa-pl__mini-transport">
+                    <button type="button" className="wa-btn-pl-mini" onClick={previous} title="Prev">|◀</button>
+                    <button type="button" className="wa-btn-pl-mini" onClick={() => void play()} title="Play">▶</button>
+                    <button type="button" className="wa-btn-pl-mini" onClick={pause} title="Pause">❚❚</button>
+                    <button type="button" className="wa-btn-pl-mini" onClick={stop} title="Stop">■</button>
+                    <button type="button" className="wa-btn-pl-mini" onClick={next} title="Next">▶|</button>
+                  </div>
+
+                  <button type="button" className="wa-btn-pl wa-btn-pl--opts">
+                    LIST OPTS
+                  </button>
+                </div>
               </div>
             </div>
           )}
