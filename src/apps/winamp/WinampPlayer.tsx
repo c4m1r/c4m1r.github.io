@@ -68,7 +68,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       setShuffle(st.shuffle);
       setAutoAdvance(st.autoAdvance);
     });
-  }, []);
+  }, [playlistRevision]);
 
   // Module visibility & shade states
   const [showEq, setShowEq] = useState(true);
@@ -83,6 +83,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [preamp, setPreamp] = useState(() => winampController.getEqualizerState().preamp);
   const [eqBands, setEqBands] = useState<number[]>(() => winampController.getEqualizerState().bands);
   const [selectedEqPreset, setSelectedEqPreset] = useState('custom');
+  const [playlistSelection, setPlaylistSelection] = useState<number[]>([]);
+  const [playlistRevision, setPlaylistRevision] = useState(0);
+  const playlistInputRef = useRef<HTMLInputElement | null>(null);
 
   // Visualizer bar heights and peak dots
   const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
@@ -124,12 +127,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     };
   }, []);
 
-  const track = PROJECT_PLAYLIST[trackIndex] ?? PROJECT_PLAYLIST[0];
+  const playlist = winampController.getPlaylist();
+  const track = playlist[trackIndex] ?? playlist[0] ?? PROJECT_PLAYLIST[0];
   const albumArt = useMemo(() => generateAlbumArt(track), [track]);
 
   // Total playlist duration calculation
   const totalPlaylistSeconds = useMemo(() => {
-    return PROJECT_PLAYLIST.reduce((acc, t) => {
+    return playlist.reduce((acc, t) => {
       const parts = t.durationLabel.split(':').map(Number);
       return acc + (parts[0] * 60 + (parts[1] || 0));
     }, 0);
@@ -672,7 +676,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <div className="wa-pl__body">
               {/* Songs List */}
               <div className="wa-pl__list" role="listbox">
-                {PROJECT_PLAYLIST.map((item, index) => {
+                {playlist.map((item, index) => {
                   const isCurrent = index === trackIndex;
                   return (
                     <div
@@ -680,7 +684,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       role="option"
                       aria-selected={isCurrent}
                       className={`wa-pl__item ${isCurrent ? 'is-selected' : ''}`}
-                      onClick={() => winampController.setTrack(index)}
+                      onClick={(event) => {
+                        if (event.ctrlKey || event.metaKey) {
+                          setPlaylistSelection((selected) => selected.includes(index) ? selected.filter((value) => value !== index) : [...selected, index]);
+                        } else {
+                          setPlaylistSelection([index]);
+                          winampController.setTrack(index);
+                        }
+                      }}
                       onDoubleClick={() => {
                         winampController.setTrack(index);
                         void winampController.play();
@@ -698,10 +709,47 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               {/* Playlist Bottom Bar */}
               <div className="wa-pl__footer">
                 <div className="wa-pl__actions">
-                  <button type="button" className="wa-btn-pl" onClick={() => winampController.setTrack(0)}>+ ADD</button>
-                  <button type="button" className="wa-btn-pl" onClick={() => next()}>- REM</button>
-                  <button type="button" className="wa-btn-pl">SEL</button>
-                  <button type="button" className="wa-btn-pl">MISC</button>
+                  <input
+                    ref={playlistInputRef}
+                    type="file"
+                    accept="audio/*"
+                    multiple
+                    hidden
+                    onChange={(event) => {
+                      const files = Array.from(event.currentTarget.files ?? []);
+                      const additions = files.map((file, index) => ({
+                        id: `local-${Date.now()}-${index}-${file.name}`,
+                        title: file.name.replace(/\\.[^.]+$/, ''),
+                        artist: 'Local file',
+                        durationLabel: '—',
+                        src: URL.createObjectURL(file),
+                      }));
+                      winampController.addTracks(additions);
+                      setPlaylistRevision((revision) => revision + 1);
+                      event.currentTarget.value = '';
+                    }}
+                  />
+                  <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()}>+ ADD</button>
+                  <button
+                    type="button"
+                    className="wa-btn-pl"
+                    disabled={!playlistSelection.length || playlist.length <= playlistSelection.length}
+                    onClick={() => {
+                      winampController.removeTracks(playlistSelection);
+                      setPlaylistSelection([]);
+                      setPlaylistRevision((revision) => revision + 1);
+                    }}
+                  >- REM</button>
+                  <button
+                    type="button"
+                    className="wa-btn-pl"
+                    onClick={() => setPlaylistSelection(playlist.map((_, index) => index))}
+                  >SEL</button>
+                  <button
+                    type="button"
+                    className="wa-btn-pl"
+                    onClick={() => setPlaylistSelection([])}
+                  >MISC</button>
                 </div>
 
                 <div className="wa-pl__status">
