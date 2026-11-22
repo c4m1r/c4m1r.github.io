@@ -731,3 +731,9 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Windows 2000 Start menu sits flush to the left edge (no 4 px inset), as in the reference.
 - Start menu for Windows 98 and 2000 sits directly on the taskbar (bottom offset equals the 28 px taskbar height). Before, there was a 4 px gap.
 - Suspend (Windows 98) now returns to the sign-in screen, the closest existing state for a machine that waits for the user. It keeps its place in the menu as in the reference.
+
+## Start menu — deferred, with reasons (2026-11-22)
+- **98lite entry in Programs** (reference `eat/screens/oc/win98/01-…png`): 98lite is a third-party utility and its branding (name, company, URL) appears on that reference machine. We do not carry third-party apps or their branding, so this entry is not added.
+- **StartUp submenu** (Programs > StartUp): needs the Start menu to read the file system's `Start Menu` folder, which currently exists but is empty (`src/utils/FileSystem.ts`). Until the menu is built from that folder, a StartUp entry would be a fake folder. Deferred to the unified Start menu architecture below.
+- **Unified Start menu architecture** (needed for StartUp and for the rest of the menus): today the Windows 98/2000 menu is a hardcoded list in `StartMenu98.tsx`, while XP and 7 have their own lists in `StartMenuXP.tsx` and `StartMenu7.tsx`. The plan is one data source built from the file system's `Start Menu` folder and a single renderer per visual skin. This changes the menu for every Windows skin, so it is a separate, reviewed step and not part of the visual pass.
+- **Log Off** is not in the 98 or 2000 menus (per reference). Its function is reachable through Shut Down only. This is a deliberate choice, recorded here so it is not treated as a regression.
