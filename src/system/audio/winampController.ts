@@ -153,6 +153,23 @@ class WinampControllerService {
     this.notify();
   }
 
+  public updateTrackMetadata(id: string, metadata: Partial<Pick<MediaTrack, 'title' | 'artist' | 'durationLabel'>>): void {
+    const index = this.playlist.findIndex((track) => track.id === id);
+    if (index < 0) return;
+    const current = this.playlist[index];
+    this.playlist = this.playlist.map((track, trackIndex) =>
+      trackIndex === index
+        ? {
+            ...track,
+            ...(typeof metadata.title === 'string' ? { title: metadata.title } : {}),
+            ...(typeof metadata.artist === 'string' ? { artist: metadata.artist } : {}),
+            ...(typeof metadata.durationLabel === 'string' ? { durationLabel: metadata.durationLabel } : {}),
+          }
+        : track
+    );
+    if (current) this.notify();
+  }
+
   public moveTrack(fromIndex: number, toIndex: number): void {
     if (
       !Number.isInteger(fromIndex) ||
