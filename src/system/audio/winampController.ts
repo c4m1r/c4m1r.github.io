@@ -39,6 +39,7 @@ class WinampControllerService {
   private readonly eqFrequencies = [70, 180, 320, 600, 1000, 3000, 6000, 12000, 14000, 16000];
 
   constructor() {
+    this.loadEqualizerSettings();
     if (typeof window !== 'undefined') {
       window.addEventListener('winamp:command', (e: Event) => {
         const custom = e as CustomEvent<{ action: string; value?: unknown }>;
@@ -300,26 +301,61 @@ class WinampControllerService {
     return this.shuffle;
   }
 
+  private loadEqualizerSettings(): void {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = window.localStorage.getItem('winamp:equalizer:v1');
+      if (!raw) return;
+      const saved = JSON.parse(raw) as { enabled?: unknown; bands?: unknown; preamp?: unknown; balance?: unknown };
+      if (typeof saved.enabled === 'boolean') this.eqEnabled = saved.enabled;
+      if (Array.isArray(saved.bands) && saved.bands.length === this.eqGains.length) {
+        this.eqGains = saved.bands.map((value) => Number.isFinite(value) ? Math.max(-12, Math.min(12, Number(value))) : 0);
+      }
+      if (typeof saved.preamp === 'number' && Number.isFinite(saved.preamp)) this.preampGain = Math.max(-12, Math.min(12, saved.preamp));
+      if (typeof saved.balance === 'number' && Number.isFinite(saved.balance)) this.balance = Math.max(-1, Math.min(1, saved.balance));
+    } catch {
+      // Ignore unavailable storage or malformed settings and retain safe defaults.
+    }
+  }
+
+  private saveEqualizerSettings(): void {
+    if (typeof window === 'undefined') return;
+    try {
+      window.localStorage.setItem('winamp:equalizer:v1', JSON.stringify({
+        enabled: this.eqEnabled,
+        bands: this.eqGains,
+        preamp: this.preampGain,
+        balance: this.balance,
+      }));
+    } catch {
+      // Playback remains available when storage is blocked or full.
+    }
+  }
+
   public setEqualizerEnabled(enabled: boolean): void {
     this.eqEnabled = enabled;
     this.eqFilters.forEach((filter, index) => filter.gain.setTargetAtTime(enabled ? this.eqGains[index] : 0, filter.context.currentTime, 0.015));
     if (this.preampNode) this.preampNode.gain.setTargetAtTime(enabled ? Math.pow(10, this.preampGain / 20) : 1, this.preampNode.context.currentTime, 0.015);
+    this.saveEqualizerSettings();
   }
   public setEqualizerBand(index: number, gain: number): void {
     if (index < 0 || index >= this.eqGains.length || !Number.isFinite(gain)) return;
     this.eqGains[index] = Math.max(-12, Math.min(12, gain));
     const filter = this.eqFilters[index];
     if (filter) filter.gain.setTargetAtTime(this.eqEnabled ? this.eqGains[index] : 0, filter.context.currentTime, 0.015);
+    this.saveEqualizerSettings();
   }
   public setPreamp(gainDb: number): void {
     if (!Number.isFinite(gainDb)) return;
     this.preampGain = Math.max(-12, Math.min(12, gainDb));
     if (this.preampNode) this.preampNode.gain.setTargetAtTime(this.eqEnabled ? Math.pow(10, this.preampGain / 20) : 1, this.preampNode.context.currentTime, 0.015);
+    this.saveEqualizerSettings();
   }
   public setBalance(balance: number): void {
     if (!Number.isFinite(balance)) return;
     this.balance = Math.max(-1, Math.min(1, balance));
     if (this.pannerNode) this.pannerNode.pan.setTargetAtTime(this.balance, this.pannerNode.context.currentTime, 0.015);
+    this.saveEqualizerSettings();
   }
   public getEqualizerState(): { enabled: boolean; bands: number[]; preamp: number; balance: number } {
     return { enabled: this.eqEnabled, bands: [...this.eqGains], preamp: this.preampGain, balance: this.balance };
