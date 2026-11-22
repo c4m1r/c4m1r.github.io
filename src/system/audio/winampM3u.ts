@@ -77,6 +77,10 @@ export function parseM3uPlaylist(content: string): ParsedM3uPlaylist {
   return { tracks, skippedEntries };
 }
 
+function singleLine(value: string): string {
+  return value.replace(/[\\r\\n]+/g, ' ').trim();
+}
+
 export function createM3uPlaylist(tracks: MediaTrack[]): { content: string; skippedEntries: number } {
   const lines = ['#EXTM3U'];
   let skippedEntries = 0;
@@ -88,13 +92,13 @@ export function createM3uPlaylist(tracks: MediaTrack[]): { content: string; skip
       skippedEntries += 1;
       return;
     }
-    if ((url.protocol !== 'http:' && url.protocol !== 'https:') || url.protocol === 'blob:') {
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
       skippedEntries += 1;
       return;
     }
     const [minutes, seconds] = track.durationLabel.split(':').map(Number);
     const duration = Number.isFinite(minutes) && Number.isFinite(seconds) ? minutes * 60 + seconds : -1;
-    lines.push(`#EXTINF:${duration},${track.artist} - ${track.title}`);
+    lines.push(`#EXTINF:${duration},${singleLine(track.artist)} - ${singleLine(track.title)}`);
     lines.push(url.href);
   });
   return { content: `${lines.join('\n')}\n`, skippedEntries };
