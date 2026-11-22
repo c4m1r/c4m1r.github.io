@@ -710,7 +710,19 @@
 
 .wa-pl__actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 2px;
+}
+
+.wa-pl__import-status {
+  margin-top: 3px;
+  padding: 2px 4px;
+  background: #090909;
+  border: 1px solid #292929;
+  color: #00d82b;
+  font: 8px 'Courier New', monospace;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .wa-btn-pl {
