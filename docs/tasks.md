@@ -723,3 +723,8 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
   - `themes/xp-98.css`, `themes/xp-winxp.css`, `themes/xp-webos.css`: rules scoped to `.theme-98`, `.theme-win-xp` and `.theme-webos`. Rules that match several themes are copied into each relevant file.
 - Main CSS bundle: 200 KB -> 162 KB. The first OS-split step took it from 573 KB to 200 KB.
 - Verified against the HEAD build (pre-split), pixel for pixel: Win 98 and 2000 with Start open, XP login and XP desktop with Start open, Win 7, Ubuntu, macOS, WebOS, Halloween. Remaining differences are the clock and login-card animation only.
+
+### REF-02 follow-up — Start menu round 2 (2026-11-22)
+- Windows 98 top-level icons are 32 px at a 33 px row pitch, as in the reference.
+- Windows 98 Programs: Accessories (with Entertainment and Games inside), MS-DOS Prompt (opens the terminal app), Windows Explorer (opens My Computer). Internet Explorer and Outlook Express are removed from the 98 list, as in the reference. Windows 2000 keeps its list.
+- Still open: 98lite and StartUp entries from the reference are not added (no matching apps). The 98 Suspend row has no handler yet.

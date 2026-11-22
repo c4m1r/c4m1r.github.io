@@ -84,7 +84,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       { label: 'Windows Update', icon: classicIcon(win2000UpdateIcon) },
       { label: '', icon: null, separator: true },
     ] : []),
-    { label: isRu ? 'Программы' : 'Programs', icon: classicIcon(programsIcon), submenu: [
+    { label: isRu ? 'Программы' : 'Programs', icon: classicIcon(programsIcon), submenu: isWin2000 ? [
       { label: 'Internet Explorer', icon: classicIcon(ieIcon), appId: 'internet-explorer' },
       { label: 'Outlook Express', icon: classicIcon(outlookClassicIcon), appId: 'outlook' },
       { label: isRu ? 'Стандартные' : 'Accessories', icon: classicIcon(accessoriesIcon), submenu: [
@@ -102,6 +102,26 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         { label: 'DOOM', icon: classicIcon(documentIcon), appId: 'doom1' },
         { label: 'DOOM II', icon: classicIcon(documentIcon), appId: 'doom2' },
       ] },
+    ] : [
+      // Windows 98 list as in the reference: Accessories (with Games and Entertainment inside),
+      // MS-DOS Prompt, Windows Explorer.
+      { label: isRu ? 'Стандартные' : 'Accessories', icon: classicIcon(accessoriesIcon), submenu: [
+        { label: isRu ? 'Калькулятор' : 'Calculator', icon: classicIcon(calculatorIcon), appId: 'calculator' },
+        { label: isRu ? 'Блокнот' : 'Notepad', icon: classicIcon(notepadIcon), appId: 'notepad' },
+        { label: isRu ? 'Paint' : 'Paint', icon: classicIcon(paintIcon), appId: 'paint' },
+        { label: isRu ? 'Панель управления' : 'Control Panel', icon: classicIcon(settingsIcon), appId: 'control-panel' },
+        { label: isRu ? 'Мультимедиа' : 'Entertainment', icon: classicIcon(mediaPlayerIcon), submenu: [
+          { label: 'Windows Media Player', icon: classicIcon(mediaPlayerIcon), appId: 'windows-media-player' },
+          { label: 'Winamp', icon: classicIcon(mediaPlayerIcon), appId: 'winamp' },
+        ] },
+        { label: isRu ? 'Игры' : 'Games', icon: classicIcon(minesweeperIcon), submenu: [
+          { label: isRu ? 'Сапёр' : 'Minesweeper', icon: classicIcon(minesweeperIcon), appId: 'minesweeper' },
+          { label: 'DOOM', icon: classicIcon(documentIcon), appId: 'doom1' },
+          { label: 'DOOM II', icon: classicIcon(documentIcon), appId: 'doom2' },
+        ] },
+      ] },
+      { label: 'MS-DOS Prompt', icon: classicIcon(runClassicIcon), appId: 'terminal' },
+      { label: 'Windows Explorer', icon: classicIcon(programsClassicIcon), path: 'My Computer' },
     ] },
     { label: isRu ? 'Документы' : 'Documents', icon: classicIcon(documentsIcon), path: DOCUMENTS_PATH },
     { label: isRu ? 'Настройка' : 'Settings', icon: classicIcon(settingsIcon), submenu: [
@@ -132,10 +152,12 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     setOpenChain((prev) => (label === null ? prev.slice(0, depth) : [...prev.slice(0, depth), label]));
   };
 
-  // Top-level rows use the large 24 px shell icons from the reference; submenus use 16 px.
+  // Windows 98 top-level rows use 32 px icons at a 33 px pitch (reference); Windows 2000 uses
+  // 24 px icons. Submenus stay at 16 px.
+  const topIconClass = isWin2000 ? 'h-6 w-6 object-contain' : 'h-8 w-8 object-contain';
   const iconForDepth = (icon: ReactNode, depth: number): ReactNode =>
     depth === 0 && isValidElement(icon)
-      ? cloneElement(icon as ReactElement<{ className?: string }>, { className: 'h-6 w-6 object-contain' })
+      ? cloneElement(icon as ReactElement<{ className?: string }>, { className: topIconClass })
       : icon;
 
   const renderItems = (items: ClassicMenuItem[], depth: number) => (
@@ -154,8 +176,8 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
                 fontFamily: 'MS Sans Serif, sans-serif',
                 fontSize: 12,
                 lineHeight: '16px',
-                padding: depth === 0 ? '6px 8px' : '3px 8px',
-                minHeight: depth === 0 ? 32 : 22,
+                padding: depth === 0 ? (isWin2000 ? '6px 8px' : '0 8px') : '3px 8px',
+                minHeight: depth === 0 ? (isWin2000 ? 32 : 33) : 22,
               }}
               onClick={() => (item.submenu ? openAt(depth, isOpen ? null : item.label) : activate(item))}
               onMouseEnter={() => {
