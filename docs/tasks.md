@@ -362,7 +362,8 @@ Percentages are working estimates, not test results. The previous task registry 
 - Drag-and-drop reordering is handled by the shared controller; the active track is located by stable track ID after a move, so its playback position is not accidentally reassigned to another song. Audio files can also be dropped onto the playlist surface.
 - Local file metadata is read asynchronously to populate track duration labels. A dedicated `winamp:playlist-changed` event keeps queue rendering synchronized without forcing playlist rebuilds on every playback time update.
 - Local object URLs are revoked when their queue entries are removed; unknown local-file durations are excluded from the total-duration calculation.
-- Remaining: persistent local-file storage, M3U load/save, folder drop where browser permissions allow, list options menu, keyboard navigation and browser acceptance.
+- M3U import/export now supports `#EXTM3U` and `#EXTINF` metadata, absolute HTTP(S) track URLs, and explicit skipped-entry reporting. Relative paths and `file://` entries are skipped because a browser file picker does not expose the playlist's parent directory; HLS `#EXT-X-*` manifests are rejected rather than misread as track lists. Export writes portable web URLs and excludes transient `blob:` local-file URLs.
+- Remaining: persistent local-file storage, folder drop where browser permissions allow, list options menu, keyboard navigation and browser acceptance.
 
 
 - 2026-11-19 source pass: Windows 7 Explorer now receives the shared slideshow callback, offers a Slide show action when the current folder contains multiple supported images, and uses actual image URLs in thumbnail view. This reuses the shared PictureViewer slideshow instead of creating a second viewer. Runtime acceptance remains pending.
