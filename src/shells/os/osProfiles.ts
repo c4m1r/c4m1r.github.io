@@ -125,8 +125,9 @@ export const osBootProfiles: OsBootProfile[] = [
     kind: 'desktop' as const,
     mode: 'webos' as const,
     theme: 'halloween' as const,
-    order: 500,
+    order: 114,
     enabled: true,
+    group: 'windows' as BootMenuGroup,
   },
   {
     id: 'terminal' as OsProfileId,
