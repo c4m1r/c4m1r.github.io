@@ -755,3 +755,8 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 
 ## Typecheck (2026-11-22)
 - `npx tsc --noEmit -p .` checks nothing: the root `tsconfig.json` only references the app and node configs. Use `npx tsc --noEmit -p tsconfig.app.json`. Earlier "TSC_OK" results in this log were not valid. The real check found 34 errors (action literal typing, unused XP imports, missing translations in the new builder, flyout generic typing, and an unused `cssFile` field in `themeConfig.ts`). All are fixed; the app config reports 0.
+
+## ARCH-01 step 3b — Windows 7 fixed lists (2026-11-22)
+- The Windows 7 lists (default programs, All Programs, places) and their path constants moved from `StartMenu7.tsx` to `startMenuWin7Lists.ts` (`buildWin7StartMenuLists`). The component memoises them and keeps search, flyouts and launching.
+- Checks: default menu differs from the previous build only in the taskbar clock; All Programs rows differ only by the added StartUp row.
+- Step 3 is complete for XP and 7. Next: the classic menus (98, 2000) already read their lists from the model and keep their own builders in `StartMenu98.tsx`; moving those into a shared builder is the remaining cleanup.
