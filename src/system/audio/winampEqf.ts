@@ -37,7 +37,7 @@ export function parseWinampEqf(buffer: ArrayBuffer): WinampEqfPreset[] {
     const nameBytes = bytes.subarray(offset, offset + 257);
     const terminator = nameBytes.indexOf(0);
     const visibleName = nameBytes.subarray(0, terminator < 0 ? nameBytes.length : terminator);
-    const name = new TextDecoder('windows-1252').decode(visibleName).trim().slice(0, 32) || `Imported ${presets.length + 1}`;
+    const name = String.fromCharCode(...visibleName).trim().slice(0, 32) || `Imported ${presets.length + 1}`;
     offset += 257;
     const values: number[] = [];
     for (let i = 0; i < 11; i += 1) {
@@ -59,9 +59,11 @@ export function createWinampEqf(presets: WinampEqfPreset[]): ArrayBuffer {
   const header = new TextEncoder().encode(HEADER);
   const bytes: number[] = [...header, 26, 33, 45, 45];
   presets.forEach((preset) => {
-    const name = new TextEncoder().encode(preset.name.slice(0, 32));
+    const name = preset.name.slice(0, 32);
     const nameBytes = new Uint8Array(257);
-    nameBytes.set(name.subarray(0, 257));
+    for (let index = 0; index < name.length; index += 1) {
+      nameBytes[index] = name.charCodeAt(index) & 0xff;
+    }
     bytes.push(...nameBytes);
     const values = [...preset.bands.slice(0, BAND_COUNT), preset.preamp];
     values.forEach((gain) => {
