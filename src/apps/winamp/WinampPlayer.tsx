@@ -159,7 +159,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     link.href = url;
     link.download = `${label.replace(/[^a-z0-9-_ ]/gi, '').trim() || 'winamp-eq'}.eqf`;
     link.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     setEqfStatus('EQF exported');
   };
 
