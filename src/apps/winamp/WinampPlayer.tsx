@@ -727,7 +727,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       const files = Array.from(event.currentTarget.files ?? []);
                       const additions = files.map((file, index) => ({
                         id: `local-${Date.now()}-${index}-${file.name}`,
-                        title: file.name.replace(/\\.[^.]+$/, ''),
+                        title: file.name.replace(/\.[^.]+$/, ''),
                         artist: 'Local file',
                         durationLabel: '—',
                         src: URL.createObjectURL(file),
