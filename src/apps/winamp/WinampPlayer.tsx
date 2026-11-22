@@ -197,7 +197,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   };
 
   const exportM3uFile = () => {
-    const result = createM3uPlaylist(playlist);
+    const result = createM3uPlaylist(winampController.getPlaylist());
     if (result.content === '#EXTM3U\n') {
       setM3uStatus('No web-address tracks to export; local files need a portable path');
       return;
