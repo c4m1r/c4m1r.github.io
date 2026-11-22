@@ -211,7 +211,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
   return (
     <div
-      className="absolute bottom-[32px] left-1 w-52 flex z-50 os-panel"
+      className={`absolute bottom-[32px] ${isWin2000 ? 'left-0' : 'left-1'} w-52 flex z-50 os-panel`}
       style={{
         background: '#c0c0c0',
         border: '2px solid',
