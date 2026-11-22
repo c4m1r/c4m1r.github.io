@@ -146,6 +146,28 @@ class WinampControllerService {
     this.notify();
   }
 
+  public moveTrack(fromIndex: number, toIndex: number): void {
+    if (
+      !Number.isInteger(fromIndex) ||
+      !Number.isInteger(toIndex) ||
+      fromIndex < 0 ||
+      toIndex < 0 ||
+      fromIndex >= this.playlist.length ||
+      toIndex >= this.playlist.length ||
+      fromIndex === toIndex
+    ) return;
+
+    const currentTrackId = this.getTrack().id;
+    const nextPlaylist = [...this.playlist];
+    const [movedTrack] = nextPlaylist.splice(fromIndex, 1);
+    if (!movedTrack) return;
+    nextPlaylist.splice(toIndex, 0, movedTrack);
+    this.playlist = nextPlaylist;
+    const currentIndex = this.playlist.findIndex((track) => track.id === currentTrackId);
+    if (currentIndex >= 0) this.trackIndex = currentIndex;
+    this.notify();
+  }
+
   public removeTracks(indices: number[]): void {
     if (!indices.length || this.playlist.length <= 1) return;
     const remove = new Set(indices.filter((index) => Number.isInteger(index) && index >= 0 && index < this.playlist.length));
