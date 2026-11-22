@@ -36,8 +36,12 @@ function Die({ value }: { value: number }) {
   const lit = PIP_LAYOUT[value] ?? [];
   return (
     <span
-      className="inline-grid h-[30px] w-[30px] grid-cols-3 grid-rows-3 place-items-center rounded-[6px] p-[4px] shadow-[0_2px_3px_rgba(0,0,0,0.6)]"
-      style={{ background: 'radial-gradient(circle at 35% 30%, #fffdf5, #e9dcb8 70%, #cbb88a)', border: '1px solid #6b5a33' }}
+      className="inline-grid h-[30px] w-[30px] grid-cols-3 grid-rows-3 place-items-center rounded-[5px] p-[4px]"
+      style={{
+        background: 'linear-gradient(135deg, #fffdf6 0%, #f1e6c8 55%, #d8c595 100%)',
+        border: '1px solid #5b4a28',
+        boxShadow: 'inset 2px 2px 0 rgba(255,255,255,0.9), inset -2px -3px 0 rgba(120,90,40,0.55), 2px 3px 4px rgba(0,0,0,0.7)',
+      }}
     >
       {Array.from({ length: 9 }).map((_, cell) => (
         <span
@@ -127,8 +131,17 @@ export function BackgammonGame() {
   const [matchWinner, setMatchWinner] = useState<Player | null>(null);
   const [log, setLog] = useState<string[]>(['Roll the dice to begin.']);
   const [chatOn, setChatOn] = useState(true);
+  const [pick, setPick] = useState('');
 
   const say = (text: string) => setLog((previous) => [...previous.slice(-60), text]);
+
+  const CANNED = ['Good roll!', 'Nice move.', 'Your move.', 'Good game.'];
+  const sendChat = (message: string) => {
+    if (!message) return;
+    say(`You: ${message}`);
+    setPick('');
+    window.setTimeout(() => say(`Computer: ${CANNED[Math.floor(Math.random() * CANNED.length)]}`), 600);
+  };
 
   const humanMoves = turn === 'W' && dice.length > 0 && !gameWinner ? legalMoves(board, 'W', dice) : [];
   const targets = selected === null ? [] : humanMoves.filter((move) => move.from === selected);
@@ -348,6 +361,16 @@ export function BackgammonGame() {
               <label className="flex items-center gap-1"><input type="radio" name="chat" checked={!chatOn} onChange={() => setChatOn(false)} />off</label>
             </div>
           </div>
+          <select
+            value={pick}
+            disabled={!chatOn}
+            onChange={(e) => sendChat(e.target.value)}
+            data-testid="chat-picker"
+            className="rounded border border-[#4a2a10] bg-white px-1 py-0.5 text-[11px] text-black disabled:opacity-50"
+          >
+            <option value="">(Select a message to send)</option>
+            {CANNED.map((message) => <option key={message} value={message}>{message}</option>)}
+          </select>
         </div>
 
         <aside className="flex w-[150px] shrink-0 flex-col gap-2 text-[11px]">
