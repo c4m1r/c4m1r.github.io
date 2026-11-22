@@ -1,15 +1,20 @@
 import { useMemo, useState } from 'react';
 import { CardView } from '../cards/CardView';
 import { GameMenuBar } from '../GameMenuBar';
+import { formatClock, useGameClock, useNewGameShortcut } from '../gameHooks';
 import {
-  createDeck, isAlternatingRun, isRed, SUIT_SYMBOL, SUITS, type Card, pileStep } from '../cards/cards';
+  CARD_HEIGHT, CARD_WIDTH, createDeck, isAlternatingRun, isRed, SUIT_SYMBOL, SUITS, type Card, pileStep } from '../cards/cards';
 
 /**
- * Klondike Solitaire (the default Windows "Solitaire"), draw-one, temporary sketch.
+ * Klondike Solitaire (the default Windows "Solitaire"), temporary sketch.
  * Click a card (or the waste pile) to select it, then click a legal target:
  * another tableau column, a foundation pile or an empty column.
- * Click the stock to draw one card; when the stock is empty, the waste is turned back.
+ * Click the stock to draw one or three cards (Options); when the stock is empty, the waste is turned back.
+ * Standard scoring: waste to tableau +5, waste to foundation +10, tableau to foundation +10,
+ * turning over a tableau card +5. Score never drops below zero.
  */
+
+export type DrawCount = 1 | 3;
 
 interface KlondikeState {
   stock: Card[];
@@ -17,6 +22,7 @@ interface KlondikeState {
   foundations: Card[][];
   tableau: Card[][];
   moves: number;
+  score: number;
 }
 
 type Source = { kind: 'waste' } | { kind: 'tableau'; col: number; index: number };
@@ -31,7 +37,7 @@ function deal(): KlondikeState {
     tableau.push(pile);
   }
   deck.forEach((card) => { card.faceUp = false; });
-  return { stock: deck, waste: [], foundations: [[], [], [], []], tableau, moves: 0 };
+  return { stock: deck, waste: [], foundations: [[], [], [], []], tableau, moves: 0, score: 0 };
 }
 
 function canPlaceOnTableau(cards: Card[], column: Card[]): boolean {
@@ -53,6 +59,11 @@ function cardsFor(state: KlondikeState, source: Source): Card[] {
 }
 
 /** Returns the new state, or null when the move is not legal. */
+function moveScore(source: Source, target: Target): number {
+  if (target.kind === 'foundation') return 10;
+  return source.kind === 'waste' ? 5 : 0;
+}
+
 function applyMove(state: KlondikeState, source: Source, target: Target): KlondikeState | null {
   const moving = cardsFor(state, source);
   if (moving.length === 0) return null;
@@ -73,6 +84,7 @@ function applyMove(state: KlondikeState, source: Source, target: Target): Klondi
     foundations: state.foundations.map((pile) => [...pile]),
     tableau: state.tableau.map((column) => [...column]),
     moves: state.moves + 1,
+    score: state.score + moveScore(source, target),
   };
 
   if (source.kind === 'waste') {
@@ -80,7 +92,10 @@ function applyMove(state: KlondikeState, source: Source, target: Target): Klondi
   } else {
     next.tableau[source.col] = next.tableau[source.col].slice(0, source.index);
     const top = next.tableau[source.col][next.tableau[source.col].length - 1];
-    if (top && !top.faceUp) top.faceUp = true;
+    if (top && !top.faceUp) {
+      top.faceUp = true;
+      next.score += 5;
+    }
   }
 
   if (target.kind === 'foundation') {
@@ -91,12 +106,17 @@ function applyMove(state: KlondikeState, source: Source, target: Target): Klondi
   return next;
 }
 
-function drawOrRecycle(state: KlondikeState): KlondikeState {
+function drawOrRecycle(state: KlondikeState, count: DrawCount): KlondikeState {
   if (state.stock.length > 0) {
     const stock = [...state.stock];
-    const card = stock.pop() as Card;
-    card.faceUp = true;
-    return { ...state, stock, waste: [...state.waste, card], moves: state.moves + 1 };
+    const waste = [...state.waste];
+    const drawn = Math.min(count, stock.length);
+    for (let i = 0; i < drawn; i += 1) {
+      const card = stock.pop() as Card;
+      card.faceUp = true;
+      waste.push(card);
+    }
+    return { ...state, stock, waste, moves: state.moves + 1 };
   }
   if (state.waste.length === 0) return state;
   const stock = [...state.waste].reverse().map((card) => ({ ...card, faceUp: false }));
@@ -106,8 +126,10 @@ function drawOrRecycle(state: KlondikeState): KlondikeState {
 export function SolitaireGame() {
   const [state, setState] = useState<KlondikeState>(deal);
   const [selected, setSelected] = useState<Source | null>(null);
+  const [drawCount, setDrawCount] = useState<DrawCount>(1);
 
   const won = useMemo(() => state.foundations.every((pile) => pile.length === 13), [state]);
+  const clock = useGameClock(state.moves > 0, won);
 
   const attempt = (target: Target) => {
     if (!selected) return;
@@ -135,17 +157,40 @@ export function SolitaireGame() {
   const newGame = () => {
     setState(deal());
     setSelected(null);
+    clock.reset();
   };
+
+  const chooseDraw = (count: DrawCount) => {
+    setDrawCount(count);
+    newGame();
+  };
+
+  useNewGameShortcut(newGame);
 
   const topWaste = state.waste[state.waste.length - 1];
 
   return (
     <div className="flex h-full flex-col bg-[#008000] text-white">
-      <GameMenuBar menus={[{ label: 'Game', items: [{ label: 'New Game', onSelect: newGame }] }]} />
+      <GameMenuBar
+        menus={[
+          { label: 'Game', items: [{ label: 'New Game', onSelect: newGame }] },
+          {
+            label: 'Options',
+            items: [
+              { label: 'Draw One', checked: drawCount === 1, onSelect: () => chooseDraw(1) },
+              { label: 'Draw Three', checked: drawCount === 3, onSelect: () => chooseDraw(3) },
+            ],
+          },
+        ]}
+      />
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-3" data-game="solitaire">
       <header className="flex items-center justify-between text-sm">
-        <span>Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}</span>
-        <button type="button" onClick={newGame} className="rounded bg-white/15 px-3 py-1">New game</button>
+        <span>
+          Score: <strong data-testid="score">{state.score}</strong>
+          {' · '}Time: <strong data-testid="time">{formatClock(clock.seconds)}</strong>
+          {' · '}Moves: <strong data-testid="moves">{state.moves}</strong>
+          {won ? ' — Win!' : ''}
+        </span>
       </header>
 
       <div className="grid grid-cols-7 gap-2">
@@ -153,18 +198,31 @@ export function SolitaireGame() {
           <CardView
             card={state.stock.length ? state.stock[state.stock.length - 1] : undefined}
             placeholder={state.stock.length ? undefined : '↺'}
-            onClick={() => { setSelected(null); setState((s) => drawOrRecycle(s)); }}
+            onClick={() => { setSelected(null); setState((s) => drawOrRecycle(s, drawCount)); }}
             testId="stock"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <CardView
-            card={topWaste}
-            selected={selected?.kind === 'waste'}
-            onClick={() => (selected ? setSelected(null) : topWaste && setSelected({ kind: 'waste' }))}
-            placeholder={topWaste ? undefined : ' '}
-            testId="waste"
-          />
+          {/* Draw Three fans the last three waste cards; only the top card can be played. */}
+          {topWaste ? (
+            <div className="relative" style={{ width: CARD_WIDTH + 14 * (Math.min(drawCount, state.waste.length) - 1), height: CARD_HEIGHT }}>
+              {state.waste.slice(-drawCount).map((card, i, visible) => {
+                const isTop = i === visible.length - 1;
+                return (
+                  <div key={card.id} className="absolute top-0" style={{ left: i * 14 }}>
+                    <CardView
+                      card={card}
+                      selected={isTop && selected?.kind === 'waste'}
+                      onClick={isTop ? () => (selected ? setSelected(null) : setSelected({ kind: 'waste' })) : undefined}
+                      testId={isTop ? 'waste' : undefined}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <CardView placeholder=" " testId="waste" />
+          )}
         </div>
         <div />
         {state.foundations.map((pile, index) => (

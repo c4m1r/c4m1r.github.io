@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CardView } from '../cards/CardView';
+import { formatClock, useGameClock, useNewGameShortcut } from '../gameHooks';
 import { GameMenuBar } from '../GameMenuBar';
 import {
   createDeck, isAlternatingRun, isRed, SUIT_SYMBOL, SUITS, type Card, pileStep } from '../cards/cards';
@@ -104,6 +105,7 @@ export function FreeCellGame() {
   const [selected, setSelected] = useState<Source | null>(null);
 
   const won = useMemo(() => state.foundations.every((pile) => pile.length === 13), [state]);
+  const clock = useGameClock(state.moves > 0, won);
 
   const attempt = (target: Target) => {
     if (!selected) return;
@@ -140,14 +142,21 @@ export function FreeCellGame() {
   const newGame = () => {
     setState(deal());
     setSelected(null);
+    clock.reset();
   };
+
+  useNewGameShortcut(newGame);
 
   return (
     <div className="flex h-full flex-col bg-[#008000] text-white">
       <GameMenuBar menus={[{ label: 'Game', items: [{ label: 'New Game', onSelect: newGame }] }]} />
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-3" data-game="freecell">
       <header className="flex items-center justify-between text-sm">
-        <span>Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}</span>
+        <span>
+          Time: <strong data-testid="time">{formatClock(clock.seconds)}</strong>
+          {' · '}Moves: <strong data-testid="moves">{state.moves}</strong>
+          {won ? ' — Win!' : ''}
+        </span>
         <button type="button" onClick={newGame} className="rounded bg-white/15 px-3 py-1">New game</button>
       </header>
 

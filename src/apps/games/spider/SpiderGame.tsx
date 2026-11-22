@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CardView } from '../cards/CardView';
+import { formatClock, useGameClock, useNewGameShortcut } from '../gameHooks';
 import { GameMenuBar } from '../GameMenuBar';
 import { rankLabel, SUITS, type Card, type Suit, pileStep } from '../cards/cards';
 
@@ -23,6 +24,8 @@ interface SpiderState {
   completed: number;
   moves: number;
   suits: Suit[];
+  /** Standard scoring: starts at 500, −1 per move, +100 per completed suit. */
+  score: number;
 }
 
 type Selection = { col: number; index: number } | null;
@@ -52,7 +55,7 @@ function deal(suitCount: number = SUIT_COUNT): SpiderState {
   for (let deal = 0; deal < 5; deal += 1) {
     stock.push(cards.splice(0, COLUMNS).map((card) => ({ ...card, faceUp: false })));
   }
-  return { columns, stock, completed: 0, moves: 0, suits };
+  return { columns, stock, completed: 0, moves: 0, suits, score: 500 };
 }
 
 /** Length of the same-suit descending run that starts at `index` and reaches the column end. */
@@ -77,7 +80,7 @@ function collectFinishedRun(state: SpiderState, col: number): SpiderState {
   const columns = state.columns.map((cards, index) => (index === col ? cards.slice(0, start) : cards));
   const top = columns[col][columns[col].length - 1];
   if (top && !top.faceUp) top.faceUp = true;
-  return { ...state, columns, completed: state.completed + 1 };
+  return { ...state, columns, completed: state.completed + 1, score: state.score + 100 };
 }
 
 function moveRun(state: SpiderState, from: Selection, to: number): SpiderState | null {
@@ -96,7 +99,7 @@ function moveRun(state: SpiderState, from: Selection, to: number): SpiderState |
   if (exposed && !exposed.faceUp) exposed.faceUp = true;
   columns[to] = [...destination, ...run];
 
-  return collectFinishedRun({ ...state, columns, moves: state.moves + 1 }, to);
+  return collectFinishedRun({ ...state, columns, moves: state.moves + 1, score: state.score - 1 }, to);
 }
 
 function dealRow(state: SpiderState): SpiderState | null {
@@ -118,6 +121,7 @@ export function SpiderGame() {
   const [suitCount, setSuitCount] = useState<1 | 2 | 4>(1);
 
   const won = useMemo(() => state.completed === 8, [state.completed]);
+  const clock = useGameClock(state.moves > 0, won);
 
   const clickCard = (col: number, index: number, card: Card) => {
     if (selected) {
@@ -139,12 +143,16 @@ export function SpiderGame() {
   const newGame = () => {
     setState(deal(suitCount));
     setSelected(null);
+    clock.reset();
   };
+
+  useNewGameShortcut(newGame);
 
   const chooseSuits = (count: 1 | 2 | 4) => {
     setSuitCount(count);
     setState(deal(count));
     setSelected(null);
+    clock.reset();
   };
 
   const deals = state.stock.length;
@@ -155,7 +163,7 @@ export function SpiderGame() {
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-3" data-game="spider">
       <header className="flex items-center justify-between gap-2 text-sm">
         <span>
-          Completed: <strong data-testid="completed">{state.completed}</strong>/8 · Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}
+          Score: <strong data-testid="score">{state.score}</strong> · Time: <strong data-testid="time">{formatClock(clock.seconds)}</strong> · Completed: <strong data-testid="completed">{state.completed}</strong>/8 · Moves: <strong data-testid="moves">{state.moves}</strong>{won ? ' — Win!' : ''}
         </span>
         <span className="flex items-center gap-2">
           <button

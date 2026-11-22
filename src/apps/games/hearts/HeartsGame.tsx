@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CardView } from '../cards/CardView';
+import { useNewGameShortcut } from '../gameHooks';
 import { GameMenuBar } from '../GameMenuBar';
 import type { Card } from '../cards/cards';
 import {
@@ -127,6 +128,8 @@ export function HeartsGame() {
 
   const nextRound = () => setState((s) => startRound(s.roundNo + 1, s.totals));
   const newGame = () => setState(() => startRound(0, [0, 0, 0, 0]));
+
+  useNewGameShortcut(newGame);
 
   const legal = phase === 'playing' && turn === HUMAN
     ? legalPlays(hands[HUMAN], trick, heartsBroken, firstTrick, trick.length === 0).map((card) => card.id)
