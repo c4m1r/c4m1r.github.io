@@ -150,6 +150,7 @@ class WinampControllerService {
     const additions = tracks.filter((track) => track?.id && track.src && !existing.has(track.id));
     if (!additions.length) return;
     this.playlist = [...this.playlist, ...additions];
+    this.notifyPlaylistChanged();
     this.notify();
   }
 
@@ -167,7 +168,10 @@ class WinampControllerService {
           }
         : track
     );
-    if (current) this.notify();
+    if (current) {
+      this.notifyPlaylistChanged();
+      this.notify();
+    }
   }
 
   public moveTrack(fromIndex: number, toIndex: number): void {
@@ -189,6 +193,7 @@ class WinampControllerService {
     this.playlist = nextPlaylist;
     const currentIndex = this.playlist.findIndex((track) => track.id === currentTrackId);
     if (currentIndex >= 0) this.trackIndex = currentIndex;
+    this.notifyPlaylistChanged();
     this.notify();
   }
 
@@ -202,6 +207,7 @@ class WinampControllerService {
     const currentWasRemoved = remove.has(this.trackIndex);
     const nextIndex = this.playlist.findIndex((track) => track.id === currentTrack.id);
     this.trackIndex = nextIndex >= 0 ? nextIndex : Math.min(this.trackIndex, this.playlist.length - 1);
+    this.notifyPlaylistChanged();
     if (currentWasRemoved && this.audioElement) this.updateAudioSrc(this.isPlaying);
     else this.notify();
     if (typeof URL !== 'undefined') {
@@ -231,6 +237,10 @@ class WinampControllerService {
     return () => {
       this.subscribers.delete(fn);
     };
+  }
+
+  private notifyPlaylistChanged(): void {
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event('winamp:playlist-changed'));
   }
 
   private notify() {
