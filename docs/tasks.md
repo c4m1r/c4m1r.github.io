@@ -353,7 +353,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - One singleton `winampController` owns the audio element, Web Audio graph, ten peaking EQ filters, preamp, stereo panner and analyser. UI components must not create parallel media elements or processing graphs.
 - Full player band/preamp/balance controls route through the shared controller. EQ bypass neutralizes both the ten filters and preamp while preserving slider values.
 - Named presets available in the full player: Flat, Rock, Pop, Jazz, Classical, Bass Boost and Vocal.
-- Remaining: persist settings and user-created presets; expose shared EQ state in compact widget controls; verify audible filter response, bypass level and state continuity between full player/widget.
+- EQ enabled state, ten band gains, preamp and stereo balance now persist in local storage under a versioned key; the preset selector resolves the active named preset from restored values. Remaining: user-created preset save/restore; expose shared EQ state in compact widget controls; verify audible filter response, bypass level and state continuity between full player/widget.
 - Skins must remain presentation-only and must not fork playback, queue or DSP state.
 
 ### WINAMP-03 — Editable shared playlist
