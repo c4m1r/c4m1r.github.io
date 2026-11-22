@@ -57,6 +57,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [repeat, setRepeat] = useState(() => winampController.isRepeat());
   const [timeRemainingMode, setTimeRemainingMode] = useState(false);
 
+  const [playlistSelection, setPlaylistSelection] = useState<number[]>([]);
+  const [playlistRevision, setPlaylistRevision] = useState(0);
+  const playlistInputRef = useRef<HTMLInputElement | null>(null);
+
   // Sync with global winampController
   useEffect(() => {
     return winampController.subscribe((st) => {
@@ -90,9 +94,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     );
     setSelectedEqPreset(matchingPreset?.id ?? 'custom');
   }, [eqBands, preamp]);
-  const [playlistSelection, setPlaylistSelection] = useState<number[]>([]);
-  const [playlistRevision, setPlaylistRevision] = useState(0);
-  const playlistInputRef = useRef<HTMLInputElement | null>(null);
 
   // Visualizer bar heights and peak dots
   const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
@@ -134,7 +135,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     };
   }, []);
 
-  const playlist = winampController.getPlaylist();
+  const playlist = useMemo(() => winampController.getPlaylist(), [playlistRevision]);
   const track = playlist[trackIndex] ?? playlist[0] ?? PROJECT_PLAYLIST[0];
   const albumArt = useMemo(() => generateAlbumArt(track), [track]);
 
