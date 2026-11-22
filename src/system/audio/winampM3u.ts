@@ -59,7 +59,9 @@ export function parseM3uPlaylist(content: string): ParsedM3uPlaylist {
 
     const label = pendingInfo?.label ?? '';
     const separator = label.indexOf(' - ');
-    const title = separator >= 0 ? label.slice(separator + 3).trim() : label || decodeURIComponent(url.pathname.split('/').pop() || 'Untitled track');
+    let fallbackTitle = url.pathname.split('/').pop() || 'Untitled track';
+    try { fallbackTitle = decodeURIComponent(fallbackTitle); } catch { /* Keep the encoded URL segment as a safe title. */ }
+    const title = separator >= 0 ? label.slice(separator + 3).trim() : label || fallbackTitle;
     const artist = separator >= 0 ? label.slice(0, separator).trim() : 'Unknown artist';
     const duration = pendingInfo?.duration ?? -1;
     tracks.push({
