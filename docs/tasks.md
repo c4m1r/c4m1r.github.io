@@ -359,8 +359,9 @@ Percentages are working estimates, not test results. The previous task registry 
 ### WINAMP-03 — Editable shared playlist
 - The controller owns a mutable queue initialized from the shared project media catalogue. All player/widget commands continue to use the same current track and queue.
 - Playlist supports adding local audio files through the browser file picker, multi-selection (Ctrl/Cmd-click), select-all, removal of selected entries, and current-track preservation when other entries are removed.
+- Drag-and-drop reordering is handled by the shared controller; the active track is located by stable track ID after a move, so its playback position is not accidentally reassigned to another song.
 - Local object URLs are revoked when their queue entries are removed; unknown local-file durations are excluded from the total-duration calculation.
-- Remaining: drag-and-drop files/folders, reorder/move up/down, queue persistence, playlist load/save formats, list options menu, keyboard navigation and browser acceptance.
+- Remaining: drag-and-drop files/folders, queue persistence, playlist load/save formats, list options menu, keyboard navigation and browser acceptance.
 
 
 - 2026-11-19 source pass: Windows 7 Explorer now receives the shared slideshow callback, offers a Slide show action when the current folder contains multiple supported images, and uses actual image URLs in thumbnail view. This reuses the shared PictureViewer slideshow instead of creating a second viewer. Runtime acceptance remains pending.
