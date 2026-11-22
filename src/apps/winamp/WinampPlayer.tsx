@@ -58,6 +58,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [timeRemainingMode, setTimeRemainingMode] = useState(false);
 
   const [playlistSelection, setPlaylistSelection] = useState<number[]>([]);
+  const [draggedPlaylistIndex, setDraggedPlaylistIndex] = useState<number | null>(null);
   const [playlistRevision, setPlaylistRevision] = useState(0);
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -693,6 +694,18 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       role="option"
                       aria-selected={isCurrent}
                       className={`wa-pl__item ${isCurrent ? 'is-current is-selected' : ''} ${playlistSelection.includes(index) ? 'is-selected' : ''}`}
+                      draggable
+                      onDragStart={() => setDraggedPlaylistIndex(index)}
+                      onDragOver={(event) => event.preventDefault()}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        if (draggedPlaylistIndex === null) return;
+                        winampController.moveTrack(draggedPlaylistIndex, index);
+                        setDraggedPlaylistIndex(null);
+                        setPlaylistSelection([]);
+                        setPlaylistRevision((revision) => revision + 1);
+                      }}
+                      onDragEnd={() => setDraggedPlaylistIndex(null)}
                       onClick={(event) => {
                         if (event.ctrlKey || event.metaKey) {
                           setPlaylistSelection((selected) => selected.includes(index) ? selected.filter((value) => value !== index) : [...selected, index]);
