@@ -1,12 +1,10 @@
-import { useState, type ReactNode } from 'react';
+import { cloneElement, isValidElement, useState, type ReactElement, type ReactNode } from 'react';
 import { useApp } from '../../../../contexts/useApp';
 import { getActiveEdition } from '../../../os/osEditions';
-import { getSessionAccount } from '../../../../domain/auth/session';
 import ieClassicIcon from '../../../../themes/win98/icons/network/msie1/16x16-3.png';
 import outlookClassicIcon from '../../../../themes/win98/icons/network/mailbox-world/16x16-1.png';
 import mediaPlayerClassicIcon from '../../../../themes/win98/icons/media/media-player/16x16-1.png';
 import programsClassicIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-1.png';
-import favoritesIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-2.png';
 import documentsClassicIcon from '../../../../themes/win98/icons/documents/directory-open-file-mydocs/16x16-2.png';
 import settingsClassicIcon from '../../../../themes/win98/icons/folders/directory-control-panel/16x16-1.png';
 import findClassicIcon from '../../../../themes/win98/icons/devices/search-computer/16x16-1.png';
@@ -53,7 +51,6 @@ type ClassicMenuItem = {
 };
 
 const DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
-const DESKTOP_PATH = 'C:\\Documents and Settings\\C4m1r\\Desktop';
 
 const classicIcon = (src: string) => <img src={src} alt="" className="h-4 w-4 object-contain" />;
 
@@ -66,7 +63,6 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const isWin2000 = theme === 'win2000';
   const [openChain, setOpenChain] = useState<string[]>([]);
   const activeEdition = getActiveEdition(theme);
-  const account = getSessionAccount();
 
   // Windows 2000 gets its own shell icons for the roles the native ICO set covers;
   // the rest fall back to the Windows 98 artwork until they are identified.
@@ -107,7 +103,6 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         { label: 'DOOM II', icon: classicIcon(documentIcon), appId: 'doom2' },
       ] },
     ] },
-    ...(isWin2000 ? [] : [{ label: isRu ? 'Избранное' : 'Favorites', icon: classicIcon(favoritesIcon), path: DESKTOP_PATH }]),
     { label: isRu ? 'Документы' : 'Documents', icon: classicIcon(documentsIcon), path: DOCUMENTS_PATH },
     { label: isRu ? 'Настройка' : 'Settings', icon: classicIcon(settingsIcon), submenu: [
       { label: isRu ? 'Панель управления' : 'Control Panel', icon: classicIcon(settingsIcon), appId: 'control-panel' },
@@ -118,7 +113,9 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     { label: isRu ? 'Справка' : 'Help', icon: classicIcon(helpIcon), appId: 'wiki' },
     { label: isRu ? 'Выполнить...' : 'Run...', icon: classicIcon(runIcon), appId: 'run' },
     { label: '', icon: null, separator: true },
-    { label: isWin2000 ? (isRu ? `Завершение сеанса ${account}...` : `Log Off ${account}...`) : (isRu ? 'Завершение сеанса...' : 'Log Off...'), icon: classicIcon(logOffIcon), action: 'logoff' },
+    // Windows 98 offers Suspend (no handler yet, so it only closes the menu); Windows 2000
+    // ends with Shut Down alone, as in the reference screenshot.
+    ...(isWin2000 ? [] : [{ label: isRu ? 'Приостановить' : 'Suspend', icon: classicIcon(logOffIcon) }]),
     { label: isRu ? 'Завершение работы...' : 'Shut Down...', icon: classicIcon(shutDownIcon), action: 'shutdown' },
   ];
 
@@ -135,6 +132,12 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     setOpenChain((prev) => (label === null ? prev.slice(0, depth) : [...prev.slice(0, depth), label]));
   };
 
+  // Top-level rows use the large 24 px shell icons from the reference; submenus use 16 px.
+  const iconForDepth = (icon: ReactNode, depth: number): ReactNode =>
+    depth === 0 && isValidElement(icon)
+      ? cloneElement(icon as ReactElement<{ className?: string }>, { className: 'h-6 w-6 object-contain' })
+      : icon;
+
   const renderItems = (items: ClassicMenuItem[], depth: number) => (
     <>
       {items.map((item, index) => {
@@ -147,7 +150,13 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             <button
               type="button"
               className={`w-full text-left px-2 flex items-center gap-2 os-list-item os-button ${isOpen ? 'bg-[#000080] text-white' : 'hover:bg-[#000080] hover:text-white'}`}
-              style={{ fontFamily: 'MS Sans Serif, sans-serif', fontSize: 12, lineHeight: '16px', padding: '3px 8px' }}
+              style={{
+                fontFamily: 'MS Sans Serif, sans-serif',
+                fontSize: 12,
+                lineHeight: '16px',
+                padding: depth === 0 ? '6px 8px' : '3px 8px',
+                minHeight: depth === 0 ? 32 : 22,
+              }}
               onClick={() => (item.submenu ? openAt(depth, isOpen ? null : item.label) : activate(item))}
               onMouseEnter={() => {
                 onHover?.();
@@ -155,7 +164,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               }}
               aria-expanded={item.submenu ? isOpen : undefined}
             >
-              {item.icon}
+              {iconForDepth(item.icon, depth)}
               <span className="flex-1 whitespace-nowrap">{item.label}</span>
               {item.submenu ? <span aria-hidden="true">›</span> : null}
             </button>
@@ -196,21 +205,28 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           width: 32,
           flexShrink: 0,
           flexDirection: 'row',
-          background: isWin2000 ? 'linear-gradient(to top, #000080, #1084d0)' : '#000080',
+          // Reference: Windows 2000 is a black top fading to blue; Windows 98 is solid navy.
+          background: isWin2000 ? 'linear-gradient(to bottom, #000000 0%, #000000 30%, #0000a8 100%)' : '#000080',
         }}
       >
         <span
-          className={`text-white font-bold whitespace-nowrap ${isWin2000 ? 'text-base' : 'transform -rotate-90 origin-bottom-center text-lg tracking-widest'}`}
-          style={isWin2000
-            ? { fontFamily: 'MS Sans Serif, sans-serif', writingMode: 'vertical-rl', transform: 'rotate(180deg)' }
-            : { fontFamily: 'MS Sans Serif, sans-serif' }}
+          className="text-white whitespace-nowrap"
+          style={{
+            fontFamily: 'Arial Black, Arial, sans-serif',
+            fontSize: isWin2000 ? 20 : 22,
+            lineHeight: 1,
+            writingMode: 'vertical-rl',
+            transform: 'rotate(180deg)',
+            letterSpacing: isWin2000 ? 0 : '-0.5px',
+            paddingBottom: 4,
+          }}
         >
           {isWin2000 ? (
-            <>Windows<span className="font-normal text-xs ml-1">{activeEdition?.label ?? '2000'}</span></>
+            <><b>Windows 2000</b>{' '}<span className="font-normal">Professional</span></>
           ) : activeEdition?.id === 'second-edition' ? (
-            <>Windows<span className="font-normal">98</span><span className="font-bold text-xs ml-1 text-yellow-300">SE</span></>
+            <><b>Windows</b><span className="font-normal">98</span><span className="font-bold text-xs ml-1 text-yellow-300">SE</span></>
           ) : (
-            <>Windows<span className="font-normal">98</span></>
+            <><b>Windows</b><span className="font-normal">98</span></>
           )}
         </span>
       </div>

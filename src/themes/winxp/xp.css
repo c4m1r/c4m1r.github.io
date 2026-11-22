@@ -1025,7 +1025,7 @@
   border: 2px solid var(--win98-border-highlight);
   border-bottom-color: var(--win98-border-medium);
   border-right-color: var(--win98-border-medium);
-  text-transform: uppercase;
+  text-transform: none;
   font-weight: bold;
   padding: 4px 10px;
 }
@@ -1127,7 +1127,7 @@
   font-family: var(--font-98);
   font-size: 13px;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: none;
   color: #000000;
 }
 

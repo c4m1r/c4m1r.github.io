@@ -2010,9 +2010,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               </>
             ) : (
               <>
-                <div className="w-4 h-4 bg-black">
-                  <div className="w-full h-full bg-gradient-to-br from-red-500 to-yellow-500"></div>
-                </div>
+                {themeAssets.startButtonIcon && (
+                  <img src={themeAssets.startButtonIcon} alt="" className="h-4 w-4 object-contain" />
+                )}
                 <span className="text-black font-bold text-sm">{t.start ?? 'Start'}</span>
               </>
             )}

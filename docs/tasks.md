@@ -671,3 +671,20 @@ Percentages are working estimates, not test results. The previous task registry 
 - Applied (2026-11-22): wooden frame and bevel, point numbers 1–24 on all points, glossy checkers, pip-dot dice, side panel with Pips/Score/Off for both sides, match points (3), cube with Double (the computer takes it when its pip count is within 20% of yours), Resign, chat log with on/off, and a Help menu item; menu bar now has Game (New Match, Next Game, Resign) and Help.
 - Second pass (2026-11-22): dice are bevelled cubes with lit and shaded edges; chat has the canned-message picker (`(Select a message to send)`) that posts your line and a short computer reply.
 - Still different from the reference: checker shading is an approximation; the computer never doubles; no gammons; no free-text chat; the title bar comes from the OS window frame, not the reference's Windows 98/2000 window.
+
+### REF-02 — Start menu differences, Windows 98 and 2000 (recorded before the change, 2026-11-22)
+Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png` and `eat/screens/oc/win2000/02-desktop-my-computer-getting-started.png`.
+- Taskbar Start button: reference has a flag logo (about 16 px) and a bold "Start" label on a raised grey button about 22 px tall. Ours draws a fake red/yellow gradient square; it must go.
+- Banner, Windows 98: navy strip with "Windows" bold and "98" regular, large (about 20 px) and reading bottom to top. Ours is 18 px with tracking.
+- Banner, Windows 2000: black-to-blue vertical band with "Windows 2000" bold and "Professional" regular. Ours is a plain blue gradient with a small "2000" suffix.
+- Top-level items: reference rows are about 32 px tall with 24 px icons. Ours are about 22 px rows with 16 px icons.
+- Submenu items: reference rows are about 22 px with 16 px icons. Ours match in height; check spacing after the change.
+- Bottom rows, Windows 98: reference has Suspend and Shut Down; no Log Off. Ours has Log Off and Shut Down. Suspend has no handler yet, so it closes the menu only (known gap).
+- Bottom rows, Windows 2000: reference has only Shut Down; no Log Off. Ours has Log Off too.
+- Favorites: absent from the 98 reference menu; ours shows it. Removed from the top level.
+- Windows 2000 top row: Windows Update with its icon, then a separator. Matches already.
+- Panel: reference Windows 2000 menu sits flush to the left edge above the taskbar; ours has a 4 px inset.
+- Not yet covered: exact icon art (the reference uses the Windows 98 and 2000 shell icons), the bevelled submenu border, and the 98 Programs submenu contents (98lite, StartUp, MS-DOS Prompt, Windows Explorer). These stay as later items.
+- Applied (2026-11-22): the taskbar Start button shows the flag (`win98StartIcon`, now also set for Windows 2000) at 16 px with a bold "Start" in mixed case; the fake gradient square is gone. Banners: Windows 98 is navy with bold "Windows" and regular "98" at 22 px; Windows 2000 is black fading to blue with bold "Windows 2000" and regular "Professional". Top-level rows are 32 px tall with 24 px icons; submenus stay 22 px with 16 px icons. Favorites is removed from both menus. Windows 98 ends with Suspend and Shut Down; Windows 2000 ends with Shut Down only. Suspend has no handler yet and only closes the menu.
+- Verified in the browser at 800×600 (GRUB → Windows 98 / Windows 2000 → User → Start).
+- Still open: the reference icon art for 98 is 32 px, ours is 24 px; the bevelled submenu border; the Programs submenu contents; Log Off was removed from both menus, so Log Off is reachable only through Shut Down.

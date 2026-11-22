@@ -346,6 +346,9 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     // the Windows 98 set, never to the XP artwork of the shared base.
     ...WIN98_ICON_ASSETS,
     ...WIN2000_ICON_ASSETS,
+    // The flag on the taskbar button is the same logo in both classic skins; the 2000
+    // start.png carries a baked-in localised label, so it is not used.
+    startButtonIcon: win98StartIcon,
     // Game icons are theme-neutral; Win2000 has its own asset object, so it lists them explicitly.
     snakeIcon: snakeIconAsset,
     memoryIcon: memoryIconAsset,
