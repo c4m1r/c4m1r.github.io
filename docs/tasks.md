@@ -643,7 +643,7 @@ Percentages are working estimates, not test results. The previous task registry 
 - Verified in the browser: Windows 98 Views menu lists Large Icons, Small Icons, List, Details; selecting Small Icons renders the system items.
 - Not yet verified: the Windows 10 draft Views menu. Its login asks for a password, which the test run does not have.
 - Open: Windows 98/2000 Small Icons flows items row-wise; the native layout fills columns top to bottom. Confirm against `eat/screens/oc/win98/` once screenshots arrive.
-- Open: Tiles mode is in the type but has no render branch.
+- Tiles: 32px icon with name and type line, offered in the Views menu for Vista, 8, 10 and 11 (not Win98/2000).
 
 ### BOOT-02 — Boot menu groups, Windows order and accounts
 - GRUB top level: My Site, Windows ▸, Unix ▸, MacOS ▸, Mobile ▸, Halloween Edition, Terminal, WebOS (WebOS stays semi-hidden, black text). Each submenu opens its own list with a Back row at the bottom; Esc, Backspace or A also go back.
