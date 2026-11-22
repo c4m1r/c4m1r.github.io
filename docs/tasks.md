@@ -747,3 +747,11 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Flyouts (step 2b, 2026-11-22): in XP and 7 a folder with content opens a flyout panel to its right, and deeper folders stack. Shared logic is in `startMenuFlyout.ts` (chain state) and `StartMenuFlyoutPanel.tsx` (portal panel, so the slide-in transform does not move it). Empty folders stay rows that open Explorer. Verified with sample shortcuts in a temporary build (not committed): both menus show the flyout; the default menus are unchanged.
 - Open for flyouts: shortcuts without their own icon use the folder icon. Real shortcuts should carry app icons.
 - Step 3 (open): move the hardcoded lists (pinned, frequent, All Programs) of XP and 7 into shared builders. Each step needs a pixel check.
+
+## ARCH-01 step 3 — Windows XP fixed lists (2026-11-22)
+- The XP fixed lists (pinned, All Programs, frequently used, places) moved from `StartMenuXP.tsx` to `startMenuXpLists.ts` as `buildXpStartMenuLists(...)`. Text and values are unchanged; the component only renders them. `MenuItem` is exported from the new module.
+- Default XP menu checked against the previous build: differs only in the taskbar clock. All Programs still lists StartUp.
+- Windows 7 fixed lists (`StartMenu7.tsx`) are the next part of step 3.
+
+## Typecheck (2026-11-22)
+- `npx tsc --noEmit -p .` checks nothing: the root `tsconfig.json` only references the app and node configs. Use `npx tsc --noEmit -p tsconfig.app.json`. Earlier "TSC_OK" results in this log were not valid. The real check found 34 errors (action literal typing, unused XP imports, missing translations in the new builder, flyout generic typing, and an unused `cssFile` field in `themeConfig.ts`). All are fixed; the app config reports 0.

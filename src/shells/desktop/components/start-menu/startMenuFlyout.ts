@@ -17,7 +17,7 @@ export interface FlyoutLevel<T> {
   left: number;
 }
 
-export function useFlyoutChain<T extends FlyoutItem>() {
+export function useFlyoutChain<T extends { id: string; submenu?: T[] }>() {
   const [chain, setChain] = useState<FlyoutLevel<T>[]>([]);
 
   /** Hovering a row at `depth` (0 for the root list) replaces the panels from that depth on. */
