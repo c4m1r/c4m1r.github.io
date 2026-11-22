@@ -2,6 +2,7 @@
    OS-specific stylesheets are loaded per OS from osStyleSheets.ts. */
 
 @import './base/tokens.css';
+@import './base/xp-root.css';
 @import './base/os-base.css';
 @import './apps/cv.css';
 @import './components/system-actions.css';

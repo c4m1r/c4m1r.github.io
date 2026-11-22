@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { playXpLogoff, playXpShutdown } from './xpSoundService';
-import './xp.css';
 
 type TransitionMode = 'logoff' | 'shutdown';
 

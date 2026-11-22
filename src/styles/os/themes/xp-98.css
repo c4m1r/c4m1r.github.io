@@ -1,0 +1,256 @@
+/* Windows 98 and 2000 rules (STYLE-02, split from src/themes/winxp/xp.css). Loaded by the OS sets in osStyleSheets.ts. */
+
+
+.theme-98 .taskbar-divider {
+  display: none;
+}
+
+
+:is(.theme-webos, .theme-win-xp, .theme-98) .volume-slider-wrapper {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0;
+}
+
+
+:is(.theme-webos, .theme-win-xp, .theme-98) .volume-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 20px;
+  height: 110px;
+  accent-color: #1e5ad8;
+}
+
+
+:is(.theme-webos, .theme-win-xp, .theme-98) .volume-panel__icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+
+/* Windows 98 theme ------------------------------------------------------- */
+
+.theme-98 {
+  --win98-surface: #c0c0c0;
+  --win98-border-dark: #0a0a0a;
+  --win98-border-medium: #808080;
+  --win98-border-light: #dfdfdf;
+  --win98-border-highlight: #ffffff;
+  font-family: var(--font-98);
+  color: #000000;
+}
+
+
+.theme-98 button {
+  font-family: inherit;
+}
+
+
+.theme-98 .win98-window {
+  padding: 3px;
+  background: var(--win98-surface);
+  box-shadow: inset -1px -1px var(--win98-border-dark),
+    inset 1px 1px var(--win98-border-highlight),
+    inset -2px -2px var(--win98-border-medium),
+    inset 2px 2px var(--win98-border-light);
+}
+
+
+.theme-98 .win98-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 2px 3px 3px;
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+
+.theme-98 .win98-window--inactive .win98-titlebar {
+  background: linear-gradient(90deg, #808080, #b5b5b5);
+  color: #ededed;
+}
+
+
+.theme-98 .win98-titlebar__title {
+  margin-right: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.theme-98 .win98-titlebar__controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+
+.theme-98 .win98-control-button {
+  width: 16px;
+  height: 14px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+
+.theme-98 .win98-control-button:hover {
+  background-color: #1084d0;
+}
+
+
+.theme-98 .win98-control-button:active {
+  background-color: #000080;
+}
+
+
+.theme-98 .win98-control-button--close:hover {
+  background-color: #c75050;
+}
+
+
+.theme-98 .win98-control-button--close:active {
+  background-color: #c42d2d;
+}
+
+
+.theme-98 .win98-window__content {
+  background: white;
+  margin: 8px;
+  height: calc(100% - 60px);
+  overflow: hidden;
+}
+
+
+.theme-98 .win98-window__content--plain {
+  margin: 0;
+  height: calc(100% - 28px);
+}
+
+
+.theme-98 .taskbar {
+  background: var(--win98-surface);
+  border-top: 2px solid var(--win98-border-highlight);
+  border-bottom: 1px solid var(--win98-border-dark);
+  font-family: var(--font-98);
+  font-size: 11px;
+}
+
+
+.theme-98 .taskbar-button {
+  font-size: 11px;
+  font-family: var(--font-98);
+}
+
+
+.theme-98 .taskbar-button.is-minimized {
+  opacity: 0.75;
+}
+
+
+.theme-98 .start-button {
+  background: var(--win98-surface);
+  border: 2px solid var(--win98-border-highlight);
+  border-bottom-color: var(--win98-border-medium);
+  border-right-color: var(--win98-border-medium);
+  text-transform: none;
+  font-weight: bold;
+  padding: 4px 10px;
+}
+
+
+.theme-98 .start-button:active {
+  border-top-color: var(--win98-border-medium);
+  border-left-color: var(--win98-border-medium);
+  border-bottom-color: var(--win98-border-highlight);
+  border-right-color: var(--win98-border-highlight);
+}
+
+
+.theme-98 .start-button.start-button--open {
+  background: linear-gradient(-15deg, #169316 35%, #157f15 75%);
+  border-color: #094009;
+  box-shadow: inset 0 -12px 2px -10px rgba(9, 64, 9, 0.6),
+    inset -10px 0 10px -10px rgba(9, 64, 9, 0.6),
+    inset 10px 10px 5px -10px #094009;
+}
+
+
+.theme-98 .desktop-icon {
+  color: black;
+  text-shadow: none;
+}
+
+
+.theme-98 .taskbar-button {
+  font-family: var(--font-98);
+  font-size: 11px;
+  height: 22px;
+  background: var(--win98-surface);
+  color: #000000;
+  border: 1px solid transparent;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.1s ease;
+}
+
+
+.theme-98 .taskbar-button:hover {
+  background: #1084d0;
+  color: #ffffff;
+}
+
+
+.theme-98 .taskbar-button.is-active {
+  background: #000080;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+
+.theme-98 .taskbar-button.is-minimized {
+  opacity: 0.75;
+}
+
+
+:is(.theme-98) .taskbar-button img {
+  margin-right: 4px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Windows 98 title bar glyphs: 1–2px black strokes drawn inside the 16×14 control,
+   matching the classic minimize / maximize / restore / close marks. */
+.theme-98 .win98-control-button { position: relative; }
+
+.theme-98 .win98-control-button::before,
+.theme-98 .win98-control-button::after { content: ''; position: absolute; box-sizing: border-box; }
+
+.theme-98 .win98-control-button--minimize::before { left: 4px; top: 9px; width: 6px; height: 2px; background: #000; }
+
+.theme-98 .win98-control-button--maximize::before { left: 3px; top: 2px; width: 10px; height: 9px; border: 1px solid #000; border-top-width: 2px; }
+
+.theme-98 .win98-control-button--restore::before { left: 5px; top: 2px; width: 8px; height: 7px; border: 1px solid #000; border-top-width: 2px; }
+
+.theme-98 .win98-control-button--restore::after { left: 3px; top: 5px; width: 8px; height: 7px; border: 1px solid #000; border-top-width: 2px; background: #c0c0c0; }
+
+.theme-98 .win98-control-button--close::before,
+.theme-98 .win98-control-button--close::after { left: 3px; top: 6px; width: 10px; height: 2px; background: #000; }
+
+.theme-98 .win98-control-button--close::before { transform: rotate(45deg); }
+
+.theme-98 .win98-control-button--close::after { transform: rotate(-45deg); }

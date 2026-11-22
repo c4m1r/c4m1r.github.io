@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { XP_IDENTITY_LOGO } from './xpIdentityLogo';
 import { useApp } from '../../contexts/useApp';
 import { playBootStartup } from '../bootPreload';
-import './xp.css';
 
 interface BootScreenProps {
   onComplete: () => void;

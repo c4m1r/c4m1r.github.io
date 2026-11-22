@@ -1,0 +1,8 @@
+/* CSS variables (STYLE-02, split from src/themes/winxp/xp.css). Loaded by the OS sets in osStyleSheets.ts. */
+
+/* Shared theme variables */
+:root {
+  --font-xp: 'Tahoma', 'Trebuchet MS', sans-serif;
+  --font-xp-title: 'Trebuchet MS', 'Tahoma', sans-serif;
+  --font-98: 'Pixelated MS Sans Serif', 'MS Sans Serif', sans-serif;
+}

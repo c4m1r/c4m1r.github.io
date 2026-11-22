@@ -13,6 +13,10 @@ type StyleLoader = () => Promise<unknown>;
 
 const css = {
   classic: () => import('./themes/classic.css'),
+  xpShared: () => import('./themes/xp-shared.css'),
+  xp98: () => import('./themes/xp-98.css'),
+  xpWinxp: () => import('./themes/xp-winxp.css'),
+  xpWebos: () => import('./themes/xp-webos.css'),
   winxp: () => import('./themes/winxp.css'),
   winxpFidelity: () => import('./themes/winxp-fidelity.css'),
   winxpStartmenu: () => import('./themes/winxp-startmenu-fidelity.css'),
@@ -38,6 +42,7 @@ const css = {
 } satisfies Record<string, StyleLoader>;
 
 const WINXP_SET: StyleLoader[] = [
+  css.xpWinxp,
   css.winxp,
   css.winxpFidelity,
   css.winxpStartmenu,
@@ -56,7 +61,7 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
   'os-winxp': WINXP_SET,
   // Halloween is a child of Windows XP: the whole XP set, then its own file last.
   'os-spooky': [...WINXP_SET, css.halloween],
-  'os-classic': [css.classic, css.macos, css.buildWatermark, css.calendar],
+  'os-classic': [css.xp98, css.classic, css.macos, css.buildWatermark, css.calendar],
   'os-win7': [
     css.win7,
     css.macos,
@@ -73,7 +78,7 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
   'os-ios': [css.ios, css.appleDock, css.appleLauncher, css.appleApps, css.calendar],
   'os-win10': [css.calendar, css.macos],
   'os-win11': [css.calendar, css.macos],
-  'os-webos': [css.webos, css.calendar],
+  'os-webos': [css.xpWebos, css.webos, css.calendar],
 };
 
 /** Priority order when a skin lists several OS classes, e.g. "os-classic os-win2000". */
@@ -104,7 +109,8 @@ export function loadOsStyleSheets(osClassName: string): Promise<void> {
   const key = osStyleSetKey(osClassName);
   let pending = loadedSets.get(key);
   if (!pending) {
-    const loaders = OS_STYLE_SETS[key] ?? [];
+    // Unscoped XP rules (start button parts, tray, welcome and transition screens) apply to every set.
+    const loaders = [css.xpShared, ...(OS_STYLE_SETS[key] ?? [])];
     pending = loaders.reduce<Promise<unknown>>(
       (chain, load) => chain.then(() => load()),
       Promise.resolve(),

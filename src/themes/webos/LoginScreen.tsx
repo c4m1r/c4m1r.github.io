@@ -4,7 +4,6 @@ import { getOsClassName } from '../../shells/os/osClassNames';
 import { translations } from '../../i18n/translations';
 import { Power, ArrowRight } from 'lucide-react';
 import userAvatar from '../winxp/assets/user.gif';
-import '../winxp/xp.css';
 import { AppleLoginScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { verifyAccountPassword } from '../../domain/auth/credentials';
 import { setSessionAccount } from '../../domain/auth/session';

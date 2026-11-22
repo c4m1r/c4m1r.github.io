@@ -3,9 +3,6 @@
  * Импортирует стили каждой темы
  */
 
-/* Windows XP / WebOS стили */
-@import './winxp/xp.css';
-
 /* Универсальный OS CSS Wrapper */
 @import '../styles/os/index.css';
 

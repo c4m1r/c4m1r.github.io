@@ -8,7 +8,6 @@ import userDefaultPicture from './assets/avatars/user4.png';
 import { setSessionAccount } from '../../domain/auth/session';
 import { XP_IDENTITY_LOGO } from './xpIdentityLogo';
 import { verifyAccountPassword } from '../../domain/auth/credentials';
-import './xp.css';
 
 interface LoginScreenProps {
   onLogin: () => void;

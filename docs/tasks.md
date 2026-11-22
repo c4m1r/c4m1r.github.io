@@ -715,3 +715,11 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 
 ## Deferred during CSS migration
 - Do not modify Explorer, Games or other broad application styling/layout surfaces while Claude's CSS extraction/optimization migration is in progress. Resume the previously planned Explorer/Games work only after the migration is complete and its resulting CSS ownership/import boundaries are stable. Continue isolated Winamp logic and non-conflicting application functionality in the meantime.
+
+## STYLE-02 — XP stylesheet split (2026-11-22)
+- `src/themes/winxp/xp.css` is removed. Its rules are split by theme class and loaded per OS set:
+  - `base/xp-root.css`: CSS variables, always global.
+  - `themes/xp-shared.css`: unscoped rules (start-button parts, tray, welcome and transition screens); loaded by every OS set.
+  - `themes/xp-98.css`, `themes/xp-winxp.css`, `themes/xp-webos.css`: rules scoped to `.theme-98`, `.theme-win-xp` and `.theme-webos`. Rules that match several themes are copied into each relevant file.
+- Main CSS bundle: 200 KB -> 162 KB. The first OS-split step took it from 573 KB to 200 KB.
+- Verified against the HEAD build (pre-split), pixel for pixel: Win 98 and 2000 with Start open, XP login and XP desktop with Start open, Win 7, Ubuntu, macOS, WebOS, Halloween. Remaining differences are the clock and login-card animation only.

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { translations } from '../../i18n/translations';
 import { playXpStartup } from './xpSoundService';
-import './xp.css';
 
 interface WelcomeScreenProps {
   onComplete: () => void;

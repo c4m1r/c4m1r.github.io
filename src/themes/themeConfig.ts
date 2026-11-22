@@ -32,7 +32,6 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     hasBootScreen: true,
     hasLoginScreen: true,
     hasWelcomeScreen: true,
-    cssFile: './themes/winxp/xp.css',
     assetsPath: './themes/winxp/assets',
     defaultWallpaper: winxpBliss,
     soundsEnabled: true,
