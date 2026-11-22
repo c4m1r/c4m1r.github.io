@@ -1048,7 +1048,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                     <span className={`truncate text-xs ${selectedItem === entry.key ? 'text-white' : 'text-black'}`}>{entry.label}</span>
                   </div>
                 ))
-                : visibleItems.map((item, i) => (
+                : visibleItems.filter((item) => !(path === 'My Computer' && item.name === 'Network Neighborhood')).map((item, i) => (
                   <div
                     key={i}
                     className={`flex items-center gap-1.5 cursor-pointer px-1 py-0.5 min-w-0 ${selectedItem === item.name ? 'bg-[#000080] text-white' : 'hover:bg-gray-100'}`}
