@@ -728,13 +728,13 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 ### REF-02 follow-up — Start menu round 2 (2026-11-22)
 - Windows 98 top-level icons are 32 px at a 33 px row pitch, as in the reference.
 - Windows 98 Programs: Accessories (with Entertainment and Games inside), MS-DOS Prompt (opens the terminal app), Windows Explorer (opens My Computer). Internet Explorer and Outlook Express are removed from the 98 list, as in the reference. Windows 2000 keeps its list.
-- Still open: 98lite and StartUp entries from the reference are not added (no matching apps).
+- 98lite is excluded by decision (not canonical for Windows 98). StartUp is covered by ARCH-01 below.
 - Windows 2000 Start menu sits flush to the left edge (no 4 px inset), as in the reference.
 - Start menu for Windows 98 and 2000 sits directly on the taskbar (bottom offset equals the 28 px taskbar height). Before, there was a 4 px gap.
 - Suspend (Windows 98) now returns to the sign-in screen, the closest existing state for a machine that waits for the user. It keeps its place in the menu as in the reference.
 
 ## Start menu — deferred, with reasons (2026-11-22)
-- **98lite entry in Programs** (reference `eat/screens/oc/win98/01-…png`): 98lite is a third-party utility and its branding (name, company, URL) appears on that reference machine. We do not carry third-party apps or their branding, so this entry is not added.
+- **98lite entry in Programs** (reference `eat/screens/oc/win98/01-…png`): decided 2026-11-22. 98lite is not part of the canonical Windows 98 set, so it is not added and is not planned. This closes the item; it is not a deferred task.
 - **StartUp submenu** — done in ARCH-01 below.
 - **Unified Start menu architecture** (needed for StartUp and for the rest of the menus): today the Windows 98/2000 menu is a hardcoded list in `StartMenu98.tsx`, while XP and 7 have their own lists in `StartMenuXP.tsx` and `StartMenu7.tsx`. The plan is one data source built from the file system's `Start Menu` folder and a single renderer per visual skin. This changes the menu for every Windows skin, so it is a separate, reviewed step and not part of the visual pass.
 - **Log Off** is not in the 98 or 2000 menus (per reference). Its function is reachable through Shut Down only. This is a deliberate choice, recorded here so it is not treated as a regression.
@@ -743,6 +743,7 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - New `src/shells/desktop/components/start-menu/startMenuModel.ts`: one node type (`StartMenuNode`) and one builder that reads the profile's `Start Menu\Programs` folder from the file system. Folders become submenus (empty folders open in Explorer), shortcuts with an appId become items.
 - `FileSystem.ts`: both profiles (C4m1r, User) get `Start Menu\Programs\StartUp`. The path follows the signed-in account.
 - Windows 98 and 2000 read their user entries from this model. StartUp appears in Programs (98: after Accessories, as in the reference; 2000: at the end). Clicking it opens Explorer on the folder.
+- Shortcuts without their own icon take the icon of their application (`getFileIcon` by `appId`). The classic 98/2000 menu uses its own icon set for the known apps (Calculator, Notepad, Paint, Minesweeper, Media Player, Winamp, Control Panel) and falls back to the file-system icon for the rest.
 - Step 2 (done): Windows XP and Windows 7 read the same folder through the same model and append its entries to All Programs. The default menus are unchanged; a pixel check against the previous build differs only by the clock.
 - Flyouts (step 2b, 2026-11-22): in XP and 7 a folder with content opens a flyout panel to its right, and deeper folders stack. Shared logic is in `startMenuFlyout.ts` (chain state) and `StartMenuFlyoutPanel.tsx` (portal panel, so the slide-in transform does not move it). Empty folders stay rows that open Explorer. Verified with sample shortcuts in a temporary build (not committed): both menus show the flyout; the default menus are unchanged.
 - Open for flyouts: shortcuts without their own icon use the folder icon. Real shortcuts should carry app icons.

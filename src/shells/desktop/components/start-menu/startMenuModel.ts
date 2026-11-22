@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { getItemsFromPath, type FileSystemItem } from '../../../../utils/FileSystem';
+import { getFileIcon, getItemsFromPath, type FileSystemItem } from '../../../../utils/FileSystem';
 
 /**
  * One data model for every Start menu. A node is a launchable entry (appId or path), a system
@@ -26,8 +26,11 @@ export interface StartMenuNode {
   separator?: boolean;
 }
 
-/** Turns an icon URL into the renderer's icon. Each menu supplies its own sizing. */
-export type StartMenuIconRenderer = (src: string | undefined, kind: StartMenuIconKind) => ReactNode;
+/**
+ * Turns an icon URL into the renderer's icon. `appId` is passed only when the entry has no icon of
+ * its own, so a skin may substitute its art for a known application; an explicit icon always wins.
+ */
+export type StartMenuIconRenderer = (src: string | undefined, kind: StartMenuIconKind, appId?: string) => ReactNode;
 
 const MAX_DEPTH = 4;
 
@@ -50,7 +53,11 @@ export function startMenuFolderNodes(path: string, render: StartMenuIconRenderer
     .slice()
     .sort(compareItems)
     .flatMap((item): StartMenuNode[] => {
-      const iconSrc = typeof item.icon === 'string' ? item.icon : undefined;
+      // Same rule as the desktop: an explicit icon wins. A shortcut without one takes its
+      // application's icon (getFileIcon), so a shortcut to Notepad shows Notepad.
+      const explicitIcon = typeof item.icon === 'string' ? item.icon : undefined;
+      const iconSrc = explicitIcon ?? (item.type === 'file' && item.appId ? getFileIcon(item) : undefined);
+      const iconAppId = explicitIcon === undefined && item.type === 'file' ? item.appId : undefined;
       if (item.type === 'folder') {
         const folderPath = `${path}\\${item.name}`;
         const children = startMenuFolderNodes(folderPath, render, depth + 1);
@@ -65,7 +72,7 @@ export function startMenuFolderNodes(path: string, render: StartMenuIconRenderer
         return [node];
       }
       if (item.type === 'file' && item.appId) {
-        return [{ label: item.name, icon: render(iconSrc, 'file'), iconSrc, appId: item.appId }];
+        return [{ label: item.name, icon: render(iconSrc, 'file', iconAppId), iconSrc, appId: item.appId }];
       }
       return [];
     });

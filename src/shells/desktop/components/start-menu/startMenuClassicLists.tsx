@@ -59,9 +59,20 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
 
 
   // Entries the user placed in Start Menu\Programs (including the StartUp folder) come from the file system.
-  const userPrograms = startMenuFolderNodes(startMenuProgramsPath(account), (src, kind) =>
-    classicIcon(src ?? (kind === 'folder' ? programsClassicIcon : documentIcon)),
-  );
+  // Known applications keep this skin's own art; other entries fall back to the file system icon.
+  const classicAppIcons: Record<string, string> = {
+    calculator: calculatorIcon,
+    notepad: notepadClassicIcon,
+    paint: paintClassicIcon,
+    minesweeper: minesweeperIcon,
+    'windows-media-player': mediaPlayerClassicIcon,
+    winamp: mediaPlayerClassicIcon,
+    'control-panel': settingsClassicIcon,
+  };
+  const userPrograms = startMenuFolderNodes(startMenuProgramsPath(account), (src, kind, appId) => {
+    const own = appId ? classicAppIcons[appId] : undefined;
+    return classicIcon(own ?? src ?? (kind === 'folder' ? programsClassicIcon : documentIcon));
+  });
 
 
   const menuItems: ClassicMenuItem[] = [
