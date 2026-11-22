@@ -4,6 +4,7 @@ import { useApp } from '../../../../contexts/useApp';
 import { appRegistry } from '../../appRegistry';
 import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
 import { getSessionAccount } from '../../../../domain/auth/session';
+import { startMenuFolderNodes, startMenuProgramsPath } from './startMenuModel';
 
 export interface StartMenu7Props {
   onClose: () => void;
@@ -122,7 +123,17 @@ export function StartMenu7({
     { id: 'doom1', label: 'DOOM', appId: 'doom1', icon: assets.doomIcon },
     { id: 'doom2', label: 'DOOM II', appId: 'doom2', icon: assets.doomIcon },
   ];
-  const filteredPrograms = (showAllPrograms ? allPrograms : programs).filter((program) =>
+  // User entries from Start Menu\Programs (StartUp included), shown after the built-in list.
+  // A folder row opens the folder in Explorer.
+  const userPrograms: Win7MenuEntry[] = startMenuFolderNodes(startMenuProgramsPath(getSessionAccount()), () => null)
+    .map((node) => ({
+      id: `user-${node.label}`,
+      label: node.label,
+      appId: node.appId,
+      path: node.path,
+      icon: node.iconSrc ?? assets.folderIcon,
+    }));
+  const filteredPrograms = (showAllPrograms ? [...allPrograms, ...userPrograms] : programs).filter((program) =>
     program.label.toLocaleLowerCase(language).includes(query.trim().toLocaleLowerCase(language)),
   );
 

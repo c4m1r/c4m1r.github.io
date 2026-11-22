@@ -2,20 +2,23 @@ import type { ReactNode } from 'react';
 import { getItemsFromPath, type FileSystemItem } from '../../../../utils/FileSystem';
 
 /**
- * One data model for the classic Start menus (Windows 98 and 2000). A node is either a launchable
- * entry (appId or path), a system command (action), a separator, or a submenu.
+ * One data model for every Start menu. A node is a launchable entry (appId or path), a system
+ * command (action), a separator, or a submenu. Renderers decide how to draw it:
+ *  - classic menus (98, 2000) use `icon` (ReactNode) and submenus;
+ *  - XP and 7 use `iconSrc` (URL) and flat lists, where a folder opens in Explorer through `path`.
  *
- * Entries that come from the user's file system are read from the profile's
- * `Start Menu\Programs` folder: folders become submenus, shortcuts with an appId become items.
- * This is the single source for user-installed entries, so the StartUp folder works without
- * any menu-specific code.
+ * User-installed entries come from the profile's `Start Menu\Programs` folder: folders become
+ * submenus (and also carry `path`), shortcuts with an appId become items.
  */
 
 export type StartMenuAction = 'logoff' | 'shutdown';
+export type StartMenuIconKind = 'folder' | 'file';
 
 export interface StartMenuNode {
   label: string;
   icon: ReactNode;
+  /** Icon URL when the file system item has one; used by the flat (XP and 7) renderers. */
+  iconSrc?: string;
   appId?: string;
   path?: string;
   action?: StartMenuAction;
@@ -23,12 +26,8 @@ export interface StartMenuNode {
   separator?: boolean;
 }
 
-export interface StartMenuIconSet {
-  folder: ReactNode;
-  file: ReactNode;
-  /** Wraps an icon URL in the markup the menu uses for its 16 px art. */
-  image: (src: string) => ReactNode;
-}
+/** Turns an icon URL into the renderer's icon. Each menu supplies its own sizing. */
+export type StartMenuIconRenderer = (src: string | undefined, kind: StartMenuIconKind) => ReactNode;
 
 const MAX_DEPTH = 4;
 
@@ -44,28 +43,29 @@ function compareItems(a: FileSystemItem, b: FileSystemItem): number {
   return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
 }
 
-function iconOf(item: FileSystemItem, icons: StartMenuIconSet, fallback: ReactNode): ReactNode {
-  if (typeof item.icon === 'string') return icons.image(item.icon);
-  if (item.icon) return item.icon;
-  return fallback;
-}
-
 /** Menu nodes for the items of a file-system folder, folders first, then by name. */
-export function startMenuFolderNodes(path: string, icons: StartMenuIconSet, depth = 0): StartMenuNode[] {
+export function startMenuFolderNodes(path: string, render: StartMenuIconRenderer, depth = 0): StartMenuNode[] {
   if (depth >= MAX_DEPTH) return [];
   return getItemsFromPath(path)
     .slice()
     .sort(compareItems)
     .flatMap((item): StartMenuNode[] => {
+      const iconSrc = typeof item.icon === 'string' ? item.icon : undefined;
       if (item.type === 'folder') {
         const folderPath = `${path}\\${item.name}`;
-        const children = startMenuFolderNodes(folderPath, icons, depth + 1);
+        const children = startMenuFolderNodes(folderPath, render, depth + 1);
+        const node: StartMenuNode = {
+          label: item.name,
+          icon: render(iconSrc, 'folder'),
+          iconSrc,
+          path: folderPath,
+        };
         // An empty folder opens in Explorer instead of showing an empty flyout.
-        if (children.length === 0) return [{ label: item.name, icon: icons.folder, path: folderPath }];
-        return [{ label: item.name, icon: icons.folder, submenu: children }];
+        if (children.length > 0) node.submenu = children;
+        return [node];
       }
       if (item.type === 'file' && item.appId) {
-        return [{ label: item.name, icon: iconOf(item, icons, icons.file), appId: item.appId }];
+        return [{ label: item.name, icon: render(iconSrc, 'file'), iconSrc, appId: item.appId }];
       }
       return [];
     });

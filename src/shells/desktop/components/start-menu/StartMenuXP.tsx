@@ -5,6 +5,7 @@ import { ChevronsRight } from 'lucide-react';
 import { THEME_ASSETS, ThemeAssetId } from '../../../../themes/webos/themeAssets';
 import { appRegistry } from '../../appRegistry';
 import { getActiveEdition } from '../../../os/osEditions';
+import { startMenuFolderNodes, startMenuProgramsPath } from './startMenuModel';
 import { getSessionAccount } from '../../../../domain/auth/session';
 import xpUserDefaultPicture from '../../../../themes/winxp/assets/avatars/user4.png';
 
@@ -127,6 +128,17 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     { id: 'doom1', title: 'DOOM', icon: themeAssets.doomIcon, appId: 'doom1' },
     { id: 'doom2', title: 'DOOM II', icon: themeAssets.doomIcon, appId: 'doom2' },
   ];
+
+  // User entries from Start Menu\Programs (StartUp included). The flat list shows each folder as a
+  // row that opens it in Explorer; shortcuts launch their app.
+  const userProgramEntries: MenuItem[] = startMenuFolderNodes(startMenuProgramsPath(sessionAccount), () => null)
+    .map((node) => ({
+      id: `user-${node.label}`,
+      title: node.label,
+      icon: node.iconSrc ?? fallbackIcon,
+      appId: node.appId,
+      path: node.path,
+    }));
 
   const frequentPrograms: MenuItem[] = [
     {
@@ -461,7 +473,7 @@ export function StartMenuXP({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#555]">
                 {isRu ? 'Установленные программы' : 'Installed programs'}
               </div>
-              {allProgramsEntries.map((program) => (
+              {[...allProgramsEntries, ...userProgramEntries].map((program) => (
                 <button
                   key={program.id}
                   type="button"

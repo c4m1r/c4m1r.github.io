@@ -75,11 +75,9 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const mediaPlayerIcon = isWin2000 ? win2000MediaPlayerIcon : mediaPlayerClassicIcon;
 
   // Entries the user placed in Start Menu\Programs (including the StartUp folder) come from the file system.
-  const userPrograms = startMenuFolderNodes(startMenuProgramsPath(account), {
-    folder: classicIcon(programsClassicIcon),
-    file: classicIcon(documentIcon),
-    image: classicIcon,
-  });
+  const userPrograms = startMenuFolderNodes(startMenuProgramsPath(account), (src, kind) =>
+    classicIcon(src ?? (kind === 'folder' ? programsClassicIcon : documentIcon)),
+  );
 
   const menuItems: ClassicMenuItem[] = [
     ...(isWin2000 ? [
