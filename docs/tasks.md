@@ -353,15 +353,16 @@ Percentages are working estimates, not test results. The previous task registry 
 - One singleton `winampController` owns the audio element, Web Audio graph, ten peaking EQ filters, preamp, stereo panner and analyser. UI components must not create parallel media elements or processing graphs.
 - Full player band/preamp/balance controls route through the shared controller. EQ bypass neutralizes both the ten filters and preamp while preserving slider values.
 - Named presets available in the full player: Flat, Rock, Pop, Jazz, Classical, Bass Boost and Vocal.
-- EQ enabled state, ten band gains, preamp and stereo balance now persist in local storage under a versioned key; the preset selector resolves the active named preset from restored values. Remaining: user-created preset save/restore; expose shared EQ state in compact widget controls; verify audible filter response, bypass level and state continuity between full player/widget.
+- EQ enabled state, ten band gains, preamp and stereo balance now persist in local storage under a versioned key; the preset selector resolves the active named preset from restored values. Built-in Flat/Rock/Pop/Jazz/Classical/Bass Boost/Vocal profiles remain separate from up to 30 user presets; custom profiles support save/update by name, selection, deletion and versioned local persistence. Preset controls use a dedicated compact row below the EQ curve so the classic header does not overflow. Remaining: expose shared EQ state in compact widget controls; verify audible filter response, bypass level and state continuity between full player/widget.
 - Skins must remain presentation-only and must not fork playback, queue or DSP state.
 
 ### WINAMP-03 — Editable shared playlist
 - The controller owns a mutable queue initialized from the shared project media catalogue. All player/widget commands continue to use the same current track and queue.
 - Playlist supports adding local audio files through the browser file picker, multi-selection (Ctrl/Cmd-click), select-all, removal of selected entries, and current-track preservation when other entries are removed.
-- Drag-and-drop reordering is handled by the shared controller; the active track is located by stable track ID after a move, so its playback position is not accidentally reassigned to another song.
+- Drag-and-drop reordering is handled by the shared controller; the active track is located by stable track ID after a move, so its playback position is not accidentally reassigned to another song. Audio files can also be dropped onto the playlist surface.
+- Local file metadata is read asynchronously to populate track duration labels. A dedicated `winamp:playlist-changed` event keeps queue rendering synchronized without forcing playlist rebuilds on every playback time update.
 - Local object URLs are revoked when their queue entries are removed; unknown local-file durations are excluded from the total-duration calculation.
-- Remaining: drag-and-drop files/folders, queue persistence, playlist load/save formats, list options menu, keyboard navigation and browser acceptance.
+- Remaining: persistent local-file storage, M3U load/save, folder drop where browser permissions allow, list options menu, keyboard navigation and browser acceptance.
 
 
 - 2026-11-19 source pass: Windows 7 Explorer now receives the shared slideshow callback, offers a Slide show action when the current folder contains multiple supported images, and uses actual image URLs in thumbnail view. This reuses the shared PictureViewer slideshow instead of creating a second viewer. Runtime acceptance remains pending.
