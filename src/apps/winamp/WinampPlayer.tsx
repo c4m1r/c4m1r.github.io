@@ -64,7 +64,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   // Sync with global winampController
   useEffect(() => {
-    return winampController.subscribe((st) => {
+    const unsubscribe = winampController.subscribe((st) => {
       setTrackIndex(st.trackIndex);
       setIsPlaying(st.isPlaying);
       setCurrentTime(st.currentTime);
@@ -72,8 +72,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       setVolume(st.volume);
       setShuffle(st.shuffle);
       setAutoAdvance(st.autoAdvance);
-      setPlaylistRevision((revision) => revision + 1);
     });
+    const refreshPlaylist = () => setPlaylistRevision((revision) => revision + 1);
+    window.addEventListener('winamp:playlist-changed', refreshPlaylist);
+    return () => {
+      unsubscribe();
+      window.removeEventListener('winamp:playlist-changed', refreshPlaylist);
+    };
   }, []);
 
   // Module visibility & shade states
@@ -137,8 +142,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }));
     if (!additions.length) return;
     winampController.addTracks(additions);
-    setPlaylistRevision((revision) => revision + 1);
-
     additions.forEach((track) => {
       const metadataAudio = new Audio();
       metadataAudio.preload = 'metadata';
@@ -800,7 +803,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                         winampController.moveTrack(draggedPlaylistIndex, index);
                         setDraggedPlaylistIndex(null);
                         setPlaylistSelection([]);
-                        setPlaylistRevision((revision) => revision + 1);
                       }}
                       onDragEnd={() => setDraggedPlaylistIndex(null)}
                       onClick={(event) => {
@@ -847,7 +849,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     onClick={() => {
                       winampController.removeTracks(playlistSelection);
                       setPlaylistSelection([]);
-                      setPlaylistRevision((revision) => revision + 1);
                     }}
                   >- REM</button>
                   <button
