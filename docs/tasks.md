@@ -657,3 +657,15 @@ Percentages are working estimates, not test results. The previous task registry 
 - Menu bar: classic `GameMenuBar` (`src/apps/games/GameMenuBar.tsx`) on Solitaire, FreeCell, Hearts (Game > New Game) and Spider (Game > New Game; Options > One/Two/Four Suits, which starts a new deal).
 - Done since: F2 starts a new game on all four (`useNewGameShortcut`). Solitaire has Options > Draw One / Draw Three with a fanned waste pile, standard scoring and a m:ss clock. FreeCell shows a clock. Spider shows score (500 start, −1 per move, +100 per suit) and a clock.
 - Not 1:1 yet: no Hearts score/clock line beyond its own scoreboard, no Win animation, face-card art is letter-only, face-card art is letter-only, card back is an approximation. No reference screenshots exist in `eat/screens/oc/` yet, so pixel comparison is pending.
+
+### REF-01 — Reference screenshots received 2026-11-22 and Backgammon differences
+- Saved to `eat/screens/oc/`: `win2000/01-internet-backgammon.png` (Internet Backgammon; the user wrote 98/2000, filed under 2000, to confirm), `winxp/01-…`, `win2000/02-…`, `win98/01-…`, `vista/01-window-chrome-styles.png` (Aero/Vista/Basic/Standard search-bar styles), `vista/02-explorer-about-windows.png`, `server2003/01-desktop-start-menu.jpg`, `win8/01-start-screen.png`.
+- Backgammon, reference vs our build (`src/apps/games/backgammon`), recorded before any change:
+  - Board: reference has a bevelled wooden frame, dark board with cream and brown points, a raised bar divider and point numbers 1–12 along the top and bottom edges. Ours is a flat brown frame with no numbers.
+  - Checkers: reference has shaded, glossy discs with a rim. Ours are flat circles.
+  - Dice: reference shows two 3D cubes between the boards. Ours are numbered tiles in a row above the board.
+  - Side panel: reference has player names, Pips and Score for each side, Match Points, Double and Resign buttons, and a cube/score display. Ours has none of these; the Roll button is in the top bar.
+  - Chat: reference has a chat log, message picker and an on/off radio. Ours has no chat.
+  - Window: reference has the classic title bar with menus Game and Help. Ours has the Game menu only.
+  - Rules: reference supports a doubling cube and match play. Ours has neither, and the status line has a different wording.
+- Not changed yet: per the rule, these differences are recorded first; the next Backgammon change follows this list.
