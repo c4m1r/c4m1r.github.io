@@ -668,4 +668,5 @@ Percentages are working estimates, not test results. The previous task registry 
   - Chat: reference has a chat log, message picker and an on/off radio. Ours has no chat.
   - Window: reference has the classic title bar with menus Game and Help. Ours has the Game menu only.
   - Rules: reference supports a doubling cube and match play. Ours has neither, and the status line has a different wording.
-- Not changed yet: per the rule, these differences are recorded first; the next Backgammon change follows this list.
+- Applied (2026-11-22): wooden frame and bevel, point numbers 1–24 on all points, glossy checkers, pip-dot dice, side panel with Pips/Score/Off for both sides, match points (3), cube with Double (the computer takes it when its pip count is within 20% of yours), Resign, chat log with on/off, and a Help menu item; menu bar now has Game (New Match, Next Game, Resign) and Help.
+- Still different from the reference: dice are flat tiles, not 3D cubes; checkers are plain gradients, not the reference's shading; the computer never doubles; no gammons; no typed chat (the log only shows game events, with no message picker); the title bar is not the reference's Windows 98/2000 frame.

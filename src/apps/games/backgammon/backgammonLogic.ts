@@ -165,3 +165,19 @@ export function chooseComputerMove(state: BackgammonState, p: Player, dice: numb
   };
   return candidates.reduce((best, move) => (score(move) > score(best) ? move : best));
 }
+
+/** Pip count: pips a side still needs to bear off. Checkers on the bar count 25 each. */
+export function pipCount(state: BackgammonState, p: Player): number {
+  let total = state.bar[p] * 25;
+  for (let i = 0; i < 24; i += 1) {
+    const count = p === 'W' ? Math.max(0, state.points[i]) : Math.max(0, -state.points[i]);
+    if (count === 0) continue;
+    total += count * (p === 'W' ? i + 1 : 24 - i);
+  }
+  return total;
+}
+
+/** Computer answer to a double: it takes unless it is clearly behind in the race. */
+export function computerTakesDouble(state: BackgammonState): boolean {
+  return pipCount(state, 'B') <= pipCount(state, 'W') * 1.2;
+}
