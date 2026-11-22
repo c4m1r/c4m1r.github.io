@@ -349,6 +349,20 @@ Percentages are working estimates, not test results. The previous task registry 
 - Current source work: `Window.tsx` bypasses OS chrome for `app:winamp`; `WinampPlayer.tsx` owns drag/stack/close behavior; `winamp.css` renders floating windows over the desktop.
 - Still required: browser test dragging each window by its titlebar, overlap/bring-to-front, windowshade, close/reopen, mobile touch, viewport edges, playback/EQ/playlist, and verify that the full player does not cover the taskbar or block desktop interaction outside its surfaces. Webamp is a behavior reference, not a bundled dependency. Do not claim full Webamp feature parity until skins, file drop, EQ presets persistence and media metadata are verified.
 
+### WINAMP-02 — Shared DSP and equalizer presets
+- One singleton `winampController` owns the audio element, Web Audio graph, ten peaking EQ filters, preamp, stereo panner and analyser. UI components must not create parallel media elements or processing graphs.
+- Full player band/preamp/balance controls route through the shared controller. EQ bypass neutralizes both the ten filters and preamp while preserving slider values.
+- Named presets available in the full player: Flat, Rock, Pop, Jazz, Classical, Bass Boost and Vocal.
+- Remaining: persist settings and user-created presets; expose shared EQ state in compact widget controls; verify audible filter response, bypass level and state continuity between full player/widget.
+- Skins must remain presentation-only and must not fork playback, queue or DSP state.
+
+### WINAMP-03 — Editable shared playlist
+- The controller owns a mutable queue initialized from the shared project media catalogue. All player/widget commands continue to use the same current track and queue.
+- Playlist supports adding local audio files through the browser file picker, multi-selection (Ctrl/Cmd-click), select-all, removal of selected entries, and current-track preservation when other entries are removed.
+- Local object URLs are revoked when their queue entries are removed; unknown local-file durations are excluded from the total-duration calculation.
+- Remaining: drag-and-drop files/folders, reorder/move up/down, queue persistence, playlist load/save formats, list options menu, keyboard navigation and browser acceptance.
+
+
 - 2026-11-19 source pass: Windows 7 Explorer now receives the shared slideshow callback, offers a Slide show action when the current folder contains multiple supported images, and uses actual image URLs in thumbnail view. This reuses the shared PictureViewer slideshow instead of creating a second viewer. Runtime acceptance remains pending.
 - 2026-11-19 follow-up: shared Picture Viewer now supports Left/Right image navigation, +/- zoom shortcuts and Escape to stop slideshow and invoke its optional close callback. Zoom and rotation reset when the active image changes, including slideshow advances. Browser/keyboard acceptance remains pending.
 - Explorer address-bar file activation in the shared legacy Explorer now resolves the final filename case-insensitively, matching the virtual filesystem's case-insensitive path resolver. Validate mixed-case file paths and associations in browser acceptance.
@@ -696,3 +710,6 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - `App.tsx` waits for the OS set before rendering WebOS, so no unstyled frame shows.
 - Verified against the HEAD build: Win 98, Win 2000, XP, Win 7, Ubuntu, macOS, WebOS and GRUB match pixel for pixel. Halloween differs by a few shadow pixels on the login card.
 - Not done yet (next steps): `webos.css` as a master for generic selectors. In practice the generic layer is `os-base.css`, which already loads globally; `webos.css` holds rules scoped to `.os-webos` and would leak into other OSes if it were the master. Also `src/themes/winxp/xp.css` (47 KB, classes `.theme-98`, `.theme-webos`, `.theme-win-xp`) still loads globally and should move to its own sets.
+
+## Deferred during CSS migration
+- Do not modify Explorer, Games or other broad application styling/layout surfaces while Claude's CSS extraction/optimization migration is in progress. Resume the previously planned Explorer/Games work only after the migration is complete and its resulting CSS ownership/import boundaries are stable. Continue isolated Winamp logic and non-conflicting application functionality in the meantime.
