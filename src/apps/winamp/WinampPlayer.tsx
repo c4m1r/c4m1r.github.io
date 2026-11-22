@@ -684,7 +684,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       key={item.id}
                       role="option"
                       aria-selected={isCurrent}
-                      className={`wa-pl__item ${isCurrent ? 'is-current' : ''} ${playlistSelection.includes(index) ? 'is-selected' : ''}`}
+                      className={`wa-pl__item ${isCurrent ? 'is-current is-selected' : ''} ${playlistSelection.includes(index) ? 'is-selected' : ''}`}
                       onClick={(event) => {
                         if (event.ctrlKey || event.metaKey) {
                           setPlaylistSelection((selected) => selected.includes(index) ? selected.filter((value) => value !== index) : [...selected, index]);
