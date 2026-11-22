@@ -135,9 +135,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const totalPlaylistSeconds = useMemo(() => {
     return playlist.reduce((acc, t) => {
       const parts = t.durationLabel.split(':').map(Number);
-      return acc + (parts[0] * 60 + (parts[1] || 0));
+      if (parts.length !== 2 || !parts.every(Number.isFinite)) return acc;
+      return acc + (parts[0] * 60 + parts[1]);
     }, 0);
-  }, []);
+  }, [playlist]);
 
   // Web Audio setup
   const initWebAudio = useCallback(() => {
@@ -683,7 +684,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       key={item.id}
                       role="option"
                       aria-selected={isCurrent}
-                      className={`wa-pl__item ${isCurrent ? 'is-selected' : ''}`}
+                      className={`wa-pl__item ${isCurrent ? 'is-current' : ''} ${playlistSelection.includes(index) ? 'is-selected' : ''}`}
                       onClick={(event) => {
                         if (event.ctrlKey || event.metaKey) {
                           setPlaylistSelection((selected) => selected.includes(index) ? selected.filter((value) => value !== index) : [...selected, index]);
