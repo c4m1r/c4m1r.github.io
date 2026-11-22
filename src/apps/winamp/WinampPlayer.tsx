@@ -72,8 +72,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       setVolume(st.volume);
       setShuffle(st.shuffle);
       setAutoAdvance(st.autoAdvance);
+      setPlaylistRevision((revision) => revision + 1);
     });
-  }, [playlistRevision]);
+  }, []);
 
   // Module visibility & shade states
   const [showEq, setShowEq] = useState(true);
@@ -123,6 +124,37 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     if (!selectedEqPreset.startsWith('custom-')) return;
     setCustomEqPresets(winampController.deleteCustomEqualizerPreset(selectedEqPreset));
     setSelectedEqPreset('custom');
+  };
+
+  const addLocalAudioFiles = (files: File[]) => {
+    const audioFiles = files.filter((file) => file.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|m4a|aac|flac|opus|webm)$/i.test(file.name));
+    const additions = audioFiles.map((file, index) => ({
+      id: `local-${Date.now()}-${index}-${file.name}`,
+      title: file.name.replace(/\.[^.]+$/, ''),
+      artist: 'Local file',
+      durationLabel: '—',
+      src: URL.createObjectURL(file),
+    }));
+    if (!additions.length) return;
+    winampController.addTracks(additions);
+    setPlaylistRevision((revision) => revision + 1);
+
+    additions.forEach((track) => {
+      const metadataAudio = new Audio();
+      metadataAudio.preload = 'metadata';
+      metadataAudio.addEventListener('loadedmetadata', () => {
+        if (Number.isFinite(metadataAudio.duration) && metadataAudio.duration > 0) {
+          winampController.updateTrackMetadata(track.id, { durationLabel: formatTime(metadataAudio.duration) });
+        }
+        metadataAudio.removeAttribute('src');
+        metadataAudio.load();
+      }, { once: true });
+      metadataAudio.addEventListener('error', () => {
+        metadataAudio.removeAttribute('src');
+        metadataAudio.load();
+      }, { once: true });
+      metadataAudio.src = track.src;
+    });
   };
 
   // Visualizer bar heights and peak dots
@@ -614,7 +646,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
               </div>
 
-              {/* Sliders Grid */}
+              {/* Equalizer preset controls and faders */}
               <div
                 className="wa-eq__preset-tools"
                 role="group"
@@ -735,7 +767,22 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           {!plShade && (
             <div className="wa-pl__body">
               {/* Songs List */}
-              <div className="wa-pl__list" role="listbox">
+              <div
+                className="wa-pl__list"
+                role="listbox"
+                onDragOver={(event) => {
+                  if (event.dataTransfer.types.includes('Files')) {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = 'copy';
+                  }
+                }}
+                onDrop={(event) => {
+                  if (!event.dataTransfer.files.length) return;
+                  event.preventDefault();
+                  event.stopPropagation();
+                  addLocalAudioFiles(Array.from(event.dataTransfer.files));
+                }}
+              >
                 {playlist.map((item, index) => {
                   const isCurrent = index === trackIndex;
                   return (
@@ -788,16 +835,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     multiple
                     hidden
                     onChange={(event) => {
-                      const files = Array.from(event.currentTarget.files ?? []);
-                      const additions = files.map((file, index) => ({
-                        id: `local-${Date.now()}-${index}-${file.name}`,
-                        title: file.name.replace(/\.[^.]+$/, ''),
-                        artist: 'Local file',
-                        durationLabel: '—',
-                        src: URL.createObjectURL(file),
-                      }));
-                      winampController.addTracks(additions);
-                      setPlaylistRevision((revision) => revision + 1);
+                      addLocalAudioFiles(Array.from(event.currentTarget.files ?? []));
                       event.currentTarget.value = '';
                     }}
                   />
@@ -821,7 +859,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     type="button"
                     className="wa-btn-pl"
                     onClick={() => setPlaylistSelection([])}
-                  >MISC</button>
+                  >CLR SEL</button>
                 </div>
 
                 <div className="wa-pl__status">
