@@ -27,6 +27,7 @@ import { SolitaireGame } from '../../apps/games/solitaire';
 import { FreeCellGame } from '../../apps/games/freecell';
 import { HeartsGame } from '../../apps/games/hearts';
 import { SpiderGame } from '../../apps/games/spider';
+import { BackgammonGame } from '../../apps/games/backgammon';
 import { PinballGame } from '../../apps/games/pinball';
 import { ResumeApp } from './apps/resume/ResumeApp';
 import { TaskManager } from '../../apps/TaskManager';
@@ -454,6 +455,14 @@ export const appRegistry: Record<string, DesktopAppDefinition> = {
     iconKey: 'heartsIcon',
     component: HeartsGame,
     defaultWindow: { width: 640, height: 600 },
+    showInStartMenu: false,
+    showOnDesktop: false,
+  },
+  'backgammon': {
+    id: 'backgammon',
+    title: { en: 'Internet Backgammon', ru: 'Интернет-нарды', fr: 'Backgammon', es: 'Backgammon', zh: '国际双陆棋', ja: 'バックギャモン', ko: '백가몬' },
+    component: BackgammonGame,
+    defaultWindow: { width: 760, height: 560 },
     showInStartMenu: false,
     showOnDesktop: false,
   },

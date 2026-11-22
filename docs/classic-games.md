@@ -15,7 +15,7 @@ Layouts and rules follow the public rule sets; code is written for this site, no
 | 3D Pinball – Space Cadet | 2000, XP | Sketch: `src/apps/games/pinball` (canvas physics, flippers, bumpers, plunger held by time; three balls) |
 | Reversi | 3.1 | Not started |
 | Chess Titans | Vista, 7 | Not started (Chess sketch reference in `eat/`) |
-| Internet Backgammon | XP, 7 | Not started |
+| Internet Backgammon | XP, 7 | Sketch: `src/apps/games/backgammon` (you as White against the computer; bar, hits, bearing off, doubles; no doubling cube; computer plays greedy moves; icon is a stand-in until native art is sourced) |
 | Purble Place | Vista, 7 | Not started |
 | Mahjong | Vista, 7, 8, 10 | Not started |
 
