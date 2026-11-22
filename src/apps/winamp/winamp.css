@@ -702,10 +702,20 @@
 /* Playlist Footer */
 .wa-pl__footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
   gap: 3px;
   margin-top: 4px;
+}
+
+.wa-pl__footer-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding-top: 3px;
+  border-top: 1px solid #34343f;
 }
 
 .wa-pl__actions {
