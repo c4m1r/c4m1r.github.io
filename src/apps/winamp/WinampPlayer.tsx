@@ -104,7 +104,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     const matchingPreset = allEqPresets.find((preset) => preset.id === selectedEqPreset && matchesCurrent(preset))
       ?? allEqPresets.find(matchesCurrent);
     setSelectedEqPreset(matchingPreset?.id ?? 'custom');
-  }, [eqBands, preamp, customEqPresets]);
+  }, [eqBands, preamp, customEqPresets, selectedEqPreset]);
 
   const applyEqPreset = (preset: WinampEqualizerPreset) => {
     setSelectedEqPreset(preset.id);
