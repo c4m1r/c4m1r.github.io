@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
+import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
 import './winamp.css';
 
 // 10 standard Winamp EQ bands in Hz
@@ -96,6 +97,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [selectedEqPreset, setSelectedEqPreset] = useState('custom');
   const [customEqPresets, setCustomEqPresets] = useState<WinampEqualizerPreset[]>(() => winampController.getCustomEqualizerPresets());
   const [newEqPresetName, setNewEqPresetName] = useState('');
+  const eqfInputRef = useRef<HTMLInputElement | null>(null);
+  const [eqfStatus, setEqfStatus] = useState('');
   const allEqPresets: WinampEqualizerPreset[] = [...EQ_PRESETS, ...customEqPresets];
 
   useEffect(() => {
@@ -130,6 +133,36 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setCustomEqPresets(winampController.deleteCustomEqualizerPreset(selectedEqPreset));
     setSelectedEqPreset('custom');
   };
+
+  const importEqfFile = async (file?: File) => {
+    if (!file) return;
+    try {
+      const imported = parseWinampEqf(await file.arrayBuffer());
+      if (!imported.length) {
+        setEqfStatus('No presets found');
+        return;
+      }
+      const next = winampController.importCustomEqualizerPresets(imported);
+      setCustomEqPresets(next);
+      setEqfStatus(`Imported ${imported.length} preset${imported.length === 1 ? '' : 's'}`);
+    } catch (error) {
+      setEqfStatus(error instanceof Error ? error.message : 'Unable to read EQF file');
+    }
+  };
+
+  const exportEqfFile = () => {
+    const selected = allEqPresets.find((preset) => preset.id === selectedEqPreset);
+    const label = selected?.label ?? 'My Winamp EQ';
+    const buffer = createWinampEqf([{ name: label, preamp, bands: [...eqBands] }]);
+    const url = URL.createObjectURL(new Blob([buffer], { type: 'application/octet-stream' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${label.replace(/[^a-z0-9-_ ]/gi, '').trim() || 'winamp-eq'}.eqf`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setEqfStatus('EQF exported');
+  };
+
 
   const addLocalAudioFiles = (files: File[]) => {
     const audioFiles = files.filter((file) => file.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|m4a|aac|flac|opus|webm)$/i.test(file.name));
@@ -654,7 +687,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 className="wa-eq__preset-tools"
                 role="group"
                 aria-label="Equalizer preset management"
-                style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}
+                style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0, flexWrap: 'wrap' }}
               >
                 <select
                   className="wa-btn-presets"
@@ -687,7 +720,21 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 />
                 <button type="button" className="wa-btn-mode" onClick={saveEqPreset} disabled={!newEqPresetName.trim()} title="Save current equalizer as a preset">SAVE</button>
                 <button type="button" className="wa-btn-mode" onClick={deleteEqPreset} disabled={!selectedEqPreset.startsWith('custom-')} title="Delete selected custom preset">DEL</button>
+                <input
+                  ref={eqfInputRef}
+                  type="file"
+                  accept=".eqf,application/octet-stream"
+                  aria-label="Import Winamp EQF file"
+                  style={{ display: 'none' }}
+                  onChange={(event) => {
+                    void importEqfFile(event.currentTarget.files?.[0]);
+                    event.currentTarget.value = '';
+                  }}
+                />
+                <button type="button" className="wa-btn-mode" onClick={() => eqfInputRef.current?.click()} title="Import Winamp EQF library">EQF IN</button>
+                <button type="button" className="wa-btn-mode" onClick={exportEqfFile} title="Export selected equalizer as Winamp EQF">EQF OUT</button>
               </div>
+              {eqfStatus && <span className="wa-eq__status" role="status" aria-live="polite">{eqfStatus}</span>}
 
               <div className="wa-eq__sliders-container">
                 <div className="wa-eq__labels-left">
