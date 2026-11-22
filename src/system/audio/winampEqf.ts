@@ -9,11 +9,12 @@ export interface WinampEqfPreset {
 }
 
 function toWinampValue(gainDb: number): number {
-  return Math.max(0, Math.min(127, Math.round(64 + (gainDb / 12) * 64)));
+  const gain = Math.max(-12, Math.min(12, gainDb));
+  return Math.round(gain >= 0 ? 32 + (gain / 12) * 32 : 32 + (gain / 12) * 31);
 }
 
 function fromWinampValue(value: number): number {
-  return Math.max(-12, Math.min(12, ((value - 64) / 64) * 12));
+  return Math.max(-12, Math.min(12, value >= 32 ? ((value - 32) / 32) * 12 : ((value - 32) / 31) * 12));
 }
 
 export function parseWinampEqf(buffer: ArrayBuffer): WinampEqfPreset[] {
