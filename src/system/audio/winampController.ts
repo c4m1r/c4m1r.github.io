@@ -150,11 +150,18 @@ class WinampControllerService {
     const remove = new Set(indices.filter((index) => Number.isInteger(index) && index >= 0 && index < this.playlist.length));
     if (!remove.size || remove.size >= this.playlist.length) return;
     const currentTrack = this.getTrack();
+    const removedTracks = this.playlist.filter((_, index) => remove.has(index));
     this.playlist = this.playlist.filter((_, index) => !remove.has(index));
+    const currentWasRemoved = remove.has(this.trackIndex);
     const nextIndex = this.playlist.findIndex((track) => track.id === currentTrack.id);
     this.trackIndex = nextIndex >= 0 ? nextIndex : Math.min(this.trackIndex, this.playlist.length - 1);
-    if (this.audioElement && !this.playlist.some((track) => track.id === currentTrack.id)) this.updateAudioSrc(this.isPlaying);
+    if (currentWasRemoved && this.audioElement) this.updateAudioSrc(this.isPlaying);
     else this.notify();
+    if (typeof URL !== 'undefined') {
+      removedTracks.forEach((track) => {
+        if (track.src.startsWith('blob:')) URL.revokeObjectURL(track.src);
+      });
+    }
   }
 
 
