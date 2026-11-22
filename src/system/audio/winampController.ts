@@ -1,5 +1,12 @@
 import { PROJECT_PLAYLIST, type MediaTrack } from '../../apps/mediaplayer/playlist';
 
+export interface WinampEqualizerPreset {
+  id: string;
+  label: string;
+  preamp: number;
+  bands: number[];
+}
+
 export interface WinampState {
   trackIndex: number;
   track: MediaTrack;
@@ -379,6 +386,70 @@ class WinampControllerService {
     if (this.pannerNode) this.pannerNode.pan.setTargetAtTime(this.balance, this.pannerNode.context.currentTime, 0.015);
     this.saveEqualizerSettings();
   }
+  public getCustomEqualizerPresets(): WinampEqualizerPreset[] {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = window.localStorage.getItem('winamp:equalizer-presets:v1');
+      if (!raw) return [];
+      const parsed: unknown = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.flatMap((item): WinampEqualizerPreset[] => {
+        if (
+          !item ||
+          typeof item.id !== 'string' ||
+          typeof item.label !== 'string' ||
+          !item.label.trim() ||
+          typeof item.preamp !== 'number' ||
+          !Number.isFinite(item.preamp) ||
+          !Array.isArray(item.bands) ||
+          item.bands.length !== this.eqGains.length ||
+          !item.bands.every((value: unknown) => typeof value === 'number' && Number.isFinite(value))
+        ) return [];
+        return [{
+          id: item.id,
+          label: item.label.slice(0, 32),
+          preamp: Math.max(-12, Math.min(12, item.preamp)),
+          bands: item.bands.map((value: number) => Math.max(-12, Math.min(12, value))),
+        }];
+      }).slice(0, 30);
+    } catch {
+      return [];
+    }
+  }
+
+  public saveCustomEqualizerPreset(label: string): WinampEqualizerPreset[] {
+    const cleanLabel = label.trim().slice(0, 32);
+    if (!cleanLabel || typeof window === 'undefined') return this.getCustomEqualizerPresets();
+    const current = this.getEqualizerState();
+    const presets = this.getCustomEqualizerPresets();
+    const existing = presets.find((preset) => preset.label.toLowerCase() === cleanLabel.toLowerCase());
+    const preset: WinampEqualizerPreset = {
+      id: existing?.id ?? `custom-${Date.now().toString(36)}`,
+      label: cleanLabel,
+      preamp: current.preamp,
+      bands: current.bands,
+    };
+    const next = [...presets.filter((item) => item.id !== preset.id), preset].slice(-30);
+    try {
+      window.localStorage.setItem('winamp:equalizer-presets:v1', JSON.stringify(next));
+    } catch {
+      // EQ operation remains available if local storage is blocked or full.
+    }
+    return next;
+  }
+
+  public deleteCustomEqualizerPreset(id: string): WinampEqualizerPreset[] {
+    const next = this.getCustomEqualizerPresets().filter((preset) => preset.id !== id);
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem('winamp:equalizer-presets:v1', JSON.stringify(next));
+      } catch {
+        // Keep the in-memory UI usable if storage is unavailable.
+      }
+    }
+    return next;
+  }
+
   public getEqualizerState(): { enabled: boolean; bands: number[]; preamp: number; balance: number } {
     return { enabled: this.eqEnabled, bands: [...this.eqGains], preamp: this.preampGain, balance: this.balance };
   }
