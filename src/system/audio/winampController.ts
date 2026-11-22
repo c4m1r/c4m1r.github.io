@@ -15,6 +15,7 @@ type WinampSubscriber = (state: WinampState) => void;
 
 class WinampControllerService {
   private audioElement: HTMLAudioElement | null = null;
+  private playlist: MediaTrack[] = [...PROJECT_PLAYLIST];
   private trackIndex = 0;
   private isPlaying = false;
   private currentTime = 0;
@@ -114,13 +115,13 @@ class WinampControllerService {
   }
 
   private pickRandomIndex(): number {
-    if (PROJECT_PLAYLIST.length <= 1) return 0;
-    const choices = PROJECT_PLAYLIST.map((_, index) => index).filter((index) => index !== this.trackIndex);
+    if (this.playlist.length <= 1) return 0;
+    const choices = this.playlist.map((_, index) => index).filter((index) => index !== this.trackIndex);
     return choices[Math.floor(Math.random() * choices.length)] ?? this.trackIndex;
   }
 
   private pickNextIndex(): number {
-    return this.shuffle ? this.pickRandomIndex() : (this.trackIndex + 1) % PROJECT_PLAYLIST.length;
+    return this.shuffle ? this.pickRandomIndex() : (this.trackIndex + 1) % this.playlist.length;
   }
 
   private advance(shouldPlay: boolean) {
@@ -129,8 +130,33 @@ class WinampControllerService {
   }
 
   public getTrack(): MediaTrack {
-    return PROJECT_PLAYLIST[this.trackIndex] ?? PROJECT_PLAYLIST[0];
+    return this.playlist[this.trackIndex] ?? this.playlist[0] ?? PROJECT_PLAYLIST[0];
   }
+
+  public getPlaylist(): MediaTrack[] {
+    return [...this.playlist];
+  }
+
+  public addTracks(tracks: MediaTrack[]): void {
+    const existing = new Set(this.playlist.map((track) => track.id));
+    const additions = tracks.filter((track) => track?.id && track.src && !existing.has(track.id));
+    if (!additions.length) return;
+    this.playlist = [...this.playlist, ...additions];
+    this.notify();
+  }
+
+  public removeTracks(indices: number[]): void {
+    if (!indices.length || this.playlist.length <= 1) return;
+    const remove = new Set(indices.filter((index) => Number.isInteger(index) && index >= 0 && index < this.playlist.length));
+    if (!remove.size || remove.size >= this.playlist.length) return;
+    const currentTrack = this.getTrack();
+    this.playlist = this.playlist.filter((_, index) => !remove.has(index));
+    const nextIndex = this.playlist.findIndex((track) => track.id === currentTrack.id);
+    this.trackIndex = nextIndex >= 0 ? nextIndex : Math.min(this.trackIndex, this.playlist.length - 1);
+    if (this.audioElement && !this.playlist.some((track) => track.id === currentTrack.id)) this.updateAudioSrc(this.isPlaying);
+    else this.notify();
+  }
+
 
   public getState(): WinampState {
     return {
@@ -197,20 +223,20 @@ class WinampControllerService {
 
   public prev(): void {
     this.initAudio();
-    this.trackIndex = (this.trackIndex - 1 + PROJECT_PLAYLIST.length) % PROJECT_PLAYLIST.length;
+    this.trackIndex = (this.trackIndex - 1 + this.playlist.length) % this.playlist.length;
     this.updateAudioSrc(this.isPlaying);
   }
 
   public randomTrack(): void {
     this.initAudio();
-    if (PROJECT_PLAYLIST.length <= 1) return;
+    if (this.playlist.length <= 1) return;
     this.trackIndex = this.pickRandomIndex();
     this.updateAudioSrc(this.isPlaying);
   }
 
   public playRandom(): Promise<void> {
     this.initAudio();
-    if (PROJECT_PLAYLIST.length > 1) {
+    if (this.playlist.length > 1) {
       this.trackIndex = this.pickRandomIndex();
       this.updateAudioSrc(false);
     }
@@ -228,7 +254,7 @@ class WinampControllerService {
 
   public setTrack(index: number): void {
     this.initAudio();
-    if (index >= 0 && index < PROJECT_PLAYLIST.length) {
+    if (index >= 0 && index < this.playlist.length) {
       this.trackIndex = index;
       this.updateAudioSrc(this.isPlaying);
     }
