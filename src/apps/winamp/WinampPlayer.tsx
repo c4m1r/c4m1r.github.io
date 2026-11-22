@@ -93,9 +93,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const allEqPresets: WinampEqualizerPreset[] = [...EQ_PRESETS, ...customEqPresets];
 
   useEffect(() => {
-    const matchingPreset = allEqPresets.find((preset) =>
-      preset.preamp === preamp && preset.bands.every((gain, index) => gain === eqBands[index])
-    );
+    const matchesCurrent = (preset: WinampEqualizerPreset) =>
+      preset.preamp === preamp && preset.bands.every((gain, index) => gain === eqBands[index]);
+    const matchingPreset = allEqPresets.find((preset) => preset.id === selectedEqPreset && matchesCurrent(preset))
+      ?? allEqPresets.find(matchesCurrent);
     setSelectedEqPreset(matchingPreset?.id ?? 'custom');
   }, [eqBands, preamp, customEqPresets]);
 
@@ -610,40 +611,49 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </svg>
                 </div>
 
-                <div className="wa-eq__toggles" aria-label="Equalizer preset management">
-                  <select
-                    className="wa-btn-presets"
-                    aria-label="Equalizer preset"
-                    value={selectedEqPreset}
-                    onChange={(event) => {
-                      const preset = allEqPresets.find((item) => item.id === event.currentTarget.value);
-                      if (preset) applyEqPreset(preset);
-                    }}
-                  >
-                    <option value="custom">CUSTOM</option>
-                    <optgroup label="Built-in">
-                      {EQ_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
-                    </optgroup>
-                    {customEqPresets.length > 0 && (
-                      <optgroup label="My presets">
-                        {customEqPresets.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
-                      </optgroup>
-                    )}
-                  </select>
-                  <input
-                    className="wa-btn-presets"
-                    aria-label="New equalizer preset name"
-                    placeholder="Preset name"
-                    maxLength={32}
-                    value={newEqPresetName}
-                    onChange={(event) => setNewEqPresetName(event.currentTarget.value)}
-                  />
-                  <button type="button" className="wa-btn-mode" onClick={saveEqPreset} disabled={!newEqPresetName.trim()} title="Save current equalizer as a preset">SAVE</button>
-                  <button type="button" className="wa-btn-mode" onClick={deleteEqPreset} disabled={!selectedEqPreset.startsWith('custom-')} title="Delete selected custom preset">DEL</button>
-                </div>
+
               </div>
 
               {/* Sliders Grid */}
+              <div
+                className="wa-eq__preset-tools"
+                role="group"
+                aria-label="Equalizer preset management"
+                style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}
+              >
+                <select
+                  className="wa-btn-presets"
+                  aria-label="Equalizer preset"
+                  value={selectedEqPreset}
+                  style={{ flex: '0 0 88px', minWidth: 0 }}
+                  onChange={(event) => {
+                    const preset = allEqPresets.find((item) => item.id === event.currentTarget.value);
+                    if (preset) applyEqPreset(preset);
+                  }}
+                >
+                  <option value="custom">CUSTOM</option>
+                  <optgroup label="Built-in">
+                    {EQ_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
+                  </optgroup>
+                  {customEqPresets.length > 0 && (
+                    <optgroup label="My presets">
+                      {customEqPresets.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
+                    </optgroup>
+                  )}
+                </select>
+                <input
+                  className="wa-btn-presets"
+                  aria-label="New equalizer preset name"
+                  placeholder="Preset name"
+                  maxLength={32}
+                  value={newEqPresetName}
+                  style={{ flex: '1 1 auto', width: 0, minWidth: 0 }}
+                  onChange={(event) => setNewEqPresetName(event.currentTarget.value)}
+                />
+                <button type="button" className="wa-btn-mode" onClick={saveEqPreset} disabled={!newEqPresetName.trim()} title="Save current equalizer as a preset">SAVE</button>
+                <button type="button" className="wa-btn-mode" onClick={deleteEqPreset} disabled={!selectedEqPreset.startsWith('custom-')} title="Delete selected custom preset">DEL</button>
+              </div>
+
               <div className="wa-eq__sliders-container">
                 <div className="wa-eq__labels-left">
                   <span>+12db</span>
