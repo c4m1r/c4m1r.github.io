@@ -391,7 +391,7 @@ class WinampControllerService {
             return filter;
           });
           this.preampNode = ctx.createGain();
-          this.preampNode.gain.value = Math.pow(10, this.preampGain / 20);
+          this.preampNode.gain.value = this.eqEnabled ? Math.pow(10, this.preampGain / 20) : 1;
           this.pannerNode = ctx.createStereoPanner();
           this.pannerNode.pan.value = this.balance;
           let previous: AudioNode = this.mediaSource;
