@@ -84,7 +84,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   const isWindowsXp = theme === 'win-xp';
   const isClassicWindows = theme === 'win-98' || theme === 'win2000';
   // Classic Windows (98, 2000) and the Windows 10/11 drafts open a Views menu instead of cycling.
-  const viewsMenu = usesViewsMenu(theme) ? viewMenuEntries(isRu) : null;
+  const viewsMenu = usesViewsMenu(theme) ? viewMenuEntries(isRu, theme) : null;
   const [viewsMenuOpen, setViewsMenuOpen] = useState(false);
   const viewsMenuRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -1024,6 +1024,37 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                   <span className={`text-center text-xs px-1 rounded break-words w-full truncate ${selectedItem === item.name ? 'bg-[#316ac5] text-white' : 'text-black'}`}>
                     {item.name}
                   </span>
+                </div>
+              ))}
+            </div>
+          ) : viewMode === 'tiles' ? (
+            // Tiles: 32px icon, name and a type line, filling the pane in a wrapping grid.
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-2">
+              {visibleItems.filter((item) => !(path === 'My Computer' && item.name === 'Network Neighborhood')).map((item, i) => (
+                <div
+                  key={i}
+                  className={`flex min-w-0 cursor-pointer items-center gap-3 border p-2 ${selectedItem === item.name ? 'border-[#99d1ff] bg-[#cce8ff]' : 'border-transparent hover:bg-[#e5f3ff]'}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedItem(item.name);
+                  }}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    handleNavigate(item);
+                  }}
+                >
+                  <img
+                    src={getExplorerItemIcon(item)}
+                    alt=""
+                    className="h-8 w-8 shrink-0 object-contain"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                  <div className="min-w-0">
+                    <div className="truncate text-sm text-black">{item.name}</div>
+                    <div className="truncate text-xs text-gray-500">
+                      {item.type === 'folder' ? (isRu ? 'Папка с файлами' : 'File Folder') : item.type === 'drive' ? (isRu ? 'Локальный диск' : 'Local Disk') : (item.size ?? (isRu ? 'Файл' : 'File'))}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

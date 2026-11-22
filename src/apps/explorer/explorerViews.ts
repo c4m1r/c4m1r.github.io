@@ -10,7 +10,7 @@ import type { ThemeId } from '../../contexts/appContextTypes';
 export type ExplorerViewMode = 'thumbnails' | 'tiles' | 'icons' | 'small' | 'list' | 'details';
 
 /** Modes that appear as radio entries in the Views menu. */
-export type ExplorerViewMenuMode = 'icons' | 'small' | 'list' | 'details';
+export type ExplorerViewMenuMode = 'icons' | 'small' | 'tiles' | 'list' | 'details';
 
 export interface ExplorerViewMenuEntry {
   mode: ExplorerViewMenuMode;
@@ -31,13 +31,20 @@ export function usesViewsMenu(theme: ThemeId): boolean {
   return VIEW_MENU_THEMES.has(theme);
 }
 
-export function viewMenuEntries(isRu: boolean): ExplorerViewMenuEntry[] {
-  return [
+/** Vista and later add Tiles to the Views menu; Windows 98 and 2000 do not have it. */
+const TILES_THEMES: ReadonlySet<ThemeId> = new Set<ThemeId>(['vista', 'win8', 'win10', 'win11']);
+
+export function viewMenuEntries(isRu: boolean, theme: ThemeId): ExplorerViewMenuEntry[] {
+  const entries: ExplorerViewMenuEntry[] = [
     { mode: 'icons', label: isRu ? 'Крупные значки' : 'Large Icons' },
     { mode: 'small', label: isRu ? 'Мелкие значки' : 'Small Icons' },
     { mode: 'list', label: isRu ? 'Список' : 'List' },
     { mode: 'details', label: isRu ? 'Таблица' : 'Details' },
   ];
+  if (TILES_THEMES.has(theme)) {
+    entries.splice(2, 0, { mode: 'tiles', label: isRu ? 'Плитка' : 'Tiles' });
+  }
+  return entries;
 }
 
 /** Views cycled by the single Views button on themes without a menu (XP and the rest). */
