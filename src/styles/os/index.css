@@ -1,34 +1,11 @@
-/* Aggregated OS Wrapper Theme Stylesheet */
+/* Global OS layer: tokens, base classes and components shared by every OS.
+   OS-specific stylesheets are loaded per OS from osStyleSheets.ts. */
 
 @import './base/tokens.css';
 @import './base/os-base.css';
 @import './apps/cv.css';
-@import './themes/classic.css';
-@import './themes/winxp.css';
-@import './themes/winxp-fidelity.css';
-@import './themes/winxp-startmenu-fidelity.css';
-@import './themes/winxp-tray-clock.css';
-@import './themes/win7.css';
-@import './themes/ubuntu.css';
-@import './themes/arch.css';
-@import './themes/halloween.css';
-@import './themes/webos.css';
-@import './themes/apple-widgets.css';
-@import './themes/macos.css';
-@import './themes/apple-launcher.css';
-@import './themes/apple-dock.css';
-@import './themes/apple-session.css';
-@import './themes/ios.css';
 @import './components/system-actions.css';
 @import './components/desktop-workspace.css';
-@import './themes/winxp-explorer-fidelity.css';
 @import './themes/explorer-os-adapters.css';
-@import './themes/winxp-authenticity-pass.css';
-@import './themes/windows-xp-win7-fidelity-pass.css';
-@import './themes/windows-native-app-final.css';
-@import './themes/windows-shell-fidelity-final.css';
-@import './themes/boot-session-fidelity-final.css';
-@import './themes/windows-build-watermark.css';
-
-@import './themes/apple-apps.css';
-@import './themes/calendar-os-adapters.css';
+@import './themes/apple-session.css';
+@import './themes/apple-widgets.css';

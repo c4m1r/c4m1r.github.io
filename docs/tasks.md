@@ -688,3 +688,11 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Applied (2026-11-22): the taskbar Start button shows the flag (`win98StartIcon`, now also set for Windows 2000) at 16 px with a bold "Start" in mixed case; the fake gradient square is gone. Banners: Windows 98 is navy with bold "Windows" and regular "98" at 22 px; Windows 2000 is black fading to blue with bold "Windows 2000" and regular "Professional". Top-level rows are 32 px tall with 24 px icons; submenus stay 22 px with 16 px icons. Favorites is removed from both menus. Windows 98 ends with Suspend and Shut Down; Windows 2000 ends with Shut Down only. Suspend has no handler yet and only closes the menu.
 - Verified in the browser at 800×600 (GRUB → Windows 98 / Windows 2000 → User → Start).
 - Still open: the reference icon art for 98 is 32 px, ours is 24 px; the bevelled submenu border; the Programs submenu contents; Log Off was removed from both menus, so Log Off is reachable only through Shut Down.
+
+## STYLE-01 — Per-OS stylesheets (2026-11-22)
+- Global CSS fell from 573 KB to 200 KB in the main bundle. OS-specific files now load per OS from `src/styles/os/osStyleSheets.ts` as separate chunks: classic (98/2000), XP, Win 7, Ubuntu, Arch, macOS, iOS, WebOS, Halloween.
+- Halloween is a child of Windows XP: it loads the full XP set and then `halloween.css` on top.
+- `src/styles/os/index.css` keeps only the shared layer: tokens, os-base, cv, system-actions, desktop-workspace, explorer adapters and the Apple session/widget files with no OS selectors.
+- `App.tsx` waits for the OS set before rendering WebOS, so no unstyled frame shows.
+- Verified against the HEAD build: Win 98, Win 2000, XP, Win 7, Ubuntu, macOS, WebOS and GRUB match pixel for pixel. Halloween differs by a few shadow pixels on the login card.
+- Not done yet (next steps): `webos.css` as a master for generic selectors. In practice the generic layer is `os-base.css`, which already loads globally; `webos.css` holds rules scoped to `.os-webos` and would leak into other OSes if it were the master. Also `src/themes/winxp/xp.css` (47 KB, classes `.theme-98`, `.theme-webos`, `.theme-win-xp`) still loads globally and should move to its own sets.

@@ -1,5 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { useApp } from './contexts/useApp';
+import { useEffect, useState } from 'react';
+import { getOsSkinRules } from './shells/os/osSkins';
+import { loadOsStyleSheets } from './styles/os/osStyleSheets';
 import { GrubMenu } from './apps/GrubMenu';
 import { BiosPostScreen } from './apps/bios/BiosPostScreen';
 import { PowerOffScreen } from './apps/bios/PowerOffScreen';
@@ -16,8 +19,24 @@ function LazyFallback() {
   return <div className="min-h-screen bg-background" aria-live="polite" />;
 }
 
+/** True once the stylesheets of the current OS are in the document. */
+function useOsStyleSheets(osClassName: string): boolean {
+  const [readyFor, setReadyFor] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    loadOsStyleSheets(osClassName).then(() => {
+      if (!cancelled) setReadyFor(osClassName);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [osClassName]);
+  return readyFor === osClassName;
+}
+
 function App() {
   const { mode, theme, setMode } = useApp();
+  const osStylesReady = useOsStyleSheets(getOsSkinRules(theme).osClassName);
 
   if (mode === 'bios') {
     return <BiosPostScreen onComplete={() => setMode('grub')} />;
@@ -51,6 +70,7 @@ function App() {
   }
 
   if (mode === 'webos') {
+    if (!osStylesReady) return <LazyFallback />;
     return (
       <Suspense fallback={<LazyFallback />}>
         {theme === 'win-xp' ? <WindowsXP /> : theme === 'win7' ? <Windows7 /> : <WebOS />}
