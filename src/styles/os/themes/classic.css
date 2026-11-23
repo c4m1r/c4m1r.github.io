@@ -23,6 +23,23 @@
   background-color: #3a6ea5 !important;
 }
 
+/* Classic skins are pixel art: every image is drawn at its own size and never smoothed. */
+.os-classic img {
+  image-rendering: pixelated;
+}
+
+/* Windows 2000 taskbar is 20 px tall with a 16 px Start button (reference, 800x600). */
+.os-classic.os-win2000 .taskbar {
+  height: 20px !important;
+  min-height: 20px !important;
+}
+
+.os-win2000 .start-button {
+  height: 16px;
+  padding: 0 6px;
+  font-size: 12px;
+}
+
 /* ── 1. Window Chrome ───────────────────────────────────────── */
 
 .os-classic .os-window,

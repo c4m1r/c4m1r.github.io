@@ -105,9 +105,10 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
   return (
     <div
-      className={`absolute ${isWin2000 ? 'bottom-[28px] left-0 w-[136px]' : 'bottom-[26px] left-1 w-40'} flex z-50 os-panel`}
+      className={`absolute ${isWin2000 ? 'bottom-[20px] left-0 w-[136px]' : 'bottom-[26px] left-1 w-40'} flex z-50 os-panel`}
       style={{
-        background: '#c0c0c0',
+        // Reference: Windows 2000 menus use the 2000 window face (#d4d0c8); Windows 98 uses #c0c0c0.
+        background: isWin2000 ? '#d4d0c8' : '#c0c0c0',
         border: '2px solid',
         borderColor: '#ffffff #000000 #000000 #ffffff',
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
@@ -129,7 +130,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           className="text-white whitespace-nowrap"
           style={{
             fontFamily: 'Arial Black, Arial, sans-serif',
-            fontSize: isWin2000 ? 20 : 22,
+            fontSize: isWin2000 ? 16 : 22,
             lineHeight: 1,
             writingMode: 'vertical-rl',
             transform: 'rotate(180deg)',
@@ -147,7 +148,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         </span>
       </div>
       {/* The shared .os-list is a scroll box; the classic menu sizes to its items instead. */}
-      <div className="flex-1 min-w-0 os-list" style={{ overflow: 'visible', height: 'auto', paddingTop: 4, paddingBottom: isWin2000 ? 4 : 0 }}>
+      <div className="flex-1 min-w-0 os-list" style={{ overflow: 'visible', height: 'auto', background: 'transparent', paddingTop: 4, paddingBottom: 0 }}>
         {renderItems(menuItems, 0)}
       </div>
     </div>
