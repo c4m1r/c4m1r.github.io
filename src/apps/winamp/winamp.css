@@ -1055,3 +1055,36 @@
   color: #858596;
   line-height: 1.4;
 }
+
+
+/* Imported Winamp bitmap font (9×13 glyphs from nums_ex.bmp / numbers.bmp). */
+.wa-time-lcd__digits--skin {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 13px;
+  font-size: 13px;
+  line-height: 13px;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.wa-time-lcd__digits--skin img {
+  display: block;
+  width: 9px;
+  height: 13px;
+  flex: 0 0 9px;
+  image-rendering: pixelated;
+}
+
+.wa-time-lcd__colon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3px;
+  height: 13px;
+  overflow: hidden;
+  color: #00e000;
+  font: 900 12px/13px Arial, sans-serif;
+  text-shadow: 0 0 4px rgba(0, 224, 0, 0.65);
+}
