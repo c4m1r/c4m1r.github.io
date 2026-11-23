@@ -40,6 +40,11 @@
   background-color: #3a6ea5 !important;
 }
 
+/* Windows 2000 draws menus, icon labels and window text in Tahoma; the Start button keeps MS Sans Serif bold. */
+.os-classic.os-win2000 {
+  --os-font: "Tahoma", "Pixelated MS Sans Serif", sans-serif;
+}
+
 /* Classic skins are pixel art: every image is drawn at its own size and never smoothed. */
 .os-classic img {
   image-rendering: pixelated;
@@ -269,7 +274,7 @@
   border-right: 1px solid var(--win98-gray-dark) !important;
   border-bottom: 1px solid var(--win98-gray-dark) !important;
   color: #000000 !important;
-  font-family: var(--os-font) !important;
+  font-family: "Pixelated MS Sans Serif", "MS Sans Serif", sans-serif !important;
   font-weight: bold !important;
   font-size: 11px !important;
   border-radius: 0 !important;
@@ -421,4 +426,11 @@
 .os-win-98 [aria-busy="true"],
 .os-win-98 .is-busy {
   cursor: url('../../../themes/win98/assets/cursors/w98-hourglass.cur'), wait;
+}
+
+/* The classic tray clock is regular weight with no text shadow (the shared markup is bold with a shadow). */
+.os-classic .taskbar-tray-time span {
+  font-weight: 400 !important;
+  text-shadow: none !important;
+  letter-spacing: 0 !important;
 }

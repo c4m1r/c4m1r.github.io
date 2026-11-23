@@ -271,7 +271,7 @@ export function TaskbarSystemArea({
               <span>{time.toLocaleDateString(language, { month: 'numeric', day: 'numeric', year: 'numeric' })}</span>
             </span>
           ) : (
-            <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' })}</span>
+            <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' }).replace(/[\u202f\u00a0]/g, ' ')}</span>
           )}
         </button>
         {showClockPanel && <ClockCalendarPopup language={language} time={time} labels={labels} theme={theme} onOpenCalendar={onOpenCalendar} />}
