@@ -55,6 +55,7 @@ import { THEME_STYLES } from '../../themes/webos/themeStyles';
 import { playXpClick } from '../../themes/winxp/xpSoundService';
 import { AsciiAurora } from '../../components/effects';
 import webosVideoWallpaper from '../../themes/webos/assets/Ascii_Blossom.mp4';
+import win2000IeDesktopIcon from '../../themes/win2000/icons/desktop/internet-explorer-32.png';
 import win2000ShowDesktopIcon from '../../themes/win2000/icons/quick-launch/show-desktop-16.png';
 import win2000IeQuickIcon from '../../themes/win2000/icons/start-menu/internet-explorer-16.png';
 import win2000OutlookQuickIcon from '../../themes/win98/icons/network/mailbox-world/16x16-1.png';
@@ -799,22 +800,32 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     ...(themeKey === 'macos-26'
       ? []
       : [
-          {
-            id: 'my-computer',
-            icon: getIconElement('computer'),
-            label: getOsSystemLabel('myComputer', t.myComputer, themeKey, language),
-            type: 'system' as const,
-          },
-          {
-            id: 'my-documents',
-            icon: getIconElement('documents'),
-            label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
-            type: 'system' as const,
-          },
+          // Windows 2000 lists My Documents first, then My Computer; the other skins keep My Computer first.
+          ...(() => {
+            const computer = {
+              id: 'my-computer',
+              icon: getIconElement('computer'),
+              label: getOsSystemLabel('myComputer', t.myComputer, themeKey, language),
+              type: 'system' as const,
+            };
+            const documents = {
+              id: 'my-documents',
+              icon: getIconElement('documents'),
+              label: getOsSystemLabel('documents', language === 'ru' ? 'Мои документы' : 'My Documents', themeKey, language),
+              type: 'system' as const,
+            };
+            return themeKey === 'win2000' ? [documents, computer] : [computer, documents];
+          })(),
           ...(['win-xp', 'win-98', 'win2000', 'win7'].includes(themeKey) ? [{
             id: 'recycle-bin',
             icon: getIconElement('recycle'),
             label: getOsSystemLabel('recycleBin', language === 'ru' ? 'Корзина' : 'Recycle Bin', themeKey, language),
+            type: 'system' as const,
+          }] : []),
+          ...(themeKey === 'win2000' ? [{
+            id: 'internet-explorer',
+            icon: <img src={win2000IeDesktopIcon} alt="" className={desktopIconImageClass} />,
+            label: 'Internet Explorer',
             type: 'system' as const,
           }] : []),
           {
