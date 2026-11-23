@@ -30,17 +30,19 @@ const MAX_EXPANDED_BYTES = 64 * 1024 * 1024;
 const MAX_ENTRY_BYTES = 16 * 1024 * 1024;
 const MAX_ENTRIES = 512;
 const DEFAULT_VISUALIZER_COLORS = [
-  '#00ff00', '#00df00', '#00bf00', '#009f00', '#007f00', '#005f00',
-  '#ffff00', '#dfdf00', '#bfbf00', '#9f9f00', '#7f7f00', '#5f5f00',
-  '#ff0000', '#df0000', '#bf0000', '#9f0000', '#7f0000', '#5f0000',
-  '#ffffff', '#dfdfdf', '#bfbfbf', '#9f9f9f', '#7f7f7f', '#5f5f5f',
+  'rgb(0,0,0)', 'rgb(24,33,41)', 'rgb(239,49,16)', 'rgb(206,41,16)',
+  'rgb(214,90,0)', 'rgb(214,102,0)', 'rgb(214,115,0)', 'rgb(198,123,8)',
+  'rgb(222,165,24)', 'rgb(214,181,33)', 'rgb(189,222,41)', 'rgb(148,222,33)',
+  'rgb(41,206,16)', 'rgb(50,190,16)', 'rgb(57,181,16)', 'rgb(49,156,8)',
+  'rgb(41,148,0)', 'rgb(24,132,8)', 'rgb(255,255,255)', 'rgb(214,214,222)',
+  'rgb(181,189,189)', 'rgb(160,170,175)', 'rgb(148,156,165)', 'rgb(150,150,150)',
 ];
 
 const DEFAULT_PLAYLIST_STYLE: WinampSkinPlaylistStyle = {
   normal: '#00ff00',
   current: '#ffffff',
   normalbg: '#000000',
-  selectedbg: '#000080',
+  selectedbg: '#0000ff',
   mbfg: '#ffffff',
   mbbg: '#000080',
   font: 'Arial',
