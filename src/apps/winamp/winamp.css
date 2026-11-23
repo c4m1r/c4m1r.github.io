@@ -970,14 +970,14 @@
   border: 0;
 }
 
-.wa-skin-range--volume::-webkit-slider-runnable-track,
-.wa-skin-range--balance::-webkit-slider-runnable-track {
+.wa-slider-track--skinned .wa-skin-range--volume::-webkit-slider-runnable-track,
+.wa-slider-track--skinned .wa-skin-range--balance::-webkit-slider-runnable-track {
   height: 15px;
   background: transparent;
 }
 
-.wa-skin-range--volume::-moz-range-track,
-.wa-skin-range--balance::-moz-range-track {
+.wa-slider-track--skinned .wa-skin-range--volume::-moz-range-track,
+.wa-slider-track--skinned .wa-skin-range--balance::-moz-range-track {
   height: 15px;
   background: transparent;
 }
