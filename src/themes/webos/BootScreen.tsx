@@ -6,10 +6,17 @@ import { playBootStartup } from '../bootPreload';
 import { AppleBootScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { ClassicBootScreen, type ClassicBootVariant } from '../classicBoot/ClassicBootScreen';
 import { getActiveBootProfileId } from '../bootProfile';
+import { getSelectedEditionId } from '../../shells/os/osEditions';
+
+/** Windows 2000 editions that share the Server Family splash (chosen with E in GRUB). */
+const WIN2000_SERVER_EDITIONS = ['server', 'advanced-server', 'datacenter'];
 
 /** Classic splashes replace the placeholder boot for these skins (Windows 95 shares the 98 theme). */
 function classicBootVariant(theme: string | undefined): ClassicBootVariant | null {
-  if (theme === 'win2000') return 'win2000';
+  if (theme === 'win2000') {
+    const edition = getSelectedEditionId(getActiveBootProfileId() ?? 'win2000');
+    return WIN2000_SERVER_EDITIONS.includes(edition) ? 'win2000server' : 'win2000';
+  }
   if (theme === 'vista') return 'vista';
   if (theme === 'win-98') return getActiveBootProfileId() === 'win95' ? 'win95' : 'win98';
   return null;
