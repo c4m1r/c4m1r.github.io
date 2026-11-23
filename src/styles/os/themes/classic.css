@@ -43,6 +43,10 @@
 /* Windows 2000 draws menus, icon labels and window text in Tahoma; the Start button keeps MS Sans Serif bold. */
 .os-classic.os-win2000 {
   --os-font: "Tahoma", "Pixelated MS Sans Serif", sans-serif;
+  /* Windows 2000 palette (reference: eat/screens/oc/win2000): face #d4d0c8, caption gradient navy to light blue. */
+  --win98-gray: #d4d0c8;
+  --win98-blue-active: linear-gradient(90deg, #0a246a 0%, #a6caf0 100%);
+  --win98-blue-inactive: linear-gradient(90deg, #808080 0%, #c0c0c0 100%);
 }
 
 /* Classic skins are pixel art: every image is drawn at its own size and never smoothed. */
