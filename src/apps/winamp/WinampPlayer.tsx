@@ -1174,7 +1174,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </div>
 
                   <div className="wa-pl__status">
-                    {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinVisuals?.name ?? 'SKIN'}: {skinStatus}</span>}
+                    {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinStatus}</span>}
                     <span className="wa-pl__status-text">
                       {formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}
                     </span>
