@@ -1088,3 +1088,49 @@
   font: 900 12px/13px Arial, sans-serif;
   text-shadow: 0 0 4px rgba(0, 224, 0, 0.65);
 }
+
+
+/* Main-window settings popover stays available even when the Playlist is closed. */
+.wa-player-settings-panel {
+  position: absolute;
+  top: 21px;
+  right: 3px;
+  z-index: 120;
+  width: min(246px, calc(100vw - 16px));
+  box-sizing: border-box;
+  padding: 7px;
+  color: #c7c7d2;
+  background: #1b1b25;
+  border: 1px solid #77778a;
+  border-right-color: #08080c;
+  border-bottom-color: #08080c;
+  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.7);
+  font-size: 9px;
+}
+
+.wa-player-settings-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #444452;
+  color: #ededf4;
+  letter-spacing: 0.5px;
+}
+
+.wa-player-settings-panel__header button {
+  width: 16px;
+  height: 15px;
+  padding: 0;
+  color: #ddd;
+  background: #383844;
+  border: 1px solid #777;
+  cursor: pointer;
+  line-height: 12px;
+}
+
+.wa-player-settings-panel p {
+  margin: 4px 0 0;
+  color: #9292a2;
+  line-height: 1.4;
+}
