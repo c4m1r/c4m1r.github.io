@@ -854,3 +854,40 @@
   outline-offset: 2px;
 }
 
+
+
+/* Imported .wsz sprite rendering — native pixels, no smoothing or stretching. */
+.wa-skin-sprite-default,
+.wa-skin-sprite-pressed {
+  display: block;
+  flex: 0 0 auto;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.wa-skin-sprite-pressed { display: none; }
+
+.wa-btn-transport:active .wa-skin-sprite-default,
+.wa-btn-mode:active .wa-skin-sprite-default {
+  display: none;
+}
+
+.wa-btn-transport:active .wa-skin-sprite-pressed,
+.wa-btn-mode:active .wa-skin-sprite-pressed {
+  display: block;
+}
+
+.wa-btn-mode--skinned {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  gap: 0;
+}
+
+.wa-btn-toggle--skinned {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  min-width: 23px;
+  min-height: 12px;
+}
