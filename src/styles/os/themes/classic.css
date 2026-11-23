@@ -33,6 +33,11 @@
   height: 22px;
 }
 
+/* Windows 2000 taskbar uses the 2000 window face (#d4d0c8), not the Windows 98 grey shared by .taskbar-98. */
+.os-classic .taskbar.theme-win2000 {
+  background: #d4d0c8 !important;
+}
+
 /* Windows 95, 98 and 2000 Start sit in the bottom-left corner: no shared taskbar padding in front of it. */
 .os-win2000 .taskbar,
 .theme-98 .taskbar {

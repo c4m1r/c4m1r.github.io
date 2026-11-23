@@ -353,10 +353,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 ### Windows 2000
 - Cursors: no Windows 2000 `.cur` set in the repo. Needs the 2000 scheme before it can be canonical; the 98 set must not be reused.
 - Start menu top-level icons: 32 px shell art is approximate (98 lineage). Needs a 2000 Start-menu reference capture.
-- Logon window: teal background and position done; "Options >>" button and remaining Windows 2000 logon details need a reference.
+- Logon window: teal background, position and the "Log on to" row behind Options >> / << Options are done (2026-11-23; OK, Cancel, Shut Down... and Options >> fit the 420 px window at 640x480). Remaining 2000 logon details need a reference.
 - Desktop default colour: kept at `#3a6ea5` to match the Windows 2000 Server reference; confirm if the canonical default should be teal.
 - Boot: Professional and Server Family GIFs in place with paced progress; Advanced Server and Datacenter currently use the Server Family splash. Confirm whether they need their own splash.
-- Taskbar: tile wired; quick-launch icon spacing not re-measured against the reference.
+- Taskbar: tile wired. Face colour fixed to the 2000 window face #d4d0c8 (`.os-classic .taskbar.theme-win2000` in `classic.css`; the shared `.taskbar-98` grey was winning). Still open: the reference shows three quick-launch icons (notepad, Internet Explorer, show desktop) after Start and no language flag in the middle; we have neither the icons nor the quick-launch row. Start size (22 px, native) and 28 px taskbar are kept: the reference is scaled about 0.78, so its pixel sizes are not native.
 
 ### Boot, logon and sound (all Windows-family OSes)
 - Startup sound plays only on logon (desktop mount). Confirmed by the audio trace; Safari and Firefox not tested.
@@ -381,4 +381,3 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - The local audio picker belongs to the Winamp shell, not the Playlist body, so the classic `L` shortcut and ADD action work while Playlist is hidden.
 - Reopening the full player must compare persisted IDs against the live controller queue before creating object URLs, avoiding duplicate queue entries and leaked URLs when the singleton outlives the window. Keep local-library and M3U feedback in one existing Playlist status row so the feature does not add another permanent row to the classic window.
 - Acceptance: reload with saved audio and confirm tracks restore/play; remove a saved track and confirm it stays removed after reload; verify storage-failure fallback; compare all three modules with the Webamp reference at native 275 px width. Browser QA remains required.
-
