@@ -28,6 +28,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [selectedUser98, setSelectedUser98] = useState<'c4m1r' | 'user'>('user');
+  // Windows 2000 keeps the "Log on to" row behind Options >> until it is expanded.
+  const [options2000Open, setOptions2000Open] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [shake, setShake] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -155,10 +157,14 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                 } ${shake ? 'border-red-600 bg-red-50' : ''}`}
               />
 
-              <label className="text-sm font-medium text-gray-800">Log on to:</label>
-              <div className="text-sm text-gray-700 bg-gray-100 px-2 py-0.5 border border-gray-300">
-                (this computer)
-              </div>
+              {options2000Open && (
+                <>
+                  <label className="text-sm font-medium text-gray-800">Log on to:</label>
+                  <div className="text-sm text-gray-700 bg-gray-100 px-2 py-0.5 border border-gray-300">
+                    (this computer)
+                  </div>
+                </>
+              )}
             </div>
 
             {errorMessage && (
@@ -189,6 +195,14 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               className="px-6 py-1 border-2 border-white border-b-black border-r-black active:border-black active:border-b-white active:border-r-white font-medium text-sm os-button"
             >
               Shut Down...
+            </button>
+            <button
+              type="button"
+              aria-expanded={options2000Open}
+              onClick={() => setOptions2000Open((open) => !open)}
+              className="px-6 py-1 border-2 border-white border-b-black border-r-black active:border-black active:border-b-white active:border-r-white font-medium text-sm os-button"
+            >
+              {options2000Open ? '<< Options' : 'Options >>'}
             </button>
           </div>
         </form>
