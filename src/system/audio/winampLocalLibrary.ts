@@ -87,7 +87,7 @@ export async function saveWinampLocalAudioFiles(files: File[]): Promise<WinampLo
     title: file.name.replace(/\.[^.]+$/, ''),
     artist: 'Local file',
     durationLabel: '—',
-    addedAt: Date.now(),
+    addedAt: Date.now() + files.indexOf(file),
     blob: file.slice(0, file.size, file.type || 'application/octet-stream'),
   }));
   records.forEach((record) => store.put(record));

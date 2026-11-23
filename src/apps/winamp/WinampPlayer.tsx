@@ -79,10 +79,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     let active = true;
     void getWinampLocalAudioFiles().then((records) => {
       if (!active) return;
-      const restored = records.map(({ blob, ...track }) => ({
-        ...track,
-        src: URL.createObjectURL(blob),
-      }));
+      const existingTrackIds = new Set(winampController.getPlaylist().map((track) => track.id));
+      const restored = records
+        .filter(({ id }) => !existingTrackIds.has(id))
+        .map(({ blob, ...track }) => ({
+          ...track,
+          src: URL.createObjectURL(blob),
+        }));
       if (restored.length) {
         winampController.addTracks(restored);
         setLocalLibraryStatus(`Restored ${restored.length} saved local track${restored.length === 1 ? '' : 's'}`);
@@ -212,6 +215,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const importM3uFile = async (file?: File) => {
     if (!file) return;
+    setLocalLibraryStatus('');
     try {
       const parsed = parseM3uPlaylist(await file.text());
       if (!parsed.tracks.length) {
@@ -241,6 +245,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   };
 
   const addLocalAudioFiles = async (files: File[]) => {
+    setM3uStatus('');
     const audioFiles = files.filter((file) => file.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|m4a|aac|flac|opus|webm)$/i.test(file.name));
     if (!audioFiles.length) {
       setLocalLibraryStatus('No supported audio files selected');
@@ -1060,8 +1065,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               </div>
 
               {/* Playlist Bottom Bar */}
-              {m3uStatus && <div className="wa-pl__import-status" role="status" aria-live="polite">{m3uStatus}</div>}
-              {localLibraryStatus && <div className="wa-pl__import-status" role="status" aria-live="polite">{localLibraryStatus}</div>}
+              {(m3uStatus || localLibraryStatus) && (
+                <div className="wa-pl__import-status" role="status" aria-live="polite">
+                  {m3uStatus || localLibraryStatus}
+                </div>
+              )}
               <div className="wa-pl__footer">
                 <div className="wa-pl__actions">
                   <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()} title="Add local audio (L)" aria-keyshortcuts="L">+ ADD</button>

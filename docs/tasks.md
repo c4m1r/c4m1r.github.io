@@ -379,5 +379,6 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Local audio files are stored as Blob records in IndexedDB, never as persisted `blob:` URLs. On restore, create fresh object URLs and append records to the single shared controller queue. Persist duration metadata; removing a local track deletes its stored record and lets the controller revoke its session URL.
 - If IndexedDB is unavailable or quota is exceeded, the selected audio remains playable for the current session and the UI reports that it was not saved. Remote M3U tracks remain separate.
 - The local audio picker belongs to the Winamp shell, not the Playlist body, so the classic `L` shortcut and ADD action work while Playlist is hidden.
+- Reopening the full player must compare persisted IDs against the live controller queue before creating object URLs, avoiding duplicate queue entries and leaked URLs when the singleton outlives the window. Keep local-library and M3U feedback in one existing Playlist status row so the feature does not add another permanent row to the classic window.
 - Acceptance: reload with saved audio and confirm tracks restore/play; remove a saved track and confirm it stays removed after reload; verify storage-failure fallback; compare all three modules with the Webamp reference at native 275 px width. Browser QA remains required.
 
