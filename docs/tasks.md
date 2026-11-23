@@ -827,3 +827,9 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - The Windows startup sound plays only when the user actually logs on: the desktop plays it when it appears after the logon screen. No boot screen (GRUB click, classic, XP, 7, webos) plays it any more; `bootPreload.ts` only preloads images and video.
 - Start corner: 98 and 95 (`theme-98`) now drop the shared taskbar padding like 2000, so Start sits at x≈2. Measured on 98 (was x≈12).
 - Open point: the XP-style loader (`src/themes/winxp/BootScreen.tsx`) is shown by `App.tsx` whenever mode is `webos` and theme is still the default `win-xp`. It did not appear on the GRUB click path in tests; the exact action that shows it is not yet reproduced.
+
+### Media preload on the logon screen (2026-11-23)
+- `preloadThemeAssets(theme)` in `bootPreload.ts` collects every image and sound URL in the active theme's assets (wallpaper, desktop and start menu icons, sounds) and loads them into the browser cache. It starts on the logon screen (`LoginScreen`), so media loads while the user picks an account.
+- `WelcomeScreen` finishes only after 3 s and after the same preload promise, capped at 10 s, so the desktop opens with its media already in the cache.
+- Measured on Windows 98: 15 media files fetched before the logon click, 1 after it.
+- Not covered yet: the boot video (warmed at the GRUB click only) and cursor images referenced from CSS.

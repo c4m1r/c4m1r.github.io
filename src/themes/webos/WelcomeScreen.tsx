@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { AppleWelcomeScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { getOsClassName } from '../../shells/os/osClassNames';
+import { preloadThemeAssets } from '../bootPreload';
 
 interface WelcomeScreenProps {
   onComplete: () => void;
@@ -16,13 +17,17 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   useEffect(() => {
     if (appleTheme) return;
     setFadeIn(true);
-    // Auto-complete after 3 seconds
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 3000);
+    // Complete after 3 seconds, and only once the theme's media has loaded (see preloadThemeAssets).
+    let cancelled = false;
+    const minWait = new Promise<void>((resolve) => setTimeout(resolve, 3000));
+    void Promise.all([minWait, preloadThemeAssets(theme)]).then(() => {
+      if (!cancelled) onComplete();
+    });
 
-    return () => clearTimeout(timer);
-  }, [appleTheme, onComplete]);
+    return () => {
+      cancelled = true;
+    };
+  }, [appleTheme, onComplete, theme]);
 
   if (appleTheme) {
     return <AppleWelcomeScreen theme={theme} onComplete={onComplete} />;

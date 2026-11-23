@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { getOsClassName } from '../../shells/os/osClassNames';
 import { translations } from '../../i18n/translations';
@@ -7,6 +7,7 @@ import userAvatar from '../winxp/assets/user.gif';
 import { AppleLoginScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { verifyAccountPassword } from '../../domain/auth/credentials';
 import { setSessionAccount } from '../../domain/auth/session';
+import { preloadThemeAssets } from '../bootPreload';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -14,6 +15,11 @@ interface LoginScreenProps {
 
 export function LoginScreen({ onLogin }: LoginScreenProps) {
   const { language, theme, setMode } = useApp();
+
+  // Load the theme's wallpaper, icons and sounds while the user picks an account.
+  useEffect(() => {
+    void preloadThemeAssets(theme);
+  }, [theme]);
   const t = translations[language].xp;
   const osClassName = getOsClassName(theme);
   const isRu = language === 'ru';
