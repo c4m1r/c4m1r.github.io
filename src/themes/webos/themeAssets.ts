@@ -61,6 +61,10 @@ import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
+import win2000SideBar from '../win2000/assets/sideBar.png';
+import win2000MenuSeparator from '../win2000/assets/startMenu_separator.png';
+import win2000MenuArrow from '../win2000/assets/startMenu_arrow.png';
+import win2000TaskbarTile from '../win2000/assets/taskbar.png';
 import { OS_SOUNDS } from '../../assets/os-sounds';
 import win98StartIcon from '../win98/icons/system/start98/32x32-0.png';
 import { WIN98_ICON_ASSETS } from '../win98/iconAssets';
@@ -101,6 +105,14 @@ export interface ThemeAssets {
   driveIcon?: string;
   startButtonIcon?: string;
   startButtonHoverIcon?: string;
+  /** Start menu banner strip (native pixel art, with its own lettering). */
+  startMenuSidebar?: string;
+  /** Start menu separator line (native pixel art). */
+  startMenuSeparator?: string;
+  /** Submenu arrow (native pixel art). */
+  startMenuArrow?: string;
+  /** Taskbar background tile (native pixel art). */
+  taskbarTile?: string;
   trayExpandIcon?: string;
   wallpaper?: string;
   userAvatar?: string;
@@ -349,6 +361,10 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     // The flag on the taskbar button is the same logo in both classic skins; the 2000
     // start.png carries a baked-in localised label, so it is not used.
     startButtonIcon: win98StartIcon,
+    startMenuSidebar: win2000SideBar,
+    startMenuSeparator: win2000MenuSeparator,
+    startMenuArrow: win2000MenuArrow,
+    taskbarTile: win2000TaskbarTile,
     // Game icons are theme-neutral; Win2000 has its own asset object, so it lists them explicitly.
     snakeIcon: snakeIconAsset,
     memoryIcon: memoryIconAsset,

@@ -28,16 +28,9 @@
   image-rendering: pixelated;
 }
 
-/* Windows 2000 taskbar is 20 px tall with a 16 px Start button (reference, 800x600). */
-.os-classic.os-win2000 .taskbar {
-  height: 20px !important;
-  min-height: 20px !important;
-}
-
+/* Windows 2000 Start button is the native 22 px height (the 2000 taskbar is 28 px). */
 .os-win2000 .start-button {
-  height: 16px;
-  padding: 0 6px;
-  font-size: 12px;
+  height: 22px;
 }
 
 /* ── 1. Window Chrome ───────────────────────────────────────── */

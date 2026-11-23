@@ -3,6 +3,7 @@ import { useApp } from '../../../../contexts/useApp';
 import { getSessionAccount } from '../../../../domain/auth/session';
 import { buildClassicStartMenu, type ClassicMenuItem } from './startMenuClassicLists';
 import { getActiveEdition } from '../../../os/osEditions';
+import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
 
 export interface StartMenu98Props {
   onClose: () => void;
@@ -27,6 +28,8 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const activeEdition = getActiveEdition(theme);
 
   const menuItems = buildClassicStartMenu({ isWin2000, isRu, account });
+  // Windows 2000 chrome is native pixel art (banner, separator, submenu arrow); Windows 98 draws its own.
+  const chrome = isWin2000 ? THEME_ASSETS.win2000 : undefined;
 
   const activate = (item: ClassicMenuItem) => {
     if (item.action) onSystemCommand?.(item.action);
@@ -46,11 +49,26 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       {items.map((item, index) => {
         if (item.separator) {
           // Reference gaps: Windows 98 separator is 9 px tall (4 + 3 margin + 2 border), Windows 2000 is 6 px (2 + 2 + 2).
+          if (chrome?.startMenuSeparator) {
+            return (
+              <div
+                key={`sep-${index}`}
+                className="mx-1"
+                style={{
+                  height: 2,
+                  marginTop: 3,
+                  marginBottom: 3,
+                  backgroundImage: `url(${chrome.startMenuSeparator})`,
+                  backgroundRepeat: 'repeat-x',
+                }}
+              />
+            );
+          }
           return (
             <div
               key={`sep-${index}`}
               className="mx-1 border-t border-[#808080] border-b border-white"
-              style={isWin2000 ? { marginTop: 2, marginBottom: 2 } : { marginTop: 4, marginBottom: 3 }}
+              style={{ marginTop: 4, marginBottom: 3 }}
             />
           );
         }
@@ -69,9 +87,9 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
                 // so the row height is the pitch.
                 border: 0,
                 boxShadow: 'none',
-                padding: depth === 0 ? (isWin2000 ? '4px 8px' : '0 8px') : '3px 8px',
-                // Reference pitch: Windows 98 top level 32 px, Windows 2000 top level 25 px, submenus 22 px.
-                minHeight: depth === 0 ? (isWin2000 ? 25 : 32) : 22,
+                padding: depth === 0 ? '0 8px' : '3px 8px',
+                // Top-level rows are 32 px (the native icon size) on both skins; submenu rows are 22 px.
+                minHeight: depth === 0 ? 32 : 22,
               }}
               onClick={() => (item.submenu ? openAt(depth, isOpen ? null : item.label) : activate(item))}
               onMouseEnter={() => {
@@ -82,7 +100,13 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             >
               {item.icon}
               <span className="flex-1 whitespace-nowrap">{item.label}</span>
-              {item.submenu ? <span aria-hidden="true">›</span> : null}
+              {item.submenu ? (
+                chrome?.startMenuArrow ? (
+                  <img src={chrome.startMenuArrow} alt="" width={4} height={7} style={{ imageRendering: 'pixelated' }} />
+                ) : (
+                  <span aria-hidden="true">›</span>
+                )
+              ) : null}
             </button>
             {isOpen && item.submenu && (
               <div
@@ -105,10 +129,12 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
   return (
     <div
-      className={`absolute ${isWin2000 ? 'bottom-[20px] left-0 w-[136px]' : 'bottom-[26px] left-1 w-40'} flex z-50 os-panel`}
+      className={`absolute ${isWin2000 ? 'bottom-[28px] left-0' : 'bottom-[26px] left-1 w-40'} flex z-50 os-panel`}
       style={{
         // Reference: Windows 2000 menus use the 2000 window face (#d4d0c8); Windows 98 uses #c0c0c0.
         background: isWin2000 ? '#d4d0c8' : '#c0c0c0',
+        // The 2000 menu grows to its longest label (e.g. "Shut Down..." or the Russian names), never clips them.
+        ...(isWin2000 ? { minWidth: 174, width: 'max-content' } : {}),
         border: '2px solid',
         borderColor: '#ffffff #000000 #000000 #ffffff',
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
@@ -119,14 +145,17 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       <div
         className="flex items-end justify-center pb-2 os-sidebar select-none"
         style={{
-          width: isWin2000 ? 18 : 22,
+          width: isWin2000 ? 21 : 22,
           flexShrink: 0,
           flexDirection: 'row',
-          // Reference: Windows 2000 is a black top fading to blue; Windows 98 is solid navy.
-          background: isWin2000 ? 'linear-gradient(to bottom, #000000 0%, #000000 30%, #0000a8 100%)' : '#000080',
+          // Windows 2000: the native banner (black top, blue foot, lettering in the art) sits at the bottom.
+          // Windows 98: a solid navy strip with its own lettering.
+          background: chrome?.startMenuSidebar
+            ? `url(${chrome.startMenuSidebar}) bottom / 21px auto no-repeat, #000000`
+            : '#000080',
         }}
       >
-        <span
+        {!isWin2000 && <span
           className="text-white whitespace-nowrap"
           style={{
             fontFamily: 'Arial Black, Arial, sans-serif',
@@ -138,14 +167,12 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             paddingBottom: 4,
           }}
         >
-          {isWin2000 ? (
-            <><b>Windows 2000</b>{' '}<span className="font-normal">Professional</span></>
-          ) : activeEdition?.id === 'second-edition' ? (
+          {activeEdition?.id === 'second-edition' ? (
             <><b>Windows</b><span className="font-normal">98</span><span className="font-bold text-xs ml-1 text-yellow-300">SE</span></>
           ) : (
             <><b>Windows</b><span className="font-normal">98</span></>
           )}
-        </span>
+        </span>}
       </div>
       {/* The shared .os-list is a scroll box; the classic menu sizes to its items instead. */}
       <div className="flex-1 min-w-0 os-list" style={{ overflow: 'visible', height: 'auto', background: 'transparent', paddingTop: 4, paddingBottom: 0 }}>

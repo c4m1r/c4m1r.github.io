@@ -68,8 +68,8 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
   const notepadIcon = isWin2000 ? win2000NotepadIcon : notepadClassicIcon;
   const paintIcon = isWin2000 ? win2000PaintIcon : paintClassicIcon;
   const mediaPlayerIcon = isWin2000 ? win2000MediaPlayerIcon : mediaPlayerClassicIcon;
-  // Top-level rows: Windows 98 shows the 32px shell icons, Windows 2000 its 16px ones.
-  const topIcon = (src16: string, src32: string) => (isWin2000 ? classicIcon(src16, 16) : classicIcon(src32, 32));
+  // Both skins use the 32 px shell art for the top level (the 2000 reference is the same art lineage).
+  const topIcon = (_src16: string, src32: string) => classicIcon(src32, 32);
 
 
   // Entries the user placed in Start Menu\Programs (including the StartUp folder) come from the file system.
