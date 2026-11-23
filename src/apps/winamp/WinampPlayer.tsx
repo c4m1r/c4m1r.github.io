@@ -84,6 +84,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       return 'wsz';
     }
   });
+  const [playerSettingsOpen, setPlayerSettingsOpen] = useState(false);
   const [m3uStatus, setM3uStatus] = useState('');
   const [localLibraryStatus, setLocalLibraryStatus] = useState('');
 
@@ -655,9 +656,27 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             >
               ▲
             </button>
+            <button type="button" className="wa-titlebar__btn" title="Player settings" aria-label="Player settings" aria-expanded={playerSettingsOpen} onClick={() => setPlayerSettingsOpen((open) => !open)}>⚙</button>
             <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close Winamp" onClick={onClose}>×</button>
           </div>
         </div>
+
+        {playerSettingsOpen && (
+          <div className="wa-player-settings-panel" onPointerDown={(event) => event.stopPropagation()}>
+            <div className="wa-player-settings-panel__header">
+              <strong>PLAYER SETTINGS</strong>
+              <button type="button" onClick={() => setPlayerSettingsOpen(false)} aria-label="Close player settings">×</button>
+            </div>
+            <label className="wa-player-settings__row">
+              <span>Appearance renderer</span>
+              <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'built-in' | 'wsz')}>
+                <option value="built-in">Built-in Winamp UI</option>
+                <option value="wsz" disabled={!skinVisuals}>Imported .wsz skin{skinVisuals ? ` — ${skinVisuals.name}` : ' (not loaded)'}</option>
+              </select>
+            </label>
+            <p>Both renderers share the same playback, playlist and equalizer controller. The built-in UI remains available when a skin is imported.</p>
+          </div>
+        )}
 
         {!mainShade && (
           <div className="wa-main__body" style={activeSkin ? { backgroundImage: `url("${activeSkin.mainUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 116px' } : undefined}>
@@ -1229,18 +1248,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       });
                     }} title="Remove the imported skin">RESET</button>}
                   </div>
-                  <details className="wa-player-settings">
-                    <summary>PLAYER SETTINGS</summary>
-                    <label className="wa-player-settings__row">
-                      <span>Appearance renderer</span>
-                      <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'built-in' | 'wsz')}>
-                        <option value="built-in">Built-in Winamp UI</option>
-                        <option value="wsz" disabled={!skinVisuals}>Imported .wsz skin{skinVisuals ? ` — ${skinVisuals.name}` : ' (not loaded)'}</option>
-                      </select>
-                    </label>
-                    <p>Both renderers share the same playback, playlist and equalizer controller. The built-in UI remains available when a skin is imported.</p>
-                  </details>
-
                   <div className="wa-pl__status">
                     {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinStatus}</span>}
                     <span className="wa-pl__status-text">
