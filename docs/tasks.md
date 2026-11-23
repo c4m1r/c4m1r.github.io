@@ -344,7 +344,7 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Internet Backgammon). Completed items are in [history.md](./history.md), section "Moved from tasks.md — 2026-11-23".
 
 ### Windows 95 / 98
-- Start button text: reference uses MS Sans Serif bold; we use Arial bold 11px. No font available in-browser; decide whether to ship a matching bitmap or accept the approximation.
+- Start button text and classic UI font: done (2026-11-24). `classic.css` now declares `Pixelated MS Sans Serif` (regular and bold woff2 from `eat/windows-98-portfolio-main/src/fonts`, copied to `src/assets/fonts`); there was no `@font-face` before, so classic skins rendered a fallback. The face is designed for 11 px: Start menu rows use 11 px. Other classic components that hard-code 12 px or `Tahoma` should be reviewed against it.
 - Accelerator underlines on menu items: not visible in the reference screenshot; confirm against an Alt-key capture before changing.
 - Start menu rows and banner metrics: re-measure against `01-desktop-programs-menu-system-properties.png` after the banner fix (banner now matches; row spacing not re-checked).
 - Windows 95 cursor set: uses the 98 set for now; confirm the 95 scheme separately if a 95 reference appears.

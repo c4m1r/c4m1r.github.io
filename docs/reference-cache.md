@@ -17,6 +17,11 @@ Active task registry: `docs/tasks.md`. Completed records: `docs/history.md`.
   - It has no Windows 2000 `.cur` cursors and no quick-launch row (notepad, Internet Explorer, show desktop).
 - `eat/98.portfolio-main/public/cursors/` — the only `.cur` set in the repo (Windows 98: arrow, pointer, ibeam, hourglass).
 
+## Fonts in eat
+- `windows-98-portfolio-main/src/fonts/ms_sans_serif{,_bold}.woff2` — used by `classic.css` (`Pixelated MS Sans Serif`, 11 px).
+- `wins95Portfolio-main/src/assets/MS Sans Serif 8pt bold.ttf`, `win95.ttf`; `portfolio-main/MS_Sans.ttf` (also in `src/assets/fonts`, unused); `windows2000-main/public/fonts/tahoma.woff2`; `winxpsite-main/fonts/Tahoma{,Bold} V1.woff`.
+- Not yet used: Tahoma for Windows 2000 and XP UI text (check `--os-font` in `winxp.css` and the 2000 skin).
+
 ## Scaling
 - The 640×480 and 800×600 reference screenshots are scaled by about 0.78. Their pixel sizes are not native.
 - Native Windows 2000 values used: 28 px taskbar, 22 px Start button, 32 px top-level menu rows, 32 px top-level icons, 21 px banner.

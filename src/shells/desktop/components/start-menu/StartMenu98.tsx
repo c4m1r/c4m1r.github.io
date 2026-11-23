@@ -80,8 +80,8 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               className={`w-full text-left px-2 flex items-center os-list-item os-button ${isOpen ? '!bg-[#000080] !text-white' : 'hover:!bg-[#000080] hover:!text-white'}`}
               style={{
                 gap: depth === 0 && !isWin2000 ? 4 : 8,
-                fontFamily: 'MS Sans Serif, sans-serif',
-                fontSize: 12,
+                fontFamily: 'var(--os-font)',
+                fontSize: 11,
                 lineHeight: '16px',
                 // Rows are flat in the reference: the shared button bevel (box-shadow and borders) is removed,
                 // so the row height is the pitch.

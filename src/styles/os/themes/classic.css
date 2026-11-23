@@ -1,3 +1,20 @@
+/* Pixel-perfect MS Sans Serif (regular and bold, from eat/windows-98-portfolio-main). Designed for 11 px. */
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url('../../../assets/fonts/ms_sans_serif.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url('../../../assets/fonts/ms_sans_serif_bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ============================================================
    Classic / Windows 98 Visual Skin — classic.css
    Scope: .os-classic, .os-win-98
@@ -252,6 +269,7 @@
   border-right: 1px solid var(--win98-gray-dark) !important;
   border-bottom: 1px solid var(--win98-gray-dark) !important;
   color: #000000 !important;
+  font-family: var(--os-font) !important;
   font-weight: bold !important;
   font-size: 11px !important;
   border-radius: 0 !important;
