@@ -1169,7 +1169,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       void clearActiveWinampSkin().then(() => {
                         setSkinVisuals(null);
                         setSkinStatus('Built-in Winamp appearance restored');
-                      }).catch((error) => setSkinStatus(error instanceof Error ? error.message : 'Unable to reset skin'));
+                      }).catch((error) => {
+                        setSkinVisuals(null);
+                        setSkinStatus(`Built-in appearance restored for this session; saved skin could not be cleared: ${error instanceof Error ? error.message : 'storage unavailable'}`);
+                      });
                     }} title="Restore the built-in Winamp appearance">RESET</button>}
                   </div>
 
