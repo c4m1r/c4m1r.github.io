@@ -5,12 +5,13 @@ import { WelcomeScreen } from './WelcomeScreen';
 import { DesktopShell } from '../../shells/desktop/DesktopShell';
 import { SystemTransitionScreen } from './SystemTransitionScreen';
 import { useApp } from '../../contexts/useApp';
+import { Windows2000StartupScreen } from '../classicBoot/ClassicBootScreen';
 
-type WebOSState = 'boot' | 'login' | 'welcome' | 'desktop' | 'logoff' | 'shutdown';
+type WebOSState = 'boot' | 'startup' | 'login' | 'welcome' | 'desktop' | 'logoff' | 'shutdown';
 
 export function WebOS() {
   const [state, setState] = useState<WebOSState>('boot');
-  const { setMode } = useApp();
+  const { setMode, theme } = useApp();
 
   const exitToPowerOff = useCallback(() => {
     setMode('poweroff');
@@ -23,7 +24,12 @@ export function WebOS() {
   }, []);
 
   if (state === 'boot') {
-    return <BootScreen onComplete={() => setState('login')} />;
+    // Windows 2000 shows its first post-boot GIF before logon.
+    return <BootScreen onComplete={() => setState(theme === 'win2000' ? 'startup' : 'login')} />;
+  }
+
+  if (state === 'startup') {
+    return <Windows2000StartupScreen onComplete={() => setState('login')} />;
   }
 
   if (state === 'login') {

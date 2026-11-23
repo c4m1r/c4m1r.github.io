@@ -789,3 +789,9 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Shared code: `src/themes/classicBoot/ClassicBootScreen.tsx` and `useBootProgress.ts`. The old placeholder boots for 98 and 2000 in `themes/webos/BootScreen.tsx` are gone.
 - Verified in the browser at 800×600: Windows 2000 (progress bar fills), Windows 98 and Vista (splash shows). Windows 95 is not confirmed in the browser: the GRUB autoboot selects the site before the click in the test harness, so the 95 path was not exercised. Check it by hand.
 
+
+### Windows 2000 boot GIFs (2026-11-23)
+- Reference GIFs stored in `eat/screens/oc/win2000/`: `windows2000_professional_loading.gif` (640x480, 160 frames, boot splash with an empty progress box) and `windows2000_example_startup-desktop.gif` (640x480, 1 frame, first screen after boot).
+- Boot: the 2000 splash plays `windows2000_professional_loading.gif` (copied to `src/themes/win2000/assets/boot/`). The site fills the GIF's own progress box (x≈273–437, y≈436–445 of 640x480) with real loading progress. The old still `splash-professional.png` was removed.
+- Post-boot: `Windows2000StartupScreen` (in `ClassicBootScreen.tsx`) shows the startup GIF for 2.5 s, or until a click or key press, then logon. `WebOS` routes boot → startup → login only for `win2000`.
+- Letterbox: all classic boot screens use an inline black background, so side bars never show the system background.
