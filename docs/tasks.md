@@ -806,3 +806,9 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 
 ### Windows 2000 taskbar tile (2026-11-23)
 - The 2000 taskbar paints from `src/themes/win2000/assets/taskbar.png` (116x28, repeats horizontally) via the inline style set in `DesktopShellContainer.tsx`, only when the theme is `win2000`. The tile carries the native colour `#c0c7c8` and the white top highlight.
+
+### Windows 2000 Server boot, pacing and Start corner (2026-11-23)
+- Server Family splash: `windows2000_server_family_loading.gif` (also in `eat/screens/oc/win2000/`). It plays when the GRUB edition chosen with E is Server, Advanced Server or Datacenter (`BootScreen.tsx` reads the edition for `win2000`). Professional stays the default.
+- Windows 2000 boot bar is paced over 9 s (`WIN2000_BOOT_MS`) and never jumps to full, even when loading is instant. Post-boot GIF holds 4 s (`WIN2000_STARTUP_MS`).
+- Start corner: the shared taskbar padding is removed for Windows 2000 (`classic.css`), so Start sits at x≈2 like the reference.
+- Windows 95 and 98 splashes and the 2000 splashes all draw on a black letterbox (inline `LETTERBOX`).
