@@ -2065,10 +2065,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
           <div className="taskbar-divider" aria-hidden />
 
-          <div className="taskbar-lang">
-            <LangSwitcher variant="tray" buttonClassName="taskbar-tray-icon taskbar-lang-button" />
-          </div>
-
           {/* Notification Tray / Clock */}
           <div ref={trayRef} className={`taskbar-tray ${themeStyles.systemTray.join(' ')}`}>
           <TaskbarSystemArea
@@ -2096,6 +2092,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             notificationIconSrc={notificationIconSrc}
             trayExpandIconSrc={themeAssets.trayExpandIcon}
             onOpenCalendar={() => launchApp('calendar')}
+            languageSlot={<LangSwitcher variant="tray" buttonClassName="taskbar-tray-icon taskbar-lang-button" />}
           />
         </div>
       </div>

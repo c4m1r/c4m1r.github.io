@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useState, type ReactNode, type RefObject } from 'react';
 import { type Language } from '../../../i18n/translations';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { useApp } from '../../../contexts/useApp';
@@ -27,6 +27,8 @@ export interface TaskbarSystemAreaProps {
   notificationIconSrc?: string;
   trayExpandIconSrc?: string;
   onOpenCalendar?: () => void;
+  /** Input-language indicator; in the tray it sits at the left edge, before the other tray icons. */
+  languageSlot?: ReactNode;
 }
 
 interface TrayLabels {
@@ -148,6 +150,7 @@ export function TaskbarSystemArea({
   notificationIconSrc,
   trayExpandIconSrc,
   onOpenCalendar,
+  languageSlot,
 }: TaskbarSystemAreaProps) {
   const { theme } = useApp();
   const isWin7 = theme === 'win7';
@@ -233,6 +236,7 @@ export function TaskbarSystemArea({
 
   return (
     <div className="taskbar-system-area relative flex h-full items-center gap-1.5">
+      {languageSlot}
       {useExpandableTray && trayExpandIconSrc && (
         <button type="button" onClick={handleTrayExpandToggle} className={`taskbar-tray-icon taskbar-tray-icon--compact taskbar-tray-expand ${isWin7 ? 'win7-tray-expand' : ''} ${hiddenTrayExpanded ? 'is-open' : ''}`} title={hiddenTrayExpanded ? labels.hideHidden : labels.showHidden} aria-label={hiddenTrayExpanded ? labels.hideHidden : labels.showHidden} aria-expanded={hiddenTrayExpanded}>
           <img src={trayExpandIconSrc} alt="" className="w-3 h-3" />
