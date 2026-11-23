@@ -77,6 +77,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const skinInputRef = useRef<HTMLInputElement | null>(null);
   const [skinVisuals, setSkinVisuals] = useState<{ name: string; mainUrl: string; titlebarUrl: string; sprites: Record<string, string> } | null>(null);
   const [skinStatus, setSkinStatus] = useState('');
+  const [skinAppearance, setSkinAppearance] = useState<'built-in' | 'wsz'>(() => {
+    try {
+      return window.localStorage.getItem('winamp:skin-appearance:v1') === 'built-in' ? 'built-in' : 'wsz';
+    } catch {
+      return 'wsz';
+    }
+  });
   const [m3uStatus, setM3uStatus] = useState('');
   const [localLibraryStatus, setLocalLibraryStatus] = useState('');
 
@@ -589,6 +596,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [currentTime, duration, timeRemainingMode]);
 
   const progressPct = duration ? (currentTime / duration) * 100 : 0;
+  const activeSkin = skinAppearance === 'wsz' ? skinVisuals : null;
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('winamp:skin-appearance:v1', skinAppearance);
+    } catch {
+      // Keep the selected renderer for this session when storage is unavailable.
+    }
+  }, [skinAppearance]);
 
   return (
     <div className="wa-shell" aria-label="Winamp classic player">
@@ -623,7 +639,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.main.x, top: windowPositions.main.y, zIndex: activeWindow === 'main' ? 90 : 80 }} onPointerDown={() => setActiveWindow('main')}>
         {/* Title Bar */}
-        <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'main')} style={skinVisuals ? { backgroundImage: `url("${skinVisuals.titlebarUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 13px' } : undefined}>
+        <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'main')} style={activeSkin ? { backgroundImage: `url("${activeSkin.titlebarUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 13px' } : undefined}>
           <div className="wa-titlebar__left">
             <span className="wa-titlebar__bolt">⚡</span>
             <span className="wa-titlebar__title">WINAMP</span>
@@ -643,14 +659,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         </div>
 
         {!mainShade && (
-          <div className="wa-main__body" style={skinVisuals ? { backgroundImage: `url("${skinVisuals.mainUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 116px' } : undefined}>
+          <div className="wa-main__body" style={activeSkin ? { backgroundImage: `url("${activeSkin.mainUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 116px' } : undefined}>
             {/* Top Display Area */}
             <div className="wa-display">
               {/* Left Column: Mode & Segmented Digits */}
               <div className="wa-display__left">
                 <div className="wa-indicators">
-                  {skinVisuals
-                    ? <img src={skinVisuals.sprites[isPlaying ? 'playIndicator' : currentTime > 0 ? 'pauseIndicator' : 'stopIndicator']} alt="" draggable={false} />
+                  {activeSkin
+                    ? <img src={activeSkin.sprites[isPlaying ? 'playIndicator' : currentTime > 0 ? 'pauseIndicator' : 'stopIndicator']} alt="" draggable={false} />
                     : <>
                         <span className={`wa-ind-dot ${isPlaying ? 'is-lit' : ''}`}>▶</span>
                         <span className={`wa-ind-dot ${!isPlaying && currentTime > 0 ? 'is-lit' : ''}`}>❚❚</span>
@@ -702,14 +718,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <div className="wa-controls-row">
               {/* Position seeker */}
               <div
-                className={"wa-slider-track wa-slider-track--pos" + (skinVisuals ? " wa-slider-track--skinned" : "")}
-                style={skinVisuals ? ({
-                  backgroundImage: `url("${skinVisuals.sprites.positionTrack}")`,
-                  "--wa-skin-range-thumb": `url("${skinVisuals.sprites.positionThumb}")`,
-                  "--wa-skin-range-thumb-pressed": `url("${skinVisuals.sprites.positionThumbPressed}")`,
+                className={"wa-slider-track wa-slider-track--pos" + (activeSkin ? " wa-slider-track--skinned" : "")}
+                style={activeSkin ? ({
+                  backgroundImage: `url("${activeSkin.sprites.positionTrack}")`,
+                  "--wa-skin-range-thumb": `url("${activeSkin.sprites.positionThumb}")`,
+                  "--wa-skin-range-thumb-pressed": `url("${activeSkin.sprites.positionThumbPressed}")`,
                 } as CSSProperties) : undefined}
               >
-                {!skinVisuals && <div className="wa-slider-progress" style={{ width: `${progressPct}%` }} />}
+                {!activeSkin && <div className="wa-slider-progress" style={{ width: `${progressPct}%` }} />}
                 <input
                   type="range"
                   min={0}
@@ -717,7 +733,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   step={0.1}
                   value={progressPct}
                   onChange={(e) => seek(Number(e.currentTarget.value))}
-                  className={"wa-slider-input" + (skinVisuals ? " wa-skin-range--position" : "")}
+                  className={"wa-slider-input" + (activeSkin ? " wa-skin-range--position" : "")}
                   aria-label="Seek position"
                 />
               </div>
@@ -727,12 +743,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <div className="wa-vol-control">
                   <span className="wa-slider-label">VOL</span>
                   <div
-                    className={"wa-slider-track wa-slider-track--vol" + (skinVisuals ? " wa-slider-track--skinned" : "")}
-                    style={skinVisuals ? ({
-                      backgroundImage: `url("${skinVisuals.sprites.volumeTrack}")`,
+                    className={"wa-slider-track wa-slider-track--vol" + (activeSkin ? " wa-slider-track--skinned" : "")}
+                    style={activeSkin ? ({
+                      backgroundImage: `url("${activeSkin.sprites.volumeTrack}")`,
                       backgroundPosition: "0 -" + (Math.round((1 - volume) * 27) * 15) + "px",
-                      "--wa-skin-range-thumb": `url("${skinVisuals.sprites.volumeThumb}")`,
-                      "--wa-skin-range-thumb-pressed": `url("${skinVisuals.sprites.volumeThumbPressed}")`,
+                      "--wa-skin-range-thumb": `url("${activeSkin.sprites.volumeThumb}")`,
+                      "--wa-skin-range-thumb-pressed": `url("${activeSkin.sprites.volumeThumbPressed}")`,
                     } as CSSProperties) : undefined}
                   >
                     <input
@@ -746,7 +762,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                         setVolume(nextVol);
                         winampController.setVolume(nextVol);
                       }}
-                      className={"wa-slider-input" + (skinVisuals ? " wa-skin-range--volume" : "")}
+                      className={"wa-slider-input" + (activeSkin ? " wa-skin-range--volume" : "")}
                       aria-label="Volume"
                     />
                   </div>
@@ -755,12 +771,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <div className="wa-bal-control">
                   <span className="wa-slider-label">BAL</span>
                   <div
-                    className={"wa-slider-track wa-slider-track--bal" + (skinVisuals ? " wa-slider-track--skinned" : "")}
-                    style={skinVisuals ? ({
-                      backgroundImage: `url("${skinVisuals.sprites.balanceTrack}")`,
+                    className={"wa-slider-track wa-slider-track--bal" + (activeSkin ? " wa-slider-track--skinned" : "")}
+                    style={activeSkin ? ({
+                      backgroundImage: `url("${activeSkin.sprites.balanceTrack}")`,
                       backgroundPosition: "0 -" + (Math.round((1 - ((balance + 1) / 2)) * 27) * 15) + "px",
-                      "--wa-skin-range-thumb": `url("${skinVisuals.sprites.balanceThumb}")`,
-                      "--wa-skin-range-thumb-pressed": `url("${skinVisuals.sprites.balanceThumbPressed}")`,
+                      "--wa-skin-range-thumb": `url("${activeSkin.sprites.balanceThumb}")`,
+                      "--wa-skin-range-thumb-pressed": `url("${activeSkin.sprites.balanceThumbPressed}")`,
                     } as CSSProperties) : undefined}
                   >
                     <input
@@ -770,7 +786,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       step={0.05}
                       value={balance}
                       onChange={(e) => setBalance(Number(e.currentTarget.value))}
-                      className={"wa-slider-input" + (skinVisuals ? " wa-skin-range--balance" : "")}
+                      className={"wa-slider-input" + (activeSkin ? " wa-skin-range--balance" : "")}
                       aria-label="Balance"
                     />
                   </div>
@@ -780,21 +796,21 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <div className="wa-toggle-btns">
                   <button
                     type="button"
-                    className={`wa-btn-toggle ${showEq ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-toggle--skinned' : ''}`}
+                    className={`wa-btn-toggle ${showEq ? 'is-active' : ''} ${activeSkin ? 'wa-btn-toggle--skinned' : ''}`}
                     onClick={() => setShowEq((v) => !v)}
                     aria-pressed={showEq}
                     aria-label="Toggle equalizer"
                   >
-                    {skinVisuals ? <img src={skinVisuals.sprites[showEq ? 'equalizerToggleOn' : 'equalizerToggleOff']} alt="" draggable={false} /> : <><span className="wa-led-dot" />EQ</>}
+                    {activeSkin ? <img src={activeSkin.sprites[showEq ? 'equalizerToggleOn' : 'equalizerToggleOff']} alt="" draggable={false} /> : <><span className="wa-led-dot" />EQ</>}
                   </button>
                   <button
                     type="button"
-                    className={`wa-btn-toggle ${showPl ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-toggle--skinned' : ''}`}
+                    className={`wa-btn-toggle ${showPl ? 'is-active' : ''} ${activeSkin ? 'wa-btn-toggle--skinned' : ''}`}
                     onClick={() => setShowPl((v) => !v)}
                     aria-pressed={showPl}
                     aria-label="Toggle playlist"
                   >
-                    {skinVisuals ? <img src={skinVisuals.sprites[showPl ? 'playlistToggleOn' : 'playlistToggleOff']} alt="" draggable={false} /> : <><span className="wa-led-dot" />PL</>}
+                    {activeSkin ? <img src={activeSkin.sprites[showPl ? 'playlistToggleOn' : 'playlistToggleOff']} alt="" draggable={false} /> : <><span className="wa-led-dot" />PL</>}
                   </button>
                 </div>
               </div>
@@ -804,22 +820,22 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <div className="wa-transport-row">
               <div className="wa-buttons-group">
                 <button type="button" className="wa-btn-transport" onClick={previous} title="Previous (Z)" aria-keyshortcuts="Z">
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.previous} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.previousPressed} alt="" draggable={false} /></> : '|◀◀'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.previous} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.previousPressed} alt="" draggable={false} /></> : '|◀◀'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => void play()} title="Play (X)" aria-keyshortcuts="X">
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.play} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.playPressed} alt="" draggable={false} /></> : '▶'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.play} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.playPressed} alt="" draggable={false} /></> : '▶'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={pause} title="Pause (C)" aria-keyshortcuts="C">
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.pause} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.pausePressed} alt="" draggable={false} /></> : '❚❚'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.pause} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.pausePressed} alt="" draggable={false} /></> : '❚❚'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={stop} title="Stop (V)" aria-keyshortcuts="V">
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.stop} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.stopPressed} alt="" draggable={false} /></> : '■'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.stop} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.stopPressed} alt="" draggable={false} /></> : '■'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={next} title="Next (B)" aria-keyshortcuts="B">
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.next} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.nextPressed} alt="" draggable={false} /></> : '▶▶|'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.next} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.nextPressed} alt="" draggable={false} /></> : '▶▶|'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => seek(0)} title="Eject">
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.eject} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.ejectPressed} alt="" draggable={false} /></> : '⏏'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.eject} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.ejectPressed} alt="" draggable={false} /></> : '⏏'}
                 </button>
               </div>
 
@@ -827,7 +843,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               <div className="wa-toggles-group">
                 <button
                   type="button"
-                  className={`wa-btn-mode ${shuffle ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-mode--skinned' : ''}`}
+                  className={`wa-btn-mode ${shuffle ? 'is-active' : ''} ${activeSkin ? 'wa-btn-mode--skinned' : ''}`}
                   aria-pressed={shuffle}
                   onClick={() => {
                     const nextVal = !shuffle;
@@ -836,11 +852,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   }}
                   title="Shuffle (S)" aria-keyshortcuts="S"
                 >
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites[shuffle ? 'shuffleActive' : 'shuffle']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.shufflePressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />SHUFFLE</>}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites[shuffle ? 'shuffleActive' : 'shuffle']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.shufflePressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />SHUFFLE</>}
                 </button>
                 <button
                   type="button"
-                  className={`wa-btn-mode ${repeat ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-mode--skinned' : ''}`}
+                  className={`wa-btn-mode ${repeat ? 'is-active' : ''} ${activeSkin ? 'wa-btn-mode--skinned' : ''}`}
                   aria-pressed={repeat}
                   onClick={() => {
                     const nextVal = !repeat;
@@ -849,7 +865,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   }}
                   title="Repeat (R)" aria-keyshortcuts="R"
                 >
-                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites[repeat ? 'repeatActive' : 'repeat']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.repeatPressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />🔁</>}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites[repeat ? 'repeatActive' : 'repeat']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.repeatPressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />🔁</>}
                 </button>
                 <button
                   type="button"
@@ -1200,8 +1216,19 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                         setSkinVisuals(null);
                         setSkinStatus(`Built-in appearance restored for this session; saved skin could not be cleared: ${error instanceof Error ? error.message : 'storage unavailable'}`);
                       });
-                    }} title="Restore the built-in Winamp appearance">RESET</button>}
+                    }} title="Remove the imported skin">RESET</button>}
                   </div>
+                  <details className="wa-player-settings">
+                    <summary>PLAYER SETTINGS</summary>
+                    <label className="wa-player-settings__row">
+                      <span>Appearance renderer</span>
+                      <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'built-in' | 'wsz')}>
+                        <option value="built-in">Built-in Winamp UI</option>
+                        <option value="wsz" disabled={!skinVisuals}>Imported .wsz skin{skinVisuals ? ` — ${skinVisuals.name}` : ' (not loaded)'}</option>
+                      </select>
+                    </label>
+                    <p>Both renderers share the same playback, playlist and equalizer controller. The built-in UI remains available when a skin is imported.</p>
+                  </details>
 
                   <div className="wa-pl__status">
                     {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinStatus}</span>}
