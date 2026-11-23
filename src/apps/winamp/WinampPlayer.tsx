@@ -82,7 +82,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const applySkinFile = useCallback(async (file: Blob, fileName: string, persist: boolean) => {
     const archive = await parseWinampSkinArchive(file, fileName);
-    const spriteBlobs = await extractWinampSkinSprites(archive, ['main', 'titlebarActive', 'previous', 'previousPressed', 'play', 'playPressed', 'pause', 'pausePressed', 'stop', 'stopPressed', 'next', 'nextPressed', 'eject', 'ejectPressed', 'repeat', 'repeatPressed', 'repeatActive', 'shuffle', 'shufflePressed', 'shuffleActive', 'equalizerToggleOff', 'equalizerToggleOn', 'playlistToggleOff', 'playlistToggleOn']);
+    const spriteBlobs = await extractWinampSkinSprites(archive, ['main', 'titlebarActive', 'previous', 'previousPressed', 'play', 'playPressed', 'pause', 'pausePressed', 'stop', 'stopPressed', 'next', 'nextPressed', 'eject', 'ejectPressed', 'positionTrack', 'positionThumb', 'positionThumbPressed', 'volumeTrack', 'volumeThumb', 'volumeThumbPressed', 'balanceTrack', 'balanceThumb', 'balanceThumbPressed', 'playIndicator', 'pauseIndicator', 'stopIndicator', 'repeat', 'repeatPressed', 'repeatActive', 'shuffle', 'shufflePressed', 'shuffleActive', 'equalizerToggleOff', 'equalizerToggleOn', 'playlistToggleOff', 'playlistToggleOn']);
     const sprites = Object.fromEntries([...spriteBlobs].map(([id, blob]) => [id, URL.createObjectURL(blob)]));
     const nextVisuals = { name: fileName, mainUrl: sprites.main, titlebarUrl: sprites.titlebarActive, sprites };
     setSkinVisuals(nextVisuals);
@@ -649,8 +649,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               {/* Left Column: Mode & Segmented Digits */}
               <div className="wa-display__left">
                 <div className="wa-indicators">
-                  <span className={`wa-ind-dot ${isPlaying ? 'is-lit' : ''}`}>▶</span>
-                  <span className={`wa-ind-dot ${!isPlaying && currentTime > 0 ? 'is-lit' : ''}`}>❚❚</span>
+                  {skinVisuals
+                    ? <img src={skinVisuals.sprites[isPlaying ? 'playIndicator' : currentTime > 0 ? 'pauseIndicator' : 'stopIndicator']} alt="" draggable={false} />
+                    : <>
+                        <span className={`wa-ind-dot ${isPlaying ? 'is-lit' : ''}`}>▶</span>
+                        <span className={`wa-ind-dot ${!isPlaying && currentTime > 0 ? 'is-lit' : ''}`}>❚❚</span>
+                      </>}
                 </div>
                 <button
                   type="button"
