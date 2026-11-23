@@ -66,6 +66,17 @@ export const WINAMP_CLASSIC_SPRITES: Readonly<Record<string, WinampSkinSprite>> 
   volumeThumb: sprite('volumeThumb', 'volume.bmp', 15, 422, 14, 11),
   balanceTrack: sprite('balanceTrack', 'balance.bmp', 9, 0, 38, 420),
   balanceThumb: sprite('balanceThumb', 'balance.bmp', 15, 422, 14, 11),
+  digit0: sprite('digit0', 'nums_ex.bmp', 0, 0, 9, 13),
+  digit1: sprite('digit1', 'nums_ex.bmp', 9, 0, 9, 13),
+  digit2: sprite('digit2', 'nums_ex.bmp', 18, 0, 9, 13),
+  digit3: sprite('digit3', 'nums_ex.bmp', 27, 0, 9, 13),
+  digit4: sprite('digit4', 'nums_ex.bmp', 36, 0, 9, 13),
+  digit5: sprite('digit5', 'nums_ex.bmp', 45, 0, 9, 13),
+  digit6: sprite('digit6', 'nums_ex.bmp', 54, 0, 9, 13),
+  digit7: sprite('digit7', 'nums_ex.bmp', 63, 0, 9, 13),
+  digit8: sprite('digit8', 'nums_ex.bmp', 72, 0, 9, 13),
+  digit9: sprite('digit9', 'nums_ex.bmp', 81, 0, 9, 13),
+  timeMinus: sprite('timeMinus', 'nums_ex.bmp', 90, 0, 9, 13),
 
   repeat: sprite('repeat', 'shufrep.bmp', 0, 0, 28, 15),
   repeatPressed: sprite('repeatPressed', 'shufrep.bmp', 0, 15, 28, 15),
@@ -155,7 +166,8 @@ export async function extractWinampSkinSprite(
 
   const definition = WINAMP_CLASSIC_SPRITES[spriteId];
   const source = findSkinAsset(skin.assets, definition.file)
-    ?? (spriteId === 'main' ? findSkinAsset(skin.assets, 'main.png') : undefined);
+    ?? (spriteId === 'main' ? findSkinAsset(skin.assets, 'main.png') : undefined)
+    ?? (/^(digit[0-9]|timeMinus)$/.test(spriteId) ? findSkinAsset(skin.assets, 'numbers.bmp') : undefined);
   if (!source) throw new Error(`Skin is missing required sprite sheet: ${definition.file}`);
 
   const bitmap = await createImageBitmap(source);
@@ -200,7 +212,8 @@ export async function extractWinampSkinSprites(
     for (const id of spriteIds) {
       const definition = WINAMP_CLASSIC_SPRITES[id];
       const source = findSkinAsset(skin.assets, definition.file)
-        ?? (id === 'main' ? findSkinAsset(skin.assets, 'main.png') : undefined);
+        ?? (id === 'main' ? findSkinAsset(skin.assets, 'main.png') : undefined)
+        ?? (/^(digit[0-9]|timeMinus)$/.test(id) ? findSkinAsset(skin.assets, 'numbers.bmp') : undefined);
       if (!source) throw new Error(`Skin is missing required sprite sheet: ${definition.file}`);
 
       let bitmap = bitmaps.get(definition.file);
