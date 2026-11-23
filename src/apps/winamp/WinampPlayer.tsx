@@ -77,11 +77,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const skinInputRef = useRef<HTMLInputElement | null>(null);
   const [skinVisuals, setSkinVisuals] = useState<{ name: string; mainUrl: string; titlebarUrl: string; sprites: Record<string, string> } | null>(null);
   const [skinStatus, setSkinStatus] = useState('');
-  const [skinAppearance, setSkinAppearance] = useState<'dev-alpha' | 'wsz'>(() => {
+  const [skinAppearance, setSkinAppearance] = useState<'dev-alpha' | 'webamp-classic' | 'wsz'>(() => {
     try {
-      return window.localStorage.getItem('winamp:skin-appearance:v1') === 'built-in' ? 'dev-alpha' : 'wsz';
+      const saved = window.localStorage.getItem('winamp:skin-appearance:v1');
+      return saved === 'webamp-classic' ? 'webamp-classic' : saved === 'wsz' ? 'wsz' : 'dev-alpha';
     } catch {
-      return 'wsz';
+      return 'dev-alpha';
     }
   });
   const [playerSettingsOpen, setPlayerSettingsOpen] = useState(false);
@@ -609,7 +610,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [skinAppearance]);
 
   return (
-    <div className="wa-shell" aria-label="Winamp classic player">
+    <div className={`wa-shell ${skinAppearance === 'webamp-classic' ? 'wa-shell--webamp-classic' : ''}`} aria-label="Winamp classic player">
       <input
         ref={skinInputRef}
         type="file"
@@ -669,12 +670,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             </div>
             <label className="wa-player-settings__row">
               <span>Appearance renderer</span>
-              <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'dev-alpha' | 'wsz')}>
-                <option value="dev-alpha">Dev Alpha (existing UI)</option>
+              <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'dev-alpha' | 'webamp-classic' | 'wsz')}>
+                <option value="dev-alpha">Dev Alpha</option>
+                <option value="webamp-classic">Classic Winamp (Webamp Classic)</option>
                 <option value="wsz" disabled={!skinVisuals}>Imported .wsz skin{skinVisuals ? ` — ${skinVisuals.name}` : ' (not loaded)'}</option>
               </select>
             </label>
-            <p>Both renderers share the same playback, playlist and equalizer controller. Dev Alpha remains available when a skin is imported.</p>
+            <p>Appearance only: Dev Alpha, Webamp Classic and imported .wsz skins share the existing player controls and state.</p>
           </div>
         )}
 
