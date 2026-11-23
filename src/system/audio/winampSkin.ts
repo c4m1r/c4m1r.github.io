@@ -174,14 +174,14 @@ function findLastEntry(entries: Map<string, Blob>, baseName: string): Blob | und
 function parseIni(text: string): Record<string, string> {
   const values: Record<string, string> = {};
   let section = '';
-  for (const line of text.replace(/^\\uFEFF/, '').split(/[\\r\\n]+/)) {
+  for (const line of text.replace(/^\uFEFF/, '').split(/[\r\n]+/)) {
     const sectionMatch = /^\\s*\\[([^\\]]+)\\]\\s*$/.exec(line);
     if (sectionMatch) {
       section = sectionMatch[1].trim().toLowerCase();
       continue;
     }
-    if (!section || /^\\s*[;#]/.test(line)) continue;
-    const match = /^\\s*([^=]+?)\\s*=\\s*(.*?)\\s*$/.exec(line);
+    if (!section || /^\s*[;#]/.test(line)) continue;
+    const match = /^\s*([^=]+?)\s*=\s*(.*?)\s*$/.exec(line);
     if (!match) continue;
     const key = match[1].trim().toLowerCase();
     const value = match[2].split('=')[0].trim().replace(/^["']|["']$/g, '');
@@ -213,7 +213,7 @@ function parsePlaylistStyle(text: string | undefined): WinampSkinPlaylistStyle {
 function parseVisualizerColors(text: string | undefined): string[] {
   if (!text) return DEFAULT_VISUALIZER_COLORS;
   const colors = [...DEFAULT_VISUALIZER_COLORS];
-  const matcher = /^\\s*(\\d+)\\s*,?\\s*(\\d+)\\s*,?\\s*(\\d+)/;
+  const matcher = /^\s*(\d+)\s*,?\s*(\d+)\s*,?\s*(\d+)/;
   text.split(/[\\r\\n]+/).forEach((line, index) => {
     if (index >= colors.length) return;
     const match = matcher.exec(line);
@@ -236,7 +236,7 @@ export async function parseWinampSkinArchive(file: Blob, fileName = 'custom.wsz'
   for (const entry of entries) {
     const baseName = entry.name.split('/').pop()?.toLowerCase() ?? '';
     const isSupportedAsset = /\\.(bmp|png|cur)$/i.test(baseName);
-    const isSupportedConfig = /^(pledit|viscolor|region)\\.txt$/i.test(baseName);
+    const isSupportedConfig = /^(pledit|viscolor|region)\.txt$/i.test(baseName);
     if (!isSupportedAsset && !isSupportedConfig) continue;
 
     const data = await extractZipEntry(bytes, entry);
