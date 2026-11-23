@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
@@ -697,8 +697,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             {/* Middle Controls & Sliders */}
             <div className="wa-controls-row">
               {/* Position seeker */}
-              <div className="wa-slider-track wa-slider-track--pos">
-                <div className="wa-slider-progress" style={{ width: `${progressPct}%` }} />
+              <div
+                className={"wa-slider-track wa-slider-track--pos" + (skinVisuals ? " wa-slider-track--skinned" : "")}
+                style={skinVisuals ? ({
+                  backgroundImage: `url("${skinVisuals.sprites.positionTrack}")`,
+                  "--wa-skin-range-thumb": `url("${skinVisuals.sprites.positionThumb}")`,
+                  "--wa-skin-range-thumb-pressed": `url("${skinVisuals.sprites.positionThumbPressed}")`,
+                } as CSSProperties) : undefined}
+              >
+                {!skinVisuals && <div className="wa-slider-progress" style={{ width: `${progressPct}%` }} />}
                 <input
                   type="range"
                   min={0}
@@ -706,7 +713,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   step={0.1}
                   value={progressPct}
                   onChange={(e) => seek(Number(e.currentTarget.value))}
-                  className="wa-slider-input"
+                  className={"wa-slider-input" + (skinVisuals ? " wa-skin-range--position" : "")}
                   aria-label="Seek position"
                 />
               </div>
@@ -715,7 +722,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               <div className="wa-vol-bal-row">
                 <div className="wa-vol-control">
                   <span className="wa-slider-label">VOL</span>
-                  <div className="wa-slider-track wa-slider-track--vol">
+                  <div
+                    className={"wa-slider-track wa-slider-track--vol" + (skinVisuals ? " wa-slider-track--skinned" : "")}
+                    style={skinVisuals ? ({
+                      backgroundImage: `url("${skinVisuals.sprites.volumeTrack}")`,
+                      backgroundPosition: "0 -" + (Math.round((1 - volume) * 27) * 15) + "px",
+                      "--wa-skin-range-thumb": `url("${skinVisuals.sprites.volumeThumb}")`,
+                      "--wa-skin-range-thumb-pressed": `url("${skinVisuals.sprites.volumeThumbPressed}")`,
+                    } as CSSProperties) : undefined}
+                  >
                     <input
                       type="range"
                       min={0}
@@ -727,7 +742,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                         setVolume(nextVol);
                         winampController.setVolume(nextVol);
                       }}
-                      className="wa-slider-input"
+                      className={"wa-slider-input" + (skinVisuals ? " wa-skin-range--volume" : "")}
                       aria-label="Volume"
                     />
                   </div>
@@ -735,7 +750,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
                 <div className="wa-bal-control">
                   <span className="wa-slider-label">BAL</span>
-                  <div className="wa-slider-track wa-slider-track--bal">
+                  <div
+                    className={"wa-slider-track wa-slider-track--bal" + (skinVisuals ? " wa-slider-track--skinned" : "")}
+                    style={skinVisuals ? ({
+                      backgroundImage: `url("${skinVisuals.sprites.balanceTrack}")`,
+                      backgroundPosition: "0 -" + (Math.round((1 - ((balance + 1) / 2)) * 27) * 15) + "px",
+                      "--wa-skin-range-thumb": `url("${skinVisuals.sprites.balanceThumb}")`,
+                      "--wa-skin-range-thumb-pressed": `url("${skinVisuals.sprites.balanceThumbPressed}")`,
+                    } as CSSProperties) : undefined}
+                  >
                     <input
                       type="range"
                       min={-1}
@@ -743,7 +766,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       step={0.05}
                       value={balance}
                       onChange={(e) => setBalance(Number(e.currentTarget.value))}
-                      className="wa-slider-input"
+                      className={"wa-slider-input" + (skinVisuals ? " wa-skin-range--balance" : "")}
                       aria-label="Balance"
                     />
                   </div>
