@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { playBootStartup } from '../bootPreload';
-import { useApp } from '../../contexts/useApp';
 import { useBootProgress } from './useBootProgress';
 import gif98 from '../win98/assets/boot/boot_windows_logo.gif';
 import gif95 from '../win98/assets/boot/windows95_loading.gif';
@@ -43,7 +41,6 @@ interface ClassicBootScreenProps {
 }
 
 export function ClassicBootScreen({ variant, onComplete }: ClassicBootScreenProps) {
-  const { theme } = useApp();
   const spec = SPLASH[variant];
   const is2000 = isWin2000Variant(variant);
   const minMs = is2000 ? WIN2000_BOOT_MS : spec.gifMs * spec.plays;
@@ -56,9 +53,6 @@ export function ClassicBootScreen({ variant, onComplete }: ClassicBootScreenProp
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  useEffect(() => {
-    playBootStartup(theme ?? 'win-98');
-  }, [theme]);
 
   useEffect(() => {
     const timer = setTimeout(() => setMinElapsed(true), minMs);

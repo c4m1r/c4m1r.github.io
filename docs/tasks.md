@@ -822,3 +822,8 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Open point: logon background is the 2000 desktop blue (#3a6ea5), while the startup GIF is teal. Not changed.
 - Logon background for Windows 2000 is now the startup GIF teal `#54a6a6` (sampled from the frame), so the hand-over from "Please wait" keeps the same colour.
 - Canonical check: Windows 95 and 98 use `#008080` for desktop, logon and the transition screen (unchanged). Windows 2000 desktop stays `#3a6ea5`, as in the 2000 Server reference screenshot.
+
+### Startup sound and Start corner for 95, 98, 2000 (2026-11-23)
+- The Windows startup sound plays only when the user actually logs on: the desktop plays it when it appears after the logon screen. No boot screen (GRUB click, classic, XP, 7, webos) plays it any more; `bootPreload.ts` only preloads images and video.
+- Start corner: 98 and 95 (`theme-98`) now drop the shared taskbar padding like 2000, so Start sits at x≈2. Measured on 98 (was x≈12).
+- Open point: the XP-style loader (`src/themes/winxp/BootScreen.tsx`) is shown by `App.tsx` whenever mode is `webos` and theme is still the default `win-xp`. It did not appear on the GRUB click path in tests; the exact action that shows it is not yet reproduced.

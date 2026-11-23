@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useApp } from '../../contexts/useApp';
 import { getOsClassName } from '../../shells/os/osClassNames';
 import { THEME_ASSETS, ThemeAssetId } from './themeAssets';
-import { playBootStartup } from '../bootPreload';
 import { AppleBootScreen, isAppleTheme } from '../apple/AppleSessionScreens';
 import { ClassicBootScreen, type ClassicBootVariant } from '../classicBoot/ClassicBootScreen';
 import { getActiveBootProfileId } from '../bootProfile';
@@ -37,9 +36,6 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   const [logoFailed, setLogoFailed] = useState(false);
   const classicVariant = classicBootVariant(theme);
 
-  useEffect(() => {
-    playBootStartup(theme ?? 'webos');
-  }, [theme]);
 
   useEffect(() => {
     if (appleTheme) return;

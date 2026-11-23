@@ -33,12 +33,14 @@
   height: 22px;
 }
 
-/* Windows 2000 Start sits in the bottom-left corner: no shared taskbar padding in front of it. */
-.os-win2000 .taskbar {
+/* Windows 95, 98 and 2000 Start sit in the bottom-left corner: no shared taskbar padding in front of it. */
+.os-win2000 .taskbar,
+.theme-98 .taskbar {
   padding-left: 0 !important;
 }
 
-.os-win2000 .taskbar__inner {
+.os-win2000 .taskbar__inner,
+.theme-98 .taskbar__inner {
   padding-left: 0 !important;
 }
 
