@@ -68,9 +68,13 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   }
 
   if (theme === 'win2000') {
+    // The 2000 logon window takes the place of the "Please wait" window from the startup GIF:
+    // same 420 px width and the same top-left point, measured on the 640x480 frame (x 108, y 112).
     return (
-      <div className="min-h-screen bg-[#3a6ea5] flex items-center justify-center font-sans os-shell os-classic select-none">
+      <div className="fixed inset-0 bg-black flex items-center justify-center font-sans os-shell os-classic select-none">
+      <div className="relative bg-[#3a6ea5]" style={{ width: 'min(100vw, calc(100vh * 4 / 3))', aspectRatio: '4 / 3' }}>
         <form
+          style={{ left: '16.875%', top: '23.33%' }}
           onSubmit={(e) => {
             e.preventDefault();
             if (selectedUser98 === 'user') {
@@ -83,7 +87,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               triggerError();
             }
           }}
-          className="w-[420px] bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-1 shadow-2xl os-window"
+          className="absolute w-[420px] bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-1 shadow-2xl os-window"
         >
           <div className="bg-gradient-to-r from-[#000080] via-[#1084d0] to-[#000080] px-2 py-1 flex justify-between items-center mb-3 os-titlebar">
             <span className="text-white font-bold text-sm tracking-wide os-titlebar-title">Log On to Windows</span>
@@ -182,6 +186,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             </button>
           </div>
         </form>
+      </div>
       </div>
     );
   }
