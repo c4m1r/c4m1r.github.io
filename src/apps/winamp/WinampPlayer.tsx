@@ -3,6 +3,9 @@ import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
 import { createM3uPlaylist, parseM3uPlaylist } from '../../system/audio/winampM3u';
+import { extractWinampSkinSprite } from '../../system/audio/winampSkinAtlas';
+import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
+import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
 import {
   createWinampLocalAudioId,
   deleteWinampLocalAudioFiles,
@@ -71,8 +74,54 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [playlistRevision, setPlaylistRevision] = useState(0);
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
   const m3uInputRef = useRef<HTMLInputElement | null>(null);
+  const skinInputRef = useRef<HTMLInputElement | null>(null);
+  const [skinVisuals, setSkinVisuals] = useState<{ name: string; mainUrl: string; titlebarUrl: string } | null>(null);
+  const [skinStatus, setSkinStatus] = useState('');
   const [m3uStatus, setM3uStatus] = useState('');
   const [localLibraryStatus, setLocalLibraryStatus] = useState('');
+
+  const applySkinFile = useCallback(async (file: Blob, fileName: string, persist: boolean) => {
+    const archive = await parseWinampSkinArchive(file, fileName);
+    const [mainBlob, titlebarBlob] = await Promise.all([
+      extractWinampSkinSprite(archive, 'main'),
+      extractWinampSkinSprite(archive, 'titlebarActive'),
+    ]);
+    const nextVisuals = {
+      name: fileName,
+      mainUrl: URL.createObjectURL(mainBlob),
+      titlebarUrl: URL.createObjectURL(titlebarBlob),
+    };
+    setSkinVisuals(nextVisuals);
+    if (persist) {
+      try {
+        await saveActiveWinampSkin(fileName, file);
+        setSkinStatus(`Applied and saved skin: ${fileName}`);
+      } catch {
+        setSkinStatus(`Applied ${fileName}; browser storage is unavailable, so it will not survive reload`);
+      }
+    } else {
+      setSkinStatus(`Restored skin: ${fileName}`);
+    }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    void getActiveWinampSkin().then((saved) => {
+      if (active && saved) void applySkinFile(saved.blob, saved.name, false).catch((error) => {
+        if (active) setSkinStatus(error instanceof Error ? error.message : 'Unable to restore saved skin');
+      });
+    }).catch((error) => {
+      if (active) setSkinStatus(error instanceof Error ? error.message : 'Skin storage unavailable');
+    });
+    return () => { active = false; };
+  }, [applySkinFile]);
+
+  useEffect(() => () => {
+    if (skinVisuals) {
+      URL.revokeObjectURL(skinVisuals.mainUrl);
+      URL.revokeObjectURL(skinVisuals.titlebarUrl);
+    }
+  }, [skinVisuals]);
 
   // Restore persisted local files as fresh object URLs in the shared controller queue.
   useEffect(() => {
@@ -551,6 +600,20 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   return (
     <div className="wa-shell" aria-label="Winamp classic player">
       <input
+        ref={skinInputRef}
+        type="file"
+        accept=".wsz,application/octet-stream,application/zip"
+        hidden
+        aria-label="Import Winamp skin"
+        onChange={(event) => {
+          const file = event.currentTarget.files?.[0];
+          if (file) void applySkinFile(file, file.name, true).catch((error) => {
+            setSkinStatus(error instanceof Error ? error.message : 'Unable to import Winamp skin');
+          });
+          event.currentTarget.value = '';
+        }}
+      />
+      <input
         ref={playlistInputRef}
         type="file"
         accept="audio/*,.mp3,.wav,.ogg,.oga,.m4a,.aac,.flac,.opus,.webm"
@@ -567,7 +630,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.main.x, top: windowPositions.main.y, zIndex: activeWindow === 'main' ? 90 : 80 }} onPointerDown={() => setActiveWindow('main')}>
         {/* Title Bar */}
-        <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'main')}>
+        <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'main')} style={skinVisuals ? { backgroundImage: `url("${skinVisuals.titlebarUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 13px' } : undefined}>
           <div className="wa-titlebar__left">
             <span className="wa-titlebar__bolt">⚡</span>
             <span className="wa-titlebar__title">WINAMP</span>
@@ -587,7 +650,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         </div>
 
         {!mainShade && (
-          <div className="wa-main__body">
+          <div className="wa-main__body" style={skinVisuals ? { backgroundImage: `url("${skinVisuals.mainUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 116px' } : undefined}>
             {/* Top Display Area */}
             <div className="wa-display">
               {/* Left Column: Mode & Segmented Digits */}
@@ -1112,9 +1175,17 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   <div className="wa-pl__actions">
                     <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()} title="Import an M3U playlist">M3U IN</button>
                     <button type="button" className="wa-btn-pl" onClick={exportM3uFile} title="Export web-address tracks as an M3U playlist">M3U OUT</button>
+                    <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()} title="Import a classic Winamp .wsz skin">SKIN IN</button>
+                    {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => {
+                      void clearActiveWinampSkin().then(() => {
+                        setSkinVisuals(null);
+                        setSkinStatus('Built-in Winamp appearance restored');
+                      }).catch((error) => setSkinStatus(error instanceof Error ? error.message : 'Unable to reset skin'));
+                    }} title="Restore the built-in Winamp appearance">RESET</button>}
                   </div>
 
                   <div className="wa-pl__status">
+                    {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinVisuals?.name ?? 'SKIN'}: {skinStatus}</span>}
                     <span className="wa-pl__status-text">
                       {formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}
                     </span>
