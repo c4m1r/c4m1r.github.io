@@ -820,3 +820,5 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Startup GIF "Please wait" window, measured on the 640x480 frame: x 108–527 (420 px wide), y 112–255, navy title bar y 115–131 (#00009a), face grey, background teal (#54a6a6).
 - The logon window ("Log On to Windows") takes that window's place: 420 px wide, top-left at 16.875% x / 23.33% y of the 4:3 frame, so the hand-over does not jump. Fields: User name (profiles User / C4m1r), Password, Log on to (this computer), OK / Cancel / Shut Down.
 - Open point: logon background is the 2000 desktop blue (#3a6ea5), while the startup GIF is teal. Not changed.
+- Logon background for Windows 2000 is now the startup GIF teal `#54a6a6` (sampled from the frame), so the hand-over from "Please wait" keeps the same colour.
+- Canonical check: Windows 95 and 98 use `#008080` for desktop, logon and the transition screen (unchanged). Windows 2000 desktop stays `#3a6ea5`, as in the 2000 Server reference screenshot.

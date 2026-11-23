@@ -72,7 +72,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     // same 420 px width and the same top-left point, measured on the 640x480 frame (x 108, y 112).
     return (
       <div className="fixed inset-0 bg-black flex items-center justify-center font-sans os-shell os-classic select-none">
-      <div className="relative bg-[#3a6ea5]" style={{ width: 'min(100vw, calc(100vh * 4 / 3))', aspectRatio: '4 / 3' }}>
+      <div className="relative bg-[#54a6a6]" style={{ width: 'min(100vw, calc(100vh * 4 / 3))', aspectRatio: '4 / 3' }}>
         <form
           style={{ left: '16.875%', top: '23.33%' }}
           onSubmit={(e) => {
