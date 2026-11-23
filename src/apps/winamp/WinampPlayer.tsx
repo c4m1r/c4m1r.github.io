@@ -90,7 +90,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const applySkinFile = useCallback(async (file: Blob, fileName: string, persist: boolean) => {
     const archive = await parseWinampSkinArchive(file, fileName);
     const spriteBlobs = await extractWinampSkinSprites(archive, ['main', 'titlebarActive', 'previous', 'previousPressed', 'play', 'playPressed', 'pause', 'pausePressed', 'stop', 'stopPressed', 'next', 'nextPressed', 'eject', 'ejectPressed', 'positionTrack', 'positionThumb', 'positionThumbPressed', 'volumeTrack', 'volumeThumb', 'volumeThumbPressed', 'balanceTrack', 'balanceThumb', 'balanceThumbPressed', 'playIndicator', 'pauseIndicator', 'stopIndicator', 'repeat', 'repeatPressed', 'repeatActive', 'shuffle', 'shufflePressed', 'shuffleActive', 'equalizerToggleOff', 'equalizerToggleOn', 'playlistToggleOff', 'playlistToggleOn']);
-    const sprites = Object.fromEntries([...spriteBlobs].map(([id, blob]) => [id, URL.createObjectURL(blob)]));
+    const numericSpriteBlobs = await extractWinampSkinSprites(archive, ['digit0', 'digit1', 'digit2', 'digit3', 'digit4', 'digit5', 'digit6', 'digit7', 'digit8', 'digit9', 'timeMinus']).catch(() => new Map());
+    const sprites = Object.fromEntries([...spriteBlobs, ...numericSpriteBlobs].map(([id, blob]) => [id, URL.createObjectURL(blob)]));
     const nextVisuals = { name: fileName, mainUrl: sprites.main, titlebarUrl: sprites.titlebarActive, sprites };
     setSkinVisuals(nextVisuals);
     if (persist) {
@@ -678,7 +679,17 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   onClick={() => setTimeRemainingMode((v) => !v)}
                   title="Click to toggle elapsed / remaining time"
                 >
-                  <span className="wa-time-lcd__digits">{displayTime}</span>
+                  <span className={"wa-time-lcd__digits" + (activeSkin?.sprites.digit0 ? " wa-time-lcd__digits--skin" : "")}>
+                    {activeSkin?.sprites.digit0
+                      ? Array.from(displayTime).map((character, index) => {
+                          if (character === ':') return <span className="wa-time-lcd__colon" key={index}>:</span>;
+                          const glyph = character === '-' ? activeSkin.sprites.timeMinus : activeSkin.sprites[`digit${character}`];
+                          return glyph
+                            ? <img key={index} src={glyph} alt="" draggable={false} />
+                            : <span key={index}>{character}</span>;
+                        })
+                      : displayTime}
+                  </span>
                 </button>
               </div>
 
