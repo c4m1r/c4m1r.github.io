@@ -803,3 +803,6 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Boot: the 2000 splash plays `windows2000_professional_loading.gif` (copied to `src/themes/win2000/assets/boot/`). The site fills the GIF's own progress box (x≈273–437, y≈436–445 of 640x480) with real loading progress. The old still `splash-professional.png` was removed.
 - Post-boot: `Windows2000StartupScreen` (in `ClassicBootScreen.tsx`) shows the startup GIF for 2.5 s, or until a click or key press, then logon. `WebOS` routes boot → startup → login only for `win2000`.
 - Letterbox: all classic boot screens use an inline black background, so side bars never show the system background.
+
+### Windows 2000 taskbar tile (2026-11-23)
+- The 2000 taskbar paints from `src/themes/win2000/assets/taskbar.png` (116x28, repeats horizontally) via the inline style set in `DesktopShellContainer.tsx`, only when the theme is `win2000`. The tile carries the native colour `#c0c7c8` and the white top highlight.

@@ -102,6 +102,9 @@ const joinWindowsPath = (parent: string, child: string) => {
 export function DesktopShellContainer(props?: DesktopShellProps) {
   const { onSystemCommand } = props ?? {};
   const { language, theme } = useApp();
+  // Windows 2000 paints its taskbar from a 116x28 tile that repeats horizontally.
+  const taskbarTile = theme === 'win2000' ? THEME_ASSETS.win2000.taskbarTile : undefined;
+  const taskbarTileStyle = taskbarTile ? { backgroundImage: `url(${taskbarTile})`, backgroundRepeat: 'repeat-x', backgroundSize: 'auto 28px' } : undefined;
   const t = translations[language].xp;
   const widgetEntryLabels: Record<string, string> = {
     en: 'Widgets', ru: 'Виджеты', fr: 'Widgets', es: 'Widgets', zh: '小组件', ja: 'ウィジェット', ko: '위젯', be: 'Віджэты', kk: 'Виджеттер',
@@ -1953,6 +1956,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       {/* Taskbar */}
       <div
         className={`taskbar fixed bottom-0 left-0 right-0 flex items-center justify-start shadow-lg z-50 os-statusbar ${themeStyles.taskbar.join(' ')}`}
+        style={taskbarTileStyle}
       >
         <div className="taskbar__inner">
           <AppleDock
