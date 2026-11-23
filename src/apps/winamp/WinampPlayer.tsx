@@ -90,7 +90,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const applySkinFile = useCallback(async (file: Blob, fileName: string, persist: boolean) => {
     const archive = await parseWinampSkinArchive(file, fileName);
-    const spriteBlobs = await extractWinampSkinSprites(archive, ['main', 'titlebarActive', 'previous', 'previousPressed', 'play', 'playPressed', 'pause', 'pausePressed', 'stop', 'stopPressed', 'next', 'nextPressed', 'eject', 'ejectPressed', 'positionTrack', 'positionThumb', 'positionThumbPressed', 'volumeTrack', 'volumeThumb', 'volumeThumbPressed', 'balanceTrack', 'balanceThumb', 'balanceThumbPressed', 'playIndicator', 'pauseIndicator', 'stopIndicator', 'repeat', 'repeatPressed', 'repeatActive', 'shuffle', 'shufflePressed', 'shuffleActive', 'equalizerToggleOff', 'equalizerToggleOn', 'playlistToggleOff', 'playlistToggleOn']);
+    const spriteBlobs = await extractWinampSkinSprites(archive, ['equalizer', 'equalizerTitlebarActive', 'equalizerTitlebarInactive', 'equalizerPreset', 'equalizerPresetPressed', 'equalizerOff', 'equalizerOffPressed', 'equalizerOn', 'equalizerAuto', 'equalizerAutoPressed', 'equalizerAutoOn', 'equalizerClose', 'equalizerClosePressed', 'equalizerToggle', 'equalizerVisualizerBackground', 'equalizerSliderThumb', 'equalizerSliderThumbPressed', 'equalizerPreampBand', 'equalizerBand0', 'equalizerBand1', 'equalizerBand2', 'equalizerBand3', 'equalizerBand4', 'equalizerBand5', 'equalizerBand6', 'equalizerBand7', 'equalizerBand8', 'equalizerBand9', 'main', 'titlebarActive', 'previousPressed', 'play', 'playPressed', 'pause', 'pausePressed', 'stop', 'stopPressed', 'next', 'nextPressed', 'eject', 'ejectPressed', 'positionTrack', 'positionThumb', 'positionThumbPressed', 'volumeTrack', 'volumeThumb', 'volumeThumbPressed', 'balanceTrack', 'balanceThumb', 'balanceThumbPressed', 'playIndicator', 'pauseIndicator', 'stopIndicator', 'repeat', 'repeatPressed', 'repeatActive', 'shuffle', 'shufflePressed', 'shuffleActive', 'equalizerToggleOff', 'equalizerToggleOn', 'playlistToggleOff', 'playlistToggleOn']);
     const numericSpriteBlobs = await extractWinampSkinSprites(archive, ['digit0', 'digit1', 'digit2', 'digit3', 'digit4', 'digit5', 'digit6', 'digit7', 'digit8', 'digit9', 'timeMinus']).catch(() => new Map());
     const sprites = Object.fromEntries([...spriteBlobs, ...numericSpriteBlobs].map(([id, blob]) => [id, URL.createObjectURL(blob)]));
     const nextVisuals = { name: fileName, mainUrl: sprites.main, titlebarUrl: sprites.titlebarActive, sprites };
@@ -934,7 +934,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       {showEq && (
         <div className={`wa-window wa-equalizer ${eqShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.equalizer.x, top: windowPositions.equalizer.y, zIndex: activeWindow === 'equalizer' ? 90 : 80 }} onPointerDown={() => setActiveWindow('equalizer')}>
-          <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'equalizer')}>
+          <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'equalizer')} style={activeSkin ? { backgroundImage: `url("${activeSkin.sprites.equalizerTitlebarActive}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 14px', height: 14, minHeight: 14, boxSizing: 'border-box' } : undefined}>
             <span className="wa-titlebar__title">WINAMP EQUALIZER</span>
             <div className="wa-titlebar__controls">
               <button
@@ -957,25 +957,23 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           </div>
 
           {!eqShade && (
-            <div className="wa-eq__body">
+            <div className="wa-eq__body" style={activeSkin ? { backgroundImage: `url("${activeSkin.sprites.equalizer}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 116px' } : undefined}>
               {/* EQ Top Options */}
               <div className="wa-eq__header">
                 <div className="wa-eq__toggles">
                   <button
                     type="button"
-                    className={`wa-btn-mode ${eqOn ? 'is-active' : ''}`}
+                    className={`wa-btn-mode ${eqOn ? 'is-active' : ''} ${activeSkin ? 'wa-eq-btn--skinned' : ''}`}
                     onClick={() => setEqOn((v) => { const next = !v; winampController.setEqualizerEnabled(next); return next; })}
                   >
-                    <span className="wa-led-dot" />
-                    ON
+                    {activeSkin ? <img src={activeSkin.sprites[eqOn ? 'equalizerOn' : 'equalizerOff']} alt="" draggable={false} /> : <><span className="wa-led-dot" />ON</>}
                   </button>
                   <button
                     type="button"
-                    className={`wa-btn-mode ${eqAuto ? 'is-active' : ''}`}
+                    className={`wa-btn-mode ${eqAuto ? 'is-active' : ''} ${activeSkin ? 'wa-eq-btn--skinned' : ''}`}
                     onClick={() => setEqAuto((v) => !v)}
                   >
-                    <span className="wa-led-dot" />
-                    AUTO
+                    {activeSkin ? <img src={activeSkin.sprites[eqAuto ? 'equalizerAutoOn' : 'equalizerAuto']} alt="" draggable={false} /> : <><span className="wa-led-dot" />AUTO</>}
                   </button>
                 </div>
 
