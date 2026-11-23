@@ -3,7 +3,7 @@ import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
 import { createM3uPlaylist, parseM3uPlaylist } from '../../system/audio/winampM3u';
-import { extractWinampSkinSprite } from '../../system/audio/winampSkinAtlas';
+import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
 import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
 import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
 import {
@@ -75,22 +75,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
   const m3uInputRef = useRef<HTMLInputElement | null>(null);
   const skinInputRef = useRef<HTMLInputElement | null>(null);
-  const [skinVisuals, setSkinVisuals] = useState<{ name: string; mainUrl: string; titlebarUrl: string } | null>(null);
+  const [skinVisuals, setSkinVisuals] = useState<{ name: string; mainUrl: string; titlebarUrl: string; sprites: Record<string, string> } | null>(null);
   const [skinStatus, setSkinStatus] = useState('');
   const [m3uStatus, setM3uStatus] = useState('');
   const [localLibraryStatus, setLocalLibraryStatus] = useState('');
 
   const applySkinFile = useCallback(async (file: Blob, fileName: string, persist: boolean) => {
     const archive = await parseWinampSkinArchive(file, fileName);
-    const [mainBlob, titlebarBlob] = await Promise.all([
-      extractWinampSkinSprite(archive, 'main'),
-      extractWinampSkinSprite(archive, 'titlebarActive'),
-    ]);
-    const nextVisuals = {
-      name: fileName,
-      mainUrl: URL.createObjectURL(mainBlob),
-      titlebarUrl: URL.createObjectURL(titlebarBlob),
-    };
+    const spriteBlobs = await extractWinampSkinSprites(archive, ['main', 'titlebarActive', 'previous', 'previousPressed', 'play', 'playPressed', 'pause', 'pausePressed', 'stop', 'stopPressed', 'next', 'nextPressed', 'eject', 'ejectPressed', 'repeat', 'repeatPressed', 'repeatActive', 'shuffle', 'shufflePressed', 'shuffleActive', 'equalizerToggleOff', 'equalizerToggleOn', 'playlistToggleOff', 'playlistToggleOn']);
+    const sprites = Object.fromEntries([...spriteBlobs].map(([id, blob]) => [id, URL.createObjectURL(blob)]));
+    const nextVisuals = { name: fileName, mainUrl: sprites.main, titlebarUrl: sprites.titlebarActive, sprites };
     setSkinVisuals(nextVisuals);
     if (persist) {
       try {
@@ -118,8 +112,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   useEffect(() => () => {
     if (skinVisuals) {
-      URL.revokeObjectURL(skinVisuals.mainUrl);
-      URL.revokeObjectURL(skinVisuals.titlebarUrl);
+      Object.values(skinVisuals.sprites).forEach((url) => URL.revokeObjectURL(url));
     }
   }, [skinVisuals]);
 
@@ -765,8 +758,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     aria-pressed={showEq}
                     aria-label="Toggle equalizer"
                   >
-                    <span className="wa-led-dot" />
-                    EQ
+                    {skinVisuals ? <img src={skinVisuals.sprites[showEq ? 'equalizerToggleOn' : 'equalizerToggleOff']} alt="" draggable={false} /> : <><span className="wa-led-dot" />EQ</>}
                   </button>
                   <button
                     type="button"
@@ -775,8 +767,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     aria-pressed={showPl}
                     aria-label="Toggle playlist"
                   >
-                    <span className="wa-led-dot" />
-                    PL
+                    {skinVisuals ? <img src={skinVisuals.sprites[showPl ? 'playlistToggleOn' : 'playlistToggleOff']} alt="" draggable={false} /> : <><span className="wa-led-dot" />PL</>}
                   </button>
                 </div>
               </div>
@@ -786,22 +777,22 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <div className="wa-transport-row">
               <div className="wa-buttons-group">
                 <button type="button" className="wa-btn-transport" onClick={previous} title="Previous (Z)" aria-keyshortcuts="Z">
-                  |◀◀
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.previous} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.previousPressed} alt="" draggable={false} /></> : '|◀◀'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => void play()} title="Play (X)" aria-keyshortcuts="X">
-                  ▶
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.play} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.playPressed} alt="" draggable={false} /></> : '▶'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={pause} title="Pause (C)" aria-keyshortcuts="C">
-                  ❚❚
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.pause} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.pausePressed} alt="" draggable={false} /></> : '❚❚'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={stop} title="Stop (V)" aria-keyshortcuts="V">
-                  ■
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.stop} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.stopPressed} alt="" draggable={false} /></> : '■'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={next} title="Next (B)" aria-keyshortcuts="B">
-                  ▶▶|
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.next} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.nextPressed} alt="" draggable={false} /></> : '▶▶|'}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => seek(0)} title="Eject">
-                  ⏏
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites.eject} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.ejectPressed} alt="" draggable={false} /></> : '⏏'}
                 </button>
               </div>
 
@@ -818,8 +809,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   }}
                   title="Shuffle (S)" aria-keyshortcuts="S"
                 >
-                  <span className="wa-led-dot" />
-                  SHUFFLE
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites[shuffle ? 'shuffleActive' : 'shuffle']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.shufflePressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />SHUFFLE</>}
                 </button>
                 <button
                   type="button"
@@ -832,8 +822,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   }}
                   title="Repeat (R)" aria-keyshortcuts="R"
                 >
-                  <span className="wa-led-dot" />
-                  🔁
+                  {skinVisuals ? <><img className="wa-skin-sprite-default" src={skinVisuals.sprites[repeat ? 'repeatActive' : 'repeat']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={skinVisuals.sprites.repeatPressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />🔁</>}
                 </button>
                 <button
                   type="button"
