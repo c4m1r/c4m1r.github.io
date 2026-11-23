@@ -84,7 +84,6 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
     throw new Error('The .wsz archive directory is outside supported limits');
   }
 
-  const decoder = new TextDecoder('utf-8');
   const entries: ZipEntry[] = [];
   let offset = directoryOffset;
 
