@@ -753,7 +753,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <div className="wa-toggle-btns">
                   <button
                     type="button"
-                    className={`wa-btn-toggle ${showEq ? 'is-active' : ''}`}
+                    className={`wa-btn-toggle ${showEq ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-toggle--skinned' : ''}`}
                     onClick={() => setShowEq((v) => !v)}
                     aria-pressed={showEq}
                     aria-label="Toggle equalizer"
@@ -762,7 +762,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </button>
                   <button
                     type="button"
-                    className={`wa-btn-toggle ${showPl ? 'is-active' : ''}`}
+                    className={`wa-btn-toggle ${showPl ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-toggle--skinned' : ''}`}
                     onClick={() => setShowPl((v) => !v)}
                     aria-pressed={showPl}
                     aria-label="Toggle playlist"
@@ -800,7 +800,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               <div className="wa-toggles-group">
                 <button
                   type="button"
-                  className={`wa-btn-mode ${shuffle ? 'is-active' : ''}`}
+                  className={`wa-btn-mode ${shuffle ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-mode--skinned' : ''}`}
                   aria-pressed={shuffle}
                   onClick={() => {
                     const nextVal = !shuffle;
@@ -813,7 +813,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 </button>
                 <button
                   type="button"
-                  className={`wa-btn-mode ${repeat ? 'is-active' : ''}`}
+                  className={`wa-btn-mode ${repeat ? 'is-active' : ''} ${skinVisuals ? 'wa-btn-mode--skinned' : ''}`}
                   aria-pressed={repeat}
                   onClick={() => {
                     const nextVal = !repeat;
