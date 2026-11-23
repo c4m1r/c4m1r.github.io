@@ -21,6 +21,7 @@ interface ZipEntry {
   compression: number;
   compressedSize: number;
   uncompressedSize: number;
+  crc32: number;
   localHeaderOffset: number;
   flags: number;
 }
@@ -67,6 +68,7 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
   const entryCount = view.getUint16(endOffset + 10, true);
   const directorySize = view.getUint32(endOffset + 12, true);
   const directoryOffset = view.getUint32(endOffset + 16, true);
+  const commentLength = view.getUint16(endOffset + 20, true);
 
   if (diskNumber !== 0 || directoryDisk !== 0 || entriesOnDisk !== entryCount) {
     throw new Error('Multi-volume .wsz archives are not supported');
@@ -74,7 +76,10 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
   if (entryCount === 0xffff || directoryOffset === 0xffffffff || directorySize === 0xffffffff) {
     throw new Error('ZIP64 .wsz archives are not supported');
   }
-  if (entryCount > MAX_ENTRIES || directoryOffset + directorySize > bytes.length) {
+  if (endOffset + 22 + commentLength !== bytes.length) {
+    throw new Error('Invalid .wsz archive: malformed ZIP end record');
+  }
+  if (entryCount > MAX_ENTRIES || directoryOffset + directorySize > endOffset) {
     throw new Error('The .wsz archive directory is outside supported limits');
   }
 
@@ -89,6 +94,7 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
 
     const flags = view.getUint16(offset + 8, true);
     const compression = view.getUint16(offset + 10, true);
+    const crc32 = view.getUint32(offset + 16, true);
     const compressedSize = view.getUint32(offset + 20, true);
     const uncompressedSize = view.getUint32(offset + 24, true);
     const nameLength = view.getUint16(offset + 28, true);
@@ -98,12 +104,17 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
     const nameStart = offset + 46;
     const nextOffset = nameStart + nameLength + extraLength + commentLength;
 
-    if (nextOffset > bytes.length || compressedSize === 0xffffffff || uncompressedSize === 0xffffffff) {
+    if (nextOffset > directoryOffset + directorySize || compressedSize === 0xffffffff || uncompressedSize === 0xffffffff || localHeaderOffset === 0xffffffff) {
       throw new Error('Invalid .wsz archive: unsupported ZIP entry size');
     }
 
     const rawName = bytes.subarray(nameStart, nameStart + nameLength);
-    const name = decoder.decode(rawName).replace(/\\/g, '/');
+    let name: string;
+    try {
+      name = decoder.decode(rawName).replace(/\\/g, '/');
+    } catch {
+      throw new Error('Invalid .wsz archive: entry filename is not valid UTF-8');
+    }
     if (name.startsWith('/') || name.split('/').some((part) => part === '..')) {
       throw new Error('Unsafe path found in .wsz archive');
     }
@@ -112,9 +123,19 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
       if (uncompressedSize > MAX_ENTRY_BYTES) {
         throw new Error(`Skin entry exceeds the ${MAX_ENTRY_BYTES / 1024 / 1024} MB safety limit`);
       }
-      entries.push({ name, compression, compressedSize, uncompressedSize, localHeaderOffset, flags });
+      if (compression !== 0 && compression !== 8) {
+        throw new Error(`Unsupported ZIP compression method ${compression}: ${name}`);
+      }
+      if (flags & (0x0001 | 0x0020 | 0x0040 | 0x2000)) {
+        throw new Error(`Unsupported ZIP entry flags: ${name}`);
+      }
+      entries.push({ name, compression, compressedSize, uncompressedSize, crc32, localHeaderOffset, flags });
     }
     offset = nextOffset;
+  }
+
+  if (offset !== directoryOffset + directorySize) {
+    throw new Error('Invalid .wsz archive: ZIP directory size does not match its entries');
   }
 
   const expandedTotal = entries.reduce((total, entry) => total + entry.uncompressedSize, 0);
@@ -122,6 +143,17 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
     throw new Error('Expanded .wsz contents exceed the 64 MB safety limit');
   }
   return entries;
+}
+
+function calculateCrc32(bytes: Uint8Array): number {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) {
+      crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
 }
 
 async function extractZipEntry(bytes: Uint8Array, entry: ZipEntry): Promise<Uint8Array> {
@@ -133,8 +165,17 @@ async function extractZipEntry(bytes: Uint8Array, entry: ZipEntry): Promise<Uint
     throw new Error(`Invalid ZIP local header: ${entry.name}`);
   }
 
+  const localFlags = view.getUint16(offset + 6, true);
+  const localCompression = view.getUint16(offset + 8, true);
   const nameLength = view.getUint16(offset + 26, true);
   const extraLength = view.getUint16(offset + 28, true);
+  const localNameStart = offset + 30;
+  const localNameEnd = localNameStart + nameLength;
+  const centralName = new TextEncoder().encode(entry.name.replace(/\\/g, '/'));
+  const localName = bytes.subarray(localNameStart, localNameEnd);
+  if (localFlags !== entry.flags || localCompression !== entry.compression || localName.length !== centralName.length || localName.some((value, index) => value !== centralName[index])) {
+    throw new Error(`ZIP local header does not match directory entry: ${entry.name}`);
+  }
   const dataOffset = offset + 30 + nameLength + extraLength;
   const dataEnd = dataOffset + entry.compressedSize;
   if (dataEnd > bytes.length) throw new Error(`Truncated skin entry: ${entry.name}`);
@@ -160,6 +201,9 @@ async function extractZipEntry(bytes: Uint8Array, entry: ZipEntry): Promise<Uint
 
   if (result.byteLength !== entry.uncompressedSize) {
     throw new Error(`Unexpected expanded size for skin entry: ${entry.name}`);
+  }
+  if (calculateCrc32(result) !== entry.crc32) {
+    throw new Error(`ZIP integrity check failed for skin entry: ${entry.name}`);
   }
   return result;
 }
