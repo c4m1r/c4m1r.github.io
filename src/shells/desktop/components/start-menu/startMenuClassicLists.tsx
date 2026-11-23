@@ -38,6 +38,13 @@ import win2000IeIcon from '../../../../themes/win2000/icons/start-menu/internet-
 import win2000NotepadIcon from '../../../../themes/win2000/icons/start-menu/notepad-16.png';
 import win2000PaintIcon from '../../../../themes/win2000/icons/start-menu/paint-16.png';
 import win2000MediaPlayerIcon from '../../../../themes/win2000/icons/start-menu/media-player-16.png';
+import win2000Programs32Icon from '../../../../themes/win2000/icons/start-menu/programs-32.png';
+import win2000Documents32Icon from '../../../../themes/win2000/icons/start-menu/documents-32.png';
+import win2000Settings32Icon from '../../../../themes/win2000/icons/start-menu/settings-32.png';
+import win2000Find32Icon from '../../../../themes/win2000/icons/start-menu/find-32.png';
+import win2000Help32Icon from '../../../../themes/win2000/icons/start-menu/help-32.png';
+import win2000Run32Icon from '../../../../themes/win2000/icons/start-menu/run-32.png';
+import win2000Shutdown32Icon from '../../../../themes/win2000/icons/start-menu/shutdown-32.png';
 
 /**
  * The classic Start menu list (Windows 98 and 2000). Icons follow the skin, and the list is built
@@ -68,8 +75,17 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
   const notepadIcon = isWin2000 ? win2000NotepadIcon : notepadClassicIcon;
   const paintIcon = isWin2000 ? win2000PaintIcon : paintClassicIcon;
   const mediaPlayerIcon = isWin2000 ? win2000MediaPlayerIcon : mediaPlayerClassicIcon;
-  // Both skins use the 32 px shell art for the top level (the 2000 reference is the same art lineage).
-  const topIcon = (_src16: string, src32: string) => classicIcon(src32, 32);
+  // Top-level rows use 32 px shell art: the native Windows 2000 bitmaps on 2000, the Windows 98 art on 98.
+  const win2000Top: Record<string, string> = {
+    [programs32Icon]: win2000Programs32Icon,
+    [documents32Icon]: win2000Documents32Icon,
+    [settings32Icon]: win2000Settings32Icon,
+    [find32Icon]: win2000Find32Icon,
+    [help32Icon]: win2000Help32Icon,
+    [run32Icon]: win2000Run32Icon,
+    [shutDown32Icon]: win2000Shutdown32Icon,
+  };
+  const topIcon = (_src16: string, src32: string) => classicIcon(isWin2000 ? (win2000Top[src32] ?? src32) : src32, 32);
 
 
   // Entries the user placed in Start Menu\Programs (including the StartUp folder) come from the file system.

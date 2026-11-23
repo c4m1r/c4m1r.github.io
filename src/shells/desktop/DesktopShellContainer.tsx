@@ -55,6 +55,9 @@ import { THEME_STYLES } from '../../themes/webos/themeStyles';
 import { playXpClick } from '../../themes/winxp/xpSoundService';
 import { AsciiAurora } from '../../components/effects';
 import webosVideoWallpaper from '../../themes/webos/assets/Ascii_Blossom.mp4';
+import win2000ShowDesktopIcon from '../../themes/win2000/icons/quick-launch/show-desktop-16.png';
+import win2000IeQuickIcon from '../../themes/win2000/icons/start-menu/internet-explorer-16.png';
+import win2000OutlookQuickIcon from '../../themes/win98/icons/network/mailbox-world/16x16-1.png';
 import {
   getOsAppTitle,
   getOsSystemLabel,
@@ -2018,6 +2021,25 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               </>
             )}
           </button>
+
+          {/* Windows 2000 quick launch: Show Desktop, Internet Explorer, Outlook Express. */}
+          {themeKey === 'win2000' && (
+            <>
+              <div className="taskbar-divider" aria-hidden />
+              <div className="taskbar-quick-launch flex items-center flex-shrink-0" style={{ gap: 2, padding: '0 3px' }}>
+                {[
+                  { id: 'show-desktop', label: language === 'ru' ? 'Свернуть все окна' : 'Show Desktop', icon: win2000ShowDesktopIcon, run: () => windows.forEach((w) => { if (!w.minimized) handleMinimizeWindow(w.id); }) },
+                  { id: 'internet-explorer', label: language === 'ru' ? 'Запуск Internet Explorer' : 'Launch Internet Explorer Browser', icon: win2000IeQuickIcon, run: () => launchApp('internet-explorer') },
+                  { id: 'outlook', label: language === 'ru' ? 'Запуск Outlook Express' : 'Launch Outlook Express', icon: win2000OutlookQuickIcon, run: () => launchApp('outlook') },
+                ].map((item) => (
+                  <button key={item.id} type="button" className="flex items-center justify-center bg-transparent border-0 p-0" style={{ width: 22, height: 22 }} title={item.label} aria-label={item.label} onClick={item.run}>
+                    <img src={item.icon} alt="" width={16} height={16} style={{ imageRendering: 'pixelated' }} />
+                  </button>
+                ))}
+              </div>
+              <div className="taskbar-divider" aria-hidden />
+            </>
+          )}
 
           {/* Window List Area */}
           <div className="taskbar-windows flex-1 overflow-hidden">

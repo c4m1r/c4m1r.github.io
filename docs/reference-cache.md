@@ -28,10 +28,13 @@ Active task registry: `docs/tasks.md`. Completed records: `docs/history.md`.
 - **Language flag.** Lives at the left edge of the tray, before the other tray icons and the speaker (`TaskbarSystemArea` `languageSlot`). It is not in the taskbar body.
 - **Windows 2000 taskbar face.** `#d4d0c8`, scoped as `.os-classic .taskbar.theme-win2000` in `classic.css`. The shared `.taskbar-98` grey would otherwise win.
 
+## Windows 2000 ICO map (`eat/windows2000-main/src/assets/ICON/<id>.ico`, one size per file)
+- 32 px: Programs 104, Documents 110, Settings 116, Search 122, Help 128, Run 134, Shut Down 139, Log Off 152, Update 227, Notepad 321, Internet Explorer 431, Show Desktop 313, My Computer 203, Recycle Bin 165.
+- 16 px: Show Desktop 316, Notepad 322, Internet Explorer 434, Update 229. Ids come in pairs (256 and 16 colour art); the second of a pair is used.
+- Already exported: `src/themes/win2000/icons/start-menu/*-16.png`, `*-32.png`, `src/themes/win2000/icons/quick-launch/`.
+
 ## Open items and what is missing
 - Windows 2000 cursors: no canonical `.cur` set found in `eat/`, on GitHub search, or in web search. Do not reuse the 98 set. Needs the user's files.
-- Windows 2000 quick-launch icons (notepad, Internet Explorer, show desktop): the icons are probably among `eat/windows2000-main/src/assets/ICON/*.ico`, but the IDs are not identified yet. Needs a visual check of each `.ico` against the reference.
-- Windows 2000 top-level Start icons: needs a Start menu reference.
 - Windows 95 cursors and the 98 logon "Welcome to Windows" window: no reference.
 
 ## Verification recipe (Playwright)
