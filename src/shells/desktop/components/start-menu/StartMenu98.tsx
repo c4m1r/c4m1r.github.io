@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement, useState, type ReactElement, type ReactNode } from 'react';
+import { useState } from 'react';
 import { useApp } from '../../../../contexts/useApp';
 import { getSessionAccount } from '../../../../domain/auth/session';
 import { buildClassicStartMenu, type ClassicMenuItem } from './startMenuClassicLists';
@@ -41,34 +41,37 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
     setOpenChain((prev) => (label === null ? prev.slice(0, depth) : [...prev.slice(0, depth), label]));
   };
 
-  // Windows 98 top-level rows use 32 px icons at a 33 px pitch (reference); Windows 2000 uses
-  // 24 px icons. Submenus stay at 16 px.
-  const topIconClass = isWin2000 ? 'h-6 w-6 object-contain' : 'h-8 w-8 object-contain';
-  const iconForDepth = (icon: ReactNode, depth: number): ReactNode =>
-    depth === 0 && isValidElement(icon)
-      ? cloneElement(icon as ReactElement<{ className?: string }>, { className: topIconClass })
-      : icon;
-
   const renderItems = (items: ClassicMenuItem[], depth: number) => (
     <>
       {items.map((item, index) => {
         if (item.separator) {
-          return <div key={`sep-${index}`} className="my-1 mx-1 border-t border-[#808080] border-b border-white" />;
+          // Reference gaps: Windows 98 separator is 9 px tall (4 + 3 margin + 2 border), Windows 2000 is 6 px (2 + 2 + 2).
+          return (
+            <div
+              key={`sep-${index}`}
+              className="mx-1 border-t border-[#808080] border-b border-white"
+              style={isWin2000 ? { marginTop: 2, marginBottom: 2 } : { marginTop: 4, marginBottom: 3 }}
+            />
+          );
         }
         const isOpen = !!item.submenu && openChain[depth] === item.label;
         return (
           <div key={item.label} className="relative">
             <button
               type="button"
-              className={`w-full text-left px-2 flex items-center gap-2 os-list-item os-button ${isOpen ? 'bg-[#000080] text-white' : 'hover:bg-[#000080] hover:text-white'}`}
+              className={`w-full text-left px-2 flex items-center os-list-item os-button ${isOpen ? '!bg-[#000080] !text-white' : 'hover:!bg-[#000080] hover:!text-white'}`}
               style={{
+                gap: depth === 0 && !isWin2000 ? 4 : 8,
                 fontFamily: 'MS Sans Serif, sans-serif',
                 fontSize: 12,
                 lineHeight: '16px',
-                // Rows are flat in the reference: no button border, so the row height is the pitch.
+                // Rows are flat in the reference: the shared button bevel (box-shadow and borders) is removed,
+                // so the row height is the pitch.
                 border: 0,
-                padding: depth === 0 ? (isWin2000 ? '6px 8px' : '0 8px') : '3px 8px',
-                minHeight: depth === 0 ? 32 : 22,
+                boxShadow: 'none',
+                padding: depth === 0 ? (isWin2000 ? '4px 8px' : '0 8px') : '3px 8px',
+                // Reference pitch: Windows 98 top level 32 px, Windows 2000 top level 25 px, submenus 22 px.
+                minHeight: depth === 0 ? (isWin2000 ? 25 : 32) : 22,
               }}
               onClick={() => (item.submenu ? openAt(depth, isOpen ? null : item.label) : activate(item))}
               onMouseEnter={() => {
@@ -77,13 +80,13 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
               }}
               aria-expanded={item.submenu ? isOpen : undefined}
             >
-              {iconForDepth(item.icon, depth)}
+              {item.icon}
               <span className="flex-1 whitespace-nowrap">{item.label}</span>
               {item.submenu ? <span aria-hidden="true">›</span> : null}
             </button>
             {isOpen && item.submenu && (
               <div
-                className="absolute left-full top-0 z-[100001] min-w-52 py-1"
+                className={`absolute left-full top-0 z-[100001] ${isWin2000 ? 'min-w-52' : 'w-[138px]'} py-1`}
                 style={{
                   background: '#c0c0c0',
                   border: '2px solid',
@@ -102,7 +105,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
 
   return (
     <div
-      className={`absolute bottom-[28px] ${isWin2000 ? 'left-0' : 'left-1'} w-52 flex z-50 os-panel`}
+      className={`absolute ${isWin2000 ? 'bottom-[28px] left-0 w-[136px]' : 'bottom-[26px] left-1 w-40'} flex z-50 os-panel`}
       style={{
         background: '#c0c0c0',
         border: '2px solid',
@@ -115,7 +118,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
       <div
         className="flex items-end justify-center pb-2 os-sidebar select-none"
         style={{
-          width: 32,
+          width: isWin2000 ? 18 : 22,
           flexShrink: 0,
           flexDirection: 'row',
           // Reference: Windows 2000 is a black top fading to blue; Windows 98 is solid navy.
@@ -144,7 +147,7 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
         </span>
       </div>
       {/* The shared .os-list is a scroll box; the classic menu sizes to its items instead. */}
-      <div className="flex-1 min-w-0 py-1 os-list" style={{ overflow: 'visible', height: 'auto' }}>
+      <div className="flex-1 min-w-0 os-list" style={{ overflow: 'visible', height: 'auto', paddingTop: 4, paddingBottom: isWin2000 ? 4 : 0 }}>
         {renderItems(menuItems, 0)}
       </div>
     </div>

@@ -709,6 +709,13 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Not verified: Windows 2000 in the browser after the border change. The GRUB path to 2000 did not open in the check script, so re-check the 2000 Start menu before relying on it.
 - Log Off was removed from both menus, so Log Off is reachable only through Shut Down.
 
+### REF-02 pixel pass — icons, placement (2026-11-23)
+- Icons are drawn at the size of their own file and never scaled (`image-rendering: pixelated`). Before, 16 px art was stretched to 32 px (98) or 24 px (2000), which made it soft.
+- Windows 98 top level uses the 32 px shell icons that match the reference: Programs (`apps/program-manager`), Documents (`mydocs-small`), Settings (`settings-gear`), Find (`search-file-2`), Help (`help-book-small`), Run (`application-hourglass-small`), Suspend (`standby-monitor-moon`), Shut Down (`shut-down-normal`). Run used to be the MS-DOS icon.
+- Windows 98 geometry against the reference at 640×480: menu 160 px wide (was 208), submenu 138 px, sidebar about 22 px, icon-to-label gap 4 px on the top level, row pitch 32 px (top level) and 22 px (submenu), flat rows (no shared button bevel), separator 9 px, menu bottom on the taskbar edge (menu ends at y 453, taskbar at 454), list shifted to match the reference rows (within about 1 px).
+- Windows 2000 (not verified in the browser): top-level rows 25 px pitch and separator 6 px, as measured on the 800×600 reference; 16 px icons at native size; menu 136 px wide; sidebar 18 px. The 2000 menu could not be opened in the check, because the GRUB list only shows "98" in the DOM. Re-check it before relying on these numbers.
+- Still different from the reference (no matching art in the repo): MS-DOS Prompt shows the blue DOS box (reference: red MS-DOS logo, 32 px art only); Accessories and StartUp show the plain folder (reference: folder with a program window; no 16 px art for it); Windows Explorer uses `directory-explorer/16x16-3`, which is the closest match.
+
 ## STYLE-01 — Per-OS stylesheets (2026-11-22)
 - Global CSS fell from 573 KB to 200 KB in the main bundle. OS-specific files now load per OS from `src/styles/os/osStyleSheets.ts` as separate chunks: classic (98/2000), XP, Win 7, Ubuntu, Arch, macOS, iOS, WebOS, Halloween.
 - Halloween is a child of Windows XP: it loads the full XP set and then `halloween.css` on top.

@@ -7,7 +7,16 @@ import documentsClassicIcon from '../../../../themes/win98/icons/documents/direc
 import settingsClassicIcon from '../../../../themes/win98/icons/folders/directory-control-panel/16x16-1.png';
 import findClassicIcon from '../../../../themes/win98/icons/devices/search-computer/16x16-1.png';
 import helpClassicIcon from '../../../../themes/win98/icons/devices/help-book-computer/16x16-1.png';
-import runClassicIcon from '../../../../themes/win98/icons/apps/ms-dos/32x32-0.png';
+import programs32Icon from '../../../../themes/win98/icons/apps/program-manager/32x32-0.png';
+import documents32Icon from '../../../../themes/win98/icons/documents/directory-open-file-mydocs-small/32x32-3.png';
+import settings32Icon from '../../../../themes/win98/icons/system/settings-gear/32x32-3.png';
+import find32Icon from '../../../../themes/win98/icons/documents/search-file-2/32x32-3.png';
+import help32Icon from '../../../../themes/win98/icons/documents/help-book-small/32x32-3.png';
+import run32Icon from '../../../../themes/win98/icons/apps/application-hourglass-small/32x32-3.png';
+import suspend32Icon from '../../../../themes/win98/icons/devices/standby-monitor-moon/32x32-2.png';
+import shutDown32Icon from '../../../../themes/win98/icons/system/shut-down-normal/32x32-3.png';
+import msDos16Icon from '../../../../themes/win98/icons/apps/ms-dos-2/16x16-1.png';
+import explorer16Icon from '../../../../themes/win98/icons/folders/directory-explorer/16x16-3.png';
 import logOffIcon from '../../../../themes/win98/icons/system/shut-down-cool/16x16-3.png';
 import shutDownClassicIcon from '../../../../themes/win98/icons/system/shut-down-cool/16x16-2.png';
 import accessoriesClassicIcon from '../../../../themes/win98/icons/folders/directory-closed/16x16-1.png';
@@ -39,7 +48,10 @@ export type ClassicMenuItem = StartMenuNode;
 
 const DOCUMENTS_PATH = 'C:\\Documents and Settings\\C4m1r\\My Documents';
 
-const classicIcon = (src: string) => <img src={src} alt="" className="h-4 w-4 object-contain" />;
+// Icons are drawn at the size of their own file, never scaled: a scaled icon looks soft.
+const classicIcon = (src: string, size: 16 | 32 = 16) => (
+  <img src={src} alt="" width={size} height={size} style={{ imageRendering: 'pixelated' }} />
+);
 
 export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000: boolean; isRu: boolean; account: string }): ClassicMenuItem[] {
   // Windows 2000 gets its own shell icons for the roles the native ICO set covers;
@@ -50,12 +62,14 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
   const settingsIcon = isWin2000 ? win2000SettingsIcon : settingsClassicIcon;
   const findIcon = isWin2000 ? win2000FindIcon : findClassicIcon;
   const helpIcon = isWin2000 ? win2000HelpIcon : helpClassicIcon;
-  const runIcon = isWin2000 ? win2000RunIcon : runClassicIcon;
+  const runIcon = isWin2000 ? win2000RunIcon : run32Icon;
   const shutDownIcon = isWin2000 ? win2000ShutDownIcon : shutDownClassicIcon;
   const ieIcon = isWin2000 ? win2000IeIcon : ieClassicIcon;
   const notepadIcon = isWin2000 ? win2000NotepadIcon : notepadClassicIcon;
   const paintIcon = isWin2000 ? win2000PaintIcon : paintClassicIcon;
   const mediaPlayerIcon = isWin2000 ? win2000MediaPlayerIcon : mediaPlayerClassicIcon;
+  // Top-level rows: Windows 98 shows the 32px shell icons, Windows 2000 its 16px ones.
+  const topIcon = (src16: string, src32: string) => (isWin2000 ? classicIcon(src16, 16) : classicIcon(src32, 32));
 
 
   // Entries the user placed in Start Menu\Programs (including the StartUp folder) come from the file system.
@@ -80,7 +94,7 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
       { label: 'Windows Update', icon: classicIcon(win2000UpdateIcon) },
       { label: '', icon: null, separator: true },
     ] : []),
-    { label: isRu ? 'Программы' : 'Programs', icon: classicIcon(programsIcon), submenu: isWin2000 ? [
+    { label: isRu ? 'Программы' : 'Programs', icon: topIcon(programsIcon, programs32Icon), submenu: isWin2000 ? [
       { label: 'Internet Explorer', icon: classicIcon(ieIcon), appId: 'internet-explorer' },
       { label: 'Outlook Express', icon: classicIcon(outlookClassicIcon), appId: 'outlook' },
       { label: isRu ? 'Стандартные' : 'Accessories', icon: classicIcon(accessoriesIcon), submenu: [
@@ -118,23 +132,23 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
         ] },
       ] },
       ...userPrograms,
-      { label: 'MS-DOS Prompt', icon: classicIcon(runClassicIcon), appId: 'terminal' },
-      { label: 'Windows Explorer', icon: classicIcon(programsClassicIcon), path: 'My Computer' },
+      { label: 'MS-DOS Prompt', icon: classicIcon(msDos16Icon), appId: 'terminal' },
+      { label: 'Windows Explorer', icon: classicIcon(explorer16Icon), path: 'My Computer' },
     ] },
-    { label: isRu ? 'Документы' : 'Documents', icon: classicIcon(documentsIcon), path: DOCUMENTS_PATH },
-    { label: isRu ? 'Настройка' : 'Settings', icon: classicIcon(settingsIcon), submenu: [
+    { label: isRu ? 'Документы' : 'Documents', icon: topIcon(documentsIcon, documents32Icon), path: DOCUMENTS_PATH },
+    { label: isRu ? 'Настройка' : 'Settings', icon: topIcon(settingsIcon, settings32Icon), submenu: [
       { label: isRu ? 'Панель управления' : 'Control Panel', icon: classicIcon(settingsIcon), appId: 'control-panel' },
     ] },
-    { label: isWin2000 ? (isRu ? 'Поиск' : 'Search') : (isRu ? 'Найти' : 'Find'), icon: classicIcon(findIcon), submenu: [
+    { label: isWin2000 ? (isRu ? 'Поиск' : 'Search') : (isRu ? 'Найти' : 'Find'), icon: topIcon(findIcon, find32Icon), submenu: [
       { label: isRu ? 'Файлы или папки...' : 'Files or Folders...', icon: classicIcon(findIcon), appId: 'search' },
     ] },
-    { label: isRu ? 'Справка' : 'Help', icon: classicIcon(helpIcon), appId: 'wiki' },
-    { label: isRu ? 'Выполнить...' : 'Run...', icon: classicIcon(runIcon), appId: 'run' },
+    { label: isRu ? 'Справка' : 'Help', icon: topIcon(helpIcon, help32Icon), appId: 'wiki' },
+    { label: isRu ? 'Выполнить...' : 'Run...', icon: topIcon(runIcon, run32Icon), appId: 'run' },
     { label: '', icon: null, separator: true },
     // Windows 98 offers Suspend (goes to the sign-in screen); Windows 2000
     // ends with Shut Down alone, as in the reference screenshot.
-    ...(isWin2000 ? [] : [{ label: isRu ? 'Приостановить' : 'Suspend', icon: classicIcon(logOffIcon), action: 'logoff' as const }]),
-    { label: isRu ? 'Завершение работы...' : 'Shut Down...', icon: classicIcon(shutDownIcon), action: 'shutdown' },
+    ...(isWin2000 ? [] : [{ label: isRu ? 'Приостановить' : 'Suspend', icon: topIcon(logOffIcon, suspend32Icon), action: 'logoff' as const }]),
+    { label: isRu ? 'Завершение работы...' : 'Shut Down...', icon: topIcon(shutDownIcon, shutDown32Icon), action: 'shutdown' },
   ];
 
   return menuItems;
