@@ -183,14 +183,51 @@ export async function extractWinampSkinSprite(
   }
 }
 
-/** Extract a named set of sprites, failing atomically if any requested crop is invalid. */
+/** Extract a named set of sprites, decoding each source sheet only once per batch. */
 export async function extractWinampSkinSprites(
   skin: WinampSkinArchive,
   spriteIds: Array<keyof typeof WINAMP_CLASSIC_SPRITES>,
 ): Promise<Map<keyof typeof WINAMP_CLASSIC_SPRITES, Blob>> {
-  const extracted = new Map<keyof typeof WINAMP_CLASSIC_SPRITES, Blob>();
-  for (const id of spriteIds) {
-    extracted.set(id, await extractWinampSkinSprite(skin, id));
+  if (typeof document === 'undefined' || typeof createImageBitmap === 'undefined') {
+    throw new Error('Sprite extraction requires a browser with image bitmap support');
   }
-  return extracted;
+
+  const bitmaps = new Map<string, ImageBitmap>();
+  const extracted = new Map<keyof typeof WINAMP_CLASSIC_SPRITES, Blob>();
+  try {
+    for (const id of spriteIds) {
+      const definition = WINAMP_CLASSIC_SPRITES[id];
+      const source = findSkinAsset(skin.assets, definition.file)
+        ?? (id === 'main' ? findSkinAsset(skin.assets, 'main.png') : undefined);
+      if (!source) throw new Error(`Skin is missing required sprite sheet: ${definition.file}`);
+
+      let bitmap = bitmaps.get(definition.file);
+      if (!bitmap) {
+        bitmap = await createImageBitmap(source);
+        bitmaps.set(definition.file, bitmap);
+      }
+      const { x, y, width, height } = definition;
+      if (x + width > bitmap.width || y + height > bitmap.height) {
+        throw new Error(`Sprite "${id}" is outside the bounds of ${definition.file}`);
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Unable to create a canvas context for skin extraction');
+      context.imageSmoothingEnabled = false;
+      context.drawImage(bitmap, x, y, width, height, 0, 0, width, height);
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((result) => {
+          if (result) resolve(result);
+          else reject(new Error(`Unable to encode sprite "${id}"`));
+        }, 'image/png');
+      });
+      extracted.set(id, blob);
+    }
+    return extracted;
+  } finally {
+    bitmaps.forEach((bitmap) => bitmap.close());
+  }
 }
