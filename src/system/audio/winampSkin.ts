@@ -23,6 +23,7 @@ interface ZipEntry {
   uncompressedSize: number;
   crc32: number;
   localHeaderOffset: number;
+  directoryOffset: number;
   flags: number;
 }
 
@@ -111,7 +112,7 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
     const rawName = bytes.subarray(nameStart, nameStart + nameLength);
     let name: string;
     try {
-      name = decoder.decode(rawName).replace(/\\/g, '/');
+      name = new TextDecoder('utf-8', { fatal: true }).decode(rawName).replace(/\\/g, '/');
     } catch {
       throw new Error('Invalid .wsz archive: entry filename is not valid UTF-8');
     }
@@ -129,7 +130,7 @@ function readZipDirectory(bytes: Uint8Array): ZipEntry[] {
       if (flags & (0x0001 | 0x0020 | 0x0040 | 0x2000)) {
         throw new Error(`Unsupported ZIP entry flags: ${name}`);
       }
-      entries.push({ name, compression, compressedSize, uncompressedSize, crc32, localHeaderOffset, flags });
+      entries.push({ name, compression, compressedSize, uncompressedSize, crc32, localHeaderOffset, directoryOffset, flags });
     }
     offset = nextOffset;
   }
@@ -171,14 +172,19 @@ async function extractZipEntry(bytes: Uint8Array, entry: ZipEntry): Promise<Uint
   const extraLength = view.getUint16(offset + 28, true);
   const localNameStart = offset + 30;
   const localNameEnd = localNameStart + nameLength;
-  const centralName = new TextEncoder().encode(entry.name.replace(/\\/g, '/'));
   const localName = bytes.subarray(localNameStart, localNameEnd);
-  if (localFlags !== entry.flags || localCompression !== entry.compression || localName.length !== centralName.length || localName.some((value, index) => value !== centralName[index])) {
+  let decodedLocalName = '';
+  try {
+    decodedLocalName = new TextDecoder('utf-8', { fatal: true }).decode(localName).replace(/\\/g, '/');
+  } catch {
+    throw new Error(`Invalid ZIP local filename: ${entry.name}`);
+  }
+  if (localFlags !== entry.flags || localCompression !== entry.compression || decodedLocalName !== entry.name) {
     throw new Error(`ZIP local header does not match directory entry: ${entry.name}`);
   }
   const dataOffset = offset + 30 + nameLength + extraLength;
   const dataEnd = dataOffset + entry.compressedSize;
-  if (dataEnd > bytes.length) throw new Error(`Truncated skin entry: ${entry.name}`);
+  if (dataEnd > entry.directoryOffset || dataEnd > bytes.length) throw new Error(`Truncated skin entry: ${entry.name}`);
 
   const compressed = bytes.subarray(dataOffset, dataEnd);
   let result: Uint8Array;
