@@ -60,6 +60,8 @@ export const WINAMP_CLASSIC_SPRITES: Readonly<Record<string, WinampSkinSprite>> 
   positionTrack: sprite('positionTrack', 'posbar.bmp', 0, 0, 248, 10),
   positionThumb: sprite('positionThumb', 'posbar.bmp', 248, 0, 29, 10),
   positionThumbPressed: sprite('positionThumbPressed', 'posbar.bmp', 278, 0, 29, 10),
+  volumeThumbPressed: sprite('volumeThumbPressed', 'volume.bmp', 0, 422, 14, 11),
+  balanceThumbPressed: sprite('balanceThumbPressed', 'balance.bmp', 0, 422, 14, 11),
   volumeTrack: sprite('volumeTrack', 'volume.bmp', 0, 0, 68, 420),
   volumeThumb: sprite('volumeThumb', 'volume.bmp', 15, 422, 14, 11),
   balanceTrack: sprite('balanceTrack', 'balance.bmp', 9, 0, 38, 420),
