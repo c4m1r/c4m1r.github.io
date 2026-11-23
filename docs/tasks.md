@@ -781,3 +781,11 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - The classic list (Windows Update, Programs with Accessories, Entertainment, Games, Favorites-free Windows 98 variant, Documents, Settings, Find, Help, Run, Suspend, Shut Down) and its icon choice per skin moved from `StartMenu98.tsx` to `startMenuClassicLists.tsx` (`buildClassicStartMenu`). The component renders the list and keeps the banner, activation and the 98/2000 geometry.
 - Checked against the previous build: Windows 98 and 2000, main menu and Programs, differ only in the taskbar clock.
 - Step 4 completes the planned architecture move: every Windows Start menu (98, 2000, XP, 7) now reads its user entries from `Start Menu\Programs` through `startMenuModel.ts`, and each has its fixed list in a builder module.
+
+## Loading screens (2026-11-23)
+- Windows 98 and Windows 95: full-screen animated splash (the supplied GIFs), shown for one play and until the site's boot resources have loaded. Windows 95 has its own GIF; it shares the 98 theme, so GRUB passes the chosen profile id to the boot screen (`src/themes/bootProfile.ts`).
+- Windows 2000: the base splash (Professional, 640×480 frame, fitted to the window at 4:3). The progress bar is drawn over the box the splash already has, and fills with the site's real loading (boot images and fonts), with a minimum of 1.5 s.
+- Windows Vista: the supplied black splash with its small animated bar, played three times, and until the boot resources have loaded.
+- Shared code: `src/themes/classicBoot/ClassicBootScreen.tsx` and `useBootProgress.ts`. The old placeholder boots for 98 and 2000 in `themes/webos/BootScreen.tsx` are gone.
+- Verified in the browser at 800×600: Windows 2000 (progress bar fills), Windows 98 and Vista (splash shows). Windows 95 is not confirmed in the browser: the GRUB autoboot selects the site before the click in the test harness, so the 95 path was not exercised. Check it by hand.
+

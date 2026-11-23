@@ -10,6 +10,7 @@ import {
 } from '../shells/os/osBootOptions';
 import { type BootMenuGroup, type OsBootProfile } from '../shells/os/osTypes';
 import { primeBootTheme } from '../themes/bootPreload';
+import { setActiveBootProfileId } from '../themes/bootProfile';
 
 const FAKE_COUNTDOWN_TICK_MS = 330;
 
@@ -120,6 +121,7 @@ export function GrubMenu() {
 
   const handleBoot = useCallback(
     (profile: OsBootProfile) => {
+      setActiveBootProfileId(String(profile.id));
       if (profile.theme) {
         // Runs inside the user's click or key press, so the startup sound may start now.
         primeBootTheme(profile.theme);

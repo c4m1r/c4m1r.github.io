@@ -4,6 +4,16 @@ import { getOsClassName } from '../../shells/os/osClassNames';
 import { THEME_ASSETS, ThemeAssetId } from './themeAssets';
 import { playBootStartup } from '../bootPreload';
 import { AppleBootScreen, isAppleTheme } from '../apple/AppleSessionScreens';
+import { ClassicBootScreen, type ClassicBootVariant } from '../classicBoot/ClassicBootScreen';
+import { getActiveBootProfileId } from '../bootProfile';
+
+/** Classic splashes replace the placeholder boot for these skins (Windows 95 shares the 98 theme). */
+function classicBootVariant(theme: string | undefined): ClassicBootVariant | null {
+  if (theme === 'win2000') return 'win2000';
+  if (theme === 'vista') return 'vista';
+  if (theme === 'win-98') return getActiveBootProfileId() === 'win95' ? 'win95' : 'win98';
+  return null;
+}
 
 interface BootScreenProps {
   onComplete: () => void;
@@ -18,6 +28,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   const [progress, setProgress] = useState(0);
   const [fadeIn, setFadeIn] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
+  const classicVariant = classicBootVariant(theme);
 
   useEffect(() => {
     playBootStartup(theme ?? 'webos');
@@ -40,7 +51,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   }, [onComplete]);
 
   useEffect(() => {
-    if (appleTheme) return;
+    if (appleTheme || classicVariant) return;
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -53,10 +64,14 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     }, 30);
 
     return () => clearInterval(interval);
-  }, [appleTheme, onComplete]);
+  }, [appleTheme, classicVariant, onComplete]);
 
   if (appleTheme) {
     return <AppleBootScreen theme={theme} onComplete={onComplete} />;
+  }
+
+  if (classicVariant) {
+    return <ClassicBootScreen variant={classicVariant} onComplete={onComplete} />;
   }
 
   if (theme === 'win2000') {
