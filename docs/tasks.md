@@ -812,3 +812,6 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - Windows 2000 boot bar is paced over 9 s (`WIN2000_BOOT_MS`) and never jumps to full, even when loading is instant. Post-boot GIF holds 4 s (`WIN2000_STARTUP_MS`).
 - Start corner: the shared taskbar padding is removed for Windows 2000 (`classic.css`), so Start sits at x≈2 like the reference.
 - Windows 95 and 98 splashes and the 2000 splashes all draw on a black letterbox (inline `LETTERBOX`).
+
+### Windows 98 Start banner colours (2026-11-23)
+- Banner text follows the 640x480 reference: "Windows" in bold #c0c0c0, "98" in regular Arial (not the heavy banner face). Second Edition keeps its "SE" tag.

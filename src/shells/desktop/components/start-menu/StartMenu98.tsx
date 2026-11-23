@@ -168,9 +168,9 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
           }}
         >
           {activeEdition?.id === 'second-edition' ? (
-            <><b>Windows</b><span className="font-normal">98</span><span className="font-bold text-xs ml-1 text-yellow-300">SE</span></>
+            <><b className="text-[#c0c0c0]">Windows</b><span className="font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>98</span><span className="font-bold text-xs ml-1 text-yellow-300">SE</span></>
           ) : (
-            <><b>Windows</b><span className="font-normal">98</span></>
+            <><b className="text-[#c0c0c0]">Windows</b><span className="font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>98</span></>
           )}
         </span>}
       </div>
