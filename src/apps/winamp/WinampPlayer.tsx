@@ -77,9 +77,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const skinInputRef = useRef<HTMLInputElement | null>(null);
   const [skinVisuals, setSkinVisuals] = useState<{ name: string; mainUrl: string; titlebarUrl: string; sprites: Record<string, string> } | null>(null);
   const [skinStatus, setSkinStatus] = useState('');
-  const [skinAppearance, setSkinAppearance] = useState<'built-in' | 'wsz'>(() => {
+  const [skinAppearance, setSkinAppearance] = useState<'dev-alpha' | 'wsz'>(() => {
     try {
-      return window.localStorage.getItem('winamp:skin-appearance:v1') === 'built-in' ? 'built-in' : 'wsz';
+      return window.localStorage.getItem('winamp:skin-appearance:v1') === 'built-in' ? 'dev-alpha' : 'wsz';
     } catch {
       return 'wsz';
     }
@@ -669,12 +669,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             </div>
             <label className="wa-player-settings__row">
               <span>Appearance renderer</span>
-              <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'built-in' | 'wsz')}>
-                <option value="built-in">Built-in Winamp UI</option>
+              <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'dev-alpha' | 'wsz')}>
+                <option value="dev-alpha">Dev Alpha (existing UI)</option>
                 <option value="wsz" disabled={!skinVisuals}>Imported .wsz skin{skinVisuals ? ` — ${skinVisuals.name}` : ' (not loaded)'}</option>
               </select>
             </label>
-            <p>Both renderers share the same playback, playlist and equalizer controller. The built-in UI remains available when a skin is imported.</p>
+            <p>Both renderers share the same playback, playlist and equalizer controller. Dev Alpha remains available when a skin is imported.</p>
           </div>
         )}
 
