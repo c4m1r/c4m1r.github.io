@@ -1134,3 +1134,28 @@
   color: #9292a2;
   line-height: 1.4;
 }
+
+
+/* Imported classic EQ panel artwork and bitmap toggle controls. */
+.wa-eq-btn--skinned {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  width: 25px;
+  height: 12px;
+  min-height: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  gap: 0;
+}
+
+.wa-eq-btn--skinned img {
+  display: block;
+  width: auto;
+  height: 12px;
+  max-width: 33px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
