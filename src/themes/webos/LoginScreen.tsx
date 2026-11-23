@@ -199,7 +199,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
   if (theme === 'win-98') {
     return (
-      <div className="min-h-screen bg-[#008080] flex items-center justify-center font-sans os-shell os-classic">
+      <div className="min-h-screen bg-[#008080] flex items-center justify-center font-sans theme-98 os-shell os-classic">
         <form
           onSubmit={(e) => {
             e.preventDefault();

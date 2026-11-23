@@ -367,3 +367,35 @@
   background-color: #000080 !important;
   color: #ffffff !important;
 }
+
+/* ── 0. Cursors: canonical Windows 95 / 98 set ─────────────────
+   The 32x32 .cur files are the Windows 98 scheme (also used by 95): arrow by default, hand over
+   links, I-beam in text fields, hourglass while busy. Windows 2000 has no cursor files yet and
+   keeps the system default until its set is added. */
+.theme-98,
+.os-win-98 {
+  cursor: url('../../../themes/win98/assets/cursors/w98-arrow.cur'), default;
+}
+
+.theme-98 a[href],
+.theme-98 [role="link"],
+.os-win-98 a[href],
+.os-win-98 [role="link"] {
+  cursor: url('../../../themes/win98/assets/cursors/w98-pointer.cur'), pointer;
+}
+
+.theme-98 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),
+.theme-98 textarea,
+.theme-98 [contenteditable="true"],
+.os-win-98 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),
+.os-win-98 textarea,
+.os-win-98 [contenteditable="true"] {
+  cursor: url('../../../themes/win98/assets/cursors/w98-ibeam.cur'), text;
+}
+
+.theme-98 [aria-busy="true"],
+.theme-98 .is-busy,
+.os-win-98 [aria-busy="true"],
+.os-win-98 .is-busy {
+  cursor: url('../../../themes/win98/assets/cursors/w98-hourglass.cur'), wait;
+}

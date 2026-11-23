@@ -833,3 +833,8 @@ Reference: `eat/screens/oc/win98/01-desktop-programs-menu-system-properties.png`
 - `WelcomeScreen` finishes only after 3 s and after the same preload promise, capped at 10 s, so the desktop opens with its media already in the cache.
 - Measured on Windows 98: 15 media files fetched before the logon click, 1 after it.
 - Not covered yet: the boot video (warmed at the GRUB click only) and cursor images referenced from CSS.
+
+### Windows 95 / 98 cursors (2026-11-23)
+- Canonical cursor set for 95 and 98 from `src/themes/win98/assets/cursors/` (arrow, hand, I-beam, hourglass) in `classic.css` under `.theme-98` / `.os-win-98`. Vite inlines the 32x32 `.cur` files as data URIs. The 98 login screen is tagged `theme-98` so the cursor applies there too.
+- Verified on the Windows 98 desktop: the root cursor is the 98 arrow.
+- Open: Windows 2000 has no cursor files in the repo, so it keeps the system cursor. Needs the Windows 2000 scheme (.cur) before it can be canonical.
