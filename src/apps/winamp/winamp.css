@@ -1013,3 +1013,45 @@
 .wa-skin-range--balance:active::-moz-range-thumb {
   background-image: var(--wa-skin-range-thumb-pressed);
 }
+
+
+/* Optional renderer switch: preserve the built-in implementation beside .wsz. */
+.wa-player-settings {
+  margin-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 3px;
+  color: #c7c7d2;
+  font-size: 9px;
+}
+
+.wa-player-settings summary {
+  cursor: pointer;
+  color: #b8b8c8;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 2px 0;
+}
+
+.wa-player-settings__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.wa-player-settings select {
+  max-width: 150px;
+  min-width: 0;
+  background: #101018;
+  color: #e0e0e8;
+  border: 1px solid #555568;
+  font: inherit;
+  padding: 2px 3px;
+}
+
+.wa-player-settings p {
+  margin: 2px 0 4px;
+  color: #858596;
+  line-height: 1.4;
+}
