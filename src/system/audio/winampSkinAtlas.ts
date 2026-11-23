@@ -152,7 +152,8 @@ export async function extractWinampSkinSprite(
   }
 
   const definition = WINAMP_CLASSIC_SPRITES[spriteId];
-  const source = findSkinAsset(skin.assets, definition.file);
+  const source = findSkinAsset(skin.assets, definition.file)
+    ?? (spriteId === 'main' ? findSkinAsset(skin.assets, 'main.png') : undefined);
   if (!source) throw new Error(`Skin is missing required sprite sheet: ${definition.file}`);
 
   const bitmap = await createImageBitmap(source);
