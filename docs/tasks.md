@@ -356,6 +356,14 @@ Percentages are working estimates, not test results. The previous task registry 
 - EQ enabled state, ten band gains, preamp and stereo balance now persist in local storage under a versioned key; the preset selector resolves the active named preset from restored values. Built-in Flat/Rock/Pop/Jazz/Classical/Bass Boost/Vocal profiles remain separate from up to 30 user presets; custom profiles support save/update by name, selection, deletion and versioned local persistence. Winamp `.eqf` and multi-preset `.q1` libraries can be imported (all records, merging by preset name); the current EQ curve exports as `.eqf`, while built-in and custom profiles export together as a native `winamp.q1` library. EQF values use Winamp's native 0–63 reversed slider encoding and fixed 257-byte name records. Preset controls use a dedicated compact row below the EQ curve so the classic header does not overflow. Remaining: expose shared EQ state in compact widget controls; verify audible filter response, bypass level, EQF round-trip against Winamp/Webamp fixtures and state continuity between full player/widget.
 - Skins must remain presentation-only and must not fork playback, queue or DSP state.
 
+### WINAMP-04 — Keyboard transport and navigation
+- The full player registers shortcuts only while its component is mounted; listener cleanup is required on close/unmount. Do not add a second playback state or audio engine.
+- Transport mapping follows classic Webamp/Winamp conventions: Z previous, X play, C pause, V stop, B next; R toggles repeat; S toggles shuffle; L opens the local audio picker.
+- Arrow Left/Right seek by 5 seconds; Arrow Up/Down adjust volume by 5 percentage points. Clamp seeking and volume to valid ranges.
+- Ignore shortcuts while focus is in an input, textarea, select, editable region or textbox so playlist selection, EQ controls and sliders retain normal keyboard behavior. Do not intercept modified or repeated key events.
+- Main transport buttons expose their matching shortcut through tooltip and `aria-keyshortcuts`.
+- Acceptance: verify every shortcut while the player is open, verify no action after close, test focus guards on EQ sliders/preset controls and playlist interactions, and confirm arrows do not scroll the page when used as player shortcuts.
+
 ### WINAMP-03 — Editable shared playlist
 - The controller owns a mutable queue initialized from the shared project media catalogue. All player/widget commands continue to use the same current track and queue.
 - Playlist supports adding local audio files through the browser file picker, multi-selection (Ctrl/Cmd-click), select-all, removal of selected entries, and current-track preservation when other entries are removed.

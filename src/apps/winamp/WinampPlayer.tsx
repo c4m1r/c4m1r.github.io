@@ -386,6 +386,76 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     winampController.seek((pct / 100) * duration);
   };
 
+  // Webamp-compatible transport shortcuts. Editable controls keep their native keyboard behavior.
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]')) return;
+
+      const key = event.key.toLowerCase();
+      let handled = true;
+
+      switch (key) {
+        case 'z':
+          previous();
+          break;
+        case 'x':
+          void play();
+          break;
+        case 'c':
+          pause();
+          break;
+        case 'v':
+          stop();
+          break;
+        case 'b':
+          next();
+          break;
+        case 'r': {
+          const nextValue = !winampController.isRepeat();
+          setRepeat(nextValue);
+          winampController.setRepeat(nextValue);
+          break;
+        }
+        case 's': {
+          const nextValue = !winampController.isShuffle();
+          setShuffle(nextValue);
+          winampController.setShuffle(nextValue);
+          break;
+        }
+        case 'l':
+          playlistInputRef.current?.click();
+          break;
+        case 'arrowleft':
+          winampController.seek(Math.max(0, currentTime - 5));
+          break;
+        case 'arrowright':
+          winampController.seek(Math.min(duration || currentTime + 5, currentTime + 5));
+          break;
+        case 'arrowup': {
+          const nextValue = Math.min(1, volume + 0.05);
+          setVolume(nextValue);
+          winampController.setVolume(nextValue);
+          break;
+        }
+        case 'arrowdown': {
+          const nextValue = Math.max(0, volume - 0.05);
+          setVolume(nextValue);
+          winampController.setVolume(nextValue);
+          break;
+        }
+        default:
+          handled = false;
+      }
+
+      if (handled) event.preventDefault();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [previous, play, pause, stop, next, currentTime, duration, volume]);
+
   // Sync EQ slider changes to Web Audio filters
   const handleEqBandChange = (index: number, value: number) => {
     setSelectedEqPreset('custom');
@@ -580,19 +650,19 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             {/* Bottom Transport Buttons & Mini Album Art */}
             <div className="wa-transport-row">
               <div className="wa-buttons-group">
-                <button type="button" className="wa-btn-transport" onClick={previous} title="Previous">
+                <button type="button" className="wa-btn-transport" onClick={previous} title="Previous (Z)" aria-keyshortcuts="Z">
                   |◀◀
                 </button>
-                <button type="button" className="wa-btn-transport" onClick={() => void play()} title="Play">
+                <button type="button" className="wa-btn-transport" onClick={() => void play()} title="Play (X)" aria-keyshortcuts="X">
                   ▶
                 </button>
-                <button type="button" className="wa-btn-transport" onClick={pause} title="Pause">
+                <button type="button" className="wa-btn-transport" onClick={pause} title="Pause (C)" aria-keyshortcuts="C">
                   ❚❚
                 </button>
-                <button type="button" className="wa-btn-transport" onClick={stop} title="Stop">
+                <button type="button" className="wa-btn-transport" onClick={stop} title="Stop (V)" aria-keyshortcuts="V">
                   ■
                 </button>
-                <button type="button" className="wa-btn-transport" onClick={next} title="Next">
+                <button type="button" className="wa-btn-transport" onClick={next} title="Next (B)" aria-keyshortcuts="B">
                   ▶▶|
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => seek(0)} title="Eject">
@@ -611,7 +681,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     setShuffle(nextVal);
                     winampController.setShuffle(nextVal);
                   }}
-                  title="Shuffle"
+                  title="Shuffle (S)" aria-keyshortcuts="S"
                 >
                   <span className="wa-led-dot" />
                   SHUFFLE
@@ -625,7 +695,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     setRepeat(nextVal);
                     winampController.setRepeat(nextVal);
                   }}
-                  title="Repeat"
+                  title="Repeat (R)" aria-keyshortcuts="R"
                 >
                   <span className="wa-led-dot" />
                   🔁
@@ -937,7 +1007,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       event.currentTarget.value = '';
                     }}
                   />
-                  <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()}>+ ADD</button>
+                  <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()} title="Add local audio (L)" aria-keyshortcuts="L">+ ADD</button>
                   <button
                     type="button"
                     className="wa-btn-pl"
