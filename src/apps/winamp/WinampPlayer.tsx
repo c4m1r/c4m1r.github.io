@@ -1928,9 +1928,19 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
       {/* 4. VIDEO / VISUALIZATION WINDOW */}
       {showVideo && <div
-        className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'} ${videoShade ? 'wa-window--shaded' : ''}`}
-        style={{ left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80 }}
+        ref={videoWindowRef}
+        tabIndex={isVideoFullscreen ? -1 : undefined}
+        className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'} ${videoShade ? 'wa-window--shaded' : ''} ${isVideoFullscreen ? 'wa-video--fullscreen' : ''}`}
+        style={isVideoFullscreen ? undefined : { left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80 }}
         onPointerDown={() => setActiveWindow('video')}
+        onPointerUp={handleVideoStagePointerUp}
+        onDoubleClick={(event) => {
+          const target = event.target as HTMLElement;
+          if (!target.closest('.wa-video__visualizer, .wa-video__screen')) return;
+          event.preventDefault();
+          enterVideoFullscreen();
+        }}
+        onMouseMove={() => { if (isVideoFullscreen) revealFullscreenControls(); }}
       >
         <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'video')}>
           <span className="wa-titlebar__title">WINAMP {videoMode === 'video' ? 'VIDEO' : 'VISUALIZATION'}</span>
@@ -1980,10 +1990,31 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               }
               event.currentTarget.value = '';
             }} />
-            {videoUrl ? <video src={videoUrl} controls playsInline /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
+            {videoUrl ? <video ref={videoElementRef} src={videoUrl} controls={!isVideoFullscreen} playsInline onPlay={() => revealFullscreenControls()} onPause={() => revealFullscreenControls()} /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>
             <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
           </div>
         )}
+        {isVideoFullscreen && <div
+          className={`wa-video__fullscreen-controls${showFullscreenControls ? ' is-visible' : ''}`}
+          onPointerEnter={() => {
+            fullscreenPanelHoverRef.current = true;
+            clearFullscreenHideTimer();
+            setShowFullscreenControls(true);
+          }}
+          onPointerLeave={() => {
+            fullscreenPanelHoverRef.current = false;
+            scheduleFullscreenControlsHide();
+          }}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}>−5s</button>
+          <button type="button" title="Предыдущий трек" aria-label="Предыдущий трек" onClick={() => { previous(); revealFullscreenControls(); }}>|◀</button>
+          <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}>{videoMode === 'video' ? (videoElementRef.current?.paused ? '▶' : 'Ⅱ') : (isPlaying ? 'Ⅱ' : '▶')}</button>
+          <button type="button" title="Следующий трек" aria-label="Следующий трек" onClick={() => { next(); revealFullscreenControls(); }}>▶|</button>
+          <button type="button" title="Вперёд на 5 секунд" aria-label="Вперёд на 5 секунд" onClick={() => { seekFullscreenMedia(5); revealFullscreenControls(); }}>+5s</button>
+          <button type="button" title="Переключить режим" aria-label="Переключить режим" onClick={() => { cycleFullscreenMode(); revealFullscreenControls(); }}>MODE</button>
+          <button type="button" title="Выйти из полноэкранного режима" aria-label="Выйти из полноэкранного режима" onClick={exitVideoFullscreen}>✕</button>
+        </div>}
         </>}
       </div>}
     </div>
