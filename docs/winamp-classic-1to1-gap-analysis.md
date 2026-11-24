@@ -127,3 +127,10 @@ This register is based on current main source and the supplied reference image, 
 - Corrected both PREAMP and all ten band inputs to use a true vertical range axis via `writing-mode: vertical-lr` and `direction: rtl` (minimum at bottom, maximum at top). Added explicit vertical track/thumb dimensions for Chromium/WebKit and Firefox; React state and audio controller handlers remain unchanged.
 - The previous titlebar settings gear hide rule is present in the active Classic stylesheet, and the root applies the Classic scope class only when the saved appearance is `webamp-classic`. If the app remains in Dev Alpha or an imported skin, Classic-only faceplate changes will not appear.
 - Pending verification: confirm the latest GitHub Actions run passes, then test real pointer movement and capture a browser screenshot at native 275 px width. This source-level fix is not yet browser-verified.
+
+
+## Progress log — 2026-11-24 (Classic default)
+- Webamp Classic is now the default renderer on first launch and when migrating the former `dev-alpha` default preference.
+- The appearance preference is stored under `winamp:skin-appearance:v2` so a previously persisted Dev Alpha default does not silently keep the app in the non-Classic renderer.
+- A previously selected imported `.wsz` skin is preserved during migration. Dev Alpha remains manually selectable; imported skins remain available.
+- This also makes the Classic-only faceplate CSS and the Classic initial window stack active by default. Existing browser storage may retain the imported skin if that was the user's last explicit choice.
