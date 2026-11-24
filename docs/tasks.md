@@ -513,3 +513,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Added short etched tick marks beside the three reference labels, with a slightly stronger center tick. Kept the existing 63 px fader travel and the current range values/orientation unchanged.
 - CSS-only, scoped to `.wa-shell--webamp-classic`; no JSX, EQ values, presets, DSP/controller logic, Dev Alpha or imported .wsz rendering changed.
 - Verification: CSS brace balance and new-selector scope checked. Browser-specific range-thumb alignment, browser visual QA, build/typecheck and CI remain unconfirmed.
+
+
+### Winamp — Webamp Classic EQ cross-browser range normalization (2026-11-24)
+- Added an explicit unstyled native range baseline for the built-in Classic EQ sliders, then retained the custom metallic thumb and track presentation through the existing WebKit and Gecko pseudo-elements.
+- Harmonized track/progress transparency, removed Firefox's outer focus decoration, and added matching keyboard-focus and disabled-state treatment for both engines.
+- CSS-only, scoped to `.wa-shell--webamp-classic`. Slider orientation, min/max/step, values, event handlers, PREAMP separation, graph mapping, DSP/controller behavior, Dev Alpha and imported .wsz styles remain unchanged.
+- Verification: CSS brace balance and selector scope checked. Actual Chrome/Firefox thumb geometry, touch, keyboard, browser visual QA, build/typecheck and CI still require runtime validation.
