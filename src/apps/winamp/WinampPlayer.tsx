@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
@@ -723,7 +723,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [detachedWindows, showEq, showPl, showVideo]);
 
 
-  const startPlaylistResize = (event: React.PointerEvent<HTMLDivElement>) => {
+  const startPlaylistResize = (event: PointerEvent<HTMLDivElement>) => {
     if (skinAppearance !== 'webamp-classic' || plShade) return;
     event.preventDefault();
     event.stopPropagation();
