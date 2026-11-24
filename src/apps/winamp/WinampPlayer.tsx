@@ -441,7 +441,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         right: position.x + (node?.offsetWidth ?? (windowKey === 'video' ? 320 : 275)),
         bottom: position.y + (node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 104 : windowKey === 'video' ? 240 : 232)),
         width: node?.offsetWidth ?? (windowKey === 'video' ? 320 : 275),
-        height: node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : windowKey === 'video' ? 240 : 232),
+        height: node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 104 : windowKey === 'video' ? 240 : 232),
       }];
     })) as Record<PlayerWindowKey, { left: number; top: number; right: number; bottom: number; width: number; height: number }>;
     const connected = new Set<PlayerWindowKey>([key]);
