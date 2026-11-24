@@ -2188,3 +2188,65 @@
     min-width: 0;
   }
 }
+
+
+/* Clickable Main LCD analyzer: spectrum, oscilloscope and peak-meter views. */
+.wa-shell--webamp-classic .wa-visualizer {
+  min-width: 0;
+  width: 100%;
+  min-height: 0;
+  padding: 0 1px 2px;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-visualizer:hover {
+  filter: brightness(1.16);
+}
+
+.wa-shell--webamp-classic .wa-visualizer:active {
+  filter: brightness(.88);
+}
+
+.wa-shell--webamp-classic .wa-visualizer:focus-visible {
+  outline: 1px dotted #9bff9b;
+  outline-offset: -1px;
+}
+
+.wa-shell--webamp-classic .wa-visualizer--mode-1 {
+  align-items: center;
+  background: repeating-linear-gradient(180deg, transparent 0 11px, rgba(0, 190, 0, .12) 11px 12px);
+}
+
+.wa-shell--webamp-classic .wa-visualizer-wave {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.wa-shell--webamp-classic .wa-visualizer-wave polyline {
+  fill: none;
+  stroke: #00ed22;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1px rgba(0, 255, 30, .55));
+}
+
+.wa-shell--webamp-classic .wa-visualizer--mode-2 .wa-vis-bar {
+  min-height: 2px;
+  background: linear-gradient(180deg, #e7e7a0 0%, #8be44b 24%, #00c820 100%);
+  box-shadow: 0 0 2px rgba(0, 220, 30, .35);
+}
+
+.wa-shell--webamp-classic .wa-visualizer--mode-2 .wa-vis-col {
+  align-items: flex-end;
+}
