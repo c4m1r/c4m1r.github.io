@@ -432,3 +432,9 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Transport controls retain their native 23 × 18 px footprint (Eject 22 × 18 px in this approximation). Narrow-screen width handling remains scoped to Webamp Classic.
 - No TSX markup, playback/controller handlers, audio state, Dev Alpha or imported .wsz styles were changed.
 - Verification: CSS source structure and scoped selector checks performed after update; browser screenshot/layout QA, build/typecheck and CI have not been run. Treat the exact 275 × 116 layout as an authored CSS target, not browser-verified pixel parity.
+
+### Winamp — Webamp Classic Main pixel-detail pass (2026-11-24)
+- Added a narrowly scoped CSS pass for the built-in Webamp Classic Main window: compact pixel-like PLAY/PAUSE indicators, sharper green LCD digits and colon, boxed Mono/Stereo readouts, and more tactile transport/slider bevels with focus treatment.
+- Existing time toggle, playback handlers, visualizer modes, slider inputs, imported .wsz skins and Dev Alpha are unchanged. No original Nullsoft bitmap assets were copied or embedded; this is an original CSS approximation.
+- Preserved the authored Main target geometry (275 × 116 px; 14 px title strip; 44 px display; 18 px transport row).
+- Verification still required: build/typecheck, browser visual review at desktop and narrow widths, and interaction QA. CI status is checked separately; no browser QA is claimed by this source-only pass.
