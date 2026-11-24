@@ -140,3 +140,14 @@ This register is based on current main source and the supplied reference image, 
 - Moved the Q1 library export action out of the PRESETS disclosure menu and placed it directly beside PRESETS in the Classic Equalizer header row.
 - Kept the action wired to the existing full-preset-library export handler; no EQ preset serialization or audio processing behavior changed.
 - Applied a Classic-only 13 px button treatment so the added action fits the existing compact header row. Native browser screenshot verification remains pending.
+
+
+## Progress log — 2026-11-24 (fourth window and detachable modules)
+- Added a fourth independent Video / Visualization window. It opens by default beside the Main / Equalizer / Playlist stack and can be hidden or reopened with the VIS button in the Main titlebar.
+- The fourth window switches between an expanded visualizer (Spectrum, Oscilloscope and Peak Meter, reusing the current player's visualizer data) and a local video viewer. Video is loaded from a file picker into a native HTML video element; object URLs are revoked when a replacement file is selected or the player unmounts.
+- Added per-window attach/detach controls to Main, Equalizer, Playlist and Video / Visualization. Detached windows are excluded from connected-window drag groups; attached windows can join a group when their edges touch within the existing 8 px tolerance.
+- Added magnetic edge alignment on pointer release for attached windows when the gap is within 12 px. Hidden Video / Visualization is excluded from drag-group calculations. Window positions are also initialized when switching renderer appearance.
+- Added Classic-compatible styling for the fourth window, including a dark visualizer stage, audio-reactive bars/waveform, video viewport and compact mode controls.
+- GitHub Actions run for source commit 20e26a33 completed successfully: context verification, TypeScript, lint, production build, build-output verification, artifact upload and GitHub Pages deployment all passed.
+- Browser interaction and screenshot QA have not yet been performed. In particular, verify touch dragging, magnetic docking on narrow screens, native video playback formats, and that the fourth window does not overlap the initial three-window stack on small viewports.
+- Current video loading is intentionally independent of the audio playlist; it does not yet auto-detect video entries in M3U or synchronize external video audio with the Winamp audio controller.
