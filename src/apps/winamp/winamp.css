@@ -4327,3 +4327,251 @@
     border-left-color: #111;
   }
 }
+
+
+/* Webamp Classic — equalizer window proportions and complete faceplate hierarchy. */
+.wa-shell--webamp-classic .wa-equalizer {
+  box-sizing: border-box;
+  width: 275px;
+  min-width: 275px;
+  max-width: min(275px, calc(100vw - 8px));
+  overflow: hidden;
+  background: linear-gradient(180deg, #777 0, #393939 2px, #242424 100%);
+  border: 1px solid #080808;
+  border-top-color: #bdbdbd;
+  border-left-color: #999;
+  border-right-color: #080808;
+  border-bottom-color: #050505;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.62),
+    inset -1px -1px 0 #080808,
+    1px 1px 0 #000,
+    0 2px 4px rgba(0,0,0,.3);
+}
+
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar {
+  flex: 0 0 14px;
+  height: 14px;
+  min-height: 14px;
+  padding: 0 3px 0 5px;
+  gap: 4px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.16), transparent 38%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #686868 0%, #484848 27%, #303030 66%, #1b1b1b 100%);
+  border-bottom: 1px solid #080808;
+  box-shadow: inset 0 1px rgba(255,255,255,.48), inset 0 -1px rgba(255,255,255,.06);
+}
+
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar .wa-titlebar__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 8px;
+  letter-spacing: .55px;
+}
+
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar .wa-titlebar__controls {
+  flex: 0 0 auto;
+}
+
+.wa-shell--webamp-classic .wa-eq__body {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 4px 5px 5px;
+  gap: 3px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055) 0, transparent 17px),
+    linear-gradient(180deg, #3b3b3b 0%, #2d2d2d 43%, #222 100%);
+  border-top: 1px solid #080808;
+}
+
+.wa-shell--webamp-classic .wa-eq__header {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 17px;
+  height: 17px;
+  min-height: 17px;
+  align-items: center;
+  gap: 4px;
+  padding: 0 1px;
+}
+
+.wa-shell--webamp-classic .wa-eq__toggles {
+  box-sizing: border-box;
+  flex: 0 0 59px;
+  width: 59px;
+  min-width: 59px;
+  height: 16px;
+  padding: 1px;
+  gap: 2px;
+  background: linear-gradient(180deg, #171717, #343434);
+  box-shadow: inset 1px 1px 2px #080808, inset -1px -1px #666;
+}
+
+.wa-shell--webamp-classic .wa-eq__toggles .wa-btn-mode {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 13px;
+  min-height: 13px;
+  padding: 0 2px;
+  justify-content: center;
+  font: 700 6px/11px Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+}
+
+.wa-shell--webamp-classic .wa-eq__spline {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  height: 16px;
+  min-height: 16px;
+  align-self: center;
+  border: 1px solid #080a08;
+  border-top-color: #050605;
+  border-left-color: #050605;
+  border-right-color: #777;
+  border-bottom-color: #777;
+  background-color: #020502;
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px #172117;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools {
+  box-sizing: border-box;
+  flex: 0 0 14px;
+  min-height: 14px;
+  height: 14px;
+  align-items: center;
+  gap: 2px !important;
+  padding: 1px 2px;
+  border-top: 1px solid rgba(0,0,0,.62);
+  border-bottom: 1px solid rgba(255,255,255,.09);
+  background: linear-gradient(180deg, rgba(0,0,0,.2), rgba(255,255,255,.025));
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools select.wa-btn-presets {
+  flex: 0 0 65px !important;
+  width: 65px;
+  height: 11px;
+  min-height: 11px;
+  padding: 0 1px;
+  font: 6px/9px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools input.wa-btn-presets {
+  flex: 1 1 34px !important;
+  width: 34px;
+  height: 11px;
+  min-height: 11px;
+  padding: 0 3px;
+  font: 6px/9px Arial, Helvetica, sans-serif;
+  color: #e0e0e0;
+  background: linear-gradient(180deg, #171717, #292929);
+  border-color: #090909 #666 #666 #090909;
+  box-shadow: inset 1px 1px 1px #080808;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools input.wa-btn-presets::placeholder {
+  color: #969696;
+  opacity: 1;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode {
+  height: 11px;
+  min-height: 11px;
+  max-height: 11px;
+  padding: 0 2px;
+  font: 700 5px/9px Arial, Helvetica, sans-serif;
+  letter-spacing: -.12px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode:disabled {
+  color: #777;
+  filter: saturate(.35);
+  opacity: .65;
+}
+
+.wa-shell--webamp-classic .wa-eq__status {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-height: 10px;
+  padding: 0 3px;
+  overflow: hidden;
+  border-left: 1px solid #101010;
+  border-right: 1px solid #555;
+  background: #111;
+  color: #c6d69b;
+  font: 6px/10px "Courier New", monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-eq__sliders-container {
+  box-sizing: border-box;
+  flex: 0 0 76px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 1px;
+  padding: 2px 3px 2px;
+  gap: 2px;
+  border: 1px solid #101010;
+  border-top-color: #080808;
+  border-left-color: #171717;
+  border-right-color: #696969;
+  border-bottom-color: #858585;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.045), transparent 8px),
+    linear-gradient(90deg, #252525 0%, #303030 18%, #292929 50%, #303030 82%, #242424 100%);
+  box-shadow: inset 1px 1px 2px #090909, inset -1px -1px 1px rgba(255,255,255,.14), 0 1px 0 rgba(0,0,0,.7);
+}
+
+.wa-shell--webamp-classic .wa-eq__band {
+  min-width: 0;
+}
+
+.wa-shell--webamp-classic .wa-eq__fader {
+  flex: 0 0 63px;
+  height: 63px;
+  min-height: 63px;
+}
+
+.wa-shell--webamp-classic .wa-eq__band-name {
+  border-top-color: rgba(0,0,0,.56);
+  color: #d0d0d0;
+  text-shadow: 1px 1px #080808;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-equalizer {
+    width: 275px;
+    min-width: 0;
+    max-width: calc(100vw - 8px);
+  }
+
+  .wa-shell--webamp-classic .wa-eq__body {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__header {
+    gap: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__toggles {
+    flex-basis: 57px;
+    width: 57px;
+    min-width: 57px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__sliders-container {
+    gap: 1px;
+    padding-right: 2px;
+    padding-left: 2px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__labels-left {
+    flex-basis: 17px;
+    width: 17px;
+  }
+}
