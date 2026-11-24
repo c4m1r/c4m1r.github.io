@@ -638,3 +638,9 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Заголовки окон и их индивидуальная типографика сохранены; правила ограничены titlebar конкретных трёх окон внутри `.wa-shell--webamp-classic`. Imported-skin inline backgrounds и Dev Alpha не затрагиваются.
 - CSS-only: TSX, действия minimize/shade/close/settings, drag, playback, EQ/DSP, playlist и размеры окон не менялись.
 - Source checks: CSS brace balance 0; все 12 новых selector lines scoped to Webamp Classic windows. Совместное browser QA, narrow viewport, клавиатура/касания, build/typecheck и CI остаются неподтверждёнными. Не помечать Verified.
+
+### Winamp — Webamp Classic shared titlebar baseline calibration (2026-11-24)
+- Завершена следующая часть согласования Main, Equalizer и Playlist: единый 14 px baseline titlebar, общий внутренний отступ 4 px, нижний металлический шов и единая вертикальная оптика заголовков.
+- Для Main сохранена отдельная левая группа логотипа/названия; заголовки ограничены доступной шириной с безопасным ellipsis, системные кнопки остаются отдельной фиксированной группой.
+- CSS-only, 10 новых selector lines в .wa-shell--webamp-classic; TSX, размеры окон, позиции/drag, shade/close/settings, EQ, playlist и playback не менялись. Dev Alpha и imported .wsz не затрагивались.
+- Source checks: CSS brace balance 0, scope violations 0. Browser comparison of all three windows, narrow viewport, keyboard/touch, build/typecheck and CI are not confirmed. Not marked Verified.
