@@ -6974,3 +6974,33 @@
 .wa-shell--webamp-classic .wa-playlist > .wa-titlebar .wa-titlebar__controls {
   flex-shrink: 0;
 }
+
+
+
+/* Webamp Classic — Playlist Editor width extension.
+   Preserve the classic one-column footprint and allow a second track-list
+   column's worth of horizontal room; keep the vertical chassis fixed. */
+.wa-shell--webamp-classic .wa-playlist {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 275px;
+  min-width: 275px;
+  max-width: min(550px, calc(100vw - 8px));
+  height: 232px;
+  min-height: 232px;
+  max-height: 232px;
+  resize: horizontal;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__body,
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list,
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer {
+  min-width: 0;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist {
+    max-width: calc(100vw - 8px);
+  }
+}
