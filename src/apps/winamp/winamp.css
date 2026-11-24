@@ -3934,3 +3934,56 @@
   outline: 1px dotted #ffe36e;
   outline-offset: 2px;
 }
+
+
+/* Webamp Classic — EQ upper strip and response display bezel. */
+.wa-shell--webamp-classic .wa-eq__header {
+  box-sizing: border-box;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.wa-shell--webamp-classic .wa-eq__toggles {
+  box-sizing: border-box;
+  flex: 0 0 59px;
+  height: 16px;
+  min-width: 59px;
+}
+
+.wa-shell--webamp-classic .wa-eq__spline {
+  box-sizing: border-box;
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 16px;
+  align-self: center;
+  border: 1px solid #080a08;
+  border-top-color: #050605;
+  border-left-color: #050605;
+  border-right-color: #626a5b;
+  border-bottom-color: #626a5b;
+  background-color: #020502;
+  box-shadow:
+    inset 1px 1px 2px #000,
+    inset -1px -1px #172117,
+    0 0 0 1px rgba(0,0,0,.42);
+}
+
+.wa-shell--webamp-classic .wa-spline-svg {
+  position: relative;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-spline-svg polyline {
+  stroke: #fff27a;
+  stroke-width: 1.25;
+  stroke-linecap: square;
+  stroke-linejoin: bevel;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1px rgba(255,244,110,.72));
+}
