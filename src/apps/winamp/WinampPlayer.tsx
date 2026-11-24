@@ -377,9 +377,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const videoUrlRef = useRef('');
   const videoInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => () => { if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current); }, []);
+  // Classic's video/visualizer is a 275px square directly above Main.
+  // Reserve that vertical space so the four-window stack starts as one aligned column.
   const classicStackTop = typeof window === 'undefined'
-    ? 48
-    : Math.max(8, Math.min(48, window.innerHeight - 480));
+    ? 283
+    : Math.max(283, Math.min(320, window.innerHeight - 480));
   const classicStackLeft = typeof window === 'undefined'
     ? 24
     : Math.max(8, Math.min(24, window.innerWidth - 283));
@@ -390,7 +392,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       main: { x, y: top },
       equalizer: { x, y: top + 116 },
       playlist: { x, y: top + 232 },
-      video: { x: Math.min(x + 290, Math.max(8, (typeof window === 'undefined' ? 600 : window.innerWidth) - 340)), y: top },
+      video: { x, y: top - 275 },
     };
   });
   const [playlistSize, setPlaylistSize] = useState({ width: 275, height: 232 });
@@ -857,7 +859,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           </div>
           <div className="wa-titlebar__controls">
             <button type="button" className="wa-titlebar__btn" title={detachedWindows.includes('main') ? 'Attach to window group' : 'Detach this window'} aria-label={detachedWindows.includes('main') ? 'Attach Main' : 'Detach Main'} onClick={() => setDetachedWindows((items) => items.includes('main') ? items.filter((item) => item !== 'main') : [...items, 'main'])}>{detachedWindows.includes('main') ? '↗' : '⛓'}</button>
-            <button type="button" className="wa-titlebar__btn" title="Minimize">_</button>
+            <button type="button" className="wa-titlebar__btn" title="Minimize to Windowshade" aria-label="Minimize Main to Windowshade" onClick={() => setMainShade(true)}>_</button>
             <button
               type="button"
               className="wa-titlebar__btn"
@@ -884,13 +886,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 const nextAppearance = event.currentTarget.value as 'dev-alpha' | 'webamp-classic' | 'wsz';
                 setSkinAppearance(nextAppearance);
                 if (nextAppearance === 'webamp-classic') {
-                  const top = Math.max(8, Math.min(48, window.innerHeight - 480));
+                  const top = Math.max(283, Math.min(320, window.innerHeight - 480));
                   const left = Math.max(8, Math.min(24, window.innerWidth - 283));
                   setWindowPositions({
                     main: { x: left, y: top },
                     equalizer: { x: left, y: top + 116 },
                     playlist: { x: left, y: top + 232 },
-                    video: { x: Math.min(left + 290, Math.max(8, window.innerWidth - 340)), y: top },
+                    video: { x: left, y: top - 275 },
                   });
                 }
               }}>
