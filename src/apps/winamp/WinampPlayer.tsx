@@ -1131,8 +1131,27 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     />
                   </svg>
                 </div>
-
-
+                {skinAppearance === 'webamp-classic' && (
+                  <select
+                    className="wa-btn-presets wa-eq__preset-select"
+                    aria-label="Equalizer preset"
+                    value={selectedEqPreset}
+                    onChange={(event) => {
+                      const preset = allEqPresets.find((item) => item.id === event.currentTarget.value);
+                      if (preset) applyEqPreset(preset);
+                    }}
+                  >
+                    <option value="custom">CUSTOM</option>
+                    <optgroup label="Built-in">
+                      {EQ_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
+                    </optgroup>
+                    {customEqPresets.length > 0 && (
+                      <optgroup label="My presets">
+                        {customEqPresets.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
+                      </optgroup>
+                    )}
+                  </select>
+                )}
               </div>
 
               {/* Equalizer preset controls and faders */}
@@ -1142,7 +1161,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 aria-label="Equalizer preset management"
                 style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0, flexWrap: 'wrap' }}
               >
-                <select
+                {skinAppearance !== 'webamp-classic' && (                <select
                   className="wa-btn-presets"
                   aria-label="Equalizer preset"
                   value={selectedEqPreset}
@@ -1161,7 +1180,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       {customEqPresets.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
                     </optgroup>
                   )}
-                </select>
+                </select>)}
                 <input
                   className="wa-btn-presets"
                   aria-label="New equalizer preset name"
