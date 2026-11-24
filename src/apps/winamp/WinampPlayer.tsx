@@ -365,7 +365,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     main: { x: 24, y: 48 }, equalizer: { x: 24, y: 174 }, playlist: { x: 24, y: 292 },
   });
   const [playlistSize, setPlaylistSize] = useState({ width: 275, height: 232 });
-  const playlistResizeRef = useRef<{ pointerX: number; pointerY: number; width: number; height: number } | null>(null);
+  const playlistResizeRef = useRef<{ pointerId: number; pointerX: number; pointerY: number; width: number; height: number } | null>(null);
   const dragRef = useRef<{
     anchorKey: PlayerWindowKey;
     members: Array<{ key: PlayerWindowKey; originX: number; originY: number; width: number; height: number }>;
@@ -466,6 +466,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     event.preventDefault();
     event.stopPropagation();
     playlistResizeRef.current = {
+      pointerId: event.pointerId,
       pointerX: event.clientX, pointerY: event.clientY,
       width: document.querySelector<HTMLElement>('.wa-playlist')?.offsetWidth ?? playlistSize.width,
       height: document.querySelector<HTMLElement>('.wa-playlist')?.offsetHeight ?? playlistSize.height,
@@ -476,7 +477,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   useEffect(() => {
     const move = (event: PointerEvent) => {
       const resize = playlistResizeRef.current;
-      if (!resize) return;
+      if (!resize || event.pointerId !== resize.pointerId) return;
       const left = windowPositions.playlist.x;
       const top = windowPositions.playlist.y;
       const maxWidth = Math.max(275, Math.min(550, window.innerWidth - left - 8));
@@ -486,7 +487,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         height: Math.max(232, Math.min(maxHeight, resize.height + event.clientY - resize.pointerY)),
       });
     };
-    const stop = () => { playlistResizeRef.current = null; };
+    const stop = (event: PointerEvent) => {
+      if (playlistResizeRef.current?.pointerId === event.pointerId) playlistResizeRef.current = null;
+    };
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', stop);
     window.addEventListener('pointercancel', stop);
