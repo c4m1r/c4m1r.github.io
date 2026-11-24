@@ -158,7 +158,8 @@ function resolveSpriteAsset(
   fileName: string,
 ): { path: string; blob: Blob } | undefined {
   return findSkinAsset(assets, fileName)
-    ?? (spriteId === 'main' ? findSkinAsset(assets, 'main.png') : undefined);
+    ?? (spriteId === 'main' ? findSkinAsset(assets, 'main.png') : undefined)
+    ?? (/^(digit[0-9]|timeMinus)$/.test(spriteId) ? findSkinAsset(assets, 'nums_ex.bmp') : undefined);
 }
 
 /**
