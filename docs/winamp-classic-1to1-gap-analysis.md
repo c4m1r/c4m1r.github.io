@@ -134,3 +134,9 @@ This register is based on current main source and the supplied reference image, 
 - The appearance preference is stored under `winamp:skin-appearance:v2` so a previously persisted Dev Alpha default does not silently keep the app in the non-Classic renderer.
 - A previously selected imported `.wsz` skin is preserved during migration. Dev Alpha remains manually selectable; imported skins remain available.
 - This also makes the Classic-only faceplate CSS and the Classic initial window stack active by default. Existing browser storage may retain the imported skin if that was the user's last explicit choice.
+
+
+## Progress log — 2026-11-24 (EQ header actions)
+- Moved the Q1 library export action out of the PRESETS disclosure menu and placed it directly beside PRESETS in the Classic Equalizer header row.
+- Kept the action wired to the existing full-preset-library export handler; no EQ preset serialization or audio processing behavior changed.
+- Applied a Classic-only 13 px button treatment so the added action fits the existing compact header row. Native browser screenshot verification remains pending.
