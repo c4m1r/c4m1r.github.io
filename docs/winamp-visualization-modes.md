@@ -12,7 +12,7 @@ The existing fourth window already contains a visualizer stage and a local-video
 
 - The Main LCD now has its own independent three-mode state; the fourth window has a separate 13-mode state.
 - The existing fourth-window `MODE` control cycles through Spectrum, Oscilloscope, Peak Meter, Alchemy, Bars and Waves, Battery, Ambience, Particle, Plenoptic, Spikes, Musical Colors, AVS and MilkDrop.
-- Each added family currently has an original lightweight SVG/CSS procedural renderer driven by the shared analyser arrays. These are recognizable first-pass interpretations, not byte-exact reproductions of Microsoft / Nullsoft visualizers, original plugin engines, or compatible preset implementations.
+- Each added family uses an original SVG/CSS procedural renderer driven by the shared analyser arrays. WMP Alchemy now layers frequency-shaped ribbons, orbital rings and a waveform core; Plenoptic uses a perspective tunnel, frequency spokes and depth layers. These remain original interpretations, not byte-exact reproductions of Microsoft / Nullsoft visualizers, original plugin engines, or compatible preset implementations.
 - The fourth-window geometry and video stage were not changed. Added CSS scene animation respects `prefers-reduced-motion`. Browser screenshots, visual tuning and regression checks are still outstanding.
 
 ## Main LCD versus fourth-window mode state
