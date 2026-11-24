@@ -3541,7 +3541,7 @@
   flex: 1 1 0;
 }
 
-.wa-shell--webamp-classic .wa-eq__band:first-of-type {
+.wa-shell--webamp-classic .wa-eq__band:nth-of-type(2) {
   flex-grow: 1.08;
 }
 
