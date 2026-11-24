@@ -1156,7 +1156,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </svg>
                 </div>
                 {skinAppearance === 'webamp-classic' && (
-                  <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--eq" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }}>
+                  <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--eq" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
                     <summary className="wa-btn-presets">PRESETS</summary>
                     <div className="wa-classic-menu__panel wa-classic-menu__panel--eq">
                       <label className="wa-classic-menu__label">CURRENT PRESET
