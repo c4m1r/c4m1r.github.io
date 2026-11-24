@@ -703,7 +703,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add random mode action (random within a multi-mode family; across all modes for singleton families).
 - [x] Add four named AVS-inspired and four MilkDrop-inspired variants with compact PSET control.
 - [x] Respect prefers-reduced-motion for the added CSS scene animation.
-- [ ] Add optional auto-cycle (off by default).
+- [x] Add optional AUTO mode cycling every 15 seconds (off by default; pauses when the fourth window is hidden/shaded, Video is active or the tab is backgrounded).
 - [ ] Verify hidden-window lifecycle / performance in browser.
 - [x] Preserve local video stage, object-URL cleanup and existing window geometry in the implementation pass.
 - [ ] Browser acceptance: visual distinction, mobile fit, drag/attach, playback/EQ/playlist and video regressions.
