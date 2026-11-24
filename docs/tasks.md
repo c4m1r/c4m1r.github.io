@@ -527,3 +527,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Tightened PREAMP caption sizing separately from the ten frequency labels; retained tabular frequency figures and the narrow-screen label reduction. The dB scale and divider remain aligned to the fader travel.
 - CSS-only, scoped to `.wa-shell--webamp-classic`. No JSX, frequency mapping, slider ranges/values, EQ handlers, DSP/controller behavior, Dev Alpha or imported .wsz styles changed.
 - Verification: CSS brace balance (588/588) and selector scope checked. Browser visual review at desktop/narrow widths, Chrome/Firefox endpoint checks, build/typecheck and CI remain unconfirmed.
+
+
+### Winamp — Webamp Classic EQ lower faceplate rail (2026-11-24)
+- Added a recessed lower fader-bank well with a dark inner edge, restrained metallic outer bevel and subtle top highlight, visually tying the EQ control area to the Main/Playlist chassis language.
+- Refined the fader wells, bottom caption rail, dB scale contrast and PREAMP separator without changing the established 63 px slider travel or shared label baseline.
+- CSS-only and scoped to `.wa-shell--webamp-classic`. No JSX, EQ values/ranges/handlers, DSP/controller logic, Main/Playlist behavior, Dev Alpha or imported .wsz styling changed.
+- Verification: CSS brace balance (599/599) and selector scope checked. Browser visual comparison against Main/Playlist, narrow-width review, build/typecheck and CI remain unconfirmed.
