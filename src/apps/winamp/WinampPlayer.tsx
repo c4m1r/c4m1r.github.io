@@ -370,10 +370,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
   const [detachedWindows, setDetachedWindows] = useState<PlayerWindowKey[]>([]);
   const [videoMode, setVideoMode] = useState<'visualizer' | 'video'>('visualizer');
+  const [showVideo, setShowVideo] = useState(true);
+  const [videoShade, setVideoShade] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFileName, setVideoFileName] = useState('');
+  const videoUrlRef = useRef('');
   const videoInputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => () => { if (videoUrl) URL.revokeObjectURL(videoUrl); }, [videoUrl]);
+  useEffect(() => () => { if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current); }, []);
   const classicStackTop = typeof window === 'undefined'
     ? 48
     : Math.max(8, Math.min(48, window.innerHeight - 480));
@@ -817,6 +820,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             >
               ▲
             </button>
+            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--window-toggle" title="Open Video / Visualization" aria-label="Open Video / Visualization" onClick={() => setShowVideo((value) => !value)}>VIS</button>
             <button type="button" className="wa-titlebar__btn wa-titlebar__btn--settings" title="Player settings" aria-label="Player settings" aria-expanded={playerSettingsOpen} onClick={() => setPlayerSettingsOpen((open) => !open)}>⚙</button>
             <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close Winamp" onClick={onClose}>×</button>
           </div>
@@ -1122,6 +1126,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'equalizer')} style={activeSkin ? { backgroundImage: `url("${activeSkin.sprites.equalizerTitlebarActive}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 14px', height: 14, minHeight: 14, boxSizing: 'border-box' } : undefined}>
             <span className="wa-titlebar__title">WINAMP EQUALIZER</span>
             <div className="wa-titlebar__controls">
+              <button type="button" className="wa-titlebar__btn" title={detachedWindows.includes('equalizer') ? 'Attach to window group' : 'Detach this window'} aria-label={detachedWindows.includes('equalizer') ? 'Attach Equalizer' : 'Detach Equalizer'} onClick={() => setDetachedWindows((items) => items.includes('equalizer') ? items.filter((item) => item !== 'equalizer') : [...items, 'equalizer'])}>{detachedWindows.includes('equalizer') ? '↗' : '⛓'}</button>
               <button
                 type="button"
                 className="wa-titlebar__btn"
@@ -1321,6 +1326,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'playlist')}>
             <span className="wa-titlebar__title">WINAMP PLAYLIST</span>
             <div className="wa-titlebar__controls">
+              <button type="button" className="wa-titlebar__btn" title={detachedWindows.includes('playlist') ? 'Attach to window group' : 'Detach this window'} aria-label={detachedWindows.includes('playlist') ? 'Attach Playlist' : 'Detach Playlist'} onClick={() => setDetachedWindows((items) => items.includes('playlist') ? items.filter((item) => item !== 'playlist') : [...items, 'playlist'])}>{detachedWindows.includes('playlist') ? '↗' : '⛓'}</button>
               <button
                 type="button"
                 className="wa-titlebar__btn"
@@ -1536,7 +1542,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       )}
 
       {/* 4. VIDEO / VISUALIZATION WINDOW */}
-      <div
+      {showVideo && <div
         className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'}`}
         style={{ left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80 }}
         onPointerDown={() => setActiveWindow('video')}
@@ -1545,10 +1551,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           <span className="wa-titlebar__title">WINAMP {videoMode === 'video' ? 'VIDEO' : 'VISUALIZATION'}</span>
           <div className="wa-titlebar__controls">
             <button type="button" className="wa-titlebar__btn" title={detachedWindows.includes('video') ? 'Attach to window group' : 'Detach this window'} aria-label={detachedWindows.includes('video') ? 'Attach window' : 'Detach window'} onClick={() => setDetachedWindows((items) => items.includes('video') ? items.filter((item) => item !== 'video') : [...items, 'video'])}>{detachedWindows.includes('video') ? '↗' : '⛓'}</button>
-            <button type="button" className="wa-titlebar__btn" title="Minimize video / visualization">_</button>
-            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close video / visualization" onClick={() => setVideoMode('visualizer')}>×</button>
+            <button type="button" className="wa-titlebar__btn" title="Toggle Windowshade" onClick={() => setVideoShade((value) => !value)}>▲</button>
+            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close video / visualization" onClick={() => setShowVideo(false)}>×</button>
           </div>
         </div>
+        {!videoShade && <>
         <div className="wa-video__toolbar">
           <button type="button" className={videoMode === 'visualizer' ? 'is-active' : ''} onClick={() => setVideoMode('visualizer')}>VISUALIZATION</button>
           <button type="button" className={videoMode === 'video' ? 'is-active' : ''} onClick={() => setVideoMode('video')}>VIDEO</button>
@@ -1574,7 +1581,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               const file = event.currentTarget.files?.[0];
               if (file) {
                 const nextUrl = URL.createObjectURL(file);
-                setVideoUrl((previous) => { if (previous) URL.revokeObjectURL(previous); return nextUrl; });
+                if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current);
+                videoUrlRef.current = nextUrl;
+                setVideoUrl(nextUrl);
                 setVideoFileName(file.name);
               }
               event.currentTarget.value = '';
@@ -1583,7 +1592,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
           </div>
         )}
-      </div>
+        </>}
+      </div>}
     </div>
   );
 }
