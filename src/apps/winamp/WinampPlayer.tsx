@@ -890,6 +890,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     main: { x: left, y: top },
                     equalizer: { x: left, y: top + 116 },
                     playlist: { x: left, y: top + 232 },
+                    video: { x: Math.min(left + 290, Math.max(8, window.innerWidth - 340)), y: top },
                   });
                 }
               }}>
