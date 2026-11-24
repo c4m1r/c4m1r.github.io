@@ -1156,7 +1156,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </svg>
                 </div>
                 {skinAppearance === 'webamp-classic' && (
-                  <details className="wa-classic-menu wa-classic-menu--eq">
+                  <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--eq" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }}>
                     <summary className="wa-btn-presets">PRESETS</summary>
                     <div className="wa-classic-menu__panel wa-classic-menu__panel--eq">
                       <label className="wa-classic-menu__label">CURRENT PRESET
@@ -1395,7 +1395,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     setPlaylistSelection([]);
                   }}>REM</button>
                   <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection(playlist.map((_, index) => index))}>SEL</button>
-                  <details className="wa-classic-menu wa-classic-menu--pl">
+                  <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--pl" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }}>
                     <summary className="wa-btn-pl">MISC</summary>
                     <div className="wa-classic-menu__panel wa-classic-menu__panel--pl">
                       <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection([])}>Clear selection</button>
@@ -1410,7 +1410,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   <span>{formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}</span>
                   {(m3uStatus || localLibraryStatus || skinStatus) && <span className="wa-pl__status-text" role="status" aria-live="polite" title={m3uStatus || localLibraryStatus || skinStatus}>•</span>}
                 </div>
-                <details className="wa-classic-menu wa-classic-menu--list">
+                <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--list" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }}>
                   <summary className="wa-btn-pl wa-btn-pl--opts">LIST<br />OPT</summary>
                   <div className="wa-classic-menu__panel wa-classic-menu__panel--list">
                     <label><input type="checkbox" defaultChecked /> Show track time</label>
