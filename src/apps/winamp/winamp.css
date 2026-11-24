@@ -4108,3 +4108,52 @@
     width: 3px;
   }
 }
+
+
+/* Webamp Classic — normalize native range rendering across Blink and Gecko. */
+.wa-shell--webamp-classic .wa-eq__input-vert {
+  display: block;
+  flex: 0 0 63px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background-color: #151515;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-focus-outer {
+  border: 0;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-range-track {
+  background: transparent;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-range-progress {
+  height: 63px;
+  background: transparent;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert:focus-visible::-webkit-slider-thumb {
+  outline: 1px dotted #ffe36e;
+  outline-offset: 2px;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert:focus-visible::-moz-range-thumb {
+  outline: 1px dotted #ffe36e;
+  outline-offset: 2px;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert:disabled::-webkit-slider-thumb {
+  filter: grayscale(1);
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert:disabled::-moz-range-thumb {
+  filter: grayscale(1);
+}
