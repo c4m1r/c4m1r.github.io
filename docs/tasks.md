@@ -624,3 +624,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Уплотнил footer без удаления функций: уменьшены высоты командных кнопок, межстрочные интервалы и высота status/mini-transport; M3U/skin-команды, ADD/REM/SEL/CLR SEL и LIST OPTS остаются доступными.
 - Сохранены фиксированная геометрия окна 275 × 232 px, прокрутка списка, текущий трек/выделение, import-status, обработчики и все ветви Dev Alpha/.wsz. Изменения только CSS и строго scoped к `.wa-shell--webamp-classic .wa-playlist`.
 - CSS brace balance 0, новые селекторы проверены на scope. Реальную высоту списка, переполнение footer и scrollbar-gutter необходимо подтвердить в браузере; build/typecheck/browser QA не запускались, проход не помечен Verified.
+
+
+### Winamp — Webamp Classic Playlist empty state and footer legibility (2026-11-24)
+- Added a restrained empty-playlist prompt inside the existing list surface. It does not add a new control or intercept pointer input; the list remains the same drag-and-drop target and the existing + ADD action remains unchanged.
+- Clarified the footer command rail, import-status clipping and status display contrast; kept the compact mini-transport keys at a stable 16 px width.
+- CSS-only in `src/apps/winamp/winamp.css`, scoped to `.wa-shell--webamp-classic .wa-playlist`. No TSX, handlers, playlist state, M3U/skin import-export, audio/controller, Dev Alpha or imported .wsz behavior changed. The 275 × 232 px Playlist chassis and 13 px row rhythm are retained.
+- Source checks: CSS brace balance 0; all 9 added selectors scoped to Webamp Classic Playlist. Browser rendering, empty/drop-state interaction, narrow-device QA, build/typecheck and CI remain unconfirmed. Do not mark Verified.
