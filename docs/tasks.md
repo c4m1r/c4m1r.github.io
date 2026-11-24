@@ -499,3 +499,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Added a clearer recessed display bezel with asymmetric light/dark edges and tightened SVG clipping/stroke treatment for a compact LCD-like response display.
 - Kept the existing ten-band response coordinates, grid calibration, 0 dB reference, EQ controls and all handlers unchanged. CSS-only and scoped to `.wa-shell--webamp-classic`.
 - Verification: CSS brace balance and new selector scope checked. Browser visual QA, build/typecheck and CI are not confirmed.
+
+
+### Winamp — Webamp Classic Equalizer PREAMP and frequency label separation (2026-11-24)
+- Gave the PREAMP column a fixed compact footprint and a restrained warm accent so it reads as a separate gain control rather than an eleventh frequency band.
+- Increased the visual break before the ten frequency bands and normalized their compact numeric labels with tabular figures; retained the existing narrow-screen reduction.
+- CSS-only, scoped to `.wa-shell--webamp-classic`. No JSX, frequency constants, slider values/ranges, EQ graph mapping, presets, DSP/controller behavior, Dev Alpha or imported .wsz rendering changed.
+- Verification: CSS brace balance and scope of the new selectors checked. Browser visual/interaction QA, build/typecheck and CI remain unconfirmed.
