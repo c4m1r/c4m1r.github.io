@@ -6990,7 +6990,17 @@
   min-height: 232px;
   max-height: min(464px, calc(100vh - 38px));
   resize: both;
-  overflow: auto;
+  overflow: hidden;
+}
+
+/* Let the track list consume the extra vertical room created by resizing. */
+.wa-shell--webamp-classic .wa-playlist .wa-pl__body {
+  min-height: 0;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list {
+  min-height: 0;
+  max-height: none;
 }
 
 .wa-shell--webamp-classic .wa-playlist .wa-pl__body,
