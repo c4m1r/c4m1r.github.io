@@ -1431,6 +1431,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                         setSkinStatus(`Built-in appearance restored for this session; saved skin could not be cleared: ${error instanceof Error ? error.message : 'storage unavailable'}`);
                       });
                     }} title="Remove the imported skin">RESET</button>}
+                    <button type="button" className="wa-btn-pl wa-btn-pl--opts" title="Playlist options">
+                      LIST OPT
+                    </button>
                   </div>
                   <div className="wa-pl__status">
                     {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinStatus}</span>}
@@ -1439,17 +1442,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     </span>
                   </div>
 
-                  <div className="wa-pl__mini-transport">
-                    <button type="button" className="wa-btn-pl-mini" onClick={previous} title="Prev">|◀</button>
-                    <button type="button" className="wa-btn-pl-mini" onClick={() => void play()} title="Play">▶</button>
-                    <button type="button" className="wa-btn-pl-mini" onClick={pause} title="Pause">❚❚</button>
-                    <button type="button" className="wa-btn-pl-mini" onClick={stop} title="Stop">■</button>
-                    <button type="button" className="wa-btn-pl-mini" onClick={next} title="Next">▶|</button>
-                  </div>
 
-                  <button type="button" className="wa-btn-pl wa-btn-pl--opts">
-                    LIST OPTS
-                  </button>
                 </div>
               </div>
             </div>
