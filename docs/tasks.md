@@ -485,3 +485,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Smoothed the response trace caps/joins and refined its restrained yellow-green glow. The ten frequency-band values remain the only plotted values; PREAMP remains separate.
 - CSS-only, scoped to .wa-shell--webamp-classic; no TSX, EQ values, slider handlers, presets, DSP/audio logic, Dev Alpha or imported .wsz rendering changed.
 - Verification: source and documentation committed; CSS brace/scope checks performed. Browser visual QA, build/typecheck and CI remain unconfirmed.
+
+
+### Winamp — Webamp Classic Equalizer ON/AUTO switch detail (2026-11-24)
+- Refined the built-in Classic EQ ON/AUTO controls as compact recessed hardware switches, with distinct raised, hover, pressed and keyboard-focus states.
+- The ON indicator uses a green LED when active; AUTO uses a separate warm amber LED so the two states are visually distinguishable. Inactive LEDs remain dark and inset.
+- CSS-only, scoped to `.wa-shell--webamp-classic`. Existing button markup, `eqOn`/`eqAuto` state, click handlers, DSP/controller behavior, presets, faders, Dev Alpha and imported .wsz rendering are unchanged.
+- Verification: source CSS structure and selector scope checked after update. Browser visual/interaction QA, build/typecheck and CI are not confirmed.
