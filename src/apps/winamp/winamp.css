@@ -9178,3 +9178,37 @@
     width: calc(100% + 10px) !important;
   }
 }
+
+
+/* 2026-11-24 visual calibration: incremental Main/EQ offsets and align
+   decibel scale + preamp separator strictly to the fader travel area. */
+.wa-shell--webamp-classic .wa-main__body {
+  left: -14px !important;
+  width: calc(100% + 14px) !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+  left: -22px !important;
+  width: calc(100% + 22px) !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__labels-left {
+  height: 45px !important;
+  margin: 0 0 7px !important;
+  align-self: end !important;
+  justify-content: space-between !important;
+  line-height: 1 !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__divider {
+  height: 45px !important;
+  margin: 0 auto !important;
+  align-self: end !important;
+}
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-main__body {
+    left: -14px !important;
+    width: calc(100% + 14px) !important;
+  }
+  .wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+    left: -22px !important;
+    width: calc(100% + 22px) !important;
+  }
+}
