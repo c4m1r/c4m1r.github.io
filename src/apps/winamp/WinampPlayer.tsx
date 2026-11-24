@@ -1376,10 +1376,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 })}
               </div>
 
+              {skinAppearance === 'webamp-classic' ? (
               {/* Playlist Bottom Bar */}
-              {(m3uStatus || localLibraryStatus) && (
+              {(m3uStatus || localLibraryStatus || skinStatus) && (
                 <div className="wa-pl__import-status" role="status" aria-live="polite">
-                  {m3uStatus || localLibraryStatus}
+                  {m3uStatus || localLibraryStatus || skinStatus}
                 </div>
               )}
               <div className="wa-pl__footer wa-pl__footer--classic">
@@ -1417,6 +1418,80 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </div>
                 </details>
               </div>
+              ) : (
+              {/* Legacy footer retained for Dev Alpha and imported skins. */}
+              {(m3uStatus || localLibraryStatus) && (
+                <div className="wa-pl__import-status" role="status" aria-live="polite">
+                  {m3uStatus || localLibraryStatus}
+                </div>
+              )}
+              <div className="wa-pl__footer">
+                <div className="wa-pl__actions">
+                  <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()} title="Add local audio (L)" aria-keyshortcuts="L">+ ADD</button>
+                  <button
+                    type="button"
+                    className="wa-btn-pl"
+                    disabled={!playlistSelection.length || playlist.length <= playlistSelection.length}
+                    onClick={() => {
+                      const removedIds = playlistSelection.map((index) => playlist[index]?.id).filter((id): id is string => Boolean(id));
+                      winampController.removeTracks(playlistSelection);
+                      void deleteWinampLocalAudioFiles(removedIds).catch((error) => {
+                        setLocalLibraryStatus(error instanceof Error ? error.message : 'Unable to remove saved local audio');
+                      });
+                      setPlaylistSelection([]);
+                    }}
+                  >- REM</button>
+                  <button
+                    type="button"
+                    className="wa-btn-pl"
+                    onClick={() => setPlaylistSelection(playlist.map((_, index) => index))}
+                  >SEL</button>
+                  <button
+                    type="button"
+                    className="wa-btn-pl"
+                    onClick={() => setPlaylistSelection([])}
+                  >CLR SEL</button>
+                </div>
+
+                <div className="wa-pl__footer-tools">
+                  <input
+                    ref={m3uInputRef}
+                    type="file"
+                    accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl"
+                    hidden
+                    onChange={(event) => {
+                      void importM3uFile(event.currentTarget.files?.[0]);
+                      event.currentTarget.value = '';
+                    }}
+                  />
+                  <div className="wa-pl__actions">
+                    <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()} title="Import an M3U playlist">M3U IN</button>
+                    <button type="button" className="wa-btn-pl" onClick={exportM3uFile} title="Export web-address tracks as an M3U playlist">M3U OUT</button>
+                    <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()} title="Import a classic Winamp .wsz skin">SKIN IN</button>
+                    {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => {
+                      void clearActiveWinampSkin().then(() => {
+                        setSkinVisuals(null);
+                        setSkinStatus('Built-in Winamp appearance restored');
+                      }).catch((error) => {
+                        setSkinVisuals(null);
+                        setSkinStatus(`Built-in appearance restored for this session; saved skin could not be cleared: ${error instanceof Error ? error.message : 'storage unavailable'}`);
+                      });
+                    }} title="Remove the imported skin">RESET</button>}
+                    <button type="button" className="wa-btn-pl wa-btn-pl--opts" title="Playlist options">
+                      LIST OPT
+                    </button>
+                  </div>
+                  <div className="wa-pl__status">
+                    {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinStatus}</span>}
+                    <span className="wa-pl__status-text">
+                      {formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}
+                    </span>
+                  </div>
+
+
+                </div>
+              </div>
+              )}
             </div>
           )}
           {skinAppearance === 'webamp-classic' && !plShade && (
