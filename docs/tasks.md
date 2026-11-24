@@ -680,3 +680,14 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Финальная геометрия EQ сохранена в исходном габарите Winamp Classic 275 × 116 px: верхний rail 14 px, одна строка управления пресетами 10 px, банка фейдеров 68 px; высота самих фейдеров 55 px вместо 63 px, подписи выровнены по нижней кромке. Так Equalizer не наезжает на Playlist в исходной вертикальной раскладке.
 - Стартовая раскладка Webamp Classic теперь автоматически собирает Main → Equalizer → Playlist в одну вертикальную колонну с общей левой кромкой и нулевыми зазорами: высоты 116 + 116 + 232 px, координаты соседних окон вычисляются как top + 116 и top + 232. При первом запуске с сохранённым Classic и при переключении на Classic раскладка сразу подготавливает все три окна к групповому drag; ручное пододвигание больше не требуется. Начальная точка адаптируется к доступному viewport, а ручное перемещение после запуска сохраняется.
 - Нижняя панель Playlist в Webamp Classic сведена в одну непрерывную строку кнопок: +ADD / -REM / SEL / CLR SEL / M3U IN / M3U OUT / SKIN IN / RESET (если доступен) / LIST OPT. Две JSX-группы действий объединены в общий flex-ряд; кнопки немного уменьшены и равномерно распределяют доступную ширину, чтобы убрать пустой участок справа и сохранить LIST OPT последней кнопкой. Строка статуса расположена отдельно ниже. Отдельная мини-панель транспортных кнопок Play/Pause/Stop/Prev/Next удалена из Playlist: управление воспроизведением остаётся на основном модуле.
+
+
+### Winamp Classic — detachable fourth window (2026-11-24)
+- [x] Add fourth Video / Visualization window with independent visibility and a Main-titlebar VIS toggle.
+- [x] Add visualizer mode switch: Spectrum / Oscilloscope / Peak Meter; reuse the player's current visualizer data.
+- [x] Add local video file picker and native video playback in the fourth window.
+- [x] Add per-window attach/detach controls for Main, Equalizer, Playlist and Video / Visualization.
+- [x] Add magnetic edge alignment for attached windows on release.
+- [x] Keep hidden video windows out of group drag calculations and initialize the fourth window on renderer changes.
+- [ ] Browser QA: verify touch/pointer dragging, re-docking, mobile viewport layout and video playback.
+- [ ] Future integration: optionally support video entries from playlists and explicit audio/video synchronization; current video source is independent of the audio playlist.
