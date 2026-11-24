@@ -355,6 +355,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   // Visualizer bar heights and peak dots
   const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
   const [peaks, setPeaks] = useState<number[]>(() => Array(19).fill(2));
+  const [waveform, setWaveform] = useState<number[]>(() => Array(19).fill(50));
+  const [visualizerMode, setVisualizerMode] = useState<0 | 1 | 2>(0);
+  const visualizerModeNames = ['Spectrum', 'Oscilloscope', 'Peak meter'] as const;
   const rafRef = useRef<number | null>(null);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist';
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
@@ -416,6 +419,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   useEffect(() => {
     let active = true;
     const freqData = new Uint8Array(32);
+    const timeData = new Uint8Array(64);
 
     const updateVisualizer = () => {
       if (!active) return;
@@ -423,6 +427,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       if (isPlaying) {
         if (analyser && audioCtxRef.current?.state === 'running') {
           analyser.getByteFrequencyData(freqData);
+          analyser.getByteTimeDomainData(timeData);
+          setWaveform(Array.from({ length: 19 }, (_, i) => {
+            const sample = timeData[Math.round(i * (timeData.length - 1) / 18)] ?? 128;
+            return 50 + (sample - 128) / 2.56;
+          }));
           setBars(() => {
             const nextBars = Array(19).fill(0).map((_, i) => {
               const val = freqData[i] ?? 0;
@@ -434,7 +443,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             return nextBars;
           });
         } else {
-          // Synthetic dynamic spectrum based on time
+          // Synthetic spectrum and waveform keep the display alive without an active analyser.
+          setWaveform(Array.from({ length: 19 }, (_, i) => 50 + Math.sin(Date.now() / 95 + i * 0.72) * 34));
           setBars((prev) => {
             const nextBars = prev.map((_, i) => {
               const spike = Math.random() < 0.25 ? Math.random() * 50 : 0;
@@ -714,15 +724,26 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 </button>
               </div>
 
-              {/* Center Spectrum Analyzer */}
-              <div className="wa-visualizer" aria-hidden="true">
-                {bars.map((barHeight, idx) => (
-                  <div key={idx} className="wa-vis-col">
-                    <div className="wa-vis-bar" style={{ height: `${barHeight}%` }} />
-                    <div className="wa-vis-peak" style={{ bottom: `${peaks[idx]}%` }} />
+              {/* Click the LED analyzer to cycle its classic display modes. */}
+              <button
+                type="button"
+                className={`wa-visualizer wa-visualizer--mode-${visualizerMode}`}
+                onClick={() => setVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}
+                aria-label={`Visualizer mode: ${visualizerModeNames[visualizerMode]}. Click to switch mode`}
+                title={`${visualizerModeNames[visualizerMode]} — click to change`}
+                aria-live="off"
+              >
+                {visualizerMode === 1 ? (
+                  <svg className="wa-visualizer-wave" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
+                    <polyline points={waveform.map((sample, index) => `${(index / 18) * 100},${50 - sample}`).join(' ')} />
+                  </svg>
+                ) : bars.map((barHeight, idx) => (
+                  <div key={idx} className={`wa-vis-col ${visualizerMode === 2 ? 'wa-vis-col--peak' : ''}`}>
+                    <div className="wa-vis-bar" style={{ height: `${visualizerMode === 2 ? Math.max(3, peaks[idx]) : barHeight}%` }} />
+                    {visualizerMode === 0 && <div className="wa-vis-peak" style={{ bottom: `${peaks[idx]}%` }} />}
                   </div>
                 ))}
-              </div>
+              </button>
 
               {/* Right Column: Track Marquee & Technical Info */}
               <div className="wa-display__right">
