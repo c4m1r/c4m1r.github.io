@@ -2,87 +2,102 @@
 
 Status: design baseline; implementation and browser acceptance are pending.
 
-## Goal
+## Scope — existing fourth window only
 
-Turn the fourth Video / Visualization window into a genuine multi-mode music visualization surface inspired by classic Winamp visualizers and Windows Media Player 9/10. Preserve the compact Main LCD as a separate, deliberately simple Winamp hardware display.
+There is exactly one expanded visualization surface: the already implemented square fourth window, initially 275 × 275 px, directly above Main. Do not create another window, pop-out, enlarged mode, sidecar, second visualization panel, or change the existing window geometry.
 
-This is an original implementation. “MilkDrop-inspired” means a project-authored reactive effect, not the original MilkDrop engine, preset compatibility, or a claim of plugin support.
+The existing fourth window already contains a visualizer stage and a local-video stage. Add selectable visualization modes inside that existing stage. Keep the titlebar, toolbar, video picker, local video playback, window drag/attach behavior and object-URL cleanup intact.
 
-## Two visualization surfaces
+## Main LCD versus fourth-window mode state
 
-### Main LCD (small, always compact)
+- Main LCD remains compact and faithful to Winamp Classic. Its existing three quick displays remain Spectrum, Oscilloscope and Peak Meter.
+- The fourth window gets its own independent selected visualization mode and selector. Switching the fourth-window mode must not change the Main LCD mode; cycling the Main LCD must not change the fourth-window mode.
+- Both surfaces may read the same audio-analysis data, but presentation state is independent.
+- Keep the existing fourth-window MODE control functional, but replace its three-way duplicate cycle with a compact mode selector / next-mode action that can reach the complete collection without adding a large control panel.
 
-Keep the existing three quick modes and their instant click-to-cycle behavior:
-1. Spectrum — frequency columns with peak hold.
-2. Oscilloscope — time-domain waveform.
-3. Peak meter — peak-hold level columns.
+## Canonical Winamp visualization families
 
-Do not add large effects or settings panels to Main. It should remain faithful to the small Winamp LCD.
+### Built-in Classic analyzer
+- Spectrum Analyzer
+- Oscilloscope
+- Peak Meter
 
-### Fourth window (expanded visualizer)
+These are already represented in the project and remain available. The expanded window may render them at its larger existing stage dimensions, but they are not separate windows.
 
-Replace the current three-mode duplicate with a mode browser. Modes are grouped by visual family, not by vendor branding:
+### Winamp visualization plug-in families
+- **AVS (Advanced Visualization Studio):** preset-driven geometric / feedback visualizations. Implement a small original set of AVS-inspired scenes (for example: Scope, Oscilloscope, Spectrum, Rotating Shapes, Feedback Tunnel, Color Cycle). Do not claim binary plugin compatibility or AVS preset-file compatibility unless actually implemented.
+- **MilkDrop:** fluid, full-stage, beat-reactive geometric feedback scenes. Implement original MilkDrop-inspired scenes only; do not claim the original MilkDrop engine, preset compatibility, or bundled third-party plugin support.
 
-| Group | Mode | Visual behavior | Reference family |
-|---|---|---|---|
-| Winamp Classic | Spectrum Analyzer | 32–64 logarithmic frequency bands, peak caps, configurable decay | Winamp AVS / classic analyzer |
-| Winamp Classic | Oscilloscope | Smooth time-domain trace; mono and dual-trace variants | Winamp oscilloscope |
-| Winamp Classic | Spectrogram | Scrolling frequency/time waterfall with logarithmic frequency mapping | Analyzer / spectrogram |
-| Winamp Classic | Stereo Scope | Lissajous / XY phase trace when stereo channel data is available; honest mono fallback otherwise | Winamp scope |
-| WMP-style | Bars & Waves | Paired frequency bars and flowing waveform ribbons | Windows Media Player |
-| WMP-style | Mystify | Multiple continuously morphing, audio-reactive wireframe polygons | Windows Media Player |
-| WMP-style | Particles | Audio-reactive particle field with bass impulses and treble shimmer | Windows Media Player |
-| WMP-style | Spikes | Radial or mirrored spike field driven by frequency bins | Windows Media Player |
-| WMP-style | Battery / Pulse | A central form whose fill, glow and pulse respond to average level and bass | Windows Media Player |
-| Experimental | Milkdrop-inspired | Full-stage procedural feedback / geometric patterns with beat-reactive motion; original presets only | Inspired by MilkDrop, not compatible with it |
+Winamp's official product documentation identifies AVS and MilkDrop 2 as its visualization plug-ins and describes manual/random preset switching and fullscreen use.
 
-The mode browser should make the selected mode and group obvious. Do not imply that these are bundled Microsoft or Winamp plugins.
+## Canonical Windows Media Player families
 
-## Controls
+The mode picker should use recognizable original WMP names and keep their family identity visible:
 
-- Previous / next mode; direct mode picker grouped by family.
-- Random mode, with no immediate repeat.
-- Optional auto-cycle with a configurable interval; disabled by default.
-- Fullscreen visualization stage, with Escape to exit.
-- Compact settings: palette, sensitivity, smoothing/decay, and visual density where relevant.
-- Reset-to-default settings.
-- Keyboard access and visible focus. Buttons must have useful labels and must not intercept window dragging outside their own hit areas.
-- Persist only user preferences (selected mode, palette, sensitivity, smoothing, auto-cycle). Do not persist transient analyser samples or animation state.
+### WMP 9–12 core
+- **Alchemy** — fluid, colorful, audio-reactive 3D-like forms and trails.
+- **Bars and Waves** — spectrum bars with flowing wave/ribbon variants.
+- **Battery** — a battery / charge metaphor whose level and glow respond to audio.
 
-## Audio data and rendering architecture
+### Legacy WMP 7–10 collection
+- **Ambience** — slow atmospheric color fields and flowing forms.
+- **Particle** — particle field / dot-plane movement driven by the music.
+- **Plenoptic** — layered depth / kaleidoscopic visual field.
+- **Spikes** — sharp radial or amoeba-like forms driven by frequency and beat.
+- **Musical Colors** — color-field visualization tied to level and frequency.
 
-- One shared Web Audio analyser source; no second audio engine and no duplicate media playback.
-- Read frequency and time-domain samples once per animation frame and expose a compact frame snapshot to the active renderer.
-- Prefer a canvas renderer for the large stage. Resize using the element's actual pixel size and devicePixelRatio, capped to avoid excessive backing-store memory on high-DPI displays.
-- Use requestAnimationFrame only while the visualizer is visible and the audio context is running or a deliberate idle animation is selected. Stop/cancel the loop on hide, mode teardown and unmount.
-- Do not call React state setters for every sample/frame. React state should hold mode and settings; animation samples stay in refs/canvas.
-- Handle paused/stopped audio deterministically: decay to silence for analyzers; procedural idle motion only where the mode explicitly supports it.
-- Avoid random values per React render. Seed or update procedural motion in the renderer loop.
-- Stereo Scope must not fabricate separate left/right channels. If the current controller graph exposes only a merged analyser, show a mono scope or implement a documented channel splitter in the existing graph without changing playback gain, EQ/DSP routing, or controller ownership.
-- No mandatory external libraries, cloud APIs, remote assets, or imported plugin binaries.
+The legacy modes are historical WMP visualizations, not all present in later WMP versions. Show them under a clearly labeled legacy group rather than implying every version shipped them.
+
+## Interaction and mode navigation
+
+- Compact selector grouped as: Winamp Classic, Winamp AVS, Winamp MilkDrop-inspired, Windows Media Player, Windows Media Player Legacy.
+- Previous / next mode cycles within the current group; group switching is explicit.
+- Random mode chooses another mode in the active group without immediately repeating the current mode.
+- Optional auto-cycle is off by default.
+- The current mode name is visible unobtrusively inside the stage.
+- Preserve the existing compact square window. No full-screen-only controls, new panels or oversized settings UI are required for this task.
+- If basic tuning is useful, keep it to a compact palette / sensitivity / motion control row and avoid obstructing the visualizer.
+
+## Audio data and rendering
+
+- Use the existing shared Web Audio analyser; do not create a second audio engine or duplicate playback.
+- Reuse the existing audio analysis loop where possible. Do not introduce React state updates for every animation frame.
+- Canvas or SVG rendering may be used within the current stage; choose based on the effect and keep resource use suitable for a 275 px square viewport.
+- Stop expensive animation work when the fourth window is hidden or when its Video stage is active.
+- When playback is paused/stopped, analyzers decay naturally; ambient procedural modes may continue at a restrained idle rate.
+- Do not fabricate stereo channel separation if the existing analyser exposes only merged channel data.
+- No remote assets, cloud APIs, mandatory external libraries or imported plugin binaries.
 
 ## Visual direction
 
-- Keep the Winamp Classic frame/chrome and the existing square 275 px initial stage. The stage itself can scale to the user's resized window if resizing is later enabled.
-- Default Spectrum palette should evoke classic Winamp green/yellow/red analyzer columns on a black background. Other modes may have distinct palettes.
-- WMP-style modes should be more fluid, colorful and spatial, while retaining readable contrast and restrained controls.
-- No visualizer mode should cover the titlebar, toolbar, window controls or video controls.
-- The video tab remains independent and must not lose its selected file or object-URL cleanup when switching modes.
+- Preserve the current fourth-window square dimensions and existing Winamp Classic chrome.
+- Winamp analyzer modes should retain recognizable analyzer conventions: black stage, distinct bands, peak hold and restrained phosphor-like color.
+- AVS/MilkDrop-inspired modes may be more experimental, colorful and fluid, but should remain visually distinct from the WMP collection.
+- WMP modes should reproduce their characteristic visual grammar and motion, not just rename generic particles or bars.
+- No mode may cover the titlebar, toolbar, video picker or window controls.
+- Switching between visualizer and video must preserve the selected local video and cleanup behavior.
 
 ## Delivery phases
 
-1. **Foundation:** mode registry, grouped selector, previous/next/random controls, preference persistence, visibility-aware render lifecycle.
-2. **Classic analyzers:** Spectrum Analyzer, Oscilloscope, Spectrogram and safe mono/stereo scope behavior.
-3. **WMP-style collection:** Bars & Waves, Mystify, Particles, Spikes and Battery/Pulse.
-4. **Experimental renderer:** original Milkdrop-inspired procedural mode and a small curated preset set.
-5. **Polish:** fullscreen, palette/sensitivity/smoothing controls, keyboard navigation, reduced-motion handling and responsive canvas sizing.
+1. **State and selector:** decouple fourth-window mode from Main LCD; add compact grouped mode navigation and stable mode names.
+2. **WMP core:** Alchemy, Bars and Waves, Battery.
+3. **WMP legacy:** Ambience, Particle, Plenoptic, Spikes, Musical Colors.
+4. **Winamp plug-in-inspired:** original AVS-style and MilkDrop-inspired scenes with a small set of named presets.
+5. **Polish:** mode randomization / optional auto-cycle, reduced-motion behavior, responsive rendering and audio/performance acceptance.
 
 ## Acceptance
 
-- Each mode visibly differs and reacts to actual audio samples; no mode is merely a renamed copy of the same bars.
+- No new window, no enlarged visualization layout and no change to the current fourth-window geometry.
+- Main LCD and fourth-window mode selections are independent.
+- Every named mode has visibly distinct motion and reacts to actual audio samples.
+- WMP core and legacy modes are labeled accurately; AVS / MilkDrop inspiration is not misrepresented as original plugin compatibility.
 - Test bass-heavy, speech, quiet, paused, stopped, short and long tracks.
-- Verify no analyser loop continues while the fourth window is hidden or video mode is active.
-- Verify resize, fullscreen, device-pixel-ratio changes, narrow viewport, touch and keyboard use.
+- Verify no expensive animation loop while fourth window is hidden or in Video mode.
+- Verify switching modes does not interrupt video playback or leak object URLs.
 - Verify no audible change, no duplicate audio playback, no EQ/controller/playlist regressions.
-- Verify no React render loop or per-frame component-tree churn.
 - Browser screenshots and interaction tests are required before marking any phase Verified.
+
+## Reference notes
+
+- Winamp Help Center: Winamp desktop player lists AVS and MilkDrop 2 as visualization plug-ins and describes classic analyzer options.
+- Windows Media Player history: Alchemy, Bars and Waves, Battery are the later core set; Ambience, Particle, Plenoptic, Spikes and Musical Colors belong to earlier WMP generations.
