@@ -7651,3 +7651,41 @@
   .wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-thumb { width: 11px; }
   .wa-shell--webamp-classic .wa-eq__band-name { font-size: 4.7px; letter-spacing: -.2px; }
 }
+
+
+/* Webamp Classic — keep Q1 library export on the preset header rail. */
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__q1-out {
+  box-sizing: border-box;
+  flex: 0 0 25px;
+  width: 25px;
+  min-width: 25px;
+  height: 12px;
+  min-height: 12px;
+  max-height: 12px;
+  padding: 0 1px;
+  border: 1px solid #080808;
+  border-top-color: #777;
+  border-left-color: #777;
+  border-radius: 0;
+  background: linear-gradient(180deg, #5a5a5a 0%, #383838 48%, #242424 100%);
+  color: #e1e1d7;
+  font: 700 4.8px/9px Arial, Helvetica, sans-serif;
+  letter-spacing: -.18px;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 1px 1px #111;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__q1-out:active {
+  border-color: #777 #080808 #080808 #777;
+  background: linear-gradient(180deg, #222, #3d3d3d);
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__header .wa-eq__q1-out {
+    flex-basis: 23px;
+    width: 23px;
+    min-width: 23px;
+    font-size: 4.5px;
+  }
+}
