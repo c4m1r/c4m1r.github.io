@@ -531,6 +531,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const setVideoWindowVisible = (visible: boolean) => {
     if (visible === showVideo) return;
+    if (!visible && isVideoFullscreen) {
+      if (document.fullscreenElement === videoWindowRef.current && document.exitFullscreen) void document.exitFullscreen();
+      setIsVideoFullscreen(false);
+    }
     if (!detachedWindows.includes('video')) {
       const offset = visible ? 275 : -275;
       setWindowPositions((current) => ({
@@ -929,7 +933,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       setIsVideoFullscreen(true);
       revealFullscreenControls();
     }
-  }, [clearFullscreenHideTimer]);
+  }, [clearFullscreenHideTimer, revealFullscreenControls]);
 
   const exitVideoFullscreen = useCallback(() => {
     clearFullscreenHideTimer();
