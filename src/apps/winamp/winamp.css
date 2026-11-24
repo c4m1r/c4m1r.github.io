@@ -2658,3 +2658,178 @@
     font-size: 6px;
   }
 }
+
+
+/* Webamp Classic — Main LCD precision pass.
+   Keep the built-in renderer self-contained; imported .wsz bitmap sprites
+   continue to use their own native-pixel rendering path. */
+.wa-shell--webamp-classic .wa-display__left {
+  gap: 5px;
+  align-items: center;
+  padding-left: 1px;
+}
+
+.wa-shell--webamp-classic .wa-indicators {
+  flex: 0 0 8px;
+  align-items: center;
+  gap: 3px;
+  font: 6px/7px Arial, Helvetica, sans-serif;
+  text-shadow: 0 0 2px currentColor;
+}
+
+.wa-shell--webamp-classic .wa-ind-dot {
+  display: block;
+  width: 7px;
+  height: 6px;
+  overflow: hidden;
+  color: #173817;
+  font-size: 6px;
+  line-height: 6px;
+  text-align: center;
+  text-shadow: none;
+}
+
+.wa-shell--webamp-classic .wa-ind-dot.is-lit {
+  color: #00e800;
+  text-shadow: 0 0 3px rgba(0, 255, 0, .8);
+}
+
+.wa-shell--webamp-classic .wa-time-lcd {
+  min-width: 0;
+  height: 25px;
+  padding: 0 1px;
+  background: linear-gradient(180deg, #020402 0%, #071007 48%, #020402 100%);
+  box-shadow: inset 0 1px 2px #000, 0 0 0 1px #111;
+}
+
+.wa-shell--webamp-classic .wa-time-lcd__digits {
+  display: block;
+  color: #00e000;
+  font-family: "Arial Narrow", "Liberation Sans Narrow", "Courier New", monospace;
+  font-size: 21px;
+  font-weight: 700;
+  font-stretch: condensed;
+  font-variant-numeric: tabular-nums;
+  line-height: 23px;
+  letter-spacing: -1.25px;
+  text-shadow: 0 0 2px #00b800, 0 0 5px rgba(0, 255, 0, .35);
+}
+
+.wa-shell--webamp-classic .wa-visualizer {
+  min-width: 0;
+  padding: 3px 2px 2px;
+  gap: 2px;
+  border: 1px solid #101510;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 4px, rgba(0, 40, 0, .22) 4px 5px),
+    linear-gradient(180deg, #020502, #061006);
+  box-shadow: inset 0 0 3px #000;
+  cursor: pointer;
+}
+
+.wa-shell--webamp-classic .wa-visualizer:focus-visible {
+  outline: 1px dotted #b8d6a0;
+  outline-offset: -2px;
+}
+
+.wa-shell--webamp-classic .wa-vis-col {
+  min-width: 2px;
+  background: repeating-linear-gradient(180deg, #092009 0 2px, transparent 2px 4px);
+}
+
+.wa-shell--webamp-classic .wa-vis-bar {
+  min-height: 1px;
+  background: linear-gradient(180deg, #d8e600 0%, #8cdb00 24%, #00a800 68%, #006000 100%);
+  box-shadow: 0 0 2px rgba(0, 220, 0, .35);
+}
+
+.wa-shell--webamp-classic .wa-vis-peak {
+  height: 1px;
+  background: #d7ef9a;
+  box-shadow: 0 0 2px #8fce52;
+}
+
+.wa-shell--webamp-classic .wa-visualizer-wave polyline {
+  fill: none;
+  stroke: #00d800;
+  stroke-width: 1.35;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1px #00a800);
+}
+
+.wa-shell--webamp-classic .wa-tech-info {
+  min-height: 10px;
+  align-items: center;
+  gap: 3px;
+  color: #8a9a78;
+  font: 6px/9px "Courier New", monospace;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-tech-info .wa-digit-val {
+  color: #c9d89b;
+  font-weight: 700;
+  text-shadow: 0 0 2px rgba(180, 220, 120, .25);
+}
+
+.wa-shell--webamp-classic .wa-tech-info .wa-unit {
+  color: #7f8b70;
+  font-size: 6px;
+}
+
+.wa-shell--webamp-classic .wa-audio-channels {
+  gap: 2px;
+  margin-left: auto;
+}
+
+.wa-shell--webamp-classic .wa-tech-info .wa-chan {
+  padding: 0 2px;
+  border: 1px solid transparent;
+  color: #46523d;
+  font: 6px/8px Arial, Helvetica, sans-serif;
+  letter-spacing: -.15px;
+  text-transform: uppercase;
+}
+
+.wa-shell--webamp-classic .wa-tech-info .wa-chan.is-active {
+  border-color: #48523b;
+  background: linear-gradient(180deg, #343b2b, #1a2116);
+  color: #d5e2a3;
+  text-shadow: 0 0 2px rgba(190, 230, 120, .25);
+}
+
+.wa-shell--webamp-classic .wa-slider-track--pos {
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-slider-track--pos::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  pointer-events: none;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.wa-shell--webamp-classic .wa-vol-control,
+.wa-shell--webamp-classic .wa-bal-control {
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-slider-label {
+  min-width: 19px;
+  color: #bdbdbd;
+  font: 6px/10px Arial, Helvetica, sans-serif;
+  letter-spacing: .15px;
+}
+
+.wa-shell--webamp-classic .wa-slider-track--vol,
+.wa-shell--webamp-classic .wa-slider-track--bal {
+  box-shadow: inset 1px 1px #080808, inset -1px -1px #666;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-display__left { gap: 3px; }
+  .wa-shell--webamp-classic .wa-time-lcd__digits { font-size: 18px; }
+  .wa-shell--webamp-classic .wa-tech-info { gap: 2px; font-size: 5px; }
+  .wa-shell--webamp-classic .wa-tech-info .wa-chan { padding-inline: 1px; font-size: 5px; }
+}
