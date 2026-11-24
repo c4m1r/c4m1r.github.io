@@ -400,7 +400,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     'Ambience', 'Particle', 'Plenoptic', 'Spikes', 'Musical Colors',
     'AVS', 'MilkDrop',
   ] as const;
-  type FourthVisualizerMode = typeof fourthVisualizerModes[number];
   const [fourthVisualizerMode, setFourthVisualizerMode] = useState<FourthVisualizerMode>('Spectrum');
   const rafRef = useRef<number | null>(null);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
