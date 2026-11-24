@@ -9235,3 +9235,33 @@
 .wa-shell--webamp-classic .wa-playlist {
   min-width: 269px !important;
 }
+
+
+/* Fourth-window canonical visualization families. All effects stay inside
+   the existing 275px visualization stage and consume the shared analyser data. */
+.wa-video__visualizer { position: relative; overflow: hidden; isolation: isolate; }
+.wa-video__visualizer > svg { position: absolute; inset: 28px 10px 26px; width: calc(100% - 20px); height: calc(100% - 54px); overflow: visible; }
+.wa-video__visualizer > svg polyline,
+.wa-video__visualizer > svg polygon,
+.wa-video__visualizer > svg path { fill: none; stroke: #35eaff; stroke-width: 1.8; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px currentColor); }
+.wa-video__visualizer > svg .wa-viz-wave { stroke: #51f5ff; stroke-width: 2; }
+.wa-video__visualizer > svg .wa-viz-wave--secondary { stroke: #ff55d9; stroke-width: 1.25; }
+.wa-video__visualizer > svg .wa-viz-wave--soft { stroke: #a8ffcf; opacity: .7; }
+.wa-video__visualizer > svg .wa-viz-grid { stroke: #2d765f; stroke-width: .45; opacity: .5; }
+.wa-video__visualizer--alchemy { background: radial-gradient(ellipse at center, #102f47, #030811 72%); }
+.wa-video__visualizer--bars-and-waves { background: linear-gradient(180deg,#08131c,#020408); }
+.wa-video__visualizer--battery { background: radial-gradient(ellipse,#17351e,#030803 75%); }
+.wa-video__visualizer--ambience { background: radial-gradient(ellipse at 50% 65%,#164f77,#07101e 75%); }
+.wa-video__visualizer--particle { background: radial-gradient(ellipse,#17132e,#03030b 75%); }
+.wa-video__visualizer--plenoptic { background: radial-gradient(ellipse,#152d4a,#030711 75%); }
+.wa-video__visualizer--spikes { background: radial-gradient(ellipse,#3c1e08,#080402 75%); }
+.wa-video__visualizer--musical-colors { background: linear-gradient(180deg,#151020,#030307); }
+.wa-video__visualizer--avs { background: radial-gradient(ellipse,#25113c,#03020a 75%); }
+.wa-video__visualizer--milkdrop { background: radial-gradient(ellipse,#102d54,#03030c 75%); }
+.wa-video__bars--peaks span { background: linear-gradient(180deg,#fff 0%,#ff5b28 16%,#ffb52e 18%,#29e9ff 100%); box-shadow: 0 0 5px #ff9b2e; }
+.wa-viz-battery { position:absolute; inset:34px 24px 28px; display:flex; align-items:flex-end; gap:5px; border:2px solid #4b9b65; padding:8px; background:repeating-linear-gradient(0deg,transparent 0 15px,rgba(120,255,160,.08) 15px 16px); }
+.wa-viz-battery::after { content:""; position:absolute; top:-6px; right:12px; width:20px; height:4px; background:#4b9b65; }
+.wa-viz-battery span { flex:1; min-width:3px; background:#263d2b; border:1px solid #59835d; box-shadow:0 0 5px rgba(75,255,120,.2); }
+.wa-viz-battery span.is-charged { background:linear-gradient(180deg,#caff80,#39e66d 60%,#168b47); }
+.wa-viz-colors { position:absolute; inset:34px 12px 28px; display:flex; align-items:flex-end; gap:2px; }
+.wa-viz-colors span { flex:1; min-width:2px; box-shadow:0 0 7px currentColor; opacity:.92; }
