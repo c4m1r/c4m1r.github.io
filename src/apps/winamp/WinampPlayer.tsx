@@ -1263,6 +1263,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       value={preamp}
                       onChange={(e) => handlePreampChange(Number(e.currentTarget.value))}
                       className="wa-eq__input-vert"
+                      style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
                     />
                   </div>
                   <span className="wa-eq__band-name">PREAMP</span>
@@ -1284,6 +1285,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                           value={eqBands[i]}
                           onChange={(e) => handleEqBandChange(i, Number(e.currentTarget.value))}
                           className="wa-eq__input-vert"
+                          style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
                         />
                       </div>
                       <span className="wa-eq__band-name">{label}</span>
