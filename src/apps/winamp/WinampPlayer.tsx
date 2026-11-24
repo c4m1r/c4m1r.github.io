@@ -73,16 +73,52 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
     return `${50 + Math.cos(angle) * radius},${50 + Math.sin(angle) * radius}`;
   }).join(' ');
   const hue = (index: number) => (index * 19 + 105) % 360;
+  const safeBars = Array.from({ length: 19 }, (_, index) => Math.max(0, Math.min(100, bars[index] ?? 0)));
+  const averageLevel = safeBars.reduce((sum, value) => sum + value, 0) / safeBars.length;
+  const alchemyLayers = [0, 1, 2].map((layer) => {
+    const points = safeBars.map((value, index) => {
+      const angle = (index / safeBars.length) * Math.PI * 2 - Math.PI / 2 + layer * 0.11;
+      const sample = safeBars[(index + layer * 3) % safeBars.length];
+      const radius = 13 + sample * (0.25 + layer * 0.035) + Math.sin(index * 1.7 + layer) * 4;
+      return [50 + Math.cos(angle) * radius, 50 + Math.sin(angle) * radius] as const;
+    });
+    return points.map(([x, y], index) => {
+      const next = points[(index + 1) % points.length];
+      return `${index === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)} L${next[0].toFixed(2)},${next[1].toFixed(2)}`;
+    }).join(' ') + ' Z';
+  });
+  const plenopticDepths = [0, 1, 2, 3, 4, 5].map((depth) => {
+    const scale = 1 - depth * 0.145;
+    const pulse = safeBars[(depth * 3) % safeBars.length] * 0.055;
+    return { scale: Math.max(0.2, scale - pulse * 0.012), rotation: depth * 7 + averageLevel * 0.08, opacity: 0.9 - depth * 0.11 };
+  });
   if (mode === 'Oscilloscope') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path className="wa-viz-grid" d="M0 25H100 M0 50H100 M0 75H100 M25 0V100 M50 0V100 M75 0V100" /><polyline className="wa-viz-wave" points={wavePoints} /></svg>;
   if (mode === 'Spectrum' || mode === 'Peak meter') return <div className={`wa-video__bars ${mode === 'Peak meter' ? 'wa-video__bars--peaks' : ''}`}>{bars.map((value, index) => <span key={index} style={{height:`${Math.max(2, mode === 'Peak meter' ? peaks[index] : value)}%`}} />)}</div>;
   if (mode === 'Bars and Waves') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path className="wa-viz-wave" d={bars.map((v,i)=>`M${(i/bars.length)*100} 50v${-Math.max(3,v*.42)} M${(i/bars.length)*100} 50v${Math.max(3,v*.42)}`).join(' ')} /><polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints} /></svg>;
   if (mode === 'Battery') return <div className="wa-viz-battery">{bars.slice(0,12).map((v,i)=><span key={i} className={v>45?'is-charged':''} style={{height:`${Math.max(8,v)}%`}} />)}</div>;
   if (mode === 'Ambience') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="wa-ambience"><stop offset="0%" stopColor="#b7ffdc" stopOpacity=".9"/><stop offset="100%" stopColor="#1b62a5" stopOpacity="0"/></radialGradient></defs><circle cx="50" cy="50" r={24+Math.max(...bars)*.34} fill="url(#wa-ambience)" /><polyline className="wa-viz-wave wa-viz-wave--soft" points={wavePoints} /></svg>;
   if (mode === 'Particle') return <svg viewBox="0 0 100 100" aria-hidden="true">{bars.map((v,i)=><circle key={i} cx={(i*37+13)%100} cy={(i*23+waveform[i%waveform.length])%100} r={1.2+v/18} fill={`hsl(${hue(i)} 95% 65%)`} opacity=".8" />)}</svg>;
-  if (mode === 'Plenoptic') return <svg viewBox="0 0 100 100" aria-hidden="true">{[0,1,2,3,4].map((i)=><circle key={i} cx="50" cy="50" r={12+i*8+bars[i*3]*.12} fill="none" stroke={`hsl(${185+i*24} 90% 65%)`} strokeWidth="1.2" opacity={.8-i*.1} />)}<polyline className="wa-viz-wave" points={wavePoints} /></svg>;
+  if (mode === 'Plenoptic') return <svg className="wa-viz-plenoptic" viewBox="0 0 100 100" aria-hidden="true">
+    <defs><radialGradient id="wa-plenoptic-glow"><stop stopColor="#b9faff" stopOpacity=".9" /><stop offset=".28" stopColor="#438bff" stopOpacity=".28" /><stop offset="1" stopColor="#06101f" stopOpacity="0" /></radialGradient></defs>
+    <circle cx="50" cy="50" r="47" fill="url(#wa-plenoptic-glow)" />
+    <g className="wa-plenoptic-tunnel">{plenopticDepths.map((depth, index) => <g key={index} transform={`rotate(${depth.rotation} 50 50) translate(${50 * (1-depth.scale)} ${50 * (1-depth.scale)}) scale(${depth.scale}) translate(-50 -50)`} opacity={depth.opacity}>
+      <polygon points="50,4 96,50 50,96 4,50" fill={index % 2 ? 'rgba(53,206,255,.035)' : 'rgba(186,95,255,.045)'} stroke={`hsl(${190 + index * 23} 95% 68%)`} strokeWidth=".9" />
+      <path d="M50 4L50 96 M4 50H96 M17 17L83 83 M83 17L17 83" stroke={`hsl(${190 + index * 23} 90% 65%)`} strokeWidth=".35" opacity=".55" />
+    </g>)}</g>
+    {safeBars.map((value, index) => { const angle = index / safeBars.length * Math.PI * 2; const radius = 12 + value * .22; return <line key={index} x1="50" y1="50" x2={50 + Math.cos(angle) * radius} y2={50 + Math.sin(angle) * radius} stroke={`hsl(${185 + index * 8} 100% 72%)`} strokeWidth=".8" opacity=".8" />; })}
+    <circle cx="50" cy="50" r={3 + averageLevel * .035} fill="#e8ffff" className="wa-plenoptic-core" />
+    <polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints} />
+  </svg>;
   if (mode === 'Spikes') return <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points={radialPoints} fill="rgba(255,170,40,.18)" stroke="#ffb52e" strokeWidth="1.2" /><circle cx="50" cy="50" r="10" fill="#ff6b25" opacity=".55" /></svg>;
   if (mode === 'Musical Colors') return <div className="wa-viz-colors">{bars.map((v,i)=><span key={i} style={{height:`${Math.max(3,v)}%`,background:`hsl(${hue(i)} 95% 55%)`}} />)}</div>;
-  if (mode === 'Alchemy') return <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points={radialPoints} fill="rgba(25,210,255,.12)" stroke="#20dcff" strokeWidth="1.4" /><polygon points={bars.map((v,i)=>{const a=(i/bars.length)*Math.PI*2;const r=15+v*.2;return `${50+Math.cos(a)*r},${50+Math.sin(a)*r}`;}).join(' ')} fill="none" stroke="#ff4dd2" strokeWidth="1" /><circle cx="50" cy="50" r="5" fill="#fff" /></svg>;
+  if (mode === 'Alchemy') return <svg className="wa-viz-alchemy" viewBox="0 0 100 100" aria-hidden="true">
+    <defs><radialGradient id="wa-alchemy-core"><stop stopColor="#fff" /><stop offset=".18" stopColor="#8ffaff" stopOpacity=".9" /><stop offset="1" stopColor="#0878c9" stopOpacity="0" /></radialGradient><linearGradient id="wa-alchemy-ribbon" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#44f5ff" /><stop offset=".5" stopColor="#a65cff" /><stop offset="1" stopColor="#ff5bc8" /></linearGradient></defs>
+    <g className="wa-alchemy-orbits">{[0,1,2].map((ring) => <ellipse key={ring} cx="50" cy="50" rx={18 + ring * 8 + averageLevel * .12} ry={8 + ring * 4 + averageLevel * .07} transform={`rotate(${ring * 58 + averageLevel * .12} 50 50)`} fill="none" stroke={ring === 1 ? '#ff70d8' : '#4deeff'} strokeWidth=".65" opacity={.48 - ring * .08} />)}</g>
+    {alchemyLayers.map((path, index) => <path key={index} d={path} fill={index === 1 ? 'rgba(255,83,205,.075)' : 'rgba(35,218,255,.055)'} stroke={index === 1 ? '#ff66d5' : 'url(#wa-alchemy-ribbon)'} strokeWidth={index === 0 ? 1.5 : .85} opacity={.95 - index * .18} />)}
+    <path d={waveform.map((value,index)=>{const x=8+index/Math.max(1,waveform.length-1)*84;const y=50+(value-50)*.34;return `${index?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke="#e6ffff" strokeWidth=".9" opacity=".75" />
+    <circle cx="50" cy="50" r={8 + averageLevel * .11} fill="url(#wa-alchemy-core)" opacity=".9" />
+    {safeBars.map((value,index)=>{const angle=index/safeBars.length*Math.PI*2;const inner=10;const outer=inner+value*.18;return <line key={index} x1={50+Math.cos(angle)*inner} y1={50+Math.sin(angle)*inner} x2={50+Math.cos(angle)*outer} y2={50+Math.sin(angle)*outer} stroke={`hsl(${180+index*9} 100% 72%)`} strokeWidth=".75" opacity=".85" />;})}
+  </svg>;
   if (mode === 'AVS') return <svg className={`wa-viz-preset wa-viz-preset--${presetIndex % 4}`} viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(50 50)"><polyline className="wa-viz-wave" points={waveform.map((v,i)=>{const a=(i/(waveform.length-1))*Math.PI*2;const r=12+v*.34;return `${Math.cos(a)*r},${Math.sin(a)*r}`;}).join(' ')} /><polyline className="wa-viz-wave wa-viz-wave--secondary" points={waveform.map((v,i)=>{const a=(i/(waveform.length-1))*Math.PI*2;const r=10+v*.28;return `${Math.cos(-a)*r},${Math.sin(-a)*r}`;}).join(' ')} /></g></svg>;
   return <svg className={`wa-viz-preset wa-viz-preset--${presetIndex % 4}`} viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="wa-milkdrop"><stop stopColor="#fff" /><stop offset=".35" stopColor="#4be8ff" /><stop offset="1" stopColor="#18216c" stopOpacity="0" /></radialGradient></defs><circle cx="50" cy="50" r={15+Math.max(...bars)*.35} fill="url(#wa-milkdrop)" opacity=".8" /><polygon points={radialPoints} fill="none" stroke="#ff69d4" strokeWidth="1.1" /><polyline className="wa-viz-wave" points={wavePoints} /></svg>;
 }
