@@ -1413,9 +1413,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--list" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }}>
                   <summary className="wa-btn-pl wa-btn-pl--opts">LIST<br />OPT</summary>
                   <div className="wa-classic-menu__panel wa-classic-menu__panel--list">
-                    <label><input type="checkbox" defaultChecked /> Show track time</label>
-                    <label><input type="checkbox" defaultChecked /> Scroll follows playback</label>
-                    <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection([])}>Clear selection</button>
+                    <div className="wa-classic-menu__info">CLASSIC PLAYLIST</div>
+                    <div className="wa-classic-menu__info">Track durations: ON</div>
+                    <div className="wa-classic-menu__info">Playback follow: ON</div>
                   </div>
                 </details>
               </div>
