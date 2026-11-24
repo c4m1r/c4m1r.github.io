@@ -13,14 +13,15 @@ The existing fourth window already contains a visualizer stage and a local-video
 - The Main LCD now has its own independent three-mode state; the fourth window has a separate 13-mode state.
 - The existing fourth-window `MODE` control cycles through Spectrum, Oscilloscope, Peak Meter, Alchemy, Bars and Waves, Battery, Ambience, Particle, Plenoptic, Spikes, Musical Colors, AVS and MilkDrop.
 - Each added family currently has an original lightweight SVG/CSS procedural renderer driven by the shared analyser arrays. These are recognizable first-pass interpretations, not byte-exact reproductions of Microsoft / Nullsoft visualizers, original plugin engines, or compatible preset implementations.
-- The fourth-window geometry and video stage were not changed. Browser screenshots, visual tuning and regression checks are still outstanding.
+- The fourth-window geometry and video stage were not changed. Added CSS scene animation respects `prefers-reduced-motion`. Browser screenshots, visual tuning and regression checks are still outstanding.
 
 ## Main LCD versus fourth-window mode state
 
 - Main LCD remains compact and faithful to Winamp Classic. Its existing three quick displays remain Spectrum, Oscilloscope and Peak Meter.
 - The fourth window gets its own independent selected visualization mode. Switching the fourth-window mode does not change the Main LCD mode; cycling the Main LCD does not change the fourth-window mode.
 - Both surfaces may read the same audio-analysis data, but presentation state is independent.
-- The existing fourth-window MODE control now cycles through the complete 13-mode collection. Grouped navigation is still pending.
+- The existing toolbar has a compact grouped picker, `MODE` cycles all 13 modes, and `RND` selects another mode in the current family (or from all modes for a singleton family).
+- AVS has four named original variations (Scope, Feedback Tunnel, Rotating Geometry, Kaleidoscope); MilkDrop has four (Geiss Flow, Fractal Flame, Waveform Tunnel, Psychedelic Swirl), cycled with `PSET`.
 
 ## Canonical Winamp visualization families
 
@@ -90,7 +91,7 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 2. **WMP core:** Alchemy, Bars and Waves, Battery.
 3. **WMP legacy:** Ambience, Particle, Plenoptic, Spikes, Musical Colors.
 4. **Winamp plug-in-inspired:** original AVS-style and MilkDrop-inspired scenes with a small set of named presets.
-5. **Polish:** mode randomization / optional auto-cycle, reduced-motion behavior, responsive rendering and audio/performance acceptance.
+5. **Polish:** randomization and reduced-motion handling are implemented; optional auto-cycle, responsive rendering and audio/performance acceptance remain.
 
 ## Acceptance
 
