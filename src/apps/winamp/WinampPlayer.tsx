@@ -1377,6 +1377,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               </div>
 
               {skinAppearance === 'webamp-classic' ? (
+              <>
               {/* Playlist Bottom Bar */}
               {(m3uStatus || localLibraryStatus || skinStatus) && (
                 <div className="wa-pl__import-status" role="status" aria-live="polite">
@@ -1418,7 +1419,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </div>
                 </details>
               </div>
+              </>
               ) : (
+              <>
               {/* Legacy footer retained for Dev Alpha and imported skins. */}
               {(m3uStatus || localLibraryStatus) && (
                 <div className="wa-pl__import-status" role="status" aria-live="polite">
@@ -1491,6 +1494,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
                 </div>
               </div>
+              </>
               )}
             </div>
           )}
