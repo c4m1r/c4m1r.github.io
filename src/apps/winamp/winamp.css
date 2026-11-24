@@ -7129,3 +7129,107 @@
     font-size: 4.8px;
   }
 }
+
+
+/* Keep the complete Classic EQ inside the original 275 × 116 px window. */
+.wa-shell--webamp-classic .wa-equalizer {
+  height: 116px;
+  min-height: 116px;
+  max-height: 116px;
+}
+
+.wa-shell--webamp-classic .wa-eq__body {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 1px;
+  padding: 1px 5px;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-eq__header {
+  flex: 0 0 14px;
+  height: 14px;
+  min-height: 14px;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__toggles {
+  height: 12px;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__toggles .wa-btn-mode {
+  height: 11px;
+  min-height: 11px;
+  line-height: 9px;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__spline {
+  height: 14px;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__preset-select {
+  height: 12px;
+  min-height: 12px;
+  font-size: 5.5px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools {
+  flex: 0 0 10px;
+  height: 10px;
+  min-height: 10px;
+  padding: 0 2px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools input.wa-btn-presets {
+  height: 9px;
+  min-height: 9px;
+  padding-block: 0;
+  font-size: 5px;
+  line-height: 7px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode {
+  height: 8px;
+  min-height: 8px;
+  max-height: 8px;
+  padding-block: 0;
+  font: 700 4.8px/6px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-eq__sliders-container {
+  flex: 0 0 68px;
+  height: 68px;
+  min-height: 68px;
+  margin-top: 0;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.wa-shell--webamp-classic .wa-eq__band {
+  height: 65px;
+  min-height: 65px;
+}
+
+.wa-shell--webamp-classic .wa-eq__fader,
+.wa-shell--webamp-classic .wa-eq__input-vert,
+.wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-runnable-track,
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-range-track {
+  height: 55px;
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left {
+  height: 55px;
+  margin-bottom: 10px;
+}
+
+.wa-shell--webamp-classic .wa-eq__divider {
+  height: 55px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__body {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+}
