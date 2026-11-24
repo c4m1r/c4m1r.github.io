@@ -2523,3 +2523,138 @@
     min-width: 0;
   }
 }
+
+
+/* Webamp Classic — Main transport/status geometry refinement.
+   Presentation-only: retain the existing controls and their handlers. */
+.wa-shell--webamp-classic .wa-transport-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 3px;
+  min-width: 0;
+}
+
+.wa-shell--webamp-classic .wa-buttons-group {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0;
+  align-items: center;
+}
+
+.wa-shell--webamp-classic .wa-btn-transport {
+  box-sizing: border-box;
+  flex: 0 0 23px;
+  width: 23px;
+  min-width: 23px;
+  height: 18px;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wa-shell--webamp-classic .wa-buttons-group .wa-btn-transport + .wa-btn-transport {
+  margin-left: -1px;
+}
+
+.wa-shell--webamp-classic .wa-buttons-group .wa-btn-transport:last-child {
+  flex-basis: 22px;
+  width: 22px;
+  min-width: 22px;
+}
+
+.wa-shell--webamp-classic .wa-btn-transport img {
+  display: block;
+  flex: 0 0 auto;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+
+.wa-shell--webamp-classic .wa-toggles-group {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  min-width: 0;
+}
+
+.wa-shell--webamp-classic .wa-toggles-group .wa-btn-mode {
+  box-sizing: border-box;
+  min-height: 16px;
+  padding: 1px 3px;
+  white-space: nowrap;
+  font: 700 6px/10px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-toggles-group .wa-btn-mode .wa-led-dot {
+  width: 3px;
+  height: 3px;
+  flex: 0 0 3px;
+}
+
+.wa-shell--webamp-classic .wa-tech-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  min-width: 0;
+  white-space: nowrap;
+  font: 7px/9px "Courier New", monospace;
+}
+
+.wa-shell--webamp-classic .wa-audio-channels {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding-left: 2px;
+  border-left: 1px solid #4c4c4c;
+  font: 6px/8px Arial, Helvetica, sans-serif;
+  letter-spacing: -.15px;
+  text-transform: uppercase;
+}
+
+.wa-shell--webamp-classic .wa-chan {
+  color: #555;
+  text-shadow: none;
+}
+
+.wa-shell--webamp-classic .wa-chan.is-active {
+  color: #d4d49a;
+  text-shadow: 0 0 2px rgba(220, 220, 150, .45);
+}
+
+.wa-shell--webamp-classic .wa-slider-track--pos {
+  height: 10px;
+  min-height: 10px;
+  box-sizing: border-box;
+}
+
+.wa-shell--webamp-classic .wa-vol-bal-row {
+  align-items: center;
+  gap: 6px;
+}
+
+.wa-shell--webamp-classic .wa-vol-control,
+.wa-shell--webamp-classic .wa-bal-control {
+  gap: 3px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-transport-row {
+    flex-wrap: wrap;
+    row-gap: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-toggles-group {
+    flex: 1 1 auto;
+  }
+
+  .wa-shell--webamp-classic .wa-tech-info {
+    gap: 2px;
+    font-size: 6px;
+  }
+}
