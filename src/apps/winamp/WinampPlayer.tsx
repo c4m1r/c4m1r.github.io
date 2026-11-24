@@ -1176,6 +1176,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     )}
                   </select>
                 )}
+                {skinAppearance === 'webamp-classic' && (
+                  <button type="button" className="wa-btn-mode wa-eq__q1-out" onClick={exportEqfLibrary} title="Export built-in and custom presets as a Winamp Q1 library">Q1 OUT</button>
+                )}
               </div>
 
               {/* Equalizer preset controls and faders */}
@@ -1231,7 +1234,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 />
                 <button type="button" className="wa-btn-mode" onClick={() => eqfInputRef.current?.click()} title="Import Winamp EQF library">EQF IN</button>
                 <button type="button" className="wa-btn-mode" onClick={exportEqfFile} title="Export selected equalizer as Winamp EQF">EQF OUT</button>
-                <button type="button" className="wa-btn-mode" onClick={exportEqfLibrary} title="Export built-in and custom presets as a Winamp Q1 library">Q1 OUT</button>
               </div>
               {eqfStatus && <span className="wa-eq__status" role="status" aria-live="polite">{eqfStatus}</span>}
 
