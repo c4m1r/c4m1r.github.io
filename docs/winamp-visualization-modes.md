@@ -1,6 +1,6 @@
 # Winamp Visualization Modes — design and implementation contract
 
-Status: implementation in progress. First-pass in-window renderers, grouped family picker and random mode action are committed; named presets, lifecycle/performance work and browser acceptance remain pending.
+Status: implementation in progress. First-pass in-window renderers, grouped family picker, random action, named AVS/MilkDrop variants and optional auto-cycle are committed; lifecycle/performance work and browser acceptance remain pending.
 
 ## Scope — existing fourth window only
 
@@ -61,7 +61,7 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 - Compact selector grouped as: Winamp Classic, Winamp AVS, Winamp MilkDrop-inspired, Windows Media Player, Windows Media Player Legacy.
 - Previous / next mode cycles within the current group; group switching is explicit.
 - Random mode chooses another mode in the active group without immediately repeating the current mode.
-- Optional auto-cycle is off by default.
+- Optional auto-cycle is off by default; when enabled it advances every 15 seconds and pauses while the fourth window is hidden/shaded, Video is active, or the browser tab is backgrounded.
 - The current mode name is visible unobtrusively inside the stage.
 - Preserve the existing compact square window. No full-screen-only controls, new panels or oversized settings UI are required for this task.
 - If basic tuning is useful, keep it to a compact palette / sensitivity / motion control row and avoid obstructing the visualizer.
@@ -87,7 +87,7 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 
 ## Delivery phases
 
-1. **State and selector:** decouple fourth-window mode from Main LCD; completed independent state, grouped family picker, full MODE cycle and RND action. Named preset variants and auto-cycle remain follow-ups.
+1. **State and selector:** decouple fourth-window mode from Main LCD; completed independent state, grouped family picker, full MODE cycle, RND action, named AVS/MilkDrop variants and optional 15-second AUTO cycle.
 2. **WMP core:** Alchemy, Bars and Waves, Battery.
 3. **WMP legacy:** Ambience, Particle, Plenoptic, Spikes, Musical Colors.
 4. **Winamp plug-in-inspired:** original AVS-style and MilkDrop-inspired scenes with a small set of named presets.
