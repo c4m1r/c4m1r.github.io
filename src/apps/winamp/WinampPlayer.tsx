@@ -70,6 +70,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [timeRemainingMode, setTimeRemainingMode] = useState(false);
 
   const [playlistSelection, setPlaylistSelection] = useState<number[]>([]);
+  const [showPlaylistDurations, setShowPlaylistDurations] = useState(true);
+  const [followPlaylistPlayback, setFollowPlaylistPlayback] = useState(true);
   const [draggedPlaylistIndex, setDraggedPlaylistIndex] = useState<number | null>(null);
   const [playlistRevision, setPlaylistRevision] = useState(0);
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
@@ -527,6 +529,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const playlist = useMemo(() => winampController.getPlaylist(), [playlistRevision]);
   const track = playlist[trackIndex] ?? playlist[0] ?? PROJECT_PLAYLIST[0];
+
+  useEffect(() => {
+    if (!followPlaylistPlayback || !showPl) return;
+    document.querySelector<HTMLElement>('.wa-playlist .wa-pl__item.is-current')?.scrollIntoView({ block: 'nearest' });
+  }, [trackIndex, followPlaylistPlayback, showPl]);
   const albumArt = useMemo(() => generateAlbumArt(track), [track]);
 
   // Total playlist duration calculation
@@ -1370,7 +1377,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       <span className="wa-pl__title">
                         {index + 1}. {item.artist} - {item.title}
                       </span>
-                      <span className="wa-pl__dur">{item.durationLabel}</span>
+                      {showPlaylistDurations && <span className="wa-pl__dur">{item.durationLabel}</span>}
                     </div>
                   );
                 })}
@@ -1414,9 +1421,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--list" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
                   <summary className="wa-btn-pl wa-btn-pl--opts">LIST<br />OPT</summary>
                   <div className="wa-classic-menu__panel wa-classic-menu__panel--list">
-                    <div className="wa-classic-menu__info">CLASSIC PLAYLIST</div>
-                    <div className="wa-classic-menu__info">Track durations: ON</div>
-                    <div className="wa-classic-menu__info">Playback follow: ON</div>
+                    <div className="wa-classic-menu__info">PLAYLIST OPTIONS</div>
+                    <button type="button" className="wa-btn-pl" aria-pressed={showPlaylistDurations} onClick={() => setShowPlaylistDurations((value) => !value)}>Track durations: {showPlaylistDurations ? 'ON' : 'OFF'}</button>
+                    <button type="button" className="wa-btn-pl" aria-pressed={followPlaylistPlayback} onClick={() => setFollowPlaylistPlayback((value) => !value)}>Playback follow: {followPlaylistPlayback ? 'ON' : 'OFF'}</button>
                   </div>
                 </details>
               </div>
