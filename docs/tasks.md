@@ -451,6 +451,12 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Styling is scoped to `.wa-shell--webamp-classic .wa-main`. Existing button markup, drag handling, windowshade/settings/close handlers, Main dimensions, Equalizer, Playlist, Dev Alpha and imported `.wsz` skins are unchanged.
 - Verification: CSS brace balance and selector-scope checks performed on the resulting source. Browser visual QA, build/typecheck and CI remain unconfirmed; this is not a pixel-exact bitmap reconstruction.
 
+### Winamp — Webamp Classic Equalizer faceplate refinement (2026-11-24)
+- Reworked the built-in Classic EQ's metal faceplate, title strip, ON/AUTO buttons and LEDs, graph grid/glow, preset selector, preset action rail, dB scale, ten frequency faders, preamp fader, slider caps, frequency labels and focus states.
+- Added dedicated WebKit and Firefox range-thumb styling while retaining native range controls and their existing handlers.
+- CSS-only, scoped to `.wa-shell--webamp-classic`; no EQ values, preset data/operations, EQF/Q1 import/export, DSP, Main, Playlist, Dev Alpha or imported `.wsz` skin behavior changed.
+- Verification: CSS braces balanced and all new selectors scoped to Webamp Classic. Browser visual/interaction QA not available in this run; CI will be checked after the docs commit.
+
 ### Winamp — Webamp Classic Equalizer faceplate pass (2026-11-24)
 - Refined the built-in Classic Equalizer's title strip, metal frame, compact ON/AUTO toggles, response-curve display, fader wells, slider caps and frequency labels.
 - Added restrained graph grid and curve glow, clearer active LED treatment, tactile raised/pressed window controls and visible keyboard focus states.
