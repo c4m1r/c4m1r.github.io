@@ -425,3 +425,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Bitrate and sample-rate readouts (128 kbps, 44 kHz) remain static presentation values, not measured stream metadata. Mono/Stereo currently remains a visual state, not channel-count detection.
 - This is still a CSS approximation, not a bitmap-exact reconstruction. Original Nullsoft bitmap artwork is not bundled; the Webamp MIT code licence does not automatically license those assets.
 - Verification: source update succeeded; browser visual QA, build/typecheck and CI checks have not yet been run. Do not mark this pass Verified until the relevant checks and narrow/mobile visual review are complete.
+
+
+### Winamp — Webamp Classic Main native chassis geometry (2026-11-24)
+- CSS-only geometry pass for the built-in Classic renderer: Main is constrained to the atlas reference size of 275 × 116 px, with a 14 px title strip and 100 px content area. The LCD/display, seek + volume/balance row and transport row receive explicit compact dimensions and spacing so the native window height is respected.
+- Transport controls retain their native 23 × 18 px footprint (Eject 22 × 18 px in this approximation). Narrow-screen width handling remains scoped to Webamp Classic.
+- No TSX markup, playback/controller handlers, audio state, Dev Alpha or imported .wsz styles were changed.
+- Verification: CSS source structure and scoped selector checks performed after update; browser screenshot/layout QA, build/typecheck and CI have not been run. Treat the exact 275 × 116 layout as an authored CSS target, not browser-verified pixel parity.
