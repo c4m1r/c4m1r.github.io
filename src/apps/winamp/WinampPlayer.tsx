@@ -365,6 +365,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     main: { x: 24, y: 48 }, equalizer: { x: 24, y: 174 }, playlist: { x: 24, y: 292 },
   });
   const dragRef = useRef<{
+    anchorKey: PlayerWindowKey;
     members: Array<{ key: PlayerWindowKey; originX: number; originY: number; width: number; height: number }>;
     pointerX: number;
     pointerY: number;
@@ -407,6 +408,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
     setActiveWindow(key);
     dragRef.current = {
+      anchorKey: key,
       pointerX: event.clientX,
       pointerY: event.clientY,
       members: [...connected].map((member) => ({
@@ -426,8 +428,17 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       const maxX = Math.min(...drag.members.map((member) => window.innerWidth - member.width - member.originX));
       const minY = Math.max(...drag.members.map((member) => -member.originY));
       const maxY = Math.min(...drag.members.map((member) => window.innerHeight - member.height - 30 - member.originY));
-      const dx = Math.max(minX, Math.min(maxX, deltaX));
-      const dy = Math.max(minY, Math.min(maxY, deltaY));
+      // If a connected group is larger than the viewport, keep the grabbed
+      // window in bounds rather than applying an inverted clamp to the group.
+      const anchor = drag.members.find((member) => member.key === drag.anchorKey)!;
+      const anchorMinX = -anchor.originX;
+      const anchorMaxX = window.innerWidth - anchor.width - anchor.originX;
+      const anchorMinY = -anchor.originY;
+      const anchorMaxY = window.innerHeight - anchor.height - 30 - anchor.originY;
+      const clampDelta = (value: number, min: number, max: number) =>
+        min <= max ? Math.max(min, Math.min(max, value)) : Math.max(max, Math.min(min, value));
+      const dx = clampDelta(deltaX, minX <= maxX ? minX : anchorMinX, minX <= maxX ? maxX : anchorMaxX);
+      const dy = clampDelta(deltaY, minY <= maxY ? minY : anchorMinY, minY <= maxY ? maxY : anchorMaxY);
       setWindowPositions((current) => {
         const next = { ...current };
         drag.members.forEach((member) => {
