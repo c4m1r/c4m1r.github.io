@@ -384,7 +384,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         equalizer: { ...current.equalizer, y: current.equalizer.y + offset },
         playlist: { ...current.playlist, y: current.playlist.y + offset },
         video: visible
-          ? { x: current.main.x, y: current.main.y - 275 }
+          ? { x: current.main.x, y: current.main.y }
           : current.video,
       }));
     }
