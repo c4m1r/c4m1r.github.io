@@ -541,3 +541,43 @@
 .file-explorer--win-98 .fx-toolbar button span {
   white-space: nowrap;
 }
+
+/* Windows 2000 My Computer web-view pane (left of the file list when the folder tree is hidden).
+   Reference: eat/screens/oc/win2000/02-desktop-my-computer-getting-started.png */
+.file-explorer .fx-webview {
+  width: 150px;
+  flex-shrink: 0;
+  background: #ffffff !important;
+  border-right: 0 !important;
+  overflow: hidden;
+  padding: 0 !important;
+  font-family: var(--os-font);
+  font-size: 11px;
+  color: #000000;
+}
+
+.fx-webview__banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 4px 6px 0 6px;
+  padding: 2px 0 6px;
+  border-bottom: 2px solid #6b94cb;
+}
+
+.fx-webview__title {
+  font-family: var(--os-font);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.fx-webview__body {
+  padding: 10px 8px;
+  line-height: 1.35;
+}
+
+.fx-webview__body p {
+  margin: 0;
+}

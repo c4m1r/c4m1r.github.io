@@ -62,7 +62,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   const [viewMode, setViewMode] = useState<ExplorerViewMode>(
     isMyPictures ? 'thumbnails' : 'icons'
   );
-  const [showSidebar, setShowSidebar] = useState(true);
+  // Windows 2000 opens with the web-view pane; the Folders button swaps it for the folder tree.
+  const [showSidebar, setShowSidebar] = useState(theme !== 'win2000');
   const [searchOpen, setSearchOpen] = useState(initialSearchOpen);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedTreePaths, setExpandedTreePaths] = useState<Record<string, boolean>>({ 'My Computer': true, 'C:\\': true });
@@ -1006,6 +1007,35 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             {renderFolderTree(initialFileSystem['My Computer'], 'My Computer', 0)}
           </aside>
         )}
+
+        {/* Windows 2000 web-view pane: folder title banner and the description of the selected item. */}
+        {theme === 'win2000' && !showSidebar && (() => {
+          const folderTitle = path === 'My Computer'
+            ? (isRu ? 'Мой компьютер' : 'My Computer')
+            : addressTextFor(path).split('\\').filter(Boolean).pop() ?? path;
+          const kindOf = (name: string) => /^Local Disk/i.test(name) ? (isRu ? 'Локальный диск' : 'Local Disk')
+            : /^3½|Floppy/i.test(name) ? (isRu ? 'Дисковод 3½' : '3½-Inch Floppy Disk')
+            : /^CD/i.test(name) ? (isRu ? 'Компакт-диск' : 'Compact Disc')
+            : (isRu ? 'Системная папка' : 'System Folder');
+          return (
+            <aside className="fx-webview" aria-label={folderTitle}>
+              <div className="fx-webview__banner">
+                <img src={getAddressIcon()} alt="" width={64} height={64} style={{ imageRendering: 'pixelated' }} />
+                <span className="fx-webview__title">{folderTitle}</span>
+              </div>
+              <div className="fx-webview__body">
+                {selectedItem ? (
+                  <>
+                    <b>{selectedItem}</b>
+                    <div>{path === 'My Computer' ? kindOf(selectedItem) : ''}</div>
+                  </>
+                ) : (
+                  <p>{isRu ? 'Выберите элемент, чтобы увидеть его описание.' : 'Select an item to view its description.'}</p>
+                )}
+              </div>
+            </aside>
+          );
+        })()}
 
         {/* Content Pane */}
         <div className="min-w-0 flex-1 bg-white p-4 overflow-y-auto" onClick={() => setSelectedItem(null)}>
