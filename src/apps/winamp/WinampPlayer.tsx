@@ -888,6 +888,169 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     winampController.seek((pct / 100) * duration);
   };
 
+  const clearFullscreenHideTimer = useCallback(() => {
+    if (fullscreenHideTimerRef.current !== null) {
+      window.clearTimeout(fullscreenHideTimerRef.current);
+      fullscreenHideTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleFullscreenControlsHide = useCallback(() => {
+    clearFullscreenHideTimer();
+    if (fullscreenPanelHoverRef.current) return;
+    fullscreenHideTimerRef.current = window.setTimeout(() => {
+      setShowFullscreenControls(false);
+      fullscreenHideTimerRef.current = null;
+    }, 3000);
+  }, [clearFullscreenHideTimer]);
+
+  const revealFullscreenControls = useCallback(() => {
+    setShowFullscreenControls(true);
+    clearFullscreenHideTimer();
+    if (!fullscreenPanelHoverRef.current) scheduleFullscreenControlsHide();
+  }, [clearFullscreenHideTimer, scheduleFullscreenControlsHide]);
+
+  const enterVideoFullscreen = useCallback(() => {
+    const element = videoWindowRef.current;
+    if (!element) return;
+    setActiveWindow('video');
+    setShowFullscreenControls(true);
+    clearFullscreenHideTimer();
+    if (element.requestFullscreen) {
+      void element.requestFullscreen().then(() => setIsVideoFullscreen(true)).catch(() => setIsVideoFullscreen(true));
+    } else {
+      setIsVideoFullscreen(true);
+    }
+  }, [clearFullscreenHideTimer]);
+
+  const exitVideoFullscreen = useCallback(() => {
+    clearFullscreenHideTimer();
+    if (document.fullscreenElement === videoWindowRef.current && document.exitFullscreen) {
+      void document.exitFullscreen().catch(() => setIsVideoFullscreen(false));
+    } else {
+      setIsVideoFullscreen(false);
+    }
+    setShowFullscreenControls(true);
+  }, [clearFullscreenHideTimer]);
+
+  const seekFullscreenMedia = useCallback((delta: number) => {
+    if (videoMode === 'video' && videoElementRef.current) {
+      const media = videoElementRef.current;
+      const end = Number.isFinite(media.duration) ? media.duration : Math.max(0, media.currentTime + delta);
+      media.currentTime = Math.max(0, Math.min(end, media.currentTime + delta));
+      return;
+    }
+    const state = winampController.getState();
+    const end = state.duration || state.currentTime + delta;
+    winampController.seek(Math.max(0, Math.min(end, state.currentTime + delta)));
+  }, [videoMode]);
+
+  const toggleFullscreenPlayback = useCallback(() => {
+    if (videoMode === 'video' && videoElementRef.current) {
+      const media = videoElementRef.current;
+      if (media.paused) void media.play().catch(() => undefined);
+      else media.pause();
+      return;
+    }
+    if (winampController.getState().isPlaying) pause();
+    else void play();
+  }, [videoMode, pause, play]);
+
+  const cycleFullscreenMode = useCallback(() => {
+    if (videoMode === 'video') {
+      setVideoMode('visualizer');
+      return;
+    }
+    setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length]);
+    setFourthVisualizerPresetIndex(0);
+  }, [videoMode]);
+
+  const handleVideoStagePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.wa-video__visualizer, .wa-video__screen')) return;
+    if (!isVideoFullscreen && event.pointerType === 'touch') {
+      const now = Date.now();
+      if (lastTouchTapRef.current && now - lastTouchTapRef.current < 340) {
+        lastTouchTapRef.current = 0;
+        enterVideoFullscreen();
+        return;
+      }
+      lastTouchTapRef.current = now;
+      return;
+    }
+    if (isVideoFullscreen) revealFullscreenControls();
+  };
+
+  useEffect(() => {
+    const element = videoWindowRef.current;
+    const syncFullscreen = () => {
+      const active = document.fullscreenElement === element;
+      setIsVideoFullscreen(active);
+      if (active) revealFullscreenControls();
+      else {
+        clearFullscreenHideTimer();
+        setShowFullscreenControls(true);
+      }
+    };
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    return () => document.removeEventListener('fullscreenchange', syncFullscreen);
+  }, [clearFullscreenHideTimer, revealFullscreenControls]);
+
+  useEffect(() => {
+    if (!isVideoFullscreen) return;
+    const handleFullscreenKeys = (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]')) return;
+      switch (event.key) {
+        case 'ArrowLeft':
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          seekFullscreenMedia(-5);
+          revealFullscreenControls();
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          seekFullscreenMedia(5);
+          revealFullscreenControls();
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          previous();
+          revealFullscreenControls();
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          next();
+          revealFullscreenControls();
+          break;
+        case ' ':
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          toggleFullscreenPlayback();
+          revealFullscreenControls();
+          break;
+        case 'm':
+        case 'M':
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          cycleFullscreenMode();
+          revealFullscreenControls();
+          break;
+        case 'Escape':
+          if (!document.fullscreenElement) setIsVideoFullscreen(false);
+          break;
+      }
+    };
+    window.addEventListener('keydown', handleFullscreenKeys, true);
+    return () => window.removeEventListener('keydown', handleFullscreenKeys, true);
+  }, [isVideoFullscreen, seekFullscreenMedia, previous, next, toggleFullscreenPlayback, cycleFullscreenMode, revealFullscreenControls]);
+
+  useEffect(() => () => clearFullscreenHideTimer(), [clearFullscreenHideTimer]);
+
   // Webamp-compatible transport shortcuts. Editable controls keep their native keyboard behavior.
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
