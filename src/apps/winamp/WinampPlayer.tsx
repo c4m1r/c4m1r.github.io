@@ -479,7 +479,52 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         return next;
       });
     };
-    const stop = () => { dragRef.current = null; };
+    const stop = () => {
+      const drag = dragRef.current;
+      if (!drag) return;
+      const moving = new Set(drag.members.map((member) => member.key));
+      if (!detachedWindows.includes(drag.anchorKey)) {
+        const anchorNode = document.querySelector<HTMLElement>(`.wa-${drag.anchorKey}`);
+        const anchorRect = anchorNode?.getBoundingClientRect();
+        if (anchorRect) {
+          let snapX = 0;
+          let snapY = 0;
+          let bestX = 13;
+          let bestY = 13;
+          const candidates: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : []), ...(showVideo ? ['video' as const] : [])];
+          for (const candidate of candidates) {
+            if (moving.has(candidate) || detachedWindows.includes(candidate)) continue;
+            const node = document.querySelector<HTMLElement>(`.wa-${candidate}`);
+            const rect = node?.getBoundingClientRect();
+            if (!rect) continue;
+            const overlapX = Math.min(anchorRect.right, rect.right) - Math.max(anchorRect.left, rect.left);
+            const overlapY = Math.min(anchorRect.bottom, rect.bottom) - Math.max(anchorRect.top, rect.top);
+            if (overlapX >= 32) {
+              const topGap = rect.bottom - anchorRect.top;
+              const bottomGap = rect.top - anchorRect.bottom;
+              if (Math.abs(topGap) <= bestY) { bestY = Math.abs(topGap); snapY = topGap; }
+              if (Math.abs(bottomGap) <= bestY) { bestY = Math.abs(bottomGap); snapY = bottomGap; }
+            }
+            if (overlapY >= 24) {
+              const leftGap = rect.right - anchorRect.left;
+              const rightGap = rect.left - anchorRect.right;
+              if (Math.abs(leftGap) <= bestX) { bestX = Math.abs(leftGap); snapX = leftGap; }
+              if (Math.abs(rightGap) <= bestX) { bestX = Math.abs(rightGap); snapX = rightGap; }
+            }
+          }
+          if (bestX <= 12 || bestY <= 12) {
+            setWindowPositions((current) => {
+              const updated = { ...current };
+              drag.members.forEach((member) => {
+                updated[member.key] = { x: current[member.key].x + (bestX <= 12 ? snapX : 0), y: current[member.key].y + (bestY <= 12 ? snapY : 0) };
+              });
+              return updated;
+            });
+          }
+        }
+      }
+      dragRef.current = null;
+    };
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', stop);
     window.addEventListener('pointercancel', stop);
@@ -488,7 +533,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       window.removeEventListener('pointerup', stop);
       window.removeEventListener('pointercancel', stop);
     };
-  }, []);
+  }, [detachedWindows, showEq, showPl, showVideo]);
 
 
   const startPlaylistResize = (event: React.PointerEvent<HTMLDivElement>) => {
