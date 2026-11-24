@@ -8228,3 +8228,150 @@
   font: 6px/11px Arial, Helvetica, sans-serif;
   white-space: nowrap;
 }
+
+
+/* Fourth detachable Winamp module: video playback and expanded visualization. */
+.wa-shell .wa-video {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  height: 240px;
+  min-width: 240px;
+  min-height: 150px;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid #555;
+  color: #d8d8d8;
+}
+.wa-shell .wa-video__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 24px;
+  min-width: 0;
+  padding: 2px 4px;
+  box-sizing: border-box;
+  background: #252525;
+  border-bottom: 1px solid #080808;
+}
+.wa-shell .wa-video__toolbar button,
+.wa-shell .wa-video__open,
+.wa-shell .wa-video__mode {
+  flex: 0 0 auto;
+  border: 1px solid #777;
+  border-top-color: #ddd;
+  border-left-color: #bbb;
+  border-radius: 0;
+  padding: 2px 6px;
+  color: #eee;
+  background: linear-gradient(#555,#292929);
+  font: 9px Arial, sans-serif;
+  cursor: pointer;
+}
+.wa-shell .wa-video__toolbar button.is-active {
+  color: #f5e45c;
+  border-color: #d8c94b;
+}
+.wa-shell .wa-video__filename {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 9px Arial, sans-serif;
+  color: #aaa;
+}
+.wa-shell .wa-video__visualizer,
+.wa-shell .wa-video__screen {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center,#202c36 0%,#090d12 68%,#020304 100%);
+}
+.wa-shell .wa-video__visualizer-label {
+  position: absolute;
+  top: 7px;
+  left: 8px;
+  color: #78c8ff;
+  font: 9px/1 monospace;
+  letter-spacing: 1px;
+}
+.wa-shell .wa-video__bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  width: 88%;
+  height: 72%;
+}
+.wa-shell .wa-video__bars span {
+  flex: 1 1 0;
+  min-width: 2px;
+  max-width: 12px;
+  background: linear-gradient(to top,#087cce 0%,#17d6bd 58%,#e6e75a 100%);
+  box-shadow: 0 0 5px #159bd0;
+}
+.wa-shell .wa-video__visualizer svg {
+  width: 90%;
+  height: 72%;
+  overflow: visible;
+}
+.wa-shell .wa-video__visualizer polyline {
+  fill: none;
+  stroke: #44e8d1;
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px #19b9db);
+}
+.wa-shell .wa-video__mode {
+  position: absolute;
+  right: 7px;
+  bottom: 6px;
+}
+.wa-shell .wa-video__screen video {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  background: #000;
+}
+.wa-shell .wa-video__empty {
+  color: #777;
+  font: bold 11px/1 monospace;
+  letter-spacing: 2px;
+}
+.wa-shell .wa-video__open {
+  position: absolute;
+  right: 7px;
+  bottom: 6px;
+}
+.wa-shell .wa-video--video {
+  width: 420px;
+  height: 300px;
+}
+.wa-shell .wa-titlebar__btn--window-toggle {
+  min-width: 20px;
+  padding: 0 3px;
+  font: bold 7px/12px Arial, sans-serif;
+}
+.wa-shell .wa-video .wa-titlebar__controls {
+  margin-left: auto;
+}
+.wa-shell .wa-video .wa-titlebar__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  .wa-shell .wa-video,
+  .wa-shell .wa-video--video {
+    width: min(320px, calc(100vw - 16px));
+    max-width: calc(100vw - 16px);
+  }
+}
