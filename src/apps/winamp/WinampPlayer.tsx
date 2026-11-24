@@ -1168,6 +1168,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </svg>
                 </div>
                 {skinAppearance === 'webamp-classic' && (
+                  <>
                   <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--eq" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
                     <summary className="wa-btn-presets">PRESETS</summary>
                     <div className="wa-classic-menu__panel wa-classic-menu__panel--eq">
@@ -1191,6 +1192,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     </div>
                   </details>
                   <button type="button" className="wa-btn-mode wa-eq__q1-export" onClick={exportEqfLibrary} title="Export all equalizer presets as a Q1 library">Q1 OUT</button>
+                  </>
                 )}
               </div>
 
