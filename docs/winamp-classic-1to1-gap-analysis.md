@@ -47,22 +47,22 @@ All three modules share one left edge and meet vertically with no visual gaps. T
 This register is based on current main source and the supplied reference image, not on a browser screenshot of the live build.
 
 ### Main
-- [ ] Current markup includes an extra NEXT/auto-advance button beside Shuffle/Repeat; remove it from the visible Classic row and expose the setting through player settings.
+- [x] Removed NEXT/auto-advance from the visible Classic transport row; retained the control in Dev Alpha and its existing controller setting.
 - [ ] Current markup includes a mini album-art preview; hide it in Webamp Classic.
 - [ ] Verify titlebar chrome/wordmark and display proportions, analyzer position and metadata alignment.
 - [ ] Reconcile transport spacing and bevels to the six-button reference row.
 - [ ] Verify volume/balance/EQ/PL fit the compact row without wrapping.
 
 ### Equalizer
-- [ ] Permanent preset rail currently contains preset-name input, SAVE, DEL, EQF IN and EQF OUT. Remove it from the always-visible faceplate.
-- [ ] Q1 OUT was moved into the top row, but reference top rail only has ON/AUTO, graph and PRESETS. Move Q1 OUT into PRESETS menu.
+- [x] Hid the permanent preset-management rail in Classic and moved preset selection, naming, SAVE/DEL, EQF IN/OUT and Q1 OUT into the PRESETS dropdown.
+- [x] Q1 OUT is inside PRESETS; the visible EQ top rail is limited to ON/AUTO, curve and PRESETS.
 - [ ] Fit graph/preset rail and fader panel into strict 275 × 116 px geometry; all 11 faders and labels must remain visible.
 - [ ] CSS contains successive overrides for the same EQ selectors; consolidate final Classic-only faceplate rules after visual verification.
 - [ ] Match yellow rails, silver square handles, dB labels, frequency labels and spacing.
 
 ### Playlist
-- [ ] Current markup exposes CLR SEL as a fourth primary action and a second tools row with M3U IN/OUT, SKIN IN, optional RESET and LIST OPT. Replace with ADD / REM / SEL / MISC and LIST OPT; move extra operations into menus.
-- [ ] Rebuild footer as one compact row; retain elapsed/total LCD and tiny status controls without extra toolbar height.
+- [x] Classic Playlist primary controls are ADD / REM / SEL / MISC and LIST OPT; MISC contains selection clearing, M3U import/export and skin import/reset.
+- [x] Classic footer is a single compact row with elapsed/total LCD and a small status indicator. Dev Alpha and .wsz retain the legacy footer.
 - [ ] Match list viewport height, black field, green text, current-track white text, right-aligned durations and narrow scrollbar.
 - [ ] Keep resize support without a prominent default resize handle.
 
@@ -87,3 +87,11 @@ This register is based on current main source and the supplied reference image, 
 ## Implementation log
 
 - 2026-11-24: Created this standalone reference specification and gap register from the user-provided screenshot and current main source. Source-confirmed differences are distinguished from browser-only checks still requiring a running build.
+
+
+## Progress log — 2026-11-24 (first correction pass)
+- Main: removed NEXT from the Classic faceplate while keeping the feature in non-Classic modes; the extra album-art preview remains hidden in Classic.
+- Equalizer: replaced the permanent preset selector/action rail with a PRESETS dropdown containing current preset selection, custom preset naming, SAVE, DEL, EQF IN, EQF OUT and Q1 OUT. Existing handlers and EQ state are reused.
+- Playlist: Classic now has ADD / REM / SEL / MISC plus LIST OPT in a single footer row. MISC contains clear-selection, M3U import/export and .wsz import/reset. Elapsed/total remains visible; status details collapse to a small indicator/title.
+- Compatibility: legacy Playlist footer remains in the non-Classic branch. New CSS is scoped to `.wa-shell--webamp-classic`.
+- Still open: pixel-accurate chassis/titlebars, display and fader geometry, scrollbar and native footer detail; verify menus close on outside click/Escape; full browser comparison, build and regression tests are not yet confirmed.
