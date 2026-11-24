@@ -7237,3 +7237,66 @@
     padding-left: 3px;
   }
 }
+
+/* Webamp Classic — two-row Playlist command footer.
+   Playback transport remains on the Main unit; Playlist keeps file/list actions only. */
+.wa-shell--webamp-classic .wa-playlist .wa-pl__mini-transport {
+  display: none !important;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 14px 12px;
+  align-items: center;
+  gap: 1px;
+  padding: 1px 1px 0;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+  flex: 0 0 auto;
+  min-width: 0;
+  height: 14px;
+  min-height: 14px;
+  padding: 0 3px;
+  font: 700 6px/12px Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl--opts {
+  min-width: 0;
+  margin-left: auto;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__status {
+  grid-column: 1;
+  grid-row: 2;
+  height: 12px;
+  min-height: 12px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions {
+    gap: 1px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+    padding-right: 2px;
+    padding-left: 2px;
+    font-size: 5.5px;
+  }
+}
