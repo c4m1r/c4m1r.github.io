@@ -6705,3 +6705,109 @@
     width: 16px;
   }
 }
+
+
+/* Webamp Classic — Playlist optical density and footer fit.
+   Keep the Winamp-style 13 px track rhythm while reserving a compact,
+   stable footprint for the project's additional library and skin commands. */
+.wa-shell--webamp-classic .wa-playlist .wa-pl__body {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list {
+  padding-top: 0;
+  padding-bottom: 0;
+  scrollbar-gutter: stable;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item {
+  min-height: 13px;
+  height: 13px;
+  padding-right: 3px;
+  padding-left: 4px;
+  gap: 4px;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__title {
+  letter-spacing: -.22px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__dur {
+  flex-basis: 30px;
+  min-width: 30px;
+  font-size: 9px;
+  line-height: 13px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer {
+  gap: 1px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions {
+  min-height: 15px;
+  padding: 0 1px 1px;
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions .wa-btn-pl {
+  height: 14px;
+  min-height: 14px;
+  line-height: 12px;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools {
+  grid-template-rows: 14px 12px 14px;
+  row-gap: 1px;
+  padding-top: 1px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+  height: 14px;
+  min-height: 14px;
+  line-height: 12px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__status {
+  height: 12px;
+  min-height: 12px;
+  font-size: 7px;
+  line-height: 10px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini {
+  width: 16px;
+  height: 14px;
+  min-height: 14px;
+  line-height: 10px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl--opts {
+  height: 14px;
+  min-height: 14px;
+  line-height: 12px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__import-status {
+  max-height: 12px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 10px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__item {
+    padding-right: 2px;
+    padding-left: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__dur {
+    flex-basis: 29px;
+    min-width: 29px;
+  }
+}
