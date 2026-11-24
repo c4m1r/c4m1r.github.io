@@ -650,3 +650,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Для встроенного Webamp Classic Playlist разрешено горизонтальное изменение ширины от 275 до 550 px (до двух базовых ширин списка треков); высота остаётся 232 px. Внутренние список, статус и footer используют доступную ширину. Ограничение дополнительно учитывает ширину viewport.
 - Изменены TSX drag coordinator и изолированный CSS Playlist; аудио, playlist state/actions, порядок треков, EQ/DSP, imported .wsz и Dev Alpha не менялись. CSS brace balance 0, новые CSS селекторы scoped к .wa-shell--webamp-classic.
 - Browser QA ещё необходим: проверить цепочки из двух/трёх окон при касании, разрыв цепочки при отодвигании, перетаскивание от каждого titlebar, крайние границы экрана, горизонтальный resize Playlist и поведение на узком viewport. Build/typecheck и CI пока не подтверждены; не помечать Verified.
+
+### Winamp — Webamp Classic Playlist two-axis resize and oversized-group drag safety (2026-11-24)
+- Расширено изменение размера Playlist: теперь доступны обе оси, базовый размер 275 × 232 px сохраняется как минимум; максимальный размер — до 550 × 464 px с ограничением ширины/высоты текущим viewport.
+- При увеличении высоты Playlist внутренний список получает больше вертикального пространства; при увеличении ширины — больше горизонтального. Resize остаётся ограничен встроенным Webamp Classic и не меняет Dev Alpha или imported .wsz.
+- Групповой drag по-прежнему рассчитывает геометрию по фактическим DOM-размерам окон. Добавлен безопасный fallback для связанной группы, которая целиком не помещается в viewport: при невозможности ограничить всю группу в пределах экрана удерживается в границах окно, за titlebar которого начато перетаскивание, без инвертированного clamp.
+- Аудио/controller, playlist actions/state, EQ/DSP и логика воспроизведения не менялись.
+- Source review выполнен; CSS brace balance и scope, TypeScript build/typecheck, реальный browser resize/drag QA и CI требуют отдельного подтверждения. Не помечать Verified.
