@@ -2833,3 +2833,119 @@
   .wa-shell--webamp-classic .wa-tech-info { gap: 2px; font-size: 5px; }
   .wa-shell--webamp-classic .wa-tech-info .wa-chan { padding-inline: 1px; font-size: 5px; }
 }
+
+
+/* Webamp Classic — native Main chassis geometry (275 × 116 px).
+   The 14 px title strip and 100 px body reproduce the atlas dimensions
+   without changing the shared player markup or imported-skin layout. */
+.wa-shell--webamp-classic .wa-main {
+  box-sizing: border-box;
+  width: 275px;
+  min-width: 275px;
+  height: 116px;
+  min-height: 116px;
+  max-height: 116px;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar {
+  box-sizing: border-box;
+  flex: 0 0 14px;
+  width: 100%;
+  height: 14px;
+  min-height: 14px;
+}
+
+.wa-shell--webamp-classic .wa-main__body {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100px;
+  padding: 3px 8px 4px;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-main__body > .wa-display {
+  box-sizing: border-box;
+  flex: 0 0 44px;
+  width: 100%;
+  height: 44px;
+  min-height: 44px;
+  padding: 2px 4px;
+  gap: 4px;
+}
+
+.wa-shell--webamp-classic .wa-main__body > .wa-controls-row {
+  flex: 0 0 auto;
+  min-height: 0;
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--pos {
+  flex: 0 0 10px;
+  height: 10px;
+  min-height: 10px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-vol-bal-row {
+  min-height: 11px;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.wa-shell--webamp-classic .wa-main__body > .wa-transport-row {
+  flex: 0 0 18px;
+  min-height: 18px;
+  height: 18px;
+  flex-wrap: nowrap;
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-buttons-group {
+  flex: 0 0 auto;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-toggles-group {
+  flex: 0 0 auto;
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-btn-transport {
+  flex: 0 0 23px;
+  width: 23px;
+  min-width: 23px;
+  height: 18px;
+  min-height: 18px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-buttons-group .wa-btn-transport:last-child {
+  flex-basis: 22px;
+  width: 22px;
+  min-width: 22px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-main {
+    width: 275px;
+    min-width: 0;
+    max-width: calc(100vw - 8px);
+  }
+
+  .wa-shell--webamp-classic .wa-main__body {
+    padding-inline: 5px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body > .wa-display {
+    grid-template-columns: 70px 58px minmax(0, 1fr);
+    gap: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-vol-bal-row {
+    gap: 4px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body > .wa-transport-row {
+    gap: 2px;
+  }
+}
