@@ -1055,13 +1055,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           revealFullscreenControls();
           break;
         case 'Escape':
-          if (!document.fullscreenElement) setIsVideoFullscreen(false);
+          event.stopImmediatePropagation();
+          exitVideoFullscreen();
           break;
       }
     };
     window.addEventListener('keydown', handleFullscreenKeys, true);
     return () => window.removeEventListener('keydown', handleFullscreenKeys, true);
-  }, [isVideoFullscreen, seekFullscreenMedia, previous, next, toggleFullscreenPlayback, cycleFullscreenMode, revealFullscreenControls]);
+  }, [isVideoFullscreen, seekFullscreenMedia, previous, next, toggleFullscreenPlayback, cycleFullscreenMode, revealFullscreenControls, exitVideoFullscreen]);
 
   useEffect(() => () => clearFullscreenHideTimer(), [clearFullscreenHideTimer]);
 
@@ -1106,6 +1107,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         case 'l':
           playlistInputRef.current?.click();
           break;
+        case 'f':
+          if (showVideo && activeWindow) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            enterVideoFullscreen();
+          } else {
+            handled = false;
+          }
+          break;
         case 'arrowleft':
           winampController.seek(Math.max(0, currentTime - 5));
           break;
@@ -1133,7 +1143,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [previous, play, pause, stop, next, currentTime, duration, volume]);
+  }, [previous, play, pause, stop, next, currentTime, duration, volume, showVideo, activeWindow, enterVideoFullscreen]);
 
   // Sync EQ slider changes to Web Audio filters
   const handleEqBandChange = (index: number, value: number) => {
