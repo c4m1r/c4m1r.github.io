@@ -400,14 +400,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     const viewportWidth = typeof window === 'undefined' ? 375 : window.innerWidth;
     const viewportHeight = typeof window === 'undefined' ? 800 : window.innerHeight;
     const videoSize = Math.min(275, Math.max(0, viewportWidth - 8));
-    const stackHeight = videoSize + 116 + 116 + 232;
+    const stackHeight = videoSize + 116 + 104 + 232;
     const x = Math.max(4, Math.round((viewportWidth - 275) / 2));
     const stackTop = Math.max(8, Math.round((viewportHeight - stackHeight) / 2));
     const mainTop = stackTop + videoSize;
     return {
       main: { x, y: mainTop },
       equalizer: { x, y: mainTop + 116 },
-      playlist: { x, y: mainTop + 232 },
+      playlist: { x, y: mainTop + 220 },
       video: { x, y: stackTop },
     };
   };
@@ -421,7 +421,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           video: { x: 24, y: 0 },
         }
   ));
-  const [playlistSize, setPlaylistSize] = useState({ width: 275, height: 232 });
+  const [playlistSize, setPlaylistSize] = useState({ width: 269, height: 232 });
   const playlistResizeRef = useRef<{ pointerId: number; pointerX: number; pointerY: number; width: number; height: number } | null>(null);
   const dragRef = useRef<{
     anchorKey: PlayerWindowKey;
@@ -439,7 +439,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       return [windowKey, {
         left: position.x, top: position.y,
         right: position.x + (node?.offsetWidth ?? (windowKey === 'video' ? 320 : 275)),
-        bottom: position.y + (node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : windowKey === 'video' ? 240 : 232)),
+        bottom: position.y + (node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 104 : windowKey === 'video' ? 240 : 232)),
         width: node?.offsetWidth ?? (windowKey === 'video' ? 320 : 275),
         height: node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : windowKey === 'video' ? 240 : 232),
       }];
