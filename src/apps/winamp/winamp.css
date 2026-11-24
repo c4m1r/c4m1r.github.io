@@ -6547,3 +6547,161 @@
     width: 15px;
   }
 }
+
+
+/* Webamp Classic — Playlist Editor composition calibration.
+   Keep the 275 × 232 chassis; give the track list the available height and
+   arrange the existing footer controls into a predictable compact grid. */
+.wa-shell--webamp-classic .wa-playlist .wa-pl__body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  padding: 4px;
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none;
+  width: 100%;
+  padding: 1px 0;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  min-width: 0;
+  gap: 2px;
+  padding: 1px 1px 2px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions .wa-btn-pl {
+  flex: 0 0 auto;
+  min-width: 0;
+  height: 16px;
+  min-height: 16px;
+  padding: 0 4px;
+  font: 700 7px/14px Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: 16px 13px 16px;
+  align-items: center;
+  gap: 2px 4px;
+  min-width: 0;
+  padding: 2px 1px 0;
+  border-top: 1px solid rgba(5,6,4,.72);
+  box-shadow: inset 0 1px rgba(220,224,202,.08);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  min-width: 0;
+  gap: 2px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+  flex: 0 0 auto;
+  height: 15px;
+  min-height: 15px;
+  padding: 0 4px;
+  font: 700 6px/13px Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__status {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  width: 100%;
+  height: 13px;
+  min-height: 13px;
+  box-sizing: border-box;
+  padding: 0 4px;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__mini-transport {
+  grid-column: 1;
+  grid-row: 3;
+  justify-self: start;
+  align-self: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini {
+  width: 17px;
+  height: 15px;
+  min-height: 15px;
+  font-size: 7px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl--opts {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: end;
+  align-self: center;
+  min-width: 48px;
+  height: 15px;
+  min-height: 15px;
+  margin: 0;
+  padding: 0 4px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__import-status {
+  flex: 0 0 auto;
+  max-height: 14px;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__body {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools {
+    column-gap: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+    padding-right: 3px;
+    padding-left: 3px;
+    font-size: 5.8px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini {
+    width: 16px;
+  }
+}
