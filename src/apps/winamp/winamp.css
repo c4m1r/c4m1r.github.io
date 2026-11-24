@@ -5059,3 +5059,245 @@
     flex-basis: 22px;
   }
 }
+
+
+/* Webamp Classic — Main LCD, track readout and analyzer glass. */
+.wa-shell--webamp-classic .wa-main__body .wa-display {
+  box-sizing: border-box;
+  height: 44px;
+  min-height: 44px;
+  grid-template-columns: 76px 57px minmax(0, 1fr);
+  gap: 4px;
+  padding: 3px 4px;
+  border: 1px solid #080a07;
+  border-top-color: #050605;
+  border-left-color: #080a07;
+  border-right-color: #74776a;
+  border-bottom-color: #74776a;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.025), transparent 8px),
+    #050704;
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px rgba(183,194,148,.12), 0 0 0 1px rgba(0,0,0,.45);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-display__left {
+  gap: 4px;
+  padding-right: 3px;
+  border-right: 1px solid rgba(130,145,105,.2);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-indicators {
+  flex: 0 0 8px;
+  gap: 3px;
+  align-items: center;
+  color: #26351d;
+  font: 700 6px/6px Arial, sans-serif;
+  text-shadow: 0 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-ind-dot {
+  color: #26351d;
+  font-size: 6px;
+  line-height: 6px;
+  text-shadow: none;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-ind-dot.is-lit {
+  color: #b5f56a;
+  text-shadow: 0 0 2px rgba(159,255,80,.65);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-time-lcd {
+  min-width: 0;
+  max-width: 100%;
+  cursor: pointer;
+  border: 0;
+  outline-offset: 1px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-time-lcd__digits {
+  color: #a7e86a;
+  font: 700 19px/1 'Courier New', Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1.25px;
+  text-shadow: 0 0 2px rgba(147,255,73,.5), 0 0 5px rgba(91,180,42,.2);
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-time-lcd__colon {
+  display: inline-block;
+  padding: 0 1px;
+  color: #c1f28e;
+  transform: translateY(-1px);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-time-lcd__digits--skin {
+  text-shadow: none;
+  letter-spacing: normal;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-time-lcd__digits--skin img {
+  image-rendering: pixelated;
+  vertical-align: middle;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-visualizer {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  padding: 3px 2px 2px;
+  gap: 2px;
+  overflow: hidden;
+  border: 1px solid #10150d;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 6px, rgba(119,151,83,.09) 6px 7px),
+    linear-gradient(180deg, #020402, #071006);
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px rgba(126,159,84,.12);
+  cursor: pointer;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-vis-col {
+  min-width: 1px;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-vis-bar {
+  min-height: 1px;
+  background: linear-gradient(180deg, #d5e98b 0%, #8ccf4c 18%, #4d9b2b 58%, #28651d 100%);
+  box-shadow: none;
+  image-rendering: pixelated;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-vis-peak {
+  height: 1px;
+  background: #d7e9a0;
+  box-shadow: 0 0 2px rgba(190,235,120,.35);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-vis-col--peak .wa-vis-bar {
+  background: linear-gradient(180deg, #d8ec9c, #8ac94e 55%, #417d29);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-visualizer-wave {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-visualizer-wave polyline {
+  fill: none;
+  stroke: #a9e86b;
+  stroke-width: 1.35;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1px rgba(144,238,75,.45));
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-visualizer:focus-visible,
+.wa-shell--webamp-classic .wa-main__body .wa-time-lcd:focus-visible {
+  outline: 1px dotted #c8e99b;
+  outline-offset: 1px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-display__right {
+  min-width: 0;
+  gap: 3px;
+  padding: 1px 0;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-marquee-box {
+  box-sizing: border-box;
+  min-width: 0;
+  height: 19px;
+  flex: 0 0 19px;
+  padding: 0 3px;
+  border: 1px solid #18220f;
+  border-top-color: #050805;
+  border-left-color: #080c06;
+  background:
+    linear-gradient(180deg, rgba(143,183,91,.06), transparent 55%),
+    #071006;
+  box-shadow: inset 1px 1px 2px #000, inset 0 -1px rgba(135,170,88,.08);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-marquee-text {
+  color: #b1e77a;
+  font: 700 8px/15px 'Courier New', Courier, monospace;
+  letter-spacing: -.2px;
+  text-shadow: 0 0 2px rgba(137,221,75,.35);
+  animation-duration: 20s;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-tech-info {
+  min-width: 0;
+  gap: 3px;
+  justify-content: space-between;
+  color: #78866c;
+  font: 6px/9px Arial, Helvetica, sans-serif;
+  letter-spacing: -.1px;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-bitrate,
+.wa-shell--webamp-classic .wa-main__body .wa-samplerate {
+  flex: 0 0 auto;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-digit-val {
+  color: #a6dc6d;
+  font: 700 7px/9px 'Courier New', Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 2px rgba(134,209,73,.28);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-unit {
+  color: #87917a;
+  font: 6px/9px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-audio-channels {
+  flex: 0 0 auto;
+  gap: 2px;
+  align-items: center;
+  font: 6px/9px Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-chan {
+  color: #47533d;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-chan.is-active {
+  color: #b0e77a;
+  text-shadow: 0 0 2px rgba(146,224,83,.35);
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-main__body .wa-display {
+    grid-template-columns: 72px 52px minmax(0, 1fr);
+    gap: 3px;
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-time-lcd__digits {
+    font-size: 17px;
+    letter-spacing: -1px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-tech-info {
+    gap: 2px;
+    font-size: 5px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-digit-val {
+    font-size: 6px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-unit,
+  .wa-shell--webamp-classic .wa-main__body .wa-audio-channels {
+    font-size: 5px;
+  }
+}
