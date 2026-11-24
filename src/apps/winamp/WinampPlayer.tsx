@@ -1187,10 +1187,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                         <button type="button" className="wa-btn-mode" onClick={deleteEqPreset} disabled={!selectedEqPreset.startsWith('custom-')}>DEL</button>
                         <button type="button" className="wa-btn-mode" onClick={() => eqfInputRef.current?.click()}>EQF IN</button>
                         <button type="button" className="wa-btn-mode" onClick={exportEqfFile}>EQF OUT</button>
-                        <button type="button" className="wa-btn-mode" onClick={exportEqfLibrary}>Q1 OUT</button>
                       </div>
                     </div>
                   </details>
+                  <button type="button" className="wa-btn-mode wa-eq__q1-export" onClick={exportEqfLibrary} title="Export all equalizer presets as a Q1 library">Q1 OUT</button>
                 )}
               </div>
 
