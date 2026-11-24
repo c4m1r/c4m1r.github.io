@@ -7689,3 +7689,13 @@
     font-size: 4.5px;
   }
 }
+
+
+/* Webamp Classic — reference silhouette cleanup (2026-11-24).
+   Keep project-only conveniences out of the original Main faceplate. */
+.wa-shell--webamp-classic .wa-transport-row .wa-toggles-group > .wa-btn-mode:nth-child(3) {
+  display: none;
+}
+.wa-shell--webamp-classic .wa-transport-row .wa-album-preview {
+  display: none !important;
+}
