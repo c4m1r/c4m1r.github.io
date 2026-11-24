@@ -978,7 +978,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setFourthVisualizerPresetIndex(0);
   }, [videoMode]);
 
-  const handleVideoStagePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handleVideoStagePointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     if (!target.closest('.wa-video__visualizer, .wa-video__screen')) return;
     if (!isVideoFullscreen && event.pointerType === 'touch') {
@@ -2005,7 +2005,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               }
               event.currentTarget.value = '';
             }} />
-            {videoUrl ? <video ref={videoElementRef} src={videoUrl} controls={!isVideoFullscreen} playsInline onPlay={() => revealFullscreenControls()} onPause={() => revealFullscreenControls()} /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>
+            {videoUrl ? <video ref={videoElementRef} src={videoUrl} controls={!isVideoFullscreen} playsInline onPlay={() => { setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }} onPause={() => { setVideoIsPlaying(false); if (isVideoFullscreen) revealFullscreenControls(); }} /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
             <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
           </div>
         )}
