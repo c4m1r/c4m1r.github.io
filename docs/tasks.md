@@ -599,3 +599,11 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Tightened optical spacing and glyph sizing, clarified the recessed display/control/deck boundaries, adjusted metallic edge contrast, and reduced small-screen control dimensions while retaining the 275 × 116 px desktop chassis.
 - All rules are appended in `src/apps/winamp/winamp.css` and scoped to `.wa-shell--webamp-classic` Main descendants. No TSX, audio/controller logic, native range handlers, visualizer click-to-cycle behaviour, Dev Alpha renderer or imported `.wsz` sprite path was changed.
 - Source checks: CSS brace balance is zero; all 61 new selector/media lines are Webamp Classic-scoped. This is a CSS-authored visual approximation, not original Nullsoft bitmap artwork. Browser rendering, responsive device QA, keyboard/touch QA, build/typecheck and CI are not confirmed.
+
+
+### Winamp — Webamp Classic three-window metal finish alignment (2026-11-24)
+- Согласовал Main, Equalizer и Playlist как три самостоятельных окна одной аппаратной серии: унифицированы оттенок оливково-серого металла, контраст боковых граней, нижний тёмный шов и характер внешнего bevel.
+- Привёл titlebar EQ/Playlist к уже откалиброванному Main: одинаковые 14 px высоты, металлический градиент, тонкая внутренняя кромка, компактная типографика и 9 px системные кнопки с hover/pressed/focus состояниями.
+- Поверхности EQ и Playlist получили согласованный металлический фон и внутренние кромки; индивидуальные детали EQ-графика/фейдеров и Playlist-списка/панели действий сохранены. Кнопки Playlist получили тот же визуальный язык raised/pressed, без изменения их действий.
+- CSS-only в `src/apps/winamp/winamp.css`, 30 новых selector lines; все ограничены `.wa-shell--webamp-classic`. TSX, размеры/позиционирование окон, drag/shade/close, EQ значения и DSP, playlist state/actions, аудио/controller, Dev Alpha и импортированные .wsz не менялись.
+- Проверка исходника: CSS braces balanced (0), scope violations — 0. Browser visual QA трёх окон вместе, narrow viewport, build/typecheck и keyboard/touch QA не запускались. CI проверяется отдельно; проход не помечен Verified.
