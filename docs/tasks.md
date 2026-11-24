@@ -492,3 +492,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - The ON indicator uses a green LED when active; AUTO uses a separate warm amber LED so the two states are visually distinguishable. Inactive LEDs remain dark and inset.
 - CSS-only, scoped to `.wa-shell--webamp-classic`. Existing button markup, `eqOn`/`eqAuto` state, click handlers, DSP/controller behavior, presets, faders, Dev Alpha and imported .wsz rendering are unchanged.
 - Verification: source CSS structure and selector scope checked after update. Browser visual/interaction QA, build/typecheck and CI are not confirmed.
+
+
+### Winamp — Webamp Classic EQ upper display frame (2026-11-24)
+- Refined the top EQ strip proportions: the ON/AUTO switch bank has a stable 59px footprint and the response graph uses the remaining width without shrinking below its container.
+- Added a clearer recessed display bezel with asymmetric light/dark edges and tightened SVG clipping/stroke treatment for a compact LCD-like response display.
+- Kept the existing ten-band response coordinates, grid calibration, 0 dB reference, EQ controls and all handlers unchanged. CSS-only and scoped to `.wa-shell--webamp-classic`.
+- Verification: CSS brace balance and new selector scope checked. Browser visual QA, build/typecheck and CI are not confirmed.
