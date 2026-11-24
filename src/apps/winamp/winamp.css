@@ -4043,3 +4043,68 @@
     letter-spacing: -.3px;
   }
 }
+
+
+/* Webamp Classic — align the dB scale with the fader thumb travel. */
+.wa-shell--webamp-classic .wa-eq__labels-left {
+  height: 63px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-bottom: 11px;
+  justify-content: space-between;
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left span {
+  position: relative;
+  display: block;
+  min-height: 7px;
+  line-height: 7px;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left span::after {
+  position: absolute;
+  top: 50%;
+  right: -3px;
+  width: 2px;
+  height: 1px;
+  background: #9b9b9b;
+  content: "";
+  transform: translateY(-50%);
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left span:nth-child(2)::after {
+  width: 4px;
+  right: -5px;
+  background: #e0e0e0;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert {
+  height: 63px;
+  min-height: 63px;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-runnable-track {
+  height: 63px;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-range-track {
+  height: 63px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__labels-left {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__labels-left span::after {
+    right: -2px;
+    width: 2px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__labels-left span:nth-child(2)::after {
+    right: -4px;
+    width: 3px;
+  }
+}
