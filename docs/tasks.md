@@ -665,3 +665,6 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Перетаскивание handle останавливает всплытие pointer event и не запускает drag окна; resize использует отдельный pointer lifecycle и не затрагивает плейлист/аудио.
 - Resize handle привязан к pointerId активного указателя: параллельный второй touch/pointer не меняет размер и не завершает чужую resize-сессию.
 - Для нижнего правого resize-grip зарезервировано место в строке инструментов Playlist, чтобы ручка не перекрывала кнопку LIST OPTS и соседние элементы.
+
+- Webamp Classic Equalizer compact layout: preset selector перенесён в верхнюю строку рядом с ON/AUTO и графиком; поле имени пресета и SAVE/DEL/EQF IN/EQF OUT/Q1 OUT собраны в одну фиксированную строку без переноса. Высота промежутков уменьшена, высота фейдеров и логика управления EQ не менялись. Для Dev Alpha и imported .wsz сохранено прежнее расположение селектора и controls.
+- Ориентир по геометрии верхней части — оригинальный Webamp Equalizer: 14 px titlebar, компактный верхний control rail и близко расположенная банка фейдеров; дополнительные функции проекта сохранены в отдельной тонкой toolbar-строке.
