@@ -2037,3 +2037,58 @@
   }
 }
 
+
+
+/* Webamp Classic — Playlist interaction-state polish. */
+.wa-shell--webamp-classic .wa-pl__item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wa-shell--webamp-classic .wa-pl__item.is-current:not(.is-selected) {
+  color: #fff;
+  background: #003b00;
+}
+
+.wa-shell--webamp-classic .wa-pl__item.is-selected .wa-pl__dur {
+  color: #fff;
+}
+
+.wa-shell--webamp-classic .wa-pl__item:focus-visible {
+  outline: 1px dotted #d8ffd8;
+  outline-offset: -2px;
+}
+
+.wa-shell--webamp-classic .wa-pl__list::-webkit-scrollbar {
+  width: 10px;
+  background: #171717;
+}
+
+.wa-shell--webamp-classic .wa-pl__list::-webkit-scrollbar-thumb {
+  border: 1px solid #111;
+  border-top-color: #aaa;
+  border-left-color: #aaa;
+  background: linear-gradient(90deg, #777, #444 55%, #666);
+}
+
+.wa-shell--webamp-classic .wa-btn-pl:hover:not(:disabled),
+.wa-shell--webamp-classic .wa-btn-pl-mini:hover:not(:disabled) {
+  background: linear-gradient(135deg, #858585, #414141 70%);
+  color: #fff;
+}
+
+.wa-shell--webamp-classic .wa-btn-pl:focus-visible,
+.wa-shell--webamp-classic .wa-btn-pl-mini:focus-visible {
+  outline: 1px dotted #eee;
+  outline-offset: -3px;
+}
+
+.wa-shell--webamp-classic .wa-btn-pl:disabled,
+.wa-shell--webamp-classic .wa-btn-pl-mini:disabled {
+  color: #777;
+  background: linear-gradient(135deg, #484848, #252525 70%);
+  border-color: #333 #111 #111 #333;
+  box-shadow: none;
+  cursor: default;
+}
