@@ -6811,3 +6811,75 @@
     min-width: 29px;
   }
 }
+
+
+
+/* Webamp Classic — Playlist empty state and final footer legibility.
+   Keep the native list surface usable as a drop target while making the
+   existing import/status controls readable inside the fixed 275 × 232 frame. */
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list:empty {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(180deg, rgba(126,153,91,.045), transparent 22px),
+    repeating-linear-gradient(0deg, transparent 0 13px, rgba(135,166,99,.025) 13px 14px),
+    #020402;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list:empty::before {
+  content: "DROP AUDIO FILES OR USE + ADD";
+  max-width: calc(100% - 18px);
+  padding: 5px 7px;
+  border: 1px dotted rgba(139,177,103,.34);
+  color: #607d4b;
+  font: 8px/12px "Courier New", Courier, monospace;
+  letter-spacing: .15px;
+  text-align: center;
+  text-shadow: 0 0 4px rgba(115,190,67,.12);
+  pointer-events: none;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__import-status {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  line-height: 10px;
+  text-overflow: ellipsis;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions {
+  border-top: 1px solid rgba(220,224,202,.08);
+  background: linear-gradient(180deg, rgba(0,0,0,.13), transparent);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__status {
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(151,183,113,.07), transparent 38%),
+    #050704;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__mini-transport {
+  min-width: 0;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini {
+  flex: 0 0 16px;
+  padding: 0;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__list:empty::before {
+    max-width: calc(100% - 10px);
+    padding-right: 4px;
+    padding-left: 4px;
+    font-size: 7px;
+  }
+}
