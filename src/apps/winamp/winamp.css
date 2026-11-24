@@ -7894,3 +7894,9 @@
   margin-top: 1px;
   padding-top: 2px;
 }
+
+
+/* The reference titlebar has only minimize, shade and close; settings stay in MISC. */
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__btn--settings {
+  display: none !important;
+}
