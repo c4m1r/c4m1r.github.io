@@ -9335,7 +9335,11 @@
   animation: wa-viz-breathe 7s ease-in-out infinite alternate;
 }
 .wa-shell .wa-video__visualizer--ambience::after { width: 48%; animation-delay: -3s; animation-direction: alternate-reverse; }
+.wa-shell .wa-video__visualizer--ambience .wa-ambience-fields { transform-origin: 50% 50%; animation: wa-ambience-drift 13s ease-in-out infinite alternate; }
+.wa-shell .wa-video__visualizer--particle .wa-particle-orbits { transform-origin: 50% 50%; animation: wa-viz-turn 38s linear infinite; }
+.wa-shell .wa-video__visualizer--particle svg line { filter: drop-shadow(0 0 2px #62dfff); }
 .wa-shell .wa-video__visualizer--particle svg circle { filter: drop-shadow(0 0 2px currentColor); }
+@keyframes wa-ambience-drift { from { transform: translate(-2px, 1px) rotate(-4deg) scale(.94); } to { transform: translate(2px, -1px) rotate(4deg) scale(1.06); } }
 .wa-shell .wa-video__visualizer--plenoptic svg circle { filter: drop-shadow(0 0 3px #49cfff); }
 .wa-shell .wa-video__visualizer--spikes svg polygon { filter: drop-shadow(0 0 4px #ff9c35); }
 .wa-shell .wa-video__visualizer--milkdrop .wa-milkdrop-pulse { animation: wa-viz-breathe 2.6s ease-in-out infinite alternate; transform-origin: center; }
@@ -9349,6 +9353,8 @@
   .wa-shell .wa-viz-preset--3,
   .wa-shell .wa-video__visualizer--ambience::before,
   .wa-shell .wa-video__visualizer--ambience::after,
+  .wa-shell .wa-video__visualizer--ambience .wa-ambience-fields,
+  .wa-shell .wa-video__visualizer--particle .wa-particle-orbits,
   .wa-shell .wa-video__visualizer--milkdrop .wa-milkdrop-pulse { animation: none !important; }
 }
 
