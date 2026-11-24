@@ -7017,6 +7017,10 @@
   overflow: hidden;
 }
 
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools {
+  padding-right: 14px;
+}
+
 .wa-shell--webamp-classic .wa-playlist__resize-handle {
   position: absolute;
   right: 1px;
