@@ -9351,3 +9351,16 @@
   .wa-shell .wa-video__visualizer--ambience::after,
   .wa-shell .wa-video__visualizer--milkdrop .wa-milkdrop-pulse { animation: none !important; }
 }
+
+
+/* Keep the expanded toolbar within the fixed 275px fourth-window width. */
+.wa-shell .wa-video__toolbar > button:first-child { width: 73px; padding-left: 2px; padding-right: 2px; font-size: 8px; }
+.wa-shell .wa-video__toolbar > button:nth-child(2) { width: 28px; padding-left: 1px; padding-right: 1px; font-size: 8px; }
+.wa-shell .wa-video__mode-select { width: 76px; max-width: 76px; }
+.wa-shell .wa-video__preset { width: 28px; min-width: 28px; }
+.wa-shell .wa-video__random { width: 24px; min-width: 24px; }
+.wa-shell .wa-video__filename { flex: 1 1 20px; }
+@media (max-width: 360px) {
+  .wa-shell .wa-video__mode-select { width: 68px; max-width: 68px; }
+  .wa-shell .wa-video__filename { display: none; }
+}
