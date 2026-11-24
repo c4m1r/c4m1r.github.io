@@ -3064,3 +3064,119 @@
   }
 }
 
+/* Webamp Classic — Main LCD hierarchy and readout alignment. */
+.wa-shell--webamp-classic .wa-display {
+  grid-template-columns: 78px 70px minmax(0, 1fr);
+  align-items: stretch;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.018), transparent 31%, rgba(255,255,255,.012) 63%, transparent),
+    #070907;
+}
+
+.wa-shell--webamp-classic .wa-display__left {
+  min-width: 0;
+  padding: 1px;
+  border-right: 1px solid #1b2419;
+}
+
+.wa-shell--webamp-classic .wa-time-lcd {
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(90deg, rgba(90,150,55,.035) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #010301, #071007 52%, #020402);
+}
+
+.wa-shell--webamp-classic .wa-visualizer {
+  position: relative;
+  isolation: isolate;
+  border-color: #172017;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 5px, rgba(75,125,55,.12) 5px 6px),
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(75,125,55,.07) 7px 8px),
+    linear-gradient(180deg, #010301, #071007);
+}
+
+.wa-shell--webamp-classic .wa-visualizer::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 1px;
+  border: 1px solid rgba(116, 150, 91, .12);
+  pointer-events: none;
+}
+
+.wa-shell--webamp-classic .wa-display__right {
+  min-width: 0;
+  padding: 1px 0 0 2px;
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-marquee-box {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 17px;
+  border-color: #182719;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 3px, rgba(35,85,30,.08) 3px 4px),
+    #020602;
+  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #101a10;
+}
+
+.wa-shell--webamp-classic .wa-marquee-text {
+  font-size: 7px;
+  letter-spacing: -.2px;
+  text-shadow: 1px 0 #174417, 0 0 2px rgba(0, 220, 0, .3);
+}
+
+.wa-shell--webamp-classic .wa-tech-info {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-content: center;
+  justify-content: stretch;
+  gap: 2px 4px;
+  min-width: 0;
+  padding: 0 1px;
+}
+
+.wa-shell--webamp-classic .wa-bitrate,
+.wa-shell--webamp-classic .wa-samplerate {
+  white-space: nowrap;
+  line-height: 8px;
+}
+
+.wa-shell--webamp-classic .wa-audio-channels {
+  min-width: 0;
+  justify-content: flex-end;
+  gap: 1px;
+}
+
+.wa-shell--webamp-classic .wa-tech-info .wa-chan {
+  min-width: 18px;
+  padding-inline: 1px;
+  font-size: 5px;
+  line-height: 7px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-display {
+    grid-template-columns: 70px 58px minmax(0, 1fr);
+  }
+
+  .wa-shell--webamp-classic .wa-display__left {
+    padding-inline: 0;
+  }
+
+  .wa-shell--webamp-classic .wa-display__right {
+    padding-left: 1px;
+    gap: 2px;
+  }
+
+  .wa-shell--webamp-classic .wa-marquee-text {
+    font-size: 6px;
+  }
+}
+
