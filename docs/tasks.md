@@ -568,3 +568,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Explicitly excluded imported-skin button classes from the new built-in button face styling; imported .wsz sprite visuals remain in control. All rules are scoped to .wa-shell--webamp-classic .wa-main.
 - CSS-only: no JSX, handlers, state, keyboard shortcuts, audio/controller behavior, window positioning or Dev Alpha changes. The existing six transport buttons, sliders and controls remain intact.
 - Verification: CSS brace balance and selector scope checked after update. Browser visual QA (desktop/narrow viewport), touch/keyboard checks, build/typecheck and CI are not yet confirmed. Not marked Verified.
+
+### Winamp — Webamp Classic Main LCD and analyzer glass pass (2026-11-24)
+- Refined the built-in Main display within its existing compact 44 px target: tighter recessed LCD bezel, separate time-readout bay, restrained phosphor-green segmented-style typography and clearer PLAY/PAUSE indicator contrast.
+- Reworked the three-mode analyzer surface as a dark, gridded inset with crisp green spectrum columns/peaks and a restrained waveform trace. The existing visualizer button remains clickable and continues to cycle spectrum → oscilloscope → peak meter; no mode state or waveform/bar calculations changed.
+- Tightened the track marquee and technical readouts (bitrate, sample rate, Mono/Stereo) with compact pixel-scale typography, tabular numeric figures and improved alignment. Existing marquee animation and readout content remain in place; this is presentation only, not a change to metadata sourcing or audio-format detection.
+- CSS-only, scoped to .wa-shell--webamp-classic .wa-main__body. No JSX, playback/controller/audio logic, visualizer handlers, window geometry, Dev Alpha or imported .wsz skin rendering changed. Existing skin digit sprites retain pixel rendering.
+- Verification: CSS brace balance is 0 and all 36 newly introduced selector lines are scoped to Webamp Classic. Browser visual QA, mobile/touch interaction QA, build/typecheck and CI still require separate confirmation; do not mark this pass Verified.
