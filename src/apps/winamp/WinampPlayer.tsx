@@ -394,12 +394,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [waveform, setWaveform] = useState<number[]>(() => Array(19).fill(50));
   const [mainVisualizerMode, setMainVisualizerMode] = useState<0 | 1 | 2>(0);
   const mainVisualizerModeNames = ['Spectrum', 'Oscilloscope', 'Peak meter'] as const;
-  const fourthVisualizerModes = [
-    'Spectrum', 'Oscilloscope', 'Peak meter',
-    'Alchemy', 'Bars and Waves', 'Battery',
-    'Ambience', 'Particle', 'Plenoptic', 'Spikes', 'Musical Colors',
-    'AVS', 'MilkDrop',
+  const fourthVisualizerGroups = [
+    { label: 'Winamp Classic', modes: ['Spectrum', 'Oscilloscope', 'Peak meter'] },
+    { label: 'Windows Media Player', modes: ['Alchemy', 'Bars and Waves', 'Battery'] },
+    { label: 'WMP Legacy', modes: ['Ambience', 'Particle', 'Plenoptic', 'Spikes', 'Musical Colors'] },
+    { label: 'Winamp AVS-inspired', modes: ['AVS'] },
+    { label: 'Winamp MilkDrop-inspired', modes: ['MilkDrop'] },
   ] as const;
+  const fourthVisualizerModes = fourthVisualizerGroups.flatMap((group) => group.modes) as FourthVisualizerMode[];
   const [fourthVisualizerMode, setFourthVisualizerMode] = useState<FourthVisualizerMode>('Spectrum');
   const rafRef = useRef<number | null>(null);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
@@ -1663,6 +1665,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         <div className="wa-video__toolbar">
           <button type="button" className={videoMode === 'visualizer' ? 'is-active' : ''} onClick={() => setVideoMode('visualizer')}>VISUALIZATION</button>
           <button type="button" className={videoMode === 'video' ? 'is-active' : ''} onClick={() => setVideoMode('video')}>VIDEO</button>
+          {videoMode === 'visualizer' && <select className="wa-video__mode-select" aria-label="Visualization family and mode" value={fourthVisualizerMode} onChange={(event) => setFourthVisualizerMode(event.target.value as FourthVisualizerMode)}>
+            {fourthVisualizerGroups.map((group) => <optgroup key={group.label} label={group.label}>
+              {group.modes.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
+            </optgroup>)}
+          </select>}
+          {videoMode === 'visualizer' && <button type="button" className="wa-video__random" title="Random mode in current family" onClick={() => {
+            const group = fourthVisualizerGroups.find((item) => (item.modes as readonly string[]).includes(fourthVisualizerMode));
+            const choices = (group?.modes as readonly FourthVisualizerMode[] | undefined)?.filter((mode) => mode !== fourthVisualizerMode) ?? fourthVisualizerModes.filter((mode) => mode !== fourthVisualizerMode);
+            if (choices.length) setFourthVisualizerMode(choices[Math.floor(Math.random() * choices.length)]);
+          }}>RND</button>}
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
         {videoMode === 'visualizer' ? (
