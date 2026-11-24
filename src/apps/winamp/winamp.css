@@ -8214,3 +8214,17 @@
   outline: 1px solid #f5e45c;
   outline-offset: 1px;
 }
+
+
+/* Keep the all-presets export on the EQ header row beside PRESETS. */
+.wa-shell--webamp-classic .wa-eq__q1-export {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  height: 13px;
+  min-height: 13px;
+  max-height: 13px;
+  padding: 0 4px;
+  border-radius: 0;
+  font: 6px/11px Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
