@@ -48,7 +48,7 @@ This register is based on current main source and the supplied reference image, 
 
 ### Main
 - [x] Removed NEXT/auto-advance from the visible Classic transport row; retained the control in Dev Alpha and its existing controller setting.
-- [ ] Current markup includes a mini album-art preview; hide it in Webamp Classic.
+- [x] Hidden the project-only mini album-art preview in Webamp Classic (corrected the selector to target its actual sibling position in Main).
 - [ ] Verify titlebar chrome/wordmark and display proportions, analyzer position and metadata alignment.
 - [ ] Reconcile transport spacing and bevels to the six-button reference row.
 - [ ] Verify volume/balance/EQ/PL fit the compact row without wrapping.
@@ -56,14 +56,14 @@ This register is based on current main source and the supplied reference image, 
 ### Equalizer
 - [x] Hid the permanent preset-management rail in Classic and moved preset selection, naming, SAVE/DEL, EQF IN/OUT and Q1 OUT into the PRESETS dropdown.
 - [x] Q1 OUT is inside PRESETS; the visible EQ top rail is limited to ON/AUTO, curve and PRESETS.
-- [ ] Fit graph/preset rail and fader panel into strict 275 × 116 px geometry; all 11 faders and labels must remain visible.
+- [x] Added explicit 275 × 116 px outer geometry and 100 px content budget for the Classic Equalizer; the 13 px top rail and fader panel now share the available height. Visual confirmation of all 11 faders remains open.
 - [ ] CSS contains successive overrides for the same EQ selectors; consolidate final Classic-only faceplate rules after visual verification.
 - [ ] Match yellow rails, silver square handles, dB labels, frequency labels and spacing.
 
 ### Playlist
 - [x] Classic Playlist primary controls are ADD / REM / SEL / MISC and LIST OPT; MISC contains selection clearing, M3U import/export and skin import/reset.
 - [x] Classic footer is a single compact row with elapsed/total LCD and a small status indicator. Dev Alpha and .wsz retain the legacy footer.
-- [ ] Match list viewport height, black field, green text, current-track white text, right-aligned durations and narrow scrollbar.
+- [ ] Visually confirm list viewport height, black field, green text, current-track white text, right-aligned durations and narrow scrollbar after the fixed 232 px stack geometry pass.
 - [ ] Keep resize support without a prominent default resize handle.
 
 ## Interaction and compatibility requirements
@@ -96,3 +96,10 @@ This register is based on current main source and the supplied reference image, 
 - Compatibility: legacy Playlist footer remains in the non-Classic branch. New CSS is scoped to `.wa-shell--webamp-classic`.
 - Menu behavior: native disclosure menus share one exclusive group and support Escape dismissal. Menus also dismiss when focus leaves the menu; pointer-only outside-click behavior still needs browser verification.
 - Still open: pixel-accurate chassis/titlebars, display and fader geometry, scrollbar and native footer detail; full browser comparison, build and regression tests are not yet confirmed.
+
+
+## Progress log — 2026-11-24 (geometry pass 2)
+- Corrected the album-art hide selector: the artwork is a sibling of the transport row, so the previous descendant selector could never match it.
+- Main and Equalizer now have explicit 275 × 116 px outer boxes; Main content is budgeted to 100 px beneath the titlebar, and the EQ content is budgeted to 100 px with a 13 px control rail.
+- Playlist keeps its 275 px width and 232 px minimum height, with a fixed 14 px titlebar, flexible black list viewport and a 21 px single-row footer.
+- This is a source/CSS geometry pass only. It does not prove pixel alignment in a browser; native-size visual comparison and responsive viewport testing remain outstanding.
