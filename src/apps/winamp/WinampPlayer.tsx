@@ -404,7 +404,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const startWindowDrag = (event: React.PointerEvent, key: PlayerWindowKey) => {
     if ((event.target as HTMLElement).closest('button')) return;
     event.preventDefault();
-    const keys: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : []), 'video'];
+    const keys: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : []), ...(showVideo ? ['video' as const] : [])];
     const rects = Object.fromEntries(keys.map((windowKey) => {
       const node = document.querySelector<HTMLElement>(`.wa-${windowKey}`);
       const position = windowPositions[windowKey];
@@ -811,6 +811,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <span className="wa-titlebar__title">WINAMP</span>
           </div>
           <div className="wa-titlebar__controls">
+            <button type="button" className="wa-titlebar__btn" title={detachedWindows.includes('main') ? 'Attach to window group' : 'Detach this window'} aria-label={detachedWindows.includes('main') ? 'Attach Main' : 'Detach Main'} onClick={() => setDetachedWindows((items) => items.includes('main') ? items.filter((item) => item !== 'main') : [...items, 'main'])}>{detachedWindows.includes('main') ? '↗' : '⛓'}</button>
             <button type="button" className="wa-titlebar__btn" title="Minimize">_</button>
             <button
               type="button"
