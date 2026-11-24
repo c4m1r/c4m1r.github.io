@@ -444,3 +444,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Responsive column proportions remain explicitly scoped to Webamp Classic. The 275 × 116 px Main target, 14 px title strip, existing time toggle, analyzer click-to-cycle behavior and playback/control handlers remain unchanged.
 - CSS-only presentation change; no original Nullsoft artwork or external assets added. Dev Alpha and imported .wsz styling are untouched.
 - Verification: source structure/scope and CSS brace balance to be checked after update. Browser visual QA, build/typecheck and CI remain separate requirements; do not mark Verified before they run.
+
+### Winamp — Webamp Classic Main titlebar and chassis pass (2026-11-24)
+- Refined only the built-in Webamp Classic Main window's top chrome: metallic title strip with restrained brushed highlights, stronger outer edge/bevel, compact title mark and more legible title typography.
+- Minimize, windowshade, settings and close controls now have clearer raised, hover, pressed and keyboard-focus states; the close control receives a restrained red treatment.
+- Styling is scoped to `.wa-shell--webamp-classic .wa-main`. Existing button markup, drag handling, windowshade/settings/close handlers, Main dimensions, Equalizer, Playlist, Dev Alpha and imported `.wsz` skins are unchanged.
+- Verification: CSS brace balance and selector-scope checks performed on the resulting source. Browser visual QA, build/typecheck and CI remain unconfirmed; this is not a pixel-exact bitmap reconstruction.
+
