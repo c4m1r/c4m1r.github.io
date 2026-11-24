@@ -8144,3 +8144,73 @@
   border-bottom-color: #555;
   background: linear-gradient(90deg,#e4e4e4,#858585);
 }
+
+/* Webamp Classic — real vertical range orientation.
+   The previous controls were horizontal ranges squeezed into a tall box:
+   their thumb therefore stayed on the horizontal midpoint. */
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__fader {
+  position: relative;
+  width: 13px;
+  height: 63px;
+  overflow: visible;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert {
+  display: block;
+  box-sizing: border-box;
+  width: 13px !important;
+  min-width: 13px;
+  max-width: 13px;
+  height: 63px !important;
+  min-height: 63px;
+  max-height: 63px;
+  margin: 0;
+  padding: 0;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: ns-resize;
+  touch-action: none;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-webkit-slider-runnable-track {
+  width: 7px;
+  height: 100%;
+  margin-inline: auto;
+  border: 0;
+  background: transparent;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-moz-range-track {
+  width: 7px;
+  height: 100%;
+  margin-inline: auto;
+  border: 0;
+  background: transparent;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-webkit-slider-thumb {
+  width: 12px;
+  height: 7px;
+  margin: 0;
+  border: 1px solid #111;
+  border-top-color: #fff;
+  border-left-color: #ddd;
+  border-radius: 0;
+  background: linear-gradient(180deg,#f1f1e8 0%,#bdbdb4 48%,#77776e 100%);
+  box-shadow: 0 1px 2px #000;
+  -webkit-appearance: none;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-moz-range-thumb {
+  width: 12px;
+  height: 7px;
+  margin: 0;
+  border: 1px solid #111;
+  border-top-color: #fff;
+  border-left-color: #ddd;
+  border-radius: 0;
+  background: linear-gradient(180deg,#f1f1e8 0%,#bdbdb4 48%,#77776e 100%);
+  box-shadow: 0 1px 2px #000;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert:focus-visible {
+  outline: 1px solid #f5e45c;
+  outline-offset: 1px;
+}
