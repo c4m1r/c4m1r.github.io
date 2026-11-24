@@ -438,3 +438,9 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Existing time toggle, playback handlers, visualizer modes, slider inputs, imported .wsz skins and Dev Alpha are unchanged. No original Nullsoft bitmap assets were copied or embedded; this is an original CSS approximation.
 - Preserved the authored Main target geometry (275 × 116 px; 14 px title strip; 44 px display; 18 px transport row).
 - Verification still required: build/typecheck, browser visual review at desktop and narrow widths, and interaction QA. CI status is checked separately; no browser QA is claimed by this source-only pass.
+
+### Winamp — Webamp Classic Main LCD hierarchy pass (2026-11-24)
+- Refined the Main display's three-column hierarchy: subtle divider beside the time readout, tighter LCD inset, low-contrast analyzer grid, compact marquee surface and aligned technical readouts. Mono/Stereo badges were tightened to fit the right-hand information column.
+- Responsive column proportions remain explicitly scoped to Webamp Classic. The 275 × 116 px Main target, 14 px title strip, existing time toggle, analyzer click-to-cycle behavior and playback/control handlers remain unchanged.
+- CSS-only presentation change; no original Nullsoft artwork or external assets added. Dev Alpha and imported .wsz styling are untouched.
+- Verification: source structure/scope and CSS brace balance to be checked after update. Browser visual QA, build/typecheck and CI remain separate requirements; do not mark Verified before they run.
