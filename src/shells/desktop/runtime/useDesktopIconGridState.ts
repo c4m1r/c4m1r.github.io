@@ -9,6 +9,8 @@ export interface UseDesktopIconGridStateOptions {
   desktopRef: React.RefObject<HTMLDivElement | null>;
   iconRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
   onCloseStartMenu?: () => void;
+  /** Windows 95/98/2000: one column from the top-left, 75 px grid, Recycle Bin flows with the other icons. */
+  classicLayout?: boolean;
 }
 
 export interface UseDesktopIconGridStateReturn {
@@ -27,7 +29,7 @@ export interface UseDesktopIconGridStateReturn {
 export function useDesktopIconGridState(
   options: UseDesktopIconGridStateOptions
 ): UseDesktopIconGridStateReturn {
-  const { initialDesktopIcons, viewport, desktopRef, iconRefs, onCloseStartMenu } = options;
+  const { initialDesktopIcons, viewport, desktopRef, iconRefs, onCloseStartMenu, classicLayout = false } = options;
 
   const [iconPositions, setIconPositions] = useState<Record<string, { x: number; y: number }>>({});
   const [draggingIcon, setDraggingIcon] = useState<string | null>(null);
@@ -39,10 +41,11 @@ export function useDesktopIconGridState(
   const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const taskbarHeight = 30;
-  const iconSpacingY = 100;
-  const iconSpacingX = 110;
-  const baseOffsetX = 40;
-  const baseOffsetY = 40;
+  const iconSpacingY = classicLayout ? 75 : 100;
+  const iconSpacingX = classicLayout ? 75 : 110;
+  const baseOffsetX = classicLayout ? 4 : 40;
+  const baseOffsetY = classicLayout ? 4 : 40;
+  const pinRecycleBin = !classicLayout;
   const availableHeight = Math.max(
     iconSpacingY,
     viewport.height - taskbarHeight - baseOffsetY * 2
@@ -62,7 +65,7 @@ export function useDesktopIconGridState(
   const desktopIcons: DesktopIcon[] = orderedDesktopIcons.map((icon, index) => {
     // Windows keeps the Recycle Bin anchored to the usable desktop corner. It must
     // not inherit a stale drag position when the viewport changes.
-    if (icon.id === 'recycle-bin') {
+    if (pinRecycleBin && icon.id === 'recycle-bin') {
       return {
         ...icon,
         x: Math.max(baseOffsetX, viewport.width - baseOffsetX - 72),
@@ -214,7 +217,7 @@ export function useDesktopIconGridState(
     // The Recycle Bin is a fixed desktop landmark in this shell. It can still be
     // selected and right-clicked, but dragging must never move it away from the
     // bottom-right usable desktop corner.
-    if (iconId === 'recycle-bin') {
+    if (pinRecycleBin && iconId === 'recycle-bin') {
       setDraggingIcon(null);
       return;
     }

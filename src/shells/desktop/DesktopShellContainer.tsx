@@ -902,6 +902,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     desktopRef,
     iconRefs,
     onCloseStartMenu: closeStartMenu,
+    classicLayout: themeKey === 'win-98' || themeKey === 'win2000',
   });
 
   const handleOpenFile = useCallback(async (item: FileSystemItem, parentPath: string) => {
