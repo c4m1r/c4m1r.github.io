@@ -3517,3 +3517,91 @@
   box-shadow: 1px 0 #666, 2px 0 rgba(255,255,255,.08);
 }
 
+
+
+/* Webamp Classic — equalizer band spacing and calibrated zero reference. */
+.wa-shell--webamp-classic .wa-eq__sliders-container {
+  box-sizing: border-box;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left {
+  box-sizing: border-box;
+  flex: 0 0 20px;
+  width: 20px;
+  padding-right: 2px;
+  margin-bottom: 11px;
+  text-align: right;
+  line-height: 1;
+}
+
+.wa-shell--webamp-classic .wa-eq__band {
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.wa-shell--webamp-classic .wa-eq__band:first-of-type {
+  flex-grow: 1.08;
+}
+
+.wa-shell--webamp-classic .wa-eq__fader {
+  box-sizing: border-box;
+  width: 13px;
+  height: 63px;
+  flex: 0 0 63px;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert {
+  box-sizing: border-box;
+  width: 11px;
+  height: 61px;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent calc(50% - .5px),
+      rgba(190, 190, 190, .62) calc(50% - .5px),
+      rgba(190, 190, 190, .62) calc(50% + .5px),
+      transparent calc(50% + .5px)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 4px,
+      rgba(0, 0, 0, .7) 4px,
+      rgba(0, 0, 0, .7) 5px
+    );
+}
+
+.wa-shell--webamp-classic .wa-eq__divider {
+  box-sizing: border-box;
+  flex: 0 0 1px;
+  height: 63px;
+  margin: 0 2px 11px;
+}
+
+.wa-shell--webamp-classic .wa-eq__band-name {
+  min-height: 8px;
+  margin-top: 3px;
+  line-height: 8px;
+  text-align: center;
+  letter-spacing: -.15px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__sliders-container {
+    gap: 1px;
+    padding-inline: 2px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__labels-left {
+    flex-basis: 17px;
+    width: 17px;
+    padding-right: 1px;
+    font-size: 6px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__divider {
+    margin-inline: 1px;
+  }
+}
