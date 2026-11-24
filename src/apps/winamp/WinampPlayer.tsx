@@ -393,16 +393,17 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const videoUrlRef = useRef('');
   const videoInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => () => { if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current); }, []);
-  // Build the Classic windows as one measured vertical stack:
-  // Video 275 + Main 116 + EQ 116 + Playlist 232 = 739px total.
-  // Center the whole stack when it fits; on short screens pin its top to 8px
-  // rather than starting the Main window too low and hiding the Playlist.
+  // Build the Classic windows as one vertical stack using the same responsive
+  // video size as the stylesheet. This prevents a gap above Main on very narrow
+  // screens where the square visualization must shrink below 275px.
   const getClassicWindowPositions = () => {
     const viewportWidth = typeof window === 'undefined' ? 375 : window.innerWidth;
     const viewportHeight = typeof window === 'undefined' ? 800 : window.innerHeight;
+    const videoSize = Math.min(275, Math.max(0, viewportWidth - 8));
+    const stackHeight = videoSize + 116 + 116 + 232;
     const x = Math.max(4, Math.round((viewportWidth - 275) / 2));
-    const stackTop = Math.max(8, Math.round((viewportHeight - 739) / 2));
-    const mainTop = stackTop + 275;
+    const stackTop = Math.max(8, Math.round((viewportHeight - stackHeight) / 2));
+    const mainTop = stackTop + videoSize;
     return {
       main: { x, y: mainTop },
       equalizer: { x, y: mainTop + 116 },
