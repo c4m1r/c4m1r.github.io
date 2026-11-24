@@ -506,3 +506,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Increased the visual break before the ten frequency bands and normalized their compact numeric labels with tabular figures; retained the existing narrow-screen reduction.
 - CSS-only, scoped to `.wa-shell--webamp-classic`. No JSX, frequency constants, slider values/ranges, EQ graph mapping, presets, DSP/controller behavior, Dev Alpha or imported .wsz rendering changed.
 - Verification: CSS brace balance and scope of the new selectors checked. Browser visual/interaction QA, build/typecheck and CI remain unconfirmed.
+
+
+### Winamp — Webamp Classic Equalizer dB scale alignment (2026-11-24)
+- Tightened the vertical dB scale geometry: +12 dB and −12 dB labels now sit closer to the actual slider-thumb travel endpoints, while 0 dB remains centered on the track midpoint.
+- Added short etched tick marks beside the three reference labels, with a slightly stronger center tick. Kept the existing 63 px fader travel and the current range values/orientation unchanged.
+- CSS-only, scoped to `.wa-shell--webamp-classic`; no JSX, EQ values, presets, DSP/controller logic, Dev Alpha or imported .wsz rendering changed.
+- Verification: CSS brace balance and new-selector scope checked. Browser-specific range-thumb alignment, browser visual QA, build/typecheck and CI remain unconfirmed.
