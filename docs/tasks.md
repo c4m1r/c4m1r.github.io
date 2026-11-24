@@ -701,8 +701,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Implement first-pass WMP legacy renderers: Ambience, Particle, Plenoptic, Spikes, Musical Colors.
 - [x] Implement original AVS-inspired and MilkDrop-inspired procedural scenes; no plugin binary/preset compatibility is claimed.
 - [x] Add random mode action (random within a multi-mode family; across all modes for singleton families).
-- [ ] Add named AVS/MilkDrop preset variants and optional auto-cycle (off by default).
-- [ ] Verify reduced-motion and hidden-window lifecycle / performance in browser.
+- [x] Add four named AVS-inspired and four MilkDrop-inspired variants with compact PSET control.
+- [x] Respect prefers-reduced-motion for the added CSS scene animation.
+- [ ] Add optional auto-cycle (off by default).
+- [ ] Verify hidden-window lifecycle / performance in browser.
 - [x] Preserve local video stage, object-URL cleanup and existing window geometry in the implementation pass.
 - [ ] Browser acceptance: visual distinction, mobile fit, drag/attach, playback/EQ/playlist and video regressions.
-- Design contract and progress: `docs/winamp-visualization-modes.md`. First-pass modes and grouped picker are committed; browser acceptance is pending.
+- Design contract and progress: `docs/winamp-visualization-modes.md`. First-pass modes, grouped picker, named presets and reduced-motion CSS are committed; browser acceptance is pending.
