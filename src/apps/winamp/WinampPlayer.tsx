@@ -366,8 +366,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [visualizerMode, setVisualizerMode] = useState<0 | 1 | 2>(0);
   const visualizerModeNames = ['Spectrum', 'Oscilloscope', 'Peak meter'] as const;
   const rafRef = useRef<number | null>(null);
-  type PlayerWindowKey = 'main' | 'equalizer' | 'playlist';
+  type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
+  const [detachedWindows, setDetachedWindows] = useState<PlayerWindowKey[]>([]);
+  const [videoMode, setVideoMode] = useState<'visualizer' | 'video'>('visualizer');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [videoFileName, setVideoFileName] = useState('');
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => () => { if (videoUrl) URL.revokeObjectURL(videoUrl); }, [videoUrl]);
   const classicStackTop = typeof window === 'undefined'
     ? 48
     : Math.max(8, Math.min(48, window.innerHeight - 480));
@@ -381,6 +387,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       main: { x, y: top },
       equalizer: { x, y: top + 116 },
       playlist: { x, y: top + 232 },
+      video: { x: Math.min(x + 290, Math.max(8, (typeof window === 'undefined' ? 600 : window.innerWidth) - 340)), y: top },
     };
   });
   const [playlistSize, setPlaylistSize] = useState({ width: 275, height: 232 });
@@ -394,24 +401,25 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const startWindowDrag = (event: React.PointerEvent, key: PlayerWindowKey) => {
     if ((event.target as HTMLElement).closest('button')) return;
     event.preventDefault();
-    const keys: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : [])];
+    const keys: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : []), 'video'];
     const rects = Object.fromEntries(keys.map((windowKey) => {
       const node = document.querySelector<HTMLElement>(`.wa-${windowKey}`);
       const position = windowPositions[windowKey];
       return [windowKey, {
         left: position.x, top: position.y,
-        right: position.x + (node?.offsetWidth ?? 275),
-        bottom: position.y + (node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : 232)),
-        width: node?.offsetWidth ?? 275,
-        height: node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : 232),
+        right: position.x + (node?.offsetWidth ?? (windowKey === 'video' ? 320 : 275)),
+        bottom: position.y + (node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : windowKey === 'video' ? 240 : 232)),
+        width: node?.offsetWidth ?? (windowKey === 'video' ? 320 : 275),
+        height: node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : windowKey === 'video' ? 240 : 232),
       }];
     })) as Record<PlayerWindowKey, { left: number; top: number; right: number; bottom: number; width: number; height: number }>;
     const connected = new Set<PlayerWindowKey>([key]);
+    const canJoin = (candidate: PlayerWindowKey) => !detachedWindows.includes(candidate) && !detachedWindows.includes(key);
     let changed = true;
     while (changed) {
       changed = false;
       for (const candidate of keys) {
-        if (connected.has(candidate)) continue;
+        if (connected.has(candidate) || !canJoin(candidate)) continue;
         const a = rects[candidate];
         for (const member of connected) {
           const b = rects[member];
@@ -1526,6 +1534,56 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           )}
         </div>
       )}
+
+      {/* 4. VIDEO / VISUALIZATION WINDOW */}
+      <div
+        className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'}`}
+        style={{ left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80 }}
+        onPointerDown={() => setActiveWindow('video')}
+      >
+        <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'video')}>
+          <span className="wa-titlebar__title">WINAMP {videoMode === 'video' ? 'VIDEO' : 'VISUALIZATION'}</span>
+          <div className="wa-titlebar__controls">
+            <button type="button" className="wa-titlebar__btn" title={detachedWindows.includes('video') ? 'Attach to window group' : 'Detach this window'} aria-label={detachedWindows.includes('video') ? 'Attach window' : 'Detach window'} onClick={() => setDetachedWindows((items) => items.includes('video') ? items.filter((item) => item !== 'video') : [...items, 'video'])}>{detachedWindows.includes('video') ? '↗' : '⛓'}</button>
+            <button type="button" className="wa-titlebar__btn" title="Minimize video / visualization">_</button>
+            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close video / visualization" onClick={() => setVideoMode('visualizer')}>×</button>
+          </div>
+        </div>
+        <div className="wa-video__toolbar">
+          <button type="button" className={videoMode === 'visualizer' ? 'is-active' : ''} onClick={() => setVideoMode('visualizer')}>VISUALIZATION</button>
+          <button type="button" className={videoMode === 'video' ? 'is-active' : ''} onClick={() => setVideoMode('video')}>VIDEO</button>
+          <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
+        </div>
+        {videoMode === 'visualizer' ? (
+          <div className="wa-video__visualizer" role="img" aria-label={visualizerModeNames[visualizerMode]}>
+            <div className="wa-video__visualizer-label">{visualizerModeNames[visualizerMode].toUpperCase()}</div>
+            {visualizerMode === 1 ? (
+              <svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
+                <polyline points={waveform.map((sample, index) => `${(index / 18) * 100},${50 - sample}`).join(' ')} />
+              </svg>
+            ) : (
+              <div className="wa-video__bars">
+                {bars.map((barHeight, index) => <span key={index} style={{ height: `${Math.max(2, visualizerMode === 2 ? peaks[index] : barHeight)}%` }} />)}
+              </div>
+            )}
+            <button type="button" className="wa-video__mode" onClick={() => setVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}>MODE</button>
+          </div>
+        ) : (
+          <div className="wa-video__screen">
+            <input ref={videoInputRef} type="file" accept="video/*" hidden onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              if (file) {
+                const nextUrl = URL.createObjectURL(file);
+                setVideoUrl((previous) => { if (previous) URL.revokeObjectURL(previous); return nextUrl; });
+                setVideoFileName(file.name);
+              }
+              event.currentTarget.value = '';
+            }} />
+            {videoUrl ? <video src={videoUrl} controls playsInline /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
+            <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
