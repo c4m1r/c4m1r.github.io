@@ -81,13 +81,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [skinStatus, setSkinStatus] = useState('');
   const [skinAppearance, setSkinAppearance] = useState<'dev-alpha' | 'webamp-classic' | 'wsz'>(() => {
     try {
-      const saved = window.localStorage.getItem('winamp:skin-appearance:v2');
-      if (saved === 'dev-alpha' || saved === 'webamp-classic' || saved === 'wsz') return saved;
-      // Classic is the default. Preserve a legacy imported skin, but migrate
-      // the former Dev Alpha default to Classic.
-      return window.localStorage.getItem('winamp:skin-appearance:v1') === 'wsz'
-        ? 'wsz'
-        : 'webamp-classic';
+      // v3 distinguishes an intentional current selection from the old v2
+      // Dev Alpha default, which otherwise silently bypassed Classic startup.
+      const current = window.localStorage.getItem('winamp:skin-appearance:v3');
+      if (current === 'dev-alpha' || current === 'webamp-classic' || current === 'wsz') return current;
+      const legacy = window.localStorage.getItem('winamp:skin-appearance:v2');
+      if (legacy === 'wsz' || window.localStorage.getItem('winamp:skin-appearance:v1') === 'wsz') return 'wsz';
+      return 'webamp-classic';
     } catch {
       return 'webamp-classic';
     }
@@ -838,7 +838,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   useEffect(() => {
     try {
-      window.localStorage.setItem('winamp:skin-appearance:v2', skinAppearance);
+      window.localStorage.setItem('winamp:skin-appearance:v3', skinAppearance);
     } catch {
       // Keep the selected renderer for this session when storage is unavailable.
     }
