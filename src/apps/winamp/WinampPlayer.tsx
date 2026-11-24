@@ -528,6 +528,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const fullscreenPanelHoverRef = useRef(false);
   const [isVideoFullscreen, setIsVideoFullscreen] = useState(false);
   const [showFullscreenControls, setShowFullscreenControls] = useState(true);
+  const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const setVideoWindowVisible = (visible: boolean) => {
     if (visible === showVideo) return;
     if (!detachedWindows.includes('video')) {
@@ -917,9 +918,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setShowFullscreenControls(true);
     clearFullscreenHideTimer();
     if (element.requestFullscreen) {
-      void element.requestFullscreen().then(() => setIsVideoFullscreen(true)).catch(() => setIsVideoFullscreen(true));
+      void element.requestFullscreen().then(() => {
+        setIsVideoFullscreen(true);
+        revealFullscreenControls();
+      }).catch(() => {
+        setIsVideoFullscreen(true);
+        revealFullscreenControls();
+      });
     } else {
       setIsVideoFullscreen(true);
+      revealFullscreenControls();
     }
   }, [clearFullscreenHideTimer]);
 
@@ -930,6 +938,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     } else {
       setIsVideoFullscreen(false);
     }
+    fullscreenPanelHoverRef.current = false;
     setShowFullscreenControls(true);
   }, [clearFullscreenHideTimer]);
 
@@ -989,6 +998,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       if (active) revealFullscreenControls();
       else {
         clearFullscreenHideTimer();
+        fullscreenPanelHoverRef.current = false;
         setShowFullscreenControls(true);
       }
     };
@@ -1987,6 +1997,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 videoUrlRef.current = nextUrl;
                 setVideoUrl(nextUrl);
                 setVideoFileName(file.name);
+                setVideoIsPlaying(false);
               }
               event.currentTarget.value = '';
             }} />
@@ -2009,7 +2020,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         >
           <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}>−5s</button>
           <button type="button" title="Предыдущий трек" aria-label="Предыдущий трек" onClick={() => { previous(); revealFullscreenControls(); }}>|◀</button>
-          <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}>{videoMode === 'video' ? (videoElementRef.current?.paused ? '▶' : 'Ⅱ') : (isPlaying ? 'Ⅱ' : '▶')}</button>
+          <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}>{videoMode === 'video' ? (videoIsPlaying ? 'Ⅱ' : '▶') : (isPlaying ? 'Ⅱ' : '▶')}</button>
           <button type="button" title="Следующий трек" aria-label="Следующий трек" onClick={() => { next(); revealFullscreenControls(); }}>▶|</button>
           <button type="button" title="Вперёд на 5 секунд" aria-label="Вперёд на 5 секунд" onClick={() => { seekFullscreenMedia(5); revealFullscreenControls(); }}>+5s</button>
           <button type="button" title="Переключить режим" aria-label="Переключить режим" onClick={() => { cycleFullscreenMode(); revealFullscreenControls(); }}>MODE</button>
