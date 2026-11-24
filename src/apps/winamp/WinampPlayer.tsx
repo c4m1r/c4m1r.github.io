@@ -85,9 +85,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         ?? window.localStorage.getItem('winamp:skin-appearance:v1');
       // Classic is the default. Preserve an explicitly selected imported skin;
       // migrate the former Dev Alpha default to Classic.
-      return saved === 'wsz' ? 'wsz' : saved === 'dev-alpha' || saved === 'webamp-classic' || saved === null
-        ? 'webamp-classic'
-        : 'webamp-classic';
+      return saved === 'wsz' ? 'wsz' : 'webamp-classic';
     } catch {
       return 'webamp-classic';
     }
