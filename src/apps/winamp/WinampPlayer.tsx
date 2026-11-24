@@ -412,6 +412,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [fourthVisualizerPresetIndex, setFourthVisualizerPresetIndex] = useState(0);
   const [visualizerAutoCycle, setVisualizerAutoCycle] = useState(false);
   const rafRef = useRef<number | null>(null);
+  type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
+  const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
+  const [detachedWindows, setDetachedWindows] = useState<PlayerWindowKey[]>([]);
+  const [videoMode, setVideoMode] = useState<'visualizer' | 'video'>('visualizer');
+  const [showVideo, setShowVideo] = useState(true);
+  const [videoShade, setVideoShade] = useState(false);
   useEffect(() => {
     if (!visualizerAutoCycle || !showVideo || videoShade || videoMode !== 'visualizer') return;
     const cycle = window.setInterval(() => {
@@ -424,12 +430,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }, 15000);
     return () => window.clearInterval(cycle);
   }, [visualizerAutoCycle, showVideo, videoShade, videoMode]);
-  type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
-  const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
-  const [detachedWindows, setDetachedWindows] = useState<PlayerWindowKey[]>([]);
-  const [videoMode, setVideoMode] = useState<'visualizer' | 'video'>('visualizer');
-  const [showVideo, setShowVideo] = useState(true);
-  const [videoShade, setVideoShade] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFileName, setVideoFileName] = useState('');
   const setVideoWindowVisible = (visible: boolean) => {
