@@ -7900,3 +7900,247 @@
 .wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__btn--settings {
   display: none !important;
 }
+
+
+/* Webamp Classic — native-size faceplate detail pass (Main / EQ / Playlist). */
+.wa-shell--webamp-classic .wa-main .wa-display__left {
+  grid-template-columns: 9px minmax(0, 1fr);
+  align-items: center;
+  gap: 2px;
+  padding-right: 3px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-indicators {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 8px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-time-lcd {
+  min-width: 0;
+  justify-content: flex-start;
+  letter-spacing: -1.2px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-visualizer {
+  align-self: stretch;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid #343d2b;
+  border-top-color: #050705;
+  border-left-color: #050705;
+  background-color: #020402;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-display__right {
+  min-width: 0;
+  grid-template-rows: 18px 9px 8px;
+  align-content: center;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-tech-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-controls-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-slider-track--pos {
+  flex: 0 0 7px;
+  height: 7px;
+  min-height: 7px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-vol-bal-row {
+  display: flex;
+  flex: 0 0 12px;
+  min-height: 12px;
+  align-items: center;
+  gap: 4px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-vol-control,
+.wa-shell--webamp-classic .wa-main .wa-bal-control {
+  min-width: 0;
+  height: 10px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-slider-label {
+  flex: 0 0 17px;
+  font-size: 5px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-slider-track--vol,
+.wa-shell--webamp-classic .wa-main .wa-slider-track--bal {
+  height: 7px;
+  min-height: 7px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-transport-row {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-buttons-group {
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-btn-transport {
+  width: 22px;
+  min-width: 22px;
+  height: 16px;
+  min-height: 16px;
+}
+
+.wa-shell--webamp-classic .wa-main .wa-toggles-group {
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__labels-left {
+  flex: 0 0 19px;
+  height: 63px;
+  margin-bottom: 8px;
+  padding-right: 1px;
+  font-size: 5px;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__band {
+  align-self: flex-end;
+  min-width: 0;
+  gap: 0;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__fader {
+  width: 13px;
+  height: 63px;
+  border: 1px solid #090909;
+  border-right-color: #77776e;
+  border-bottom-color: #77776e;
+  background:
+    linear-gradient(90deg, #090909 0, #24241f 28%, #111 50%, #393930 100%),
+    #151515;
+  box-shadow: inset 0 0 2px #000;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__fader::before {
+  top: 50%;
+  height: 1px;
+  background: #b7a94d;
+  box-shadow: 0 0 2px rgba(255,226,74,.55);
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert {
+  height: 63px;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-webkit-slider-thumb {
+  width: 12px;
+  height: 7px;
+  border-radius: 0;
+  border: 1px solid #111;
+  border-top-color: #eee;
+  border-left-color: #d7d7cd;
+  background: linear-gradient(180deg,#eee 0%,#bdbdb4 45%,#77776e 100%);
+  box-shadow: 0 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-moz-range-thumb {
+  width: 12px;
+  height: 7px;
+  border-radius: 0;
+  border: 1px solid #111;
+  border-top-color: #eee;
+  border-left-color: #d7d7cd;
+  background: linear-gradient(180deg,#eee 0%,#bdbdb4 45%,#77776e 100%);
+  box-shadow: 0 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__band-name {
+  min-height: 7px;
+  margin-top: 1px;
+  font-size: 5px;
+  line-height: 7px;
+  letter-spacing: -.2px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list {
+  background: #000;
+  border: 1px solid #171717;
+  box-shadow: inset 1px 1px 2px #000;
+  scrollbar-width: thin;
+  scrollbar-color: #9a9a9a #151515;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item {
+  display: flex;
+  align-items: center;
+  min-height: 13px;
+  height: 13px;
+  padding: 0 3px 0 2px;
+  gap: 4px;
+  color: #00ed00;
+  font: 10px/13px "Lucida Console", Monaco, monospace;
+  letter-spacing: -.25px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-current {
+  color: #f4f4f4;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-selected:not(.is-current) {
+  color: #00ff00;
+  background: #102010;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__dur {
+  flex: 0 0 31px;
+  min-width: 31px;
+  color: inherit;
+  text-align: right;
+  font: inherit;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-current .wa-pl__dur {
+  color: #fff;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list::-webkit-scrollbar-track {
+  background: #171717;
+  border-left: 1px solid #333;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list::-webkit-scrollbar-thumb {
+  border: 1px solid #ddd;
+  border-right-color: #555;
+  border-bottom-color: #555;
+  background: linear-gradient(90deg,#e4e4e4,#858585);
+}
