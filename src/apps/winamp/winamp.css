@@ -8813,13 +8813,14 @@
 }
 
 
-/* Playlist footer: five equal compact controls beside a dedicated time readout. */
+/* Winamp Classic Playlist footer — compact equal command keys + shifted time readout.
+   Keep the resize-handle corner clear, but give the five command keys equal columns. */
 .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 68px !important;
+  grid-template-columns: minmax(0, 1fr) 56px !important;
   grid-template-rows: 16px !important;
   align-items: center !important;
-  column-gap: 4px !important;
+  column-gap: 3px !important;
   row-gap: 0 !important;
   width: 100% !important;
   min-width: 0 !important;
@@ -8849,14 +8850,14 @@
   width: 100% !important;
   min-width: 0 !important;
   max-width: none !important;
-  height: 14px !important;
-  min-height: 14px !important;
-  max-height: 14px !important;
+  height: 13px !important;
+  min-height: 13px !important;
+  max-height: 13px !important;
   margin: 0 !important;
   padding: 0 1px !important;
   border-radius: 0 !important;
-  font: 700 6px/12px Arial, Helvetica, sans-serif !important;
-  letter-spacing: 0 !important;
+  font: 700 6px/11px Arial, Helvetica, sans-serif !important;
+  letter-spacing: -.1px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
 }
@@ -8889,30 +8890,34 @@
   align-items: center !important;
   justify-content: center !important;
   box-sizing: border-box !important;
-  width: 68px !important;
+  width: 56px !important;
   min-width: 0 !important;
   height: 13px !important;
   min-height: 13px !important;
   margin: 0 !important;
-  padding: 0 2px !important;
+  padding: 0 1px !important;
   overflow: hidden !important;
   white-space: nowrap !important;
   font: 6px/11px Arial, Helvetica, sans-serif !important;
+  text-align: center !important;
 }
 .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__status > span:first-child {
+  display: block !important;
+  max-width: 100% !important;
   overflow: hidden !important;
   text-overflow: clip !important;
   white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
 }
 @media (max-width: 440px) {
   .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic {
-    grid-template-columns: minmax(0, 1fr) 64px !important;
-    column-gap: 3px !important;
+    grid-template-columns: minmax(0, 1fr) 54px !important;
+    column-gap: 2px !important;
     padding-right: 16px !important;
     padding-left: 2px !important;
   }
   .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__status {
-    width: 64px !important;
+    width: 54px !important;
     font-size: 5.8px !important;
   }
   .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions {
