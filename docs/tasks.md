@@ -464,3 +464,9 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Aligned the +12 / 0 / −12 dB scale baseline with the fader travel and added a restrained center reference line to each track. Frequency labels now use a consistent compact baseline; narrow layouts receive a smaller scale gutter while retaining all eleven controls.
 - CSS-only presentation change. No JSX, slider ranges/values, preset handlers, EQ/DSP logic, controller behavior, Dev Alpha or imported .wsz styling changed.
 - Verification: source update committed; browser visual QA, build/typecheck and interaction QA have not been run. Treat the zero line and spacing as authored CSS targets, not visually verified pixel parity.
+
+
+### Winamp — Webamp Classic Equalizer response graph pass (2026-11-24)
+- Refined the response graph's dark green grid, added a restrained horizontal 0 dB reference through the center of the 24-unit SVG viewBox, and tightened the yellow response trace treatment.
+- The graph continues to plot the ten frequency-band values only; PREAMP remains a separate gain control. No JSX, curve data mapping, slider values, DSP, preset handling, playback/controller behavior, Dev Alpha or imported .wsz rendering changed.
+- CSS-only presentation pass scoped to the built-in Webamp Classic renderer. Verification: source update committed; browser visual QA, build/typecheck and interaction QA have not been run. The grid-to-band alignment is an authored visual approximation, not verified pixel parity.
