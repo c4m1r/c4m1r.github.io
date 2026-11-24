@@ -7699,3 +7699,69 @@
 .wa-shell--webamp-classic .wa-transport-row .wa-album-preview {
   display: none !important;
 }
+
+
+/* Winamp Classic reference menus: secondary operations stay off the faceplate. */
+.wa-shell--webamp-classic .wa-eq__preset-tools { display: none !important; }
+.wa-shell--webamp-classic .wa-eq__header { gap: 4px; }
+.wa-shell--webamp-classic .wa-eq__header .wa-classic-menu--eq { margin-left: auto; }
+.wa-shell--webamp-classic .wa-classic-menu { position: relative; z-index: 20; }
+.wa-shell--webamp-classic .wa-classic-menu > summary {
+  display: flex; align-items: center; justify-content: center;
+  list-style: none; cursor: pointer; user-select: none;
+}
+.wa-shell--webamp-classic .wa-classic-menu > summary::-webkit-details-marker { display: none; }
+.wa-shell--webamp-classic .wa-classic-menu__panel {
+  position: absolute; z-index: 100; top: calc(100% + 3px); right: 0;
+  min-width: 148px; padding: 5px; display: flex; flex-direction: column; gap: 4px;
+  background: linear-gradient(180deg,#343440,#17171f);
+  border: 1px solid #8a8a98; border-right-color: #08080c; border-bottom-color: #08080c;
+  box-shadow: 2px 3px 7px #000c; color: #e4e4e8; font: 8px Arial,sans-serif;
+}
+.wa-shell--webamp-classic .wa-classic-menu__panel--eq { width: 174px; }
+.wa-shell--webamp-classic .wa-classic-menu__panel--eq select,
+.wa-shell--webamp-classic .wa-classic-menu__panel--eq > input {
+  box-sizing: border-box; width: 100%; min-width: 0; min-height: 17px;
+}
+.wa-shell--webamp-classic .wa-classic-menu__label {
+  display: flex; flex-direction: column; gap: 3px; color: #bfc0c8; font-size: 7px; font-weight: bold;
+}
+.wa-shell--webamp-classic .wa-classic-menu__actions {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 3px;
+}
+.wa-shell--webamp-classic .wa-classic-menu__actions button,
+.wa-shell--webamp-classic .wa-classic-menu__panel--pl button {
+  min-height: 16px; justify-content: center; white-space: nowrap;
+}
+.wa-shell--webamp-classic .wa-pl__import-status { display: none; }
+.wa-shell--webamp-classic .wa-pl__footer--classic {
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center;
+  justify-content: space-between; gap: 3px; min-height: 20px; margin-top: 3px;
+  padding-top: 3px; border-top: 1px solid #34343f;
+}
+.wa-shell--webamp-classic .wa-pl__footer--classic > .wa-pl__actions {
+  display: flex; flex: 0 0 auto; flex-wrap: nowrap; align-items: center; gap: 2px;
+}
+.wa-shell--webamp-classic .wa-pl__footer--classic .wa-btn-pl {
+  min-width: 25px; height: 18px; padding: 0 3px; font-size: 7px;
+}
+.wa-shell--webamp-classic .wa-pl__footer--classic .wa-pl__status {
+  display: flex; flex: 1 1 auto; min-width: 0; justify-content: center; align-items: center;
+  gap: 3px; height: 14px; padding: 0 2px; overflow: hidden; white-space: nowrap; font-size: 7px;
+}
+.wa-shell--webamp-classic .wa-pl__footer--classic .wa-pl__status-text { overflow: hidden; text-overflow: ellipsis; }
+.wa-shell--webamp-classic .wa-classic-menu--pl,
+.wa-shell--webamp-classic .wa-classic-menu--list { flex: 0 0 auto; }
+.wa-shell--webamp-classic .wa-classic-menu--pl > summary { min-width: 25px; height: 18px; }
+.wa-shell--webamp-classic .wa-classic-menu--list > summary {
+  width: 25px; height: 18px; line-height: 7px; text-align: center;
+}
+.wa-shell--webamp-classic .wa-classic-menu__panel--pl,
+.wa-shell--webamp-classic .wa-classic-menu__panel--list { min-width: 112px; right: 0; }
+.wa-shell--webamp-classic .wa-classic-menu__panel--list label {
+  display: flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-pl__footer--classic .wa-btn-pl { min-width: 22px; padding-inline: 2px; font-size: 6px; }
+  .wa-shell--webamp-classic .wa-pl__footer--classic .wa-pl__status { font-size: 6px; }
+}
