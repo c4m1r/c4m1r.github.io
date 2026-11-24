@@ -477,3 +477,11 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Kept the range orientation explicit: with `writing-mode: vertical-lr` and `direction: rtl`, positive gain is at the top, 0 dB at the midpoint and negative gain at the bottom. Existing `min=-12`, `max=12`, `step=0.5`, values, SVG response mapping and EQ handlers are unchanged.
 - CSS-only and scoped to `.wa-shell--webamp-classic`. No JSX, audio/DSP logic, presets, Dev Alpha or imported `.wsz` styling changed.
 - Verification: source update committed. Browser-specific thumb orientation, endpoint alignment and touch/keyboard interaction still require visual QA; build/typecheck and CI have not been confirmed.
+
+
+### Winamp — Webamp Classic Equalizer response graph calibration (2026-11-24)
+- Refined the graph's dB guides: a stronger 0 dB centerline and quieter ±6 dB guides improve reading without changing the response display's dimensions.
+- Confirmed the existing vertical grid origin/interval was already aligned to the ten SVG sample positions: x=2..98 with 10.6667% spacing. Kept that mapping rather than changing it and introducing drift from the existing curve.
+- Smoothed the response trace caps/joins and refined its restrained yellow-green glow. The ten frequency-band values remain the only plotted values; PREAMP remains separate.
+- CSS-only, scoped to .wa-shell--webamp-classic; no TSX, EQ values, slider handlers, presets, DSP/audio logic, Dev Alpha or imported .wsz rendering changed.
+- Verification: source and documentation committed; CSS brace/scope checks performed. Browser visual QA, build/typecheck and CI remain unconfirmed.
