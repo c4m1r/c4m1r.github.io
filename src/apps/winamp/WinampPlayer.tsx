@@ -521,6 +521,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [visualizerAutoCycle, showVideo, videoShade, videoMode]);
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFileName, setVideoFileName] = useState('');
+  const videoWindowRef = useRef<HTMLDivElement>(null);
+  const videoElementRef = useRef<HTMLVideoElement>(null);
+  const fullscreenHideTimerRef = useRef<number | null>(null);
+  const lastTouchTapRef = useRef(0);
+  const fullscreenPanelHoverRef = useRef(false);
+  const [isVideoFullscreen, setIsVideoFullscreen] = useState(false);
+  const [showFullscreenControls, setShowFullscreenControls] = useState(true);
   const setVideoWindowVisible = (visible: boolean) => {
     if (visible === showVideo) return;
     if (!detachedWindows.includes('video')) {
