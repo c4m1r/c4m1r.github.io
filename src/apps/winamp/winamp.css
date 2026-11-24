@@ -7009,6 +7009,14 @@
   min-width: 0;
 }
 
+.wa-shell--webamp-classic .wa-playlist.wa-window--shaded {
+  height: 20px !important;
+  min-height: 20px;
+  max-height: 20px;
+  resize: none;
+  overflow: hidden;
+}
+
 @media (max-width: 440px) {
   .wa-shell--webamp-classic .wa-playlist {
     max-width: calc(100vw - 8px);
