@@ -8928,3 +8928,206 @@
     font-size: 5.7px !important;
   }
 }
+
+
+/* Winamp Classic — final layout contract (kept last to supersede legacy overrides).
+   Main controls use two fixed rows; EQ faders use equal, explicit columns. */
+.wa-shell--webamp-classic .wa-main .wa-controls-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: 8px 12px !important;
+  align-content: center !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+  gap: 2px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 25px !important;
+  min-height: 25px !important;
+  max-height: 25px !important;
+  flex: 0 0 25px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-slider-track--pos {
+  position: relative !important;
+  display: block !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  max-height: 8px !important;
+  margin: 0 !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-vol-bal-row {
+  display: grid !important;
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  column-gap: 4px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 12px !important;
+  min-height: 12px !important;
+  max-height: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-vol-control,
+.wa-shell--webamp-classic .wa-main .wa-bal-control {
+  display: grid !important;
+  grid-template-columns: 16px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 2px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 12px !important;
+  min-height: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-slider-label {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 16px !important;
+  min-width: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 8px !important;
+  white-space: nowrap !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-slider-track--vol,
+.wa-shell--webamp-classic .wa-main .wa-slider-track--bal {
+  position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 9px !important;
+  min-height: 9px !important;
+  max-height: 9px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  justify-self: stretch !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-toggle-btns {
+  display: flex !important;
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-items: center !important;
+  justify-self: end !important;
+  gap: 2px !important;
+  width: auto !important;
+  height: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-slider-track--pos .wa-slider-input,
+.wa-shell--webamp-classic .wa-main .wa-slider-track--vol .wa-slider-input,
+.wa-shell--webamp-classic .wa-main .wa-slider-track--bal .wa-slider-input {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 1 !important;
+  touch-action: pan-y !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+  display: grid !important;
+  grid-template-columns: 19px 15px 3px repeat(10, minmax(0, 1fr)) !important;
+  grid-template-rows: 65px !important;
+  align-items: end !important;
+  justify-content: stretch !important;
+  column-gap: 0 !important;
+  row-gap: 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 68px !important;
+  min-height: 68px !important;
+  padding: 1px 2px 1px 1px !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__labels-left {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  box-sizing: border-box !important;
+  width: 19px !important;
+  min-width: 0 !important;
+  height: 55px !important;
+  margin: 0 0 10px !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__labels-left + .wa-eq__band {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__divider {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  width: 1px !important;
+  min-width: 1px !important;
+  height: 55px !important;
+  margin: 0 auto 10px !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__band {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 65px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__fader,
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert {
+  display: block !important;
+  box-sizing: border-box !important;
+  flex: 0 0 55px !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  max-width: 13px !important;
+  height: 55px !important;
+  min-height: 55px !important;
+  max-height: 55px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert {
+  writing-mode: vertical-lr !important;
+  direction: rtl !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background: transparent !important;
+  cursor: ns-resize !important;
+  touch-action: pan-x !important;
+}
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+    grid-template-columns: 18px 14px 3px repeat(10, minmax(0, 1fr)) !important;
+    padding-inline: 1px !important;
+  }
+  .wa-shell--webamp-classic .wa-equalizer .wa-eq__labels-left {
+    width: 18px !important;
+  }
+}
