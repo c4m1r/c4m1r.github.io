@@ -797,7 +797,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             >
               ▲
             </button>
-            <button type="button" className="wa-titlebar__btn" title="Player settings" aria-label="Player settings" aria-expanded={playerSettingsOpen} onClick={() => setPlayerSettingsOpen((open) => !open)}>⚙</button>
+            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--settings" title="Player settings" aria-label="Player settings" aria-expanded={playerSettingsOpen} onClick={() => setPlayerSettingsOpen((open) => !open)}>⚙</button>
             <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close Winamp" onClick={onClose}>×</button>
           </div>
         </div>
@@ -1399,6 +1399,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     <summary className="wa-btn-pl">MISC</summary>
                     <div className="wa-classic-menu__panel wa-classic-menu__panel--pl">
                       <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection([])}>Clear selection</button>
+                      <button type="button" className="wa-btn-pl" onClick={() => setPlayerSettingsOpen(true)}>Player settings…</button>
                       <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()}>Import M3U</button>
                       <button type="button" className="wa-btn-pl" onClick={exportM3uFile}>Export M3U</button>
                       <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()}>Import .wsz skin</button>
