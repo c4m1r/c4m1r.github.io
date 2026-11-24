@@ -4245,3 +4245,85 @@
     letter-spacing: -.35px;
   }
 }
+
+
+/* Webamp Classic — lower EQ faceplate rail and recessed fader-bank well. */
+.wa-shell--webamp-classic .wa-eq__body {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.045) 0, transparent 14px),
+    linear-gradient(180deg, #383838 0%, #2c2c2c 46%, #222 100%);
+}
+
+.wa-shell--webamp-classic .wa-eq__sliders-container {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid #111;
+  border-top-color: #080808;
+  border-left-color: #171717;
+  border-right-color: #626262;
+  border-bottom-color: #777;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), transparent 7px),
+    linear-gradient(90deg, #252525 0%, #303030 18%, #292929 50%, #303030 82%, #242424 100%);
+  box-shadow:
+    inset 1px 1px 2px #090909,
+    inset -1px -1px 1px rgba(255,255,255,.14),
+    0 1px 0 rgba(0,0,0,.7);
+}
+
+.wa-shell--webamp-classic .wa-eq__sliders-container::before {
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  left: 2px;
+  border: 1px solid rgba(0,0,0,.24);
+  content: "";
+  pointer-events: none;
+}
+
+.wa-shell--webamp-classic .wa-eq__fader {
+  border-left: 1px solid #090909;
+  border-right: 1px solid #686868;
+  background:
+    linear-gradient(90deg, #0d0d0d 0%, #292929 24%, #181818 70%, #0b0b0b 100%);
+  box-shadow:
+    inset 1px 0 rgba(255,255,255,.08),
+    inset -1px 0 #080808,
+    0 0 0 1px rgba(0,0,0,.22);
+}
+
+.wa-shell--webamp-classic .wa-eq__band-name {
+  position: relative;
+  z-index: 0;
+  padding-top: 1px;
+  border-top: 1px solid rgba(0,0,0,.56);
+  color: #d0d0d0;
+  text-shadow: 1px 1px #080808;
+}
+
+.wa-shell--webamp-classic .wa-eq__band:nth-of-type(2) .wa-eq__band-name {
+  color: #d6b879;
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left {
+  color: #c8c8c8;
+  text-shadow: 1px 1px #080808;
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left span:nth-child(2) {
+  color: #fff;
+}
+
+.wa-shell--webamp-classic .wa-eq__divider {
+  background: linear-gradient(90deg, #080808 0%, #777 100%);
+  box-shadow: 1px 0 rgba(0,0,0,.7);
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__sliders-container {
+    border-right-color: #555;
+    border-left-color: #111;
+  }
+}
