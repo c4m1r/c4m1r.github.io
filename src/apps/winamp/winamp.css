@@ -1734,3 +1734,125 @@
   border-left-color: #aaa;
   font: bold 7px/7px Arial, sans-serif;
 }
+
+
+/* Webamp Classic — compact EQ control strip.
+   Keep project-specific preset/EQF tools available without letting them
+   displace the classic graph and ten-band fader bank. */
+.wa-shell--webamp-classic .wa-eq__body {
+  padding: 3px 5px 4px;
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-eq__header {
+  height: 16px;
+  min-height: 16px;
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-eq__spline {
+  height: 16px;
+  min-width: 0;
+  flex: 1 1 auto;
+  background: #050805;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 2px !important;
+  width: 100%;
+  min-height: 13px;
+  margin: 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools::-webkit-scrollbar {
+  display: none;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-presets,
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode {
+  box-sizing: border-box;
+  flex: 0 0 auto !important;
+  min-width: 0;
+  height: 13px;
+  min-height: 13px;
+  max-height: 13px;
+  padding: 0 3px;
+  border-radius: 0;
+  font: 6px/11px Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools select.wa-btn-presets {
+  flex-basis: 65px !important;
+  width: 65px;
+  padding-right: 1px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools input.wa-btn-presets {
+  flex: 1 1 35px !important;
+  width: 35px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode {
+  letter-spacing: -.15px;
+}
+
+.wa-shell--webamp-classic .wa-eq__status {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 6px/8px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-eq__sliders-container {
+  height: 76px;
+  min-height: 76px;
+  padding: 0 2px;
+  gap: 1px;
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left {
+  height: 63px;
+  margin-bottom: 11px;
+  font-size: 6px;
+}
+
+.wa-shell--webamp-classic .wa-eq__fader,
+.wa-shell--webamp-classic .wa-eq__input-vert,
+.wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-runnable-track,
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-range-track {
+  height: 63px;
+}
+
+.wa-shell--webamp-classic .wa-eq__band-name {
+  margin-top: 2px;
+  font-size: 6px;
+  letter-spacing: -.2px;
+}
+
+.wa-shell--webamp-classic .wa-eq__divider {
+  height: 63px;
+  margin-bottom: 11px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__preset-tools {
+    overflow-x: auto;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__sliders-container {
+    gap: 0;
+    padding-inline: 0;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__band-name {
+    font-size: 5px;
+  }
+}
