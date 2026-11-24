@@ -560,3 +560,11 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - CSS-only, scoped to `.wa-shell--webamp-classic .wa-main`. Imported `.wsz` skin tracks/sprites and Dev Alpha are not targeted. No player/controller/audio behavior or JSX changed.
 - Verification: source update and CSS brace/scope checks only. Browser QA is still required for range-thumb alignment and touch/keyboard behavior in Chromium/Firefox; build/typecheck and CI must be checked separately. Not marked Verified.
 
+
+### Winamp — Webamp Classic Main lower control deck (2026-11-24)
+- Rebuilt the lower Main control strip as a recessed metal deck with a defined upper seam and compact, consistent spacing.
+- Refined built-in EQ/PL toggles and Shuffle/Repeat/NEXT mode buttons: compact etched labels, beveled button faces, hover/pressed/active states and green LED indicators. NEXT retains its own existing action and state; no new playback semantics were introduced.
+- Reframed the mini artwork preview as a small inset display with a metal inner rim, dark badge plate and pixel-scale typography. Existing artwork/icon/accent content remains data-driven.
+- Explicitly excluded imported-skin button classes from the new built-in button face styling; imported .wsz sprite visuals remain in control. All rules are scoped to .wa-shell--webamp-classic .wa-main.
+- CSS-only: no JSX, handlers, state, keyboard shortcuts, audio/controller behavior, window positioning or Dev Alpha changes. The existing six transport buttons, sliders and controls remain intact.
+- Verification: CSS brace balance and selector scope checked after update. Browser visual QA (desktop/narrow viewport), touch/keyboard checks, build/typecheck and CI are not yet confirmed. Not marked Verified.
