@@ -9265,3 +9265,39 @@
 .wa-viz-battery span.is-charged { background:linear-gradient(180deg,#caff80,#39e66d 60%,#168b47); }
 .wa-viz-colors { position:absolute; inset:34px 12px 28px; display:flex; align-items:flex-end; gap:2px; }
 .wa-viz-colors span { flex:1; min-width:2px; box-shadow:0 0 7px currentColor; opacity:.92; }
+
+
+/* Compact family-aware mode navigation in the existing video/visualizer toolbar. */
+.wa-shell .wa-video__toolbar { gap: 3px; }
+.wa-shell .wa-video__mode-select {
+  min-width: 0;
+  width: 104px;
+  max-width: 104px;
+  height: 19px;
+  padding: 0 3px;
+  border: 1px solid #45606b;
+  border-radius: 2px;
+  background: linear-gradient(#263b45,#101a20);
+  color: #c8e9e8;
+  font: 9px/17px Arial, sans-serif;
+  text-overflow: ellipsis;
+}
+.wa-shell .wa-video__mode-select optgroup,
+.wa-shell .wa-video__mode-select option { background: #101a20; color: #c8e9e8; }
+.wa-shell .wa-video__random {
+  flex: 0 0 auto;
+  min-width: 26px;
+  height: 19px;
+  padding: 0 3px;
+  border: 1px solid #45606b;
+  border-radius: 2px;
+  background: linear-gradient(#263b45,#101a20);
+  color: #c8e9e8;
+  font: bold 8px Arial, sans-serif;
+  cursor: pointer;
+}
+.wa-shell .wa-video__mode-select:focus-visible,
+.wa-shell .wa-video__random:focus-visible { outline: 1px solid #72e8ff; outline-offset: 1px; }
+@media (max-width: 360px) {
+  .wa-shell .wa-video__mode-select { width: 78px; max-width: 78px; }
+}
