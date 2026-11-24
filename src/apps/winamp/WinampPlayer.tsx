@@ -1159,9 +1159,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 className="wa-eq__preset-tools"
                 role="group"
                 aria-label="Equalizer preset management"
-                style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0, flexWrap: 'wrap' }}
+                style={{ display: 'flex', alignItems: 'center', gap: skinAppearance === 'webamp-classic' ? 2 : 4, marginTop: skinAppearance === 'webamp-classic' ? 0 : 4, minWidth: 0, flexWrap: skinAppearance === 'webamp-classic' ? 'nowrap' : 'wrap' }}
               >
-                {skinAppearance !== 'webamp-classic' && (                <select
+                {skinAppearance !== 'webamp-classic' && (
+                  <select
                   className="wa-btn-presets"
                   aria-label="Equalizer preset"
                   value={selectedEqPreset}
@@ -1180,7 +1181,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       {customEqPresets.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
                     </optgroup>
                   )}
-                </select>)}
+                  </select>
+                )}
                 <input
                   className="wa-btn-presets"
                   aria-label="New equalizer preset name"
