@@ -120,3 +120,10 @@ This register is based on current main source and the supplied reference image, 
 - Made the Classic Playlist LIST OPT menu functional rather than showing hard-coded status text: Track durations toggles duration columns, and Playback follow toggles automatic scrolling of the current track into view.
 - Both options default to ON, matching the previous displayed defaults. These options affect only the Classic Playlist presentation.
 - A new CI run is required to confirm the TypeScript fix and the Playlist interaction change. Browser interaction and screenshot QA remain outstanding.
+
+## Corrective pass — 2026-11-24 (visible EQ fader movement)
+- User reported that the visual faceplate had not materially changed and EQ thumbs remained centered while changing dB.
+- Root cause found in the range-control CSS: the EQ inputs were still horizontal HTML range controls placed inside narrow, tall fader boxes. Styling the box and thumb did not rotate the range axis, so the thumb's travel was constrained to the tiny horizontal width and appeared stationary.
+- Corrected both PREAMP and all ten band inputs to use a true vertical range axis via `writing-mode: vertical-lr` and `direction: rtl` (minimum at bottom, maximum at top). Added explicit vertical track/thumb dimensions for Chromium/WebKit and Firefox; React state and audio controller handlers remain unchanged.
+- The previous titlebar settings gear hide rule is present in the active Classic stylesheet, and the root applies the Classic scope class only when the saved appearance is `webamp-classic`. If the app remains in Dev Alpha or an imported skin, Classic-only faceplate changes will not appear.
+- Pending verification: confirm the latest GitHub Actions run passes, then test real pointer movement and capture a browser screenshot at native 275 px width. This source-level fix is not yet browser-verified.
