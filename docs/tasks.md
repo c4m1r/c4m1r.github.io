@@ -689,6 +689,11 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add per-window attach/detach controls for Main, Equalizer, Playlist and Video / Visualization.
 - [x] Add magnetic edge alignment for attached windows on release.
 - [x] Keep hidden video windows out of group drag calculations and initialize the fourth window on renderer changes.
+- [x] Double-click / double-tap the existing fourth stage to promote it to fullscreen without creating another window.
+- [x] Add translucent fullscreen transport panel: -5s / +5s, previous / next Winamp playlist track, play / pause, MODE and exit.
+- [x] Reveal fullscreen controls on mouse movement or a single touch; auto-hide after 3 seconds when the pointer is outside the panel.
+- [x] Add fullscreen keyboard controls: Left / Right seek, Up / Down previous / next track, Space play / pause, M mode switch, Escape exit.
+- [x] Prefer the browser Fullscreen API and retain a viewport-fixed fallback; preserve the existing local video element and object URL.
 - [ ] Browser QA: verify touch/pointer dragging, re-docking, mobile viewport layout and video playback.
 - [ ] Future integration: optionally support video entries from playlists and explicit audio/video synchronization; current video source is independent of the audio playlist.
 
