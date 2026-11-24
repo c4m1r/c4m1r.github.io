@@ -873,22 +873,22 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <div className="wa-transport-row">
               <div className="wa-buttons-group">
                 <button type="button" className="wa-btn-transport" onClick={previous} title="Previous (Z)" aria-keyshortcuts="Z">
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.previous} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.previousPressed} alt="" draggable={false} /></> : '|◀◀'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.previous} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.previousPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--previous" aria-hidden="true">|◀◀</span>}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => void play()} title="Play (X)" aria-keyshortcuts="X">
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.play} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.playPressed} alt="" draggable={false} /></> : '▶'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.play} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.playPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--play" aria-hidden="true">▶</span>}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={pause} title="Pause (C)" aria-keyshortcuts="C">
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.pause} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.pausePressed} alt="" draggable={false} /></> : '❚❚'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.pause} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.pausePressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--pause" aria-hidden="true">Ⅱ</span>}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={stop} title="Stop (V)" aria-keyshortcuts="V">
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.stop} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.stopPressed} alt="" draggable={false} /></> : '■'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.stop} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.stopPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--stop" aria-hidden="true">■</span>}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={next} title="Next (B)" aria-keyshortcuts="B">
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.next} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.nextPressed} alt="" draggable={false} /></> : '▶▶|'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.next} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.nextPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--next" aria-hidden="true">▶▶|</span>}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => seek(0)} title="Eject">
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.eject} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.ejectPressed} alt="" draggable={false} /></> : '⏏'}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.eject} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.ejectPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--eject" aria-hidden="true">⏏</span>}
                 </button>
               </div>
 
@@ -905,7 +905,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   }}
                   title="Shuffle (S)" aria-keyshortcuts="S"
                 >
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites[shuffle ? 'shuffleActive' : 'shuffle']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.shufflePressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />SHUFFLE</>}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites[shuffle ? 'shuffleActive' : 'shuffle']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.shufflePressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" /><span className="wa-mode-glyph" aria-hidden="true">⤨</span><span className="wa-mode-label">SHUFFLE</span></>}
                 </button>
                 <button
                   type="button"
@@ -918,7 +918,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   }}
                   title="Repeat (R)" aria-keyshortcuts="R"
                 >
-                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites[repeat ? 'repeatActive' : 'repeat']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.repeatPressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" />🔁</>}
+                  {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites[repeat ? 'repeatActive' : 'repeat']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.repeatPressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" /><span className="wa-mode-glyph" aria-hidden="true">↻</span><span className="wa-mode-label">REPEAT</span></>}
                 </button>
                 <button
                   type="button"
