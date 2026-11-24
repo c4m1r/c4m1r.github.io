@@ -49,6 +49,7 @@ This register is based on current main source and the supplied reference image, 
 ### Main
 - [x] Removed NEXT/auto-advance from the visible Classic transport row; retained the control in Dev Alpha and its existing controller setting.
 - [x] Hidden the project-only mini album-art preview in Webamp Classic (corrected the selector to target its actual sibling position in Main).
+- [x] Removed the project-only settings gear from the Classic Main titlebar; Player Settings is now reachable from Playlist MISC.
 - [ ] Verify titlebar chrome/wordmark and display proportions, analyzer position and metadata alignment.
 - [ ] Reconcile transport spacing and bevels to the six-button reference row.
 - [ ] Verify volume/balance/EQ/PL fit the compact row without wrapping.
@@ -103,3 +104,5 @@ This register is based on current main source and the supplied reference image, 
 - Main and Equalizer now have explicit 275 × 116 px outer boxes; Main content is budgeted to 100 px beneath the titlebar, and the EQ content is budgeted to 100 px with a 13 px control rail.
 - Playlist keeps its 275 px width and 232 px minimum height, with a fixed 14 px titlebar, flexible black list viewport and a 21 px single-row footer.
 - This is a source/CSS geometry pass only. It does not prove pixel alignment in a browser; native-size visual comparison and responsive viewport testing remain outstanding.
+
+- Main titlebar correction: hid the extra settings gear from the Classic faceplate and moved its shortcut into MISC, retaining access to appearance selection and settings.
