@@ -151,3 +151,10 @@ This register is based on current main source and the supplied reference image, 
 - GitHub Actions run for source commit 20e26a33 completed successfully: context verification, TypeScript, lint, production build, build-output verification, artifact upload and GitHub Pages deployment all passed.
 - Browser interaction and screenshot QA have not yet been performed. In particular, verify touch dragging, magnetic docking on narrow screens, native video playback formats, and that the fourth window does not overlap the initial three-window stack on small viewports.
 - Current video loading is intentionally independent of the audio playlist; it does not yet auto-detect video entries in M3U or synchronize external video audio with the Winamp audio controller.
+
+
+## Progress log — 2026-11-24 (expanded visualization design)
+- Separated the compact Main LCD contract from the expanded fourth-window visualization collection. Main keeps Spectrum / Oscilloscope / Peak Meter; the fourth window is planned as a grouped mode browser.
+- Defined Winamp-inspired analyzer modes (log Spectrum Analyzer, Oscilloscope, Spectrogram, Stereo Scope), WMP-style modes (Bars & Waves, Mystify, Particles, Spikes, Battery/Pulse), and an explicitly original Milkdrop-inspired experimental renderer.
+- Defined shared-analyser/canvas architecture, visibility-aware animation lifecycle, mode/settings controls, persistence boundaries and audio/playback regression acceptance.
+- Full design contract: `docs/winamp-visualization-modes.md`; implementation is not yet complete and no browser visual verification is claimed.
