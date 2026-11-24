@@ -114,3 +114,9 @@ This register is based on current main source and the supplied reference image, 
 - Playlist: applied a black inset viewport, green monospaced rows, white current-track text, right-aligned durations and a narrow native scrollbar treatment.
 - All additions are scoped to `.wa-shell--webamp-classic`; no JSX state/handler or audio behavior changed in this pass.
 - These are source-level styling refinements. Exact native-size appearance still requires browser screenshot comparison; no claim of pixel-perfect completion is made.
+
+## Progress log — 2026-11-24 (CI repair and Playlist options)
+- GitHub Actions run `45339977839` failed during TypeScript typecheck at `WinampPlayer.tsx:1406`: a `.catch((error) => ...)` callback declared an unused `error` parameter. The callback did not need the rejection object, so it now uses `.catch(() => ...)`; the existing fallback status message and skin reset behavior are unchanged.
+- Made the Classic Playlist LIST OPT menu functional rather than showing hard-coded status text: Track durations toggles duration columns, and Playback follow toggles automatic scrolling of the current track into view.
+- Both options default to ON, matching the previous displayed defaults. These options affect only the Classic Playlist presentation.
+- A new CI run is required to confirm the TypeScript fix and the Playlist interaction change. Browser interaction and screenshot QA remain outstanding.
