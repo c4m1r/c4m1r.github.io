@@ -457,3 +457,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Presentation-only CSS scoped to `.wa-shell--webamp-classic .wa-equalizer` and its descendants. EQ band values, preamp, preset selection/save/delete, EQF/Q1 import/export, DSP calls, windowshade/close handlers, Main, Playlist, Dev Alpha and imported `.wsz` rendering were not changed.
 - Verification: CSS brace balance and new-selector scope checked after update. Browser visual/interaction QA, build/typecheck and CI remain unconfirmed; the faceplate remains an original CSS approximation rather than a bitmap-exact Nullsoft skin.
 
+
+
+### Winamp — Webamp Classic Equalizer band geometry pass (2026-11-24)
+- Refined the ten-band fader bank spacing and fixed-width dB scale gutter within the built-in Webamp Classic scope. PREAMP remains a distinct first band with a slightly stronger visual allocation; the separator retains a clear gap before the ten frequency bands.
+- Aligned the +12 / 0 / −12 dB scale baseline with the fader travel and added a restrained center reference line to each track. Frequency labels now use a consistent compact baseline; narrow layouts receive a smaller scale gutter while retaining all eleven controls.
+- CSS-only presentation change. No JSX, slider ranges/values, preset handlers, EQ/DSP logic, controller behavior, Dev Alpha or imported .wsz styling changed.
+- Verification: source update committed; browser visual QA, build/typecheck and interaction QA have not been run. Treat the zero line and spacing as authored CSS targets, not visually verified pixel parity.
