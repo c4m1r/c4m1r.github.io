@@ -1062,7 +1062,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 >
                   {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites[repeat ? 'repeatActive' : 'repeat']} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.repeatPressed} alt="" draggable={false} /></> : <><span className="wa-led-dot" /><span className="wa-mode-glyph" aria-hidden="true">↻</span><span className="wa-mode-label">REPEAT</span></>}
                 </button>
-                <button
+                {skinAppearance !== 'webamp-classic' && (<button
                   type="button"
                   className={`wa-btn-mode ${autoAdvance ? 'is-active' : ''}`}
                   onClick={() => {
@@ -1075,7 +1075,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 >
                   <span className="wa-led-dot" />
                   NEXT
-                </button>
+                </button>)}
               </div>
 
               {/* Mini Album Cover Artwork */}
@@ -1156,28 +1156,29 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </svg>
                 </div>
                 {skinAppearance === 'webamp-classic' && (
-                  <select
-                    className="wa-btn-presets wa-eq__preset-select"
-                    aria-label="Equalizer preset"
-                    value={selectedEqPreset}
-                    onChange={(event) => {
-                      const preset = allEqPresets.find((item) => item.id === event.currentTarget.value);
-                      if (preset) applyEqPreset(preset);
-                    }}
-                  >
-                    <option value="custom">CUSTOM</option>
-                    <optgroup label="Built-in">
-                      {EQ_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
-                    </optgroup>
-                    {customEqPresets.length > 0 && (
-                      <optgroup label="My presets">
-                        {customEqPresets.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
-                      </optgroup>
-                    )}
-                  </select>
-                )}
-                {skinAppearance === 'webamp-classic' && (
-                  <button type="button" className="wa-btn-mode wa-eq__q1-out" onClick={exportEqfLibrary} title="Export built-in and custom presets as a Winamp Q1 library">Q1 OUT</button>
+                  <details className="wa-classic-menu wa-classic-menu--eq">
+                    <summary className="wa-btn-presets">PRESETS</summary>
+                    <div className="wa-classic-menu__panel wa-classic-menu__panel--eq">
+                      <label className="wa-classic-menu__label">CURRENT PRESET
+                        <select className="wa-btn-presets" aria-label="Equalizer preset" value={selectedEqPreset} onChange={(event) => {
+                          const preset = allEqPresets.find((item) => item.id === event.currentTarget.value);
+                          if (preset) applyEqPreset(preset);
+                        }}>
+                          <option value="custom">CUSTOM</option>
+                          <optgroup label="Built-in">{EQ_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}</optgroup>
+                          {customEqPresets.length > 0 && <optgroup label="My presets">{customEqPresets.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}</optgroup>}
+                        </select>
+                      </label>
+                      <input className="wa-btn-presets" aria-label="New equalizer preset name" placeholder="Preset name" maxLength={32} value={newEqPresetName} onChange={(event) => setNewEqPresetName(event.currentTarget.value)} />
+                      <div className="wa-classic-menu__actions">
+                        <button type="button" className="wa-btn-mode" onClick={saveEqPreset} disabled={!newEqPresetName.trim()}>SAVE</button>
+                        <button type="button" className="wa-btn-mode" onClick={deleteEqPreset} disabled={!selectedEqPreset.startsWith('custom-')}>DEL</button>
+                        <button type="button" className="wa-btn-mode" onClick={() => eqfInputRef.current?.click()}>EQF IN</button>
+                        <button type="button" className="wa-btn-mode" onClick={exportEqfFile}>EQF OUT</button>
+                        <button type="button" className="wa-btn-mode" onClick={exportEqfLibrary}>Q1 OUT</button>
+                      </div>
+                    </div>
+                  </details>
                 )}
               </div>
 
@@ -1381,71 +1382,40 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   {m3uStatus || localLibraryStatus}
                 </div>
               )}
-              <div className="wa-pl__footer">
+              <div className="wa-pl__footer wa-pl__footer--classic">
+                <input ref={m3uInputRef} type="file" accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl" hidden onChange={(event) => { void importM3uFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
                 <div className="wa-pl__actions">
-                  <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()} title="Add local audio (L)" aria-keyshortcuts="L">+ ADD</button>
-                  <button
-                    type="button"
-                    className="wa-btn-pl"
-                    disabled={!playlistSelection.length || playlist.length <= playlistSelection.length}
-                    onClick={() => {
-                      const removedIds = playlistSelection.map((index) => playlist[index]?.id).filter((id): id is string => Boolean(id));
-                      winampController.removeTracks(playlistSelection);
-                      void deleteWinampLocalAudioFiles(removedIds).catch((error) => {
-                        setLocalLibraryStatus(error instanceof Error ? error.message : 'Unable to remove saved local audio');
-                      });
-                      setPlaylistSelection([]);
-                    }}
-                  >- REM</button>
-                  <button
-                    type="button"
-                    className="wa-btn-pl"
-                    onClick={() => setPlaylistSelection(playlist.map((_, index) => index))}
-                  >SEL</button>
-                  <button
-                    type="button"
-                    className="wa-btn-pl"
-                    onClick={() => setPlaylistSelection([])}
-                  >CLR SEL</button>
+                  <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()} title="Add local audio (L)" aria-keyshortcuts="L">ADD</button>
+                  <button type="button" className="wa-btn-pl" disabled={!playlistSelection.length || playlist.length <= playlistSelection.length} onClick={() => {
+                    const removedIds = playlistSelection.map((index) => playlist[index]?.id).filter((id): id is string => Boolean(id));
+                    winampController.removeTracks(playlistSelection);
+                    void deleteWinampLocalAudioFiles(removedIds).catch((error) => setLocalLibraryStatus(error instanceof Error ? error.message : 'Unable to remove saved local audio'));
+                    setPlaylistSelection([]);
+                  }}>REM</button>
+                  <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection(playlist.map((_, index) => index))}>SEL</button>
+                  <details className="wa-classic-menu wa-classic-menu--pl">
+                    <summary className="wa-btn-pl">MISC</summary>
+                    <div className="wa-classic-menu__panel wa-classic-menu__panel--pl">
+                      <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection([])}>Clear selection</button>
+                      <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()}>Import M3U</button>
+                      <button type="button" className="wa-btn-pl" onClick={exportM3uFile}>Export M3U</button>
+                      <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()}>Import .wsz skin</button>
+                      {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => { void clearActiveWinampSkin().then(() => { setSkinVisuals(null); setSkinStatus('Built-in Winamp appearance restored'); }).catch((error) => { setSkinVisuals(null); setSkinStatus('Built-in appearance restored for this session; saved skin could not be cleared'); }); }}>Reset skin</button>}
+                    </div>
+                  </details>
                 </div>
-
-                <div className="wa-pl__footer-tools">
-                  <input
-                    ref={m3uInputRef}
-                    type="file"
-                    accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl"
-                    hidden
-                    onChange={(event) => {
-                      void importM3uFile(event.currentTarget.files?.[0]);
-                      event.currentTarget.value = '';
-                    }}
-                  />
-                  <div className="wa-pl__actions">
-                    <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()} title="Import an M3U playlist">M3U IN</button>
-                    <button type="button" className="wa-btn-pl" onClick={exportM3uFile} title="Export web-address tracks as an M3U playlist">M3U OUT</button>
-                    <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()} title="Import a classic Winamp .wsz skin">SKIN IN</button>
-                    {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => {
-                      void clearActiveWinampSkin().then(() => {
-                        setSkinVisuals(null);
-                        setSkinStatus('Built-in Winamp appearance restored');
-                      }).catch((error) => {
-                        setSkinVisuals(null);
-                        setSkinStatus(`Built-in appearance restored for this session; saved skin could not be cleared: ${error instanceof Error ? error.message : 'storage unavailable'}`);
-                      });
-                    }} title="Remove the imported skin">RESET</button>}
-                    <button type="button" className="wa-btn-pl wa-btn-pl--opts" title="Playlist options">
-                      LIST OPT
-                    </button>
-                  </div>
-                  <div className="wa-pl__status">
-                    {skinStatus && <span className="wa-pl__status-text" role="status" aria-live="polite">{skinStatus}</span>}
-                    <span className="wa-pl__status-text">
-                      {formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}
-                    </span>
-                  </div>
-
-
+                <div className="wa-pl__status">
+                  <span>{formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}</span>
+                  {(m3uStatus || localLibraryStatus || skinStatus) && <span className="wa-pl__status-text" role="status" aria-live="polite" title={m3uStatus || localLibraryStatus || skinStatus}>•</span>}
                 </div>
+                <details className="wa-classic-menu wa-classic-menu--list">
+                  <summary className="wa-btn-pl wa-btn-pl--opts">LIST<br />OPT</summary>
+                  <div className="wa-classic-menu__panel wa-classic-menu__panel--list">
+                    <label><input type="checkbox" defaultChecked /> Show track time</label>
+                    <label><input type="checkbox" defaultChecked /> Scroll follows playback</label>
+                    <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection([])}>Clear selection</button>
+                  </div>
+                </details>
               </div>
             </div>
           )}
