@@ -8375,3 +8375,128 @@
     max-width: calc(100vw - 16px);
   }
 }
+
+
+/* 2026-11-24 correction pass: one aligned 275px Classic column.
+   Video/visualization is a square directly above Main, never a sidecar. */
+.wa-shell--webamp-classic .wa-video,
+.wa-shell--webamp-classic .wa-video--video {
+  box-sizing: border-box;
+  width: 275px;
+  min-width: 275px;
+  max-width: 275px;
+  height: 275px;
+  min-height: 275px;
+  max-height: 275px;
+  aspect-ratio: 1 / 1;
+}
+.wa-shell--webamp-classic .wa-video__toolbar {
+  flex: 0 0 24px;
+  min-height: 24px;
+}
+.wa-shell--webamp-classic .wa-video__visualizer,
+.wa-shell--webamp-classic .wa-video__screen {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.wa-shell--webamp-classic .wa-video__screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-video,
+  .wa-shell--webamp-classic .wa-video--video {
+    width: min(275px, calc(100vw - 8px));
+    min-width: 0;
+    max-width: calc(100vw - 8px);
+    height: min(275px, calc(100vw - 8px));
+    min-height: 0;
+    max-height: calc(100vw - 8px);
+  }
+}
+
+/* Normalize live slider hitboxes to their visible rails.
+   Keep the native range controls; only remove inherited sizing ambiguity. */
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--pos,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal {
+  position: relative;
+  box-sizing: border-box;
+}
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--pos .wa-slider-input,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input {
+  position: absolute;
+  inset: 0;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 1;
+  touch-action: none;
+}
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--pos .wa-slider-input::-webkit-slider-thumb,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input::-webkit-slider-thumb,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input::-webkit-slider-thumb {
+  box-sizing: border-box;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+  align-items: flex-end;
+  justify-content: space-between;
+  min-height: 0;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__band {
+  box-sizing: border-box;
+  height: 65px;
+  min-height: 65px;
+  align-self: flex-end;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__fader {
+  box-sizing: border-box;
+  width: 13px;
+  height: 55px;
+  min-height: 55px;
+  max-height: 55px;
+  margin: 0 auto;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 13px !important;
+  min-width: 13px;
+  max-width: 13px;
+  height: 55px !important;
+  min-height: 55px;
+  max-height: 55px;
+  margin: 0;
+  padding: 0;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: none;
+  -webkit-appearance: none;
+  touch-action: none;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-webkit-slider-runnable-track,
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-moz-range-track {
+  width: 7px;
+  height: 100%;
+  margin-inline: auto;
+  background: transparent;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-webkit-slider-thumb,
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 12px;
+  height: 7px;
+}
