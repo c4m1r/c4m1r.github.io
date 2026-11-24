@@ -96,8 +96,38 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
   if (mode === 'Spectrum' || mode === 'Peak meter') return <div className={`wa-video__bars ${mode === 'Peak meter' ? 'wa-video__bars--peaks' : ''}`}>{bars.map((value, index) => <span key={index} style={{height:`${Math.max(2, mode === 'Peak meter' ? peaks[index] : value)}%`}} />)}</div>;
   if (mode === 'Bars and Waves') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path className="wa-viz-wave" d={bars.map((v,i)=>`M${(i/bars.length)*100} 50v${-Math.max(3,v*.42)} M${(i/bars.length)*100} 50v${Math.max(3,v*.42)}`).join(' ')} /><polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints} /></svg>;
   if (mode === 'Battery') return <div className="wa-viz-battery">{bars.slice(0,12).map((v,i)=><span key={i} className={v>45?'is-charged':''} style={{height:`${Math.max(8,v)}%`}} />)}</div>;
-  if (mode === 'Ambience') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="wa-ambience"><stop offset="0%" stopColor="#b7ffdc" stopOpacity=".9"/><stop offset="100%" stopColor="#1b62a5" stopOpacity="0"/></radialGradient></defs><circle cx="50" cy="50" r={24+Math.max(...bars)*.34} fill="url(#wa-ambience)" /><polyline className="wa-viz-wave wa-viz-wave--soft" points={wavePoints} /></svg>;
-  if (mode === 'Particle') return <svg viewBox="0 0 100 100" aria-hidden="true">{bars.map((v,i)=><circle key={i} cx={(i*37+13)%100} cy={(i*23+waveform[i%waveform.length])%100} r={1.2+v/18} fill={`hsl(${hue(i)} 95% 65%)`} opacity=".8" />)}</svg>;
+  if (mode === 'Ambience') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <radialGradient id="wa-ambience-a"><stop stopColor="#c5ffe2" stopOpacity=".92"/><stop offset=".42" stopColor="#48d9c0" stopOpacity=".34"/><stop offset="1" stopColor="#1b62a5" stopOpacity="0"/></radialGradient>
+      <radialGradient id="wa-ambience-b"><stop stopColor="#b0c8ff" stopOpacity=".78"/><stop offset=".48" stopColor="#7864dc" stopOpacity=".3"/><stop offset="1" stopColor="#34216e" stopOpacity="0"/></radialGradient>
+      <radialGradient id="wa-ambience-c"><stop stopColor="#fff0b0" stopOpacity=".6"/><stop offset="1" stopColor="#ff8c48" stopOpacity="0"/></radialGradient>
+    </defs>
+    <g className="wa-ambience-fields">
+      <ellipse cx={34 + safeBars[2] * .12} cy={39 + safeBars[7] * .1} rx={25 + safeBars[1] * .22} ry={19 + safeBars[5] * .16} fill="url(#wa-ambience-a)" />
+      <ellipse cx={67 - safeBars[12] * .1} cy={57 - safeBars[15] * .08} rx={24 + safeBars[10] * .2} ry={21 + safeBars[14] * .15} fill="url(#wa-ambience-b)" />
+      <ellipse cx="50" cy={28 + averageLevel * .12} rx={17 + averageLevel * .12} ry="13" fill="url(#wa-ambience-c)" />
+    </g>
+    <path d={waveform.map((v,i)=>{const x=5+i/Math.max(1,waveform.length-1)*90;const y=50+(v-50)*.48;return `${i?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke="#d2fff2" strokeWidth="1.1" opacity=".72" />
+    <polyline className="wa-viz-wave wa-viz-wave--soft" points={wavePoints} />
+  </svg>;
+  if (mode === 'Particle') return <svg className="wa-viz-particles" viewBox="0 0 100 100" aria-hidden="true">
+    <g className="wa-particle-orbits">
+      {[0,1,2].map((ring)=><ellipse key={ring} cx="50" cy="50" rx={18+ring*11+averageLevel*.08} ry={7+ring*5+averageLevel*.045} transform={`rotate(${ring*57+averageLevel*.12} 50 50)`} fill="none" stroke={`hsl(${190+ring*34} 90% 68%)`} strokeWidth=".35" opacity=".32" />)}
+    </g>
+    {safeBars.map((v,i)=>{
+      const angle=(i/safeBars.length)*Math.PI*2;
+      const orbit=18+(i%3)*10+v*.12;
+      const x=50+Math.cos(angle)*orbit;
+      const y=50+Math.sin(angle)*orbit;
+      const drift=(waveform[i%waveform.length]-50)*.12;
+      return <g key={i}>
+        <line x1="50" y1="50" x2={x} y2={y} stroke={`hsl(${hue(i)} 90% 65%)`} strokeWidth=".28" opacity=".28" />
+        <circle cx={x+drift} cy={y-drift*.7} r={.7+v/24} fill={`hsl(${hue(i)} 95% 68%)`} opacity=".9" />
+        <circle cx={x-drift*.5} cy={y+drift} r=".65" fill="#eaffff" opacity=".65" />
+      </g>;
+    })}
+    <circle cx="50" cy="50" r={2+averageLevel*.035} fill="#eaffff" opacity=".8" />
+  </svg>;
   if (mode === 'Plenoptic') return <svg className="wa-viz-plenoptic" viewBox="0 0 100 100" aria-hidden="true">
     <defs><radialGradient id="wa-plenoptic-glow"><stop stopColor="#b9faff" stopOpacity=".9" /><stop offset=".28" stopColor="#438bff" stopOpacity=".28" /><stop offset="1" stopColor="#06101f" stopOpacity="0" /></radialGradient></defs>
     <circle cx="50" cy="50" r="47" fill="url(#wa-plenoptic-glow)" />
@@ -119,8 +149,31 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
     <circle cx="50" cy="50" r={8 + averageLevel * .11} fill="url(#wa-alchemy-core)" opacity=".9" />
     {safeBars.map((value,index)=>{const angle=index/safeBars.length*Math.PI*2;const inner=10;const outer=inner+value*.18;return <line key={index} x1={50+Math.cos(angle)*inner} y1={50+Math.sin(angle)*inner} x2={50+Math.cos(angle)*outer} y2={50+Math.sin(angle)*outer} stroke={`hsl(${180+index*9} 100% 72%)`} strokeWidth=".75" opacity=".85" />;})}
   </svg>;
-  if (mode === 'AVS') return <svg className={`wa-viz-preset wa-viz-preset--${presetIndex % 4}`} viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(50 50)"><polyline className="wa-viz-wave" points={waveform.map((v,i)=>{const a=(i/(waveform.length-1))*Math.PI*2;const r=12+v*.34;return `${Math.cos(a)*r},${Math.sin(a)*r}`;}).join(' ')} /><polyline className="wa-viz-wave wa-viz-wave--secondary" points={waveform.map((v,i)=>{const a=(i/(waveform.length-1))*Math.PI*2;const r=10+v*.28;return `${Math.cos(-a)*r},${Math.sin(-a)*r}`;}).join(' ')} /></g></svg>;
-  return <svg className={`wa-viz-preset wa-viz-preset--${presetIndex % 4}`} viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="wa-milkdrop"><stop stopColor="#fff" /><stop offset=".35" stopColor="#4be8ff" /><stop offset="1" stopColor="#18216c" stopOpacity="0" /></radialGradient></defs><circle cx="50" cy="50" r={15+Math.max(...bars)*.35} fill="url(#wa-milkdrop)" opacity=".8" /><polygon points={radialPoints} fill="none" stroke="#ff69d4" strokeWidth="1.1" /><polyline className="wa-viz-wave" points={wavePoints} /></svg>;
+  if (mode === 'AVS') {
+    const radialWave = waveform.map((v,i)=>{
+      const angle=(i/Math.max(1,waveform.length))*Math.PI*2;
+      const radius=13+v*.34;
+      return `${50+Math.cos(angle)*radius},${50+Math.sin(angle)*radius}`;
+    }).join(' ');
+    const mirroredWave = waveform.map((v,i)=>{
+      const angle=(i/Math.max(1,waveform.length))*Math.PI*2;
+      const radius=10+v*.28;
+      return `${50+Math.cos(-angle)*radius},${50+Math.sin(-angle)*radius}`;
+    }).join(' ');
+    return <svg className={`wa-viz-preset wa-viz-preset--${presetIndex % 4}`} viewBox="0 0 100 100" aria-hidden="true">
+      {presetIndex % 4 === 0 && <g><circle cx="50" cy="50" r="34" fill="none" stroke="#285b86" strokeWidth=".5" strokeDasharray="2 2"/><polyline className="wa-viz-wave" points={radialWave}/><polyline className="wa-viz-wave wa-viz-wave--secondary" points={mirroredWave}/></g>}
+      {presetIndex % 4 === 1 && <g>{[0,1,2,3,4].map((ring)=><circle key={ring} cx="50" cy="50" r={8+ring*8+averageLevel*.08} fill="none" stroke={`hsl(${190+ring*29} 95% 65%)`} strokeWidth={1.2-ring*.12} opacity={.75-ring*.1}/>)}<polyline className="wa-viz-wave" points={radialWave}/></g>}
+      {presetIndex % 4 === 2 && <g>{[0,1,2,3].map((shape)=><polygon key={shape} points={safeBars.map((v,i)=>{const a=i/safeBars.length*Math.PI*2+shape*Math.PI/8;const r=12+v*(.2+shape*.025);return `${50+Math.cos(a)*r},${50+Math.sin(a)*r}`;}).join(' ')} fill="none" stroke={`hsl(${185+shape*48} 100% 68%)`} strokeWidth=".8" opacity={.85-shape*.13}/> )}</g>}
+      {presetIndex % 4 === 3 && <g>{[0,1,2,3,4,5,6,7].map((facet)=><path key={facet} d={`M50 50 L${50+Math.cos(facet*Math.PI/4)*(18+averageLevel*.16)} ${50+Math.sin(facet*Math.PI/4)*(18+averageLevel*.16)} L${50+Math.cos((facet+1)*Math.PI/4)*(18+averageLevel*.16)} ${50+Math.sin((facet+1)*Math.PI/4)*(18+averageLevel*.16)} Z`} fill={`hsl(${facet*45+190} 90% 55% / .12)`} stroke={`hsl(${facet*45+190} 95% 68%)`} strokeWidth=".6"/>)}<polyline className="wa-viz-wave wa-viz-wave--secondary" points={radialWave}/></g>}
+    </svg>;
+  }
+  return <svg className={`wa-viz-preset wa-viz-preset--${presetIndex % 4}`} viewBox="0 0 100 100" aria-hidden="true">
+    <defs><radialGradient id="wa-milkdrop"><stop stopColor="#fff" /><stop offset=".35" stopColor="#4be8ff" /><stop offset="1" stopColor="#18216c" stopOpacity="0" /></radialGradient></defs>
+    {presetIndex % 4 === 0 && <g><circle className="wa-milkdrop-pulse" cx="50" cy="50" r={15+averageLevel*.3} fill="url(#wa-milkdrop)" opacity=".8"/><polyline className="wa-viz-wave" points={radialPoints}/><polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints}/></g>}
+    {presetIndex % 4 === 1 && <g>{[0,1,2,3,4].map((flame)=><path key={flame} d={waveform.map((v,i)=>{const x=8+i/Math.max(1,waveform.length-1)*84;const y=50+(v-50)*(.22+flame*.055)+Math.sin(i*.18+flame)*((safeBars[flame*3]||0)*.08+2);return `${i?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke={`hsl(${flame*47+175} 100% 68%)`} strokeWidth={1.5-flame*.18} opacity={.85-flame*.1}/>)}</g>}
+    {presetIndex % 4 === 2 && <g>{[0,1,2,3,4,5].map((depth)=><polygon key={depth} points={safeBars.map((v,i)=>{const a=i/safeBars.length*Math.PI*2;const r=(12+v*.22)*(1-depth*.105);return `${50+Math.cos(a+depth*.08)*r},${50+Math.sin(a+depth*.08)*r}`;}).join(' ')} fill="none" stroke={`hsl(${185+depth*26} 95% 68%)`} strokeWidth=".8" opacity={.9-depth*.12}/>)}<circle className="wa-milkdrop-pulse" cx="50" cy="50" r={5+averageLevel*.08} fill="url(#wa-milkdrop)"/></g>}
+    {presetIndex % 4 === 3 && <g><polygon points={radialPoints} fill="rgba(255,70,210,.08)" stroke="#ff69d4" strokeWidth="1.1"/>{[0,1,2,3].map((echo)=><polyline key={echo} points={waveform.map((v,i)=>{const x=50+(i/Math.max(1,waveform.length-1)-.5)*(72-echo*10);const y=50+(v-50)*(.28+echo*.045);return `${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke={`hsl(${185+echo*39} 100% 68%)`} strokeWidth=".85" opacity={.8-echo*.14}/>)}</g>}
+  </svg>;
 }
 
 interface WinampPlayerProps { onClose?: () => void; }
