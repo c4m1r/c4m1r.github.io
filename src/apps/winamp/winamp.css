@@ -7368,3 +7368,286 @@
     letter-spacing: -.15px;
   }
 }
+
+
+/* Webamp Classic — Equalizer faceplate reconstruction.
+   Presentation only: preserve the existing EQ inputs, values and handlers. */
+.wa-shell--webamp-classic .wa-equalizer {
+  background: linear-gradient(180deg, #4a4a4a 0%, #242424 8%, #303030 100%);
+  border: 1px solid #080808;
+  box-shadow: inset 1px 1px #777, inset -1px -1px #101010, 1px 2px 3px rgba(0,0,0,.55);
+}
+
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar {
+  background: linear-gradient(180deg, #555 0%, #292929 48%, #171717 100%);
+  color: #e5e5d8;
+  text-shadow: 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-eq__body {
+  background: linear-gradient(180deg, #383838 0%, #292929 45%, #202020 100%);
+  box-shadow: inset 0 1px rgba(255,255,255,.08);
+}
+
+.wa-shell--webamp-classic .wa-eq__header {
+  align-items: center;
+  gap: 4px;
+}
+
+.wa-shell--webamp-classic .wa-eq__toggles {
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__toggles .wa-btn-mode {
+  box-sizing: border-box;
+  min-width: 25px;
+  padding: 0 3px;
+  border: 1px solid #090909;
+  border-top-color: #777;
+  border-left-color: #777;
+  border-radius: 0;
+  background: linear-gradient(180deg, #555, #242424 55%, #333);
+  color: #d4d4c8;
+  font: 700 6px/9px Arial, sans-serif;
+  text-shadow: 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__toggles .wa-btn-mode.is-active {
+  background: linear-gradient(180deg, #303b24, #17200f);
+  color: #d8f6a4;
+  box-shadow: inset 0 0 4px rgba(140,220,70,.25);
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-led-dot {
+  width: 4px;
+  height: 4px;
+  margin-right: 2px;
+  border: 1px solid #111;
+  border-radius: 50%;
+  background: #66704a;
+  box-shadow: inset 0 0 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-btn-mode.is-active .wa-led-dot {
+  background: #b7ff4c;
+  box-shadow: 0 0 3px #aaff36, inset 0 0 1px #fff;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__spline {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid #080b08;
+  background-color: #030703;
+  background-image: linear-gradient(rgba(80,110,70,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(80,110,70,.18) 1px, transparent 1px);
+  background-size: 12px 6px;
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px 1px #505050, 0 0 0 1px #444;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-spline-svg {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 0 2px rgba(255,238,0,.75));
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-spline-svg polyline {
+  stroke: #eaff39;
+  stroke-width: 1.35;
+  stroke-linecap: square;
+  stroke-linejoin: round;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__preset-select {
+  flex: 0 0 58px;
+  border: 1px solid #090909;
+  border-top-color: #777;
+  border-left-color: #777;
+  border-radius: 0;
+  background: linear-gradient(180deg, #333, #171717);
+  color: #deded0;
+  font: 6px Arial, sans-serif;
+  text-shadow: 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools {
+  box-sizing: border-box;
+  padding: 0 1px;
+  border-top: 1px solid #555;
+  border-bottom: 1px solid #111;
+  background: linear-gradient(180deg, #363636, #242424);
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools input.wa-btn-presets {
+  border: 1px solid #090909;
+  border-top-color: #777;
+  border-left-color: #777;
+  border-radius: 0;
+  background: linear-gradient(180deg, #151515, #080808);
+  color: #d7e2a0;
+  font: 6px Arial, sans-serif;
+  text-align: left;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode {
+  box-sizing: border-box;
+  border: 1px solid #080808;
+  border-top-color: #777;
+  border-left-color: #777;
+  border-radius: 0;
+  background: linear-gradient(180deg, #5a5a5a 0%, #383838 48%, #242424 100%);
+  color: #e1e1d7;
+  text-shadow: 1px 1px #111;
+  box-shadow: inset 0 1px rgba(255,255,255,.12);
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode:active:not(:disabled) {
+  border-color: #777 #080808 #080808 #777;
+  background: linear-gradient(180deg, #222, #3d3d3d);
+  padding-top: 1px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode:disabled {
+  color: #777;
+  opacity: .65;
+}
+
+.wa-shell--webamp-classic .wa-eq__sliders-container {
+  position: relative;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2px;
+  padding: 1px 2px 0;
+  border-top: 1px solid #111;
+  background: linear-gradient(180deg, rgba(0,0,0,.12), rgba(255,255,255,.025));
+}
+
+.wa-shell--webamp-classic .wa-eq__labels-left {
+  flex: 0 0 22px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 2px 0 0;
+  color: #bdbdb2;
+  font: 5px/1 Arial, sans-serif;
+  text-shadow: 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-eq__band {
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 0;
+}
+
+.wa-shell--webamp-classic .wa-eq__fader {
+  position: relative;
+  box-sizing: border-box;
+  width: 13px;
+  height: 55px;
+  border: 1px solid #080808;
+  border-top-color: #111;
+  border-left-color: #111;
+  border-right-color: #656565;
+  border-bottom-color: #656565;
+  background: repeating-linear-gradient(to bottom, #111 0 1px, #282828 1px 2px, #393939 2px 3px, #222 3px 5px);
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px 1px rgba(255,255,255,.12);
+}
+
+.wa-shell--webamp-classic .wa-eq__fader::before {
+  position: absolute;
+  top: 50%;
+  right: 1px;
+  left: 1px;
+  height: 1px;
+  background: rgba(210,210,190,.38);
+  content: "";
+  pointer-events: none;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  height: 55px;
+  margin: 0;
+  accent-color: #bfc0b5;
+  cursor: ns-resize;
+  opacity: 1;
+  filter: contrast(1.08);
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 55px;
+  border: 0;
+  background: transparent;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-thumb {
+  width: 12px;
+  height: 7px;
+  border: 1px solid #080808;
+  border-top-color: #aaa;
+  border-left-color: #888;
+  border-radius: 0;
+  background: linear-gradient(180deg, #d0d0c5 0%, #77776f 35%, #42423d 55%, #b5b5a9 100%);
+  box-shadow: 0 1px 1px #000;
+  -webkit-appearance: none;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-range-track {
+  width: 100%;
+  height: 55px;
+  border: 0;
+  background: transparent;
+}
+
+.wa-shell--webamp-classic .wa-eq__input-vert::-moz-range-thumb {
+  width: 10px;
+  height: 6px;
+  border: 1px solid #080808;
+  border-top-color: #aaa;
+  border-left-color: #888;
+  border-radius: 0;
+  background: linear-gradient(180deg, #d0d0c5, #55554f 55%, #aaa);
+  box-shadow: 0 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-eq__band-name {
+  min-height: 8px;
+  margin-top: 2px;
+  color: #c8c8bd;
+  font: 5px/7px Arial, sans-serif;
+  letter-spacing: -.15px;
+  text-align: center;
+  text-shadow: 1px 1px #000;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-eq__divider {
+  flex: 0 0 1px;
+  width: 1px;
+  height: 55px;
+  margin: 0 1px 10px;
+  background: linear-gradient(180deg, transparent, #090909 10%, #777 50%, #111 90%, transparent);
+}
+
+.wa-shell--webamp-classic .wa-eq__status {
+  color: #d7e8a4;
+  font: 6px Arial, sans-serif;
+  text-shadow: 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-equalizer button:focus-visible,
+.wa-shell--webamp-classic .wa-equalizer input:focus-visible,
+.wa-shell--webamp-classic .wa-equalizer select:focus-visible {
+  outline: 1px solid #e6e36a;
+  outline-offset: 1px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__labels-left { flex-basis: 20px; }
+  .wa-shell--webamp-classic .wa-eq__fader { width: 12px; }
+  .wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-thumb { width: 11px; }
+  .wa-shell--webamp-classic .wa-eq__band-name { font-size: 4.7px; letter-spacing: -.2px; }
+}
