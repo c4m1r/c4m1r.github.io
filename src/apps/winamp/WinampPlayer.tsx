@@ -81,11 +81,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [skinStatus, setSkinStatus] = useState('');
   const [skinAppearance, setSkinAppearance] = useState<'dev-alpha' | 'webamp-classic' | 'wsz'>(() => {
     try {
-      const saved = window.localStorage.getItem('winamp:skin-appearance:v2')
-        ?? window.localStorage.getItem('winamp:skin-appearance:v1');
-      // Classic is the default. Preserve an explicitly selected imported skin;
-      // migrate the former Dev Alpha default to Classic.
-      return saved === 'wsz' ? 'wsz' : 'webamp-classic';
+      const saved = window.localStorage.getItem('winamp:skin-appearance:v2');
+      if (saved === 'dev-alpha' || saved === 'webamp-classic' || saved === 'wsz') return saved;
+      // Classic is the default. Preserve a legacy imported skin, but migrate
+      // the former Dev Alpha default to Classic.
+      return window.localStorage.getItem('winamp:skin-appearance:v1') === 'wsz'
+        ? 'wsz'
+        : 'webamp-classic';
     } catch {
       return 'webamp-classic';
     }
