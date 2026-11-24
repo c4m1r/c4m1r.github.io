@@ -543,3 +543,11 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Rebalanced the fader-bank faceplate and inner clearance so the 63 px control travel and 74 px band/label stack fit without clipping. Refined the disabled-control and status readouts, plus narrow-viewport insets.
 - CSS-only. No TSX, slider values/ranges/steps/handlers, frequency mapping, controller/DSP, playback behavior, Main/Playlist, Dev Alpha or imported .wsz renderer changed.
 - Verification: CSS brace balance (626/626) and all newly added selectors scoped to .wa-shell--webamp-classic. Build/typecheck, browser visual QA (including 440 px and narrower), and CI remain unconfirmed.
+
+
+### Winamp — Webamp Classic three-window hardware chrome (2026-11-24)
+- Согласовал внешний корпус Main, Equalizer и Playlist: одинаковая ширина 275 px, металлический верхний/боковой bevel, нижняя тёмная грань и единая внешняя тень.
+- Унифицировал 14 px titlebar: brushed-metal градиент, тонкую внутреннюю подсветку, типографику, выравнивание системных кнопок, hover/pressed/focus и красный close-state. Для Main, EQ и Playlist используется одна визуальная система без изменения JSX и обработчиков.
+- Подтянул швы и металлическую поверхность Main/Playlist body, усилил inset у Playlist list и разделителя footer. EQ сохраняет собственную откалиброванную faceplate, график и фейдерную секцию — общий проход не перезаписывает их специализированные поверхности.
+- Сохранены размеры и позиционирование окон, window drag/shade/close, контроллер, аудио, визуализатор, playlist actions, Dev Alpha и импортированные .wsz. Только CSS в winamp.css.
+- Проверка исходника: скобки CSS сбалансированы (644/644); все новые селекторы ограничены .wa-shell--webamp-classic. Browser visual QA, build/typecheck и реальная проверка взаимодействий не запускались; CI для коммита нужно проверять отдельно. Не считать проход Verified до визуальной проверки трёх окон вместе и на узком экране.
