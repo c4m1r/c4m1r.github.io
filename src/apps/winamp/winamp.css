@@ -6883,3 +6883,55 @@
     font-size: 7px;
   }
 }
+
+
+
+/* Webamp Classic — final three-window titlebar alignment.
+   Match the system-button footprint across Main, Equalizer and Playlist
+   without flattening their distinct title text or imported-skin branches. */
+.wa-shell--webamp-classic .wa-main > .wa-titlebar,
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar,
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__controls,
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar .wa-titlebar__controls,
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar .wa-titlebar__controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  height: 100%;
+  min-width: 0;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__btn,
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar .wa-titlebar__btn,
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar .wa-titlebar__btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 9px;
+  align-items: center;
+  justify-content: center;
+  width: 9px;
+  min-width: 9px;
+  height: 9px;
+  min-height: 9px;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  font: 700 7px/7px Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__btn:focus-visible,
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar .wa-titlebar__btn:focus-visible,
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar .wa-titlebar__btn:focus-visible {
+  outline: 1px solid #ffe36e;
+  outline-offset: 1px;
+}
