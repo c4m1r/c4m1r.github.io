@@ -4759,3 +4759,145 @@
     min-width: 0;
   }
 }
+
+
+/* Webamp Classic — Main hardware controls and live fader caps.
+   Keep the native range inputs interactive; only their visual skin changes. */
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--pos {
+  border-color: #080a07 #65685c #65685c #080a07;
+  background: linear-gradient(180deg, #080a07 0%, #171a14 48%, #303329 100%);
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px 0 rgba(190,198,166,.22);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-progress {
+  position: relative;
+  height: 2px;
+  min-width: 0;
+  background: linear-gradient(180deg, #d7e9a2 0%, #91c64b 48%, #426b27 100%);
+  box-shadow: 0 0 3px rgba(145,198,75,.34);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-progress::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -2px;
+  width: 5px;
+  height: 8px;
+  border: 1px solid #080908;
+  background: linear-gradient(90deg, #77796d 0%, #d0d1c3 42%, #66685e 100%);
+  box-shadow: inset 1px 0 rgba(255,255,255,.42), 1px 0 #000;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal {
+  box-sizing: border-box;
+  height: 11px;
+  min-height: 11px;
+  background:
+    repeating-linear-gradient(90deg, rgba(190,198,166,.22) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, #080a07, #252820 52%, #11130e);
+  box-shadow: inset 1px 1px 1px #000, inset -1px -1px 0 #686b5e;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input {
+  z-index: 2;
+  opacity: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  cursor: ew-resize;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input::-webkit-slider-runnable-track,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input::-webkit-slider-runnable-track {
+  height: 9px;
+  background: transparent;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input::-moz-range-track,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input::-moz-range-track {
+  height: 9px;
+  background: transparent;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input::-webkit-slider-thumb,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input::-webkit-slider-thumb {
+  width: 8px;
+  height: 11px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #090a08;
+  border-radius: 0;
+  background: linear-gradient(90deg, #55574d 0%, #c0c2b2 38%, #77796e 70%, #34362e 100%);
+  box-shadow: inset 1px 0 rgba(255,255,255,.38), 1px 0 #000;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input::-moz-range-thumb,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input::-moz-range-thumb {
+  width: 7px;
+  height: 9px;
+  border: 1px solid #090a08;
+  border-radius: 0;
+  background: linear-gradient(90deg, #55574d 0%, #c0c2b2 38%, #77796e 70%, #34362e 100%);
+  box-shadow: inset 1px 0 rgba(255,255,255,.38), 1px 0 #000;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input:active::-webkit-slider-thumb,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input:active::-webkit-slider-thumb {
+  background: linear-gradient(90deg, #303229, #858779 48%, #4b4d43);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol .wa-slider-input:focus-visible,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal .wa-slider-input:focus-visible {
+  outline: 1px dotted #d3e7a0;
+  outline-offset: -1px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-buttons-group {
+  gap: 1px;
+  padding: 0 1px;
+  background: linear-gradient(180deg, #10110e, #292a24 50%, #11120f);
+  box-shadow: inset 1px 1px #080908, inset -1px -1px rgba(210,214,192,.18);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-btn-transport {
+  border-color: #a1a294 #0b0c09 #0b0c09 #a1a294;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.13), transparent 45%),
+    linear-gradient(180deg, #62645a 0%, #414339 48%, #292b24 100%);
+  box-shadow: inset 1px 1px rgba(255,255,255,.16), inset -1px -1px rgba(0,0,0,.62);
+  text-shadow: 1px 1px #080908;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-btn-transport:hover:not(:active) {
+  border-top-color: #d0d2bf;
+  border-left-color: #b9bba9;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.2), transparent 48%),
+    linear-gradient(180deg, #77796d, #45473d 55%, #303229);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-btn-transport:active {
+  border-color: #080908 #929486 #929486 #080908;
+  background: linear-gradient(180deg, #24261f, #4b4d43);
+  box-shadow: inset 1px 1px 2px #080908;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-btn-transport:focus-visible,
+.wa-shell--webamp-classic .wa-main__body .wa-btn-toggle:focus-visible,
+.wa-shell--webamp-classic .wa-main__body .wa-btn-mode:focus-visible {
+  outline: 1px dotted #d3e7a0;
+  outline-offset: 1px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol,
+  .wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal {
+    height: 10px;
+    min-height: 10px;
+  }
+}
