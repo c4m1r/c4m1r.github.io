@@ -1501,19 +1501,19 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => { void clearActiveWinampSkin().then(() => { setSkinVisuals(null); setSkinStatus('Built-in Winamp appearance restored'); }).catch(() => { setSkinVisuals(null); setSkinStatus('Built-in appearance restored for this session; saved skin could not be cleared'); }); }}>Reset skin</button>}
                     </div>
                   </details>
+                  <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--list" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
+                    <summary className="wa-btn-pl wa-btn-pl--opts">LIST OPT</summary>
+                    <div className="wa-classic-menu__panel wa-classic-menu__panel--list">
+                      <div className="wa-classic-menu__info">PLAYLIST OPTIONS</div>
+                      <button type="button" className="wa-btn-pl" aria-pressed={showPlaylistDurations} onClick={() => setShowPlaylistDurations((value) => !value)}>Track durations: {showPlaylistDurations ? 'ON' : 'OFF'}</button>
+                      <button type="button" className="wa-btn-pl" aria-pressed={followPlaylistPlayback} onClick={() => setFollowPlaylistPlayback((value) => !value)}>Playback follow: {followPlaylistPlayback ? 'ON' : 'OFF'}</button>
+                    </div>
+                  </details>
                 </div>
                 <div className="wa-pl__status">
                   <span>{formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}</span>
                   {(m3uStatus || localLibraryStatus || skinStatus) && <span className="wa-pl__status-text" role="status" aria-live="polite" title={m3uStatus || localLibraryStatus || skinStatus}>•</span>}
                 </div>
-                <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--list" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
-                  <summary className="wa-btn-pl wa-btn-pl--opts">LIST<br />OPT</summary>
-                  <div className="wa-classic-menu__panel wa-classic-menu__panel--list">
-                    <div className="wa-classic-menu__info">PLAYLIST OPTIONS</div>
-                    <button type="button" className="wa-btn-pl" aria-pressed={showPlaylistDurations} onClick={() => setShowPlaylistDurations((value) => !value)}>Track durations: {showPlaylistDurations ? 'ON' : 'OFF'}</button>
-                    <button type="button" className="wa-btn-pl" aria-pressed={followPlaylistPlayback} onClick={() => setFollowPlaylistPlayback((value) => !value)}>Playback follow: {followPlaylistPlayback ? 'ON' : 'OFF'}</button>
-                  </div>
-                </details>
               </div>
               </>
               ) : (
