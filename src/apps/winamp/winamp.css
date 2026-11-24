@@ -8811,3 +8811,115 @@
     width: 15px !important;
   }
 }
+
+
+/* Playlist footer: five equal compact controls beside a dedicated time readout. */
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 68px !important;
+  grid-template-rows: 16px !important;
+  align-items: center !important;
+  column-gap: 4px !important;
+  row-gap: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: 1px 16px 0 2px !important;
+  margin: 0 !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-items: center !important;
+  gap: 2px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-btn-pl,
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-classic-menu > summary {
+  display: flex !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 14px !important;
+  min-height: 14px !important;
+  max-height: 14px !important;
+  margin: 0 !important;
+  padding: 0 1px !important;
+  border-radius: 0 !important;
+  font: 700 6px/12px Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-classic-menu {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-classic-menu > summary {
+  list-style: none !important;
+  cursor: pointer !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-classic-menu > summary::-webkit-details-marker {
+  display: none !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-classic-menu[open] > .wa-classic-menu__panel {
+  bottom: calc(100% + 3px) !important;
+  top: auto !important;
+  left: 0 !important;
+  right: auto !important;
+  z-index: 30 !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__status {
+  display: flex !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 68px !important;
+  min-width: 0 !important;
+  height: 13px !important;
+  min-height: 13px !important;
+  margin: 0 !important;
+  padding: 0 2px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  font: 6px/11px Arial, Helvetica, sans-serif !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__status > span:first-child {
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic {
+    grid-template-columns: minmax(0, 1fr) 64px !important;
+    column-gap: 3px !important;
+    padding-right: 16px !important;
+    padding-left: 2px !important;
+  }
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__status {
+    width: 64px !important;
+    font-size: 5.8px !important;
+  }
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions {
+    gap: 1px !important;
+  }
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-btn-pl,
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-classic-menu > summary {
+    font-size: 5.7px !important;
+  }
+}
