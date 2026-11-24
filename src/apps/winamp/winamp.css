@@ -6989,7 +6989,7 @@
   height: 232px;
   min-height: 232px;
   max-height: min(464px, calc(100vh - 38px));
-  resize: both;
+  resize: none;
   overflow: hidden;
 }
 
@@ -7016,6 +7016,21 @@
   resize: none;
   overflow: hidden;
 }
+
+.wa-shell--webamp-classic .wa-playlist__resize-handle {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  z-index: 5;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  touch-action: none;
+  background:
+    linear-gradient(135deg, transparent 0 42%, #999 43% 49%, transparent 50% 60%, #777 61% 67%, transparent 68%),
+    linear-gradient(135deg, transparent 0 62%, #bbb 63% 69%, transparent 70%);
+}
+
 
 @media (max-width: 440px) {
   .wa-shell--webamp-classic .wa-playlist {
