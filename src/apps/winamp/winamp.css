@@ -1856,3 +1856,184 @@
     font-size: 5px;
   }
 }
+
+/* Webamp Classic — Playlist visual pass.
+   Keep the classic 275 px chassis and compact list/footer hierarchy while
+   retaining every project-specific playlist and skin-management control. */
+.wa-shell--webamp-classic .wa-playlist {
+  width: 275px;
+  min-width: 275px;
+  height: 232px;
+  min-height: 232px;
+  border: 1px solid #050505;
+  border-top-color: #777;
+  border-left-color: #777;
+  border-right-color: #090909;
+  border-bottom-color: #090909;
+  background: #252525;
+  box-shadow: inset 1px 1px #aaa, inset -1px -1px #080808, 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar {
+  flex: 0 0 14px;
+}
+
+.wa-shell--webamp-classic .wa-pl__body {
+  box-sizing: border-box;
+  height: 216px;
+  min-height: 216px;
+  padding: 4px 5px 4px;
+  gap: 3px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #343434 0%, #252525 100%);
+}
+
+.wa-shell--webamp-classic .wa-pl__list {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-height: 104px;
+  max-height: none;
+  padding: 1px 0;
+  overflow: auto;
+  border: 1px solid #111;
+  border-top-color: #777;
+  border-left-color: #777;
+  background: #000;
+  color: #00e800;
+  font: 10px/13px "Courier New", monospace;
+  scrollbar-color: #777 #111;
+  scrollbar-width: thin;
+}
+
+.wa-shell--webamp-classic .wa-pl__item {
+  box-sizing: border-box;
+  min-height: 13px;
+  height: 13px;
+  padding: 0 3px;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-pl__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wa-shell--webamp-classic .wa-pl__dur {
+  flex: 0 0 auto;
+  padding-left: 5px;
+  color: inherit;
+}
+
+.wa-shell--webamp-classic .wa-pl__footer {
+  flex: 0 0 auto;
+  gap: 2px;
+  margin: 0;
+}
+
+.wa-shell--webamp-classic .wa-pl__footer > .wa-pl__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-pl__footer-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px 3px;
+  padding-top: 2px;
+  border-top: 1px solid #111;
+}
+
+.wa-shell--webamp-classic .wa-pl__footer-tools > .wa-pl__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.wa-shell--webamp-classic .wa-pl__footer-tools > .wa-pl__actions::-webkit-scrollbar {
+  display: none;
+}
+
+.wa-shell--webamp-classic .wa-btn-pl {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: 0;
+  height: 15px;
+  min-height: 15px;
+  padding: 0 4px;
+  border-radius: 0;
+  font: bold 7px/13px Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-pl__import-status {
+  flex: 0 0 auto;
+  max-height: 13px;
+  margin: 0;
+  padding: 1px 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 7px/10px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-pl__status {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 11px;
+  padding: 0 3px;
+  overflow: hidden;
+  font: 7px/10px "Courier New", monospace;
+}
+
+.wa-shell--webamp-classic .wa-pl__status-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-pl__mini-transport {
+  grid-column: 1;
+  display: flex;
+  gap: 1px;
+}
+
+.wa-shell--webamp-classic .wa-btn-pl-mini {
+  width: 15px;
+  height: 13px;
+  padding: 0;
+  font: 7px/10px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-btn-pl--opts {
+  grid-column: 2;
+  justify-self: end;
+  height: 15px;
+  margin: 0;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist {
+    width: min(275px, calc(100vw - 8px));
+    min-width: 0;
+  }
+
+  .wa-shell--webamp-classic .wa-pl__body {
+    padding-inline: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-pl__footer-tools > .wa-pl__actions {
+    overflow-x: auto;
+  }
+}
+
