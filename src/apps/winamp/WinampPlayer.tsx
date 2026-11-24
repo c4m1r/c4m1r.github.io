@@ -393,24 +393,33 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const videoUrlRef = useRef('');
   const videoInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => () => { if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current); }, []);
-  // Classic's video/visualizer is a 275px square directly above Main.
-  // Reserve that vertical space so the four-window stack starts as one aligned column.
-  const classicStackTop = typeof window === 'undefined'
-    ? 283
-    : Math.max(283, Math.min(320, window.innerHeight - 480));
-  const classicStackLeft = typeof window === 'undefined'
-    ? 24
-    : Math.max(8, Math.min(24, window.innerWidth - 283));
-  const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>(() => {
-    const x = skinAppearance === 'webamp-classic' ? classicStackLeft : 24;
-    const top = skinAppearance === 'webamp-classic' ? classicStackTop : 48;
+  // Build the Classic windows as one measured vertical stack:
+  // Video 275 + Main 116 + EQ 116 + Playlist 232 = 739px total.
+  // Center the whole stack when it fits; on short screens pin its top to 8px
+  // rather than starting the Main window too low and hiding the Playlist.
+  const getClassicWindowPositions = () => {
+    const viewportWidth = typeof window === 'undefined' ? 375 : window.innerWidth;
+    const viewportHeight = typeof window === 'undefined' ? 800 : window.innerHeight;
+    const x = Math.max(4, Math.round((viewportWidth - 275) / 2));
+    const stackTop = Math.max(8, Math.round((viewportHeight - 739) / 2));
+    const mainTop = stackTop + 275;
     return {
-      main: { x, y: top },
-      equalizer: { x, y: top + 116 },
-      playlist: { x, y: top + 232 },
-      video: { x, y: top - 275 },
+      main: { x, y: mainTop },
+      equalizer: { x, y: mainTop + 116 },
+      playlist: { x, y: mainTop + 232 },
+      video: { x, y: stackTop },
     };
-  });
+  };
+  const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>(() => (
+    skinAppearance === 'webamp-classic'
+      ? getClassicWindowPositions()
+      : {
+          main: { x: 24, y: 48 },
+          equalizer: { x: 24, y: 164 },
+          playlist: { x: 24, y: 280 },
+          video: { x: 24, y: 0 },
+        }
+  ));
   const [playlistSize, setPlaylistSize] = useState({ width: 275, height: 232 });
   const playlistResizeRef = useRef<{ pointerId: number; pointerX: number; pointerY: number; width: number; height: number } | null>(null);
   const dragRef = useRef<{
@@ -902,14 +911,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 const nextAppearance = event.currentTarget.value as 'dev-alpha' | 'webamp-classic' | 'wsz';
                 setSkinAppearance(nextAppearance);
                 if (nextAppearance === 'webamp-classic') {
-                  const top = Math.max(283, Math.min(320, window.innerHeight - 480));
-                  const left = Math.max(8, Math.min(24, window.innerWidth - 283));
-                  setWindowPositions({
-                    main: { x: left, y: top },
-                    equalizer: { x: left, y: top + 116 },
-                    playlist: { x: left, y: top + 232 },
-                    video: { x: left, y: top - 275 },
-                  });
+                  setWindowPositions(getClassicWindowPositions());
                 }
               }}>
                 <option value="dev-alpha">Dev Alpha</option>
