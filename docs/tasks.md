@@ -693,14 +693,15 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [ ] Future integration: optionally support video entries from playlists and explicit audio/video synchronization; current video source is independent of the audio playlist.
 
 
-### Winamp — expanded music visualization collection
-- [ ] Keep Main LCD limited to its three quick hardware-style modes: Spectrum, Oscilloscope and Peak Meter.
-- [ ] Add a grouped mode browser to the fourth Visualization window, with Winamp Classic, WMP-style and Experimental families.
-- [ ] Implement the classic analyzer set: logarithmic Spectrum Analyzer with peak hold, Oscilloscope, scrolling Spectrogram and honest mono/stereo scope behavior.
-- [ ] Implement WMP-style modes: Bars & Waves, Mystify, Particles, Spikes and Battery/Pulse.
-- [ ] Add an original Milkdrop-inspired procedural mode; do not claim original MilkDrop engine or preset compatibility.
-- [ ] Add previous/next/random mode, optional auto-cycle (off by default), fullscreen, palette, sensitivity, smoothing and reset controls.
-- [ ] Render from the existing shared Web Audio analyser using a visibility-aware canvas loop; do not create a second audio engine or update React state on every animation frame.
-- [ ] Preserve the separate Video tab, selected local file and object-URL cleanup. Keep all new UI scoped to the fourth window / Webamp Classic presentation without changing Dev Alpha or imported .wsz skins.
-- [ ] Acceptance: actual audio response, bass/speech/quiet/paused/stopped tracks, no loop while hidden or in Video mode, resize/DPI/fullscreen/mobile/touch/keyboard, reduced-motion and performance checks; no playback/EQ/playlist regressions.
+### Winamp — canonical visualization modes in the existing fourth window
+- [ ] Keep the existing fourth square Video / Visualization window and its current dimensions; do not create additional windows or enlarged layouts.
+- [ ] Keep Main LCD's Spectrum / Oscilloscope / Peak Meter selection independent from the fourth-window mode.
+- [ ] Add compact grouped mode navigation inside the existing fourth-window stage.
+- [ ] Implement WMP core modes: Alchemy, Bars and Waves, Battery.
+- [ ] Implement historically labeled WMP legacy modes: Ambience, Particle, Plenoptic, Spikes, Musical Colors.
+- [ ] Add original AVS-inspired and MilkDrop-inspired Winamp modes; do not claim binary plugin or preset compatibility.
+- [ ] Add previous/next/random mode and optional auto-cycle (off by default), without enlarging the window or adding another panel.
+- [ ] Reuse the shared Web Audio analyser; stop expensive animation while the fourth window is hidden or showing video.
+- [ ] Preserve local video playback, object-URL cleanup, window controls, drag/attach behavior and playback/EQ/playlist logic.
+- [ ] Acceptance: distinct audio-reactive canonical modes, independent Main LCD state, hidden/video lifecycle, interaction and performance checks.
 - Design contract: `docs/winamp-visualization-modes.md`. Implementation and browser acceptance are not yet complete.
