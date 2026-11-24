@@ -631,3 +631,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Clarified the footer command rail, import-status clipping and status display contrast; kept the compact mini-transport keys at a stable 16 px width.
 - CSS-only in `src/apps/winamp/winamp.css`, scoped to `.wa-shell--webamp-classic .wa-playlist`. No TSX, handlers, playlist state, M3U/skin import-export, audio/controller, Dev Alpha or imported .wsz behavior changed. The 275 × 232 px Playlist chassis and 13 px row rhythm are retained.
 - Source checks: CSS brace balance 0; all 9 added selectors scoped to Webamp Classic Playlist. Browser rendering, empty/drop-state interaction, narrow-device QA, build/typecheck and CI remain unconfirmed. Do not mark Verified.
+
+
+### Winamp — Webamp Classic three-window titlebar alignment (2026-11-24)
+- Выполнена финальная оптическая калибровка верхней системной панели Main, Equalizer и Playlist: одинаковая геометрия контейнера системных кнопок, 9 × 9 px footprint, центрирование символов и равномерный 2 px интервал.
+- Заголовки окон и их индивидуальная типографика сохранены; правила ограничены titlebar конкретных трёх окон внутри `.wa-shell--webamp-classic`. Imported-skin inline backgrounds и Dev Alpha не затрагиваются.
+- CSS-only: TSX, действия minimize/shade/close/settings, drag, playback, EQ/DSP, playlist и размеры окон не менялись.
+- Source checks: CSS brace balance 0; все 12 новых selector lines scoped to Webamp Classic windows. Совместное browser QA, narrow viewport, клавиатура/касания, build/typecheck и CI остаются неподтверждёнными. Не помечать Verified.
