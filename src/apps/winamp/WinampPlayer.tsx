@@ -1672,7 +1672,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           </select>}
           {videoMode === 'visualizer' && <button type="button" className="wa-video__random" title="Random mode in current family" onClick={() => {
             const group = fourthVisualizerGroups.find((item) => (item.modes as readonly string[]).includes(fourthVisualizerMode));
-            const choices = (group?.modes as readonly FourthVisualizerMode[] | undefined)?.filter((mode) => mode !== fourthVisualizerMode) ?? fourthVisualizerModes.filter((mode) => mode !== fourthVisualizerMode);
+            const groupModes = group?.modes as readonly FourthVisualizerMode[] | undefined;
+            const choices = groupModes && groupModes.length > 1
+              ? groupModes.filter((mode) => mode !== fourthVisualizerMode)
+              : fourthVisualizerModes.filter((mode) => mode !== fourthVisualizerMode);
             if (choices.length) setFourthVisualizerMode(choices[Math.floor(Math.random() * choices.length)]);
           }}>RND</button>}
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
