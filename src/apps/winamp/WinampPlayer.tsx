@@ -361,8 +361,20 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const rafRef = useRef<number | null>(null);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist';
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
-  const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>({
-    main: { x: 24, y: 48 }, equalizer: { x: 24, y: 174 }, playlist: { x: 24, y: 292 },
+  const classicStackTop = typeof window === 'undefined'
+    ? 48
+    : Math.max(8, Math.min(48, window.innerHeight - 480));
+  const classicStackLeft = typeof window === 'undefined'
+    ? 24
+    : Math.max(8, Math.min(24, window.innerWidth - 283));
+  const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>(() => {
+    const x = skinAppearance === 'webamp-classic' ? classicStackLeft : 24;
+    const top = skinAppearance === 'webamp-classic' ? classicStackTop : 48;
+    return {
+      main: { x, y: top },
+      equalizer: { x, y: top + 116 },
+      playlist: { x, y: top + 232 },
+    };
   });
   const [playlistSize, setPlaylistSize] = useState({ width: 275, height: 232 });
   const playlistResizeRef = useRef<{ pointerId: number; pointerX: number; pointerY: number; width: number; height: number } | null>(null);
@@ -798,7 +810,19 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             </div>
             <label className="wa-player-settings__row">
               <span>Appearance renderer</span>
-              <select value={skinAppearance} onChange={(event) => setSkinAppearance(event.currentTarget.value as 'dev-alpha' | 'webamp-classic' | 'wsz')}>
+              <select value={skinAppearance} onChange={(event) => {
+                const nextAppearance = event.currentTarget.value as 'dev-alpha' | 'webamp-classic' | 'wsz';
+                setSkinAppearance(nextAppearance);
+                if (nextAppearance === 'webamp-classic') {
+                  const top = Math.max(8, Math.min(48, window.innerHeight - 480));
+                  const left = Math.max(8, Math.min(24, window.innerWidth - 283));
+                  setWindowPositions({
+                    main: { x: left, y: top },
+                    equalizer: { x: left, y: top + 116 },
+                    playlist: { x: left, y: top + 232 },
+                  });
+                }
+              }}>
                 <option value="dev-alpha">Dev Alpha</option>
                 <option value="webamp-classic">Classic Winamp (Webamp Classic)</option>
                 <option value="wsz" disabled={!skinVisuals}>Imported .wsz skin{skinVisuals ? ` — ${skinVisuals.name}` : ' (not loaded)'}</option>
