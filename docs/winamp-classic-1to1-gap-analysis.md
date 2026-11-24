@@ -106,3 +106,11 @@ This register is based on current main source and the supplied reference image, 
 - This is a source/CSS geometry pass only. It does not prove pixel alignment in a browser; native-size visual comparison and responsive viewport testing remain outstanding.
 
 - Main titlebar correction: hid the extra settings gear from the Classic faceplate and moved its shortcut into MISC, retaining access to appearance selection and settings.
+
+
+## Progress log — 2026-11-24 (faceplate detail pass 3)
+- Main: tightened the LCD/analyzer/metadata column proportions, set the display's three-row metadata rhythm, and refined the seek, volume/balance and six-button transport rails to remain inside the 100 px content budget.
+- Equalizer: extended the fader rails to use the available 63 px vertical area, added the yellow center reference line and silver square slider caps for WebKit and Firefox, and tightened the frequency labels.
+- Playlist: applied a black inset viewport, green monospaced rows, white current-track text, right-aligned durations and a narrow native scrollbar treatment.
+- All additions are scoped to `.wa-shell--webamp-classic`; no JSX state/handler or audio behavior changed in this pass.
+- These are source-level styling refinements. Exact native-size appearance still requires browser screenshot comparison; no claim of pixel-perfect completion is made.
