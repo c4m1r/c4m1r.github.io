@@ -1590,7 +1590,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
       {/* 4. VIDEO / VISUALIZATION WINDOW */}
       {showVideo && <div
-        className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'}`}
+        className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'} ${videoShade ? 'wa-window--shaded' : ''}`}
         style={{ left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80 }}
         onPointerDown={() => setActiveWindow('video')}
       >
