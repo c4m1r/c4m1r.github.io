@@ -94,5 +94,5 @@ This register is based on current main source and the supplied reference image, 
 - Equalizer: replaced the permanent preset selector/action rail with a PRESETS dropdown containing current preset selection, custom preset naming, SAVE, DEL, EQF IN, EQF OUT and Q1 OUT. Existing handlers and EQ state are reused.
 - Playlist: Classic now has ADD / REM / SEL / MISC plus LIST OPT in a single footer row. MISC contains clear-selection, M3U import/export and .wsz import/reset. Elapsed/total remains visible; status details collapse to a small indicator/title.
 - Compatibility: legacy Playlist footer remains in the non-Classic branch. New CSS is scoped to `.wa-shell--webamp-classic`.
-- Menu behavior: native disclosure menus share one exclusive group and support Escape dismissal. Outside-click dismissal is not yet implemented/verified.
+- Menu behavior: native disclosure menus share one exclusive group and support Escape dismissal. Menus also dismiss when focus leaves the menu; pointer-only outside-click behavior still needs browser verification.
 - Still open: pixel-accurate chassis/titlebars, display and fader geometry, scrollbar and native footer detail; full browser comparison, build and regression tests are not yet confirmed.
