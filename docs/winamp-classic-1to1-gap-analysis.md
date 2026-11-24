@@ -158,3 +158,10 @@ This register is based on current main source and the supplied reference image, 
 - Defined Winamp-inspired analyzer modes (log Spectrum Analyzer, Oscilloscope, Spectrogram, Stereo Scope), WMP-style modes (Bars & Waves, Mystify, Particles, Spikes, Battery/Pulse), and an explicitly original Milkdrop-inspired experimental renderer.
 - Defined shared-analyser/canvas architecture, visibility-aware animation lifecycle, mode/settings controls, persistence boundaries and audio/playback regression acceptance.
 - Full design contract: `docs/winamp-visualization-modes.md`; implementation is not yet complete and no browser visual verification is claimed.
+
+
+## Scope correction — 2026-11-24 (canonical visualizer modes)
+- Clarified that all new modes belong inside the already existing fourth square Video / Visualization window. No additional window, pop-out, enlarged layout or new visualization panel is part of the request.
+- Main LCD retains its own three compact modes (Spectrum / Oscilloscope / Peak Meter); the fourth-window mode selection must be independent.
+- Corrected the mode catalog to use canonical WMP names: Alchemy, Bars and Waves, Battery; legacy Ambience, Particle, Plenoptic, Spikes and Musical Colors. Added Winamp AVS- and MilkDrop-inspired families without claiming original plugin or preset compatibility.
+- Updated the task list and `docs/winamp-visualization-modes.md`. No visualization implementation code was changed in this correction.
