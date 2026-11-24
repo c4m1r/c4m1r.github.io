@@ -7210,6 +7210,10 @@
   min-height: 65px;
 }
 
+.wa-shell--webamp-classic .wa-eq__band-name {
+  margin-top: 2px;
+}
+
 .wa-shell--webamp-classic .wa-eq__fader,
 .wa-shell--webamp-classic .wa-eq__input-vert,
 .wa-shell--webamp-classic .wa-eq__input-vert::-webkit-slider-runnable-track,
