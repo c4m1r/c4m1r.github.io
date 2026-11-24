@@ -6977,9 +6977,9 @@
 
 
 
-/* Webamp Classic — Playlist Editor width extension.
-   Preserve the classic one-column footprint and allow a second track-list
-   column's worth of horizontal room; keep the vertical chassis fixed. */
+/* Webamp Classic — Playlist Editor two-axis resize.
+   Keep the classic 275 × 232 px footprint as the minimum and allow up to
+   two track-list columns and two baseline heights. */
 .wa-shell--webamp-classic .wa-playlist {
   box-sizing: border-box;
   flex: 0 0 auto;
@@ -6988,9 +6988,9 @@
   max-width: min(550px, calc(100vw - 8px));
   height: 232px;
   min-height: 232px;
-  max-height: 232px;
-  resize: horizontal;
-  overflow: hidden;
+  max-height: min(464px, calc(100vh - 38px));
+  resize: both;
+  overflow: auto;
 }
 
 .wa-shell--webamp-classic .wa-playlist .wa-pl__body,
