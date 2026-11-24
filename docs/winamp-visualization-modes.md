@@ -1,6 +1,6 @@
 # Winamp Visualization Modes — design and implementation contract
 
-Status: implementation in progress. The first in-window renderer pass is committed; grouped navigation, performance lifecycle work and browser acceptance remain pending.
+Status: implementation in progress. First-pass in-window renderers, grouped family picker and random mode action are committed; named presets, lifecycle/performance work and browser acceptance remain pending.
 
 ## Scope — existing fourth window only
 
@@ -86,7 +86,7 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 
 ## Delivery phases
 
-1. **State and first selector pass:** decouple fourth-window mode from Main LCD and add a compact MODE cycle through stable mode names. Grouped navigation remains a follow-up.
+1. **State and selector:** decouple fourth-window mode from Main LCD; completed independent state, grouped family picker, full MODE cycle and RND action. Named preset variants and auto-cycle remain follow-ups.
 2. **WMP core:** Alchemy, Bars and Waves, Battery.
 3. **WMP legacy:** Ambience, Particle, Plenoptic, Spikes, Musical Colors.
 4. **Winamp plug-in-inspired:** original AVS-style and MilkDrop-inspired scenes with a small set of named presets.
