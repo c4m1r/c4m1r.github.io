@@ -372,7 +372,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const startWindowDrag = (event: React.PointerEvent, key: PlayerWindowKey) => {
     if ((event.target as HTMLElement).closest('button')) return;
     event.preventDefault();
-    const keys: PlayerWindowKey[] = ['main', 'equalizer', 'playlist'];
+    const keys: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : [])];
     const rects = Object.fromEntries(keys.map((windowKey) => {
       const node = document.querySelector<HTMLElement>(`.wa-${windowKey}`);
       const position = windowPositions[windowKey];
