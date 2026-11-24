@@ -364,6 +364,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>({
     main: { x: 24, y: 48 }, equalizer: { x: 24, y: 174 }, playlist: { x: 24, y: 292 },
   });
+  const [playlistSize, setPlaylistSize] = useState({ width: 275, height: 232 });
+  const playlistResizeRef = useRef<{ pointerX: number; pointerY: number; width: number; height: number } | null>(null);
   const dragRef = useRef<{
     anchorKey: PlayerWindowKey;
     members: Array<{ key: PlayerWindowKey; originX: number; originY: number; width: number; height: number }>;
@@ -457,6 +459,56 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       window.removeEventListener('pointercancel', stop);
     };
   }, []);
+
+
+  const startPlaylistResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (skinAppearance !== 'webamp-classic' || plShade) return;
+    event.preventDefault();
+    event.stopPropagation();
+    playlistResizeRef.current = {
+      pointerX: event.clientX, pointerY: event.clientY,
+      width: document.querySelector<HTMLElement>('.wa-playlist')?.offsetWidth ?? playlistSize.width,
+      height: document.querySelector<HTMLElement>('.wa-playlist')?.offsetHeight ?? playlistSize.height,
+    };
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  useEffect(() => {
+    const move = (event: PointerEvent) => {
+      const resize = playlistResizeRef.current;
+      if (!resize) return;
+      const left = windowPositions.playlist.x;
+      const top = windowPositions.playlist.y;
+      const maxWidth = Math.max(275, Math.min(550, window.innerWidth - left - 8));
+      const maxHeight = Math.max(232, Math.min(464, window.innerHeight - top - 8));
+      setPlaylistSize({
+        width: Math.max(275, Math.min(maxWidth, resize.width + event.clientX - resize.pointerX)),
+        height: Math.max(232, Math.min(maxHeight, resize.height + event.clientY - resize.pointerY)),
+      });
+    };
+    const stop = () => { playlistResizeRef.current = null; };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', stop);
+    window.addEventListener('pointercancel', stop);
+    return () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', stop);
+      window.removeEventListener('pointercancel', stop);
+    };
+  }, [windowPositions.playlist.x, windowPositions.playlist.y]);
+
+  useEffect(() => {
+    const clampSize = () => {
+      const maxWidth = Math.max(275, Math.min(550, window.innerWidth - windowPositions.playlist.x - 8));
+      const maxHeight = Math.max(232, Math.min(464, window.innerHeight - windowPositions.playlist.y - 8));
+      setPlaylistSize((current) => ({
+        width: Math.min(current.width, maxWidth),
+        height: Math.min(current.height, maxHeight),
+      }));
+    };
+    window.addEventListener('resize', clampSize);
+    return () => window.removeEventListener('resize', clampSize);
+  }, [windowPositions.playlist.x, windowPositions.playlist.y]);
 
   const playlist = useMemo(() => winampController.getPlaylist(), [playlistRevision]);
   const track = playlist[trackIndex] ?? playlist[0] ?? PROJECT_PLAYLIST[0];
@@ -1190,7 +1242,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* 3. WINAMP PLAYLIST WINDOW                                    */}
       {/* ============================================================ */}
       {showPl && (
-        <div className={`wa-window wa-playlist ${plShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.playlist.x, top: windowPositions.playlist.y, zIndex: activeWindow === 'playlist' ? 90 : 80 }} onPointerDown={() => setActiveWindow('playlist')}>
+        <div className={`wa-window wa-playlist ${plShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.playlist.x, top: windowPositions.playlist.y, zIndex: activeWindow === 'playlist' ? 90 : 80, ...(skinAppearance === 'webamp-classic' ? { width: playlistSize.width, height: playlistSize.height } : {}) }} onPointerDown={() => setActiveWindow('playlist')}>
           <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'playlist')}>
             <span className="wa-titlebar__title">WINAMP PLAYLIST</span>
             <div className="wa-titlebar__controls">
@@ -1353,6 +1405,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 </div>
               </div>
             </div>
+          )}
+          {skinAppearance === 'webamp-classic' && !plShade && (
+            <div
+              className="wa-playlist__resize-handle"
+              role="separator"
+              aria-label="Resize Playlist window"
+              title="Drag to resize Playlist width and height"
+              onPointerDown={startPlaylistResize}
+            />
           )}
         </div>
       )}
