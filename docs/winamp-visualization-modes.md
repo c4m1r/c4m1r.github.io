@@ -71,7 +71,8 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 - Double-click the fourth window's video / visualization stage, or double-tap it on touch devices, to enter fullscreen. The existing fourth window is promoted; no second window or pop-out player is created.
 - In fullscreen, mouse movement or a single touch reveals a translucent bottom transport panel. It hides after 3 seconds when the pointer is outside the panel; hovering the panel keeps it visible.
 - The panel provides -5s / +5s seeking, previous / next Winamp playlist track, play / pause, mode switching and fullscreen exit. Seeking targets the local video when Video is active and the current Winamp audio track when Visualization is active.
-- Keyboard controls while fullscreen: Left / Right seek 5 seconds; Up / Down select previous / next Winamp playlist track; Space toggles playback; M switches to the next visualization mode (or returns from Video to Visualization); Escape exits fullscreen.
+- Keyboard controls while fullscreen: Left / Right seek 5 seconds; Up / Down select previous / next Winamp playlist track; Space toggles playback; M switches to the next visualization mode (or returns from Video to Visualization); Escape always exits fullscreen.
+- Press F while a Winamp window is active to open the fourth stage in fullscreen (when the fourth window is visible). The shortcut is ignored while an editable field has focus.
 - Native Fullscreen API is preferred, with a viewport-fixed fallback for browsers that do not expose it. Preserve the local video URL and playback element while entering / leaving fullscreen.
 - The fourth window's normal dimensions and attached-window layout remain unchanged outside fullscreen.
 
