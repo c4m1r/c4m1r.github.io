@@ -9131,3 +9131,50 @@
     width: 18px !important;
   }
 }
+
+
+/* 2026-11-24 visual calibration: correct the left bias and restore compact EQ
+   faders. Keep the window stack itself on one shared X axis. */
+.wa-shell--webamp-classic .wa-main__body {
+  position: relative !important;
+  left: -10px !important;
+  width: calc(100% + 10px) !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+  position: relative !important;
+  left: -10px !important;
+  width: calc(100% + 10px) !important;
+  grid-template-rows: 55px !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  max-height: 58px !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__band {
+  height: 55px !important;
+  max-height: 55px !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__fader,
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert {
+  flex: 0 0 45px !important;
+  width: 11px !important;
+  min-width: 11px !important;
+  max-width: 11px !important;
+  height: 45px !important;
+  min-height: 45px !important;
+  max-height: 45px !important;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-webkit-slider-thumb,
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__input-vert::-moz-range-thumb {
+  width: 10px !important;
+  height: 6px !important;
+}
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-main__body {
+    left: -10px !important;
+    width: calc(100% + 10px) !important;
+  }
+  .wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+    left: -10px !important;
+    width: calc(100% + 10px) !important;
+  }
+}
