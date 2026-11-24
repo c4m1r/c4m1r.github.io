@@ -364,25 +364,77 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>({
     main: { x: 24, y: 48 }, equalizer: { x: 24, y: 174 }, playlist: { x: 24, y: 292 },
   });
-  const dragRef = useRef<{ key: PlayerWindowKey; pointerX: number; pointerY: number; originX: number; originY: number } | null>(null);
+  const dragRef = useRef<{
+    members: Array<{ key: PlayerWindowKey; originX: number; originY: number; width: number; height: number }>;
+    pointerX: number;
+    pointerY: number;
+  } | null>(null);
   const startWindowDrag = (event: React.PointerEvent, key: PlayerWindowKey) => {
     if ((event.target as HTMLElement).closest('button')) return;
     event.preventDefault();
-    const origin = windowPositions[key];
+    const keys: PlayerWindowKey[] = ['main', 'equalizer', 'playlist'];
+    const rects = Object.fromEntries(keys.map((windowKey) => {
+      const node = document.querySelector<HTMLElement>(`.wa-${windowKey}`);
+      const position = windowPositions[windowKey];
+      return [windowKey, {
+        left: position.x, top: position.y,
+        right: position.x + (node?.offsetWidth ?? 275),
+        bottom: position.y + (node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : 232)),
+        width: node?.offsetWidth ?? 275,
+        height: node?.offsetHeight ?? (windowKey === 'main' ? 116 : windowKey === 'equalizer' ? 116 : 232),
+      }];
+    })) as Record<PlayerWindowKey, { left: number; top: number; right: number; bottom: number; width: number; height: number }>;
+    const connected = new Set<PlayerWindowKey>([key]);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const candidate of keys) {
+        if (connected.has(candidate)) continue;
+        const a = rects[candidate];
+        for (const member of connected) {
+          const b = rects[member];
+          const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+          const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+          const touchesVertically = overlapX >= 32 && (Math.abs(a.top - b.bottom) <= 8 || Math.abs(b.top - a.bottom) <= 8);
+          const touchesHorizontally = overlapY >= 24 && (Math.abs(a.left - b.right) <= 8 || Math.abs(b.left - a.right) <= 8);
+          if (touchesVertically || touchesHorizontally) {
+            connected.add(candidate);
+            changed = true;
+            break;
+          }
+        }
+      }
+    }
     setActiveWindow(key);
-    dragRef.current = { key, pointerX: event.clientX, pointerY: event.clientY, originX: origin.x, originY: origin.y };
+    dragRef.current = {
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      members: [...connected].map((member) => ({
+        key: member, originX: windowPositions[member].x, originY: windowPositions[member].y,
+        width: rects[member].width, height: rects[member].height,
+      })),
+    };
     (event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
   };
   useEffect(() => {
     const move = (event: PointerEvent) => {
       const drag = dragRef.current;
       if (!drag) return;
-      const node = document.querySelector<HTMLElement>(`.wa-${drag.key}`);
-      const width = node?.offsetWidth ?? 275;
-      const height = node?.offsetHeight ?? 120;
-      const x = Math.max(0, Math.min(window.innerWidth - width, drag.originX + event.clientX - drag.pointerX));
-      const y = Math.max(0, Math.min(window.innerHeight - height - 30, drag.originY + event.clientY - drag.pointerY));
-      setWindowPositions((current) => ({ ...current, [drag.key]: { x, y } }));
+      const deltaX = event.clientX - drag.pointerX;
+      const deltaY = event.clientY - drag.pointerY;
+      const minX = Math.max(...drag.members.map((member) => -member.originX));
+      const maxX = Math.min(...drag.members.map((member) => window.innerWidth - member.width - member.originX));
+      const minY = Math.max(...drag.members.map((member) => -member.originY));
+      const maxY = Math.min(...drag.members.map((member) => window.innerHeight - member.height - 30 - member.originY));
+      const dx = Math.max(minX, Math.min(maxX, deltaX));
+      const dy = Math.max(minY, Math.min(maxY, deltaY));
+      setWindowPositions((current) => {
+        const next = { ...current };
+        drag.members.forEach((member) => {
+          next[member.key] = { x: member.originX + dx, y: member.originY + dy };
+        });
+        return next;
+      });
     };
     const stop = () => { dragRef.current = null; };
     window.addEventListener('pointermove', move);
