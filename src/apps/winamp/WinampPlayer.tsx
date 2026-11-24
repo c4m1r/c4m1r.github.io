@@ -2022,6 +2022,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             fullscreenPanelHoverRef.current = false;
             scheduleFullscreenControlsHide();
           }}
+          onPointerUp={(event) => {
+            if (event.pointerType === 'touch') {
+              fullscreenPanelHoverRef.current = false;
+              scheduleFullscreenControlsHide();
+            }
+          }}
           onPointerDown={(event) => event.stopPropagation()}
         >
           <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}>−5s</button>
