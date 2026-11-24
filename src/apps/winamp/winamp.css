@@ -5717,3 +5717,364 @@
     padding-left: 2px;
   }
 }
+
+
+/* Webamp Classic — Main optical alignment and hardware micro-detail pass.
+   Preserve the 275 × 116 chassis and all native control behaviour. */
+.wa-shell--webamp-classic .wa-main {
+  border-color: #080907 #090a08 #050605 #77796e;
+  box-shadow: 0 1px 0 #000, inset 1px 0 rgba(229,232,213,.2), inset -1px 0 rgba(0,0,0,.72), inset 0 1px rgba(255,255,255,.16), inset 0 -1px #090a07;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar {
+  position: relative;
+  padding-right: 4px;
+  padding-left: 4px;
+  background: linear-gradient(90deg, rgba(220,222,205,.2), transparent 7px, transparent calc(100% - 7px), rgba(0,0,0,.42)), linear-gradient(180deg, #77796e 0%, #5b5d52 17%, #414239 54%, #292b24 100%);
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  bottom: 1px;
+  left: 2px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(225,229,208,.22) 12%, rgba(225,229,208,.22) 88%, transparent);
+  pointer-events: none;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__bolt {
+  color: #e1e3d5;
+  font-size: 8px;
+  text-shadow: 0 0 2px rgba(255,255,255,.28), 1px 1px #151611;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__title {
+  color: #f0f0e7;
+  font: 700 8px/12px Arial, Helvetica, sans-serif;
+  letter-spacing: .55px;
+  text-shadow: 1px 1px #11120e, 0 -1px rgba(255,255,255,.18);
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__controls {
+  gap: 2px;
+  align-items: center;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__btn {
+  box-sizing: border-box;
+  width: 9px;
+  min-width: 9px;
+  height: 9px;
+  min-height: 9px;
+  padding: 0;
+  border: 1px solid #11120e;
+  border-top-color: #c0c2b4;
+  border-left-color: #a3a596;
+  border-radius: 0;
+  background: linear-gradient(180deg, #77796e, #4a4c42 56%, #292b24);
+  color: #f0f1e7;
+  font: 700 7px/7px Arial, Helvetica, sans-serif;
+  text-shadow: 1px 1px #11120e;
+  box-shadow: inset 1px 0 rgba(255,255,255,.13), 1px 1px #080907;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__btn:hover {
+  background: linear-gradient(180deg, #96988a, #5d5f53 58%, #34362d);
+  color: #fff;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__btn:active {
+  border-color: #11120e #a3a596 #a3a596 #11120e;
+  background: linear-gradient(180deg, #292b24, #55574c);
+  box-shadow: inset 1px 1px 1px #080907;
+}
+
+.wa-shell--webamp-classic .wa-main__body {
+  padding: 3px 7px 4px;
+  gap: 3px;
+  background: linear-gradient(90deg, rgba(0,0,0,.25), transparent 5px, transparent calc(100% - 5px), rgba(0,0,0,.26)), linear-gradient(180deg, #3b3c34 0%, #303129 46%, #272820 100%);
+}
+
+.wa-shell--webamp-classic .wa-main__body > .wa-display {
+  padding: 2px 3px;
+  grid-template-columns: 75px 57px minmax(0, 1fr);
+  gap: 4px;
+  border-width: 1px;
+  border-top-color: #050605;
+  border-left-color: #080907;
+  border-right-color: #858779;
+  border-bottom-color: #858779;
+  background: #050704;
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px rgba(210,222,183,.14), 0 1px 0 rgba(0,0,0,.68);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-display__left {
+  min-width: 0;
+  gap: 3px;
+  padding-right: 3px;
+  border-right-color: rgba(147,165,115,.26);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-indicators {
+  flex-basis: 8px;
+  gap: 2px;
+  color: #34442a;
+  font: 700 5px/6px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-ind-dot {
+  font-size: 5px;
+  line-height: 6px;
+  color: #34442a;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-ind-dot.is-lit {
+  color: #c6f58c;
+  text-shadow: 0 0 2px rgba(169,255,101,.72);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-time-lcd__digits {
+  font-size: 18px;
+  letter-spacing: -1.35px;
+  text-shadow: 0 0 2px rgba(147,255,73,.48), 0 0 4px rgba(91,180,42,.2);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-visualizer {
+  padding: 2px 2px 1px;
+  gap: 1px;
+  border-color: #11170d #20291a #20291a #11170d;
+  background: repeating-linear-gradient(180deg, transparent 0 5px, rgba(132,164,91,.1) 5px 6px), repeating-linear-gradient(90deg, rgba(137,174,91,.035) 0 1px, transparent 1px 3px), linear-gradient(180deg, #020402, #081106);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-visualizer:hover {
+  border-color: #28351e;
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px rgba(151,185,104,.2), 0 0 2px rgba(139,205,83,.14);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-display__right {
+  gap: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-marquee-box {
+  height: 18px;
+  flex-basis: 18px;
+  padding-right: 2px;
+  padding-left: 2px;
+  border-color: #080c06 #202a17 #202a17 #080c06;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-marquee-text {
+  font-size: 7px;
+  letter-spacing: -.25px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-tech-info {
+  gap: 2px;
+  color: #829071;
+  font-size: 5px;
+  line-height: 8px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-digit-val {
+  font-size: 6px;
+  line-height: 8px;
+}
+
+.wa-shell--webamp-classic .wa-main__body > .wa-controls-row {
+  gap: 3px;
+  padding: 1px 1px 0;
+  border-top-color: rgba(5,6,4,.94);
+  box-shadow: inset 0 1px rgba(218,222,201,.1);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--pos {
+  flex-basis: 8px;
+  height: 8px;
+  min-height: 8px;
+  border-color: #080a07 #77796d #77796d #080a07;
+  background: repeating-linear-gradient(90deg, transparent 0 8px, rgba(194,205,169,.2) 8px 9px), linear-gradient(180deg, #060805, #191c15 58%, #2a2e24);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-progress::after {
+  top: -3px;
+  width: 4px;
+  height: 7px;
+  background: linear-gradient(90deg, #65675d, #d7d9ca 42%, #77796e);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-vol-bal-row {
+  gap: 4px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-vol-control,
+.wa-shell--webamp-classic .wa-main__body .wa-bal-control {
+  gap: 2px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-label {
+  flex-basis: 16px;
+  width: 16px;
+  font-size: 5px;
+  letter-spacing: .3px;
+  line-height: 9px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--vol,
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal {
+  height: 9px;
+  min-height: 9px;
+  border-color: #080a07 #737568 #737568 #080a07;
+  background: repeating-linear-gradient(90deg, rgba(192,201,170,.2) 0 1px, transparent 1px 6px), linear-gradient(180deg, #060805, #20231b 55%, #10120d);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-slider-track--bal::after {
+  top: 1px;
+  bottom: 1px;
+  background: #c2c9ad;
+  opacity: .55;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-toggle-btns {
+  gap: 2px;
+  padding-left: 2px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-toggle-btns .wa-btn-toggle:not(.wa-btn-toggle--skinned) {
+  min-width: 21px;
+  height: 13px;
+  min-height: 13px;
+  padding: 0 2px;
+  font-size: 5px;
+  line-height: 11px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-btn-toggle:not(.wa-btn-toggle--skinned) .wa-led-dot {
+  width: 3px;
+  height: 3px;
+  flex-basis: 3px;
+}
+
+.wa-shell--webamp-classic .wa-main__body > .wa-transport-row {
+  min-height: 18px;
+  height: 18px;
+  gap: 3px;
+  padding: 1px 2px;
+  border-top-color: #0b0c09;
+  background: linear-gradient(90deg, rgba(0,0,0,.2), transparent 7px, transparent calc(100% - 7px), rgba(0,0,0,.2)), linear-gradient(180deg, #414239 0%, #303129 52%, #22231d 100%);
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-buttons-group {
+  gap: 1px;
+  padding: 1px;
+  border-color: #080907 #696b60 #696b60 #080907;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-btn-transport {
+  width: 22px;
+  min-width: 22px;
+  height: 16px;
+  min-height: 16px;
+  color: #e8e9df;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-transport-glyph--previous,
+.wa-shell--webamp-classic .wa-main__body .wa-transport-glyph--next {
+  font-size: 7px;
+  letter-spacing: -1.7px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-transport-glyph--play,
+.wa-shell--webamp-classic .wa-main__body .wa-transport-glyph--pause {
+  font-size: 10px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-transport-glyph--stop,
+.wa-shell--webamp-classic .wa-main__body .wa-transport-glyph--eject {
+  font-size: 9px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-toggles-group {
+  gap: 1px;
+  padding: 1px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-toggles-group .wa-btn-mode:not(.wa-btn-mode--skinned) {
+  min-width: 32px;
+  min-height: 14px;
+  height: 14px;
+  padding: 0 2px;
+  font-size: 5px;
+  line-height: 12px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-toggles-group .wa-btn-mode[title*="automatic"] {
+  min-width: 29px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-toggles-group .wa-btn-mode:not(.wa-btn-mode--skinned) .wa-mode-glyph {
+  font-size: 9px;
+  line-height: 10px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-album-preview {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-album-preview__icon {
+  font-size: 11px;
+}
+
+.wa-shell--webamp-classic .wa-main__body .wa-album-preview__badge {
+  font-size: 4px;
+  line-height: 6px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-main {
+    width: min(275px, calc(100vw - 8px));
+    min-width: 0;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body > .wa-display {
+    grid-template-columns: 69px 50px minmax(0, 1fr);
+    gap: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-time-lcd__digits {
+    font-size: 16px;
+    letter-spacing: -1.1px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-slider-label {
+    flex-basis: 15px;
+    width: 15px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-btn-transport {
+    width: 21px;
+    min-width: 21px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-toggles-group .wa-btn-mode:not(.wa-btn-mode--skinned) {
+    min-width: 29px;
+    padding-right: 1px;
+    padding-left: 1px;
+  }
+
+  .wa-shell--webamp-classic .wa-main__body .wa-album-preview {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+  }
+}
