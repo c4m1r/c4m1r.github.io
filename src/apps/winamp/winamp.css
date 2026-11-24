@@ -6232,3 +6232,318 @@
   outline: 1px solid #ffe36e;
   outline-offset: 1px;
 }
+
+
+/* Webamp Classic — Playlist detail pass: track rows, selection, scrollbar,
+   compact footer controls and status readout. Presentation only. */
+.wa-shell--webamp-classic .wa-playlist .wa-pl__body {
+  padding: 4px 5px 4px;
+  gap: 3px;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.2), transparent 5px, transparent calc(100% - 5px), rgba(0,0,0,.22)),
+    linear-gradient(180deg, #3b3c34 0%, #303129 42%, #262720 100%);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list {
+  position: relative;
+  isolation: isolate;
+  min-height: 104px;
+  padding: 2px 1px;
+  border: 1px solid #080a07;
+  border-top-color: #080a07;
+  border-left-color: #080a07;
+  border-right-color: #858779;
+  border-bottom-color: #858779;
+  background:
+    linear-gradient(180deg, rgba(126,153,91,.045), transparent 22px),
+    #020402;
+  color: #9bd66a;
+  font: 10px/14px "Courier New", Courier, monospace;
+  scrollbar-color: #77796d #11120e;
+  scrollbar-width: thin;
+  box-shadow:
+    inset 1px 1px 2px #000,
+    inset -1px -1px rgba(214,224,190,.12),
+    0 1px 0 rgba(0,0,0,.55);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item {
+  position: relative;
+  min-height: 14px;
+  height: 14px;
+  padding: 0 4px 0 5px;
+  gap: 5px;
+  border: 0;
+  color: #a5dc78;
+  background: transparent;
+  font: 10px/14px "Courier New", Courier, monospace;
+  text-shadow: 0 0 2px rgba(115,190,67,.12);
+  transition: background-color 80ms linear, color 80ms linear;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item:nth-child(even):not(.is-selected) {
+  background: rgba(144,174,106,.025);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item:hover:not(.is-selected) {
+  color: #d4f3b4;
+  background: #173018;
+  text-shadow: 0 0 3px rgba(151,226,95,.24);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-current {
+  color: #f0f3e8;
+  background: #263b20;
+  box-shadow: inset 2px 0 #a8d879;
+  text-shadow: 0 0 3px rgba(174,225,123,.2);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-selected {
+  color: #fff;
+  background: linear-gradient(90deg, #263f79 0%, #1b3266 100%);
+  box-shadow: inset 1px 0 #9eafd4, inset -1px 0 rgba(0,0,0,.35);
+  text-shadow: 1px 1px #101b36;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-current.is-selected {
+  color: #fff;
+  background: linear-gradient(90deg, #31558d 0%, #1c3971 100%);
+  box-shadow: inset 2px 0 #c0d4a0, inset 0 1px rgba(255,255,255,.08), inset 0 -1px rgba(0,0,0,.22);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__title {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -.18px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__dur {
+  flex: 0 0 31px;
+  min-width: 31px;
+  padding-left: 2px;
+  color: #8da477;
+  text-align: right;
+  font: 9px/14px "Courier New", Courier, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-selected .wa-pl__dur,
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item.is-current .wa-pl__dur {
+  color: #e6f0d8;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__item:focus-visible {
+  z-index: 1;
+  outline: 1px dotted #e1efc7;
+  outline-offset: -2px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list::-webkit-scrollbar {
+  width: 11px;
+  background: #11120e;
+  border-left: 1px solid #050605;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list::-webkit-scrollbar-track {
+  border-left: 1px solid #090a07;
+  background:
+    repeating-linear-gradient(180deg, rgba(190,198,170,.1) 0 1px, transparent 1px 3px),
+    linear-gradient(90deg, #10110d, #292b24);
+  box-shadow: inset 1px 0 #050605;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list::-webkit-scrollbar-thumb {
+  min-height: 18px;
+  border: 1px solid #080907;
+  border-top-color: #c0c2b4;
+  border-left-color: #a3a596;
+  border-right-color: #11120e;
+  border-bottom-color: #11120e;
+  background: linear-gradient(90deg, #55574d 0%, #a6a89a 38%, #737568 72%, #3a3c33 100%);
+  box-shadow: inset 1px 0 rgba(255,255,255,.18), 1px 0 #000;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #737568 0%, #c3c5b6 38%, #898b7d 72%, #4a4c42 100%);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer {
+  gap: 2px;
+  margin: 0;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions {
+  gap: 2px;
+  padding: 1px 1px 2px;
+  border-bottom: 1px solid rgba(5,6,4,.7);
+  box-shadow: 0 1px rgba(218,222,201,.08);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions .wa-btn-pl {
+  min-width: 29px;
+  height: 16px;
+  min-height: 16px;
+  padding: 0 4px;
+  font: 700 7px/14px Arial, Helvetica, sans-serif;
+  letter-spacing: .12px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions .wa-btn-pl:first-child {
+  min-width: 35px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 4px;
+  padding-top: 2px;
+  border-top: 0;
+  box-shadow: none;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions {
+  gap: 2px;
+  padding-bottom: 1px;
+  scrollbar-width: thin;
+  scrollbar-color: #77796d #171813;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+  height: 15px;
+  min-height: 15px;
+  padding: 0 4px;
+  font: 700 6px/13px Arial, Helvetica, sans-serif;
+  letter-spacing: .08px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__status {
+  min-height: 12px;
+  padding: 0 4px;
+  border: 1px solid #080a07;
+  border-top-color: #080a07;
+  border-left-color: #080a07;
+  border-right-color: #77796d;
+  border-bottom-color: #77796d;
+  background:
+    linear-gradient(180deg, rgba(145,176,103,.045), transparent),
+    #050704;
+  color: #a3c77e;
+  font: 7px/10px "Courier New", Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset 1px 1px 1px #000;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__status-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__status-text:last-child {
+  flex: 0 0 auto;
+  padding-left: 5px;
+  color: #c4d8a8;
+  text-align: right;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__mini-transport {
+  align-items: center;
+  gap: 2px;
+  padding: 1px;
+  border: 1px solid #090a07;
+  background: linear-gradient(180deg, #171913, #303229 52%, #171813);
+  box-shadow: inset 1px 1px 2px #000, inset -1px -1px rgba(215,220,198,.1);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini {
+  box-sizing: border-box;
+  width: 16px;
+  height: 14px;
+  min-height: 14px;
+  border: 1px solid #11120e;
+  border-top-color: #a7a99a;
+  border-left-color: #929486;
+  border-radius: 0;
+  background: linear-gradient(180deg, #686a5e 0%, #484a40 56%, #2d2f28 100%);
+  color: #e8eadf;
+  font: 700 7px/11px Arial, Helvetica, sans-serif;
+  text-shadow: 1px 1px #11120e;
+  box-shadow: inset 1px 0 rgba(255,255,255,.14), inset -1px -1px rgba(0,0,0,.42);
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini:hover:not(:disabled) {
+  background: linear-gradient(180deg, #858779, #55574c 60%, #34362d);
+  color: #fff;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl--opts {
+  min-width: 48px;
+  height: 15px;
+  padding: 0 5px;
+  font: 700 6px/13px Arial, Helvetica, sans-serif;
+  letter-spacing: .12px;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl:disabled,
+.wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini:disabled {
+  color: #85877b;
+  border-color: #292b24 #11120e #11120e #292b24;
+  background: linear-gradient(180deg, #42443b, #292b24);
+  box-shadow: inset 1px 1px rgba(255,255,255,.05);
+  filter: none;
+  opacity: .62;
+  cursor: default;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__import-status {
+  max-height: 14px;
+  padding: 1px 4px;
+  border: 1px solid #090a07;
+  border-top-color: #090a07;
+  border-left-color: #090a07;
+  border-right-color: #737568;
+  border-bottom-color: #737568;
+  background: #080a06;
+  color: #b4d38f;
+  font: 7px/10px Arial, Helvetica, sans-serif;
+  box-shadow: inset 1px 1px 2px #000;
+}
+
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions:focus-within,
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer > .wa-pl__actions:focus-within {
+  outline: 1px solid rgba(218,232,192,.28);
+  outline-offset: 1px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__body {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__item {
+    padding-right: 3px;
+    padding-left: 4px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__dur {
+    flex-basis: 29px;
+    min-width: 29px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools {
+    gap: 2px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-pl__footer-tools > .wa-pl__actions .wa-btn-pl {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-playlist .wa-btn-pl-mini {
+    width: 15px;
+  }
+}
