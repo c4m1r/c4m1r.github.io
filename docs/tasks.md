@@ -697,8 +697,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Keep the existing fourth square Video / Visualization window and its current dimensions; no extra windows or enlarged layouts.
 - [x] Keep Main LCD's Spectrum / Oscilloscope / Peak Meter selection independent from the fourth-window mode.
 - [x] Add grouped mode navigation in the existing toolbar: Winamp Classic, WMP core, WMP Legacy, AVS-inspired and MilkDrop-inspired.
-- [x] Implement first-pass WMP core renderers: Alchemy, Bars and Waves, Battery.
-- [x] Implement first-pass WMP legacy renderers: Ambience, Particle, Plenoptic, Spikes, Musical Colors.
+- [x] Implement WMP core renderers: Alchemy, Bars and Waves, Battery; Alchemy now has layered frequency-shaped ribbons, orbital rings and a waveform core.
+- [x] Implement WMP legacy renderers: Ambience, Particle, Plenoptic, Spikes, Musical Colors; Plenoptic now has a perspective tunnel, depth layers and frequency spokes.
 - [x] Implement original AVS-inspired and MilkDrop-inspired procedural scenes; no plugin binary/preset compatibility is claimed.
 - [x] Add random mode action (random within a multi-mode family; across all modes for singleton families).
 - [x] Add four named AVS-inspired and four MilkDrop-inspired variants with compact PSET control.
