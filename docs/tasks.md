@@ -664,3 +664,4 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Финальная механика resize переведена с нативного CSS-resize на собственный pointer-handle в Classic renderer: ширина и высота контролируются React state, размеры ограничиваются текущим свободным пространством справа/снизу от позиции Playlist и диапазоном 275–550 × 232–464 px. При изменении viewport размер автоматически уменьшается, если прежний размер перестаёт помещаться. Handle не добавляется в Dev Alpha и imported .wsz.
 - Перетаскивание handle останавливает всплытие pointer event и не запускает drag окна; resize использует отдельный pointer lifecycle и не затрагивает плейлист/аудио.
 - Resize handle привязан к pointerId активного указателя: параллельный второй touch/pointer не меняет размер и не завершает чужую resize-сессию.
+- Для нижнего правого resize-grip зарезервировано место в строке инструментов Playlist, чтобы ручка не перекрывала кнопку LIST OPTS и соседние элементы.
