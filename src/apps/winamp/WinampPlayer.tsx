@@ -410,7 +410,20 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const fourthVisualizerModes = fourthVisualizerGroups.flatMap((group) => group.modes) as FourthVisualizerMode[];
   const [fourthVisualizerMode, setFourthVisualizerMode] = useState<FourthVisualizerMode>('Spectrum');
   const [fourthVisualizerPresetIndex, setFourthVisualizerPresetIndex] = useState(0);
+  const [visualizerAutoCycle, setVisualizerAutoCycle] = useState(false);
   const rafRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!visualizerAutoCycle || !showVideo || videoShade || videoMode !== 'visualizer') return;
+    const cycle = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
+      setFourthVisualizerMode((mode) => {
+        const index = fourthVisualizerModes.indexOf(mode);
+        return fourthVisualizerModes[(index + 1) % fourthVisualizerModes.length];
+      });
+      setFourthVisualizerPresetIndex(0);
+    }, 15000);
+    return () => window.clearInterval(cycle);
+  }, [visualizerAutoCycle, showVideo, videoShade, videoMode]);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
   const [detachedWindows, setDetachedWindows] = useState<PlayerWindowKey[]>([]);
@@ -1686,6 +1699,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               : fourthVisualizerModes.filter((mode) => mode !== fourthVisualizerMode);
             if (choices.length) setFourthVisualizerMode(choices[Math.floor(Math.random() * choices.length)]);
           }}>RND</button>}
+          {videoMode === 'visualizer' && <button type="button" className={`wa-video__auto${visualizerAutoCycle ? ' is-active' : ''}`} aria-pressed={visualizerAutoCycle} title={visualizerAutoCycle ? 'Turn automatic mode cycling off' : 'Automatically change mode every 15 seconds'} onClick={() => setVisualizerAutoCycle((value) => !value)}>AUTO</button>}
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
         {videoMode === 'visualizer' ? (
