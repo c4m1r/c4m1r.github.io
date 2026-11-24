@@ -534,3 +534,12 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Refined the fader wells, bottom caption rail, dB scale contrast and PREAMP separator without changing the established 63 px slider travel or shared label baseline.
 - CSS-only and scoped to `.wa-shell--webamp-classic`. No JSX, EQ values/ranges/handlers, DSP/controller logic, Main/Playlist behavior, Dev Alpha or imported .wsz styling changed.
 - Verification: CSS brace balance (599/599) and selector scope checked. Browser visual comparison against Main/Playlist, narrow-width review, build/typecheck and CI remain unconfirmed.
+
+
+### Winamp — Webamp Classic EQ proportions and faceplate hierarchy (2026-11-24)
+- Reworked the Equalizer window chassis dimensions and titlebar sizing around the shared 275 px classic-window width, including the metallic top/side bevel, title truncation safety and compact native-style controls.
+- Rebalanced the upper strip: fixed ON/AUTO hardware-switch bay, flexible recessed response graph, and consistent vertical alignment.
+- Rebuilt the project-specific preset/EQF toolbar as a compact recessed control rail. Preset selection, naming, save/delete and EQF/Q1 actions remain available; horizontal overflow is contained rather than forcing the window wider.
+- Rebalanced the fader-bank faceplate and inner clearance so the 63 px control travel and 74 px band/label stack fit without clipping. Refined the disabled-control and status readouts, plus narrow-viewport insets.
+- CSS-only. No TSX, slider values/ranges/steps/handlers, frequency mapping, controller/DSP, playback behavior, Main/Playlist, Dev Alpha or imported .wsz renderer changed.
+- Verification: CSS brace balance (626/626) and all newly added selectors scoped to .wa-shell--webamp-classic. Build/typecheck, browser visual QA (including 440 px and narrower), and CI remain unconfirmed.
