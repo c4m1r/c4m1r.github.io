@@ -701,7 +701,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Implement WMP legacy renderers: Ambience, Particle, Plenoptic, Spikes, Musical Colors; Plenoptic now has a perspective tunnel, depth layers and frequency spokes.
 - [x] Implement original AVS-inspired and MilkDrop-inspired procedural scenes; no plugin binary/preset compatibility is claimed.
 - [x] Add random mode action (random within a multi-mode family; across all modes for singleton families).
-- [x] Add four named AVS-inspired and four MilkDrop-inspired variants with compact PSET control.
+- [x] Add four named AVS-inspired and four MilkDrop-inspired variants with compact PSET control. Distinct scene geometry is now selected per preset; Ambience has layered audio-shaped color fields and Particle has a frequency-reactive orbital field.
 - [x] Respect prefers-reduced-motion for the added CSS scene animation.
 - [x] Add optional AUTO mode cycling every 15 seconds (off by default; pauses when the fourth window is hidden/shaded, Video is active or the tab is backgrounded).
 - [ ] Verify hidden-window lifecycle / performance in browser.
