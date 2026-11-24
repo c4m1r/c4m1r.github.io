@@ -1,6 +1,6 @@
 # Winamp Visualization Modes — design and implementation contract
 
-Status: design baseline; implementation and browser acceptance are pending.
+Status: implementation in progress. The first in-window renderer pass is committed; grouped navigation, performance lifecycle work and browser acceptance remain pending.
 
 ## Scope — existing fourth window only
 
@@ -8,12 +8,19 @@ There is exactly one expanded visualization surface: the already implemented squ
 
 The existing fourth window already contains a visualizer stage and a local-video stage. Add selectable visualization modes inside that existing stage. Keep the titlebar, toolbar, video picker, local video playback, window drag/attach behavior and object-URL cleanup intact.
 
+## Implementation snapshot (2026-11-24)
+
+- The Main LCD now has its own independent three-mode state; the fourth window has a separate 13-mode state.
+- The existing fourth-window `MODE` control cycles through Spectrum, Oscilloscope, Peak Meter, Alchemy, Bars and Waves, Battery, Ambience, Particle, Plenoptic, Spikes, Musical Colors, AVS and MilkDrop.
+- Each added family currently has an original lightweight SVG/CSS procedural renderer driven by the shared analyser arrays. These are recognizable first-pass interpretations, not byte-exact reproductions of Microsoft / Nullsoft visualizers, original plugin engines, or compatible preset implementations.
+- The fourth-window geometry and video stage were not changed. Browser screenshots, visual tuning and regression checks are still outstanding.
+
 ## Main LCD versus fourth-window mode state
 
 - Main LCD remains compact and faithful to Winamp Classic. Its existing three quick displays remain Spectrum, Oscilloscope and Peak Meter.
-- The fourth window gets its own independent selected visualization mode and selector. Switching the fourth-window mode must not change the Main LCD mode; cycling the Main LCD must not change the fourth-window mode.
+- The fourth window gets its own independent selected visualization mode. Switching the fourth-window mode does not change the Main LCD mode; cycling the Main LCD does not change the fourth-window mode.
 - Both surfaces may read the same audio-analysis data, but presentation state is independent.
-- Keep the existing fourth-window MODE control functional, but replace its three-way duplicate cycle with a compact mode selector / next-mode action that can reach the complete collection without adding a large control panel.
+- The existing fourth-window MODE control now cycles through the complete 13-mode collection. Grouped navigation is still pending.
 
 ## Canonical Winamp visualization families
 
@@ -79,7 +86,7 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 
 ## Delivery phases
 
-1. **State and selector:** decouple fourth-window mode from Main LCD; add compact grouped mode navigation and stable mode names.
+1. **State and first selector pass:** decouple fourth-window mode from Main LCD and add a compact MODE cycle through stable mode names. Grouped navigation remains a follow-up.
 2. **WMP core:** Alchemy, Bars and Waves, Battery.
 3. **WMP legacy:** Ambience, Particle, Plenoptic, Spikes, Musical Colors.
 4. **Winamp plug-in-inspired:** original AVS-style and MilkDrop-inspired scenes with a small set of named presets.
