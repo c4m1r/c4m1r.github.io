@@ -1358,9 +1358,23 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       </div>
 
       {/* Status Bar */}
+      {isClassicWindows ? (
+        <div className="fx-status flex items-stretch gap-0.5 px-0.5 py-0.5 text-[11px] text-black">
+          <span className="fx-status__cell flex-1 min-w-0">
+            {selectedItem
+              ? (isRu ? '1 объект выделен' : '1 object(s) selected')
+              : `${path === 'My Computer' ? (theme === 'win2000' ? 7 : 8) : visibleItems.length} ${isRu ? 'объект(ов)' : 'object(s)'}`}
+          </span>
+          {detailsForSelection?.size && <span className="fx-status__cell">{detailsForSelection.size}</span>}
+          <span className="fx-status__cell fx-status__cell--place">
+            <img src={getAddressIcon()} alt="" width={16} height={16} style={{ imageRendering: 'pixelated' }} />
+            {path === 'My Computer' ? (isRu ? 'Мой компьютер' : 'My Computer') : addressTextFor(path).split('\\').filter(Boolean).pop()}
+          </span>
+        </div>
+      ) : (
       <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
         <div className="flex gap-4">
-          <span>{path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (theme === 'win2000' ? 7 : 8) : path === 'My Computer' && theme === 'win-xp' ? 3 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
+          <span>{path === 'My Computer' && theme === 'win-xp' ? 3 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
           {selectedItem && <span>{isRu ? 'Выбрано:' : 'Selected:'} {selectedItem}</span>}
         </div>
         {detailsForSelection && (
@@ -1370,6 +1384,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

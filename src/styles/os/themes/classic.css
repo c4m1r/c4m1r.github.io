@@ -581,3 +581,48 @@
 .fx-webview__body p {
   margin: 0;
 }
+
+/* Explorer status bar (Windows 98 and 2000): sunken panels on the window face. */
+.file-explorer--win2000 .fx-status,
+.file-explorer--win-98 .fx-status {
+  background: var(--fx-face);
+  font-family: var(--os-font);
+  font-size: 11px;
+}
+
+.fx-status__cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border: 1px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  white-space: nowrap;
+}
+
+.fx-status__cell--place {
+  min-width: 110px;
+}
+
+/* Classic windows built on the xp-window markup: the frame is a column that fills the window, and the body
+   takes what is left under the title bar, so content such as the Explorer status bar is never pushed below
+   the frame. */
+.os-classic .os-window.window-skin-classic > .xp-window__frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.os-classic .os-window.window-skin-classic .xp-window__content {
+  flex: 1 1 0%;
+  min-height: 0;
+}
+
+.os-classic .os-window.window-skin-classic .xp-window__content > .xp-window__surface {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+}
