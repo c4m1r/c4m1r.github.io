@@ -52,6 +52,35 @@ function generateAlbumArt(track: MediaTrack): { bg: string; accent: string; icon
   };
 }
 
+
+type FourthVisualizerMode =
+  | 'Spectrum' | 'Oscilloscope' | 'Peak meter'
+  | 'Alchemy' | 'Bars and Waves' | 'Battery'
+  | 'Ambience' | 'Particle' | 'Plenoptic' | 'Spikes' | 'Musical Colors'
+  | 'AVS' | 'MilkDrop';
+
+function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peaks: number[], waveform: number[]) {
+  const wavePoints = waveform.map((sample, index) => `${(index / Math.max(1, waveform.length - 1)) * 100},${100 - sample}`).join(' ');
+  const radialPoints = bars.map((value, index) => {
+    const angle = (index / bars.length) * Math.PI * 2 - Math.PI / 2;
+    const radius = 18 + value * 0.32;
+    return `${50 + Math.cos(angle) * radius},${50 + Math.sin(angle) * radius}`;
+  }).join(' ');
+  const hue = (index: number) => (index * 19 + 105) % 360;
+  if (mode === 'Oscilloscope') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path className="wa-viz-grid" d="M0 25H100 M0 50H100 M0 75H100 M25 0V100 M50 0V100 M75 0V100" /><polyline className="wa-viz-wave" points={wavePoints} /></svg>;
+  if (mode === 'Spectrum' || mode === 'Peak meter') return <div className={`wa-video__bars ${mode === 'Peak meter' ? 'wa-video__bars--peaks' : ''}`}>{bars.map((value, index) => <span key={index} style={{height:`${Math.max(2, mode === 'Peak meter' ? peaks[index] : value)}%`}} />)}</div>;
+  if (mode === 'Bars and Waves') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path className="wa-viz-wave" d={bars.map((v,i)=>`M${(i/bars.length)*100} 50v${-Math.max(3,v*.42)} M${(i/bars.length)*100} 50v${Math.max(3,v*.42)}`).join(' ')} /><polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints} /></svg>;
+  if (mode === 'Battery') return <div className="wa-viz-battery">{bars.slice(0,12).map((v,i)=><span key={i} className={v>45?'is-charged':''} style={{height:`${Math.max(8,v)}%`}} />)}</div>;
+  if (mode === 'Ambience') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><radialGradient id="wa-ambience"><stop offset="0%" stopColor="#b7ffdc" stopOpacity=".9"/><stop offset="100%" stopColor="#1b62a5" stopOpacity="0"/></radialGradient></defs><circle cx="50" cy="50" r={24+Math.max(...bars)*.34} fill="url(#wa-ambience)" /><polyline className="wa-viz-wave wa-viz-wave--soft" points={wavePoints} /></svg>;
+  if (mode === 'Particle') return <svg viewBox="0 0 100 100" aria-hidden="true">{bars.map((v,i)=><circle key={i} cx={(i*37+13)%100} cy={(i*23+waveform[i%waveform.length])%100} r={1.2+v/18} fill={`hsl(${hue(i)} 95% 65%)`} opacity=".8" />)}</svg>;
+  if (mode === 'Plenoptic') return <svg viewBox="0 0 100 100" aria-hidden="true">{[0,1,2,3,4].map((i)=><circle key={i} cx="50" cy="50" r={12+i*8+bars[i*3]*.12} fill="none" stroke={`hsl(${185+i*24} 90% 65%)`} strokeWidth="1.2" opacity={.8-i*.1} />)}<polyline className="wa-viz-wave" points={wavePoints} /></svg>;
+  if (mode === 'Spikes') return <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points={radialPoints} fill="rgba(255,170,40,.18)" stroke="#ffb52e" strokeWidth="1.2" /><circle cx="50" cy="50" r="10" fill="#ff6b25" opacity=".55" /></svg>;
+  if (mode === 'Musical Colors') return <div className="wa-viz-colors">{bars.map((v,i)=><span key={i} style={{height:`${Math.max(3,v)}%`,background:`hsl(${hue(i)} 95% 55%)`}} />)}</div>;
+  if (mode === 'Alchemy') return <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points={radialPoints} fill="rgba(25,210,255,.12)" stroke="#20dcff" strokeWidth="1.4" /><polygon points={bars.map((v,i)=>{const a=(i/bars.length)*Math.PI*2;const r=15+v*.2;return `${50+Math.cos(a)*r},${50+Math.sin(a)*r}`;}).join(' ')} fill="none" stroke="#ff4dd2" strokeWidth="1" /><circle cx="50" cy="50" r="5" fill="#fff" /></svg>;
+  if (mode === 'AVS') return <svg viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(50 50)"><polyline className="wa-viz-wave" points={waveform.map((v,i)=>{const a=(i/(waveform.length-1))*Math.PI*2;const r=12+v*.34;return `${Math.cos(a)*r},${Math.sin(a)*r}`;}).join(' ')} /><polyline className="wa-viz-wave wa-viz-wave--secondary" points={waveform.map((v,i)=>{const a=(i/(waveform.length-1))*Math.PI*2;const r=10+v*.28;return `${Math.cos(-a)*r},${Math.sin(-a)*r}`;}).join(' ')} /></g></svg>;
+  return <svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="wa-milkdrop"><stop stopColor="#fff" /><stop offset=".35" stopColor="#4be8ff" /><stop offset="1" stopColor="#18216c" stopOpacity="0" /></radialGradient></defs><circle cx="50" cy="50" r={15+Math.max(...bars)*.35} fill="url(#wa-milkdrop)" opacity=".8" /><polygon points={radialPoints} fill="none" stroke="#ff69d4" strokeWidth="1.1" /><polyline className="wa-viz-wave" points={wavePoints} /></svg>;
+}
+
 interface WinampPlayerProps { onClose?: () => void; }
 
 export function WinampPlayer({ onClose }: WinampPlayerProps) {
@@ -363,8 +392,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
   const [peaks, setPeaks] = useState<number[]>(() => Array(19).fill(2));
   const [waveform, setWaveform] = useState<number[]>(() => Array(19).fill(50));
-  const [visualizerMode, setVisualizerMode] = useState<0 | 1 | 2>(0);
-  const visualizerModeNames = ['Spectrum', 'Oscilloscope', 'Peak meter'] as const;
+  const [mainVisualizerMode, setMainVisualizerMode] = useState<0 | 1 | 2>(0);
+  const mainVisualizerModeNames = ['Spectrum', 'Oscilloscope', 'Peak meter'] as const;
+  const fourthVisualizerModes = [
+    'Spectrum', 'Oscilloscope', 'Peak meter',
+    'Alchemy', 'Bars and Waves', 'Battery',
+    'Ambience', 'Particle', 'Plenoptic', 'Spikes', 'Musical Colors',
+    'AVS', 'MilkDrop',
+  ] as const;
+  type FourthVisualizerMode = typeof fourthVisualizerModes[number];
+  const [fourthVisualizerMode, setFourthVisualizerMode] = useState<FourthVisualizerMode>('Spectrum');
   const rafRef = useRef<number | null>(null);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
@@ -961,20 +998,20 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               {/* Click the LED analyzer to cycle its classic display modes. */}
               <button
                 type="button"
-                className={`wa-visualizer wa-visualizer--mode-${visualizerMode}`}
-                onClick={() => setVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}
-                aria-label={`Visualizer mode: ${visualizerModeNames[visualizerMode]}. Click to switch mode`}
-                title={`${visualizerModeNames[visualizerMode]} — click to change`}
+                className={`wa-visualizer wa-visualizer--mode-${mainVisualizerMode}`}
+                onClick={() => setMainVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}
+                aria-label={`Visualizer mode: ${mainVisualizerModeNames[mainVisualizerMode]}. Click to switch mode`}
+                title={`${mainVisualizerModeNames[mainVisualizerMode]} — click to change`}
                 aria-live="off"
               >
-                {visualizerMode === 1 ? (
+                {mainVisualizerMode === 1 ? (
                   <svg className="wa-visualizer-wave" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
                     <polyline points={waveform.map((sample, index) => `${(index / 18) * 100},${50 - sample}`).join(' ')} />
                   </svg>
                 ) : bars.map((barHeight, idx) => (
-                  <div key={idx} className={`wa-vis-col ${visualizerMode === 2 ? 'wa-vis-col--peak' : ''}`}>
-                    <div className="wa-vis-bar" style={{ height: `${visualizerMode === 2 ? Math.max(3, peaks[idx]) : barHeight}%` }} />
-                    {visualizerMode === 0 && <div className="wa-vis-peak" style={{ bottom: `${peaks[idx]}%` }} />}
+                  <div key={idx} className={`wa-vis-col ${mainVisualizerMode === 2 ? 'wa-vis-col--peak' : ''}`}>
+                    <div className="wa-vis-bar" style={{ height: `${mainVisualizerMode === 2 ? Math.max(3, peaks[idx]) : barHeight}%` }} />
+                    {mainVisualizerMode === 0 && <div className="wa-vis-peak" style={{ bottom: `${peaks[idx]}%` }} />}
                   </div>
                 ))}
               </button>
@@ -1630,18 +1667,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
         {videoMode === 'visualizer' ? (
-          <div className="wa-video__visualizer" role="img" aria-label={visualizerModeNames[visualizerMode]}>
-            <div className="wa-video__visualizer-label">{visualizerModeNames[visualizerMode].toUpperCase()}</div>
-            {visualizerMode === 1 ? (
-              <svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
-                <polyline points={waveform.map((sample, index) => `${(index / 18) * 100},${50 - sample}`).join(' ')} />
-              </svg>
-            ) : (
-              <div className="wa-video__bars">
-                {bars.map((barHeight, index) => <span key={index} style={{ height: `${Math.max(2, visualizerMode === 2 ? peaks[index] : barHeight)}%` }} />)}
-              </div>
-            )}
-            <button type="button" className="wa-video__mode" onClick={() => setVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}>MODE</button>
+          <div className={`wa-video__visualizer wa-video__visualizer--${fourthVisualizerMode.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} role="img" aria-label={fourthVisualizerMode}>
+            <div className="wa-video__visualizer-label">{fourthVisualizerMode.toUpperCase()}</div>
+            {renderFourthVisualizer(fourthVisualizerMode, bars, peaks, waveform)}
+            <button type="button" className="wa-video__mode" title={`Next visualization: ${fourthVisualizerModes[(fourthVisualizerModes.indexOf(fourthVisualizerMode) + 1) % fourthVisualizerModes.length]}`} onClick={() => setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length])}>MODE</button>
           </div>
         ) : (
           <div className="wa-video__screen">
