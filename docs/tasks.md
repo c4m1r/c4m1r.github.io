@@ -470,3 +470,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Refined the response graph's dark green grid, added a restrained horizontal 0 dB reference through the center of the 24-unit SVG viewBox, and tightened the yellow response trace treatment.
 - The graph continues to plot the ten frequency-band values only; PREAMP remains a separate gain control. No JSX, curve data mapping, slider values, DSP, preset handling, playback/controller behavior, Dev Alpha or imported .wsz rendering changed.
 - CSS-only presentation pass scoped to the built-in Webamp Classic renderer. Verification: source update committed; browser visual QA, build/typecheck and interaction QA have not been run. The grid-to-band alignment is an authored visual approximation, not verified pixel parity.
+
+
+### Winamp — Webamp Classic Equalizer fader cap and dB reference pass (2026-11-24)
+- Refined the eleven vertical fader caps with a compact metallic bevel, distinct hover/pressed states and keyboard-focus visibility. Track wells now have a clearer center reference and restrained tick treatment.
+- Kept the range orientation explicit: with `writing-mode: vertical-lr` and `direction: rtl`, positive gain is at the top, 0 dB at the midpoint and negative gain at the bottom. Existing `min=-12`, `max=12`, `step=0.5`, values, SVG response mapping and EQ handlers are unchanged.
+- CSS-only and scoped to `.wa-shell--webamp-classic`. No JSX, audio/DSP logic, presets, Dev Alpha or imported `.wsz` styling changed.
+- Verification: source update committed. Browser-specific thumb orientation, endpoint alignment and touch/keyboard interaction still require visual QA; build/typecheck and CI have not been confirmed.
