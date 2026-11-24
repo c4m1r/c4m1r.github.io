@@ -3605,3 +3605,46 @@
     margin-inline: 1px;
   }
 }
+
+
+/* Webamp Classic — equalizer graph grid and response reference. */
+.wa-shell--webamp-classic .wa-eq__spline {
+  background-color: #020502;
+  background-image:
+    linear-gradient(
+      to bottom,
+      transparent calc(50% - .5px),
+      rgba(177, 207, 139, .34) calc(50% - .5px),
+      rgba(177, 207, 139, .34) calc(50% + .5px),
+      transparent calc(50% + .5px)
+    ),
+    linear-gradient(rgba(104, 145, 75, .16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(104, 145, 75, .16) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 5px,
+    10.6667% 100%;
+  background-position:
+    center,
+    left center,
+    2% center;
+  background-repeat: no-repeat, repeat, repeat;
+  box-shadow:
+    inset 1px 1px 2px #000,
+    inset -1px -1px #172117,
+    0 0 0 1px rgba(0, 0, 0, .35);
+}
+
+.wa-shell--webamp-classic .wa-spline-svg {
+  display: block;
+  overflow: visible;
+}
+
+.wa-shell--webamp-classic .wa-spline-svg polyline {
+  stroke: #f5ed62;
+  stroke-width: 1.2;
+  stroke-linecap: square;
+  stroke-linejoin: bevel;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1.2px rgba(255, 244, 92, .72));
+}
