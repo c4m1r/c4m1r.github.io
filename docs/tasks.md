@@ -694,14 +694,15 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 
 
 ### Winamp — canonical visualization modes in the existing fourth window
-- [x] Keep the existing fourth square Video / Visualization window and its current dimensions; do not create additional windows or enlarged layouts.
+- [x] Keep the existing fourth square Video / Visualization window and its current dimensions; no extra windows or enlarged layouts.
 - [x] Keep Main LCD's Spectrum / Oscilloscope / Peak Meter selection independent from the fourth-window mode.
-- [ ] Add compact grouped mode navigation inside the existing fourth-window stage (current MODE action cycles the full list).
-- [x] Add first-pass WMP core renderers: Alchemy, Bars and Waves, Battery.
-- [x] Add first-pass historically labeled WMP legacy renderers: Ambience, Particle, Plenoptic, Spikes, Musical Colors.
-- [x] Add original AVS-inspired and MilkDrop-inspired procedural scenes; no binary plugin or preset compatibility is claimed.
-- [ ] Add previous/random mode and optional auto-cycle (off by default).
-- [ ] Optimize animation lifecycle while the fourth window is hidden or showing video.
-- [x] Preserve the existing local-video stage, object-URL cleanup and window geometry in the implementation pass.
-- [ ] Verify drag/attach, playback/EQ/playlist behavior, mode distinction, responsiveness and performance in browser.
-- Design contract and progress: `docs/winamp-visualization-modes.md`. First-pass renderers are implemented; grouped navigation and browser acceptance are not yet complete.
+- [x] Add grouped mode navigation in the existing toolbar: Winamp Classic, WMP core, WMP Legacy, AVS-inspired and MilkDrop-inspired.
+- [x] Implement first-pass WMP core renderers: Alchemy, Bars and Waves, Battery.
+- [x] Implement first-pass WMP legacy renderers: Ambience, Particle, Plenoptic, Spikes, Musical Colors.
+- [x] Implement original AVS-inspired and MilkDrop-inspired procedural scenes; no plugin binary/preset compatibility is claimed.
+- [x] Add random mode action (random within a multi-mode family; across all modes for singleton families).
+- [ ] Add named AVS/MilkDrop preset variants and optional auto-cycle (off by default).
+- [ ] Verify reduced-motion and hidden-window lifecycle / performance in browser.
+- [x] Preserve local video stage, object-URL cleanup and existing window geometry in the implementation pass.
+- [ ] Browser acceptance: visual distinction, mobile fit, drag/attach, playback/EQ/playlist and video regressions.
+- Design contract and progress: `docs/winamp-visualization-modes.md`. First-pass modes and grouped picker are committed; browser acceptance is pending.
