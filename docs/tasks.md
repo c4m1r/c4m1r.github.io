@@ -373,6 +373,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - See P0 and P1 above (STARTMENU-01/02, PROFILE-FS, DOCS, PICTURES, CONTROL, THEMES-01, OS-FIDELITY-01 and the rest). Those are product items; the list above covers only design fidelity.
 
 
+- 1:1 visual reconstruction is tracked separately in `docs/winamp-classic-1to1-gap-analysis.md`; use the user-supplied original Winamp 2.x screenshot as the faceplate reference and keep project-specific actions in menus rather than permanent rows.
+
 ## Winamp — classic geometry and local audio
 - Preserve the separate draggable main, equalizer and playlist modules. Base window width remains 275 px, matching Winamp 2/Webamp; retain the original titlebar, transport, display, fader and playlist density. Reference layout places main at (0,0), EQ at (0,116), and Playlist at (0,232); a small desktop offset is acceptable, but do not turn the modules into one modern resizable player.
 - Do not expand main/EQ to accommodate import tools. EQF/Q1 and M3U actions stay secondary and compact; the original controls keep visual priority. Narrow-viewport width reduction is only a fallback.
