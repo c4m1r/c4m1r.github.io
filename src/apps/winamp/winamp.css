@@ -9398,7 +9398,7 @@
 .wa-shell .wa-video__visualizer--alchemy > svg .wa-alchemy-orbits ellipse {
   filter: drop-shadow(0 0 2px #42dfff);
 }
-.wa-shell .wa-video__visualizer--alchemy > svg .wa-viz-alchemy > path {
+.wa-shell .wa-video__visualizer--alchemy > svg.wa-viz-alchemy > path {
   filter: drop-shadow(0 0 3px rgba(57,220,255,.7));
 }
 .wa-shell .wa-video__visualizer--alchemy > svg circle {
@@ -9431,4 +9431,11 @@
   .wa-shell .wa-video__visualizer--plenoptic > svg .wa-plenoptic-tunnel {
     animation: none !important;
   }
+}
+
+.wa-shell .wa-video__visualizer--alchemy > svg.wa-viz-alchemy > path:nth-of-type(2) {
+  filter: drop-shadow(0 0 4px rgba(255,90,220,.55));
+}
+.wa-shell .wa-video__visualizer--plenoptic > svg line {
+  filter: drop-shadow(0 0 2px rgba(75,225,255,.7));
 }
