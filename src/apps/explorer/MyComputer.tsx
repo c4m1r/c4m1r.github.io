@@ -1307,6 +1307,52 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                 ))}
               </div>
             )
+          ) : isClassicWindows ? (
+            // Windows 98/2000 Details: raised column headers, 16 px icons, navy selection.
+            (() => {
+              const atRoot = classicSystemEntries.length > 0;
+              const systemKind = (key: string) => /Floppy|3½/i.test(key) ? (isRu ? 'Дисковод 3½' : '3½-Inch Floppy Disk')
+                : /^Local Disk/i.test(key) ? (isRu ? 'Локальный диск' : 'Local Disk')
+                : /^CD/i.test(key) ? (isRu ? 'Дисковод CD-ROM' : 'CD-ROM Disc')
+                : (isRu ? 'Системная папка' : 'System Folder');
+              const rows = atRoot
+                ? classicSystemEntries.map((entry) => ({ key: entry.key, label: entry.label, icon: entry.icon, type: systemKind(entry.key), size: '', open: entry.open }))
+                : visibleItems.filter((item) => !(path === 'My Computer' && item.name === 'Network Neighborhood')).map((item) => ({
+                  key: item.name,
+                  label: item.name,
+                  icon: resolveFileIcon(item, theme),
+                  type: item.type === 'folder' ? (isRu ? 'Папка с файлами' : 'File Folder') : item.type === 'drive' ? (isRu ? 'Локальный диск' : 'Local Disk') : (isRu ? 'Файл' : 'File'),
+                  size: item.size || '',
+                  open: () => handleNavigate(item),
+                }));
+              return (
+                <table className="fx-details">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '38%' }}>{isRu ? 'Имя' : 'Name'}</th>
+                      <th style={{ width: '26%' }}>{isRu ? 'Тип' : 'Type'}</th>
+                      <th>{atRoot ? (isRu ? 'Общий размер' : 'Total Size') : (isRu ? 'Размер' : 'Size')}</th>
+                      {atRoot && <th>{isRu ? 'Свободно' : 'Free Space'}</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((row) => (
+                      <tr
+                        key={row.key}
+                        className={selectedItem === row.key ? 'is-selected' : ''}
+                        onClick={(event) => { event.stopPropagation(); setSelectedItem(row.key); }}
+                        onDoubleClick={(event) => { event.stopPropagation(); row.open?.(); }}
+                      >
+                        <td><img src={row.icon} alt="" width={16} height={16} style={{ imageRendering: 'pixelated' }} /><span>{row.label}</span></td>
+                        <td>{row.type}</td>
+                        <td>{row.size}</td>
+                        {atRoot && <td />}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              );
+            })()
           ) : (
             <table className="w-full text-left border-collapse">
               <thead className="bg-[#ece9d8] text-[#215dc6] uppercase text-[11px]">

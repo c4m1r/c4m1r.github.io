@@ -462,6 +462,7 @@
 
 .file-explorer--win2000 .fx-toolbar,
 .file-explorer--win-98 .fx-toolbar {
+  overflow: hidden;
   gap: 0 !important;
   padding: 2px 4px !important;
   border-top: 1px solid #ffffff;
@@ -471,8 +472,8 @@
 .file-explorer--win-98 .fx-toolbar button {
   flex-direction: column !important;
   gap: 2px !important;
-  min-width: 48px;
-  padding: 2px 6px !important;
+  min-width: 40px;
+  padding: 2px 4px !important;
   border: 1px solid transparent !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -624,5 +625,53 @@
   min-width: 0;
   min-height: 0;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
+}
+
+/* Explorer Details view (Windows 98 and 2000). */
+.fx-details {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: var(--os-font);
+  font-size: 11px;
+  color: #000000;
+}
+
+.fx-details th {
+  padding: 2px 6px;
+  text-align: left;
+  font-weight: 400;
+  background: var(--fx-face, #d4d0c8);
+  border: 2px solid;
+  border-color: #ffffff #404040 #404040 #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.fx-details td {
+  height: 17px;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fx-details td:first-child {
+  padding-left: 2px;
+}
+
+.fx-details td img {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.fx-details tr.is-selected td {
+  background: #0a246a;
+  color: #ffffff;
+}
+
+.file-explorer--win-98 .fx-details tr.is-selected td {
+  background: #000080;
 }
