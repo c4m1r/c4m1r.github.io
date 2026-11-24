@@ -9212,3 +9212,26 @@
     width: calc(100% + 22px) !important;
   }
 }
+
+
+/* 2026-11-24 compact Classic stack: reclaim unused EQ footer space and
+   reduce the three player windows to a consistent 269px faceplate width. */
+.wa-shell--webamp-classic .wa-equalizer {
+  height: 104px !important;
+  min-height: 104px !important;
+  max-height: 104px !important;
+}
+.wa-shell--webamp-classic .wa-eq__body {
+  height: 88px !important;
+  min-height: 88px !important;
+  max-height: 88px !important;
+  padding-bottom: 2px !important;
+}
+.wa-shell--webamp-classic .wa-main,
+.wa-shell--webamp-classic .wa-equalizer {
+  width: 269px !important;
+  min-width: 269px !important;
+}
+.wa-shell--webamp-classic .wa-playlist {
+  min-width: 269px !important;
+}
