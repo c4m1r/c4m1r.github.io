@@ -520,3 +520,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Harmonized track/progress transparency, removed Firefox's outer focus decoration, and added matching keyboard-focus and disabled-state treatment for both engines.
 - CSS-only, scoped to `.wa-shell--webamp-classic`. Slider orientation, min/max/step, values, event handlers, PREAMP separation, graph mapping, DSP/controller behavior, Dev Alpha and imported .wsz styles remain unchanged.
 - Verification: CSS brace balance and selector scope checked. Actual Chrome/Firefox thumb geometry, touch, keyboard, browser visual QA, build/typecheck and CI still require runtime validation.
+
+
+### Winamp — Webamp Classic EQ lower baseline and label alignment (2026-11-24)
+- Unified the eleven fader columns on a shared lower baseline: 63 px track wells, consistent label row height, and a controlled gap between the metal faders and their frequency captions.
+- Tightened PREAMP caption sizing separately from the ten frequency labels; retained tabular frequency figures and the narrow-screen label reduction. The dB scale and divider remain aligned to the fader travel.
+- CSS-only, scoped to `.wa-shell--webamp-classic`. No JSX, frequency mapping, slider ranges/values, EQ handlers, DSP/controller behavior, Dev Alpha or imported .wsz styles changed.
+- Verification: CSS brace balance (588/588) and selector scope checked. Browser visual review at desktop/narrow widths, Chrome/Firefox endpoint checks, build/typecheck and CI remain unconfirmed.
