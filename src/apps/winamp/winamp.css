@@ -6935,3 +6935,42 @@
   outline: 1px solid #ffe36e;
   outline-offset: 1px;
 }
+
+
+
+/* Webamp Classic — shared title/body optical seam.
+   Keep each module's individual faceplate, but make the three window headers
+   sit on the same 14 px baseline with consistent title inset and lower edge. */
+.wa-shell--webamp-classic .wa-main > .wa-titlebar,
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar,
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar {
+  padding-right: 4px;
+  padding-left: 4px;
+  line-height: 14px;
+  border-bottom: 1px solid #11120e;
+  box-shadow: inset 0 1px rgba(238,240,221,.2), 0 1px 0 rgba(0,0,0,.38);
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__title,
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar .wa-titlebar__title,
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar .wa-titlebar__title {
+  min-width: 0;
+  overflow: hidden;
+  line-height: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__left {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  gap: 3px;
+}
+
+.wa-shell--webamp-classic .wa-main > .wa-titlebar .wa-titlebar__controls,
+.wa-shell--webamp-classic .wa-equalizer > .wa-titlebar .wa-titlebar__controls,
+.wa-shell--webamp-classic .wa-playlist > .wa-titlebar .wa-titlebar__controls {
+  flex-shrink: 0;
+}
