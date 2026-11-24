@@ -532,7 +532,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const setVideoWindowVisible = (visible: boolean) => {
     if (visible === showVideo) return;
     if (!visible && isVideoFullscreen) {
-      if (document.fullscreenElement === videoWindowRef.current && document.exitFullscreen) void document.exitFullscreen();
+      if (document.fullscreenElement === videoWindowRef.current && document.exitFullscreen) void document.exitFullscreen().catch(() => undefined);
       setIsVideoFullscreen(false);
     }
     if (!detachedWindows.includes('video')) {
@@ -2010,6 +2010,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           </div>
         )}
         {isVideoFullscreen && <div
+          role="toolbar"
+          aria-label="Fullscreen media controls"
           className={`wa-video__fullscreen-controls${showFullscreenControls ? ' is-visible' : ''}`}
           onPointerEnter={() => {
             fullscreenPanelHoverRef.current = true;
