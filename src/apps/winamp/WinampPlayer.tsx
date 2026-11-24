@@ -374,6 +374,22 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoShade, setVideoShade] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFileName, setVideoFileName] = useState('');
+  const setVideoWindowVisible = (visible: boolean) => {
+    if (visible === showVideo) return;
+    if (!detachedWindows.includes('video')) {
+      const offset = visible ? 275 : -275;
+      setWindowPositions((current) => ({
+        ...current,
+        main: { ...current.main, y: current.main.y + offset },
+        equalizer: { ...current.equalizer, y: current.equalizer.y + offset },
+        playlist: { ...current.playlist, y: current.playlist.y + offset },
+        video: visible
+          ? { x: current.main.x, y: current.main.y - 275 }
+          : current.video,
+      }));
+    }
+    setShowVideo(visible);
+  };
   const videoUrlRef = useRef('');
   const videoInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => () => { if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current); }, []);
@@ -868,7 +884,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             >
               ▲
             </button>
-            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--window-toggle" title="Open Video / Visualization" aria-label="Open Video / Visualization" onClick={() => setShowVideo((value) => !value)}>VIS</button>
+            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--window-toggle" title="Open Video / Visualization" aria-label="Open Video / Visualization" onClick={() => setVideoWindowVisible(!showVideo)}>VIS</button>
             <button type="button" className="wa-titlebar__btn wa-titlebar__btn--settings" title="Player settings" aria-label="Player settings" aria-expanded={playerSettingsOpen} onClick={() => setPlayerSettingsOpen((open) => !open)}>⚙</button>
             <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close Winamp" onClick={onClose}>×</button>
           </div>
@@ -1601,7 +1617,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           <div className="wa-titlebar__controls">
             <button type="button" className="wa-titlebar__btn" title={detachedWindows.includes('video') ? 'Attach to window group' : 'Detach this window'} aria-label={detachedWindows.includes('video') ? 'Attach window' : 'Detach window'} onClick={() => setDetachedWindows((items) => items.includes('video') ? items.filter((item) => item !== 'video') : [...items, 'video'])}>{detachedWindows.includes('video') ? '↗' : '⛓'}</button>
             <button type="button" className="wa-titlebar__btn" title="Toggle Windowshade" onClick={() => setVideoShade((value) => !value)}>▲</button>
-            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close video / visualization" onClick={() => setShowVideo(false)}>×</button>
+            <button type="button" className="wa-titlebar__btn wa-titlebar__btn--close" title="Close video / visualization" onClick={() => setVideoWindowVisible(false)}>×</button>
           </div>
         </div>
         {!videoShade && <>
