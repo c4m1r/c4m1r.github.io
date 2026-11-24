@@ -3785,3 +3785,67 @@
 .wa-shell--webamp-classic .wa-eq__labels-left span:nth-child(2) {
   color: #fff;
 }
+
+
+/* Webamp Classic — equalizer response graph calibration.
+   The ten SVG samples use x=2..98 in equal 10.6667% steps; keep the
+   vertical grid on that same origin/interval so every guide tracks a band. */
+.wa-shell--webamp-classic .wa-eq__spline {
+  background-color: #020502;
+  background-image:
+    linear-gradient(
+      to bottom,
+      transparent calc(50% - .5px),
+      rgba(205, 226, 166, .48) calc(50% - .5px),
+      rgba(205, 226, 166, .48) calc(50% + .5px),
+      transparent calc(50% + .5px)
+    ),
+    linear-gradient(
+      to bottom,
+      transparent calc(25% - .5px),
+      rgba(115, 151, 87, .17) calc(25% - .5px),
+      rgba(115, 151, 87, .17) calc(25% + .5px),
+      transparent calc(25% + .5px)
+    ),
+    linear-gradient(
+      to bottom,
+      transparent calc(75% - .5px),
+      rgba(115, 151, 87, .17) calc(75% - .5px),
+      rgba(115, 151, 87, .17) calc(75% + .5px),
+      transparent calc(75% + .5px)
+    ),
+    linear-gradient(90deg, rgba(104, 145, 75, .2) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    10.6667% 100%;
+  background-position:
+    center,
+    center,
+    center,
+    2% center;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+  box-shadow:
+    inset 1px 1px 2px #000,
+    inset -1px -1px #172117,
+    0 0 0 1px rgba(0, 0, 0, .35);
+}
+
+.wa-shell--webamp-classic .wa-spline-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.wa-shell--webamp-classic .wa-spline-svg polyline {
+  stroke: #fff16a;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter:
+    drop-shadow(0 0 1px rgba(255, 244, 110, .82))
+    drop-shadow(0 0 2px rgba(255, 226, 70, .28));
+}
