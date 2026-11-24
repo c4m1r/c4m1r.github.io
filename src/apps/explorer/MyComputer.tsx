@@ -737,7 +737,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       {/* Toolbar */}
       <div className="flex flex-col border-b border-[#aca899]">
         {/* Menu Bar */}
-        <div className={`flex items-center px-1 ${menuBarClass} border-b border-[#aca899]`}>
+        <div className={`fx-menubar flex items-center px-1 ${menuBarClass} border-b border-[#aca899]`}>
           {menuItems.map((item) => (
             <button
               key={item}
@@ -749,7 +749,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
         </div>
 
         {/* Standard Action Buttons */}
-        <div className="flex items-center p-1 bg-[#ece9d8] gap-1 border-b border-[#aca899]">
+        <div className="fx-toolbar flex items-center p-1 bg-[#ece9d8] gap-1 border-b border-[#aca899]">
           <button
             onClick={handleBack}
             disabled={historyIndex === 0}
@@ -785,6 +785,21 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             {isClassicWindows ? <span aria-hidden="true">▣</span> : <img src={foldersToggleIcon} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Папки' : 'Folders'}</span>
           </button>
+          {theme === 'win2000' && (
+            <>
+              <button type="button" className="flex items-center gap-1 px-2 py-1 text-black border-0 bg-transparent">
+                <img src={win98SearchIcon} alt="" className="w-4 h-4 object-contain" style={{ filter: 'grayscale(1)', opacity: 0.55 }} />
+                <span>{isRu ? 'Журнал' : 'History'}</span>
+              </button>
+              <div className="w-px h-6 bg-gray-400 mx-1" />
+              {[isRu ? 'Переместить' : 'Move To', isRu ? 'Копировать' : 'Copy To', isRu ? 'Удалить' : 'Delete', isRu ? 'Отменить' : 'Undo'].map((label) => (
+                <button key={label} type="button" disabled className="flex items-center gap-1 px-2 py-1 text-black border-0 bg-transparent disabled:opacity-40">
+                  <span aria-hidden="true" className="fx-glyph" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </>
+          )}
           <div className="w-px h-6 bg-gray-400 mx-1" />
           <div className="relative" ref={viewsMenuRef}>
             <button
@@ -822,7 +837,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
         </div>
 
         {/* Address Bar */}
-        <div className="flex items-center p-1 bg-[#ece9d8] gap-2">
+        <div className="fx-address flex items-center p-1 bg-[#ece9d8] gap-2">
           <span className="text-gray-600 font-semibold">{isRu ? 'Адрес' : 'Address'}</span>
           <div className="flex-1 bg-white border border-[#7f9db9] flex items-center px-1 h-5 shadow-inner">
             <img src={getAddressIcon()} className="w-4 h-4 mr-1.5 object-contain" alt="" />

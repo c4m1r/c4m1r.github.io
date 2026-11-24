@@ -1034,14 +1034,15 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       icon: normalizedPath === 'My Computer'
         ? themeAssets.computerIcon
         : normalizedPath === 'C:\\$Recycle.Bin' ? themeAssets.recycleIcon : themeAssets.folderIcon,
-      width: 720,
-      height: 520,
+      // New windows open at (100, 100) and cascade by 30 px; leave room for that so a 640x480 screen does not clip it.
+      width: Math.min(720, Math.max(320, viewport.width - 140)),
+      height: Math.min(520, Math.max(240, viewport.height - 180)),
       content: themeKey === 'win7'
         ? <Windows7Explorer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} />
         : <MyComputer currentPath={normalizedPath} onOpenItem={handleOpenFile} onOpenSlideshow={handleOpenPictureSlideshow} initialSearchOpen={initialSearchOpen} />,
     });
     playLaunchSound();
-  }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon, themeAssets.recycleIcon, themeKey]);
+  }, [handleOpenFile, handleOpenPictureSlideshow, language, openWindow, playLaunchSound, t.myComputer, themeAssets.computerIcon, themeAssets.folderIcon, themeAssets.recycleIcon, themeKey, viewport.width, viewport.height]);
 
   const openDoomVariant = useCallback((variantId: DoomVariantId) => {
     const variant = doomVariantMap[variantId];

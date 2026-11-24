@@ -438,3 +438,106 @@
   text-shadow: none !important;
   letter-spacing: 0 !important;
 }
+
+/* ── Explorer toolbar and address bar (Windows 98 and 2000) ───────────────────
+   Native layout: flat buttons with the icon above the label, raised on hover, etched separators. */
+.file-explorer--win2000 { --fx-face: #d4d0c8; }
+.file-explorer--win-98 { --fx-face: #c0c0c0; }
+
+.file-explorer--win2000,
+.file-explorer--win-98 {
+  font-family: var(--os-font) !important;
+  font-size: 11px !important;
+}
+
+.file-explorer--win2000 .fx-menubar,
+.file-explorer--win-98 .fx-menubar,
+.file-explorer--win2000 .fx-toolbar,
+.file-explorer--win-98 .fx-toolbar,
+.file-explorer--win2000 .fx-address,
+.file-explorer--win-98 .fx-address {
+  background: var(--fx-face) !important;
+  border-color: #808080 !important;
+}
+
+.file-explorer--win2000 .fx-toolbar,
+.file-explorer--win-98 .fx-toolbar {
+  gap: 0 !important;
+  padding: 2px 4px !important;
+  border-top: 1px solid #ffffff;
+}
+
+.file-explorer--win2000 .fx-toolbar button,
+.file-explorer--win-98 .fx-toolbar button {
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 48px;
+  padding: 2px 6px !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  font-size: 11px !important;
+}
+
+.file-explorer--win2000 .fx-toolbar button:hover:not(:disabled),
+.file-explorer--win-98 .fx-toolbar button:hover:not(:disabled) {
+  border-color: #ffffff #808080 #808080 #ffffff !important;
+}
+
+.file-explorer--win2000 .fx-toolbar button:active:not(:disabled),
+.file-explorer--win-98 .fx-toolbar button:active:not(:disabled) {
+  border-color: #808080 #ffffff #ffffff #808080 !important;
+}
+
+.file-explorer--win2000 .fx-toolbar .w-px,
+.file-explorer--win-98 .fx-toolbar .w-px {
+  width: 2px !important;
+  height: 34px !important;
+  margin: 0 3px !important;
+  background: none !important;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+}
+
+.file-explorer--win2000 .fx-glyph,
+.file-explorer--win-98 .fx-glyph {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #808080;
+  background: #ffffff;
+}
+
+.file-explorer--win2000 .fx-address,
+.file-explorer--win-98 .fx-address {
+  gap: 6px !important;
+  padding: 3px 4px !important;
+}
+
+.file-explorer--win2000 .fx-address > span,
+.file-explorer--win-98 .fx-address > span {
+  color: #000000 !important;
+  font-weight: 400 !important;
+}
+
+.file-explorer--win2000 .fx-address > div,
+.file-explorer--win-98 .fx-address > div {
+  height: 22px !important;
+  border: 2px solid !important;
+  border-color: #808080 #ffffff #ffffff #808080 !important;
+  box-shadow: inset 1px 1px 0 #404040 !important;
+}
+
+.file-explorer--win2000 .fx-address > button,
+.file-explorer--win-98 .fx-address > button {
+  border: 2px solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  border-radius: 0 !important;
+  background: var(--fx-face) !important;
+  font-size: 11px !important;
+}
+
+.file-explorer--win2000 .fx-toolbar button span,
+.file-explorer--win-98 .fx-toolbar button span {
+  white-space: nowrap;
+}
