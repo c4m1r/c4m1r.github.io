@@ -2949,3 +2949,118 @@
     gap: 2px;
   }
 }
+
+/* Webamp Classic — Main bitmap-inspired pixel pass.
+   Original Nullsoft sprite artwork is intentionally not bundled. */
+.wa-shell--webamp-classic .wa-display__left {
+  align-items: center;
+  gap: 4px;
+}
+
+.wa-shell--webamp-classic .wa-indicators {
+  min-width: 9px;
+  gap: 2px;
+  align-items: center;
+  color: #18351a;
+  font: 6px/7px "Arial Narrow", Arial, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-ind-dot {
+  display: block;
+  min-width: 7px;
+  color: #263b22;
+  font: 700 6px/7px Arial, sans-serif;
+  text-shadow: 1px 0 #071007, 0 1px #071007;
+  opacity: .72;
+}
+
+.wa-shell--webamp-classic .wa-ind-dot.is-lit {
+  color: #a8e85b;
+  opacity: 1;
+  text-shadow: 0 0 1px #a8e85b, 1px 0 #315b1c;
+}
+
+.wa-shell--webamp-classic .wa-time-lcd {
+  border: 1px solid #172417;
+  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #0b180b;
+}
+
+.wa-shell--webamp-classic .wa-time-lcd__digits {
+  color: #8fe34d;
+  font-family: "Courier New", monospace;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1.4px;
+  line-height: 23px;
+  text-shadow: 1px 0 #315d20, 0 1px #183516;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+.wa-shell--webamp-classic .wa-time-lcd__colon {
+  display: inline-block;
+  padding-inline: 1px;
+  color: #b0ed68;
+  transform: translateY(-1px);
+}
+
+.wa-shell--webamp-classic .wa-tech-info .wa-chan {
+  min-width: 20px;
+  text-align: center;
+  border: 1px solid #263321;
+  background: #080d07;
+  box-shadow: inset 1px 1px 0 #000;
+  letter-spacing: 0;
+}
+
+.wa-shell--webamp-classic .wa-tech-info .wa-chan.is-active {
+  border-color: #657b42;
+  background: #26351b;
+  color: #d5f09a;
+  box-shadow: inset 1px 1px 0 #10170c, 0 0 2px rgba(140, 210, 70, .2);
+}
+
+.wa-shell--webamp-classic .wa-btn-transport {
+  position: relative;
+  overflow: hidden;
+  color: #e1e2d5;
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  line-height: 1;
+  text-shadow: 1px 1px 0 #111;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,.16), inset -1px -1px 0 rgba(0,0,0,.55);
+}
+
+.wa-shell--webamp-classic .wa-btn-transport:hover:not(:active) {
+  background: linear-gradient(180deg, #55564d, #303129);
+  border-top-color: #a0a08e;
+  border-left-color: #a0a08e;
+}
+
+.wa-shell--webamp-classic .wa-btn-transport:active {
+  box-shadow: inset 1px 1px 0 #080808, inset -1px -1px 0 #77776b;
+  transform: translate(1px, 1px);
+}
+
+.wa-shell--webamp-classic .wa-slider-track--pos,
+.wa-shell--webamp-classic .wa-slider-track--vol,
+.wa-shell--webamp-classic .wa-slider-track--bal {
+  border: 1px solid #090b08;
+  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #65685b;
+}
+
+.wa-shell--webamp-classic .wa-slider-track--pos:focus-within,
+.wa-shell--webamp-classic .wa-slider-track--vol:focus-within,
+.wa-shell--webamp-classic .wa-slider-track--bal:focus-within {
+  outline: 1px dotted #b9d58a;
+  outline-offset: 1px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-time-lcd__digits {
+    font-size: 17px;
+    letter-spacing: -1.1px;
+  }
+}
+
