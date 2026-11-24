@@ -551,3 +551,12 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Подтянул швы и металлическую поверхность Main/Playlist body, усилил inset у Playlist list и разделителя footer. EQ сохраняет собственную откалиброванную faceplate, график и фейдерную секцию — общий проход не перезаписывает их специализированные поверхности.
 - Сохранены размеры и позиционирование окон, window drag/shade/close, контроллер, аудио, визуализатор, playlist actions, Dev Alpha и импортированные .wsz. Только CSS в winamp.css.
 - Проверка исходника: скобки CSS сбалансированы (644/644); все новые селекторы ограничены .wa-shell--webamp-classic. Browser visual QA, build/typecheck и реальная проверка взаимодействий не запускались; CI для коммита нужно проверять отдельно. Не считать проход Verified до визуальной проверки трёх окон вместе и на узком экране.
+
+
+### Winamp — Webamp Classic Main hardware controls and fader caps (2026-11-24)
+- Refined the built-in Main seek rail with a recessed dark track, clearer green progress and a small metallic position cap that follows the existing progress width.
+- Replaced the invisible built-in VOL/BAL range controls with visible metallic slider thumbs using the existing native range inputs. The thumb position remains driven by the existing volume/balance values; min/max/step, state updates and handlers are unchanged. Added matching WebKit and Gecko track/thumb styling and keyboard focus treatment.
+- Reworked the six transport buttons as a tighter inset hardware bank with consistent bevel, hover and pressed states; preserved the existing glyphs, button order, 23 × 18 px targets and all click handlers.
+- CSS-only, scoped to `.wa-shell--webamp-classic .wa-main`. Imported `.wsz` skin tracks/sprites and Dev Alpha are not targeted. No player/controller/audio behavior or JSX changed.
+- Verification: source update and CSS brace/scope checks only. Browser QA is still required for range-thumb alignment and touch/keyboard behavior in Chromium/Firefox; build/typecheck and CI must be checked separately. Not marked Verified.
+
