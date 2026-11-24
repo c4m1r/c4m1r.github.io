@@ -7041,3 +7041,91 @@
     max-width: calc(100vw - 8px);
   }
 }
+
+
+/* Webamp Classic — compact EQ control rail.
+   Keep preset selection in the graph row and all file actions on one toolbar line. */
+.wa-shell--webamp-classic .wa-eq__body {
+  gap: 2px;
+  padding: 2px 5px 3px;
+}
+
+.wa-shell--webamp-classic .wa-eq__header {
+  height: 16px;
+  min-height: 16px;
+  gap: 4px;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__spline {
+  height: 16px;
+  min-width: 0;
+}
+
+.wa-shell--webamp-classic .wa-eq__header .wa-eq__preset-select {
+  box-sizing: border-box;
+  flex: 0 0 58px;
+  width: 58px;
+  min-width: 0;
+  height: 13px;
+  min-height: 13px;
+  padding: 0 1px;
+  font: 6px/10px Arial, Helvetica, sans-serif;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools {
+  display: flex;
+  flex-wrap: nowrap !important;
+  flex: 0 0 14px;
+  width: 100%;
+  min-width: 0;
+  height: 14px;
+  min-height: 14px;
+  margin-top: 0 !important;
+  gap: 2px !important;
+  overflow: hidden;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools input.wa-btn-presets {
+  flex: 1 1 40px !important;
+  width: 40px;
+  min-width: 40px;
+}
+
+.wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding-inline: 2px;
+  font-size: 5px;
+  letter-spacing: -.18px;
+  white-space: nowrap;
+}
+
+.wa-shell--webamp-classic .wa-eq__sliders-container {
+  flex: 0 0 76px;
+  height: 76px;
+  min-height: 76px;
+  margin-top: 0;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+@media (max-width: 440px) {
+  .wa-shell--webamp-classic .wa-eq__header {
+    gap: 3px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__header .wa-eq__preset-select {
+    flex-basis: 54px;
+    width: 54px;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__preset-tools {
+    overflow: hidden;
+    gap: 1px !important;
+  }
+
+  .wa-shell--webamp-classic .wa-eq__preset-tools .wa-btn-mode {
+    padding-inline: 1px;
+    font-size: 4.8px;
+  }
+}
