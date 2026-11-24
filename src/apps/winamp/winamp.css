@@ -9301,3 +9301,53 @@
 @media (max-width: 360px) {
   .wa-shell .wa-video__mode-select { width: 78px; max-width: 78px; }
 }
+
+
+/* Named AVS / MilkDrop-inspired presets stay within the same square stage. */
+.wa-shell .wa-video__preset {
+  flex: 0 0 auto;
+  min-width: 30px;
+  height: 19px;
+  padding: 0 3px;
+  border: 1px solid #45606b;
+  border-radius: 2px;
+  background: linear-gradient(#263b45,#101a20);
+  color: #c8e9e8;
+  font: bold 8px Arial, sans-serif;
+  cursor: pointer;
+}
+.wa-shell .wa-video__preset:focus-visible { outline: 1px solid #72e8ff; outline-offset: 1px; }
+.wa-shell .wa-video__visualizer-label { max-width: calc(100% - 64px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wa-shell .wa-viz-preset { transform-origin: 50% 50%; }
+.wa-shell .wa-viz-preset--0 { animation: wa-viz-breathe 4.8s ease-in-out infinite alternate; }
+.wa-shell .wa-viz-preset--1 { animation: wa-viz-turn 18s linear infinite; }
+.wa-shell .wa-viz-preset--2 { animation: wa-viz-float 6s ease-in-out infinite alternate; }
+.wa-shell .wa-viz-preset--3 { animation: wa-viz-turn 11s linear infinite reverse; }
+.wa-shell .wa-video__visualizer--alchemy > svg polygon { filter: drop-shadow(0 0 4px #21dfff); }
+.wa-shell .wa-video__visualizer--ambience::before,
+.wa-shell .wa-video__visualizer--ambience::after {
+  content: "";
+  position: absolute;
+  width: 68%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,rgba(85,255,210,.22),rgba(30,115,220,.05) 52%,transparent 72%);
+  animation: wa-viz-breathe 7s ease-in-out infinite alternate;
+}
+.wa-shell .wa-video__visualizer--ambience::after { width: 48%; animation-delay: -3s; animation-direction: alternate-reverse; }
+.wa-shell .wa-video__visualizer--particle svg circle { filter: drop-shadow(0 0 2px currentColor); }
+.wa-shell .wa-video__visualizer--plenoptic svg circle { filter: drop-shadow(0 0 3px #49cfff); }
+.wa-shell .wa-video__visualizer--spikes svg polygon { filter: drop-shadow(0 0 4px #ff9c35); }
+.wa-shell .wa-video__visualizer--milkdrop .wa-milkdrop-pulse { animation: wa-viz-breathe 2.6s ease-in-out infinite alternate; transform-origin: center; }
+@keyframes wa-viz-breathe { from { transform: scale(.88); opacity: .58; } to { transform: scale(1.08); opacity: 1; } }
+@keyframes wa-viz-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes wa-viz-float { from { transform: translateY(-2px) scale(.96); } to { transform: translateY(2px) scale(1.04); } }
+@media (prefers-reduced-motion: reduce) {
+  .wa-shell .wa-viz-preset--0,
+  .wa-shell .wa-viz-preset--1,
+  .wa-shell .wa-viz-preset--2,
+  .wa-shell .wa-viz-preset--3,
+  .wa-shell .wa-video__visualizer--ambience::before,
+  .wa-shell .wa-video__visualizer--ambience::after,
+  .wa-shell .wa-video__visualizer--milkdrop .wa-milkdrop-pulse { animation: none !important; }
+}
