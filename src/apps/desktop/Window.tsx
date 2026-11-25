@@ -206,8 +206,21 @@ export function Window({
     return null;
   }
 
-  // Winamp owns its classic independent windows and drag handles; skip OS chrome.
-  if (id === 'app:winamp') return <>{children}</>;
+  // Winamp owns its classic independent windows and drag handles; skip OS chrome,
+  // but retain an OS-focus boundary so app-level keyboard shortcuts only run
+  // while this desktop window is the active application.
+  if (id === 'app:winamp') {
+    return (
+      <div
+        className="winamp-os-window"
+        data-os-window-active={focused ? 'true' : 'false'}
+        style={{ display: 'contents' }}
+        onMouseDownCapture={() => onFocus?.()}
+      >
+        {children}
+      </div>
+    );
+  }
 
   // XP/Vista/7/WebOS family styles
   if (isXpFamily) {
