@@ -221,3 +221,20 @@ Webamp заявляет pixel-for-pixel skin rendering для Winamp 2.9. Наш
 ---
 
 **Итог:** наша версия сильнее как расширенный WebOS media module, но пока уступает Webamp в fidelity/compatibility. Самый правильный путь — сохранить уникальные окна и визуализации, одновременно доведя skin parser, metadata, playlist и render performance до надёжного уровня.
+
+
+## 9. Исправления, выполненные сразу после аудита
+
+**25 ноября 2026 — source-level corrections:**
+
+- [x] Ограничена частота публикации visualizer state до 30 FPS вместо обновления на каждом requestAnimationFrame.
+- [x] Удалён случайный synthetic spectrum при недоступном analyser. Без достоверных данных сцена затухает/остаётся idle, а не изображает несуществующий аудиосигнал.
+- [x] Убраны вложенные React state setters: bars, peaks и waveform вычисляются раздельно.
+- [x] Контроллер больше не подменяет неизвестную длительность трека фиктивными 180 секундами; UI получает реальный 0/unknown и сбрасывает stale duration при смене трека.
+- [x] Защищён fullscreen double-click handler от повторного запроса fullscreen, если сцена уже развёрнута.
+- [x] Подключены `pledit.txt` list colors/font к Playlist и `viscolor.txt` palette к Main analyzer для импортированного .wsz.
+- [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
+
+**Оставшиеся ограничения:** fallback для отсутствующих optional .wsz sprites, применение `region.txt` и Playlist menu colors, ID3 metadata extraction, portable local M3U workflow, Media Session API, HTML Playlist export, настоящая Butterchurn/MilkDrop интеграция и изоляция visualizer rendering от родительского компонента.
+
+Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
