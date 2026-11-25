@@ -1,7 +1,7 @@
 import type { MediaTrack } from '../../apps/mediaplayer/playlist';
 
 const DATABASE_NAME = 'winamp-local-audio';
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 2;
 const STORE_NAME = 'tracks';
 
 export interface WinampLocalAudioRecord {
@@ -12,6 +12,8 @@ export interface WinampLocalAudioRecord {
   lastModified: number;
   title: string;
   artist: string;
+  album?: string;
+  trackNumber?: string;
   durationLabel: string;
   addedAt: number;
   blob: Blob;
@@ -107,17 +109,19 @@ export async function getWinampLocalAudioFiles(): Promise<RestoredWinampLocalTra
   await completed;
   return records
     .sort((a, b) => a.addedAt - b.addedAt)
-    .map(({ id, title, artist, durationLabel, blob, addedAt }) => ({
+    .map(({ id, title, artist, album, trackNumber, durationLabel, blob, addedAt }) => ({
       id,
       title,
       artist,
+      ...(album ? { album } : {}),
+      ...(trackNumber ? { trackNumber } : {}),
       durationLabel,
       blob,
       addedAt,
     }));
 }
 
-export async function updateWinampLocalAudioMetadata(id: string, metadata: { title?: string; artist?: string; durationLabel?: string }): Promise<void> {
+export async function updateWinampLocalAudioMetadata(id: string, metadata: { title?: string; artist?: string; album?: string; trackNumber?: string; durationLabel?: string }): Promise<void> {
   const database = await openDatabase();
   const transaction = database.transaction(STORE_NAME, 'readwrite');
   const completed = transactionComplete(transaction);
@@ -130,6 +134,8 @@ export async function updateWinampLocalAudioMetadata(id: string, metadata: { tit
       ...current,
       ...(typeof metadata.title === 'string' ? { title: metadata.title } : {}),
       ...(typeof metadata.artist === 'string' ? { artist: metadata.artist } : {}),
+      ...(typeof metadata.album === 'string' ? { album: metadata.album } : {}),
+      ...(typeof metadata.trackNumber === 'string' ? { trackNumber: metadata.trackNumber } : {}),
       ...(typeof metadata.durationLabel === 'string' ? { durationLabel: metadata.durationLabel } : {}),
     });
   };
