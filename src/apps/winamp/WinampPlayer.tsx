@@ -7,12 +7,15 @@ import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
 import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
 import { parseWinampSkinRegions, type WinampSkinRegions, type WinampSkinRegionSection } from '../../system/audio/winampSkinRegions';
 import { readEmbeddedAudioMetadata } from '../../system/audio/winampMetadata';
+import { createWinampArchive, readWinampArchive } from '../../system/audio/winampArchive';
 import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
 import {
   createWinampLocalAudioId,
   deleteWinampLocalAudioFiles,
   getWinampLocalAudioFiles,
   saveWinampLocalAudioFiles,
+  getWinampLocalAudioRecords,
+  importWinampLocalAudioAssets,
   updateWinampLocalAudioMetadata,
 } from '../../system/audio/winampLocalLibrary';
 import './winamp.css';
@@ -342,6 +345,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [playlistRevision, setPlaylistRevision] = useState(0);
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
   const m3uInputRef = useRef<HTMLInputElement | null>(null);
+  const archiveInputRef = useRef<HTMLInputElement | null>(null);
   const skinInputRef = useRef<HTMLInputElement | null>(null);
   const [skinVisuals, setSkinVisuals] = useState<{
     name: string;
@@ -586,6 +590,50 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setM3uStatus(`Exported playlist${result.skippedEntries ? `; skipped ${result.skippedEntries} local/unsupported tracks` : ''}`);
   };
 
+  const exportLocalLibraryArchive = async () => {
+    try {
+      setM3uStatus('Preparing local library archive…');
+      const records = await getWinampLocalAudioRecords();
+      const archive = await createWinampArchive(winampController.getPlaylist(), records);
+      const url = URL.createObjectURL(archive);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'winamp-library.wampack';
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      const localCount = new Set(winampController.getPlaylist().filter((track) => records.some((record) => record.id === track.id)).map((track) => track.id)).size;
+      setM3uStatus(`Backup created: ${localCount} local tracks, ${(archive.size / (1024 * 1024)).toFixed(1)} MB`);
+    } catch (error) {
+      setM3uStatus(error instanceof Error ? error.message : 'Unable to create local library backup');
+    }
+  };
+
+  const importLocalLibraryArchive = async (file?: File) => {
+    if (!file) return;
+    try {
+      setM3uStatus('Validating library archive…');
+      const archive = await readWinampArchive(file);
+      const metadataByPath = new Map(archive.manifest.tracks.filter((track) => track.assetPath).map((track) => [track.assetPath!, {
+        title: track.title, artist: track.artist, ...(track.album ? { album: track.album } : {}),
+        ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}), durationLabel: track.durationLabel,
+      }]));
+      const importedAssets = await importWinampLocalAudioAssets(archive.assets, metadataByPath);
+      const recordsByPath = new Map(importedAssets.map(({ path, record }) => [path, record]));
+      const additions: MediaTrack[] = archive.manifest.tracks.flatMap((track) => {
+        if (track.assetPath) {
+          const record = recordsByPath.get(track.assetPath);
+          if (!record) return [];
+          return [{ id: record.id, title: track.title, artist: track.artist, ...(track.album ? { album: track.album } : {}), ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}), durationLabel: track.durationLabel, src: URL.createObjectURL(record.blob) }];
+        }
+        if (track.src) return [{ id: createWinampLocalAudioId(), title: track.title, artist: track.artist, ...(track.album ? { album: track.album } : {}), ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}), durationLabel: track.durationLabel, src: track.src }];
+        return [];
+      });
+      if (additions.length) winampController.addTracks(additions);
+      setM3uStatus(`Restored ${importedAssets.length} audio files and added ${additions.length} playlist entries`);
+    } catch (error) {
+      setM3uStatus(error instanceof Error ? error.message : 'Unable to import local library backup');
+    }
+  };
   const exportHtmlPlaylist = () => {
     const tracks = winampController.getPlaylist();
     const htmlEntities: Record<string, string> = {
@@ -2074,6 +2122,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               )}
               <div className="wa-pl__footer wa-pl__footer--classic">
                 <input ref={m3uInputRef} type="file" accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl" hidden onChange={(event) => { void importM3uFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
+                <input ref={archiveInputRef} type="file" accept=".wampack,application/vnd.winamp.wampack,application/zip" hidden onChange={(event) => { void importLocalLibraryArchive(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
                 <div className="wa-pl__actions">
                   <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()} title="Add local audio (L)" aria-keyshortcuts="L">ADD</button>
                   <button type="button" className="wa-btn-pl" disabled={!playlistSelection.length || playlist.length <= playlistSelection.length} onClick={() => {
@@ -2091,6 +2140,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()}>Import M3U</button>
                       <button type="button" className="wa-btn-pl" onClick={exportM3uFile}>Export M3U</button>
                       <button type="button" className="wa-btn-pl" onClick={exportHtmlPlaylist}>Export HTML playlist</button>
+                      <button type="button" className="wa-btn-pl" onClick={() => { void exportLocalLibraryArchive(); }}>Backup local library (.wampack)</button>
+                      <button type="button" className="wa-btn-pl" onClick={() => archiveInputRef.current?.click()}>Restore local library (.wampack)</button>
                       <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()}>Import .wsz skin</button>
                       {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => { void clearActiveWinampSkin().then(() => { setSkinVisuals(null); setSkinStatus('Built-in Winamp appearance restored'); }).catch(() => { setSkinVisuals(null); setSkinStatus('Built-in appearance restored for this session; saved skin could not be cleared'); }); }}>Reset skin</button>}
                     </div>
