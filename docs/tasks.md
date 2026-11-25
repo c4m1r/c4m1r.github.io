@@ -733,7 +733,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [ ] Add ID3/Vorbis/WAV/MP4 parser fixtures and cover rare container variants.
 - [ ] Implement a portable local-library export/import contract (M3U cannot reference transient object URLs).
 - [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
-- [ ] Apply validated `region.txt` window shapes.
+- [x] Parse and apply validated `region.txt` masks to Main/Equalizer normal and WindowShade via SVG clipPath.
 - [x] Isolate the 60 FPS visualizer render state in a shared external frame store; only the two visualizer surfaces subscribe.
 - [ ] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes.
 - [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS high-DPI performance profiling, reduced motion and all playback/window regressions.
