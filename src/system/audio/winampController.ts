@@ -224,7 +224,7 @@ class WinampControllerService {
       track: this.getTrack(),
       isPlaying: this.isPlaying,
       currentTime: this.currentTime,
-      duration: this.duration || 180,
+      duration: this.duration,
       volume: this.volume,
       autoAdvance: this.autoAdvance,
       shuffle: this.shuffle,
