@@ -78,7 +78,7 @@ export function parseM3uPlaylist(content: string): ParsedM3uPlaylist {
 }
 
 function singleLine(value: string): string {
-  return value.replace(/[\\r\\n]+/g, ' ').trim();
+  return value.replace(/[\r\n]+/g, ' ').trim();
 }
 
 export function createM3uPlaylist(tracks: MediaTrack[]): { content: string; skippedEntries: number } {
