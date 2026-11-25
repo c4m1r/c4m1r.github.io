@@ -1384,7 +1384,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     };
     window.addEventListener('keydown', handleFullscreenKeys, true);
     return () => window.removeEventListener('keydown', handleFullscreenKeys, true);
-  }, [isVideoFullscreen, seekFullscreenMedia, previous, next, toggleFullscreenPlayback, cycleFullscreenMode, revealFullscreenControls, exitVideoFullscreen]);
+  }, [isVideoFullscreen, seekFullscreenMedia, previousFullscreenItem, nextFullscreenItem, toggleFullscreenPlayback, cycleFullscreenMode, revealFullscreenControls, exitVideoFullscreen]);
 
   useEffect(() => () => clearFullscreenHideTimer(), [clearFullscreenHideTimer]);
 
