@@ -1,9 +1,15 @@
 /**
- * MilkDrop .milk -> Butterchurn WASM adapter.
- * EEL2 source is preserved and handed to Butterchurn's WASM compiler.
- * MilkDrop 2 HLSL shaders are reported as unsupported by Butterchurn.
+ * MilkDrop .milk -> Butterchurn 2.x adapter.
+ * EEL2 is parsed and emitted as the JavaScript equation strings expected by
+ * the pinned Butterchurn 2.6.7 runtime. Custom HLSL shaders remain unsupported.
  */
 export type MilkPresetObject = Record<string, unknown>;
+export type MilkdropEelParser = {
+  convert_basic_preset(version: number, init: string, frame: string, pixel: string): { perFrameInitEQs?: string | null; perFrameEQs?: string | null; perPixelEQs?: string | null };
+  make_wave_map(version: number, input: { init_eqs_str: string; frame_eqs_str: string; point_eqs_str: string }): { perFrameInitEQs?: string | null; perFrameEQs?: string | null; perPointEQs?: string | null };
+  make_shape_map(version: number, input: { init_eqs_str: string; frame_eqs_str: string }): { perFrameInitEQs?: string | null; perFrameEQs?: string | null };
+};
+
 export type MilkPresetConversion = {
   preset: MilkPresetObject;
   warnings: string[];
@@ -110,9 +116,15 @@ const SHAPE_FIELD_ALIASES: Record<string, string> = {
   thick_outline: 'thickoutline', tex_capture: 'textured',
 };
 
-export function convertMilkPreset(text: string, basePreset: MilkPresetObject): MilkPresetConversion {
+export async function convertMilkPreset(
+  text: string,
+  basePreset: MilkPresetObject,
+  parserOverride?: MilkdropEelParser,
+): Promise<MilkPresetConversion> {
   if (text.length > 2 * 1024 * 1024) throw new Error('MilkDrop preset exceeds the 2 MB import limit');
   const source = text.replace(/^\uFEFF/, '');
+  const parser = parserOverride ?? (await import('milkdrop-eel-parser')).default;
+  const presetVersion = /MILKDROP_PRESET_VERSION\s*=\s*201/i.test(source) ? 2 : 1;
   const section = source.match(/^\s*\[preset00\]\s*$/im);
   if (!section || section.index === undefined) throw new Error('Unsupported .milk file: [preset00] section was not found');
   const remainder = source.slice(section.index + section[0].length);
@@ -210,49 +222,61 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
     if (!metadata.test(key)) warnings.add('Unmapped MilkDrop field: ' + key);
   }
 
-  // Force Butterchurn's WASM EEL2 path. The cloned seed preset may be a JS
-  // preset with *_str fields; leaving useJS enabled would silently run those
-  // seed equations instead of the imported MilkDrop source.
-  preset.useJS = false;
-  delete preset.init_eqs_str;
-  delete preset.frame_eqs_str;
-  delete preset.pixel_eqs_str;
+  // Butterchurn 2.6.7 compiles JavaScript equation strings with its
+  // presetBase helpers; it does not understand the newer *_eqs_eel fields.
+  preset.init_eqs_str = '';
+  preset.frame_eqs_str = '';
+  preset.pixel_eqs_str = '';
   preset.shapes.forEach((shape) => {
-    delete shape.init_eqs_str;
-    delete shape.frame_eqs_str;
-    shape.init_eqs_eel = '';
-    shape.frame_eqs_eel = '';
+    delete shape.init_eqs_eel;
+    delete shape.frame_eqs_eel;
+    shape.init_eqs_str = '';
+    shape.frame_eqs_str = '';
   });
   preset.waves.forEach((wave) => {
-    delete wave.init_eqs_str;
-    delete wave.frame_eqs_str;
-    delete wave.point_eqs_str;
-    wave.init_eqs_eel = '';
-    wave.frame_eqs_eel = '';
-    wave.point_eqs_eel = '';
-  });
-  preset.init_eqs_eel = programSource(programs.init);
-  preset.frame_eqs_eel = programSource(programs.frame);
-  preset.pixel_eqs_eel = programSource(programs.pixel);
-  preset.shapes.forEach((shape, index) => {
-    const init = programs.shapeInit.get(index);
-    const frame = programs.shapeFrame.get(index);
-    if (init || frame) {
-      shape.init_eqs_eel = programSource(init ?? new Map());
-      shape.frame_eqs_eel = programSource(frame ?? new Map());
-    }
-  });
-  preset.waves.forEach((wave, index) => {
-    const init = programs.waveInit.get(index);
-    const frame = programs.waveFrame.get(index);
-    const point = programs.wavePoint.get(index);
-    if (init || frame || point) {
-      wave.init_eqs_eel = programSource(init ?? new Map());
-      wave.frame_eqs_eel = programSource(frame ?? new Map());
-      wave.point_eqs_eel = programSource(point ?? new Map());
-    }
+    delete wave.init_eqs_eel;
+    delete wave.frame_eqs_eel;
+    delete wave.point_eqs_eel;
+    wave.init_eqs_str = '';
+    wave.frame_eqs_str = '';
+    wave.point_eqs_str = '';
   });
 
+  const convertedRoot = parser.convert_basic_preset(
+    presetVersion,
+    programSource(programs.init),
+    programSource(programs.frame),
+    programSource(programs.pixel),
+  );
+  preset.init_eqs_str = (convertedRoot.perFrameInitEQs ?? '').trim();
+  preset.frame_eqs_str = (convertedRoot.perFrameEQs ?? '').trim();
+  preset.pixel_eqs_str = (convertedRoot.perPixelEQs ?? '').trim();
+
+  preset.shapes.forEach((shape, index) => {
+    const converted = parser.make_shape_map(presetVersion, {
+      init_eqs_str: programSource(programs.shapeInit.get(index) ?? new Map()),
+      frame_eqs_str: programSource(programs.shapeFrame.get(index) ?? new Map()),
+    });
+    shape.init_eqs_str = (converted.perFrameInitEQs ?? '').trim();
+    shape.frame_eqs_str = (converted.perFrameEQs ?? '').trim();
+  });
+  preset.waves.forEach((wave, index) => {
+    const converted = parser.make_wave_map(presetVersion, {
+      init_eqs_str: programSource(programs.waveInit.get(index) ?? new Map()),
+      frame_eqs_str: programSource(programs.waveFrame.get(index) ?? new Map()),
+      point_eqs_str: programSource(programs.wavePoint.get(index) ?? new Map()),
+    });
+    wave.init_eqs_str = (converted.perFrameInitEQs ?? '').trim();
+    wave.frame_eqs_str = (converted.perFrameEQs ?? '').trim();
+    wave.point_eqs_str = (converted.perPointEQs ?? '').trim();
+  });
+
+  // Butterchurn expects GLSL strings even when a MilkDrop preset has no
+  // custom shader. Use the runtime's canonical feedback shaders as fallback.
+  preset.warp = 'shader_body {\\nret = texture2D(sampler_main, uv).rgb;\\nret -= 0.004;\\n}\\n';
+  preset.comp = 'shader_body {\\nret = texture2D(sampler_main, uv).rgb;\\nret *= hue_shader;\\n}\\n';
+  delete preset.warp_hlsl;
+  delete preset.comp_hlsl;
   const frameEquations = programs.init.size + programs.frame.size;
   const pixelEquations = programs.pixel.size;
   const customWaveSlots = new Set([
@@ -271,6 +295,10 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
   return { preset, warnings: [...warnings], converted: { frameEquations, pixelEquations, customWaves, customShapes } };
 }
 
-export function convertSimpleMilkPreset(text: string, basePreset: MilkPresetObject): MilkPresetObject {
-  return convertMilkPreset(text, basePreset).preset;
+export async function convertSimpleMilkPreset(
+  text: string,
+  basePreset: MilkPresetObject,
+  parserOverride?: MilkdropEelParser,
+): Promise<MilkPresetObject> {
+  return (await convertMilkPreset(text, basePreset, parserOverride)).preset;
 }
