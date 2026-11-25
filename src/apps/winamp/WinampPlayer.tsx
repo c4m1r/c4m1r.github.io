@@ -910,6 +910,66 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     winampController.seek((pct / 100) * duration);
   };
 
+  // Expose the existing controller to OS media keys / lock-screen controls.
+  // This is a bridge to the same playback engine, not a second media pipeline.
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    const session = navigator.mediaSession;
+    const currentTrack = winampController.getState().track;
+    if (typeof MediaMetadata !== 'undefined') {
+      session.metadata = new MediaMetadata({
+        title: currentTrack.title,
+        artist: currentTrack.artist,
+        album: 'Winamp Classic',
+      });
+    }
+    session.playbackState = isPlaying ? 'playing' : 'paused';
+    try {
+      if (duration > 0 && Number.isFinite(currentTime)) {
+        session.setPositionState({
+          duration,
+          playbackRate: 1,
+          position: Math.max(0, Math.min(duration, currentTime)),
+        });
+      } else {
+        session.setPositionState();
+      }
+    } catch {
+      // Position state is optional and may be rejected by older browser implementations.
+    }
+  }, [trackIndex, isPlaying, currentTime, duration]);
+
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    const session = navigator.mediaSession;
+    const handlers: Array<[MediaSessionAction, MediaSessionActionHandler]> = [
+      ['play', () => { void winampController.play(); }],
+      ['pause', () => winampController.pause()],
+      ['stop', () => { winampController.pause(); winampController.seek(0); }],
+      ['previoustrack', previous],
+      ['nexttrack', next],
+      ['seekbackward', (details) => {
+        const state = winampController.getState();
+        winampController.seek(state.currentTime - (details.seekOffset ?? 5));
+      }],
+      ['seekforward', (details) => {
+        const state = winampController.getState();
+        winampController.seek(state.currentTime + (details.seekOffset ?? 5));
+      }],
+      ['seekto', (details) => {
+        if (typeof details.seekTime === 'number') winampController.seek(details.seekTime);
+      }],
+    ];
+    handlers.forEach(([action, handler]) => {
+      try { session.setActionHandler(action, handler); } catch { /* Unsupported action in this browser. */ }
+    });
+    return () => {
+      handlers.forEach(([action]) => {
+        try { session.setActionHandler(action, null); } catch { /* Ignore unsupported cleanup. */ }
+      });
+    };
+  }, [previous, next]);
+
   const clearFullscreenHideTimer = useCallback(() => {
     if (fullscreenHideTimerRef.current !== null) {
       window.clearTimeout(fullscreenHideTimerRef.current);
