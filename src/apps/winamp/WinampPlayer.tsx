@@ -235,7 +235,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     const nextVisuals = {
       name: fileName,
       mainUrl: sprites.main,
-      titlebarUrl: sprites.titlebarActive,
+      titlebarUrl: sprites.titlebarActive ?? sprites.main,
       sprites,
       playlistStyle: archive.playlistStyle,
       visualizerColors: archive.visualizerColors,
@@ -814,14 +814,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     if (wa?.analyser) analyserRef.current = wa.analyser;
   }, []);
 
-  // Sample the shared analyser at 30 FPS. The previous implementation published
+  // Sample the shared analyser at up to 60 FPS for smooth high-resolution displays. The previous implementation published
   // three React state updates on every display frame and simulated random audio
   // when the analyser was unavailable, causing unnecessary full-player renders
   // and showing activity that did not come from the actual signal.
   useEffect(() => {
     let active = true;
     let lastPublishedAt = 0;
-    const frameInterval = 1000 / 30;
+    const frameInterval = 1000 / 60;
     const freqData = new Uint8Array(32);
     const timeData = new Uint8Array(64);
 
