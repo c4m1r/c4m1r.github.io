@@ -4,6 +4,8 @@ export interface MediaTrack {
   artist: string;
   durationLabel: string;
   src: string;
+  album?: string;
+  trackNumber?: string;
 }
 
 export const PROJECT_PLAYLIST: MediaTrack[] = [
