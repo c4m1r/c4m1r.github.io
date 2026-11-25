@@ -5,7 +5,6 @@ declare module 'butterchurn' {
     loadPreset(preset: ButterchurnPreset, blendTime: number): Promise<void> | void;
     setRendererSize(width: number, height: number, options?: { pixelRatio?: number; textureRatio?: number }): void;
     render(): void;
-    loseGLContext?: () => void;
   }
 
   export interface ButterchurnPreset {
