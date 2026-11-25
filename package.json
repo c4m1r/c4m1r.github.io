@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "verify": "node scripts/verify-contexts.js",
-    "test:winamp-archive": "node --test scripts/test-winamp-archive.mjs scripts/test-winamp-metadata.mjs scripts/test-winamp-skin.mjs scripts/test-winamp-m3u.mjs scripts/test-winamp-milk-preset.mjs scripts/test-winamp-media-queue.mjs",
+    "test:winamp-archive": "node --test scripts/test-winamp-archive.mjs scripts/test-winamp-metadata.mjs scripts/test-winamp-skin.mjs scripts/test-winamp-m3u.mjs scripts/test-winamp-milk-preset.mjs scripts/test-winamp-media-queue.mjs scripts/test-winamp-local-library-transaction.mjs",
     "clean": "node scripts/clean-dist.js",
     "build:clean": "npm run clean && npm run build",
     "audit:icons": "node scripts/audit-theme-icons.js"
