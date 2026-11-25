@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
 import { createM3uPlaylist, parseM3uPlaylist } from '../../system/audio/winampM3u';
 import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
 import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
+import { parseWinampSkinRegions, type WinampSkinRegions, type WinampSkinRegionSection } from '../../system/audio/winampSkinRegions';
 import { readEmbeddedAudioMetadata } from '../../system/audio/winampMetadata';
 import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
 import {
@@ -349,8 +350,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     sprites: Record<string, string>;
     playlistStyle: { normal: string; current: string; normalbg: string; selectedbg: string; mbfg: string; mbbg: string; font: string };
     visualizerColors: string[];
+    regions: WinampSkinRegions;
   } | null>(null);
   const [skinStatus, setSkinStatus] = useState('');
+  const regionClipBaseId = `wa-skin-region-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const [skinAppearance, setSkinAppearance] = useState<'dev-alpha' | 'webamp-classic' | 'wsz'>(() => {
     try {
       // v3 distinguishes an intentional current selection from the old v2
@@ -380,6 +383,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       sprites,
       playlistStyle: archive.playlistStyle,
       visualizerColors: archive.visualizerColors,
+      regions: parseWinampSkinRegions(archive.regionText),
     };
     setSkinVisuals(nextVisuals);
     if (persist) {
@@ -1399,6 +1403,28 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   return (
     <div className={`wa-shell ${skinAppearance === 'webamp-classic' ? 'wa-shell--webamp-classic' : ''}`} aria-label="Winamp classic player">
+      {activeSkin?.regions && (
+        <svg className="wa-skin-region-defs" aria-hidden="true" focusable="false">
+          <defs>
+            {(['normal', 'windowshade', 'equalizer', 'equalizerws'] as WinampSkinRegionSection[]).map((section) => {
+              const polygons = activeSkin.regions[section];
+              if (!polygons?.length) return null;
+              const height = section === 'windowshade' || section === 'equalizerws' ? 14 : 116;
+              const clipId = section === 'normal' ? `${regionClipBaseId}-main`
+                : section === 'windowshade' ? `${regionClipBaseId}-main-shade`
+                  : section === 'equalizer' ? `${regionClipBaseId}-eq`
+                    : `${regionClipBaseId}-eq-shade`;
+              return (
+                <clipPath key={section} id={clipId} clipPathUnits="objectBoundingBox">
+                  {polygons.map((polygon, index) => (
+                    <polygon key={index} points={polygon.map((point) => `${(point.x / 275).toFixed(6)},${(point.y / height).toFixed(6)}`).join(' ')} />
+                  ))}
+                </clipPath>
+              );
+            })}
+          </defs>
+        </svg>
+      )}
       <input
         ref={skinInputRef}
         type="file"
@@ -1428,7 +1454,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* ============================================================ */}
       {/* 1. MAIN PLAYER WINDOW                                        */}
       {/* ============================================================ */}
-      <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.main.x, top: windowPositions.main.y, zIndex: activeWindow === 'main' ? 90 : 80 }} onPointerDown={() => setActiveWindow('main')}>
+      <div className={`wa-window wa-main ${mainShade ? 'wa-window--shaded' : ''}`} style={{
+        left: windowPositions.main.x,
+        top: windowPositions.main.y,
+        zIndex: activeWindow === 'main' ? 90 : 80,
+        ...(activeSkin?.regions[mainShade ? 'windowshade' : 'normal']?.length
+          ? { clipPath: `url(#${regionClipBaseId}-${mainShade ? 'main-shade' : 'main'})` }
+          : {}),
+      }} onPointerDown={() => setActiveWindow('main')}>
         {/* Title Bar */}
         <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'main')} style={activeSkin ? { backgroundImage: `url("${activeSkin.titlebarUrl}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 13px' } : undefined}>
           <div className="wa-titlebar__left">
@@ -1728,7 +1761,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       {/* 2. WINAMP EQUALIZER WINDOW                                   */}
       {/* ============================================================ */}
       {showEq && (
-        <div className={`wa-window wa-equalizer ${eqShade ? 'wa-window--shaded' : ''}`} style={{ left: windowPositions.equalizer.x, top: windowPositions.equalizer.y, zIndex: activeWindow === 'equalizer' ? 90 : 80 }} onPointerDown={() => setActiveWindow('equalizer')}>
+        <div className={`wa-window wa-equalizer ${eqShade ? 'wa-window--shaded' : ''}`} style={{
+          left: windowPositions.equalizer.x,
+          top: windowPositions.equalizer.y,
+          zIndex: activeWindow === 'equalizer' ? 90 : 80,
+          ...(activeSkin?.regions[eqShade ? 'equalizerws' : 'equalizer']?.length
+            ? { clipPath: `url(#${regionClipBaseId}-${eqShade ? 'eq-shade' : 'eq'})` }
+            : {}),
+        }} onPointerDown={() => setActiveWindow('equalizer')}>
           <div className="wa-titlebar" onPointerDown={(event) => startWindowDrag(event, 'equalizer')} style={activeSkin ? { backgroundImage: `url("${activeSkin.sprites.equalizerTitlebarActive}")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'top left', backgroundSize: '275px 14px', height: 14, minHeight: 14, boxSizing: 'border-box' } : undefined}>
             <span className="wa-titlebar__title">WINAMP EQUALIZER</span>
             <div className="wa-titlebar__controls">
