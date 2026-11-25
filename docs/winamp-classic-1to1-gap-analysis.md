@@ -1,6 +1,6 @@
 # Winamp Webamp Classic — 1:1 reference reconstruction
 
-**Status:** active visual-fidelity specification and gap register  
+**Status:** visual-fidelity specification; source-level corrections implemented, browser verification intentionally deferred  
 **Reference:** user-supplied original Winamp 2.x screenshot (267 × 422 px; rendered player width corresponds to canonical 275 px Winamp module width).  
 **Scope:** Webamp Classic renderer only. Dev Alpha and imported .wsz skins are isolated and must not regress.
 
@@ -41,6 +41,10 @@ All three modules share one left edge and meet vertically with no visual gaps. T
 - LIST OPT is a separate right-aligned menu trigger for playlist display/behavior options.
 - Small black-and-green elapsed/total LCD and tiny status/transport indicators.
 - No permanent second row for M3U, skin, reset or other management actions. Status feedback must not distort the reference silhouette.
+
+## Current implementation status (2026-11-25)
+
+The Classic faceplate corrections, compact EQ PRESETS menu, Playlist MISC/LIST OPT footer, vertical EQ faders and fixed module geometry are present in `main`. The current GitHub Actions pipeline passes TypeScript, Winamp archive/metadata/skin tests, lint, production build and GitHub Pages deployment. No browser screenshot comparison or pointer/touch acceptance is claimed. Remaining unchecked items below are visual/browser acceptance or CSS consolidation that depends on a captured visual baseline; they are not evidence that the source implementation was not committed.
 
 ## Confirmed source-to-reference gap register
 
@@ -96,7 +100,7 @@ This register is based on current main source and the supplied reference image, 
 - Playlist: Classic now has ADD / REM / SEL / MISC plus LIST OPT in a single footer row. MISC contains clear-selection, M3U import/export and .wsz import/reset. Elapsed/total remains visible; status details collapse to a small indicator/title.
 - Compatibility: legacy Playlist footer remains in the non-Classic branch. New CSS is scoped to `.wa-shell--webamp-classic`.
 - Menu behavior: native disclosure menus share one exclusive group and support Escape dismissal. Menus also dismiss when focus leaves the menu; pointer-only outside-click behavior still needs browser verification.
-- Still open: pixel-accurate chassis/titlebars, display and fader geometry, scrollbar and native footer detail; full browser comparison, build and regression tests are not yet confirmed.
+- Source implementation: the geometry, titlebar, display, EQ faders and Playlist footer received subsequent correction passes; build and regression CI now pass. Pixel-level visual acceptance, scrollbar details and pointer/touch behavior remain unverified until browser QA.
 
 
 ## Progress log — 2026-11-24 (geometry pass 2)
@@ -126,7 +130,7 @@ This register is based on current main source and the supplied reference image, 
 - Root cause found in the range-control CSS: the EQ inputs were still horizontal HTML range controls placed inside narrow, tall fader boxes. Styling the box and thumb did not rotate the range axis, so the thumb's travel was constrained to the tiny horizontal width and appeared stationary.
 - Corrected both PREAMP and all ten band inputs to use a true vertical range axis via `writing-mode: vertical-lr` and `direction: rtl` (minimum at bottom, maximum at top). Added explicit vertical track/thumb dimensions for Chromium/WebKit and Firefox; React state and audio controller handlers remain unchanged.
 - The previous titlebar settings gear hide rule is present in the active Classic stylesheet, and the root applies the Classic scope class only when the saved appearance is `webamp-classic`. If the app remains in Dev Alpha or an imported skin, Classic-only faceplate changes will not appear.
-- Pending verification: confirm the latest GitHub Actions run passes, then test real pointer movement and capture a browser screenshot at native 275 px width. This source-level fix is not yet browser-verified.
+- Source fix is included in `main`; latest GitHub Actions pipeline passes. Real pointer movement and a native 275 px browser screenshot remain deferred to browser QA.
 
 
 ## Progress log — 2026-11-24 (Classic default)
@@ -157,7 +161,7 @@ This register is based on current main source and the supplied reference image, 
 - Separated the compact Main LCD contract from the expanded fourth-window visualization collection. Main keeps Spectrum / Oscilloscope / Peak Meter; the fourth window is planned as a grouped mode browser.
 - Defined Winamp-inspired analyzer modes (log Spectrum Analyzer, Oscilloscope, Spectrogram, Stereo Scope), WMP-style modes (Bars & Waves, Mystify, Particles, Spikes, Battery/Pulse), and an explicitly original Milkdrop-inspired experimental renderer.
 - Defined shared-analyser/canvas architecture, visibility-aware animation lifecycle, mode/settings controls, persistence boundaries and audio/playback regression acceptance.
-- Full design contract: `docs/winamp-visualization-modes.md`; implementation is not yet complete and no browser visual verification is claimed.
+- Full design contract: `docs/winamp-visualization-modes.md`; all 14 modes including genuine MilkDrop (Butterchurn) are implemented in the existing fourth window. Browser visual verification is deferred.
 
 
 ## Scope correction — 2026-11-24 (canonical visualizer modes)
@@ -174,5 +178,5 @@ This register is based on current main source and the supplied reference image, 
 - Added .wampack backup / restore using original IndexedDB Blobs, ordered playlist entries, de-duplicated payload assets, bounded ZIP validation and CRC checks. M3U remains an HTTP(S)-URL interchange format; it is not treated as a portable local-file backup.
 - Corrected restored filename extension fallback and preservation of zero-valued original lastModified timestamps. Added filename/archive-extension consistency validation.
 - Expanded metadata and archive regression fixtures. CI run 45582582909 passed TypeScript, all 27 Winamp archive/metadata/skin tests, ESLint, production build and artifact upload. The subsequent code changes for video mode cleanup and documentation require their own latest CI confirmation.
-- Remaining: browser QA on mouse/touch devices, native-size screenshot comparison against the supplied Winamp reference, .wsz acceptance against real third-party skins, IndexedDB rollback test, and optional genuine MilkDrop integration through Butterchurn. No browser screenshot or mobile-device acceptance is claimed here.
+- Remaining: browser QA on mouse/touch devices, native-size screenshot comparison against the supplied Winamp reference, .wsz acceptance against real third-party skins and IndexedDB rollback test. Genuine MilkDrop through Butterchurn is implemented; its browser/GPU acceptance is deferred. No browser screenshot or mobile-device acceptance is claimed here.
 
