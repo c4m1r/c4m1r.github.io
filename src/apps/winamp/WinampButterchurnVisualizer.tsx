@@ -43,6 +43,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     let connectedNode: AudioNode | null = null;
     let webglContext: WebGL2RenderingContext | null = null;
     let webglAttempted = false;
+    let usingWindowResizeListener = false;
 
     const resize = () => {
       if (!visualizer || !canvas) return;
@@ -62,10 +63,44 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       animationFrame = 0;
     };
 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') stopRenderer();
+      else startRenderer();
+    };
+
+    const handleWebGLContextLost = (event: Event) => {
+      event.preventDefault();
+      stopRenderer();
+      if (!disposed) setStatus('WEBGL CONTEXT LOST — REOPEN MILKDROP TO RETRY');
+    };
+
+    const startRenderer = () => {
+      if (disposed || !visualizer || animationFrame || document.visibilityState === 'hidden') return;
+      const draw = () => {
+        animationFrame = 0;
+        if (disposed || !visualizer || document.visibilityState === 'hidden') return;
+        try {
+          visualizer.render();
+          animationFrame = requestAnimationFrame(draw);
+        } catch (error) {
+          stopRenderer();
+          console.error('Butterchurn render stopped:', error);
+          if (!disposed) setStatus('MILKDROP RENDERER STOPPED');
+        }
+      };
+      animationFrame = requestAnimationFrame(draw);
+    };
+
     const cleanup = () => {
       stopRenderer();
       resizeObserver?.disconnect();
       resizeObserver = null;
+      if (usingWindowResizeListener) {
+        window.removeEventListener('resize', resize);
+        usingWindowResizeListener = false;
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      canvas.removeEventListener('webglcontextlost', handleWebGLContextLost);
       const active = runtimeRef.current;
       runtimeRef.current = null;
       if (active) {
@@ -155,21 +190,13 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
           resizeObserver.observe(canvas);
         } else {
           window.addEventListener('resize', resize);
+          usingWindowResizeListener = true;
         }
 
+        canvas.addEventListener('webglcontextlost', handleWebGLContextLost);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
         setStatus('');
-        const draw = () => {
-          if (disposed || !visualizer) return;
-          try {
-            visualizer.render();
-            animationFrame = requestAnimationFrame(draw);
-          } catch (error) {
-            stopRenderer();
-            console.error('Butterchurn render stopped:', error);
-            if (!disposed) setStatus('MILKDROP RENDERER STOPPED');
-          }
-        };
-        animationFrame = requestAnimationFrame(draw);
+        startRenderer();
       } catch (error) {
         console.error('Unable to initialize Butterchurn:', error);
         if (!disposed) setStatus('MILKDROP COULD NOT BE INITIALIZED');
