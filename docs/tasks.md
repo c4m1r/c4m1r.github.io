@@ -734,6 +734,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add M3U import/export regression tests for BOM/Unicode, fractional durations, strict `MM:SS` export validation (malformed/overflow/unknown values become `-1`), relative and blob URL rejection, HLS rejection, metadata line-break sanitization and round-trip.
 - [x] Add multi-file local video queue navigation to the existing fourth window; fullscreen previous / next and end-of-file advance the selected video queue, while visualization mode retains Winamp audio playlist navigation.
 - [x] Add direct selection of any item in the current video queue inside the existing fourth-window toolbar; report unsupported codecs and browser-blocked playback in an accessible status overlay, and restart the first queued video on Previous.
+- [x] Add visible previous / next video transport controls to the fourth-window toolbar outside fullscreen; Previous restarts the first item at queue start, Next disables at the final item, and the existing fullscreen controls keep the same queue navigation semantics.
 - [x] Defer revocation of replaced video object URLs until the replacement source emits `loadstart`; retain both active and pending URLs for unmount cleanup.
 - [ ] Browser acceptance for mixed video formats, queue replacement during playback, previous/next boundaries, end-of-file advance, and object-URL cleanup. **Deferred by owner** to the later browser-QA pass.
 - [x] Implement a portable local-library export/import contract through the versioned `.wampack` archive (M3U cannot reference transient object URLs).
@@ -803,3 +804,8 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Add an optional compact Playlist mini visualizer, disabled by default and controlled from LIST OPT; it subscribes to the shared 60 FPS frame store and does not rerender the player/window manager.
 - [x] Add local Butterchurn preset JSON import to the genuine MilkDrop mode; imported presets are added to the in-memory preset list and can be selected immediately with NEXT PRESET or cycled with PSET. The imported format is Butterchurn preset JSON, not raw legacy .milk text.
 - [ ] Browser acceptance for playlist crop/reverse, imported JSON preset loading, mini visualizer layout and audio/lifecycle behavior. Deferred by owner to the later browser-QA pass.
+
+
+### Winamp — video queue usability follow-up (2026-11-25)
+- [x] Expose Previous / Next directly in the existing Video toolbar, not only in fullscreen. Previous steps backward or restarts the first item; Next is disabled at the end of the queue. Accessible names, titles, focus outline and disabled styling are included.
+- [ ] Browser acceptance for pointer/touch operation and narrow-toolbar fit remains deferred with the agreed browser-QA pass.
