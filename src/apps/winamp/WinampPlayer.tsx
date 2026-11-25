@@ -335,6 +335,18 @@ function WinampMainVisualizer({
   );
 }
 
+function WinampPlaylistMiniVisualizer() {
+  const { bars } = useSyncExternalStore(subscribeWinampVisualizerFrame, getWinampVisualizerFrame, getWinampVisualizerFrame);
+  return (
+    <svg className="wa-pl__mini-visualizer" viewBox="0 0 48 12" role="img" aria-label="Live audio mini visualizer">
+      {bars.slice(0, 16).map((height, index) => {
+        const barHeight = Math.max(1, Math.min(11, height * 0.11));
+        return <rect key={index} x={index * 3} y={12 - barHeight} width="2" height={barHeight} />;
+      })}
+    </svg>
+  );
+}
+
 function WinampFourthProceduralVisualizer({
   mode,
   presetIndex,
@@ -386,6 +398,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const [playlistSelection, setPlaylistSelection] = useState<number[]>([]);
   const [showPlaylistDurations, setShowPlaylistDurations] = useState(true);
+  const [showPlaylistMiniVisualizer, setShowPlaylistMiniVisualizer] = useState(false);
   const [followPlaylistPlayback, setFollowPlaylistPlayback] = useState(true);
   const [draggedPlaylistIndex, setDraggedPlaylistIndex] = useState<number | null>(null);
   const [playlistRevision, setPlaylistRevision] = useState(0);
@@ -2316,11 +2329,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       <div className="wa-classic-menu__info">PLAYLIST OPTIONS</div>
                       <button type="button" className="wa-btn-pl" aria-pressed={showPlaylistDurations} onClick={() => setShowPlaylistDurations((value) => !value)}>Track durations: {showPlaylistDurations ? 'ON' : 'OFF'}</button>
                       <button type="button" className="wa-btn-pl" aria-pressed={followPlaylistPlayback} onClick={() => setFollowPlaylistPlayback((value) => !value)}>Playback follow: {followPlaylistPlayback ? 'ON' : 'OFF'}</button>
+                      <button type="button" className="wa-btn-pl" aria-pressed={showPlaylistMiniVisualizer} onClick={() => setShowPlaylistMiniVisualizer((value) => !value)}>Mini visualizer: {showPlaylistMiniVisualizer ? 'ON' : 'OFF'}</button>
                     </div>
                   </details>
                 </div>
                 <div className="wa-pl__status">
                   <span>{formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}</span>
+                  {showPlaylistMiniVisualizer && <WinampPlaylistMiniVisualizer />}
                   {(m3uStatus || localLibraryStatus || skinStatus) && <span className="wa-pl__status-text" role="status" aria-live="polite" title={m3uStatus || localLibraryStatus || skinStatus}>•</span>}
                 </div>
               </div>
