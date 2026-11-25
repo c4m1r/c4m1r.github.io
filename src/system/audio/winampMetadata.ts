@@ -227,7 +227,7 @@ function parseMp4Metadata(bytes: Uint8Array): EmbeddedAudioMetadata {
   };
 
   for (let offset = 4; offset + 8 <= bytes.length; offset += 1) {
-    if (String.fromCharCode(...bytes.subarray(offset, offset + 4)) !== 'moov') continue;
+    if (bytes[offset] !== 0x6d || bytes[offset + 1] !== 0x6f || bytes[offset + 2] !== 0x6f || bytes[offset + 3] !== 0x76) continue;
     const atomStart = offset - 4;
     let size = readUint32BE(bytes, atomStart);
     let headerSize = 8;
