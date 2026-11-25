@@ -1,0 +1,129 @@
+/* Windows Vista overrides, loaded after the Windows 7 set (the shell carries `os-win7 os-vista`).
+   References: eat/screens/oc/vista/*.png. Art from eat/snowlizard.github.io-main and eat/technometer.github.io-master. */
+
+/* Segoe UI (the Windows UI font since Vista); the variable face from eat/vovacodes-master. */
+@font-face {
+  font-family: "Segoe UI";
+  src: url('../../../assets/fonts/SegoeUIVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.os-vista {
+  --os-font: "Segoe UI", "Segoe UI Variable", Tahoma, sans-serif;
+  font-family: var(--os-font);
+}
+
+/* ── Taskbar: 30 px glass, light upper half and dark lower half (taskbar-sprite.png), orb overlapping the top. ── */
+.os-vista .taskbar {
+  height: 30px !important;
+  background: url('../../../themes/vista/assets/taskbar-sprite.png') 0 0 / 100% 100% no-repeat !important;
+  backdrop-filter: blur(10px) saturate(1.25) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(1.25) !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.os-vista .taskbar__inner {
+  padding: 0 6px 0 0 !important;
+}
+
+.os-vista .start-button {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  max-width: 54px !important;
+  margin: 0 8px 0 2px !important;
+  top: -12px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  transition: filter 0.15s ease-out !important;
+}
+
+.os-vista .start-button:hover {
+  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat !important;
+  box-shadow: none !important;
+  filter: brightness(1.22) saturate(1.15) drop-shadow(0 0 6px rgba(120, 220, 255, 0.8));
+}
+
+.os-vista .start-button:active,
+.os-vista .start-button.start-button--open {
+  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat !important;
+  box-shadow: none !important;
+  filter: brightness(1.08) saturate(1.2) drop-shadow(0 0 7px rgba(120, 220, 255, 0.95));
+}
+
+/* Task buttons: icon and title on a glass plate (Vista shows labels, the Windows 7 superbar does not). */
+.os-vista .taskbar-windows {
+  gap: 3px !important;
+  padding: 0 6px !important;
+}
+
+.os-vista .taskbar-button {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 164px !important;
+  height: 24px !important;
+  padding: 0 8px 0 5px !important;
+  gap: 5px !important;
+  justify-content: flex-start !important;
+  border-radius: 3px !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.12) 49%, rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0.1) 100%) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25) !important;
+  color: #ffffff !important;
+  font-family: var(--os-font) !important;
+  font-size: 12px !important;
+}
+
+.os-vista .taskbar-button__icon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.os-vista .taskbar-button__label {
+  display: inline !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+.os-vista .taskbar-button:hover {
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.2) 49%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.22) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.65) !important;
+  box-shadow: inset 0 0 8px rgba(160, 225, 255, 0.55) !important;
+}
+
+.os-vista .taskbar-button.is-active {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.4) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  border-top-color: rgba(0, 0, 0, 0.7) !important;
+  box-shadow: inset 0 0 7px rgba(130, 210, 240, 0.55) !important;
+}
+
+.os-vista .taskbar-button.is-minimized {
+  opacity: 0.9 !important;
+}
+
+/* Tray: no frame, plain white clock. */
+.os-vista .taskbar-tray,
+.os-vista .system-tray-vista {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.os-vista .taskbar-tray-time span {
+  font-family: var(--os-font) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  text-shadow: none !important;
+}

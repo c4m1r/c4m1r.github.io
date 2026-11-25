@@ -504,7 +504,7 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
 
   vista: {
     theme: 'vista',
-    osClassName: 'os-vista',
+    osClassName: 'os-win7 os-vista',
     displayName: 'Windows Vista',
     appNames: {},
     systemLabels: {

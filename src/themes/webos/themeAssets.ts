@@ -16,6 +16,8 @@ import gamesIconWebos from '../winxp/assets/icons/pinball.png';
 import projectsIconWebos from '../winxp/assets/icons/folder_program.png';
 import userAvatarWebos from '../winxp/assets/user.gif';
 import windowsLogoWebos from '../winxp/assets/windows.png';
+import vistaWallpaper from '../vista/assets/wallpaper.jpg';
+import vistaStartOrb from '../vista/assets/start-orb.png';
 import bootWallpaperWebos from '../../content/pictures/wallpapers/windows/winxp-bliss.jpg';
 import minesweeperIconWebos from '../../apps/minesweeper/assets/icon.png';
 import calculatorIconWebos from '../winxp/assets/icons/calc.png';
@@ -291,12 +293,19 @@ const win7ThemeAssets: ThemeAssets = {
   },
 };
 
+// Windows Vista: the Windows 7 icon and sound base with Vista's own wallpaper and Start orb.
+const vistaThemeAssets: ThemeAssets = {
+  ...win7ThemeAssets,
+  wallpaper: vistaWallpaper,
+  startButtonIcon: vistaStartOrb,
+};
+
 export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   webos: sharedWebosAssets,
   'win-xp': xpThemeAssets,
   win7: win7ThemeAssets,
+  vista: vistaThemeAssets,
   // Draft Windows versions reuse the Windows 7 asset set until their own sets exist.
-  vista: win7ThemeAssets,
   win8: win7ThemeAssets,
   win10: win7ThemeAssets,
   win11: win7ThemeAssets,

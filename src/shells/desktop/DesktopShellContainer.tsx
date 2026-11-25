@@ -466,7 +466,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const usesThemeImageIcons = isThemeInFamily(themeKey, WINDOWS_IMAGE_ICON_THEMES);
   // Native size per generation: Windows 98/2000 desktops used 32 px icons,
   // Windows 7 used 48 px. XP and WebOS keep their current sizing.
-  const desktopIconImageClass = themeKey === 'win7'
+  const desktopIconImageClass = themeKey === 'win7' || themeKey === 'vista'
     ? 'w-12 h-12'
     : themeKey === 'win-98' || themeKey === 'win2000'
       ? 'w-8 h-8'
@@ -1426,7 +1426,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           ? `url(${customWallpaper})`
           : activeEdition?.wallpaper
           ? `url(${activeEdition.wallpaper})`
-          : isXpFamily && themeAssets.wallpaper
+          : (isXpFamily || themeKey === 'vista') && themeAssets.wallpaper
           ? `url(${themeAssets.wallpaper})`
           : undefined,
         backgroundColor: customWallpaper
