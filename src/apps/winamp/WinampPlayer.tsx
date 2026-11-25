@@ -871,7 +871,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFileName, setVideoFileName] = useState('');
   const [videoQueue, setVideoQueue] = useState<Array<{ url: string; name: string }>>([]);
-  const [videoQueueIndex, setVideoQueueIndex] = useState(0);
   const [unifiedMediaOrder, setUnifiedMediaOrder] = useState<string[]>([]);
   const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
   const [videoStatus, setVideoStatus] = useState('');
@@ -902,7 +901,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       pendingVideoObjectUrlsRef.current = [];
       urlsToRelease.forEach((url) => URL.revokeObjectURL(url));
       setVideoQueue([]);
-      setVideoQueueIndex(0);
       setVideoUrl('');
       setVideoFileName('');
       setVideoStatus('');
@@ -1429,7 +1427,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
     winampController.pause();
     setVideoMode('video');
-    setVideoQueueIndex(item.videoIndex);
     setVideoUrl(item.url);
     setVideoFileName(item.name);
     setVideoStatus('');
@@ -2575,7 +2572,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 pendingVideoObjectUrlsRef.current.push(...previousUrls);
                 videoElementRef.current?.pause();
                 setVideoQueue(nextQueue);
-                setVideoQueueIndex(0);
                 setVideoUrl(nextQueue[0].url);
                 setVideoFileName(nextQueue[0].name);
                 setVideoStatus('');
