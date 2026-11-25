@@ -15,7 +15,7 @@
 При этом **Webamp пока сильнее в точности Winamp 2.x и совместимости со скинами/визуализатором**. Главные отставания нашей версии:
 
 1. Частичная реализация формата .wsz: необязательные sprites теперь безопасно пропускаются, `pledit.txt`, `viscolor.txt` и четыре `region.txt` sections подключены. До полного Webamp parity ещё не хватает части sprite/cursor mappings и corpus/browser compatibility tests.
-2. Нет настоящего MilkDrop/Butterchurn и совместимости с MilkDrop preset-файлами.
+2. Настоящий MilkDrop добавлен через Butterchurn 2.6.7 с локальным preset pack и отдельным режимом. Совместимость с пользовательскими MilkDrop preset-файлами вне поставляемого preset pack отдельно не заявляется.
 3. Локальные MP3 читают ID3v2.2/v2.3/v2.4 и ID3v1; FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms читаются для title/artist/album/track. Расширенные поля и редкие нестандартные варианты контейнеров ещё не поддержаны.
 4. M3U поддерживает `#EXTM3U` / `#EXTINF`, BOM и Unicode metadata, дробные длительности при импорте и round-trip для HTTP(S)-URL. Экспорт принимает только строгий `MM:SS` с секундами `00–59`; некорректные, неизвестные и переполненные значения превращаются в `-1`, а не нормализуются молча. Относительные, `file:` и временные `blob:` ссылки пропускаются; HLS `#EXT-X-*` манифесты отклоняются. Метаданные экспортируемых записей очищаются от CR/LF. Локальные файлы переносятся через `.wampack`, а не M3U.
 5. Анимационный цикл ограничен 60 FPS и изолирован во внешнем frame store; parent Winamp не получает 60-FPS state updates. RAF приостанавливается в background tab и возобновляется при возврате; подписка на контроллер/visibility остаётся единой для обеих поверхностей. SVG gradient IDs четвёртого окна уникальны для экземпляра компонента. 60-FPS high-DPI profiling и browser lifecycle acceptance всё ещё нужны.
@@ -41,8 +41,8 @@
 | Skin regions | `region.txt` валидируется и применяется SVG clipPath к Main/Equalizer normal + WindowShade | Поддержка custom window regions | Базовые четыре region sections подключены; browser QA и редкие malformed files ещё нужны |
 | Classic analyzer | Spectrum / Oscilloscope / Peak meter | Классические analyzer modes | Функциональный паритет по основным режимам |
 | WMP visualizers | Alchemy, Bars and Waves, Battery и legacy-набор | Не является основной функцией Webamp | Наше преимущество |
-| AVS / MilkDrop | Собственные процедурные SVG-варианты; не исполняют presets | AVS не является центральной частью Webamp; MilkDrop через Butterchurn | Нельзя считать наши сцены заменой настоящего MilkDrop |
-| MilkDrop presets | Четыре авторских варианта с PSET-переключением | Butterchurn, библиотека presets, random cycling и переходы | Существенное отставание по движку и библиотеке эффектов |
+| AVS / MilkDrop | Оригинальные AVS/procedural MilkDrop сцены плюс отдельный genuine MilkDrop (Butterchurn 2.6.7) с локальным preset pack и переходами | AVS не является центральной частью Webamp; MilkDrop через Butterchurn | Genuine MilkDrop теперь присутствует; пользовательские внешние preset-файлы не заявлены как импортируемые |
+| MilkDrop presets | Локальный `butterchurn-presets` pack, выбор/переходы; четыре авторских процедурных варианта остаются отдельным режимом | Butterchurn, библиотека presets, random cycling и переходы | Базовый движок и preset pack подключены; пользовательский импорт preset-файлов отдельно не реализован |
 | Fullscreen | Четвёртое окно разворачивается; seek/track/play/mode/exit panel и горячие клавиши | У MilkDrop есть собственные Full Screen / Desktop режимы | Наш generic fullscreen удобнее для локального Video и всего окна |
 | Keyboard | Winamp transport keys, arrows; F для fullscreen; отдельные fullscreen bindings | Более полный набор Winamp hotkeys, numpad shortcuts и MilkDrop hotkeys | Нужна таблица полного соответствия |
 | Window management | Main/EQ/Playlist/Video, attach/detach, group drag, magnetic snap, Playlist resize, shade | Main/EQ/Playlist и MilkDrop, drag, shade, resize Playlist/MilkDrop | Наша компоновка функционально шире, но требует browser QA |
@@ -57,7 +57,7 @@
 
 **Статус: исправлено в текущем проходе.** Частота публикации установлена на 60 FPS; кадры публикуются через внешний frame store и `useSyncExternalStore`. Только Main и Fourth visualizer surfaces получают 60-FPS обновления — крупный Winamp parent, Playlist и window manager не перерисовываются из-за аудиокадров. Оба визуализатора используют тот же analyser после EQ и тот же AudioContext. Синтетическая случайная активность удалена; без analyser сцена затухает в idle.
 
-**Оставшаяся проверка:** browser profiling на 60 Hz/high-DPI, а также CPU/GPU нагрузка и поведение при скрытии окна/вкладки.
+**Отложено:** browser profiling на 60 Hz/high-DPI и CPU/GPU нагрузка. Исходный код приостанавливает RAF для скрытой вкладки; реальное поведение в браузере пока не подтверждалось.
 
 ### P0 — неизвестная длительность заменяется выдуманными 180 секундами
 
