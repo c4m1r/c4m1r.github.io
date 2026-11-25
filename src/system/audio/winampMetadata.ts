@@ -13,7 +13,8 @@ function decodeTextFrame(bytes: Uint8Array): string {
     else if (encoding === 2) decoded = new TextDecoder('utf-16be').decode(payload);
     else if (encoding === 3) decoded = new TextDecoder('utf-8').decode(payload);
     else return '';
-    return decoded.replace(/\0.*$/s, '').replace(/\u0000/g, '').trim();
+    const terminator = decoded.indexOf(String.fromCharCode(0));
+    return (terminator >= 0 ? decoded.slice(0, terminator) : decoded).trim();
   } catch {
     return '';
   }
