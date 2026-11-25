@@ -155,22 +155,20 @@ class WinampControllerService {
   }
 
   public updateTrackMetadata(id: string, metadata: Partial<Pick<MediaTrack, 'title' | 'artist' | 'durationLabel' | 'album' | 'trackNumber'>>): void {
-    const index = this.playlist.findIndex((track) => track.id === id);
-    if (index < 0) return;
-    const current = this.playlist[index];
-    this.playlist = this.playlist.map((track, trackIndex) =>
-      trackIndex === index
-        ? {
-            ...track,
-            ...(typeof metadata.title === 'string' ? { title: metadata.title } : {}),
-            ...(typeof metadata.artist === 'string' ? { artist: metadata.artist } : {}),
-            ...(typeof metadata.durationLabel === 'string' ? { durationLabel: metadata.durationLabel } : {}),
-            ...(typeof metadata.album === 'string' ? { album: metadata.album } : {}),
-            ...(typeof metadata.trackNumber === 'string' ? { trackNumber: metadata.trackNumber } : {}),
-          }
-        : track
-    );
-    if (current) {
+    let changed = false;
+    this.playlist = this.playlist.map((track) => {
+      if (track.id !== id && track.localAssetId !== id) return track;
+      changed = true;
+      return {
+        ...track,
+        ...(typeof metadata.title === 'string' ? { title: metadata.title } : {}),
+        ...(typeof metadata.artist === 'string' ? { artist: metadata.artist } : {}),
+        ...(typeof metadata.durationLabel === 'string' ? { durationLabel: metadata.durationLabel } : {}),
+        ...(typeof metadata.album === 'string' ? { album: metadata.album } : {}),
+        ...(typeof metadata.trackNumber === 'string' ? { trackNumber: metadata.trackNumber } : {}),
+      };
+    });
+    if (changed) {
       this.notifyPlaylistChanged();
       this.notify();
     }
@@ -213,8 +211,13 @@ class WinampControllerService {
     if (currentWasRemoved && this.audioElement) this.updateAudioSrc(this.isPlaying);
     else this.notify();
     if (typeof URL !== 'undefined') {
+      const retainedSources = new Set(this.playlist.map((track) => track.src));
+      const revokedSources = new Set<string>();
       removedTracks.forEach((track) => {
-        if (track.src.startsWith('blob:')) URL.revokeObjectURL(track.src);
+        if (track.src.startsWith('blob:') && !retainedSources.has(track.src) && !revokedSources.has(track.src)) {
+          URL.revokeObjectURL(track.src);
+          revokedSources.add(track.src);
+        }
       });
     }
   }
