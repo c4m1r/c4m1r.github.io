@@ -69,7 +69,8 @@ const fourthVisualizerPresets: Partial<Record<FourthVisualizerMode, readonly str
   MilkDrop: ['Geiss Flow', 'Fractal Flame', 'Waveform Tunnel', 'Psychedelic Swirl'],
 };
 
-function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peaks: number[], waveform: number[], presetIndex = 0) {
+function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peaks: number[], waveform: number[], presetIndex = 0, idPrefix = 'wa-fourth-viz') {
+  const gradientId = (name: string) => `${idPrefix}-${name}`;
 
   const wavePoints = waveform.map((sample, index) => `${(index / Math.max(1, waveform.length - 1)) * 100},${100 - sample}`).join(' ');
   const radialPoints = bars.map((value, index) => {
@@ -103,14 +104,14 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
   if (mode === 'Battery') return <div className="wa-viz-battery">{bars.slice(0,12).map((v,i)=><span key={i} className={v>45?'is-charged':''} style={{height:`${Math.max(8,v)}%`}} />)}</div>;
   if (mode === 'Ambience') return <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
     <defs>
-      <radialGradient id="wa-ambience-a"><stop stopColor="#c5ffe2" stopOpacity=".92"/><stop offset=".42" stopColor="#48d9c0" stopOpacity=".34"/><stop offset="1" stopColor="#1b62a5" stopOpacity="0"/></radialGradient>
-      <radialGradient id="wa-ambience-b"><stop stopColor="#b0c8ff" stopOpacity=".78"/><stop offset=".48" stopColor="#7864dc" stopOpacity=".3"/><stop offset="1" stopColor="#34216e" stopOpacity="0"/></radialGradient>
-      <radialGradient id="wa-ambience-c"><stop stopColor="#fff0b0" stopOpacity=".6"/><stop offset="1" stopColor="#ff8c48" stopOpacity="0"/></radialGradient>
+      <radialGradient id={gradientId("ambience-a")}><stop stopColor="#c5ffe2" stopOpacity=".92"/><stop offset=".42" stopColor="#48d9c0" stopOpacity=".34"/><stop offset="1" stopColor="#1b62a5" stopOpacity="0"/></radialGradient>
+      <radialGradient id={gradientId("ambience-b")}><stop stopColor="#b0c8ff" stopOpacity=".78"/><stop offset=".48" stopColor="#7864dc" stopOpacity=".3"/><stop offset="1" stopColor="#34216e" stopOpacity="0"/></radialGradient>
+      <radialGradient id={gradientId("ambience-c")}><stop stopColor="#fff0b0" stopOpacity=".6"/><stop offset="1" stopColor="#ff8c48" stopOpacity="0"/></radialGradient>
     </defs>
     <g className="wa-ambience-fields">
-      <ellipse cx={34 + safeBars[2] * .12} cy={39 + safeBars[7] * .1} rx={25 + safeBars[1] * .22} ry={19 + safeBars[5] * .16} fill="url(#wa-ambience-a)" />
-      <ellipse cx={67 - safeBars[12] * .1} cy={57 - safeBars[15] * .08} rx={24 + safeBars[10] * .2} ry={21 + safeBars[14] * .15} fill="url(#wa-ambience-b)" />
-      <ellipse cx="50" cy={28 + averageLevel * .12} rx={17 + averageLevel * .12} ry="13" fill="url(#wa-ambience-c)" />
+      <ellipse cx={34 + safeBars[2] * .12} cy={39 + safeBars[7] * .1} rx={25 + safeBars[1] * .22} ry={19 + safeBars[5] * .16} fill={`url(#${gradientId("ambience-a")})`} />
+      <ellipse cx={67 - safeBars[12] * .1} cy={57 - safeBars[15] * .08} rx={24 + safeBars[10] * .2} ry={21 + safeBars[14] * .15} fill={`url(#${gradientId("ambience-b")})`} />
+      <ellipse cx="50" cy={28 + averageLevel * .12} rx={17 + averageLevel * .12} ry="13" fill={`url(#${gradientId("ambience-c")})`} />
     </g>
     <path d={waveform.map((v,i)=>{const x=5+i/Math.max(1,waveform.length-1)*90;const y=50+(v-50)*.48;return `${i?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke="#d2fff2" strokeWidth="1.1" opacity=".72" />
     <polyline className="wa-viz-wave wa-viz-wave--soft" points={wavePoints} />
@@ -134,8 +135,8 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
     <circle cx="50" cy="50" r={2+averageLevel*.035} fill="#eaffff" opacity=".8" />
   </svg>;
   if (mode === 'Plenoptic') return <svg className="wa-viz-plenoptic" viewBox="0 0 100 100" aria-hidden="true">
-    <defs><radialGradient id="wa-plenoptic-glow"><stop stopColor="#b9faff" stopOpacity=".9" /><stop offset=".28" stopColor="#438bff" stopOpacity=".28" /><stop offset="1" stopColor="#06101f" stopOpacity="0" /></radialGradient></defs>
-    <circle cx="50" cy="50" r="47" fill="url(#wa-plenoptic-glow)" />
+    <defs><radialGradient id={gradientId("plenoptic-glow")}><stop stopColor="#b9faff" stopOpacity=".9" /><stop offset=".28" stopColor="#438bff" stopOpacity=".28" /><stop offset="1" stopColor="#06101f" stopOpacity="0" /></radialGradient></defs>
+    <circle cx="50" cy="50" r="47" fill={`url(#${gradientId("plenoptic-glow")})`} />
     <g className="wa-plenoptic-tunnel">{plenopticDepths.map((depth, index) => <g key={index} transform={`rotate(${depth.rotation} 50 50) translate(${50 * (1-depth.scale)} ${50 * (1-depth.scale)}) scale(${depth.scale}) translate(-50 -50)`} opacity={depth.opacity}>
       <polygon points="50,4 96,50 50,96 4,50" fill={index % 2 ? 'rgba(53,206,255,.035)' : 'rgba(186,95,255,.045)'} stroke={`hsl(${190 + index * 23} 95% 68%)`} strokeWidth=".9" />
       <path d="M50 4L50 96 M4 50H96 M17 17L83 83 M83 17L17 83" stroke={`hsl(${190 + index * 23} 90% 65%)`} strokeWidth=".35" opacity=".55" />
@@ -147,11 +148,11 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
   if (mode === 'Spikes') return <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points={radialPoints} fill="rgba(255,170,40,.18)" stroke="#ffb52e" strokeWidth="1.2" /><circle cx="50" cy="50" r="10" fill="#ff6b25" opacity=".55" /></svg>;
   if (mode === 'Musical Colors') return <div className="wa-viz-colors">{bars.map((v,i)=><span key={i} style={{height:`${Math.max(3,v)}%`,background:`hsl(${hue(i)} 95% 55%)`}} />)}</div>;
   if (mode === 'Alchemy') return <svg className="wa-viz-alchemy" viewBox="0 0 100 100" aria-hidden="true">
-    <defs><radialGradient id="wa-alchemy-core"><stop stopColor="#fff" /><stop offset=".18" stopColor="#8ffaff" stopOpacity=".9" /><stop offset="1" stopColor="#0878c9" stopOpacity="0" /></radialGradient><linearGradient id="wa-alchemy-ribbon" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#44f5ff" /><stop offset=".5" stopColor="#a65cff" /><stop offset="1" stopColor="#ff5bc8" /></linearGradient></defs>
+    <defs><radialGradient id={gradientId("alchemy-core")}><stop stopColor="#fff" /><stop offset=".18" stopColor="#8ffaff" stopOpacity=".9" /><stop offset="1" stopColor="#0878c9" stopOpacity="0" /></radialGradient><linearGradient id={gradientId("alchemy-ribbon")} x1="0" y1="0" x2="1" y2="1"><stop stopColor="#44f5ff" /><stop offset=".5" stopColor="#a65cff" /><stop offset="1" stopColor="#ff5bc8" /></linearGradient></defs>
     <g className="wa-alchemy-orbits">{[0,1,2].map((ring) => <ellipse key={ring} cx="50" cy="50" rx={18 + ring * 8 + averageLevel * .12} ry={8 + ring * 4 + averageLevel * .07} transform={`rotate(${ring * 58 + averageLevel * .12} 50 50)`} fill="none" stroke={ring === 1 ? '#ff70d8' : '#4deeff'} strokeWidth=".65" opacity={.48 - ring * .08} />)}</g>
-    {alchemyLayers.map((path, index) => <path key={index} d={path} fill={index === 1 ? 'rgba(255,83,205,.075)' : 'rgba(35,218,255,.055)'} stroke={index === 1 ? '#ff66d5' : 'url(#wa-alchemy-ribbon)'} strokeWidth={index === 0 ? 1.5 : .85} opacity={.95 - index * .18} />)}
+    {alchemyLayers.map((path, index) => <path key={index} d={path} fill={index === 1 ? 'rgba(255,83,205,.075)' : 'rgba(35,218,255,.055)'} stroke={index === 1 ? '#ff66d5' : `url(#${gradientId("alchemy-ribbon")})`} strokeWidth={index === 0 ? 1.5 : .85} opacity={.95 - index * .18} />)}
     <path d={waveform.map((value,index)=>{const x=8+index/Math.max(1,waveform.length-1)*84;const y=50+(value-50)*.34;return `${index?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke="#e6ffff" strokeWidth=".9" opacity=".75" />
-    <circle cx="50" cy="50" r={8 + averageLevel * .11} fill="url(#wa-alchemy-core)" opacity=".9" />
+    <circle cx="50" cy="50" r={8 + averageLevel * .11} fill={`url(#${gradientId("alchemy-core")})`} opacity=".9" />
     {safeBars.map((value,index)=>{const angle=index/safeBars.length*Math.PI*2;const inner=10;const outer=inner+value*.18;return <line key={index} x1={50+Math.cos(angle)*inner} y1={50+Math.sin(angle)*inner} x2={50+Math.cos(angle)*outer} y2={50+Math.sin(angle)*outer} stroke={`hsl(${180+index*9} 100% 72%)`} strokeWidth=".75" opacity=".85" />;})}
   </svg>;
   if (mode === 'AVS') {
@@ -173,8 +174,8 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
     </svg>;
   }
   return <svg className={`wa-viz-preset wa-viz-preset--${presetIndex % 4}`} viewBox="0 0 100 100" aria-hidden="true">
-    <defs><radialGradient id="wa-milkdrop"><stop stopColor="#fff" /><stop offset=".35" stopColor="#4be8ff" /><stop offset="1" stopColor="#18216c" stopOpacity="0" /></radialGradient></defs>
-    {presetIndex % 4 === 0 && <g><circle className="wa-milkdrop-pulse" cx="50" cy="50" r={15+averageLevel*.3} fill="url(#wa-milkdrop)" opacity=".8"/><polyline className="wa-viz-wave" points={radialPoints}/><polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints}/></g>}
+    <defs><radialGradient id={gradientId("milkdrop")}><stop stopColor="#fff" /><stop offset=".35" stopColor="#4be8ff" /><stop offset="1" stopColor="#18216c" stopOpacity="0" /></radialGradient></defs>
+    {presetIndex % 4 === 0 && <g><circle className="wa-milkdrop-pulse" cx="50" cy="50" r={15+averageLevel*.3} fill={`url(#${gradientId("milkdrop")})`} opacity=".8"/><polyline className="wa-viz-wave" points={radialPoints}/><polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints}/></g>}
     {presetIndex % 4 === 1 && <g>{[0,1,2,3,4].map((flame)=><path key={flame} d={waveform.map((v,i)=>{const x=8+i/Math.max(1,waveform.length-1)*84;const y=50+(v-50)*(.22+flame*.055)+Math.sin(i*.18+flame)*((safeBars[flame*3]||0)*.08+2);return `${i?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke={`hsl(${flame*47+175} 100% 68%)`} strokeWidth={1.5-flame*.18} opacity={.85-flame*.1}/>)}</g>}
     {presetIndex % 4 === 2 && <g>{[0,1,2,3,4,5].map((depth)=><polygon key={depth} points={safeBars.map((v,i)=>{const a=i/safeBars.length*Math.PI*2;const r=(12+v*.22)*(1-depth*.105);return `${50+Math.cos(a+depth*.08)*r},${50+Math.sin(a+depth*.08)*r}`;}).join(' ')} fill="none" stroke={`hsl(${185+depth*26} 95% 68%)`} strokeWidth=".8" opacity={.9-depth*.12}/>)}<circle className="wa-milkdrop-pulse" cx="50" cy="50" r={5+averageLevel*.08} fill="url(#wa-milkdrop)"/></g>}
     {presetIndex % 4 === 3 && <g><polygon points={radialPoints} fill="rgba(255,70,210,.08)" stroke="#ff69d4" strokeWidth="1.1"/>{[0,1,2,3].map((echo)=><polyline key={echo} points={waveform.map((v,i)=>{const x=50+(i/Math.max(1,waveform.length-1)-.5)*(72-echo*10);const y=50+(v-50)*(.28+echo*.045);return `${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke={`hsl(${185+echo*39} 100% 68%)`} strokeWidth=".85" opacity={.8-echo*.14}/>)}</g>}
@@ -315,11 +316,12 @@ function WinampFourthVisualizer({
   onCycle: () => void;
 }) {
   const { bars, peaks, waveform } = useSyncExternalStore(subscribeWinampVisualizerFrame, getWinampVisualizerFrame, getWinampVisualizerFrame);
+  const instanceId = `wa-fourth-viz-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const presets = fourthVisualizerPresets[mode];
   return (
     <div className={`wa-video__visualizer wa-video__visualizer--${mode.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} role="img" aria-label={mode}>
       <div className="wa-video__visualizer-label">{mode.toUpperCase()}{presets ? ' · ' + presets[presetIndex % presets.length].toUpperCase() : ''}</div>
-      {renderFourthVisualizer(mode, bars, peaks, waveform, presetIndex)}
+      {renderFourthVisualizer(mode, bars, peaks, waveform, presetIndex, instanceId)}
       <button type="button" className="wa-video__mode" title="Next visualization mode" onClick={onCycle}>MODE</button>
     </div>
   );
