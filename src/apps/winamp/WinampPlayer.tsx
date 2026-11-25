@@ -2128,7 +2128,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   <button type="button" className="wa-btn-pl" disabled={!playlistSelection.length || playlist.length <= playlistSelection.length} onClick={() => {
                     const removedIds = playlistSelection.map((index) => playlist[index]?.id).filter((id): id is string => Boolean(id));
                     winampController.removeTracks(playlistSelection);
-                    void deleteWinampLocalAudioFiles(removedIds).catch((error) => setLocalLibraryStatus(error instanceof Error ? error.message : 'Unable to remove saved local audio'));
+                    const remainingIds = new Set(winampController.getPlaylist().map((track) => track.id));
+                    const fullyRemovedIds = removedIds.filter((id) => !remainingIds.has(id));
+                    void deleteWinampLocalAudioFiles(fullyRemovedIds).catch((error) => setLocalLibraryStatus(error instanceof Error ? error.message : 'Unable to remove saved local audio'));
                     setPlaylistSelection([]);
                   }}>REM</button>
                   <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection(playlist.map((_, index) => index))}>SEL</button>
