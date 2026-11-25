@@ -154,11 +154,11 @@ Webamp заявляет pixel-for-pixel skin rendering для Winamp 2.9. Наш
 
 ### Настоящий MilkDrop — отдельный режим, не замена нашим сценам
 
-Добавить отдельный пункт `MilkDrop (Butterchurn)`, не переименовывая и не удаляя текущий авторский `MilkDrop` SVG mode. Наши AVS/MilkDrop-inspired сцены остаются доступными и не требуют WebGL.
+**Статус: реализовано.** Отдельный пункт `MilkDrop (Butterchurn)` добавлен, текущий авторский procedural `MilkDrop` и AVS/MilkDrop-inspired сцены сохранены и по-прежнему работают без WebGL.
 
-Butterchurn — WebGL2-реализация MilkDrop с отдельным пакетом presets. Upstream README документирует создание renderer на существующем AudioContext, подключение audio node, загрузку preset и resize. Основной пакет опубликован как MIT `butterchurn@2.6.7`, пакет presets — MIT `butterchurn-presets@2.4.7`. Для проекта использовать lazy/dynamic import только при выборе нового режима, проверять WebGL2 и оставлять текущие сцены как fallback. Canvas остаётся внутри существующего четвёртого окна; fullscreen использует тот же canvas и не создаёт новое окно.
+Butterchurn — WebGL2-реализация MilkDrop с отдельным пакетом presets. Upstream README документирует создание renderer на существующем AudioContext, подключение audio node, загрузку preset и resize. Основной пакет опубликован как MIT `butterchurn@2.6.7`, пакет presets — MIT `butterchurn-presets@2.4.7`. В проекте используются lazy/dynamic imports только при выборе нового режима, проверка WebGL2 и сохранение текущих сцен как fallback. Canvas остаётся внутри существующего четвёртого окна; fullscreen использует тот же canvas и не создаёт новое окно.
 
-**Audio graph acceptance до включения:** использовать текущий controller AudioContext и сигнал после EQ, не создавать новый AudioContext/HTMLAudioElement. Нужно проверить, можно ли подать существующий node в Butterchurn без дублирования audible output; дополнительный analyser node допустим только как tap/branch в том же графе, а не отдельный playback pipeline. Presets должны быть локальными, циклически переключаемыми, с плавным blend; никаких CDN/API.
+**Audio graph source audit: выполнено.** Используется текущий controller AudioContext и post-EQ/post-balance node; отдельные AudioContext/HTMLAudioElement и второй audible output не создаются. В Butterchurn подключается только отдельная анализирующая ветвь; `disconnectAudio` отключает эту ветвь. Presets локальные, переключаются с плавным blend; CDN/API не используются. Browser QA аудиовыхода отложен вместе с общей проверкой плеера.
 
 ## 5. Рекомендуемый порядок реализации
 
@@ -173,7 +173,7 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 | P2 | Browser QA для Media Session API | Подтвердить системные media keys / lock screen |
 | P2 | Дополнительные Playlist commands и portable local-library export | Feature parity |
 | P2 | Консолидация Classic CSS и pixel QA | Долгосрочная визуальная точность |
-| P3 | Настоящий MilkDrop через Butterchurn + локальные presets | Большой bundle/сложность, отдельное решение |
+| P3 | Настоящий MilkDrop через Butterchurn + локальные presets | Реализовано в `MilkDrop (Butterchurn)`; дальнейший импорт пользовательских preset-файлов не входит в текущий scope |
 
 ## 6. Что уже является преимуществом нашей версии
 
