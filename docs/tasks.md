@@ -731,6 +731,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Expand local metadata parsing to FLAC Vorbis comments, Ogg Vorbis/OpusTags and WAV INFO.
 - [x] Add MP4/M4A ilst atom metadata parsing.
 - [x] Add fixtures for supported ID3v1/v2.2/v2.3/v2.4, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO and MP4/M4A metadata paths; rare container variants remain a follow-up.
+- [x] Add multi-file local video queue navigation to the existing fourth window; fullscreen previous / next and end-of-file advance the selected video queue, while visualization mode retains Winamp audio playlist navigation.
 - [ ] Implement a portable local-library export/import contract (M3U cannot reference transient object URLs).
 - [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
 - [x] Parse and apply validated `region.txt` masks to Main/Equalizer normal and WindowShade via SVG clipPath.
