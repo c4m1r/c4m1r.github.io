@@ -10,7 +10,7 @@ assert.equal(errors.length, 0, errors.map((item) => ts.flattenDiagnosticMessageT
 const { convertMilkPreset, convertSimpleMilkPreset } = await import('data:text/javascript;base64,' + Buffer.from(compiled.outputText).toString('base64'));
 
 const basePreset = {
-  baseVals: { zoom: 1, decay: 0.98, gammaadj: 2, wave_mode: 0, wave_a: 0.8, echo_zoom: 2, echo_alpha: 0, echo_orient: 0, wrap: 1, red_blue: 0 },
+  baseVals: { zoom: 9, decay: 0.1, gammaadj: 8, wave_mode: 6, wave_a: 0.1, echo_zoom: 8, echo_alpha: 1, echo_orient: 3, wrap: 0, red_blue: 1, seed_only: 123 },
   init_eqs_str: 'seed-init();', frame_eqs_str: 'seed-frame();', pixel_eqs_str: 'seed-pixel();',
   shapes: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, sides: 4, x: 0.5, y: 0.5 }, init_eqs_str: 'seed-shape-init();', frame_eqs_str: 'seed-shape-frame();' })),
   waves: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, samples: 512, sep: 0, scaling: 1, smoothing: 0.5, r: 1, g: 1, b: 1, a: 1 }, init_eqs_str: 'seed-wave-init();', frame_eqs_str: 'seed-wave-frame();', point_eqs_str: 'seed-wave-point();' })),
@@ -22,7 +22,7 @@ test('converts MilkDrop scalar aliases without mutating Butterchurn base preset'
   assert.equal(result.preset.baseVals.zoom, 1.25);
   assert.equal(result.preset.baseVals.wave_mode, 7);
   assert.equal(result.preset.baseVals.echo_zoom, 1.4);
-  assert.equal(basePreset.baseVals.zoom, 1);
+  assert.equal(result.preset.baseVals.seed_only, undefined);\n  assert.equal(basePreset.baseVals.zoom, 9);
   assert.deepEqual(result.warnings, ['This preset contains no EEL equations or custom wave/shape programs; only mapped scalar parameters were imported.']);
 });
 

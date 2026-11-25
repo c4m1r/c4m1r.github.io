@@ -100,6 +100,12 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
     throw new Error('Butterchurn base preset is incomplete (baseVals/shapes/waves are required)');
   }
 
+  // Keep only the Butterchurn preset structure. Reusing a real preset as the
+  // template would leak its visual parameters and equations into the import.
+  preset.baseVals = {};
+  preset.shapes.forEach((shape) => { shape.baseVals = {}; });
+  preset.waves.forEach((wave) => { wave.baseVals = {}; });
+
   const programs = {
     init: new Map<number, string>(), frame: new Map<number, string>(), pixel: new Map<number, string>(),
     waveInit: new Map<number, Map<number, string>>(), waveFrame: new Map<number, Map<number, string>>(),
