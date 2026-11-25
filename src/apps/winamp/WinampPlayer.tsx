@@ -800,6 +800,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoQueue, setVideoQueue] = useState<Array<{ url: string; name: string }>>([]);
   const [videoQueueIndex, setVideoQueueIndex] = useState(0);
   const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
+  const [videoStatus, setVideoStatus] = useState('');
   const videoObjectUrlsRef = useRef<string[]>([]);
   const videoWindowRef = useRef<HTMLDivElement>(null);
   const videoElementRef = useRef<HTMLVideoElement>(null);
@@ -1299,7 +1300,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const previousFullscreenItem = useCallback(() => {
     if (videoMode === 'video' && videoQueue.length) {
-      goToVideoQueueIndex(videoQueueIndex - 1);
+      if (videoQueueIndex > 0) goToVideoQueueIndex(videoQueueIndex - 1);
+      else if (videoElementRef.current) videoElementRef.current.currentTime = 0;
       return;
     }
     previous();
@@ -2377,6 +2379,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             if (choices.length) setFourthVisualizerMode(choices[Math.floor(Math.random() * choices.length)]);
           }}>RND</button>}
           {videoMode === 'visualizer' && <button type="button" className={`wa-video__auto${visualizerAutoCycle ? ' is-active' : ''}`} aria-pressed={visualizerAutoCycle} title={visualizerAutoCycle ? 'Turn automatic mode cycling off' : 'Automatically change mode every 15 seconds'} onClick={() => setVisualizerAutoCycle((value) => !value)}>AUTO</button>}
+          {videoMode === 'video' && videoQueue.length > 1 && <select
+            className="wa-video__queue-select"
+            aria-label="Video queue"
+            title="Choose a video from the current queue"
+            value={videoQueueIndex}
+            onChange={(event) => goToVideoQueueIndex(Number(event.target.value))}
+          >
+            {videoQueue.map((item, index) => <option key={item.url} value={index}>{index + 1}. {item.name}</option>)}
+          </select>}
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
         {videoMode === 'visualizer' ? (
@@ -2394,24 +2405,30 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 const nextQueue = files.map((file) => ({ url: URL.createObjectURL(file), name: file.name }));
                 videoObjectUrlsRef.current = nextQueue.map((item) => item.url);
                 window.setTimeout(() => previousUrls.forEach((url) => URL.revokeObjectURL(url)), 0);
+                videoElementRef.current?.pause();
                 setVideoQueue(nextQueue);
                 setVideoQueueIndex(0);
                 setVideoUrl(nextQueue[0].url);
-                setVideoFileName(nextQueue.length > 1 ? `${nextQueue[0].name} (+${nextQueue.length - 1})` : nextQueue[0].name);
+                setVideoFileName(nextQueue[0].name);
+                setVideoStatus('');
                 setVideoAutoplayPending(false);
                 setVideoIsPlaying(false);
               }
               event.currentTarget.value = '';
             }} />
+            {videoStatus && <div className="wa-video__status" role="status" aria-live="polite">{videoStatus}</div>}
             {videoUrl ? <video
               ref={videoElementRef}
               src={videoUrl}
               controls={!isVideoFullscreen}
               playsInline
               onCanPlay={() => {
+                setVideoStatus('');
                 if (!videoAutoplayPending) return;
                 setVideoAutoplayPending(false);
-                void videoElementRef.current?.play().catch(() => undefined);
+                void videoElementRef.current?.play().catch(() => {
+                  setVideoStatus('Playback was blocked by the browser. Press Play to start this video.');
+                });
               }}
               onEnded={() => {
                 if (videoQueueIndex < videoQueue.length - 1) goToVideoQueueIndex(videoQueueIndex + 1);
@@ -2420,6 +2437,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               onError={() => {
                 setVideoAutoplayPending(false);
                 setVideoIsPlaying(false);
+                setVideoStatus('Unable to play this video. The format or codec may not be supported by this browser.');
               }}
               onPlay={() => { setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }}
               onPause={() => { setVideoIsPlaying(false); if (isVideoFullscreen) revealFullscreenControls(); }}
