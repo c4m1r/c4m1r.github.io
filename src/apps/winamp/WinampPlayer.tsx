@@ -383,7 +383,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       sprites,
       playlistStyle: archive.playlistStyle,
       visualizerColors: archive.visualizerColors,
-      regions: parseWinampSkinRegions(archive.regionText),
+      regions: parseWinampSkinRegions(archive.regionText ?? ''),
     };
     setSkinVisuals(nextVisuals);
     if (persist) {
