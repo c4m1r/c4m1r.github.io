@@ -9648,11 +9648,16 @@
   z-index: 2;
 }
 
-.wa-video__visualizer--milkdrop-butterchurn .wa-butterchurn__import {
+.wa-video__visualizer--milkdrop-butterchurn .wa-butterchurn__tools {
   position: absolute;
   z-index: 3;
   top: 7px;
   right: 8px;
+  display: flex;
+  gap: 4px;
+}
+.wa-video__visualizer--milkdrop-butterchurn .wa-butterchurn__import {
+  position: static;
   padding: 3px 5px;
   border: 1px solid rgba(119, 195, 238, .45);
   border-radius: 2px;
