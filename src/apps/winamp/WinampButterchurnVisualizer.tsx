@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { winampController } from '../../system/audio/winampController';
-import type { ButterchurnPreset, ButterchurnVisualizer } from './butterchurn';
+type ButterchurnPreset = Record<string, unknown>;
+
+interface ButterchurnVisualizer {
+  connectAudio(audioNode: AudioNode): void;
+  disconnectAudio(audioNode: AudioNode): void;
+  loadPreset(preset: ButterchurnPreset, blendTime: number): Promise<void> | void;
+  setRendererSize(width: number, height: number, options?: { pixelRatio?: number; textureRatio?: number }): void;
+  render(): void;
+}
 
 interface WinampButterchurnVisualizerProps {
   presetIndex: number;
