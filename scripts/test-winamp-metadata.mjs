@@ -51,7 +51,9 @@ test('reads legacy ID3v1 metadata', async () => {
     output.set(raw.subarray(0, 30));
     return output;
   };
-  const tag = bytes(ascii('TAG'), field('Legacy title'), field('Legacy artist'), field('Legacy album'), new Uint8Array(4), new Uint8Array(30), new Uint8Array(1), Uint8Array.of(0, 9, 0));
+  const comment = new Uint8Array(30);
+  comment[29] = 9;
+  const tag = bytes(ascii('TAG'), field('Legacy title'), field('Legacy artist'), field('Legacy album'), new Uint8Array(4), comment, Uint8Array.of(0));
   const file = new Blob([new Uint8Array(32), tag]);
   const metadata = await readEmbeddedAudioMetadata(file);
   assert.equal(metadata.title, 'Legacy title');
