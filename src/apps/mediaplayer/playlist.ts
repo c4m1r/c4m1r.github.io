@@ -6,6 +6,8 @@ export interface MediaTrack {
   src: string;
   album?: string;
   trackNumber?: string;
+  /** IndexedDB asset identity when multiple playlist entries reference one local file. */
+  localAssetId?: string;
 }
 
 export const PROJECT_PLAYLIST: MediaTrack[] = [
