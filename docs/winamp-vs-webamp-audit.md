@@ -92,7 +92,7 @@ Webamp исторически исправлял fallback для отсутст�
 
 ### P1 — парсер извлекает skin metadata, но renderer её игнорирует
 
-**Статус: частично исправлено в этом проходе.** Playlist list colors/font из `pledit.txt` и Main analyzer palette из `viscolor.txt` теперь применяются. `region.txt` и цвета меню Playlist пока не подключены.
+**Статус: частично исправлено в этом проходе.** Playlist list colors/font из `pledit.txt`, Playlist menu colors и Main analyzer palette из `viscolor.txt` теперь применяются. `region.txt` пока не подключён.
 
 `parseWinampSkinArchive()` возвращает:
 - `playlistStyle` из `pledit.txt`;
@@ -245,13 +245,13 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 - [x] Убраны вложенные React state setters: bars, peaks и waveform вычисляются раздельно.
 - [x] Контроллер больше не подменяет неизвестную длительность трека фиктивными 180 секундами; UI получает реальный 0/unknown и сбрасывает stale duration при смене трека.
 - [x] Защищён fullscreen double-click handler от повторного запроса fullscreen, если сцена уже развёрнута.
-- [x] Подключены `pledit.txt` list colors/font к Playlist и `viscolor.txt` palette к Main analyzer для импортированного .wsz.
+- [x] Подключены `pledit.txt` list colors/font + menu colors к Playlist и `viscolor.txt` palette к Main analyzer для импортированного .wsz.
 - [x] Импорт .wsz больше не падает из-за отсутствующих optional sprite sheets или отдельных atlas sprites; Main sheet остаётся обязательным.
 - [x] Добавлен локальный ID3v2.2/v2.3/v2.4 + ID3v1 reader для MP3 с сохранением title/artist/album/track number в IndexedDB.
 - [x] Добавлен автономный HTML Playlist export для HTTP(S) tracks; локальные object URLs не экспортируются как неработающие ссылки.
 - [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
 - [x] Подключён Media Session API к существующему controller: track metadata, playback/position state, play/pause/stop/next/previous и seek handlers; handlers/metadata очищаются при закрытии плеера.
 
-**Оставшиеся ограничения:** применение `region.txt` и Playlist menu colors, расширение metadata на FLAC/Ogg/MP4/WAV, portable local M3U workflow, дополнительные Playlist commands, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция и изоляция visualizer rendering от родительского компонента.
+**Оставшиеся ограничения:** применение `region.txt` window shapes, расширение metadata на FLAC/Ogg/MP4/WAV, portable local M3U workflow, дополнительные Playlist commands, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция и изоляция visualizer rendering от родительского компонента.
 
 Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
