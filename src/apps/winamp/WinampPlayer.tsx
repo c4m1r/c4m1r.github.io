@@ -442,6 +442,39 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setM3uStatus(`Exported playlist${result.skippedEntries ? `; skipped ${result.skippedEntries} local/unsupported tracks` : ''}`);
   };
 
+  const exportHtmlPlaylist = () => {
+    const tracks = winampController.getPlaylist();
+    const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    })[character] ?? character);
+    const rows: string[] = [];
+    let skippedEntries = 0;
+    tracks.forEach((track, index) => {
+      let source: URL;
+      try { source = new URL(track.src); } catch { skippedEntries += 1; return; }
+      if (source.protocol !== 'http:' && source.protocol !== 'https:') {
+        skippedEntries += 1;
+        return;
+      }
+      rows.push(`<tr><td>${index + 1}</td><td><a href="${escapeHtml(source.href)}">${escapeHtml(track.title)}</a></td><td>${escapeHtml(track.artist)}</td><td>${escapeHtml(track.durationLabel)}</td></tr>`);
+    });
+    if (!rows.length) {
+      setM3uStatus('No portable web-address tracks to export as HTML');
+      return;
+    }
+    const html = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Winamp Playlist</title>
+<style>body{font:14px/1.5 Arial,sans-serif;background:#15191d;color:#e8edf2;margin:2rem}h1{font-size:1.25rem}table{border-collapse:collapse;width:100%;max-width:960px}th,td{text-align:left;padding:.55rem .7rem;border-bottom:1px solid #39424b}th{color:#9ecbff}a{color:#70baff;text-decoration:none}a:hover{text-decoration:underline}</style>
+</head><body><h1>Winamp Playlist</h1><table><thead><tr><th>#</th><th>Title</th><th>Artist</th><th>Duration</th></tr></thead><tbody>${rows.join('')}</tbody></table></body></html>`;
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'winamp-playlist.html';
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setM3uStatus(`Exported HTML playlist${skippedEntries ? `; skipped ${skippedEntries} local/unsupported tracks` : ''}`);
+  };
+
   const addLocalAudioFiles = async (files: File[]) => {
     setM3uStatus('');
     const audioFiles = files.filter((file) => file.type.startsWith('audio/') || /\.(mp3|wav|ogg|oga|m4a|aac|flac|opus|webm)$/i.test(file.name));
@@ -1959,6 +1992,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       <button type="button" className="wa-btn-pl" onClick={() => setPlayerSettingsOpen(true)}>Player settings…</button>
                       <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()}>Import M3U</button>
                       <button type="button" className="wa-btn-pl" onClick={exportM3uFile}>Export M3U</button>
+                      <button type="button" className="wa-btn-pl" onClick={exportHtmlPlaylist}>Export HTML playlist</button>
                       <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()}>Import .wsz skin</button>
                       {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => { void clearActiveWinampSkin().then(() => { setSkinVisuals(null); setSkinStatus('Built-in Winamp appearance restored'); }).catch(() => { setSkinVisuals(null); setSkinStatus('Built-in appearance restored for this session; saved skin could not be cleared'); }); }}>Reset skin</button>}
                     </div>
@@ -2028,6 +2062,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   <div className="wa-pl__actions">
                     <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()} title="Import an M3U playlist">M3U IN</button>
                     <button type="button" className="wa-btn-pl" onClick={exportM3uFile} title="Export web-address tracks as an M3U playlist">M3U OUT</button>
+                    <button type="button" className="wa-btn-pl" onClick={exportHtmlPlaylist} title="Export a portable HTML playlist">HTML OUT</button>
                     <button type="button" className="wa-btn-pl" onClick={() => skinInputRef.current?.click()} title="Import a classic Winamp .wsz skin">SKIN IN</button>
                     {skinVisuals && <button type="button" className="wa-btn-pl" onClick={() => {
                       void clearActiveWinampSkin().then(() => {
