@@ -321,19 +321,27 @@ export async function readEmbeddedAudioMetadata(file: Blob): Promise<EmbeddedAud
   }
 
   if (!metadata.title || !metadata.artist || !metadata.album || !metadata.trackNumber) {
-    const containerBytes = new Uint8Array(await file.slice(0, Math.min(file.size, 16 * 1024 * 1024)).arrayBuffer());
-    const containerMetadata = parseFlacMetadata(containerBytes);
-    const oggMetadata = Object.keys(containerMetadata).length ? {} : parseOggMetadata(containerBytes);
-    const wavMetadata = Object.keys(containerMetadata).length || Object.keys(oggMetadata).length ? {} : parseWavInfo(containerBytes);
-    let mp4Metadata: EmbeddedAudioMetadata = {};
-    if (!Object.keys(containerMetadata).length && !Object.keys(oggMetadata).length && !Object.keys(wavMetadata).length) {
-      mp4Metadata = parseMp4Metadata(containerBytes);
-      if (!Object.keys(mp4Metadata).length && file.size > containerBytes.length) {
-        const tail = new Uint8Array(await file.slice(Math.max(0, file.size - 16 * 1024 * 1024)).arrayBuffer());
-        mp4Metadata = parseMp4Metadata(tail);
+    const signature = String.fromCharCode(...header.subarray(0, 4));
+    const mp4Marker = String.fromCharCode(...header.subarray(4, 8));
+    const isFlac = signature === 'fLaC';
+    const isOgg = signature === 'OggS';
+    const isWav = signature === 'RIFF';
+    const isMp4 = mp4Marker === 'ftyp' || /audio\\/(mp4|x-m4a)|video\\/mp4/i.test(file.type);
+    let containerMetadata: EmbeddedAudioMetadata = {};
+    if (isFlac || isOgg || isWav || isMp4) {
+      const containerBytes = new Uint8Array(await file.slice(0, Math.min(file.size, 16 * 1024 * 1024)).arrayBuffer());
+      if (isFlac) containerMetadata = parseFlacMetadata(containerBytes);
+      else if (isOgg) containerMetadata = parseOggMetadata(containerBytes);
+      else if (isWav) containerMetadata = parseWavInfo(containerBytes);
+      else {
+        containerMetadata = parseMp4Metadata(containerBytes);
+        if (!Object.keys(containerMetadata).length && file.size > containerBytes.length) {
+          const tail = new Uint8Array(await file.slice(Math.max(0, file.size - 16 * 1024 * 1024)).arrayBuffer());
+          containerMetadata = parseMp4Metadata(tail);
+        }
       }
     }
-    metadata = { ...containerMetadata, ...oggMetadata, ...wavMetadata, ...mp4Metadata, ...metadata };
+    metadata = { ...containerMetadata, ...metadata };
   }
 
   if (!metadata.title || !metadata.artist || !metadata.album || !metadata.trackNumber) {
