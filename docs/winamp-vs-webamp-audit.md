@@ -19,7 +19,7 @@
 3. Локальные аудиофайлы не проходят полноценное чтение ID3/metadata; длительность читается отдельно, а название/исполнитель в основном берутся из имени файла.
 4. M3U поддерживает только абсолютные HTTP(S)-URL; относительные и локальные пути пропускаются, поэтому экспорт локальной библиотеки не является переносимым плейлистом.
 5. Анимационный цикл обновляет React state на каждом кадре, что заставляет перерисовывать крупный родительский компонент с частотой дисплея.
-6. Не реализованы HTML-экспорт Playlist и Media Session API.
+6. Не реализован HTML-экспорт Playlist. Media Session API подключён в ходе исправлений после аудита.
 7. Классический внешний вид пока является собственной реконструкцией, а не пиксельно-точным skin renderer: есть расхождение геометрии окна 269/275 px и большой набор последовательно добавленных CSS override-блоков.
 
 **Приоритет исправлений:** корректность данных и производительность → надёжность .wsz → полнота плейлиста и системная интеграция → визуальная калибровка → дополнительные функции.
@@ -46,7 +46,7 @@
 | Fullscreen | Четвёртое окно разворачивается; seek/track/play/mode/exit panel и горячие клавиши | У MilkDrop есть собственные Full Screen / Desktop режимы | Наш generic fullscreen удобнее для локального Video и всего окна |
 | Keyboard | Winamp transport keys, arrows; F для fullscreen; отдельные fullscreen bindings | Более полный набор Winamp hotkeys, numpad shortcuts и MilkDrop hotkeys | Нужна таблица полного соответствия |
 | Window management | Main/EQ/Playlist/Video, attach/detach, group drag, magnetic snap, Playlist resize, shade | Main/EQ/Playlist и MilkDrop, drag, shade, resize Playlist/MilkDrop | Наша компоновка функционально шире, но требует browser QA |
-| Media Session | Не реализована | Опциональная интеграция с Media Session API | Приоритетная современная функция |
+| Media Session | Подключены metadata/playbackState, play/pause/stop/next/previous/seek handlers и position state | Опциональная интеграция с Media Session API | Базовый паритет; browser/OS acceptance ещё нужен |
 | HTML Playlist export | Не реализован | Есть генерация HTML-файла | Небольшая, но заметная классическая функция |
 | Mini visualizer в Playlist | Не реализован | Есть в определённой компоновке окон | Опциональное улучшение |
 | Accessibility | Часть кнопок имеет title/aria-label/aria-pressed; единая keyboard/focus acceptance ещё не проведена | В актуальном changelog улучшены Tab navigation, button names и aria-pressed | Нужно довести доступность системно |
@@ -123,15 +123,9 @@ Webamp исторически исправлял fallback для отсутст�
 
 **Исправление:** добавить локальное чтение metadata без сетевой отправки файлов, сохранять title/artist/album/track number/duration в IndexedDB. При ошибке чтения использовать filename fallback. Не добавлять облачные API.
 
-### P2 — нет Media Session API
+### P2 — Media Session API
 
-Контроллер уже централизует playback, поэтому Media Session можно подключить без второго аудио движка:
-- `navigator.mediaSession.metadata` для текущего трека;
-- play/pause/nexttrack/previoustrack/seekto handlers;
-- синхронизация playbackState и позиции;
-- очистка handlers/metadata при закрытии плеера или смене источника.
-
-Это даст управление с системных media keys и lock screen там, где браузер/ОС поддерживают API.
+**Статус: базовая реализация добавлена после аудита.** Подключены metadata, playbackState, position state и обработчики play/pause/stop/previous/next/seekbackward/seekforward/seekto. Обработчики очищаются при размонтировании плеера. Требуется browser/OS acceptance на macOS, iOS и поддерживаемых desktop browsers; нельзя считать аппаратные media keys проверенными только по наличию API.
 
 ### P2 — отсутствует HTML Playlist export и дополнительные команды
 
@@ -176,7 +170,7 @@ Webamp заявляет pixel-for-pixel skin rendering для Winamp 2.9. Наш
 | P1 | Подключить pledit.txt и viscolor.txt к UI | Фактическое применение skin metadata |
 | P1 | Реализовать ID3 metadata extraction | Качество локальной библиотеки |
 | P1 | Определить portable export для локальных треков и улучшить M3U workflow | Переносимость плейлистов |
-| P2 | Media Session API | Системное управление |
+| P2 | Browser QA для Media Session API | Подтвердить системные media keys / lock screen |
 | P2 | HTML Playlist export и дополнительные Playlist commands | Feature parity |
 | P2 | Консолидация Classic CSS и pixel QA | Долгосрочная визуальная точность |
 | P3 | Настоящий MilkDrop через Butterchurn + локальные presets | Большой bundle/сложность, отдельное решение |
@@ -244,7 +238,8 @@ Webamp заявляет pixel-for-pixel skin rendering для Winamp 2.9. Наш
 - [x] Защищён fullscreen double-click handler от повторного запроса fullscreen, если сцена уже развёрнута.
 - [x] Подключены `pledit.txt` list colors/font к Playlist и `viscolor.txt` palette к Main analyzer для импортированного .wsz.
 - [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
+- [x] Подключён Media Session API к существующему controller: track metadata, playback/position state, play/pause/stop/next/previous и seek handlers; handlers/metadata очищаются при закрытии плеера.
 
-**Оставшиеся ограничения:** fallback для отсутствующих optional .wsz sprites, применение `region.txt` и Playlist menu colors, ID3 metadata extraction, portable local M3U workflow, Media Session API, HTML Playlist export, настоящая Butterchurn/MilkDrop интеграция и изоляция visualizer rendering от родительского компонента.
+**Оставшиеся ограничения:** fallback для отсутствующих optional .wsz sprites, применение `region.txt` и Playlist menu colors, ID3 metadata extraction, portable local M3U workflow, HTML Playlist export, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция и изоляция visualizer rendering от родительского компонента.
 
 Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
