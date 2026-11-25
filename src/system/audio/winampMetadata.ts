@@ -161,7 +161,7 @@ function decodeId3v1(bytes: Uint8Array): EmbeddedAudioMetadata {
   if (String.fromCharCode(...bytes.subarray(start, start + 3)) !== 'TAG') return {};
   const decode = (from: number, length: number) =>
     new TextDecoder('windows-1252').decode(bytes.subarray(start + from, start + from + length))
-      .replace(/\0/g, '').trim();
+      .replaceAll(String.fromCharCode(0), '').trim();
   const title = decode(3, 30);
   const artist = decode(33, 30);
   const album = decode(63, 30);
