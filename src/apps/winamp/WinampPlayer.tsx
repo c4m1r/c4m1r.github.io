@@ -1112,7 +1112,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setFourthVisualizerPresetIndex(0);
   }, [videoMode]);
 
-  const handleVideoStagePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+  const handleVideoStagePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     if (!target.closest('.wa-video__visualizer, .wa-video__screen')) return;
     if (!isVideoFullscreen && event.pointerType === 'touch') {
