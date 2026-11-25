@@ -20,7 +20,7 @@ const fakeShaderConverter = async (source, stage) => {
   if (!source.includes('shader_body') || !source.includes('{') || !source.includes('}')) {
     throw new Error('fixture shader is malformed');
   }
-  return \`shader_body { ret = vec3(\${stage === 'warp' ? '0.5' : '1.0'}); }\`;
+  return `shader_body { ret = vec3(${stage === 'warp' ? '0.5' : '1.0'}); }`;
 };
 const convert = (text) => convertMilkPreset(text, basePreset, milkdropParser, fakeShaderConverter);
 
