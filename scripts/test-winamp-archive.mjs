@@ -41,6 +41,62 @@ function findLocalEntry(bytes, entryName) {
   throw new Error('ZIP entry not found: ' + entryName);
 }
 
+const zipCrcTable = (() => {
+  const table = new Uint32Array(256);
+  for (let index = 0; index < 256; index += 1) {
+    let value = index;
+    for (let bit = 0; bit < 8; bit += 1) value = (value >>> 1) ^ ((value & 1) ? 0xedb88320 : 0);
+    table[index] = value >>> 0;
+  }
+  return table;
+})();
+function zipCrc32(data) {
+  let crc = 0xffffffff;
+  for (const byte of data) crc = (crc >>> 8) ^ zipCrcTable[(crc ^ byte) & 255];
+  return (crc ^ 0xffffffff) >>> 0;
+}
+function makeStoredZip(entries) {
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+  for (const entry of entries) {
+    const name = encoder.encode(entry.name);
+    const data = typeof entry.data === 'string' ? encoder.encode(entry.data) : entry.data;
+    const crc = zipCrc32(data);
+    const method = entry.method ?? 0;
+    const local = new Uint8Array(30 + name.length + data.length);
+    const localView = new DataView(local.buffer);
+    localView.setUint32(0, 0x04034b50, true);
+    localView.setUint16(4, 20, true); localView.setUint16(6, 0x0800, true);
+    localView.setUint16(8, method, true); localView.setUint32(14, crc, true);
+    localView.setUint32(18, data.length, true); localView.setUint32(22, data.length, true);
+    localView.setUint16(26, name.length, true);
+    local.set(name, 30); local.set(data, 30 + name.length);
+    localParts.push(local);
+    const central = new Uint8Array(46 + name.length);
+    const centralView = new DataView(central.buffer);
+    centralView.setUint32(0, 0x02014b50, true);
+    centralView.setUint16(4, 20, true); centralView.setUint16(6, 20, true);
+    centralView.setUint16(8, 0x0800, true); centralView.setUint16(10, method, true);
+    centralView.setUint32(16, crc, true); centralView.setUint32(20, data.length, true);
+    centralView.setUint32(24, data.length, true); centralView.setUint16(28, name.length, true);
+    centralView.setUint32(42, offset, true); central.set(name, 46);
+    centralParts.push(central);
+    offset += local.length;
+  }
+  const centralSize = centralParts.reduce((sum, part) => sum + part.length, 0);
+  const end = new Uint8Array(22);
+  const view = new DataView(end.buffer);
+  view.setUint32(0, 0x06054b50, true);
+  view.setUint16(8, entries.length, true); view.setUint16(10, entries.length, true);
+  view.setUint32(12, centralSize, true); view.setUint32(16, offset, true);
+  const all = [...localParts, ...centralParts, end];
+  const result = new Uint8Array(all.reduce((sum, part) => sum + part.length, 0));
+  let cursor = 0;
+  for (const part of all) { result.set(part, cursor); cursor += part.length; }
+  return result;
+}
+
 test('round-trips an empty local library', async () => {
   const archive = await createWinampArchive([], []);
   const restored = await readWinampArchive(archive);
@@ -111,4 +167,28 @@ test('rejects invalid local file metadata before export', async () => {
 test('rejects a manifest that exceeds the import safety limit during export', async () => {
   const playlist = Array.from({ length: 5000 }, (_, index) => track('remote-' + index, 'https://example.com/' + index, 'x'.repeat(1000)));
   await assert.rejects(() => createWinampArchive(playlist, []), /manifest exceeds the 4 MB safety limit/i);
+});
+
+test('rejects duplicate ZIP entry paths even when the payload is valid', async () => {
+  const manifest = JSON.stringify({ format: 'wampack', version: 1, exportedAt: new Date(0).toISOString(), tracks: [] });
+  const bytes = makeStoredZip([
+    { name: 'manifest.json', data: manifest },
+    { name: 'manifest.json', data: manifest },
+  ]);
+  await assert.rejects(() => readWinampArchive(new Blob([bytes])), /duplicate|unsafe ZIP entry/i);
+});
+
+test('rejects unreferenced payload files', async () => {
+  const manifest = JSON.stringify({ format: 'wampack', version: 1, exportedAt: new Date(0).toISOString(), tracks: [] });
+  const bytes = makeStoredZip([
+    { name: 'manifest.json', data: manifest },
+    { name: 'audio/000001.mp3', data: Uint8Array.of(1, 2, 3) },
+  ]);
+  await assert.rejects(() => readWinampArchive(new Blob([bytes])), /unreferenced payload/i);
+});
+
+test('rejects compressed ZIP methods rather than treating compressed bytes as audio', async () => {
+  const manifest = JSON.stringify({ format: 'wampack', version: 1, exportedAt: new Date(0).toISOString(), tracks: [] });
+  const bytes = makeStoredZip([{ name: 'manifest.json', data: manifest, method: 8 }]);
+  await assert.rejects(() => readWinampArchive(new Blob([bytes])), /unsupported, encrypted or unsafe ZIP entry/i);
 });
