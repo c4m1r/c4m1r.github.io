@@ -293,12 +293,8 @@ export async function parseWinampSkinArchive(file: Blob, fileName = 'custom.wsz'
     let data: Uint8Array;
     try {
       data = await extractZipEntry(bytes, entry);
-    } catch (error) {
-      // A .wsz archive may contain optional sheets from another Winamp module.
-      // Keep a valid Main sheet usable when an unrelated optional asset is damaged.
-      if (baseName === 'main.bmp' || baseName === 'main.png') {
-        // Main is validated below; if no valid Main alternative remains, import fails.
-      }
+    } catch {
+      // Damaged optional assets are ignored; the required Main sheet is checked below.
       continue;
     }
     const type = baseName.endsWith('.png') ? 'image/png'
