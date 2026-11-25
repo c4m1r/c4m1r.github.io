@@ -67,7 +67,8 @@ export async function readEmbeddedAudioMetadata(file: Blob): Promise<EmbeddedAud
     const tagEnd = Math.min(file.size, 10 + tagSize, 16 * 1024 * 1024);
     const tagFlags = header[5];
     if (majorVersion >= 2 && majorVersion <= 4 && tagEnd > 10 && !(majorVersion === 2 && (tagFlags & 0x40))) {
-      const tag = new Uint8Array(await file.slice(10, tagEnd).arrayBuffer());
+      let tag = new Uint8Array(await file.slice(10, tagEnd).arrayBuffer());
+      if (majorVersion === 3 && (tagFlags & 0x80)) tag = removeUnsynchronization(tag);
       const ids: Record<string, keyof EmbeddedAudioMetadata> = {
         TIT2: 'title', TPE1: 'artist', TALB: 'album', TRCK: 'trackNumber',
         TT2: 'title', TP1: 'artist', TAL: 'album', TRK: 'trackNumber',
@@ -102,7 +103,7 @@ export async function readEmbeddedAudioMetadata(file: Blob): Promise<EmbeddedAud
         if (majorVersion === 4) {
           if (frameFormatFlags & 0x40) payload = payload.subarray(1);
           if (frameFormatFlags & 0x01) payload = payload.subarray(4);
-          if (frameFormatFlags & 0x02) payload = removeUnsynchronization(payload);
+          if ((frameFormatFlags & 0x02) || (tagFlags & 0x80)) payload = removeUnsynchronization(payload);
         }
         if (key && !compressedOrEncrypted && metadata[key] === undefined) {
           const value = decodeTextFrame(payload);
