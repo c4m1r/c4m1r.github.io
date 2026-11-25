@@ -300,3 +300,10 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - Legacy `.milk` import supports a restricted scalar-only subset: numeric/boolean base parameters are applied to a cloned bundled Butterchurn preset. EEL equations, custom waves/shapes and shader sections are rejected with an explicit explanation. This is not full MilkDrop 1/2 compatibility.
 - `.wampack` restore validates the archive before storage and writes all imported records in one IndexedDB transaction. If subsequent playlist publication fails, the newly inserted records are deleted and temporary Blob URLs are revoked.
 - Source-level implementation only; CI and browser acceptance remain required.
+
+
+## 16. Mixed queue editing and importer regression tests — 2026-11-25
+
+- Mixed audio/video order can be rearranged from the fourth-window toolbar. Stable keys preserve the selected media item while order changes. Previous/Next and end-of-track navigation use the edited order; Shuffle selects a different random item on Next/automatic advance.
+- Repeat and Auto Advance preferences apply to video completion as well as audio completion. Audio/video remain mutually exclusive and retain separate media elements.
+- Added unit coverage for the safe scalar `.milk` importer. Full EEL and MilkDrop 2 shader conversion remains a known limitation rather than being advertised as supported.

@@ -872,6 +872,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoFileName, setVideoFileName] = useState('');
   const [videoQueue, setVideoQueue] = useState<Array<{ url: string; name: string }>>([]);
   const [videoQueueIndex, setVideoQueueIndex] = useState(0);
+  const [unifiedMediaOrder, setUnifiedMediaOrder] = useState<string[]>([]);
   const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
   const [videoStatus, setVideoStatus] = useState('');
   const videoObjectUrlsRef = useRef<string[]>([]);
@@ -1168,13 +1169,17 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const playlist = useMemo(() => winampController.getPlaylist(), [playlistRevision]);
   const track = playlist[trackIndex] ?? playlist[0] ?? PROJECT_PLAYLIST[0];
-  const unifiedMediaItems = useMemo(() => [
-    ...playlist.map((item, audioIndex) => ({ kind: 'audio' as const, key: `audio:${item.id}`, label: `♫ ${item.artist} — ${item.title}`, audioIndex })),
-    ...videoQueue.map((item, videoIndex) => ({ kind: 'video' as const, key: `video:${videoIndex}:${item.name}`, label: `▣ ${item.name}`, videoIndex, url: item.url, name: item.name })),
-  ], [playlist, videoQueue]);
-  const activeUnifiedMediaIndex = videoMode === 'video' && videoQueue.length
-    ? playlist.length + videoQueueIndex
-    : Math.max(0, playlist.findIndex((item) => item.id === track.id));
+  const unifiedMediaItems = useMemo(() => {
+    const items = [
+      ...playlist.map((item, audioIndex) => ({ kind: 'audio' as const, key: `audio:${item.id}`, label: `♫ ${item.artist} — ${item.title}`, audioIndex })),
+      ...videoQueue.map((item, videoIndex) => ({ kind: 'video' as const, key: `video:${item.url}`, label: `▣ ${item.name}`, videoIndex, url: item.url, name: item.name })),
+    ];
+    const order = new Map(unifiedMediaOrder.map((key, index) => [key, index]));
+    return items.sort((a, b) => (order.get(a.key) ?? Number.MAX_SAFE_INTEGER) - (order.get(b.key) ?? Number.MAX_SAFE_INTEGER));
+  }, [playlist, videoQueue, unifiedMediaOrder]);
+  const activeUnifiedMediaIndex = videoMode === 'video' && videoUrl
+    ? Math.max(0, unifiedMediaItems.findIndex((item) => item.kind === 'video' && item.url === videoUrl))
+    : Math.max(0, unifiedMediaItems.findIndex((item) => item.kind === 'audio' && item.key === `audio:${track.id}`));
 
   useEffect(() => {
     if (!followPlaylistPlayback || !showPl) return;
@@ -1434,12 +1439,26 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const navigateUnifiedMediaQueue = useCallback((direction: -1 | 1) => {
     if (unifiedMediaItems.length < 2) return;
-    const currentIndex = videoMode === 'video' && videoQueue.length
-      ? playlist.length + videoQueueIndex
-      : Math.max(0, playlist.findIndex((item) => item.id === winampController.getState().track.id));
-    const nextIndex = (currentIndex + direction + unifiedMediaItems.length) % unifiedMediaItems.length;
+    const activeKey = videoMode === 'video' && videoUrl
+      ? `video:${videoUrl}`
+      : `audio:${winampController.getState().track.id}`;
+    const currentIndex = Math.max(0, unifiedMediaItems.findIndex((item) => item.key === activeKey));
+    let nextIndex = (currentIndex + direction + unifiedMediaItems.length) % unifiedMediaItems.length;
+    if (direction > 0 && shuffle && unifiedMediaItems.length > 2) {
+      const choices = unifiedMediaItems.map((_, index) => index).filter((index) => index !== currentIndex);
+      nextIndex = choices[Math.floor(Math.random() * choices.length)] ?? nextIndex;
+    }
     selectUnifiedMediaItem(nextIndex);
-  }, [unifiedMediaItems, videoMode, videoQueue.length, videoQueueIndex, playlist, selectUnifiedMediaItem]);
+  }, [unifiedMediaItems, videoMode, videoUrl, shuffle, selectUnifiedMediaItem]);
+
+  const moveUnifiedMediaItem = useCallback((direction: -1 | 1) => {
+    if (activeUnifiedMediaIndex < 0 || activeUnifiedMediaIndex >= unifiedMediaItems.length) return;
+    const nextIndex = activeUnifiedMediaIndex + direction;
+    if (nextIndex < 0 || nextIndex >= unifiedMediaItems.length) return;
+    const keys = unifiedMediaItems.map((item) => item.key);
+    [keys[activeUnifiedMediaIndex], keys[nextIndex]] = [keys[nextIndex], keys[activeUnifiedMediaIndex]];
+    setUnifiedMediaOrder(keys);
+  }, [activeUnifiedMediaIndex, unifiedMediaItems]);
 
   useEffect(() => {
     winampController.setTrackEndedHandler(() => navigateUnifiedMediaQueue(1));
@@ -2522,15 +2541,19 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <button type="button" className="wa-video__queue-step" title="Previous item in unified media playlist" aria-label="Previous media item" onClick={() => navigateUnifiedMediaQueue(-1)}>◀|</button>
             <button type="button" className="wa-video__queue-step" title="Next item in unified media playlist" aria-label="Next media item" onClick={() => navigateUnifiedMediaQueue(1)}>|▶</button>
           </>}
-          {unifiedMediaItems.length > 0 && <select
-            className="wa-video__queue-select"
-            aria-label="Unified audio and video playlist"
-            title="Choose audio or video from the unified media playlist"
-            value={activeUnifiedMediaIndex}
-            onChange={(event) => selectUnifiedMediaItem(Number(event.target.value))}
-          >
-            {unifiedMediaItems.map((item, index) => <option key={item.key} value={index}>{index + 1}. {item.label}</option>)}
-          </select>}
+          {unifiedMediaItems.length > 0 && <>
+            <select
+              className="wa-video__queue-select"
+              aria-label="Unified audio and video playlist"
+              title="Choose audio or video from the unified media playlist"
+              value={activeUnifiedMediaIndex}
+              onChange={(event) => selectUnifiedMediaItem(Number(event.target.value))}
+            >
+              {unifiedMediaItems.map((item, index) => <option key={item.key} value={index}>{index + 1}. {item.label}</option>)}
+            </select>
+            <button type="button" className="wa-video__queue-step" title="Move selected item up in the mixed playlist" aria-label="Move selected media item up" disabled={activeUnifiedMediaIndex <= 0} onClick={() => moveUnifiedMediaItem(-1)}>↑</button>
+            <button type="button" className="wa-video__queue-step" title="Move selected item down in the mixed playlist" aria-label="Move selected media item down" disabled={activeUnifiedMediaIndex < 0 || activeUnifiedMediaIndex >= unifiedMediaItems.length - 1} onClick={() => moveUnifiedMediaItem(1)}>↓</button>
+          </>}
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
         {videoMode === 'visualizer' ? (
@@ -2581,8 +2604,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 });
               }}
               onEnded={() => {
-                if (unifiedMediaItems.length > 1) navigateUnifiedMediaQueue(1);
-                else setVideoIsPlaying(false);
+                if (repeat && videoElementRef.current) {
+                  videoElementRef.current.currentTime = 0;
+                  void videoElementRef.current.play().catch(() => setVideoIsPlaying(false));
+                } else if (autoAdvance && unifiedMediaItems.length > 1) {
+                  navigateUnifiedMediaQueue(1);
+                } else {
+                  setVideoIsPlaying(false);
+                }
               }}
               onError={() => {
                 setVideoAutoplayPending(false);

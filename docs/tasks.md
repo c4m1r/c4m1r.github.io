@@ -817,3 +817,12 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Audio and video playback are mutually exclusive. Video remains outside the Web Audio graph; the existing audio controller and analyser remain unchanged.
 - [x] `.wampack` restore uses one IndexedDB write transaction and rolls back imported records plus temporary Blob URLs if playlist publication fails after storage commit.
 - [x] Added safe scalar-only `.milk` import to Butterchurn. EEL expressions, custom waves/shapes and shaders remain explicitly unsupported; full MilkDrop conversion is still open.
+
+
+### 2026-11-25 — Winamp mixed queue editing and MilkDrop importer tests
+
+- [x] Mixed audio/video queue order can now be edited from the fourth-window toolbar using Move Up / Move Down. The selected item remains selected by stable media key when the list changes.
+- [x] Shuffle advances to a random different item in the mixed queue; Repeat and Auto Advance settings now apply to video end-of-playback as well as audio.
+- [x] Added automated tests for the scalar-only `.milk` importer, including non-mutation, case-insensitive values, EEL rejection, custom-section rejection, malformed and oversized inputs.
+- [ ] Full legacy MilkDrop conversion (EEL and MilkDrop 2 shader translation) remains open; the current safe importer intentionally rejects those constructs.
+- [ ] Browser acceptance of mixed queue reorder, shuffle/repeat, autoplay, touch and narrow toolbar remains open.
