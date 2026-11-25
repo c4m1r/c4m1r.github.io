@@ -287,7 +287,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       setTrackIndex(st.trackIndex);
       setIsPlaying(st.isPlaying);
       setCurrentTime(st.currentTime);
-      if (st.duration > 0) setDuration(st.duration);
+      setDuration(st.duration);
       setVolume(st.volume);
       setShuffle(st.shuffle);
       setAutoAdvance(st.autoAdvance);
@@ -800,52 +800,55 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     if (wa?.analyser) analyserRef.current = wa.analyser;
   }, []);
 
-  // Visualizer loop with real frequency data or dynamic simulation
+  // Sample the shared analyser at 30 FPS. The previous implementation published
+  // three React state updates on every display frame and simulated random audio
+  // when the analyser was unavailable, causing unnecessary full-player renders
+  // and showing activity that did not come from the actual signal.
   useEffect(() => {
     let active = true;
+    let lastPublishedAt = 0;
+    const frameInterval = 1000 / 30;
     const freqData = new Uint8Array(32);
     const timeData = new Uint8Array(64);
 
-    const updateVisualizer = () => {
+    const updateVisualizer = (timestamp: number) => {
       if (!active) return;
-      const analyser = analyserRef.current;
-      if (isPlaying) {
-        if (analyser && audioCtxRef.current?.state === 'running') {
+      if (timestamp - lastPublishedAt >= frameInterval) {
+        lastPublishedAt = timestamp;
+        const analyser = analyserRef.current;
+        if (isPlaying && analyser && audioCtxRef.current?.state === 'running') {
           analyser.getByteFrequencyData(freqData);
           analyser.getByteTimeDomainData(timeData);
-          setWaveform(Array.from({ length: 19 }, (_, i) => {
+          const nextWaveform = Array.from({ length: 19 }, (_, i) => {
             const sample = timeData[Math.round(i * (timeData.length - 1) / 18)] ?? 128;
             return 50 + (sample - 128) / 2.56;
-          }));
-          setBars(() => {
-            const nextBars = Array(19).fill(0).map((_, i) => {
-              const val = freqData[i] ?? 0;
-              return Math.min(100, Math.max(4, Math.round((val / 255) * 100)));
-            });
-            setPeaks((prevPeaks) =>
-              nextBars.map((nb, i) => Math.max(nb, (prevPeaks[i] ?? 0) - 1.5))
-            );
-            return nextBars;
           });
+          const nextBars = Array.from({ length: 19 }, (_, i) => {
+            const val = freqData[i] ?? 0;
+            return Math.min(100, Math.max(4, Math.round((val / 255) * 100)));
+          });
+          setWaveform(nextWaveform);
+          setBars(nextBars);
+          setPeaks((previousPeaks) =>
+            nextBars.map((bar, index) => Math.max(bar, (previousPeaks[index] ?? 0) - 1.5))
+          );
         } else {
-          // Synthetic spectrum and waveform keep the display alive without an active analyser.
-          setWaveform(Array.from({ length: 19 }, (_, i) => 50 + Math.sin(Date.now() / 95 + i * 0.72) * 34));
-          setBars((prev) => {
-            const nextBars = prev.map((_, i) => {
-              const spike = Math.random() < 0.25 ? Math.random() * 50 : 0;
-              const base = 25 + Math.sin(Date.now() / 150 + i * 0.4) * 35;
-              return Math.min(95, Math.max(6, base + spike));
-            });
-            setPeaks((prevPeaks) =>
-              nextBars.map((nb, i) => Math.max(nb, (prevPeaks[i] ?? 0) - 1.2))
-            );
-            return nextBars;
+          // No analyser means no trustworthy audio data. Keep the scene idle/decaying
+          // instead of fabricating a spectrum while audio is playing.
+          setBars((previousBars) => {
+            const nextBars = previousBars.map((bar) => Math.max(2, bar * 0.85));
+            return nextBars.every((bar, index) => bar === previousBars[index]) ? previousBars : nextBars;
           });
+          setPeaks((previousPeaks) => {
+            const nextPeaks = previousPeaks.map((peak) => Math.max(2, peak - 2));
+            return nextPeaks.every((peak, index) => peak === previousPeaks[index]) ? previousPeaks : nextPeaks;
+          });
+          if (!isPlaying) {
+            setWaveform((previousWaveform) =>
+              previousWaveform.every((sample) => sample === 50) ? previousWaveform : Array(19).fill(50)
+            );
+          }
         }
-      } else {
-        // Decay to zero when paused
-        setBars((prev) => prev.map((b) => Math.max(2, b * 0.85)));
-        setPeaks((prev) => prev.map((p) => Math.max(2, p - 2)));
       }
       rafRef.current = requestAnimationFrame(updateVisualizer);
     };
@@ -853,7 +856,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     rafRef.current = requestAnimationFrame(updateVisualizer);
     return () => {
       active = false;
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
   }, [isPlaying]);
 
@@ -1960,7 +1963,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         onPointerUp={handleVideoStagePointerUp}
         onDoubleClick={(event) => {
           const target = event.target as HTMLElement;
-          if (!target.closest('.wa-video__visualizer, .wa-video__screen')) return;
+          if (isVideoFullscreen || !target.closest('.wa-video__visualizer, .wa-video__screen')) return;
           event.preventDefault();
           enterVideoFullscreen();
         }}
