@@ -30,12 +30,19 @@ export interface ImportedWinampArchive {
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
+const CRC_TABLE = (() => {
+  const table = new Uint32Array(256);
+  for (let index = 0; index < 256; index += 1) {
+    let value = index;
+    for (let bit = 0; bit < 8; bit += 1) value = (value >>> 1) ^ (-(value & 1) & 0xedb88320);
+    table[index] = value >>> 0;
+  }
+  return table;
+})();
+
 function crc32(bytes: Uint8Array): number {
   let crc = 0xffffffff;
-  for (const byte of bytes) {
-    crc ^= byte;
-    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (-(crc & 1) & 0xedb88320);
-  }
+  for (const byte of bytes) crc = (crc >>> 8) ^ CRC_TABLE[(crc ^ byte) & 0xff];
   return (crc ^ 0xffffffff) >>> 0;
 }
 function u16(view: DataView, offset: number, value: number): void { view.setUint16(offset, value, true); }
@@ -133,10 +140,14 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
     if (view.getUint32(i, true) === 0x06054b50) { endOffset = i; break; }
   }
   if (endOffset < 0) throw new Error('Invalid ZIP archive: end record not found');
+  const diskNumber = view.getUint16(endOffset + 4, true);
+  const centralDisk = view.getUint16(endOffset + 6, true);
+  const diskCount = view.getUint16(endOffset + 8, true);
   const count = view.getUint16(endOffset + 10, true);
   const centralSize = view.getUint32(endOffset + 12, true);
   const centralOffset = view.getUint32(endOffset + 16, true);
-  if (!count || count > MAX_ENTRIES || centralOffset + centralSize > endOffset) throw new Error('Invalid ZIP directory or entry count');
+  if (diskNumber !== 0 || centralDisk !== 0 || diskCount !== count || !count || count > MAX_ENTRIES ||
+    centralOffset + centralSize !== endOffset) throw new Error('Invalid or multi-disk ZIP directory');
   const files = new Map<string, Uint8Array>();
   let cursor = centralOffset;
   let expandedTotal = 0;
@@ -156,8 +167,12 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
     if (!safePath(name) || files.has(name) || (flags & 1) || method !== 0 || compressedSize !== size) throw new Error('Unsupported, encrypted or unsafe ZIP entry');
     expandedTotal += size;
     if (expandedTotal > MAX_TOTAL_BYTES || localOffset + 30 > bytes.length || view.getUint32(localOffset, true) !== 0x04034b50) throw new Error('Archive exceeds limits or has an invalid local entry');
+    const localFlags = view.getUint16(localOffset + 6, true);
+    const localMethod = view.getUint16(localOffset + 8, true);
     const localNameLength = view.getUint16(localOffset + 26, true);
     const localExtraLength = view.getUint16(localOffset + 28, true);
+    const localName = decoder.decode(bytes.subarray(localOffset + 30, localOffset + 30 + localNameLength));
+    if (localFlags !== flags || localMethod !== method || localName !== name) throw new Error('ZIP local and central entry headers do not match');
     const dataStart = localOffset + 30 + localNameLength + localExtraLength;
     const dataEnd = dataStart + size;
     if (dataEnd > centralOffset) throw new Error('ZIP entry overlaps the central directory');
