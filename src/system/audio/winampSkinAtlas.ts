@@ -205,47 +205,75 @@ export async function extractWinampSkinSprite(
   }
 }
 
-/** Extract a named set of sprites, decoding each source sheet only once per batch. */
+/**
+ * Extract a named set of sprites, decoding each source sheet only once per batch.
+ * Optional Winamp sheets/regions vary between real-world .wsz archives, so a bad
+ * optional sprite is skipped and the renderer falls back to its built-in artwork.
+ * The main window sprite is required by default because it is the skin's visual base.
+ */
 export async function extractWinampSkinSprites(
   skin: WinampSkinArchive,
   spriteIds: Array<keyof typeof WINAMP_CLASSIC_SPRITES>,
+  requiredSpriteIds: Array<keyof typeof WINAMP_CLASSIC_SPRITES> = ['main'],
 ): Promise<Map<keyof typeof WINAMP_CLASSIC_SPRITES, Blob>> {
   if (typeof document === 'undefined' || typeof createImageBitmap === 'undefined') {
     throw new Error('Sprite extraction requires a browser with image bitmap support');
   }
 
+  const required = new Set(requiredSpriteIds);
   const bitmaps = new Map<string, ImageBitmap>();
+  const failedSheets = new Set<string>();
   const extracted = new Map<keyof typeof WINAMP_CLASSIC_SPRITES, Blob>();
   try {
     for (const id of spriteIds) {
       const definition = WINAMP_CLASSIC_SPRITES[id];
       const source = resolveSpriteAsset(skin.assets, id, definition.file);
-      if (!source) throw new Error(`Skin is missing required sprite sheet: ${definition.file}`);
+      if (!source) {
+        if (required.has(id)) throw new Error(`Skin is missing required sprite sheet: ${definition.file}`);
+        continue;
+      }
 
       const cacheKey = source.path.toLowerCase();
+      if (failedSheets.has(cacheKey)) {
+        if (required.has(id)) throw new Error(`Unable to decode required skin sheet: ${definition.file}`);
+        continue;
+      }
+
       let bitmap = bitmaps.get(cacheKey);
       if (!bitmap) {
-        bitmap = await createImageBitmap(source.blob);
-        bitmaps.set(cacheKey, bitmap);
+        try {
+          bitmap = await createImageBitmap(source.blob);
+          bitmaps.set(cacheKey, bitmap);
+        } catch {
+          failedSheets.add(cacheKey);
+          if (required.has(id)) throw new Error(`Unable to decode required skin sheet: ${definition.file}`);
+          continue;
+        }
       }
+
       const { x, y, width, height } = definition;
       if (x + width > bitmap.width || y + height > bitmap.height) {
-        throw new Error(`Sprite "${id}" is outside the bounds of ${definition.file}`);
+        if (required.has(id)) throw new Error(`Required sprite "${id}" is outside the bounds of ${definition.file}`);
+        continue;
       }
 
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
       const context = canvas.getContext('2d');
-      if (!context) throw new Error('Unable to create a canvas context for skin extraction');
+      if (!context) {
+        if (required.has(id)) throw new Error('Unable to create a canvas context for skin extraction');
+        continue;
+      }
       context.imageSmoothingEnabled = false;
       context.drawImage(bitmap, x, y, width, height, 0, 0, width, height);
-      const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((result) => {
-          if (result) resolve(result);
-          else reject(new Error(`Unable to encode sprite "${id}"`));
-        }, 'image/png');
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob((result) => resolve(result), 'image/png');
       });
+      if (!blob) {
+        if (required.has(id)) throw new Error(`Unable to encode required sprite "${id}"`);
+        continue;
+      }
       extracted.set(id, blob);
     }
     return extracted;
