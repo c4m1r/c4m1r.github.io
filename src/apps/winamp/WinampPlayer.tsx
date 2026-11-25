@@ -1294,6 +1294,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setVideoQueueIndex(index);
     setVideoUrl(item.url);
     setVideoFileName(item.name);
+    setVideoStatus('');
     setVideoIsPlaying(false);
     setVideoAutoplayPending(true);
   }, [videoQueue, videoQueueIndex]);
