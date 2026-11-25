@@ -271,3 +271,12 @@ Butterchurn остаётся отдельным режимом `MilkDrop (Butter
 Критическая часть — не сам Canvas, а аудиограф: контроллер уже пропускает сигнал через EQ → preamp → balance → analyser → destination. Нельзя повторно подключать аудиосигнал к destination и получать удвоенную громкость/фазовое наложение. Перед кодом требуется проверить точный `connectAudio` контракт установленной версии Butterchurn. Если библиотеке нужен собственный анализатор, допустима отдельная silent tap-ветка внутри того же AudioContext; основной audible path остаётся единственным и неизменным.
 
 Проверки до статуса Verified: WebGL2 fallback/context loss, resize/fullscreen reuse, disconnect собственных tap nodes, отсутствие второго AudioContext/HTMLAudioElement, локальные presets, lazy bundle и 60-FPS профиль на high-DPI. Подробные acceptance пункты находятся в `docs/tasks.md`.
+## 12. Реализация .wampack — первая версия
+
+В Playlist → MISC добавлены Backup local library и Restore local library. Архив строится из IndexedDB Blob records и текущего порядка playlist; временные blob URL не сериализуются. Manifest сохраняет track metadata, исходное имя файла, MIME type, размер и lastModified; одинаковый локальный asset, встречающийся повторно, включается в ZIP один раз. HTTP(S) playlist items сохраняются как URL references без скачивания удалённого контента.
+
+ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополнительной зависимости. Reader принимает только STORE entries и до записи в IndexedDB проверяет EOCD/central directory, локальные заголовки, CRC, пути, дубликаты, предел 512 MB / 1002 entries / 4 MB manifest, ссылки на отсутствующие assets и неиспользуемые payload files. Imported blobs записываются одним IndexedDB read-write transaction, после чего для player создаются новые object URLs.
+
+Ограничения первой версии: нет DEFLATE, split ZIP, ZIP64 и автоматического объединения с уже имеющимися одинаковыми файлами. Большие архивы обрабатываются в памяти; размер ограничен 512 MB. Browser round-trip и malformed archive fixtures ещё не прогнаны, поэтому функция не отмечается как browser-verified.
+
+Файлы: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
