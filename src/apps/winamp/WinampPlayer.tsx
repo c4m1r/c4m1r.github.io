@@ -68,7 +68,7 @@ type FourthVisualizerMode =
 const fourthVisualizerPresets: Partial<Record<FourthVisualizerMode, readonly string[]>> = {
   AVS: ['Scope', 'Feedback Tunnel', 'Rotating Geometry', 'Kaleidoscope'],
   MilkDrop: ['Geiss Flow', 'Fractal Flame', 'Waveform Tunnel', 'Psychedelic Swirl'],
-  'MilkDrop (Butterchurn)': ['Preset 1', 'Preset 2', 'Preset 3', 'Preset 4'],
+  'MilkDrop (Butterchurn)': ['Local preset pack'],
 };
 
 function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peaks: number[], waveform: number[], presetIndex = 0, idPrefix = 'wa-fourth-viz') {
@@ -2447,7 +2447,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               {group.modes.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
             </optgroup>)}
           </select>}
-          {videoMode === 'visualizer' && fourthVisualizerPresets[fourthVisualizerMode] && <button type="button" className="wa-video__preset" title="Next named preset" onClick={() => setFourthVisualizerPresetIndex((index) => (index + 1) % fourthVisualizerPresets[fourthVisualizerMode]!.length)}>PSET</button>}
+          {videoMode === 'visualizer' && fourthVisualizerPresets[fourthVisualizerMode] && <button type="button" className="wa-video__preset" title="Next named preset" onClick={() => setFourthVisualizerPresetIndex((index) => fourthVisualizerMode === 'MilkDrop (Butterchurn)' ? index + 1 : (index + 1) % fourthVisualizerPresets[fourthVisualizerMode]!.length)}>PSET</button>}
           {videoMode === 'visualizer' && <button type="button" className="wa-video__random" title="Random mode in current family" onClick={() => {
             const group = fourthVisualizerGroups.find((item) => (item.modes as readonly string[]).includes(fourthVisualizerMode));
             const groupModes = group?.modes as readonly FourthVisualizerMode[] | undefined;
