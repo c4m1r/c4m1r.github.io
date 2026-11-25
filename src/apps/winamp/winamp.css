@@ -9683,3 +9683,17 @@
   text-shadow: 0 0 5px #167ab0;
   pointer-events: none;
 }
+
+
+/* Optional low-profile Playlist mini visualizer. */
+.wa-shell .wa-pl__mini-visualizer {
+  display: block;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 12px;
+  margin-left: 4px;
+  overflow: hidden;
+  fill: #58e36d;
+  filter: drop-shadow(0 0 2px rgba(65, 255, 100, .45));
+  pointer-events: none;
+}
