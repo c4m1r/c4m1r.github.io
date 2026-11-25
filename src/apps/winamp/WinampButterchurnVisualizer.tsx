@@ -236,7 +236,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       return;
     }
     try {
-      const isMilkFile = /\\.milk$/i.test(file.name);
+      const isMilkFile = /\.milk$/i.test(file.name);
       const rawText = await file.text();
       const parsed: unknown = isMilkFile
         ? convertSimpleMilkPreset(rawText, runtime.presets[runtime.presetNames[0]])
@@ -244,7 +244,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
         throw new Error('Preset must be a Butterchurn JSON object or a supported scalar-only MilkDrop .milk file');
       }
-      const baseName = file.name.replace(/\\.(json|milk)$/i, '').trim().slice(0, 80) || 'Imported preset';
+      const baseName = file.name.replace(/\.(json|milk)$/i, '').trim().slice(0, 80) || 'Imported preset';
       let name = baseName;
       let suffix = 2;
       while (runtime.presets[name]) name = `${baseName} (${suffix++})`;
