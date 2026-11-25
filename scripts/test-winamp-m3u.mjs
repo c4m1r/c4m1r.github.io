@@ -37,6 +37,20 @@ test('skips relative paths and transient or unsupported URL schemes', () => {
   assert.equal(parsed.tracks[0].title, 'valid.mp3');
 });
 
+test('exports unknown or malformed durations as -1 instead of normalizing invalid time values', () => {
+  const result = createM3uPlaylist([
+    { id: 'empty-seconds', title: 'Empty seconds', artist: 'Artist', durationLabel: '03:', src: 'https://example.com/a.mp3' },
+    { id: 'overflow-seconds', title: 'Overflow seconds', artist: 'Artist', durationLabel: '03:99', src: 'https://example.com/b.mp3' },
+    { id: 'unknown', title: 'Unknown', artist: 'Artist', durationLabel: '—', src: 'https://example.com/c.mp3' },
+    { id: 'valid', title: 'Valid', artist: 'Artist', durationLabel: '123:05', src: 'https://example.com/d.mp3' },
+  ]);
+  assert.equal(result.skippedEntries, 0);
+  assert.match(result.content, /#EXTINF:-1,Artist - Empty seconds/);
+  assert.match(result.content, /#EXTINF:-1,Artist - Overflow seconds/);
+  assert.match(result.content, /#EXTINF:-1,Artist - Unknown/);
+  assert.match(result.content, /#EXTINF:7385,Artist - Valid/);
+});
+
 test('rejects HLS manifests instead of treating segments as playlist tracks', () => {
   assert.throws(() => parseM3uPlaylist('#EXTM3U\n#EXT-X-VERSION:3\n#EXTINF:10,\nsegment.ts'), /HLS streaming manifests are not supported/i);
 });
