@@ -8274,6 +8274,20 @@
   color: #f5e45c;
   border-color: #d8c94b;
 }
+.wa-shell .wa-video__toolbar .wa-video__queue-step {
+  min-width: 19px;
+  padding-inline: 3px;
+  font-weight: 700;
+}
+.wa-shell .wa-video__toolbar .wa-video__queue-step:disabled {
+  opacity: .38;
+  cursor: default;
+  filter: grayscale(1);
+}
+.wa-shell .wa-video__toolbar .wa-video__queue-step:focus-visible {
+  outline: 1px solid #72e8ff;
+  outline-offset: 1px;
+}
 .wa-shell .wa-video__queue-select {
   flex: 0 1 112px;
   min-width: 58px;
