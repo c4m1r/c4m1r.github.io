@@ -1432,8 +1432,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
     selectUnifiedMediaItem(nextIndex);
   }, [unifiedMediaItems, videoMode, videoUrl, shuffle, selectUnifiedMediaItem]);
-  unifiedNavigationRef.current = navigateUnifiedMediaQueue;
-
   const moveUnifiedMediaItem = useCallback((direction: -1 | 1) => {
     if (activeUnifiedMediaIndex < 0 || activeUnifiedMediaIndex >= unifiedMediaItems.length) return;
     const nextIndex = activeUnifiedMediaIndex + direction;
@@ -1444,6 +1442,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [activeUnifiedMediaIndex, unifiedMediaItems]);
 
   useEffect(() => {
+    unifiedNavigationRef.current = navigateUnifiedMediaQueue;
     winampController.setTrackEndedHandler(() => navigateUnifiedMediaQueue(1));
     return () => winampController.setTrackEndedHandler(null);
   }, [navigateUnifiedMediaQueue]);
