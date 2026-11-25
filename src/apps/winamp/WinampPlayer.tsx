@@ -842,14 +842,35 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const setVideoWindowVisible = (visible: boolean) => {
     if (visible === showVideo) return;
-    if (!visible && videoMode === 'video') {
-      videoElementRef.current?.pause();
+    if (!visible) {
+      // Closing the fourth module is a real unload, not merely a visual hide.
+      // Detach the media element before revoking its blob URLs so the browser can
+      // release its decoder, buffered frames and file handles immediately.
+      const videoElement = videoElementRef.current;
+      if (videoElement) {
+        videoElement.pause();
+        videoElement.removeAttribute('src');
+        videoElement.load();
+      }
+      const urlsToRelease = [...videoObjectUrlsRef.current, ...pendingVideoObjectUrlsRef.current];
+      videoObjectUrlsRef.current = [];
+      pendingVideoObjectUrlsRef.current = [];
+      urlsToRelease.forEach((url) => URL.revokeObjectURL(url));
+      setVideoQueue([]);
+      setVideoQueueIndex(0);
+      setVideoUrl('');
+      setVideoFileName('');
+      setVideoStatus('');
       setVideoIsPlaying(false);
       setVideoAutoplayPending(false);
-    }
-    if (!visible && isVideoFullscreen) {
-      if (document.fullscreenElement === videoWindowRef.current && document.exitFullscreen) void document.exitFullscreen().catch(() => undefined);
-      setIsVideoFullscreen(false);
+      setVideoShade(false);
+      setVisualizerAutoCycle(false);
+      if (isVideoFullscreen) {
+        if (document.fullscreenElement === videoWindowRef.current && document.exitFullscreen) {
+          void document.exitFullscreen().catch(() => undefined);
+        }
+        setIsVideoFullscreen(false);
+      }
     }
     if (!detachedWindows.includes('video')) {
       const offset = visible ? 275 : -275;
@@ -862,6 +883,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           ? { x: current.main.x, y: current.main.y }
           : current.video,
       }));
+    }
+    if (visible) {
+      // Reopen in a lightweight idle state; media and visualizer resources are
+      // initialized only when the user selects Video or a visualization mode.
+      setVideoMode('visualizer');
+      setFourthVisualizerPresetIndex(0);
     }
     setShowVideo(visible);
   };
