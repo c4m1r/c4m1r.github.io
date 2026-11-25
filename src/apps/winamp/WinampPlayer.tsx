@@ -1170,7 +1170,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const unifiedMediaItems = useMemo(() => {
     const items = [
       ...playlist.map((item, audioIndex) => ({ kind: 'audio' as const, key: `audio:${item.id}`, label: `♫ ${item.artist} — ${item.title}`, audioIndex })),
-      ...videoQueue.map((item, videoIndex) => ({ kind: 'video' as const, key: `video:${item.url}`, label: `▣ ${item.name}`, videoIndex, url: item.url, name: item.name })),
+      ...videoQueue.map((item) => ({ kind: 'video' as const, key: `video:${item.url}`, label: `▣ ${item.name}`, url: item.url, name: item.name })),
     ];
     const order = new Map(unifiedMediaOrder.map((key, index) => [key, index]));
     return items.sort((a, b) => (order.get(a.key) ?? Number.MAX_SAFE_INTEGER) - (order.get(b.key) ?? Number.MAX_SAFE_INTEGER));
@@ -1955,7 +1955,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             {/* Bottom Transport Buttons & Mini Album Art */}
             <div className="wa-transport-row">
               <div className="wa-buttons-group">
-                <button type="button" className="wa-btn-transport" onClick={previous} title="Previous (Z)" aria-keyshortcuts="Z">
+                <button type="button" className="wa-btn-transport" onClick={() => navigateUnifiedMediaQueue(-1)} title="Previous media item (Z)" aria-keyshortcuts="Z">
                   {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.previous} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.previousPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--previous" aria-hidden="true">|◀◀</span>}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => void play()} title="Play (X)" aria-keyshortcuts="X">
@@ -1967,7 +1967,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <button type="button" className="wa-btn-transport" onClick={stop} title="Stop (V)" aria-keyshortcuts="V">
                   {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.stop} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.stopPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--stop" aria-hidden="true">■</span>}
                 </button>
-                <button type="button" className="wa-btn-transport" onClick={next} title="Next (B)" aria-keyshortcuts="B">
+                <button type="button" className="wa-btn-transport" onClick={() => navigateUnifiedMediaQueue(1)} title="Next media item (B)" aria-keyshortcuts="B">
                   {activeSkin ? <><img className="wa-skin-sprite-default" src={activeSkin.sprites.next} alt="" draggable={false} /><img className="wa-skin-sprite-pressed" src={activeSkin.sprites.nextPressed} alt="" draggable={false} /></> : <span className="wa-transport-glyph wa-transport-glyph--next" aria-hidden="true">▶▶|</span>}
                 </button>
                 <button type="button" className="wa-btn-transport" onClick={() => seek(0)} title="Eject">
