@@ -3,7 +3,7 @@
  * It never evaluates EEL or shader source; only known baseVals are copied.
  */
 export type MilkPresetObject = Record<string, unknown>;
-const UNSUPPORTED_CODE_KEY = /^(per_frame|per_pixel|wavecode|shapecode|wave_\d+_|shape_\\d+_|warp_shader|comp_shader|shader_)/i;
+const UNSUPPORTED_CODE_KEY = /^(per_frame|per_pixel|wavecode|shapecode|wave_\d+_|shape_\d+_|warp_shader|comp_shader|shader_)/i;
 
 export function convertSimpleMilkPreset(text: string, basePreset: MilkPresetObject): MilkPresetObject {
   if (text.length > 2 * 1024 * 1024) throw new Error('MilkDrop preset exceeds the 2 MB import limit');
