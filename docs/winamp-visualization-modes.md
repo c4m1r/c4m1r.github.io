@@ -122,3 +122,13 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 
 - Winamp Help Center: Winamp desktop player lists AVS and MilkDrop 2 as visualization plug-ins and describes classic analyzer options.
 - Windows Media Player history: Alchemy, Bars and Waves, Battery are the later core set; Ambience, Particle, Plenoptic, Spikes and Musical Colors belong to earlier WMP generations.
+
+
+## MilkDrop .milk import — HLSL translation pass (2026-11-26)
+
+- Added lazy HLSL-to-GLSL conversion for numbered MilkDrop 2 \`warp_N\` and \`comp_N\` shader blocks using the MIT-licensed upstream \`hlslparser-js\` Emscripten/WASM parser and the upstream MIT \`milkdrop-preset-utils\` shader preparation/cleanup helpers.
+- The parser is dynamically imported only when a .milk file actually contains a custom shader; ordinary presets do not pay its startup cost.
+- Converted shader stages are passed to Butterchurn 2.6.7 as GLSL \`warp\` / \`comp\` shader bodies. Missing or failed stages use the local fallback and produce an explicit warning.
+- HLSL conversion is not claimed as universal compatibility: unsupported HLSL constructs and Butterchurn's narrower shader runtime can still reject or visually alter individual presets.
+- Added fixture coverage for numbered, out-of-order shader lines, both shader stages, malformed-shader fallback, and conversion summaries.
+- Browser/GPU verification with real-world .milk files and performance measurements remain pending. The source and CI test suite must pass before this pass is considered complete.

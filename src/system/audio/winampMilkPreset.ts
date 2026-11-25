@@ -4,6 +4,8 @@
  * the pinned Butterchurn 2.6.7 runtime. Custom HLSL shaders remain unsupported.
  */
 export type MilkPresetObject = Record<string, unknown>;
+export type MilkdropShaderStage = 'warp' | 'comp';
+export type MilkdropShaderConverter = (source: string, stage: MilkdropShaderStage) => Promise<string>;
 export type MilkdropEelParser = {
   convert_basic_preset(version: number, init: string, frame: string, pixel: string): { perFrameInitEQs?: string | null; perFrameEQs?: string | null; perPixelEQs?: string | null };
   make_wave_map(version: number, input: { init_eqs_str: string; frame_eqs_str: string; point_eqs_str: string }): { perFrameInitEQs?: string | null; perFrameEQs?: string | null; perPointEQs?: string | null };
@@ -13,7 +15,7 @@ export type MilkdropEelParser = {
 export type MilkPresetConversion = {
   preset: MilkPresetObject;
   warnings: string[];
-  converted: { frameEquations: number; pixelEquations: number; customWaves: number; customShapes: number };
+  converted: { frameEquations: number; pixelEquations: number; customWaves: number; customShapes: number; shaderStages: number };
 };
 
 const EQUATION_KEYS = new Map([
@@ -48,6 +50,35 @@ const MAIN_FIELD_ALIASES: Record<string, string> = {
   fouterborderb: 'ob_b', fouterbordera: 'ob_a', finnerbordersize: 'ib_size',
   finnerborderr: 'ib_r', finnerborderg: 'ib_g', finnerborderb: 'ib_b', finnerbordera: 'ib_a',
 };
+
+const FALLBACK_WARP_SHADER = 'shader_body {\nret = texture2D(sampler_main, uv).rgb;\nret -= 0.004;\n}\n';
+const FALLBACK_COMP_SHADER = 'shader_body {\nret = texture2D(sampler_main, uv).rgb;\nret *= hue_shader;\n}\n';
+
+function collectShaderSource(lines: Map<number, string>): string {
+  return [...lines.entries()].sort(([a], [b]) => a - b)
+    .map(([, value]) => value.replace(/^\x60+/, '').trimEnd())
+    .join('\n').trim();
+}
+
+async function convertMilkdropShader(
+  source: string,
+  stage: MilkdropShaderStage,
+  converterOverride?: MilkdropShaderConverter,
+): Promise<string> {
+  if (converterOverride) return converterOverride(source, stage);
+  const [{ convertHLSLShader }, { prepareShader, processUnOptimizedShader }] = await Promise.all([
+    import('hlslparser-js'),
+    import('milkdrop-preset-utils'),
+  ]);
+  const entryName = 'milkdrop_shader_entry';
+  const prepared = prepareShader(source).replace('float4 shader_body (', \`float4 \${entryName} (\`);
+  const translated = await convertHLSLShader(prepared, entryName, 'fs');
+  const processed = processUnOptimizedShader(translated);
+  if (typeof processed !== 'string' || !/shader_body\s*\{/.test(processed)) {
+    throw new Error('HLSL parser returned an invalid Butterchurn shader');
+  }
+  return processed;
+}
 
 function parseNumeric(value: string): number | null {
   const normalized = value.trim();
@@ -121,6 +152,7 @@ export async function convertMilkPreset(
   text: string,
   basePreset: MilkPresetObject,
   parserOverride?: MilkdropEelParser,
+  shaderConverterOverride?: MilkdropShaderConverter,
 ): Promise<MilkPresetConversion> {
   if (text.length > 2 * 1024 * 1024) throw new Error('MilkDrop preset exceeds the 2 MB import limit');
   const source = text.replace(/^\uFEFF/, '');
@@ -158,8 +190,8 @@ export async function convertMilkPreset(
     shapeFrame: new Map<number, Map<number, string>>(),
   };
   const warnings = new Set<string>();
+  const shaderLines = { warp: new Map<number, string>(), comp: new Map<number, string>() };
   const metadata = /^(rating|author|szauthor|title|szpresetname|description|szdescription|presetname|presetauthor|presetdescription|version|milkdrop_preset_version|psversion|psversion_comp|psversion_warp)$/i;
-  const shader = /^(warp|comp)(?:_shader|_\d+|$)/i;
 
   for (const rawLine of body.split(/\r?\n/)) {
     const line = rawLine.trim();
@@ -169,8 +201,10 @@ export async function convertMilkPreset(
     const key = line.slice(0, separator).trim();
     const value = line.slice(separator + 1).trim();
     if (!value) continue;
-    if (shader.test(key)) {
-      warnings.add('Custom MilkDrop 2 warp/composite shaders are not executed by Butterchurn; Butterchurn feedback rendering will be used.');
+    const shaderLine = key.match(/^(warp|comp)_(\d+)$/i);
+    if (shaderLine) {
+      const stage = shaderLine[1].toLowerCase() as MilkdropShaderStage;
+      shaderLines[stage].set(Number(shaderLine[2]), value);
       continue;
     }
 
@@ -272,10 +306,24 @@ export async function convertMilkPreset(
     wave.point_eqs_str = (converted.perPointEQs ?? '').trim();
   });
 
-  // Butterchurn expects GLSL strings even when a MilkDrop preset has no
-  // custom shader. Use the runtime's canonical feedback shaders as fallback.
-  preset.warp = 'shader_body {\nret = texture2D(sampler_main, uv).rgb;\nret -= 0.004;\n}\n';
-  preset.comp = 'shader_body {\nret = texture2D(sampler_main, uv).rgb;\nret *= hue_shader;\n}\n';
+  // Butterchurn 2.6.7 consumes GLSL shader bodies. Translate MilkDrop 2
+  // HLSL lazily so scalar-only imports do not pay the WASM parser startup cost.
+  let shaderStages = 0;
+  for (const stage of ['warp', 'comp'] as const) {
+    const source = collectShaderSource(shaderLines[stage]);
+    if (!source) continue;
+    try {
+      const converted = await convertMilkdropShader(source, stage, shaderConverterOverride);
+      preset[stage] = converted;
+      shaderStages += 1;
+    } catch (error) {
+      warnings.add(\`MilkDrop 2 \${stage} shader could not be translated: \${error instanceof Error ? error.message : 'unknown parser error'}; Butterchurn fallback shader is used.\`);
+    }
+  }
+  preset.warp = shaderLines.warp.size && shaderStages > 0 && typeof preset.warp === 'string'
+    ? preset.warp : FALLBACK_WARP_SHADER;
+  preset.comp = shaderLines.comp.size && shaderStages > 0 && typeof preset.comp === 'string'
+    ? preset.comp : FALLBACK_COMP_SHADER;
   delete preset.warp_hlsl;
   delete preset.comp_hlsl;
   const frameEquations = programs.init.size + programs.frame.size;
@@ -293,13 +341,14 @@ export async function convertMilkPreset(
   if (!frameEquations && !pixelEquations && !customWaves && !customShapes) {
     warnings.add('This preset contains no EEL equations or custom wave/shape programs; only mapped scalar parameters were imported.');
   }
-  return { preset, warnings: [...warnings], converted: { frameEquations, pixelEquations, customWaves, customShapes } };
+  return { preset, warnings: [...warnings], converted: { frameEquations, pixelEquations, customWaves, customShapes, shaderStages } };
 }
 
 export async function convertSimpleMilkPreset(
   text: string,
   basePreset: MilkPresetObject,
   parserOverride?: MilkdropEelParser,
+  shaderConverterOverride?: MilkdropShaderConverter,
 ): Promise<MilkPresetObject> {
-  return (await convertMilkPreset(text, basePreset, parserOverride)).preset;
+  return (await convertMilkPreset(text, basePreset, parserOverride, shaderConverterOverride)).preset;
 }

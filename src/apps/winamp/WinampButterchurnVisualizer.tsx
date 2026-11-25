@@ -255,7 +255,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       if (isMilkFile) {
         const conversion = await convertMilkPreset(rawText, runtime.presets[runtime.presetNames[0]]);
         importWarnings = conversion.warnings;
-        importSummary = `EEL2: ${conversion.converted.frameEquations} frame/init, ${conversion.converted.pixelEquations} pixel, ${conversion.converted.customWaves} waves, ${conversion.converted.customShapes} shapes`;
+        importSummary = `EEL2: ${conversion.converted.frameEquations} frame/init, ${conversion.converted.pixelEquations} pixel, ${conversion.converted.customWaves} waves, ${conversion.converted.customShapes} shapes · HLSL: ${conversion.converted.shaderStages}/2 shaders`;
         parsed = conversion.preset;
       } else {
         parsed = JSON.parse(rawText);
@@ -304,7 +304,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       <canvas ref={canvasRef} aria-label="Genuine MilkDrop visualization" />
       <input ref={presetFileRef} type="file" accept=".json,.milk,application/json,text/plain" hidden onChange={(event) => { void importPresetFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
       <div className="wa-butterchurn__tools">
-        <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import Butterchurn JSON or a scalar-only legacy MilkDrop .milk preset">LOAD PRESET</button>
+        <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import Butterchurn JSON or MilkDrop .milk preset (EEL2 and supported HLSL shaders)">LOAD PRESET</button>
         <button type="button" className="wa-butterchurn__import" onClick={advancePreset} title="Advance through bundled and imported presets">NEXT PRESET</button>
       </div>
       {status && <div className="wa-butterchurn__status" role="status" aria-live="polite">{status}</div>}

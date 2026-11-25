@@ -16,7 +16,13 @@ const basePreset = {
   shapes: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, sides: 4, x: 0.5, y: 0.5 }, init_eqs_str: 'seed-shape-init();', frame_eqs_str: 'seed-shape-frame();' })),
   waves: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, samples: 512, sep: 0, scaling: 1, smoothing: 0.5, r: 1, g: 1, b: 1, a: 1 }, init_eqs_str: 'seed-wave-init();', frame_eqs_str: 'seed-wave-frame();', point_eqs_str: 'seed-wave-point();' })),
 };
-const convert = (text) => convertMilkPreset(text, basePreset, milkdropParser);
+const fakeShaderConverter = async (source, stage) => {
+  if (!source.includes('shader_body') || !source.includes('{') || !source.includes('}')) {
+    throw new Error('fixture shader is malformed');
+  }
+  return \`shader_body { ret = vec3(\${stage === 'warp' ? '0.5' : '1.0'}); }\`;
+};
+const convert = (text) => convertMilkPreset(text, basePreset, milkdropParser, fakeShaderConverter);
 
 test('converts MilkDrop scalar aliases without mutating or inheriting Butterchurn seed values', async () => {
   const result = await convert('[preset00]\nfDecay=0.91\nfZoom=1.25\nnWaveMode=7\nfVideoEchoZoom=1.4\nfRating=4.5\nfWaveParam=0.7\nbMaximizeWaveColor=1\n');
@@ -72,11 +78,20 @@ test('transpiles custom shape init/frame EEL and legacy shapecode fields', async
   assert.equal(result.converted.customShapes, 1);
 });
 
-test('reports MilkDrop 2 shaders and unmapped fields instead of silently discarding them', async () => {
+test('reports malformed MilkDrop 2 shaders and unmapped fields instead of silently discarding them', async () => {
   const result = await convert('[preset00]\nzoom=1.2\nwarp_1=shader_body\nunknown_future_field=1\n');
-  assert.ok(result.warnings.some((warning) => /shaders are not executed/i.test(warning)));
+  assert.ok(result.warnings.some((warning) => /warp shader could not be translated/i.test(warning)));
   assert.ok(result.warnings.some((warning) => /Unmapped MilkDrop field/i.test(warning)));
   assert.equal(result.preset.baseVals.zoom, 1.2);
+});
+
+
+test('translates numbered MilkDrop 2 warp and composite HLSL shader blocks', async () => {
+  const result = await convert('[preset00]\nwarp_2=\x60{\nwarp_1=\x60shader_body\nwarp_3=\x60ret = tex2D(sampler_main, uv).rgb;\nwarp_4=\x60}\ncomp_1=\x60shader_body\ncomp_2=\x60{\ncomp_3=\x60ret = tex2D(sampler_main, uv).rgb;\ncomp_4=\x60}\n');
+  assert.match(result.preset.warp, /vec3\(0\.5\)/);
+  assert.match(result.preset.comp, /vec3\(1\.0\)/);
+  assert.equal(result.converted.shaderStages, 2);
+  assert.equal(result.warnings.some((warning) => /could not be translated/i.test(warning)), false);
 });
 
 test('warns when only scalar parameters can be converted and keeps the async compatibility helper', async () => {
