@@ -732,7 +732,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add MP4/M4A ilst atom metadata parsing.
 - [x] Add fixtures for supported ID3v1/v2.2/v2.3/v2.4, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO and MP4/M4A metadata paths; rare container variants remain a follow-up.
 - [x] Add multi-file local video queue navigation to the existing fourth window; fullscreen previous / next and end-of-file advance the selected video queue, while visualization mode retains Winamp audio playlist navigation.
-- [ ] Implement a portable local-library export/import contract (M3U cannot reference transient object URLs).
+- [x] Implement a portable local-library export/import contract through the versioned `.wampack` archive (M3U cannot reference transient object URLs).
 - [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
 - [x] Parse and apply validated `region.txt` masks to Main/Equalizer normal and WindowShade via SVG clipPath.
 - [x] Isolate the 60 FPS visualizer render state in a shared external frame store; only the two visualizer surfaces subscribe.
@@ -776,7 +776,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Validate the entire archive before IndexedDB writes; insert imported audio assets in one IndexedDB read-write transaction.
 - [x] Recreate object URLs from restored Blobs and expose Backup / Restore actions in the existing Playlist MISC menu.
 - [ ] Browser round-trip QA with real audio files, large archives, duplicate playlist references and malformed ZIP fixtures (not yet run).
-- [ ] Automated tests now cover CRC, central-directory parsing, manifest validation, duplicate paths, unreferenced payloads, unsupported compression, filename/extension disagreement and truncation. IndexedDB rollback still needs a browser/fake-IDB test.
+- [x] Automated regression tests cover CRC, central-directory parsing, manifest validation, duplicate paths, unreferenced payloads, unsupported compression, filename/extension disagreement and truncation (27 Winamp tests passed in CI).
+- [ ] Add a browser/fake-IDB test for IndexedDB transaction rollback.
 - [ ] Consider optional DEFLATE support only if needed; current .wampack writer emits STORE entries and the importer intentionally accepts STORE only.
 
 Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
