@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "verify": "node scripts/verify-contexts.js",
+    "test:winamp-archive": "node --test scripts/test-winamp-archive.mjs",
     "clean": "node scripts/clean-dist.js",
     "build:clean": "npm run clean && npm run build",
     "audit:icons": "node scripts/audit-theme-icons.js"
