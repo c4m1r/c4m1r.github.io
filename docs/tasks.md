@@ -729,7 +729,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Read local MP3 ID3v2.2/v2.3/v2.4 and ID3v1 title/artist/album/track number; persist tags with the IndexedDB library.
 - [x] Add HTML Playlist export for HTTP(S) tracks; do not emit ephemeral `blob:` URLs as portable links.
 - [x] Expand local metadata parsing to FLAC Vorbis comments, Ogg Vorbis/OpusTags and WAV INFO.
-- [ ] Add ID3/Vorbis/WAV parser fixtures and add MP4/M4A atom metadata support.
+- [x] Add MP4/M4A ilst atom metadata parsing.
+- [ ] Add ID3/Vorbis/WAV/MP4 parser fixtures and cover rare container variants.
 - [ ] Implement a portable local-library export/import contract (M3U cannot reference transient object URLs).
 - [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
 - [ ] Apply validated `region.txt` window shapes.
