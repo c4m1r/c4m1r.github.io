@@ -9616,3 +9616,34 @@
   overflow: hidden;
   pointer-events: none;
 }
+
+/* Genuine Butterchurn MilkDrop runs only while its mode is mounted. */
+.wa-shell .wa-video__visualizer--milkdrop-butterchurn {
+  background: radial-gradient(ellipse at center, #102b48 0%, #030712 72%, #010205 100%);
+}
+.wa-video__visualizer--milkdrop-butterchurn .wa-butterchurn {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #02040a;
+}
+.wa-video__visualizer--milkdrop-butterchurn .wa-butterchurn canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.wa-video__visualizer--milkdrop-butterchurn .wa-butterchurn__status {
+  position: absolute;
+  inset: 50% 12px auto;
+  transform: translateY(-50%);
+  color: #9bdfff;
+  font: 9px/1.5 monospace;
+  letter-spacing: .7px;
+  text-align: center;
+  text-shadow: 0 0 8px #168bc7;
+  pointer-events: none;
+}
+.wa-shell .wa-video__visualizer--milkdrop-butterchurn .wa-video__visualizer-label,
+.wa-shell .wa-video__visualizer--milkdrop-butterchurn .wa-video__mode {
+  z-index: 2;
+}
