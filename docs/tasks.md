@@ -766,3 +766,16 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [ ] Handle WebGL2 unavailable/context lost, lazy-import failure, resize, mode switch, fullscreen exit and component unmount without breaking playback or existing modes.
 - [ ] Keep preset data local; support preset cycling and transition; avoid eagerly loading the full preset bundle on initial Winamp render.
 - [ ] Profile GPU/CPU and memory at 60 FPS on high-DPI displays. If Butterchurn cannot sustain the target, throttle only that renderer without changing the 60 FPS publication rate of existing visualizers.
+### Winamp — .wampack portable local-library archive (2026-11-25)
+- [x] Add a versioned ZIP-based .wampack manifest with ordered playlist metadata and archive-relative audio asset references.
+- [x] Export local audio bytes from IndexedDB records, not ephemeral blob URLs; repeated references to the same local track reuse one archive asset.
+- [x] Include HTTP(S) playlist entries as URL references; do not embed or fetch remote media.
+- [x] Add ZIP writer with UTF-8 filenames, CRC32 and uncompressed STORE entries; no compression dependency or CDN.
+- [x] Add bounded archive reader: entry-count/expanded-size limits, manifest limit, path traversal rejection, duplicate-path rejection, encrypted/unsupported compression rejection, CRC validation and missing/unreferenced asset checks.
+- [x] Validate the entire archive before IndexedDB writes; insert imported audio assets in one IndexedDB read-write transaction.
+- [x] Recreate object URLs from restored Blobs and expose Backup / Restore actions in the existing Playlist MISC menu.
+- [ ] Browser round-trip QA with real audio files, large archives, duplicate playlist references and malformed ZIP fixtures.
+- [ ] Add automated unit tests for CRC, central-directory parsing, manifest validation and IndexedDB rollback.
+- [ ] Consider optional DEFLATE support only if needed; current .wampack writer emits STORE entries and the importer intentionally accepts STORE only.
+
+Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
