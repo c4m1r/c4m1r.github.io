@@ -22,7 +22,8 @@ test('converts MilkDrop scalar aliases without mutating Butterchurn base preset'
   assert.equal(result.preset.baseVals.zoom, 1.25);
   assert.equal(result.preset.baseVals.wave_mode, 7);
   assert.equal(result.preset.baseVals.echo_zoom, 1.4);
-  assert.equal(result.preset.baseVals.seed_only, undefined);\n  assert.equal(basePreset.baseVals.zoom, 9);
+  assert.equal(result.preset.baseVals.seed_only, undefined);
+  assert.equal(basePreset.baseVals.zoom, 9);
   assert.deepEqual(result.warnings, ['This preset contains no EEL equations or custom wave/shape programs; only mapped scalar parameters were imported.']);
 });
 
