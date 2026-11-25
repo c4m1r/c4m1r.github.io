@@ -743,7 +743,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Pause the shared visualizer RAF loop while the document is backgrounded; resume one loop on visibility return and keep one controller/visibility subscription across both visualizer surfaces.
 - [x] Scope fourth-window SVG gradient IDs to the mounted visualizer instance to prevent cross-instance resource collisions.
 - [x] Treat closing the fourth Video / Visualization module as a full unload: detach and reset the media element, revoke active and pending local video object URLs, clear the local queue and filename, stop auto-cycle, and unmount the visualizer subtree; reopening starts idle without retaining media resources.
-- [ ] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes.
+- [x] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes. Browser acceptance and performance profiling remain open.
 - [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS high-DPI performance profiling, reduced motion and all playback/window regressions.
 - Audit and parity notes: `docs/winamp-vs-webamp-audit.md`.
 
@@ -775,10 +775,11 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Pin compatible `butterchurn@2.6.7` and `butterchurn-presets@2.4.7` and update package manifest + lockfile together; no CDN or runtime network fetch.
 - [x] Load renderer and preset bundle only after selecting the separate `MilkDrop (Butterchurn)` mode. Existing `MilkDrop` remains the procedural project mode.
 - [x] Mount one canvas inside the existing fourth 275×275 Video / Visualization scene; reuse it in fullscreen. No new player/window.
-- [ ] Use the controller's existing AudioContext and post-EQ signal. Do not create another HTMLAudioElement or AudioContext, and do not route a second audible copy to destination.
+- [x] Use the controller's existing AudioContext and post-EQ signal. Do not create another HTMLAudioElement or AudioContext, and do not route a second audible copy to destination.
 - [x] Verify Butterchurn 2.6.7's `connectAudio` contract against the exact release source: it connects the supplied node to an internal DelayNode feeding only Butterchurn analysers, not `AudioContext.destination`; `disconnectAudio` detaches only that branch.
 - [x] Add a read-only controller accessor for the shared post-EQ/post-balance `pannerNode`; the renderer can attach its analysis branch there without creating another media source. The accessor itself creates no extra nodes.
 - [x] Handle WebGL2 unavailable, lazy-import failure, resize, mode switch, fullscreen exit and component unmount without breaking playback or existing modes. The stable renderer's WebGL2 context is explicitly released with `WEBGL_lose_context`.
+- [x] Pause the Butterchurn render RAF while the browser tab is hidden; resume one loop on visibility return and stop on WebGL context loss.
 - [x] Keep preset data local; support preset cycling and transition; avoid eagerly loading the full preset bundle on initial Winamp render. PSET cycles through the locally bundled preset list.
 - [ ] Profile GPU/CPU and memory at 60 FPS on high-DPI displays. If Butterchurn cannot sustain the target, throttle only that renderer without changing the 60 FPS publication rate of existing visualizers.
 ### Winamp — .wampack portable local-library archive (2026-11-25)
