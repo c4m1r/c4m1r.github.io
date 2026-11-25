@@ -341,15 +341,13 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - Regression tests cover asynchronous quota failure, synchronous object-store failure, all-or-nothing transaction abort, successful commit, and post-commit deletion plus Blob URL revocation.
 - Butterchurn local preset imports are size-limited before file reads (2 MB for `.milk`, 8 MB for JSON). Async preset-switch and preset-advance failures are ignored when their runtime has been disposed or replaced.
 - GitHub Actions typecheck, Winamp archive tests, ESLint, production build, artifact verification and GitHub Pages deployment passed for `e53db050`.
-- Remaining: full EEL2/custom wave/custom shape/MilkDrop 2 shader conversion and owner-deferred real browser acceptance, touch interaction and WebGL performance/memory profiling. `milkdrop-toolchain` is not a drop-in Butterchurn adapter.
+- Remaining at that point: EEL2 conversion and browser acceptance. The EEL2 portion was subsequently implemented with `milkdrop-eel-parser@0.0.4`; custom HLSL shader conversion and real-browser acceptance remain open.
 
 
-## 21. MilkDrop EEL2 and custom-object conversion — 2026-11-26
+## 21. Initial MilkDrop adapter draft — superseded on 2026-11-26
 
-- The `.milk` importer now produces Butterchurn WASM preset data rather than copying scalar values only. Known MilkDrop scalar aliases map to Butterchurn base values; numbered `per_frame_init`, `per_frame`, `per_pixel`, custom wave and custom shape equations are preserved in Butterchurn's `*_eqs_eel` fields for its WASM compiler.
-- MilkDrop wave/shape slots are one-based in `.milk` files and are converted to zero-based Butterchurn array indices. Scalar slot fields and all supported equation stages are mapped.
-- Unsupported custom MilkDrop 2 warp/composite shader fields and unknown scalar fields are surfaced as import warnings. HLSL-to-Butterchurn shader conversion is not implemented; do not describe this as full MilkDrop 2 compatibility.
-- Regression tests cover aliases, equation ordering, custom wave/shape conversion, unsupported shader/unmapped-field warnings and malformed/oversized inputs. Runtime compilation and visual parity still require browser QA with representative real presets.
+- The first adapter draft incorrectly targeted the newer Butterchurn `*_eqs_eel` WASM fields. This is not compatible with the pinned Butterchurn 2.6.7 runtime.
+- The corrected implementation is documented in section 22 and emits JavaScript `*_eqs_str` through the MIT `milkdrop-eel-parser@0.0.4` package.
 
 
 ## 22. MilkDrop EEL2 adapter for pinned Butterchurn 2.6.7 — 2026-11-26
@@ -359,3 +357,10 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - Scalar defaults and inherited equations are reset before mapping, preventing values/equations from the seed Butterchurn preset leaking into the imported `.milk`. The default Butterchurn feedback GLSL shaders are retained when custom HLSL cannot be translated.
 - Tests cover scalar aliases, EEL2 JS output, custom wave/shape programs, legacy slot numbering, unknown-field and shader warnings, seed isolation and malformed/oversized inputs. CI run `45689480441` passed build and GitHub Pages deployment for `0ad49c11`.
 - Remaining: MilkDrop 2 HLSL warp/composite shader conversion and visual browser QA with real-world presets.
+
+
+## 23. Scalar alias coverage and current CI — 2026-11-26
+
+- Added upstream-compatible scalar aliases for `fRating`, `fWaveParam` and `bMaximizeWaveColor` alongside the existing MilkDrop mappings.
+- Latest verified workflow `45690014058` passed dependency installation, context verification, TypeScript, Winamp archive tests, ESLint, production build, artifact verification and GitHub Pages deployment for commit `be6d83f1`.
+- Current known limitations remain custom MilkDrop 2 HLSL shader translation and real-browser validation with representative `.milk` files.

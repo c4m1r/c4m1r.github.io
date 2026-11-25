@@ -823,7 +823,7 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 
 - [x] Mixed audio/video queue order can now be edited from the fourth-window toolbar using Move Up / Move Down. The selected item remains selected by stable media key when the list changes.
 - [x] Shuffle advances to a random different item in the mixed queue; Repeat and Auto Advance settings now apply to video end-of-playback as well as audio.
-- [x] Added automated tests for the scalar-only `.milk` importer, including non-mutation, case-insensitive values, EEL rejection, custom-section rejection, malformed and oversized inputs.
+- [x] Earlier scalar-only importer tests were superseded by tests for EEL2-to-JavaScript conversion, custom waves/shapes, field aliases, warning paths, seed isolation and malformed/oversized input.
 - [ ] MilkDrop 2 custom HLSL warp/composite shader translation remains open. EEL2, custom waves and custom shapes now emit Butterchurn 2.x JavaScript equation strings; real-preset browser validation is still required.
 - [ ] Browser acceptance of mixed queue reorder, shuffle/repeat, autoplay, touch and narrow toolbar remains open.
 
@@ -857,7 +857,7 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Ignore rejected asynchronous preset switches/advances after runtime teardown, so late failures cannot update a closed visualizer.
 - [x] Limit local preset imports before reading/parsing: 2 MB for legacy `.milk`, 8 MB for Butterchurn JSON.
 - [x] Extract `.wampack` rollback into a reusable helper and test record deletion plus revocation of all temporary Blob URLs after a post-commit failure.
-- [ ] Full legacy .milk conversion remains open. Research found milkdrop-toolchain 0.1.0 (Unlicense, TypeScript, no runtime dependencies) with EEL2 parsing/interpreter/JIT and HLSL analysis/GLSL emission plus 510 carried-over tests. It is a promising parser/compiler candidate, but it does not itself provide a Butterchurn preset adapter or renderer VM; do not claim full import or integrate it until an adapter is implemented and tested against real presets.
+- [x] EEL2 conversion is now integrated through the MIT `milkdrop-eel-parser@0.0.4` package and emits JavaScript strings for pinned Butterchurn 2.6.7. MilkDrop 2 custom HLSL warp/composite shader conversion and real-preset browser acceptance remain open.
 - [ ] Mobile drag acceptance, real-browser repeated open/close and WebGL memory profiling remain open.
 - [x] GitHub Actions passed TypeScript, Winamp archive tests (including quota/abort and post-commit rollback tests), ESLint, production build, artifact verification and GitHub Pages deployment for `e53db050`.
 
