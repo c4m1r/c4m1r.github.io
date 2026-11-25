@@ -15,7 +15,7 @@
 При этом **Webamp пока сильнее в точности Winamp 2.x и совместимости со скинами/визуализатором**. Главные отставания нашей версии:
 
 1. Частичная реализация формата .wsz: необязательные sprites теперь безопасно пропускаются, `pledit.txt`, `viscolor.txt` и четыре `region.txt` sections подключены. До полного Webamp parity ещё не хватает части sprite/cursor mappings и corpus/browser compatibility tests.
-2. Настоящий MilkDrop добавлен через Butterchurn 2.6.7 с локальным preset pack и отдельным режимом. Совместимость с пользовательскими MilkDrop preset-файлами вне поставляемого preset pack отдельно не заявляется.
+2. Настоящий MilkDrop добавлен через Butterchurn 2.6.7 с локальным preset pack и отдельным режимом. Импорт локальных Butterchurn preset JSON добавлен в сам режим; сырые legacy .milk текстовые файлы не заявляются как поддерживаемый импортируемый формат.
 3. Локальные MP3 читают ID3v2.2/v2.3/v2.4 и ID3v1; FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms читаются для title/artist/album/track. Расширенные поля и редкие нестандартные варианты контейнеров ещё не поддержаны.
 4. M3U поддерживает `#EXTM3U` / `#EXTINF`, BOM и Unicode metadata, дробные длительности при импорте и round-trip для HTTP(S)-URL. Экспорт принимает только строгий `MM:SS` с секундами `00–59`; некорректные, неизвестные и переполненные значения превращаются в `-1`, а не нормализуются молча. Относительные, `file:` и временные `blob:` ссылки пропускаются; HLS `#EXT-X-*` манифесты отклоняются. Метаданные экспортируемых записей очищаются от CR/LF. Локальные файлы переносятся через `.wampack`, а не M3U.
 5. Анимационный цикл ограничен 60 FPS и изолирован во внешнем frame store; parent Winamp не получает 60-FPS state updates. RAF приостанавливается в background tab и возобновляется при возврате; подписка на контроллер/visibility остаётся единой для обеих поверхностей. SVG gradient IDs четвёртого окна уникальны для экземпляра компонента. 60-FPS high-DPI profiling и browser lifecycle acceptance всё ещё нужны.
@@ -169,7 +169,7 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 | P1 | Расширить metadata parser на FLAC/Ogg/MP4/WAV | Качество локальной библиотеки |
 | P2 | Browser QA для M3U и `.wampack` round-trip на реальных файлах | Подтвердить переносимость и rollback |
 | P2 | Browser QA для Media Session API | Подтвердить системные media keys / lock screen |
-| P2 | Дополнительные Playlist commands и portable local-library export | Feature parity |
+| P2 | Дополнительные Playlist commands и portable local-library export | Реализованы Reverse/Crop, mini visualizer и .wampack; browser acceptance deferred |
 | P2 | Консолидация Classic CSS и pixel QA | Долгосрочная визуальная точность |
 | P3 | Настоящий MilkDrop через Butterchurn + локальные presets | Реализовано в `MilkDrop (Butterchurn)`; дальнейший импорт пользовательских preset-файлов не входит в текущий scope |
 
@@ -278,3 +278,10 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 Ограничения первой версии: нет DEFLATE, split ZIP, ZIP64 и автоматического объединения с уже имеющимися одинаковыми файлами. Большие архивы обрабатываются в памяти; размер ограничен 512 MB. Browser round-trip и malformed archive fixtures ещё не прогнаны, поэтому функция не отмечается как browser-verified.
 
 Файлы: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
+
+## 13. Winamp follow-up implementation — 2026-11-25
+
+- Playlist MISC now exposes Reverse playlist and Crop to selection. The shared controller preserves the active track by stable ID when reversing and switches safely to the first retained entry when cropping removes the active track.
+- LIST OPT now includes an optional compact live mini visualizer, disabled by default. It consumes the existing external analyser frame store rather than adding a second audio graph or forcing parent-level 60 FPS renders.
+- Genuine MilkDrop (Butterchurn) now accepts local Butterchurn preset JSON files through LOAD PRESET. Imported presets are available immediately and participate in the existing PSET cycling. Raw legacy .milk text is not parsed by this importer.
+- These are source-level implementations. Browser interaction, layout, real preset compatibility and audio lifecycle acceptance remain deferred; no manual/browser pass is claimed.
