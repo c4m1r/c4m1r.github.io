@@ -316,3 +316,11 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - The `.milk` importer is intentionally scalar-only. Full EEL2 conversion and MilkDrop 2 shader conversion require a reviewed converter/parser dependency; current support does not claim full MilkDrop compatibility.
 - `.wampack` archive writes are atomic and post-commit UI failures trigger record/Blob URL rollback. IndexedDB quota/failure-injection tests and optional DEFLATE import remain open.
 - Manual browser acceptance remains open for desktop/mobile interaction, Media Session, keyboard/touch, autoplay, codecs, fullscreen, repeated open/close, Butterchurn performance and GPU/memory release. Latest CI/deploy must be checked against the final commit.
+
+
+## 18. Persistent mixed queue order and MilkDrop converter review — 2026-11-25
+
+- Mixed audio/video order is now persisted under a versioned localStorage key. Restoration is normalized against current media keys; stale/duplicate keys are discarded, new items append, and malformed/blocked storage falls back to the current list without breaking playback.
+- Automated tests cover reorder direction, non-mutating moves, normalization, storage round-trip and storage exceptions. CI passed Typecheck, archive/media queue tests, ESLint, production build, output verification and GitHub Pages deployment for `d9fa6879`.
+- Drag-and-drop editing and browser acceptance are still open.
+- Converter research found an MIT browser-targeted `milkdrop-preset-converter` with EEL and HLSL conversion, but its package uses an old Babel 6/Webpack 3 toolchain and legacy parser/shader dependencies. It has not been added to production. Full EEL2 and MilkDrop 2 conversion remains open pending dependency and output compatibility review.

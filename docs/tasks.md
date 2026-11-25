@@ -831,8 +831,17 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 ### Winamp — remaining integration and acceptance work (2026-11-25)
 
 - [ ] Full legacy `.milk` conversion: integrate a maintained/compatible EEL2 + MilkDrop preset parser and HLSL-to-GLSL conversion path only after dependency, license, security, bundle-size and Butterchurn schema review. Current importer deliberately supports scalar-only files; do not silently strip EEL or shader content.
-- [ ] Persist the edited mixed audio/video queue order across reloads and fourth-window close/reopen; current order is session state. Add drag-and-drop/reorder affordances to the playlist surface rather than relying only on toolbar Move Up/Down.
+- [x] Persist the edited mixed audio/video queue order across reloads and fourth-window close/reopen using stable media keys and guarded localStorage access. Toolbar Move Up/Down remains the current reorder affordance; drag-and-drop remains open.
 - [ ] Extend `.wampack` restore tests with IndexedDB failure/quota injection and verify transaction abort plus post-commit rollback; optional DEFLATE import remains unimplemented (writer currently uses STORE).
 - [ ] Browser acceptance on desktop and mobile: mixed audio/video selection, reorder, shuffle, repeat, auto-advance, Media Session keys, keyboard shortcuts, autoplay restrictions, fullscreen, touch gestures, narrow toolbar, codec errors, and close/reopen resource release.
 - [ ] Profile Butterchurn CPU/GPU/memory on high-DPI displays and verify WebGL context cleanup and renderer reinitialization after repeated mode changes.
 - [ ] Verify the newest GitHub Actions run and GitHub Pages deployment for the final commit; do not equate a successful build job with a successful deploy.
+
+
+### 2026-11-25 — Persistent mixed queue order
+
+- [x] Save and restore the mixed audio/video queue order in versioned localStorage state. Normalize against current media keys, discard stale/duplicate entries, append newly added media, and recover safely from malformed or unavailable storage.
+- [x] Add regression tests for normalization, reorder direction, immutable updates, storage round-trip, malformed JSON and storage exceptions.
+- [x] GitHub Actions passed Typecheck, Winamp archive test suite (including the new media queue tests), ESLint, production Build, output verification and GitHub Pages deployment for commit `d9fa6879`.
+- [ ] Drag-and-drop queue editing and browser acceptance remain open.
+- [ ] Full EEL2 and MilkDrop 2 shader conversion remains open. The upstream MIT `milkdrop-preset-converter` is a browser-targeted converter, but its package pulls an old Babel 6 / Webpack 3 dependency tree and legacy parser/shader dependencies. Do not add it blindly; first isolate and audit a maintained or vendored converter path and verify Butterchurn output compatibility.
