@@ -49,10 +49,14 @@ test('round-trips an empty local library', async () => {
 });
 
 test('preserves playlist order, duplicate local references, remote URLs and Unicode metadata', async () => {
-  const local = track('local-audio-1', 'blob:session-only', 'Тестовая композиция');
+  const local = track('local-entry-1', 'blob:session-only', 'Тестовая композиция');
+  const duplicate = { ...local, id: 'local-entry-2', localAssetId: 'local-audio-1' };
   const remote = track('remote-1', 'https://example.com/audio.mp3', 'Remote');
-  const restored = await readWinampArchive(await createWinampArchive([local, remote, local], [record()]));
+  const restored = await readWinampArchive(await createWinampArchive([
+    { ...local, localAssetId: 'local-audio-1' }, remote, duplicate,
+  ], [record()]));
   assert.deepEqual(restored.manifest.tracks.map((item) => item.title), ['Тестовая композиция', 'Remote', 'Тестовая композиция']);
+  assert.notEqual(restored.manifest.tracks[0].id, restored.manifest.tracks[2].id);
   assert.equal(restored.manifest.tracks[0].assetPath, restored.manifest.tracks[2].assetPath);
   assert.equal(restored.manifest.tracks[1].src, 'https://example.com/audio.mp3');
   assert.equal(restored.assets.length, 1);
