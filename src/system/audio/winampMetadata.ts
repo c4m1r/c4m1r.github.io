@@ -73,7 +73,10 @@ export async function readEmbeddedAudioMetadata(file: Blob): Promise<EmbeddedAud
             : ((tag[offset + 4] << 24) | (tag[offset + 5] << 16) | (tag[offset + 6] << 8) | tag[offset + 7]) >>> 0;
         if (!frameSize || offset + headerSize + frameSize > tag.length) break;
         const flagsOffset = majorVersion === 2 ? -1 : offset + 8;
-        const compressedOrEncrypted = flagsOffset >= 0 && ((tag[flagsOffset] & 0x0c) !== 0 || (majorVersion === 4 && (tag[flagsOffset + 1] & 0x0c) !== 0));
+        const frameFormatFlags = flagsOffset >= 0 ? tag[flagsOffset + 1] : 0;
+        const compressedOrEncrypted = majorVersion === 3
+          ? (frameFormatFlags & 0xc0) !== 0
+          : majorVersion === 4 && (frameFormatFlags & 0x0c) !== 0;
         const key = ids[id];
         if (key && !compressedOrEncrypted && metadata[key] === undefined) {
           const value = decodeTextFrame(tag.subarray(offset + headerSize, offset + headerSize + frameSize));
