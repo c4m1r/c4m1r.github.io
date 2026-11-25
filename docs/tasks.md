@@ -826,3 +826,13 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Added automated tests for the scalar-only `.milk` importer, including non-mutation, case-insensitive values, EEL rejection, custom-section rejection, malformed and oversized inputs.
 - [ ] Full legacy MilkDrop conversion (EEL and MilkDrop 2 shader translation) remains open; the current safe importer intentionally rejects those constructs.
 - [ ] Browser acceptance of mixed queue reorder, shuffle/repeat, autoplay, touch and narrow toolbar remains open.
+
+
+### Winamp — remaining integration and acceptance work (2026-11-25)
+
+- [ ] Full legacy `.milk` conversion: integrate a maintained/compatible EEL2 + MilkDrop preset parser and HLSL-to-GLSL conversion path only after dependency, license, security, bundle-size and Butterchurn schema review. Current importer deliberately supports scalar-only files; do not silently strip EEL or shader content.
+- [ ] Persist the edited mixed audio/video queue order across reloads and fourth-window close/reopen; current order is session state. Add drag-and-drop/reorder affordances to the playlist surface rather than relying only on toolbar Move Up/Down.
+- [ ] Extend `.wampack` restore tests with IndexedDB failure/quota injection and verify transaction abort plus post-commit rollback; optional DEFLATE import remains unimplemented (writer currently uses STORE).
+- [ ] Browser acceptance on desktop and mobile: mixed audio/video selection, reorder, shuffle, repeat, auto-advance, Media Session keys, keyboard shortcuts, autoplay restrictions, fullscreen, touch gestures, narrow toolbar, codec errors, and close/reopen resource release.
+- [ ] Profile Butterchurn CPU/GPU/memory on high-DPI displays and verify WebGL context cleanup and renderer reinitialization after repeated mode changes.
+- [ ] Verify the newest GitHub Actions run and GitHub Pages deployment for the final commit; do not equate a successful build job with a successful deploy.

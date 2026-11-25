@@ -307,3 +307,12 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - Mixed audio/video order can be rearranged from the fourth-window toolbar. Stable keys preserve the selected media item while order changes. Previous/Next and end-of-track navigation use the edited order; Shuffle selects a different random item on Next/automatic advance.
 - Repeat and Auto Advance preferences apply to video completion as well as audio completion. Audio/video remain mutually exclusive and retain separate media elements.
 - Added unit coverage for the safe scalar `.milk` importer. Full EEL and MilkDrop 2 shader conversion remains a known limitation rather than being advertised as supported.
+
+
+## 17. Remaining acceptance and integration work — 2026-11-25
+
+- Unified audio/video navigation is wired to the Main transport, fourth-window transport, keyboard Z/B shortcuts and browser Media Session previous/next actions. The mixed order can be changed with Move Up/Move Down and is used by sequential navigation; shuffle, repeat and auto-advance are applied to video completion.
+- The edited mixed order currently lives in component state and is not persisted across reloads or fourth-window close/reopen. A richer playlist editor with drag-and-drop insertion/reordering remains open.
+- The `.milk` importer is intentionally scalar-only. Full EEL2 conversion and MilkDrop 2 shader conversion require a reviewed converter/parser dependency; current support does not claim full MilkDrop compatibility.
+- `.wampack` archive writes are atomic and post-commit UI failures trigger record/Blob URL rollback. IndexedDB quota/failure-injection tests and optional DEFLATE import remain open.
+- Manual browser acceptance remains open for desktop/mobile interaction, Media Session, keyboard/touch, autoplay, codecs, fullscreen, repeated open/close, Butterchurn performance and GPU/memory release. Latest CI/deploy must be checked against the final commit.
