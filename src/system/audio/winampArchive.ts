@@ -53,22 +53,16 @@ function crc32(bytes: Uint8Array): number {
 function u16(view: DataView, offset: number, value: number): void { view.setUint16(offset, value, true); }
 function u32(view: DataView, offset: number, value: number): void { view.setUint32(offset, value, true); }
 function safePath(path: string): boolean {
-  return path.length > 0 && path.length <= 240 && !path.startsWith('/') && !path.includes('\\') &&
-    !/[\\u0000-\\u001f\\u007f]/.test(path) &&
+  return path.length > 0 && path.length <= 240 && !path.startsWith('/') &&
+    !/[\/\\\u0000-\u001f\u007f]/.test(path) &&
     path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
 }
 function safeAssetName(name: string): boolean {
   return name.length > 0 && name.length <= 255 && name !== '.' && name !== '..' &&
-    !/[\\\\/\\u0000-\\u001f\\u007f]/.test(name);
+    !/[\/\\\u0000-\u001f\u007f]/.test(name);
 }
 function safeMimeType(type: string): boolean {
-  return type === '' || /^[a-z0-9][a-z0-9!#function safePath(path: string): boolean {
-  return path.length > 0 && !path.startsWith('/') && !path.includes('\\') &&
-    path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
-}^_.+-]*\\/[a-z0-9][a-z0-9!#function safePath(path: string): boolean {
-  return path.length > 0 && !path.startsWith('/') && !path.includes('\\') &&
-    path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
-}^_.+-]*$/i.test(type);
+  return type === '' || /^[a-z0-9][a-z0-9!#$&^_.+-]*\/[a-z0-9][a-z0-9!#$&^_.+-]*$/i.test(type);
 }
 function localAssetPath(index: number, name: string): string {
   const extension = name.match(/\.([a-z0-9]{1,8})$/i)?.[1]?.toLowerCase() ?? 'bin';
