@@ -939,6 +939,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
   }, [trackIndex, isPlaying, currentTime, duration]);
 
+  useEffect(() => () => {
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = null;
+      navigator.mediaSession.playbackState = 'none';
+    } catch {
+      // The browser may already have released its media session.
+    }
+  }, []);
+
   useEffect(() => {
     if (!('mediaSession' in navigator)) return;
     const session = navigator.mediaSession;
