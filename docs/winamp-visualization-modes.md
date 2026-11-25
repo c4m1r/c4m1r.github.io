@@ -1,6 +1,6 @@
 # Winamp Visualization Modes — design and implementation contract
 
-Status: implementation in progress. In-window renderers, grouped family picker, random action, distinct named AVS/MilkDrop scenes and optional auto-cycle are committed. A separate genuine MilkDrop (Butterchurn) mode is wired with lazy package imports, a local preset pack, post-EQ audio input, visibility-aware rendering and explicit WebGL2 teardown. The shared 60 FPS loop now stops while the document is backgrounded, resumes on return, and remains a single subscription across both procedural visualizer surfaces. Fourth-window SVG gradient IDs are instance-scoped. Browser acceptance and performance profiling remain pending.
+Status: source implementation complete for the agreed mode set. The existing fourth window contains 14 modes, including a separate genuine MilkDrop (Butterchurn) renderer with lazy local package/preset loading, shared post-EQ audio input, preset transitions, visibility-aware RAF, WebGL context-loss handling and explicit teardown. The existing procedural MilkDrop-inspired mode remains available. The shared 60 FPS loop pauses in background tabs, resumes once on return, and remains isolated from the Winamp parent render. Browser acceptance and GPU/CPU profiling are intentionally deferred; no visual/manual test is claimed.
 
 ## Scope — existing fourth window only
 
@@ -10,8 +10,8 @@ The existing fourth window already contains a visualizer stage and a local-video
 
 ## Implementation snapshot (2026-11-25)
 
-- The Main LCD now has its own independent three-mode state; the fourth window has a separate 13-mode state.
-- The existing fourth-window `MODE` control cycles through Spectrum, Oscilloscope, Peak Meter, Alchemy, Bars and Waves, Battery, Ambience, Particle, Plenoptic, Spikes, Musical Colors, AVS and MilkDrop.
+- The Main LCD now has its own independent three-mode state; the fourth window has a separate 14-mode state.
+- The existing fourth-window `MODE` control cycles through Spectrum, Oscilloscope, Peak Meter, Alchemy, Bars and Waves, Battery, Ambience, Particle, Plenoptic, Spikes, Musical Colors, AVS, procedural MilkDrop and genuine MilkDrop (Butterchurn).
 - Each added family uses an original SVG/CSS procedural renderer driven by the shared analyser arrays. WMP Alchemy layers frequency-shaped ribbons, orbital rings and a waveform core; Ambience blends several audio-shaped color fields; Particle uses a frequency-reactive orbital dot field; Plenoptic uses a perspective tunnel, frequency spokes and depth layers. AVS and MilkDrop named presets now have different scene geometry, not only different CSS motion. These remain original interpretations, not byte-exact reproductions of Microsoft / Nullsoft visualizers, original plugin engines, or compatible preset implementations.
 - The fourth-window geometry and video stage were not changed. Added CSS scene animation respects `prefers-reduced-motion`. Browser screenshots, visual tuning and regression checks are still outstanding.
 - The shared analyser RAF loop is suspended on `visibilitychange` when the tab is hidden and resumed once when it becomes visible. The controller and visibility listeners are shared across Main/Fourth subscriptions and are released when the final subscriber unmounts. SVG gradient IDs are generated from the fourth visualizer's React instance ID, avoiding duplicate document-level fragment references.
@@ -23,7 +23,7 @@ The existing fourth window already contains a visualizer stage and a local-video
 - The fourth window gets its own independent selected visualization mode. Switching the fourth-window mode does not change the Main LCD mode; cycling the Main LCD does not change the fourth-window mode.
 - Both surfaces may read the same audio-analysis data, but presentation state is independent.
 - The existing toolbar has a compact grouped picker, `MODE` cycles all 13 modes, and `RND` selects another mode in the current family (or from all modes for a singleton family).
-- AVS has four named original variations (Scope, Feedback Tunnel, Rotating Geometry, Kaleidoscope); MilkDrop has four (Geiss Flow, Fractal Flame, Waveform Tunnel, Psychedelic Swirl), cycled with `PSET`.
+- AVS has four named original variations (Scope, Feedback Tunnel, Rotating Geometry, Kaleidoscope); procedural MilkDrop has four (Geiss Flow, Fractal Flame, Waveform Tunnel, Psychedelic Swirl), cycled with `PSET`. Genuine MilkDrop (Butterchurn) has its own local preset pack and preset transition control.
 
 ## Canonical Winamp visualization families
 
@@ -35,8 +35,9 @@ The existing fourth window already contains a visualizer stage and a local-video
 These are already represented in the project and remain available. The expanded window may render them at its larger existing stage dimensions, but they are not separate windows.
 
 ### Winamp visualization plug-in families
-- **AVS (Advanced Visualization Studio):** preset-driven geometric / feedback visualizations. Implement a small original set of AVS-inspired scenes (for example: Scope, Oscilloscope, Spectrum, Rotating Shapes, Feedback Tunnel, Color Cycle). Do not claim binary plugin compatibility or AVS preset-file compatibility unless actually implemented.
-- **MilkDrop:** fluid, full-stage, beat-reactive geometric feedback scenes. Implement original MilkDrop-inspired scenes only; do not claim the original MilkDrop engine, preset compatibility, or bundled third-party plugin support.
+- **AVS (Advanced Visualization Studio):** original preset-driven geometric / feedback scenes. Do not claim binary plugin compatibility or AVS preset-file compatibility.
+- **MilkDrop-inspired (procedural):** original in-project fluid, beat-reactive geometric scenes; no original MilkDrop engine or preset compatibility is claimed.
+- **MilkDrop (Butterchurn):** genuine MilkDrop-compatible rendering through the pinned Butterchurn 2.6.7 engine and local `butterchurn-presets` pack. This is a separate mode, loaded only when selected. It reuses the shared post-EQ Winamp audio node, does not create a second audible route, and explicitly tears down its audio branch, RAF and WebGL2 context when the mode/window is released.
 
 Winamp's official product documentation identifies AVS and MilkDrop 2 as its visualization plug-ins and describes manual/random preset switching and fullscreen use.
 
@@ -102,8 +103,8 @@ The legacy modes are historical WMP visualizations, not all present in later WMP
 1. **State and selector:** decouple fourth-window mode from Main LCD; completed independent state, grouped family picker, full MODE cycle, RND action, named AVS/MilkDrop variants and optional 15-second AUTO cycle.
 2. **WMP core:** Alchemy, Bars and Waves, Battery.
 3. **WMP legacy:** Ambience, Particle, Plenoptic, Spikes, Musical Colors.
-4. **Winamp plug-in-inspired:** original AVS-style and MilkDrop-inspired scenes with a small set of named presets.
-5. **Polish:** randomization and reduced-motion handling are implemented; optional auto-cycle, responsive rendering and audio/performance acceptance remain.
+4. **Winamp plug-in modes:** original AVS and procedural MilkDrop-inspired scenes plus the separate genuine Butterchurn MilkDrop engine and local preset pack.
+5. **Polish:** randomization, reduced-motion handling, auto-cycle, responsive rendering, hidden-tab pause and WebGL teardown are implemented. Browser acceptance and performance profiling are deferred.
 
 ## Acceptance
 
