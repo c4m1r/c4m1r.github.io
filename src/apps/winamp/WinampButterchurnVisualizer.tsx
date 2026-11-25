@@ -23,6 +23,7 @@ interface ButterchurnRuntime {
 
 export default function WinampButterchurnVisualizer({ presetIndex }: WinampButterchurnVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const presetFileRef = useRef<HTMLInputElement | null>(null);
   const runtimeRef = useRef<ButterchurnRuntime | null>(null);
   const presetIndexRef = useRef(presetIndex);
   const [status, setStatus] = useState('LOADING MILKDROP ENGINE…');
@@ -226,10 +227,40 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     });
   }, [presetIndex]);
 
+  const importPresetFile = async (file?: File) => {
+    if (!file) return;
+    const runtime = runtimeRef.current;
+    if (!runtime) {
+      setStatus('WAIT FOR MILKDROP TO INITIALIZE');
+      return;
+    }
+    try {
+      const parsed: unknown = JSON.parse(await file.text());
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('Preset must be a Butterchurn JSON object');
+      }
+      const baseName = file.name.replace(/\\.json$/i, '').trim().slice(0, 80) || 'Imported preset';
+      let name = baseName;
+      let suffix = 2;
+      while (runtime.presets[name]) name = `${baseName} (${suffix++})`;
+      const preset = parsed as ButterchurnPreset;
+      await runtime.visualizer.loadPreset(preset, 2.5);
+      runtime.presets[name] = preset;
+      runtime.presetNames.push(name);
+      setPresetName(name);
+      setStatus('');
+    } catch (error) {
+      console.error('Butterchurn preset import failed:', error);
+      setStatus(error instanceof Error ? error.message : 'UNABLE TO IMPORT PRESET JSON');
+    }
+  };
+
   return (
     <div className="wa-butterchurn">
       {presetName && <div className="wa-butterchurn__preset" title={presetName}>{presetName}</div>}
       <canvas ref={canvasRef} aria-label="Genuine MilkDrop visualization" />
+      <input ref={presetFileRef} type="file" accept=".json,application/json" hidden onChange={(event) => { void importPresetFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
+      <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import a Butterchurn preset JSON file">LOAD PRESET</button>
       {status && <div className="wa-butterchurn__status" role="status" aria-live="polite">{status}</div>}
     </div>
   );
