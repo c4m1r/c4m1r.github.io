@@ -251,14 +251,15 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       if (runtime.disposed || runtimeRef.current !== runtime) return;
       let importWarnings: string[] = [];
       let importSummary = '';
-      const parsed: unknown = isMilkFile
-        ? (() => {
-            const conversion = convertMilkPreset(rawText, runtime.presets[runtime.presetNames[0]]);
-            importWarnings = conversion.warnings;
-            importSummary = `EEL2: ${conversion.converted.frameEquations} frame/init, ${conversion.converted.pixelEquations} pixel, ${conversion.converted.customWaves} waves, ${conversion.converted.customShapes} shapes`;
-            return conversion.preset;
-          })()
-        : JSON.parse(rawText);
+      let parsed: unknown;
+      if (isMilkFile) {
+        const conversion = await convertMilkPreset(rawText, runtime.presets[runtime.presetNames[0]]);
+        importWarnings = conversion.warnings;
+        importSummary = `EEL2: ${conversion.converted.frameEquations} frame/init, ${conversion.converted.pixelEquations} pixel, ${conversion.converted.customWaves} waves, ${conversion.converted.customShapes} shapes`;
+        parsed = conversion.preset;
+      } else {
+        parsed = JSON.parse(rawText);
+      }
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
         throw new Error('Preset must be a Butterchurn JSON object or a compatible MilkDrop .milk file');
       }

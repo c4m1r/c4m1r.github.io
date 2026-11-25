@@ -273,8 +273,8 @@ export async function convertMilkPreset(
 
   // Butterchurn expects GLSL strings even when a MilkDrop preset has no
   // custom shader. Use the runtime's canonical feedback shaders as fallback.
-  preset.warp = 'shader_body {\\nret = texture2D(sampler_main, uv).rgb;\\nret -= 0.004;\\n}\\n';
-  preset.comp = 'shader_body {\\nret = texture2D(sampler_main, uv).rgb;\\nret *= hue_shader;\\n}\\n';
+  preset.warp = 'shader_body {\nret = texture2D(sampler_main, uv).rgb;\nret -= 0.004;\n}\n';
+  preset.comp = 'shader_body {\nret = texture2D(sampler_main, uv).rgb;\nret *= hue_shader;\n}\n';
   delete preset.warp_hlsl;
   delete preset.comp_hlsl;
   const frameEquations = programs.init.size + programs.frame.size;
