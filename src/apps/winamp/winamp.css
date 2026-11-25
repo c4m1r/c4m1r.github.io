@@ -9647,3 +9647,18 @@
 .wa-shell .wa-video__visualizer--milkdrop-butterchurn .wa-video__mode {
   z-index: 2;
 }
+
+.wa-video__visualizer--milkdrop-butterchurn .wa-butterchurn__preset {
+  position: absolute;
+  z-index: 1;
+  left: 8px;
+  bottom: 7px;
+  max-width: calc(100% - 58px);
+  overflow: hidden;
+  color: rgba(180, 226, 255, .82);
+  font: 8px/1.2 monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 0 5px #167ab0;
+  pointer-events: none;
+}
