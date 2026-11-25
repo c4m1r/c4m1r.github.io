@@ -247,6 +247,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       await runtime.visualizer.loadPreset(preset, 2.5);
       runtime.presets[name] = preset;
       runtime.presetNames.push(name);
+      presetIndexRef.current = runtime.presetNames.length - 1;
       setPresetName(name);
       setStatus('');
     } catch (error) {
@@ -255,12 +256,28 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     }
   };
 
+  const advancePreset = () => {
+    const runtime = runtimeRef.current;
+    if (!runtime?.presetNames.length) return;
+    const nextIndex = (presetIndexRef.current + 1) % runtime.presetNames.length;
+    presetIndexRef.current = nextIndex;
+    const name = runtime.presetNames[nextIndex];
+    setPresetName(name);
+    void Promise.resolve(runtime.visualizer.loadPreset(runtime.presets[name], 2.5)).catch((error: unknown) => {
+      console.error('Butterchurn preset advance failed:', error);
+      setStatus('PRESET COULD NOT BE LOADED');
+    });
+  };
+
   return (
     <div className="wa-butterchurn">
       {presetName && <div className="wa-butterchurn__preset" title={presetName}>{presetName}</div>}
       <canvas ref={canvasRef} aria-label="Genuine MilkDrop visualization" />
       <input ref={presetFileRef} type="file" accept=".json,application/json" hidden onChange={(event) => { void importPresetFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
-      <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import a Butterchurn preset JSON file">LOAD PRESET</button>
+      <div className="wa-butterchurn__tools">
+        <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import a Butterchurn preset JSON file">LOAD PRESET</button>
+        <button type="button" className="wa-butterchurn__import" onClick={advancePreset} title="Advance through bundled and imported presets">NEXT PRESET</button>
+      </div>
       {status && <div className="wa-butterchurn__status" role="status" aria-live="polite">{status}</div>}
     </div>
   );
