@@ -245,14 +245,41 @@ function subscribeWinampVisualizerFrame(listener: () => void): () => void {
         visualizerFrame = { bars, peaks, waveform };
         visualizerFrameSubscribers.forEach((subscriber) => subscriber());
       }
-      visualizerFrameRaf = requestAnimationFrame(tick);
+      if (document.visibilityState === 'visible') {
+        visualizerFrameRaf = requestAnimationFrame(tick);
+      } else {
+        visualizerFrameRaf = null;
+        visualizerFrameLastAt = 0;
+      }
     };
-    visualizerFrameRaf = requestAnimationFrame(tick);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') {
+        if (visualizerFrameRaf !== null) cancelAnimationFrame(visualizerFrameRaf);
+        visualizerFrameRaf = null;
+        visualizerFrameLastAt = 0;
+        return;
+      }
+      if (visualizerFrameSubscribers.size && visualizerFrameRaf === null) {
+        visualizerFrameRaf = requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    if (document.visibilityState === 'visible') {
+      visualizerFrameRaf = requestAnimationFrame(tick);
+    }
+    const unsubscribeVisibility = () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    unsubscribeVisualizerController = (() => {
+      const unsubscribeController = unsubscribeVisualizerController;
+      return () => {
+        unsubscribeVisibility();
+        unsubscribeController?.();
+      };
+    })();
   }
   return () => {
     visualizerFrameSubscribers.delete(listener);
-    if (!visualizerFrameSubscribers.size && visualizerFrameRaf !== null) {
-      cancelAnimationFrame(visualizerFrameRaf);
+    if (!visualizerFrameSubscribers.size) {
+      if (visualizerFrameRaf !== null) cancelAnimationFrame(visualizerFrameRaf);
       visualizerFrameRaf = null;
       visualizerFrameLastAt = 0;
       visualizerFrame = EMPTY_VISUALIZER_FRAME;
