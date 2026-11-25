@@ -178,6 +178,25 @@ test('rejects duplicate ZIP entry paths even when the payload is valid', async (
   await assert.rejects(() => readWinampArchive(new Blob([bytes])), /duplicate|unsafe ZIP entry/i);
 });
 
+test('rejects archive asset paths that disagree with the original filename extension', async () => {
+  const payload = Uint8Array.of(1, 2, 3);
+  const manifest = JSON.stringify({
+    format: 'wampack',
+    version: 1,
+    exportedAt: new Date(0).toISOString(),
+    tracks: [{
+      id: 'local-1', title: 'Track', artist: 'Artist', durationLabel: '00:01',
+      assetPath: 'audio/000001.mp3', assetName: 'track.wav', assetType: 'audio/mpeg',
+      assetLastModified: 0, assetSize: payload.length,
+    }],
+  });
+  const bytes = makeStoredZip([
+    { name: 'manifest.json', data: manifest },
+    { name: 'audio/000001.mp3', data: payload },
+  ]);
+  await assert.rejects(() => readWinampArchive(new Blob([bytes])), /invalid original audio-file metadata/i);
+});
+
 test('rejects unreferenced payload files', async () => {
   const manifest = JSON.stringify({ format: 'wampack', version: 1, exportedAt: new Date(0).toISOString(), tracks: [] });
   const bytes = makeStoredZip([
