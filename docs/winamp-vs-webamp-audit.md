@@ -33,11 +33,11 @@
 | Локальная библиотека | Сохранение локальных файлов и восстановление object URL после перезагрузки | В документации описана загрузка файлов/URL; наша IndexedDB-библиотека — дополнительное преимущество | Наша версия функционально богаче в persistence |
 | Playlist | Добавление, удаление, выбор, сортировка drag-and-drop, длительности, M3U import/export | Классические команды Playlist, drag/drop, дополнительные команды и HTML export | У нас есть основа; не хватает ряда классических команд |
 | M3U | Только абсолютные HTTP(S)-URL; локальные/relative entries пропускаются | Поддержка playlist workflow в рамках Webamp | Наша текущая M3U реализация ограничена и не переносит локальную библиотеку |
-| ID3 / metadata | Локальные MP3 читают базовые ID3v2.2/v2.3/v2.4 и ID3v1 title/artist/album/track; остальные контейнеры пока используют filename fallback | Читает ID3 и другую metadata при загрузке | Частичный паритет только для MP3 |
+| ID3 / metadata | Локальные MP3 (ID3v2.2/v2.3/v2.4 + ID3v1), FLAC (Vorbis comments), Ogg Vorbis/OpusTags, WAV INFO, MP4/M4A ilst: title/artist/album/track | Читает ID3 и другую metadata при загрузке | Базовые common tags покрыты; нужны fixtures и редкие контейнерные варианты |
 | Equalizer | 10 полос, preamp, balance, ON, EQF import/export, 7 встроенных presets и пользовательские presets | Классический 10-band EQ, встроенные Winamp presets, EQF | База есть; набор заводских presets и skin-defined поведение слабее |
 | .wsz skins | Собственный ZIP parser, atlas cropper; необязательные отсутствующие/битые sprites теперь пропускаются, Main sheet остаётся обязательным | Совместимость с классическими Winamp 2.x skins, включая их нестандартные элементы | Импорт устойчивее, но полный skin fidelity ещё не достигнут |
-| Playlist skin data | `pledit.txt` парсится, но его значения не применяются к Playlist | Playlist colors/fonts и skin artwork поддерживаются | Данные сейчас теряются на UI-слое |
-| Visualizer colors | `viscolor.txt` парсится, но не применяется | Skin-defined visualizer colors | Данные сейчас не используются |
+| Playlist skin data | `pledit.txt` colors/font применяются к списку и menu panels | Playlist colors/fonts и skin artwork поддерживаются | Базовые colors/font подключены; custom regions ещё нет |
+| Visualizer colors | `viscolor.txt` palette применяется к Main analyzer | Skin-defined visualizer colors | Базовая palette подключена |
 | Skin regions | `region.txt` парсится, но форма окна не применяется | Поддержка custom window regions; есть отдельные исправления для Firefox/zoom | Нет нестандартных контуров окон |
 | Classic analyzer | Spectrum / Oscilloscope / Peak meter | Классические analyzer modes | Функциональный паритет по основным режимам |
 | WMP visualizers | Alchemy, Bars and Waves, Battery и legacy-набор | Не является основной функцией Webamp | Наше преимущество |
@@ -55,19 +55,9 @@
 
 ### P0 — визуализатор обновляет весь компонент на каждом кадре
 
-**Статус: исправлено в текущем проходе.** Частота публикации установлена на 60 FPS; кадры идут через внешний frame store и `useSyncExternalStore`, поэтому обновляются только две visualizer surface, а не весь Winamp parent / Playlist / window manager. Используется тот же analyser после EQ и тот же AudioContext. Synthetic random signal удалён.
+**Статус: исправлено в текущем проходе.** Частота публикации установлена на 60 FPS; кадры публикуются через внешний frame store и `useSyncExternalStore`. Только Main и Fourth visualizer surfaces получают 60-FPS обновления — крупный Winamp parent, Playlist и window manager не перерисовываются из-за аудиокадров. Оба визуализатора используют тот же analyser после EQ и тот же AudioContext. Синтетическая случайная активность удалена; без analyser сцена затухает в idle.
 
-В `WinampPlayer.tsx` цикл `requestAnimationFrame` вызывает `setWaveform`, `setBars` и `setPeaks` при каждом кадре. Эти состояния находятся в родительском `WinampPlayer`, поэтому обновление затрагивает не только сцену визуализатора, но и JSX всего плеера: Main, EQ, Playlist и Video.
-
-Дополнительная проблема: `setPeaks` вызывается из updater-функции `setBars`. Это усложняет порядок обновлений и не является хорошей границей ответственности.
-
-При отсутствии активного analyser сейчас генерируются случайные synthetic bars/waveform. Это создаёт видимость аудиореакции, хотя реального сигнала нет.
-
-**Исправление:**
-- ограничить частоту публикации кадров до разумного стабильного лимита (первый безопасный проход — 30 FPS);
-- вычислять bars/peaks/waveform отдельно и обновлять каждое состояние один раз на кадр, не вкладывая setter в updater другого setter;
-- убрать случайную активность без analyser: показывать затухание/idle, не имитировать звук;
-- отдельным последующим этапом вынести visualizer renderer в memoized/isolated component, чтобы аудиокадры не пересчитывали всю оболочку.
+**Оставшаяся проверка:** browser profiling на 60 Hz/high-DPI, а также CPU/GPU нагрузка и поведение при скрытии окна/вкладки.
 
 ### P0 — неизвестная длительность заменяется выдуманными 180 секундами
 
@@ -99,11 +89,11 @@ Webamp исторически исправлял fallback для отсутст�
 - `visualizerColors` из `viscolor.txt`;
 - `regionText` из `region.txt`.
 
-Но `applySkinFile()` сохраняет только имя, URL Main/titlebar и sprites. В JSX/CSS не найдено применения `playlistStyle`, `visualizerColors` или `regionText`.
+`applySkinFile()` теперь сохраняет `playlistStyle` и `visualizerColors`; renderer применяет Playlist list/menu colors/font и Main analyzer palette. `regionText` пока сохраняется в parsed archive, но не превращается в validated window region.
 
-**Последствия:** Playlist может не соответствовать цветам и шрифту загруженного скина; визуализатор не использует skin palette; нестандартная форма окна игнорируется.
+**Оставшееся последствие:** нестандартная форма окна по `region.txt` пока игнорируется; остальные перечисленные playlist/visualizer metadata уже подключены.
 
-**Исправление:** расширить модель активного скина и последовательно подключить Playlist colors/font и визуализатор palette. `region.txt` — отдельная задача с валидатором формата и browser tests; не применять произвольный текст напрямую как CSS.
+**Следующий шаг:** реализовать `region.txt` через отдельный валидатор координат/контуров и browser tests; не применять произвольный текст напрямую как CSS.
 
 ### P1 — M3U не переносит локальные файлы
 
@@ -119,17 +109,19 @@ Webamp исторически исправлял fallback для отсутст�
 
 ### P1 — неполное ID3/metadata extraction
 
-**Статус: частично исправлено.** Добавлен локальный parser ID3v2.2/v2.3/v2.4 и ID3v1 для MP3: title, artist, album, track number. Поля сохраняются в IndexedDB и восстанавливаются вместе с библиотекой. Ошибки/отсутствующие теги используют filename fallback; duration по-прежнему читается браузерным audio metadata event.
+**Статус: частично исправлено, базовые common tags поддерживаются.** Добавлен локальный parser ID3v2.2/v2.3/v2.4 + ID3v1 для MP3, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. Читаются title/artist/album/track number; MP3 metadata сохраняются в IndexedDB и восстанавливаются вместе с библиотекой. Отсутствующие/битые теги используют filename fallback; duration читается browser audio metadata event.
 
-Осталось: Vorbis comments (FLAC/Ogg), MP4/M4A atoms, WAV INFO, расширенные ID3 frames, tag-level unsynchronisation и обработка больших/нестандартных тегов.
+Осталось: тестовые fixtures на реальные файлы, редкие ID3/container variants, extended tags и browser QA на большом наборе аудиоформатов.
 
 ### P2 — Media Session API
 
 **Статус: базовая реализация добавлена после аудита.** Подключены metadata, playbackState, position state и обработчики play/pause/stop/previous/next/seekbackward/seekforward/seekto. Обработчики очищаются при размонтировании плеера. Требуется browser/OS acceptance на macOS, iOS и поддерживаемых desktop browsers; нельзя считать аппаратные media keys проверенными только по наличию API.
 
-### P2 — отсутствует HTML Playlist export и дополнительные команды
+### P2 — дополнительные команды Playlist
 
-Webamp поддерживает генерацию HTML Playlist. Наша Playlist умеет M3U, но HTML export отсутствует. В дальнейшем также стоит сопоставить команды Remove/Crop/Reverse/Select/Sort и контекстные меню с классическим Webamp.
+**HTML export добавлен.** Формируется автономный HTML-файл со ссылками на HTTP(S)-треки, заголовком, исполнителем и длительностью. Локальные object URLs намеренно исключаются, поскольку они не переживают закрытие вкладки и не являются переносимыми путями.
+
+В дальнейшем стоит сопоставить команды Remove/Crop/Reverse/Select/Sort и контекстные меню с классическим Webamp; отдельно решить portable export для IndexedDB-backed local audio.
 
 ### P2 — CSS и геометрия Classic renderer требуют консолидации
 
@@ -240,18 +232,18 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 
 **25 ноября 2026 — source-level corrections:**
 
-- [x] Ограничена частота публикации visualizer state до 30 FPS вместо обновления на каждом requestAnimationFrame.
+- [x] Установлена частота 60 FPS; frame store и `useSyncExternalStore` изолировали аудиокадры от большого Winamp parent.
 - [x] Удалён случайный synthetic spectrum при недоступном analyser. Без достоверных данных сцена затухает/остаётся idle, а не изображает несуществующий аудиосигнал.
 - [x] Убраны вложенные React state setters: bars, peaks и waveform вычисляются раздельно.
 - [x] Контроллер больше не подменяет неизвестную длительность трека фиктивными 180 секундами; UI получает реальный 0/unknown и сбрасывает stale duration при смене трека.
 - [x] Защищён fullscreen double-click handler от повторного запроса fullscreen, если сцена уже развёрнута.
 - [x] Подключены `pledit.txt` list colors/font + menu colors к Playlist и `viscolor.txt` palette к Main analyzer для импортированного .wsz.
 - [x] Импорт .wsz больше не падает из-за отсутствующих optional sprite sheets или отдельных atlas sprites; Main sheet остаётся обязательным.
-- [x] Добавлен локальный ID3v2.2/v2.3/v2.4 + ID3v1 reader для MP3 с сохранением title/artist/album/track number в IndexedDB.
+- [x] Добавлен локальный metadata reader: ID3v2.2/v2.3/v2.4 + ID3v1, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. MP3 tags сохраняются в IndexedDB.
 - [x] Добавлен автономный HTML Playlist export для HTTP(S) tracks; локальные object URLs не экспортируются как неработающие ссылки.
 - [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
 - [x] Подключён Media Session API к существующему controller: track metadata, playback/position state, play/pause/stop/next/previous и seek handlers; handlers/metadata очищаются при закрытии плеера.
 
-**Оставшиеся ограничения:** применение `region.txt` window shapes, расширение metadata на расширенные tag fields и редкие контейнерные варианты, portable local M3U workflow, дополнительные Playlist commands, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция browser performance profiling 60 FPS on high-DPI.
+**Оставшиеся ограничения:** `region.txt` window shapes, portable local M3U/IndexedDB export, дополнительные Playlist commands, browser QA для Media Session, реальные metadata fixtures, настоящая Butterchurn/MilkDrop интеграция и 60-FPS browser performance profiling.
 
 Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
