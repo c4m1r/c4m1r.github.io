@@ -152,3 +152,47 @@ export async function deleteWinampLocalAudioFiles(ids: string[]): Promise<void> 
   localIds.forEach((id) => store.delete(id));
   await completed;
 }
+
+export async function getWinampLocalAudioRecords(): Promise<WinampLocalAudioRecord[]> {
+  const database = await openDatabase();
+  const transaction = database.transaction(STORE_NAME, 'readonly');
+  const completed = transactionComplete(transaction);
+  const request = transaction.objectStore(STORE_NAME).getAll();
+  const records = await new Promise<WinampLocalAudioRecord[]>((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result as WinampLocalAudioRecord[]);
+    request.onerror = () => reject(request.error ?? new Error('Unable to read local audio library'));
+  });
+  await completed;
+  return records;
+}
+
+export async function importWinampLocalAudioAssets(
+  assets: Array<{ path: string; name: string; type: string; lastModified: number; blob: Blob }>,
+  metadataByPath: Map<string, { title: string; artist: string; album?: string; trackNumber?: string; durationLabel: string }>,
+): Promise<Array<{ path: string; record: WinampLocalAudioRecord }>> {
+  if (!assets.length) return [];
+  const database = await openDatabase();
+  const records = assets.map((asset, index) => {
+    const metadata = metadataByPath.get(asset.path);
+    return {
+      id: createWinampLocalAudioId(),
+      name: asset.name,
+      type: asset.type || 'application/octet-stream',
+      size: asset.blob.size,
+      lastModified: asset.lastModified || Date.now(),
+      title: metadata?.title || asset.name.replace(/\\.[^.]+$/, ''),
+      artist: metadata?.artist || 'Local file',
+      ...(metadata?.album ? { album: metadata.album } : {}),
+      ...(metadata?.trackNumber ? { trackNumber: metadata.trackNumber } : {}),
+      durationLabel: metadata?.durationLabel || '—',
+      addedAt: Date.now() + index,
+      blob: asset.blob,
+    } satisfies WinampLocalAudioRecord;
+  });
+  const transaction = database.transaction(STORE_NAME, 'readwrite');
+  const completed = transactionComplete(transaction);
+  const store = transaction.objectStore(STORE_NAME);
+  records.forEach((record) => store.add(record));
+  await completed;
+  return assets.map((asset, index) => ({ path: asset.path, record: records[index] }));
+}
