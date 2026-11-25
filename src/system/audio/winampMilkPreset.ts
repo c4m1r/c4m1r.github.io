@@ -172,6 +172,13 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
     if (!metadata.test(key)) warnings.add('Unmapped MilkDrop field: ' + key);
   }
 
+  // Force Butterchurn's WASM EEL2 path. The cloned seed preset may be a JS
+  // preset with *_str fields; leaving useJS enabled would silently run those
+  // seed equations instead of the imported MilkDrop source.
+  preset.useJS = false;
+  delete preset.init_eqs_str;
+  delete preset.frame_eqs_str;
+  delete preset.pixel_eqs_str;
   preset.init_eqs_eel = programSource(programs.init);
   preset.frame_eqs_eel = programSource(programs.frame);
   preset.pixel_eqs_eel = programSource(programs.pixel);
@@ -179,6 +186,8 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
     const init = programs.shapeInit.get(index);
     const frame = programs.shapeFrame.get(index);
     if (init || frame) {
+      delete shape.init_eqs_str;
+      delete shape.frame_eqs_str;
       shape.init_eqs_eel = programSource(init ?? new Map());
       shape.frame_eqs_eel = programSource(frame ?? new Map());
     }
@@ -188,6 +197,9 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
     const frame = programs.waveFrame.get(index);
     const point = programs.wavePoint.get(index);
     if (init || frame || point) {
+      delete wave.init_eqs_str;
+      delete wave.frame_eqs_str;
+      delete wave.point_eqs_str;
       wave.init_eqs_eel = programSource(init ?? new Map());
       wave.frame_eqs_eel = programSource(frame ?? new Map());
       wave.point_eqs_eel = programSource(point ?? new Map());
