@@ -1199,14 +1199,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, []);
 
   const play = useCallback(async () => {
-    if (videoElementRef.current && !videoElementRef.current.paused) {
-      videoElementRef.current.pause();
+    if (videoMode === 'video') {
+      videoElementRef.current?.pause();
       setVideoIsPlaying(false);
+      setVideoAutoplayPending(false);
       setVideoMode('visualizer');
     }
     initWebAudio();
     await winampController.play();
-  }, [initWebAudio]);
+  }, [initWebAudio, videoMode]);
 
   const pause = useCallback(() => {
     winampController.pause();
@@ -1407,18 +1408,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length]);
     setFourthVisualizerPresetIndex(0);
   }, [videoMode, switchVideoMode]);
-
-  const goToVideoQueueIndex = useCallback((index: number) => {
-    const item = videoQueue[index];
-    if (!item || index === videoQueueIndex) return;
-    winampController.pause();
-    setVideoQueueIndex(index);
-    setVideoUrl(item.url);
-    setVideoFileName(item.name);
-    setVideoStatus('');
-    setVideoIsPlaying(false);
-    setVideoAutoplayPending(true);
-  }, [videoQueue, videoQueueIndex]);
 
   const selectUnifiedMediaItem = useCallback((index: number) => {
     const item = unifiedMediaItems[index];
