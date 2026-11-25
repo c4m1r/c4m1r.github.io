@@ -870,6 +870,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [visualizerAutoCycle, showVideo, videoShade, videoMode]);
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFileName, setVideoFileName] = useState('');
+  const unifiedNavigationRef = useRef<(direction: -1 | 1) => void>(() => {});
   const [videoQueue, setVideoQueue] = useState<Array<{ url: string; name: string }>>([]);
   const [unifiedMediaOrder, setUnifiedMediaOrder] = useState<string[]>([]);
   const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
@@ -1226,22 +1227,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setCurrentTime(0);
   }, []);
 
-  const historyRef = useRef<number[]>([]);
-
-  const next = useCallback(() => {
-    historyRef.current.push(trackIndex);
-    winampController.next();
-  }, [trackIndex]);
-
-  const previous = useCallback(() => {
-    if (historyRef.current.length > 0) {
-      const prevIdx = historyRef.current.pop()!;
-      winampController.setTrack(prevIdx);
-      return;
-    }
-    winampController.prev();
-  }, []);
-
   const seek = (pct: number) => {
     if (!duration) return;
     winampController.seek((pct / 100) * duration);
@@ -1293,8 +1278,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       ['play', () => { void winampController.play(); }],
       ['pause', () => winampController.pause()],
       ['stop', () => { winampController.pause(); winampController.seek(0); }],
-      ['previoustrack', previous],
-      ['nexttrack', next],
+      ['previoustrack', () => unifiedNavigationRef.current(-1)],
+      ['nexttrack', () => unifiedNavigationRef.current(1)],
       ['seekbackward', (details) => {
         const state = winampController.getState();
         winampController.seek(state.currentTime - (details.seekOffset ?? 5));
@@ -1315,7 +1300,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         try { session.setActionHandler(action, null); } catch { /* Ignore unsupported cleanup. */ }
       });
     };
-  }, [previous, next]);
+  }, []);
 
   const clearFullscreenHideTimer = useCallback(() => {
     if (fullscreenHideTimerRef.current !== null) {
@@ -1447,6 +1432,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
     selectUnifiedMediaItem(nextIndex);
   }, [unifiedMediaItems, videoMode, videoUrl, shuffle, selectUnifiedMediaItem]);
+  unifiedNavigationRef.current = navigateUnifiedMediaQueue;
 
   const moveUnifiedMediaItem = useCallback((direction: -1 | 1) => {
     if (activeUnifiedMediaIndex < 0 || activeUnifiedMediaIndex >= unifiedMediaItems.length) return;
@@ -1566,7 +1552,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
       switch (key) {
         case 'z':
-          previous();
+          unifiedNavigationRef.current(-1);
           break;
         case 'x':
           void play();
@@ -1578,7 +1564,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           stop();
           break;
         case 'b':
-          next();
+          unifiedNavigationRef.current(1);
           break;
         case 'r': {
           const nextValue = !winampController.isRepeat();
