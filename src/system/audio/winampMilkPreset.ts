@@ -71,7 +71,7 @@ async function convertMilkdropShader(
     import('milkdrop-preset-utils'),
   ]);
   const entryName = 'milkdrop_shader_entry';
-  const prepared = prepareShader(source).replace('float4 shader_body (', \`float4 \${entryName} (\`);
+  const prepared = prepareShader(source).replace('float4 shader_body (', `float4 ${entryName} (`);
   const translated = await convertHLSLShader(prepared, entryName, 'fs');
   if (typeof translated !== 'string' || /^(parsing failed|code generation failed)$/i.test(translated.trim())) {
     throw new Error(typeof translated === 'string' ? translated : 'HLSL parser returned no output');
@@ -320,7 +320,7 @@ export async function convertMilkPreset(
       preset[stage] = converted;
       shaderStages += 1;
     } catch (error) {
-      warnings.add(\`MilkDrop 2 \${stage} shader could not be translated: \${error instanceof Error ? error.message : 'unknown parser error'}; Butterchurn fallback shader is used.\`);
+      warnings.add(`MilkDrop 2 ${stage} shader could not be translated: ${error instanceof Error ? error.message : 'unknown parser error'}; Butterchurn fallback shader is used.`);
     }
   }
   preset.warp = shaderLines.warp.size && shaderStages > 0 && typeof preset.warp === 'string'
