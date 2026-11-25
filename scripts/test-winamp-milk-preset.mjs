@@ -94,6 +94,18 @@ test('translates numbered MilkDrop 2 warp and composite HLSL shader blocks', asy
   assert.equal(result.warnings.some((warning) => /could not be translated/i.test(warning)), false);
 });
 
+
+test('runs the upstream HLSL parser against a minimal real MilkDrop shader', async () => {
+  const result = await convertMilkPreset(
+    '[preset00]\nwarp_1=\x60shader_body\nwarp_2=\x60{\nwarp_3=\x60ret = float3(0.1, 0.2, 0.3);\nwarp_4=\x60}\n',
+    basePreset,
+    milkdropParser,
+  );
+  assert.match(result.preset.warp, /shader_body\s*\{/);
+  assert.equal(result.converted.shaderStages, 1);
+  assert.equal(result.warnings.some((warning) => /warp shader could not be translated/i.test(warning)), false);
+});
+
 test('warns when only scalar parameters can be converted and keeps the async compatibility helper', async () => {
   const result = await convert('[preset00]\nzoom=1.2\n');
   assert.ok(result.warnings.some((warning) => /no EEL equations/i.test(warning)));
