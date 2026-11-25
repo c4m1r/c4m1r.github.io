@@ -71,9 +71,11 @@ function safeAssetName(name: string): boolean {
 function safeMimeType(type: string): boolean {
   return type === '' || /^[a-z0-9][a-z0-9!#$&^_.+-]*\/[a-z0-9][a-z0-9!#$&^_.+-]*$/i.test(type);
 }
+function assetExtension(name: string): string {
+  return name.match(/\.([a-z0-9]{1,8})$/i)?.[1]?.toLowerCase() ?? 'bin';
+}
 function localAssetPath(index: number, name: string): string {
-  const extension = name.match(/\.([a-z0-9]{1,8})$/i)?.[1]?.toLowerCase() ?? 'bin';
-  return `audio/${String(index + 1).padStart(6, '0')}.${extension}`;
+  return \`audio/\${String(index + 1).padStart(6, '0')}.\${assetExtension(name)}\`;
 }
 
 export async function createWinampArchive(
@@ -278,7 +280,9 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
         lastModified: track.assetLastModified ?? -1,
         size: track.assetSize ?? -1,
       };
+      const archiveExtension = track.assetPath.slice(track.assetPath.lastIndexOf('.') + 1).toLowerCase();
       if (!safeAssetName(metadata.name) || !safeMimeType(metadata.type) ||
+        archiveExtension !== assetExtension(metadata.name) ||
         !Number.isSafeInteger(metadata.lastModified) || metadata.lastModified < 0 ||
         !Number.isSafeInteger(metadata.size) || metadata.size !== assetBytes.byteLength) {
         throw new Error('Archive contains invalid original audio-file metadata');
