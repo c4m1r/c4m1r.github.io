@@ -18,6 +18,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
   const runtimeRef = useRef<ButterchurnRuntime | null>(null);
   const presetIndexRef = useRef(presetIndex);
   const [status, setStatus] = useState('LOADING MILKDROP ENGINE…');
+  const [presetName, setPresetName] = useState('');
 
   useEffect(() => {
     presetIndexRef.current = presetIndex;
@@ -132,6 +133,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         runtimeRef.current = { visualizer, audioNode, presetNames, presets };
 
         const firstIndex = ((presetIndexRef.current % presetNames.length) + presetNames.length) % presetNames.length;
+        setPresetName(presetNames[firstIndex]);
         await visualizer.loadPreset(presets[presetNames[firstIndex]], 2.5);
         if (disposed) return;
 
@@ -174,7 +176,9 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     const runtime = runtimeRef.current;
     if (!runtime || !runtime.presetNames.length) return;
     const index = ((presetIndex % runtime.presetNames.length) + runtime.presetNames.length) % runtime.presetNames.length;
-    const preset = runtime.presets[runtime.presetNames[index]];
+    const name = runtime.presetNames[index];
+    const preset = runtime.presets[name];
+    setPresetName(name);
     void Promise.resolve(runtime.visualizer.loadPreset(preset, 2.5)).catch((error: unknown) => {
       console.error('Butterchurn preset switch failed:', error);
       setStatus('PRESET COULD NOT BE LOADED');
@@ -183,6 +187,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
 
   return (
     <div className="wa-butterchurn">
+      {presetName && <div className="wa-butterchurn__preset" title={presetName}>{presetName}</div>}
       <canvas ref={canvasRef} aria-label="Genuine MilkDrop visualization" />
       {status && <div className="wa-butterchurn__status" role="status" aria-live="polite">{status}</div>}
     </div>
