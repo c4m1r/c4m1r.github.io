@@ -342,3 +342,11 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - Butterchurn local preset imports are size-limited before file reads (2 MB for `.milk`, 8 MB for JSON). Async preset-switch and preset-advance failures are ignored when their runtime has been disposed or replaced.
 - GitHub Actions typecheck, Winamp archive tests, ESLint, production build, artifact verification and GitHub Pages deployment passed for `e53db050`.
 - Remaining: full EEL2/custom wave/custom shape/MilkDrop 2 shader conversion and owner-deferred real browser acceptance, touch interaction and WebGL performance/memory profiling. `milkdrop-toolchain` is not a drop-in Butterchurn adapter.
+
+
+## 21. MilkDrop EEL2 and custom-object conversion — 2026-11-26
+
+- The `.milk` importer now produces Butterchurn WASM preset data rather than copying scalar values only. Known MilkDrop scalar aliases map to Butterchurn base values; numbered `per_frame_init`, `per_frame`, `per_pixel`, custom wave and custom shape equations are preserved in Butterchurn's `*_eqs_eel` fields for its WASM compiler.
+- MilkDrop wave/shape slots are one-based in `.milk` files and are converted to zero-based Butterchurn array indices. Scalar slot fields and all supported equation stages are mapped.
+- Unsupported custom MilkDrop 2 warp/composite shader fields and unknown scalar fields are surfaced as import warnings. HLSL-to-Butterchurn shader conversion is not implemented; do not describe this as full MilkDrop 2 compatibility.
+- Regression tests cover aliases, equation ordering, custom wave/shape conversion, unsupported shader/unmapped-field warnings and malformed/oversized inputs. Runtime compilation and visual parity still require browser QA with representative real presets.

@@ -816,7 +816,7 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Fourth-window selector combines the current audio playlist and video queue. Previous/Next and automatic end-of-track navigation traverse the combined list while dispatching to the correct media element.
 - [x] Audio and video playback are mutually exclusive. Video remains outside the Web Audio graph; the existing audio controller and analyser remain unchanged.
 - [x] `.wampack` restore uses one IndexedDB write transaction and rolls back imported records plus temporary Blob URLs if playlist publication fails after storage commit.
-- [x] Added safe scalar-only `.milk` import to Butterchurn. EEL expressions, custom waves/shapes and shaders remain explicitly unsupported; full MilkDrop conversion is still open.
+- [x] Replaced scalar-only `.milk` import with a Butterchurn WASM adapter: mapped MilkDrop scalar aliases, EEL2 init/frame/per-pixel equations, custom-wave fields/programs and custom-shape fields/programs are passed through the native Butterchurn EEL/WASM path. MilkDrop 2 HLSL warp/composite shaders remain unsupported and are reported.
 
 
 ### 2026-11-25 — Winamp mixed queue editing and MilkDrop importer tests
@@ -824,13 +824,13 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Mixed audio/video queue order can now be edited from the fourth-window toolbar using Move Up / Move Down. The selected item remains selected by stable media key when the list changes.
 - [x] Shuffle advances to a random different item in the mixed queue; Repeat and Auto Advance settings now apply to video end-of-playback as well as audio.
 - [x] Added automated tests for the scalar-only `.milk` importer, including non-mutation, case-insensitive values, EEL rejection, custom-section rejection, malformed and oversized inputs.
-- [ ] Full legacy MilkDrop conversion (EEL and MilkDrop 2 shader translation) remains open; the current safe importer intentionally rejects those constructs.
+- [ ] MilkDrop 2 custom HLSL warp/composite shader translation remains open. EEL2, custom waves and custom shapes are now mapped to Butterchurn's WASM preset schema; real-preset browser validation is still required.
 - [ ] Browser acceptance of mixed queue reorder, shuffle/repeat, autoplay, touch and narrow toolbar remains open.
 
 
 ### Winamp — remaining integration and acceptance work (2026-11-25)
 
-- [ ] Full legacy `.milk` conversion: integrate a maintained/compatible EEL2 + MilkDrop preset parser and HLSL-to-GLSL conversion path only after dependency, license, security, bundle-size and Butterchurn schema review. Current importer deliberately supports scalar-only files; do not silently strip EEL or shader content.
+- [ ] MilkDrop 2 HLSL warp/composite shader support: Butterchurn does not execute these native shaders. Keep the explicit warning until a compatible shader path is proven; do not silently claim shader parity.
 - [x] Persist the edited mixed audio/video queue order across reloads and fourth-window close/reopen using stable media keys and guarded localStorage access. Toolbar Move Up/Down and the in-window drag-reorder list are available.
 - [x] Extend `.wampack` restore tests with asynchronous quota failure, synchronous object-store failure, atomic transaction abort and post-commit rollback of IndexedDB records plus temporary Blob URLs. Optional DEFLATE import remains unimplemented (writer currently uses STORE).
 - [ ] Browser acceptance on desktop and mobile: mixed audio/video selection, reorder, shuffle, repeat, auto-advance, Media Session keys, keyboard shortcuts, autoplay restrictions, fullscreen, touch gestures, narrow toolbar, codec errors, and close/reopen resource release.
@@ -868,5 +868,15 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Verify post-commit rollback removes imported local records and revokes every temporary Blob URL when playlist publication fails.
 - [x] Guard late Butterchurn preset-switch/advance rejections after teardown and enforce 2 MB `.milk` / 8 MB Butterchurn JSON import limits before reading files.
 - [x] CI and GitHub Pages deployment passed for `e53db050` (TypeScript, Winamp archive tests, ESLint, production build and artifact verification).
-- [ ] Full EEL2/custom-wave/custom-shape/MilkDrop 2 shader conversion is still not complete. `milkdrop-toolchain` provides parser/compiler primitives but not a Butterchurn runtime adapter; keep the current scalar-only importer explicit until a tested adapter exists.
+- [ ] MilkDrop 2 custom HLSL warp/composite shaders are not converted. The local adapter now passes EEL2 equations and custom waves/shapes to Butterchurn WASM; validate representative real-world presets in a browser before marking compatibility complete.
 - [ ] Real browser acceptance and GPU/CPU/memory profiling remain owner-deferred; source changes and CI do not substitute for desktop/mobile browser testing.
+
+
+### 2026-11-26 — MilkDrop EEL2 and custom-object adapter
+
+- [x] Replace scalar-only `.milk` import with a local adapter that maps known MilkDrop 2 scalar aliases into Butterchurn `baseVals` and preserves numbered EEL2 init/frame/per-pixel programs in `*_eqs_eel` fields. Butterchurn's WASM loader compiles these programs; no JavaScript `eval` or extra parser dependency is introduced.
+- [x] Map one-based MilkDrop custom wave/shape slots to zero-based Butterchurn arrays, including scalar fields and init/frame/per-point EEL2 program strings.
+- [x] Report unsupported/unmapped fields and MilkDrop 2 custom warp/composite shaders instead of silently dropping them. HLSL shader parity is not implemented.
+- [x] Add regression coverage for scalar aliases, EEL2 program ordering, custom wave/shape slot conversion, shader/unmapped warnings, missing sections, incomplete base presets and size limits.
+- [ ] Run real `.milk` samples through Butterchurn WASM in a browser and visually compare; CI source tests do not prove runtime equation compatibility.
+- [ ] MilkDrop 2 HLSL warp/composite shader support remains open.
