@@ -61,12 +61,12 @@ test('reads ID3v2.2 title, artist, album and track number', async () => {
 test('reads ID3v2.4 synchsafe frame lengths and UTF-16 text frames', async () => {
   const synchsafe = (value) => Uint8Array.of((value >> 21) & 127, (value >> 14) & 127, (value >> 7) & 127, value & 127);
   const utf16 = (value) => {
-    const encoded = new TextEncoder().encode(value);
-    const output = new Uint8Array(2 + encoded.length * 2);
+    const output = new Uint8Array(2 + value.length * 2);
     output.set([0xff, 0xfe]);
-    for (let index = 0; index < encoded.length; index += 1) {
-      output[2 + index * 2] = encoded[index];
-      output[3 + index * 2] = 0;
+    for (let index = 0; index < value.length; index += 1) {
+      const codeUnit = value.charCodeAt(index);
+      output[2 + index * 2] = codeUnit & 255;
+      output[3 + index * 2] = codeUnit >>> 8;
     }
     return output;
   };
