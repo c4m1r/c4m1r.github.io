@@ -616,9 +616,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       const metadataByPath = new Map<string, { title: string; artist: string; album?: string; trackNumber?: string; durationLabel: string }>(archive.manifest.tracks.filter((track) => track.assetPath).map((track) => [track.assetPath!, {
         title: track.title, artist: track.artist, ...(track.album ? { album: track.album } : {}),
         ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}), durationLabel: track.durationLabel,
-      }]));
+      }] as const));
       const importedAssets = await importWinampLocalAudioAssets(archive.assets, metadataByPath);
-      const recordsByPath = new Map<string, (typeof importedAssets)[number]['record']>(importedAssets.map(({ path, record }) => [path, record]));
+      const recordsByPath = new Map<string, (typeof importedAssets)[number]['record']>(importedAssets.map(({ path, record }) => [path, record] as const));
       const additions: MediaTrack[] = archive.manifest.tracks.flatMap((track) => {
         if (track.assetPath) {
           const record = recordsByPath.get(track.assetPath);
