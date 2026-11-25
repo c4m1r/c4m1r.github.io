@@ -1044,7 +1044,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       session.metadata = new MediaMetadata({
         title: currentTrack.title,
         artist: currentTrack.artist,
-        album: 'Winamp Classic',
+        album: currentTrack.album || 'Winamp Classic',
       });
     }
     session.playbackState = isPlaying ? 'playing' : 'paused';
