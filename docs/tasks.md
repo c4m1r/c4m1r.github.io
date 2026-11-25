@@ -757,6 +757,13 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] UI: add Backup / Restore actions to the existing Playlist MISC menu (not another window); show archive size, track count, skipped entries and success/failure status.
 - [x] Add round-trip fixtures for empty library, mixed remote/local playlist, duplicate local tracks, Unicode filenames/tags, malformed ZIP, traversal paths, CRC mismatch, truncated archive and oversized manifest.
 
+#### Butterchurn upstream source inspection (2026-11-25)
+
+- Upstream API inspected: `createVisualizer(audioContext, canvas, { width, height })`, `connectAudio(audioNode)`, `loadPreset(preset, blendSeconds)`, `setRendererSize(width, height)` and explicit `render()`; WebGL2 is required. References: [upstream README](https://github.com/jberg/butterchurn#usage), [visualizer implementation](https://github.com/jberg/butterchurn/blob/master/src/visualizer.js), [audio processor](https://github.com/jberg/butterchurn/blob/master/src/audio/audioProcessor.js).
+- In the inspected upstream source, `connectAudio` connects the supplied node to Butterchurn's internal DelayNode; that node feeds Butterchurn's own analysers and channel splitter. The audio processor does not connect this branch to `AudioContext.destination`, so this connection does not create a second audible route. Re-check the exact pinned release before wiring.
+- The existing controller's post-EQ point is its `pannerNode` immediately before the shared analyser/destination. `getWebAudio()` currently exposes context/analyser/source but not this post-EQ node; add a read-only accessor rather than constructing another media source or AudioContext.
+- npm currently lists stable `butterchurn@2.6.7` and `butterchurn-presets@2.4.7`; upstream main identifies itself as `3.0.0-beta.5`. Do not mix the beta source assumptions with stable package behavior. Pin and test one compatible pair with package.json and package-lock.json updated together before implementation.
+
 #### Butterchurn integration — hard audio-graph acceptance
 - [ ] Pin compatible `butterchurn` and `butterchurn-presets` versions and update package manifest + lockfile together; no CDN or runtime network fetch.
 - [ ] Load renderer and preset bundle only after selecting the separate `MilkDrop (Butterchurn)` mode. Existing `MilkDrop` remains the procedural project mode.
