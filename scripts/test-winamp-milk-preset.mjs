@@ -23,7 +23,7 @@ test('converts MilkDrop scalar aliases without mutating Butterchurn base preset'
   assert.equal(result.preset.baseVals.wave_mode, 7);
   assert.equal(result.preset.baseVals.echo_zoom, 1.4);
   assert.equal(basePreset.baseVals.zoom, 1);
-  assert.equal(result.warnings.length, 0);
+  assert.deepEqual(result.warnings, [], result.warnings.join('; '));
 });
 
 test('preserves EEL2 init, frame and per-pixel source for Butterchurn WASM', () => {
