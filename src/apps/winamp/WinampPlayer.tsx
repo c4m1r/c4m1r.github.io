@@ -1371,8 +1371,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         case 'l':
           playlistInputRef.current?.click();
           break;
-        case 'f':
-          if (showVideo && document.hasFocus() && !isVideoFullscreen) {
+        case 'f': {
+          const osWindow = videoWindowRef.current?.closest<HTMLElement>('.winamp-os-window');
+          const isWinampOsWindowActive = osWindow
+            ? osWindow.dataset.osWindowActive === 'true'
+            : document.hasFocus();
+          if (showVideo && document.hasFocus() && isWinampOsWindowActive && !isVideoFullscreen) {
             event.preventDefault();
             event.stopImmediatePropagation();
             enterVideoFullscreen();
@@ -1380,6 +1384,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             handled = false;
           }
           break;
+        }
         case 'arrowleft':
           winampController.seek(Math.max(0, currentTime - 5));
           break;
