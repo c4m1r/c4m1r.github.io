@@ -811,6 +811,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const setVideoWindowVisible = (visible: boolean) => {
     if (visible === showVideo) return;
+    if (!visible && videoMode === 'video') {
+      videoElementRef.current?.pause();
+      setVideoIsPlaying(false);
+      setVideoAutoplayPending(false);
+    }
     if (!visible && isVideoFullscreen) {
       if (document.fullscreenElement === videoWindowRef.current && document.exitFullscreen) void document.exitFullscreen().catch(() => undefined);
       setIsVideoFullscreen(false);
@@ -1264,14 +1269,23 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     else void play();
   }, [videoMode, pause, play]);
 
+  const switchVideoMode = useCallback((mode: 'video' | 'visualizer') => {
+    if (mode === 'visualizer' && videoMode === 'video') {
+      videoElementRef.current?.pause();
+      setVideoIsPlaying(false);
+      setVideoAutoplayPending(false);
+    }
+    setVideoMode(mode);
+  }, [videoMode]);
+
   const cycleFullscreenMode = useCallback(() => {
     if (videoMode === 'video') {
-      setVideoMode('visualizer');
+      switchVideoMode('visualizer');
       return;
     }
     setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length]);
     setFourthVisualizerPresetIndex(0);
-  }, [videoMode]);
+  }, [videoMode, switchVideoMode]);
 
   const goToVideoQueueIndex = useCallback((index: number) => {
     const item = videoQueue[index];
@@ -2346,8 +2360,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         </div>
         {!videoShade && <>
         <div className="wa-video__toolbar">
-          <button type="button" className={videoMode === 'visualizer' ? 'is-active' : ''} onClick={() => setVideoMode('visualizer')}>VISUALIZATION</button>
-          <button type="button" className={videoMode === 'video' ? 'is-active' : ''} onClick={() => setVideoMode('video')}>VIDEO</button>
+          <button type="button" className={videoMode === 'visualizer' ? 'is-active' : ''} onClick={() => switchVideoMode('visualizer')}>VISUALIZATION</button>
+          <button type="button" className={videoMode === 'video' ? 'is-active' : ''} onClick={() => switchVideoMode('video')}>VIDEO</button>
           {videoMode === 'visualizer' && <select className="wa-video__mode-select" aria-label="Visualization family and mode" value={fourthVisualizerMode} onChange={(event) => setFourthVisualizerMode(event.target.value as FourthVisualizerMode)}>
             {fourthVisualizerGroups.map((group) => <optgroup key={group.label} label={group.label}>
               {group.modes.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
