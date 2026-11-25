@@ -748,7 +748,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
   - `audio/000001.ext`, `audio/000002.ext`, …: original audio bytes, stored without transcoding or quality loss.
   - Optional `settings/eq-presets.json`: user-created EQ presets only; do not silently export unrelated browser settings.
 - [x] Export source bytes from IndexedDB records, not from `blob:` URLs. Preserve playlist order and duplicate appearances in the manifest while storing each local asset once.
-- [x] Import validates archive signature, central-directory bounds, entry count, expanded size, path traversal, duplicate paths, manifest schema/version and per-file CRC before writing anything to IndexedDB. MIME/extension cross-validation remains open.
+- [x] Import validates archive signature, central-directory bounds, entry count, expanded size, path traversal, duplicate paths, manifest schema/version, filename/archive-extension agreement and per-file CRC before writing anything to IndexedDB. MIME syntax is checked; byte-level MIME sniffing remains out of scope.
 - [x] Set conservative import limits and report oversized archives before allocation; do not trust manifest-provided filenames as filesystem paths.
 - [x] Import validates the entire archive before saving; the IndexedDB read-write transaction aborts atomically on a failed write. Playlist entries are appended only after the transaction completes.
 - [x] Rebuild fresh object URLs from restored Blobs; revoke them on removal/unmount using the existing lifecycle. Never persist object URLs.
@@ -775,7 +775,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Validate the entire archive before IndexedDB writes; insert imported audio assets in one IndexedDB read-write transaction.
 - [x] Recreate object URLs from restored Blobs and expose Backup / Restore actions in the existing Playlist MISC menu.
 - [ ] Browser round-trip QA with real audio files, large archives, duplicate playlist references and malformed ZIP fixtures (not yet run).
-- [ ] Automated tests now cover CRC, central-directory parsing, manifest validation, duplicate paths, unreferenced payloads, unsupported compression and truncation. IndexedDB rollback still needs a browser/fake-IDB test.
+- [ ] Automated tests now cover CRC, central-directory parsing, manifest validation, duplicate paths, unreferenced payloads, unsupported compression, filename/extension disagreement and truncation. IndexedDB rollback still needs a browser/fake-IDB test.
 - [ ] Consider optional DEFLATE support only if needed; current .wampack writer emits STORE entries and the importer intentionally accepts STORE only.
 
 Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
