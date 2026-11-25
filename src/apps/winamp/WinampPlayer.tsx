@@ -211,7 +211,7 @@ function getWinampVisualizerFrame(): WinampVisualizerFrame {
 
 function subscribeWinampVisualizerFrame(listener: () => void): () => void {
   visualizerFrameSubscribers.add(listener);
-  if (visualizerFrameRaf === null && typeof window !== 'undefined') {
+  if (!unsubscribeVisualizerController && typeof window !== 'undefined') {
     unsubscribeVisualizerController = winampController.subscribe((state) => {
       if (state.isPlaying) refreshWinampVisualizerAudioGraph();
     });
