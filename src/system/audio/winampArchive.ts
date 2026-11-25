@@ -54,7 +54,7 @@ function u16(view: DataView, offset: number, value: number): void { view.setUint
 function u32(view: DataView, offset: number, value: number): void { view.setUint32(offset, value, true); }
 function safePath(path: string): boolean {
   return path.length > 0 && path.length <= 240 && !path.startsWith('/') &&
-    !/[\/\\\u0000-\u001f\u007f]/.test(path) &&
+    !/[\\\u0000-\u001f\u007f]/.test(path) &&
     path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
 }
 function safeAssetName(name: string): boolean {
