@@ -1,6 +1,6 @@
 # Winamp Visualization Modes — design and implementation contract
 
-Status: implementation in progress. In-window renderers, grouped family picker, random action, distinct named AVS/MilkDrop scenes and optional auto-cycle are committed. A separate genuine MilkDrop (Butterchurn) mode is now wired with lazy imports, local preset pack, post-EQ audio input and explicit WebGL2 teardown. The shared 60 FPS loop now stops while the document is backgrounded, resumes on return, and remains a single subscription across both procedural visualizer surfaces. Fourth-window SVG gradient IDs are instance-scoped. Browser acceptance and performance profiling remain pending.
+Status: implementation in progress. In-window renderers, grouped family picker, random action, distinct named AVS/MilkDrop scenes and optional auto-cycle are committed. A separate genuine MilkDrop (Butterchurn) mode is wired with lazy package imports, a local preset pack, post-EQ audio input, visibility-aware rendering and explicit WebGL2 teardown. The shared 60 FPS loop now stops while the document is backgrounded, resumes on return, and remains a single subscription across both procedural visualizer surfaces. Fourth-window SVG gradient IDs are instance-scoped. Browser acceptance and performance profiling remain pending.
 
 ## Scope — existing fourth window only
 
@@ -24,34 +24,6 @@ The existing fourth window already contains a visualizer stage and a local-video
 - Both surfaces may read the same audio-analysis data, but presentation state is independent.
 - The existing toolbar has a compact grouped picker, `MODE` cycles all 13 modes, and `RND` selects another mode in the current family (or from all modes for a singleton family).
 - AVS has four named original variations (Scope, Feedback Tunnel, Rotating Geometry, Kaleidoscope); MilkDrop has four (Geiss Flow, Fractal Flame, Waveform Tunnel, Psychedelic Swirl), cycled with `PSET`.
-
-## Genuine MilkDrop mode — separate optional renderer
-
-The existing `MilkDrop` entry remains an original procedural, MilkDrop-inspired project visualization. It must not be relabeled as genuine preset playback. The planned `MilkDrop (Butterchurn)` entry is a separate optional mode backed by the Butterchurn WebGL2 renderer and locally bundled presets.
-
-- Pin the stable `butterchurn@2.6.7` + `butterchurn-presets@2.4.7` pair; both packages declare MIT licensing. Do not use a CDN or runtime network fetch.
-- Load the renderer and preset bundle only after the user selects the separate genuine mode. The regular Winamp launch and all existing visualizer modes must not pay the import or preset-memory cost.
-- Reuse `winampController.getVisualizerAudioNode()`, which returns the existing post-EQ/post-balance node. Do not create another media element source, AudioContext or audible output route.
-- The upstream `master` implementation's audio branch uses an internal DelayNode feeding its own analysers; verify this behavior against the exact pinned stable package before connecting it.
-- On mode exit or fourth-window close, stop the renderer RAF, disconnect only Butterchurn's branch from the shared node, release preset references, lose the WebGL context when supported, and clear the canvas. The browser may retain the imported JavaScript module in its module cache; teardown guarantees release of the live renderer resources, not forced deletion of module code from memory.
-- Unsupported WebGL2, import errors and context loss must leave playback and all existing modes operational.
-
-Implementation status: API research and the shared post-EQ audio-node accessor are committed; dependency lockfile update, stable-package source verification, renderer integration and browser profiling remain open.
-
-## Genuine MilkDrop (Butterchurn) — implementation status
-
-The fourth-window picker now has a separate **MilkDrop (Butterchurn)** entry. The existing **MilkDrop** option remains the project's original procedural interpretation and is not replaced.
-
-- Exact dependencies are pinned locally: `butterchurn@2.6.7` and `butterchurn-presets@2.4.7`; no CDN or runtime network request is used.
-- Both packages are loaded with dynamic imports only after selecting the genuine mode. The initial Winamp bundle and other visualization modes do not load Butterchurn or the preset pack.
-- The renderer mounts one WebGL2 canvas in the existing fourth-window stage. Fullscreen reuses the same canvas and renderer; window dimensions and layout are unchanged.
-- Audio uses `winampController.getVisualizerAudioNode()`, the shared post-EQ/post-balance `StereoPannerNode`. The stable 2.6.7 source confirms `connectAudio` routes this signal to Butterchurn's internal DelayNode and analysis nodes, not to `AudioContext.destination`; the shared audible route is untouched.
-- Preset cycling uses the local preset pack and Butterchurn's blend transition. The active preset name is displayed in the stage.
-- On mode exit or fourth-window close, the renderer loop stops, only Butterchurn's analysis branch is disconnected, preset references are released, and the stable renderer's WebGL2 context is lost through `WEBGL_lose_context`. The imported JavaScript modules may remain in the browser module cache; live GPU/audio/preset resources are what teardown releases.
-- WebGL2 absence and import/renderer failures show an in-window status and do not intentionally alter Winamp playback.
-- Browser verification, visual acceptance, and 60 FPS/high-DPI performance profiling are still required before marking the mode Verified.
-
-Stable source audit: Butterchurn 2.6.7 release commit `d90f271be02969d8f16a3ed6b6960c971da6eff9`. Its stable API does not provide a `loseGLContext()` method; cleanup therefore uses the WebGL context extension directly.
 
 ## Canonical Winamp visualization families
 
