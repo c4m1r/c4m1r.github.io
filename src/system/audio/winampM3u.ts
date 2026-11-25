@@ -77,6 +77,16 @@ export function parseM3uPlaylist(content: string): ParsedM3uPlaylist {
   return { tracks, skippedEntries };
 }
 
+function parseDurationLabel(value: string): number {
+  const match = value.trim().match(/^(\d+):(\d{2})$/);
+  if (!match) return -1;
+  const minutes = Number(match[1]);
+  const seconds = Number(match[2]);
+  if (!Number.isSafeInteger(minutes) || seconds > 59) return -1;
+  const total = minutes * 60 + seconds;
+  return Number.isSafeInteger(total) ? total : -1;
+}
+
 function singleLine(value: string): string {
   return value.replace(/[\r\n]+/g, ' ').trim();
 }
@@ -96,8 +106,7 @@ export function createM3uPlaylist(tracks: MediaTrack[]): { content: string; skip
       skippedEntries += 1;
       return;
     }
-    const [minutes, seconds] = track.durationLabel.split(':').map(Number);
-    const duration = Number.isFinite(minutes) && Number.isFinite(seconds) ? minutes * 60 + seconds : -1;
+    const duration = parseDurationLabel(track.durationLabel);
     lines.push(`#EXTINF:${duration},${singleLine(track.artist)} - ${singleLine(track.title)}`);
     lines.push(url.href);
   });
