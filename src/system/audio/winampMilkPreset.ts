@@ -28,6 +28,7 @@ const EQUATION_KEYS = new Map([
 ]);
 
 const MAIN_FIELD_ALIASES: Record<string, string> = {
+  frating: 'rating', fwaveparam: 'wave_mystery', bmaximizewavecolor: 'wave_brighten',
   fdecay: 'decay', fgammaadj: 'gammaadj', nwavemode: 'wave_mode',
   badditivewaves: 'additivewave', bwavedots: 'wave_dots', bwavethick: 'wave_thick',
   bmodwavealphabyvolume: 'modwavealphabyvolume', fmodwavealphastart: 'modwavealphastart',
@@ -157,7 +158,7 @@ export async function convertMilkPreset(
     shapeFrame: new Map<number, Map<number, string>>(),
   };
   const warnings = new Set<string>();
-  const metadata = /^(rating|frating|author|szauthor|title|szpresetname|description|szdescription|presetname|presetauthor|presetdescription|version|milkdrop_preset_version|psversion|psversion_comp|psversion_warp)$/i;
+  const metadata = /^(rating|author|szauthor|title|szpresetname|description|szdescription|presetname|presetauthor|presetdescription|version|milkdrop_preset_version|psversion|psversion_comp|psversion_warp)$/i;
   const shader = /^(warp|comp)(?:_shader|_\d+|$)/i;
 
   for (const rawLine of body.split(/\r?\n/)) {

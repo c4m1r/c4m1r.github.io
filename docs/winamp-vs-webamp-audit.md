@@ -350,3 +350,12 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - MilkDrop wave/shape slots are one-based in `.milk` files and are converted to zero-based Butterchurn array indices. Scalar slot fields and all supported equation stages are mapped.
 - Unsupported custom MilkDrop 2 warp/composite shader fields and unknown scalar fields are surfaced as import warnings. HLSL-to-Butterchurn shader conversion is not implemented; do not describe this as full MilkDrop 2 compatibility.
 - Regression tests cover aliases, equation ordering, custom wave/shape conversion, unsupported shader/unmapped-field warnings and malformed/oversized inputs. Runtime compilation and visual parity still require browser QA with representative real presets.
+
+
+## 22. MilkDrop EEL2 adapter for pinned Butterchurn 2.6.7 — 2026-11-26
+
+- Important compatibility correction: Butterchurn 2.6.7 uses `init_eqs_str`, `frame_eqs_str`, `pixel_eqs_str` and the corresponding shape/wave JavaScript strings. The newer `*_eqs_eel` WASM loader is not present in the pinned version; do not use it here.
+- The importer now lazily loads the MIT `milkdrop-eel-parser@0.0.4` package and converts EEL2 source into JavaScript equation strings through its `convert_basic_preset`, `make_wave_map` and `make_shape_map` API. No `eval` is added by our adapter; Butterchurn 2.6.7 itself compiles these strings using its existing preset runner.
+- Scalar defaults and inherited equations are reset before mapping, preventing values/equations from the seed Butterchurn preset leaking into the imported `.milk`. The default Butterchurn feedback GLSL shaders are retained when custom HLSL cannot be translated.
+- Tests cover scalar aliases, EEL2 JS output, custom wave/shape programs, legacy slot numbering, unknown-field and shader warnings, seed isolation and malformed/oversized inputs. CI run `45689480441` passed build and GitHub Pages deployment for `0ad49c11`.
+- Remaining: MilkDrop 2 HLSL warp/composite shader conversion and visual browser QA with real-world presets.
