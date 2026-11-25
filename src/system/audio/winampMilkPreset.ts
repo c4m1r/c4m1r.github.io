@@ -68,6 +68,20 @@ function cloneObject<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
+function resolveSlotIndex(rawIndex: number, slotCount: number): number | null {
+  const index = rawIndex === 0 ? 0 : rawIndex - 1;
+  return Number.isInteger(rawIndex) && index >= 0 && index < slotCount ? index : null;
+}
+
+const WAVE_FIELD_ALIASES: Record<string, string> = {
+  mode: 'spectrum', bspectrum: 'spectrum', bdrawthick: 'thick',
+  busedots: 'usedots', badditive: 'additive',
+};
+const SHAPE_FIELD_ALIASES: Record<string, string> = {
+  badditive: 'additive', bthickoutline: 'thickoutline',
+  thick_outline: 'thickoutline', tex_capture: 'textured',
+};
+
 export function convertMilkPreset(text: string, basePreset: MilkPresetObject): MilkPresetConversion {
   if (text.length > 2 * 1024 * 1024) throw new Error('MilkDrop preset exceeds the 2 MB import limit');
   const source = text.replace(/^\uFEFF/, '');
@@ -116,7 +130,13 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
       matched = true;
       const isSlotProgram = kind.startsWith('wave') || kind.startsWith('shape');
       if (isSlotProgram) {
-        const slot = Number(match[1]) - 1;
+        const rawSlot = Number(match[1]);
+        const isWave = kind.startsWith('wave');
+        const slot = resolveSlotIndex(rawSlot, isWave ? preset.waves.length : preset.shapes.length);
+        if (slot === null) {
+          warnings.add('Unsupported custom ' + (isWave ? 'wave' : 'shape') + ' equation slot: ' + rawSlot);
+          continue;
+        }
         const order = Number(match[2]);
         const group = programs[kind as 'waveInit' | 'waveFrame' | 'wavePoint' | 'shapeInit' | 'shapeFrame'];
         const entries = group.get(slot) ?? new Map<number, string>();
@@ -129,16 +149,20 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
     }
     if (matched) continue;
 
-    const wave = key.match(/^wave_(\d+)_(.+)$/i);
+    const wave = key.match(/^(?:wave|wavecode)_(\d+)_(.+)$/i);
     if (wave) {
-      const target = preset.waves[Number(wave[1]) - 1]?.baseVals;
-      if (!target || !setNumericField(target, wave[2], value)) warnings.add('Unsupported custom wave field: ' + key);
+      const slot = resolveSlotIndex(Number(wave[1]), preset.waves.length);
+      const target = slot === null ? undefined : preset.waves[slot]?.baseVals;
+      const suffix = WAVE_FIELD_ALIASES[wave[2].toLowerCase()] ?? wave[2];
+      if (!target || !setNumericField(target, suffix, value)) warnings.add('Unsupported custom wave field: ' + key);
       continue;
     }
-    const shape = key.match(/^shape_(\d+)_(.+)$/i);
+    const shape = key.match(/^(?:shape|shapecode)_(\d+)_(.+)$/i);
     if (shape) {
-      const target = preset.shapes[Number(shape[1]) - 1]?.baseVals;
-      if (!target || !setNumericField(target, shape[2], value)) warnings.add('Unsupported custom shape field: ' + key);
+      const slot = resolveSlotIndex(Number(shape[1]), preset.shapes.length);
+      const target = slot === null ? undefined : preset.shapes[slot]?.baseVals;
+      const suffix = SHAPE_FIELD_ALIASES[shape[2].toLowerCase()] ?? shape[2];
+      if (!target || !setNumericField(target, suffix, value)) warnings.add('Unsupported custom shape field: ' + key);
       continue;
     }
 
