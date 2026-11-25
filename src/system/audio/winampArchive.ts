@@ -1,0 +1,197 @@
+import type { MediaTrack } from '../../apps/mediaplayer/playlist';
+import type { WinampLocalAudioRecord } from './winampLocalLibrary';
+
+const ARCHIVE_VERSION = 1;
+const MAX_ENTRIES = 1002;
+const MAX_TOTAL_BYTES = 512 * 1024 * 1024;
+const MAX_MANIFEST_BYTES = 4 * 1024 * 1024;
+
+export interface WinampArchiveTrack {
+  id: string;
+  title: string;
+  artist: string;
+  album?: string;
+  trackNumber?: string;
+  durationLabel: string;
+  src?: string;
+  assetPath?: string;
+}
+export interface WinampArchiveManifest {
+  format: 'wampack';
+  version: 1;
+  exportedAt: string;
+  tracks: WinampArchiveTrack[];
+}
+export interface ImportedWinampArchive {
+  manifest: WinampArchiveManifest;
+  assets: Array<{ path: string; name: string; type: string; lastModified: number; blob: Blob }>;
+}
+
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+function crc32(bytes: Uint8Array): number {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (-(crc & 1) & 0xedb88320);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+function u16(view: DataView, offset: number, value: number): void { view.setUint16(offset, value, true); }
+function u32(view: DataView, offset: number, value: number): void { view.setUint32(offset, value, true); }
+function safePath(path: string): boolean {
+  return path.length > 0 && !path.startsWith('/') && !path.includes('\\') &&
+    path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
+}
+function localAssetPath(index: number, name: string): string {
+  const extension = name.match(/\.([a-z0-9]{1,8})$/i)?.[1]?.toLowerCase() ?? 'bin';
+  return `audio/${String(index + 1).padStart(6, '0')}.${extension}`;
+}
+
+export async function createWinampArchive(
+  playlist: MediaTrack[],
+  localRecords: WinampLocalAudioRecord[],
+): Promise<Blob> {
+  const byId = new Map(localRecords.map((record) => [record.id, record]));
+  const used = new Map<string, string>();
+  const entries: Array<{ name: string; bytes: Uint8Array }> = [];
+  const tracks: WinampArchiveTrack[] = [];
+  let assetIndex = 0;
+  for (const track of playlist) {
+    const record = byId.get(track.id);
+    if (record) {
+      let assetPath = used.get(record.id);
+      if (!assetPath) {
+        assetPath = localAssetPath(assetIndex++, record.name);
+        used.set(record.id, assetPath);
+        entries.push({ name: assetPath, bytes: new Uint8Array(await record.blob.arrayBuffer()) });
+      }
+      tracks.push({
+        id: track.id, title: track.title, artist: track.artist, durationLabel: track.durationLabel,
+        ...(track.album ? { album: track.album } : {}),
+        ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}),
+        assetPath,
+      });
+      continue;
+    }
+    let source: URL | null = null;
+    try { source = new URL(track.src); } catch { /* session-only or invalid source */ }
+    tracks.push({
+      id: track.id, title: track.title, artist: track.artist, durationLabel: track.durationLabel,
+      ...(track.album ? { album: track.album } : {}),
+      ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}),
+      ...(source && (source.protocol === 'http:' || source.protocol === 'https:') ? { src: source.href } : {}),
+    });
+  }
+  const manifest: WinampArchiveManifest = {
+    format: 'wampack', version: ARCHIVE_VERSION, exportedAt: new Date().toISOString(), tracks,
+  };
+  entries.unshift({ name: 'manifest.json', bytes: encoder.encode(JSON.stringify(manifest, null, 2)) });
+  if (entries.length > MAX_ENTRIES) throw new Error('Library contains too many archive entries');
+  const total = entries.reduce((sum, entry) => sum + entry.bytes.byteLength, 0);
+  if (total > MAX_TOTAL_BYTES) throw new Error('Archive exceeds the 512 MB safety limit');
+  const localParts: Uint8Array[] = [];
+  const centralParts: Uint8Array[] = [];
+  let offset = 0;
+  for (const entry of entries) {
+    if (!safePath(entry.name)) throw new Error('Unsafe archive path');
+    const name = encoder.encode(entry.name);
+    const crc = crc32(entry.bytes);
+    const local = new Uint8Array(30 + name.length + entry.bytes.length);
+    const lv = new DataView(local.buffer);
+    u32(lv, 0, 0x04034b50); u16(lv, 4, 20); u16(lv, 6, 0x0800);
+    u16(lv, 8, 0); u32(lv, 14, crc); u32(lv, 18, entry.bytes.length); u32(lv, 22, entry.bytes.length);
+    u16(lv, 26, name.length); u16(lv, 28, 0);
+    local.set(name, 30); local.set(entry.bytes, 30 + name.length);
+    localParts.push(local);
+    const central = new Uint8Array(46 + name.length);
+    const cv = new DataView(central.buffer);
+    u32(cv, 0, 0x02014b50); u16(cv, 4, 20); u16(cv, 6, 20); u16(cv, 8, 0x0800);
+    u16(cv, 10, 0); u32(cv, 16, crc); u32(cv, 20, entry.bytes.length); u32(cv, 24, entry.bytes.length);
+    u16(cv, 28, name.length); u16(cv, 30, 0); u16(cv, 32, 0); u16(cv, 34, 0); u16(cv, 36, 0);
+    u32(cv, 38, 0); u32(cv, 42, offset); central.set(name, 46);
+    centralParts.push(central);
+    offset += local.length;
+  }
+  const centralSize = centralParts.reduce((sum, part) => sum + part.length, 0);
+  const end = new Uint8Array(22);
+  const ev = new DataView(end.buffer);
+  u32(ev, 0, 0x06054b50); u16(ev, 4, 0); u16(ev, 6, 0);
+  u16(ev, 8, entries.length); u16(ev, 10, entries.length);
+  u32(ev, 12, centralSize); u32(ev, 16, offset); u16(ev, 20, 0);
+  return new Blob([...localParts, ...centralParts, end], { type: 'application/vnd.winamp.wampack' });
+}
+
+export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchive> {
+  if (file.size < 22 || file.size > MAX_TOTAL_BYTES + 16 * 1024 * 1024) throw new Error('Archive size is outside the supported limit');
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const view = new DataView(bytes.buffer);
+  const searchStart = Math.max(0, bytes.length - 65557);
+  let endOffset = -1;
+  for (let i = bytes.length - 22; i >= searchStart; i -= 1) {
+    if (view.getUint32(i, true) === 0x06054b50) { endOffset = i; break; }
+  }
+  if (endOffset < 0) throw new Error('Invalid ZIP archive: end record not found');
+  const count = view.getUint16(endOffset + 10, true);
+  const centralSize = view.getUint32(endOffset + 12, true);
+  const centralOffset = view.getUint32(endOffset + 16, true);
+  if (!count || count > MAX_ENTRIES || centralOffset + centralSize > endOffset) throw new Error('Invalid ZIP directory or entry count');
+  const files = new Map<string, Uint8Array>();
+  let cursor = centralOffset;
+  let expandedTotal = 0;
+  for (let index = 0; index < count; index += 1) {
+    if (cursor + 46 > bytes.length || view.getUint32(cursor, true) !== 0x02014b50) throw new Error('Malformed ZIP central directory');
+    const flags = view.getUint16(cursor + 8, true);
+    const method = view.getUint16(cursor + 10, true);
+    const crc = view.getUint32(cursor + 16, true);
+    const compressedSize = view.getUint32(cursor + 20, true);
+    const size = view.getUint32(cursor + 24, true);
+    const nameLength = view.getUint16(cursor + 28, true);
+    const extraLength = view.getUint16(cursor + 30, true);
+    const commentLength = view.getUint16(cursor + 32, true);
+    const localOffset = view.getUint32(cursor + 42, true);
+    const name = decoder.decode(bytes.subarray(cursor + 46, cursor + 46 + nameLength));
+    cursor += 46 + nameLength + extraLength + commentLength;
+    if (!safePath(name) || files.has(name) || (flags & 1) || method !== 0 || compressedSize !== size) throw new Error('Unsupported, encrypted or unsafe ZIP entry');
+    expandedTotal += size;
+    if (expandedTotal > MAX_TOTAL_BYTES || localOffset + 30 > bytes.length || view.getUint32(localOffset, true) !== 0x04034b50) throw new Error('Archive exceeds limits or has an invalid local entry');
+    const localNameLength = view.getUint16(localOffset + 26, true);
+    const localExtraLength = view.getUint16(localOffset + 28, true);
+    const dataStart = localOffset + 30 + localNameLength + localExtraLength;
+    const dataEnd = dataStart + size;
+    if (dataEnd > centralOffset) throw new Error('ZIP entry overlaps the central directory');
+    const data = bytes.slice(dataStart, dataEnd);
+    if (crc32(data) !== crc) throw new Error(`CRC check failed for ${name}`);
+    files.set(name, data);
+  }
+  const manifestBytes = files.get('manifest.json');
+  if (!manifestBytes || manifestBytes.byteLength > MAX_MANIFEST_BYTES) throw new Error('Archive manifest is missing or too large');
+  let manifest: WinampArchiveManifest;
+  try { manifest = JSON.parse(decoder.decode(manifestBytes)) as WinampArchiveManifest; } catch { throw new Error('Archive manifest is not valid JSON'); }
+  if (manifest.format !== 'wampack' || manifest.version !== ARCHIVE_VERSION || !Array.isArray(manifest.tracks) || manifest.tracks.length > 10000) {
+    throw new Error('Unsupported archive format or manifest version');
+  }
+  const referenced = new Set<string>();
+  for (const track of manifest.tracks) {
+    if (!track || typeof track.id !== 'string' || typeof track.title !== 'string' || typeof track.artist !== 'string' ||
+      typeof track.durationLabel !== 'string' || (track.src !== undefined && typeof track.src !== 'string') ||
+      (track.assetPath !== undefined && (!safePath(track.assetPath) || !track.assetPath.startsWith('audio/')))) {
+      throw new Error('Archive contains an invalid playlist entry');
+    }
+    if (track.src) {
+      const url = new URL(track.src);
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('Archive contains an unsupported remote URL');
+    }
+    if (track.assetPath) {
+      if (!files.has(track.assetPath)) throw new Error('Archive references a missing audio asset');
+      referenced.add(track.assetPath);
+    }
+  }
+  if ([...files.keys()].some((path) => path !== 'manifest.json' && !referenced.has(path))) throw new Error('Archive contains unreferenced payload files');
+  const assets = [...referenced].map((path) => ({
+    path, name: path.split('/').pop() ?? 'audio.bin', type: 'application/octet-stream', lastModified: Date.now(),
+    blob: new Blob([files.get(path)!], { type: 'application/octet-stream' }),
+  }));
+  return { manifest, assets };
+}
