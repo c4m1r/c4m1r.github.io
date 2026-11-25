@@ -8,6 +8,7 @@ import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
 import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
 import { parseWinampSkinRegions, type WinampSkinRegions, type WinampSkinRegionSection } from '../../system/audio/winampSkinRegions';
 import { readEmbeddedAudioMetadata } from '../../system/audio/winampMetadata';
+import { readWinampMediaOrder, writeWinampMediaOrder, moveWinampMediaOrder } from '../../system/audio/winampMediaQueue';
 import { createWinampArchive, readWinampArchive } from '../../system/audio/winampArchive';
 import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
 import {
@@ -873,6 +874,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const unifiedNavigationRef = useRef<(direction: -1 | 1) => void>(() => {});
   const [videoQueue, setVideoQueue] = useState<Array<{ url: string; name: string }>>([]);
   const [unifiedMediaOrder, setUnifiedMediaOrder] = useState<string[]>([]);
+  const [unifiedMediaOrderLoaded, setUnifiedMediaOrderLoaded] = useState(false);
   const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
   const [videoStatus, setVideoStatus] = useState('');
   const videoObjectUrlsRef = useRef<string[]>([]);
@@ -1181,6 +1183,23 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     : Math.max(0, unifiedMediaItems.findIndex((item) => item.kind === 'audio' && item.key === `audio:${track.id}`));
 
   useEffect(() => {
+    setUnifiedMediaOrder(readWinampMediaOrder(unifiedMediaItems.map((item) => item.key)));
+    setUnifiedMediaOrderLoaded(true);
+    // Load the saved order once on mount; new entries are appended by normalization.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!unifiedMediaOrderLoaded) return;
+    const normalized = unifiedMediaItems.map((item) => item.key).filter((key) => unifiedMediaOrder.includes(key))
+      .concat(unifiedMediaItems.map((item) => item.key).filter((key) => !unifiedMediaOrder.includes(key)));
+    if (normalized.length !== unifiedMediaOrder.length || normalized.some((key, index) => key !== unifiedMediaOrder[index])) {
+      setUnifiedMediaOrder(normalized);
+    }
+    writeWinampMediaOrder(normalized);
+  }, [unifiedMediaItems, unifiedMediaOrder, unifiedMediaOrderLoaded]);
+
+  useEffect(() => {
     if (!followPlaylistPlayback || !showPl) return;
     document.querySelector<HTMLElement>('.wa-playlist .wa-pl__item.is-current')?.scrollIntoView({ block: 'nearest' });
   }, [trackIndex, followPlaylistPlayback, showPl]);
@@ -1437,8 +1456,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     const nextIndex = activeUnifiedMediaIndex + direction;
     if (nextIndex < 0 || nextIndex >= unifiedMediaItems.length) return;
     const keys = unifiedMediaItems.map((item) => item.key);
-    [keys[activeUnifiedMediaIndex], keys[nextIndex]] = [keys[nextIndex], keys[activeUnifiedMediaIndex]];
-    setUnifiedMediaOrder(keys);
+    setUnifiedMediaOrder(moveWinampMediaOrder(keys, activeUnifiedMediaIndex, direction));
   }, [activeUnifiedMediaIndex, unifiedMediaItems]);
 
   useEffect(() => {
