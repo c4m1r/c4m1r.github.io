@@ -12,6 +12,7 @@ const errors = (compiled.diagnostics ?? []).filter((item) => item.category === t
 assert.equal(errors.length, 0, errors.map((item) => ts.flattenDiagnosticMessageText(item.messageText, '\n')).join('\n'));
 const archiveApi = await import('data:text/javascript;base64,' + Buffer.from(compiled.outputText).toString('base64'));
 const { createWinampArchive, readWinampArchive } = archiveApi;
+const encoder = new TextEncoder();
 
 function track(id, src, title = 'Track') {
   return { id, title, artist: 'Test Artist', durationLabel: '03:21', src };
