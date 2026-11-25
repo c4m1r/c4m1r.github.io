@@ -73,6 +73,9 @@ async function convertMilkdropShader(
   const entryName = 'milkdrop_shader_entry';
   const prepared = prepareShader(source).replace('float4 shader_body (', \`float4 \${entryName} (\`);
   const translated = await convertHLSLShader(prepared, entryName, 'fs');
+  if (typeof translated !== 'string' || /^(parsing failed|code generation failed)$/i.test(translated.trim())) {
+    throw new Error(typeof translated === 'string' ? translated : 'HLSL parser returned no output');
+  }
   const processed = processUnOptimizedShader(translated);
   if (typeof processed !== 'string' || !/shader_body\s*\{/.test(processed)) {
     throw new Error('HLSL parser returned an invalid Butterchurn shader');
