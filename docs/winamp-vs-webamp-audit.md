@@ -285,3 +285,9 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - LIST OPT now includes an optional compact live mini visualizer, disabled by default. It consumes the existing external analyser frame store rather than adding a second audio graph or forcing parent-level 60 FPS renders.
 - Genuine MilkDrop (Butterchurn) now accepts local Butterchurn preset JSON files through LOAD PRESET. Imported presets are available immediately through NEXT PRESET and participate in the existing PSET cycling. Raw legacy .milk text is not parsed by this importer.
 - These are source-level implementations. Browser interaction, layout, real preset compatibility and audio lifecycle acceptance remain deferred; no manual/browser pass is claimed.
+
+
+## 14. Video queue transport follow-up — 2026-11-25
+
+- The fourth-window Video toolbar now exposes Previous and Next controls outside fullscreen as well as the existing fullscreen transport. Previous moves back through the selected local queue and restarts the first item; Next is disabled at the queue end. The current video queue remains independent from the audio playlist; no implicit audio/video sync is claimed.
+- Keyboard/touch/browser acceptance and narrow-toolbar layout verification remain deferred to the owner-approved browser-QA pass.
