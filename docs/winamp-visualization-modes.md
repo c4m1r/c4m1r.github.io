@@ -25,6 +25,19 @@ The existing fourth window already contains a visualizer stage and a local-video
 - The existing toolbar has a compact grouped picker, `MODE` cycles all 13 modes, and `RND` selects another mode in the current family (or from all modes for a singleton family).
 - AVS has four named original variations (Scope, Feedback Tunnel, Rotating Geometry, Kaleidoscope); MilkDrop has four (Geiss Flow, Fractal Flame, Waveform Tunnel, Psychedelic Swirl), cycled with `PSET`.
 
+## Genuine MilkDrop mode — separate optional renderer
+
+The existing `MilkDrop` entry remains an original procedural, MilkDrop-inspired project visualization. It must not be relabeled as genuine preset playback. The planned `MilkDrop (Butterchurn)` entry is a separate optional mode backed by the Butterchurn WebGL2 renderer and locally bundled presets.
+
+- Pin the stable `butterchurn@2.6.7` + `butterchurn-presets@2.4.7` pair; both packages declare MIT licensing. Do not use a CDN or runtime network fetch.
+- Load the renderer and preset bundle only after the user selects the separate genuine mode. The regular Winamp launch and all existing visualizer modes must not pay the import or preset-memory cost.
+- Reuse `winampController.getVisualizerAudioNode()`, which returns the existing post-EQ/post-balance node. Do not create another media element source, AudioContext or audible output route.
+- The upstream `master` implementation's audio branch uses an internal DelayNode feeding its own analysers; verify this behavior against the exact pinned stable package before connecting it.
+- On mode exit or fourth-window close, stop the renderer RAF, disconnect only Butterchurn's branch from the shared node, release preset references, lose the WebGL context when supported, and clear the canvas. The browser may retain the imported JavaScript module in its module cache; teardown guarantees release of the live renderer resources, not forced deletion of module code from memory.
+- Unsupported WebGL2, import errors and context loss must leave playback and all existing modes operational.
+
+Implementation status: API research and the shared post-EQ audio-node accessor are committed; dependency lockfile update, stable-package source verification, renderer integration and browser profiling remain open.
+
 ## Canonical Winamp visualization families
 
 ### Built-in Classic analyzer
