@@ -742,19 +742,19 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 ### Winamp — portable local-library backup and genuine MilkDrop implementation notes (2026-11-25)
 
 #### Portable local-library archive contract
-- [ ] Implement a self-contained `.wampack` ZIP archive; do not serialize object URLs or machine-specific absolute paths.
-- [ ] Archive layout:
+- [x] Implement a self-contained `.wampack` ZIP archive; do not serialize object URLs or machine-specific absolute paths.
+- [x] Archive layout:
   - `manifest.json`: schema version, export timestamp, ordered playlist entries, stable archive-relative asset paths, title/artist/album/track number/duration and original filename/MIME type/size.
   - `audio/000001.ext`, `audio/000002.ext`, …: original audio bytes, stored without transcoding or quality loss.
   - Optional `settings/eq-presets.json`: user-created EQ presets only; do not silently export unrelated browser settings.
-- [ ] Export source bytes from IndexedDB records, not from `blob:` URLs. Preserve playlist order and duplicate appearances in the manifest while storing each local asset once.
-- [ ] Import must validate archive signature, central-directory bounds, entry count, uncompressed size, path traversal, duplicate paths, manifest schema/version, MIME/extension and per-file CRC before writing anything to IndexedDB.
-- [ ] Set conservative import limits and report oversized archives before allocation; do not trust manifest-provided filenames as filesystem paths.
-- [ ] Import transaction semantics: validate the entire archive first, then save records; if a write fails, roll back newly inserted records and do not append partial playlist entries.
-- [ ] Rebuild fresh object URLs from restored Blobs; revoke them on removal/unmount using the existing lifecycle. Never persist object URLs.
-- [ ] M3U remains a separate interoperable format for HTTP(S) URLs. Local files are portable only through the archive contract; do not claim relative M3U portability until a folder-root mapping flow exists.
-- [ ] UI: add compact BACKUP OUT / BACKUP IN actions to the existing Playlist MISC menu (not another window); show archive size, track count, skipped/invalid entries and success/failure status.
-- [ ] Add round-trip fixtures for empty library, mixed remote/local playlist, duplicate local tracks, Unicode filenames/tags, malformed ZIP, traversal paths, CRC mismatch, truncated archive and oversized manifest.
+- [x] Export source bytes from IndexedDB records, not from `blob:` URLs. Preserve playlist order and duplicate appearances in the manifest while storing each local asset once.
+- [x] Import validates archive signature, central-directory bounds, entry count, expanded size, path traversal, duplicate paths, manifest schema/version and per-file CRC before writing anything to IndexedDB. MIME/extension cross-validation remains open.
+- [x] Set conservative import limits and report oversized archives before allocation; do not trust manifest-provided filenames as filesystem paths.
+- [x] Import validates the entire archive before saving; the IndexedDB read-write transaction aborts atomically on a failed write. Playlist entries are appended only after the transaction completes.
+- [x] Rebuild fresh object URLs from restored Blobs; revoke them on removal/unmount using the existing lifecycle. Never persist object URLs.
+- [x] M3U remains a separate interoperable format for HTTP(S) URLs. Local files are portable only through the archive contract; do not claim relative M3U portability until a folder-root mapping flow exists.
+- [x] UI: add Backup / Restore actions to the existing Playlist MISC menu (not another window); show archive size, track count, skipped entries and success/failure status.
+- [x] Add round-trip fixtures for empty library, mixed remote/local playlist, duplicate local tracks, Unicode filenames/tags, malformed ZIP, traversal paths, CRC mismatch, truncated archive and oversized manifest.
 
 #### Butterchurn integration — hard audio-graph acceptance
 - [ ] Pin compatible `butterchurn` and `butterchurn-presets` versions and update package manifest + lockfile together; no CDN or runtime network fetch.
@@ -774,8 +774,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add bounded archive reader: entry-count/expanded-size limits, manifest limit, path traversal rejection, duplicate-path rejection, encrypted/unsupported compression rejection, CRC validation and missing/unreferenced asset checks.
 - [x] Validate the entire archive before IndexedDB writes; insert imported audio assets in one IndexedDB read-write transaction.
 - [x] Recreate object URLs from restored Blobs and expose Backup / Restore actions in the existing Playlist MISC menu.
-- [ ] Browser round-trip QA with real audio files, large archives, duplicate playlist references and malformed ZIP fixtures.
-- [ ] Add automated unit tests for CRC, central-directory parsing, manifest validation and IndexedDB rollback.
+- [ ] Browser round-trip QA with real audio files, large archives, duplicate playlist references and malformed ZIP fixtures (not yet run).
+- [ ] Automated tests now cover CRC, central-directory parsing, manifest validation, duplicate paths, unreferenced payloads, unsupported compression and truncation. IndexedDB rollback still needs a browser/fake-IDB test.
 - [ ] Consider optional DEFLATE support only if needed; current .wampack writer emits STORE entries and the importer intentionally accepts STORE only.
 
 Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
