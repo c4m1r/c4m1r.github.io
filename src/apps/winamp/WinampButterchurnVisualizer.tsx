@@ -241,6 +241,12 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     }
     try {
       const isMilkFile = /\.milk$/i.test(file.name);
+      const maxBytes = isMilkFile ? 2 * 1024 * 1024 : 8 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        throw new Error(isMilkFile
+          ? 'MilkDrop preset exceeds the 2 MB import limit'
+          : 'Butterchurn preset JSON exceeds the 8 MB import limit');
+      }
       const rawText = await file.text();
       if (runtime.disposed || runtimeRef.current !== runtime) return;
       const parsed: unknown = isMilkFile
