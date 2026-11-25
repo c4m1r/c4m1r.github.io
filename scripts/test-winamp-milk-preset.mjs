@@ -3,8 +3,8 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import ts from 'typescript';
 import milkdropParser from 'milkdrop-eel-parser';
-import { convertHLSLShader } from 'hlslparser-js';
-import { prepareShader, processUnOptimizedShader } from 'milkdrop-preset-utils';
+import hlslParserModule from 'hlslparser-js';
+import presetUtilsModule from 'milkdrop-preset-utils';
 
 const source = await readFile(new URL('../src/system/audio/winampMilkPreset.ts', import.meta.url), 'utf8');
 const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 }, reportDiagnostics: true });
@@ -99,11 +99,13 @@ test('translates numbered MilkDrop 2 warp and composite HLSL shader blocks', asy
 
 test('runs the upstream HLSL parser against a minimal real MilkDrop shader', async () => {
   const actualShaderConverter = async (source) => {
+    const hlslParser = hlslParserModule.default ?? hlslParserModule;
+    const presetUtils = presetUtilsModule.default ?? presetUtilsModule;
     const entryName = 'milkdrop_shader_entry';
-    const prepared = prepareShader(source).replace('float4 shader_body (', `float4 ${entryName} (`);
-    const translated = await convertHLSLShader(prepared, entryName, 'fs');
+    const prepared = presetUtils.prepareShader(source).replace('float4 shader_body (', `float4 ${entryName} (`);
+    const translated = await hlslParser.convertHLSLShader(prepared, entryName, 'fs');
     assert.equal(/^(parsing failed|code generation failed)$/i.test(translated.trim()), false);
-    return processUnOptimizedShader(translated);
+    return presetUtils.processUnOptimizedShader(translated);
   };
   const result = await convertMilkPreset(
     '[preset00]\nwarp_1=\x60shader_body\nwarp_2=\x60{\nwarp_3=\x60ret = float3(0.1, 0.2, 0.3);\nwarp_4=\x60}\n',
