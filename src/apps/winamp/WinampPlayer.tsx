@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
@@ -179,9 +179,132 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
 
 interface WinampPlayerProps { onClose?: () => void; }
 
+
+type WinampVisualizerFrame = { bars: number[]; peaks: number[]; waveform: number[] };
+const EMPTY_VISUALIZER_FRAME: WinampVisualizerFrame = {
+  bars: Array(19).fill(2),
+  peaks: Array(19).fill(2),
+  waveform: Array(19).fill(50),
+};
+let visualizerFrame = EMPTY_VISUALIZER_FRAME;
+const visualizerFrameSubscribers = new Set<() => void>();
+let visualizerFrameRaf: number | null = null;
+let visualizerFrameLastAt = 0;
+
+function getWinampVisualizerFrame(): WinampVisualizerFrame {
+  return visualizerFrame;
+}
+
+function subscribeWinampVisualizerFrame(listener: () => void): () => void {
+  visualizerFrameSubscribers.add(listener);
+  if (visualizerFrameRaf === null && typeof window !== 'undefined') {
+    const frequencyData = new Uint8Array(32);
+    const timeData = new Uint8Array(64);
+    const tick = (timestamp: number) => {
+      if (!visualizerFrameSubscribers.size) {
+        visualizerFrameRaf = null;
+        return;
+      }
+      if (timestamp - visualizerFrameLastAt >= 1000 / 60) {
+        visualizerFrameLastAt = timestamp;
+        const { ctx, analyser } = winampController.getWebAudio();
+        const isPlayingNow = winampController.getState().isPlaying;
+        let bars: number[];
+        let waveform: number[];
+        if (isPlayingNow && analyser && ctx?.state === 'running') {
+          analyser.getByteFrequencyData(frequencyData);
+          analyser.getByteTimeDomainData(timeData);
+          bars = Array.from(frequencyData.subarray(0, 19), (value) => Math.min(100, Math.max(4, Math.round((value / 255) * 100))));
+          waveform = Array.from({ length: 19 }, (_, index) => {
+            const sample = timeData[Math.round(index * (timeData.length - 1) / 18)] ?? 128;
+            return 50 + (sample - 128) / 2.56;
+          });
+        } else {
+          bars = visualizerFrame.bars.map((bar) => Math.max(2, bar * 0.85));
+          waveform = Array(19).fill(50);
+        }
+        const peaks = bars.map((bar, index) => Math.max(bar, (visualizerFrame.peaks[index] ?? 0) - 1.5));
+        visualizerFrame = { bars, peaks, waveform };
+        visualizerFrameSubscribers.forEach((subscriber) => subscriber());
+      }
+      visualizerFrameRaf = requestAnimationFrame(tick);
+    };
+    visualizerFrameRaf = requestAnimationFrame(tick);
+  }
+  return () => {
+    visualizerFrameSubscribers.delete(listener);
+    if (!visualizerFrameSubscribers.size && visualizerFrameRaf !== null) {
+      cancelAnimationFrame(visualizerFrameRaf);
+      visualizerFrameRaf = null;
+      visualizerFrameLastAt = 0;
+      visualizerFrame = EMPTY_VISUALIZER_FRAME;
+    }
+  };
+}
+
+function WinampMainVisualizer({
+  mode,
+  modeName,
+  visualizerColors,
+  onCycle,
+}: {
+  mode: 0 | 1 | 2;
+  modeName: string;
+  visualizerColors?: string[];
+  onCycle: () => void;
+}) {
+  const { bars, peaks, waveform } = useSyncExternalStore(subscribeWinampVisualizerFrame, getWinampVisualizerFrame, getWinampVisualizerFrame);
+  const style = visualizerColors ? ({
+    '--wa-skin-viz-low': visualizerColors[2] ?? '#ef3110',
+    '--wa-skin-viz-mid': visualizerColors[10] ?? '#bdde29',
+    '--wa-skin-viz-high': visualizerColors[17] ?? '#189408',
+    '--wa-skin-viz-peak': visualizerColors[18] ?? '#ffffff',
+  } as CSSProperties) : undefined;
+  return (
+    <button
+      type="button"
+      className={`wa-visualizer wa-visualizer--mode-${mode}${visualizerColors ? ' wa-visualizer--skin' : ''}`}
+      style={style}
+      onClick={onCycle}
+      aria-label={`Visualizer mode: ${modeName}. Click to switch mode`}
+      title={`${modeName} — click to change`}
+      aria-live="off"
+    >
+      {mode === 1 ? (
+        <svg className="wa-visualizer-wave" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points={waveform.map((sample, index) => `${(index / 18) * 100},${50 - sample}`).join(' ')} />
+        </svg>
+      ) : bars.map((barHeight, index) => (
+        <div key={index} className={`wa-vis-col ${mode === 2 ? 'wa-vis-col--peak' : ''}`}>
+          <div className="wa-vis-bar" style={{ height: `${mode === 2 ? Math.max(3, peaks[index]) : barHeight}%` }} />
+          {mode === 0 && <div className="wa-vis-peak" style={{ bottom: `${peaks[index]}%` }} />}
+        </div>
+      ))}
+    </button>
+  );
+}
+
+function WinampFourthVisualizer({
+  mode,
+  presetIndex,
+  onCycle,
+}: {
+  mode: FourthVisualizerMode;
+  presetIndex: number;
+  onCycle: () => void;
+}) {
+  const { bars, peaks, waveform } = useSyncExternalStore(subscribeWinampVisualizerFrame, getWinampVisualizerFrame, getWinampVisualizerFrame);
+  const presets = fourthVisualizerPresets[mode];
+  return (
+    <div className={`wa-video__visualizer wa-video__visualizer--${mode.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} role="img" aria-label={mode}>
+      <div className="wa-video__visualizer-label">{mode.toUpperCase()}{presets ? ' · ' + presets[presetIndex % presets.length].toUpperCase() : ''}</div>
+      {renderFourthVisualizer(mode, bars, peaks, waveform, presetIndex)}
+      <button type="button" className="wa-video__mode" title="Next visualization mode" onClick={onCycle}>MODE</button>
+    </div>
+  );
+}
+
 export function WinampPlayer({ onClose }: WinampPlayerProps) {
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
 
   const [trackIndex, setTrackIndex] = useState(() => winampController.getState().trackIndex);
   const [isPlaying, setIsPlaying] = useState(() => winampController.getState().isPlaying);
@@ -546,9 +669,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   };
 
   // Visualizer bar heights and peak dots
-  const [bars, setBars] = useState<number[]>(() => Array(19).fill(2));
-  const [peaks, setPeaks] = useState<number[]>(() => Array(19).fill(2));
-  const [waveform, setWaveform] = useState<number[]>(() => Array(19).fill(50));
   const [mainVisualizerMode, setMainVisualizerMode] = useState<0 | 1 | 2>(0);
   const mainVisualizerModeNames = ['Spectrum', 'Oscilloscope', 'Peak meter'] as const;
   const fourthVisualizerGroups = [
@@ -562,7 +682,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [fourthVisualizerMode, setFourthVisualizerMode] = useState<FourthVisualizerMode>('Spectrum');
   const [fourthVisualizerPresetIndex, setFourthVisualizerPresetIndex] = useState(0);
   const [visualizerAutoCycle, setVisualizerAutoCycle] = useState(false);
-  const rafRef = useRef<number | null>(null);
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
   const [detachedWindows, setDetachedWindows] = useState<PlayerWindowKey[]>([]);
@@ -855,72 +974,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }, 0);
   }, [playlist]);
 
-  // Web Audio setup
+  // Initialise the one shared controller graph on user playback. The two
+  // visualizer surfaces subscribe to a small external frame store, so 60 FPS
+  // updates never re-render the large Winamp window manager / playlist tree.
   const initWebAudio = useCallback(() => {
-    const wa = winampController.getWebAudio();
-    if (wa?.ctx) audioCtxRef.current = wa.ctx;
-    if (wa?.analyser) analyserRef.current = wa.analyser;
+    winampController.getWebAudio();
   }, []);
-
-  // Sample the shared analyser at up to 60 FPS for smooth high-resolution displays. The previous implementation published
-  // three React state updates on every display frame and simulated random audio
-  // when the analyser was unavailable, causing unnecessary full-player renders
-  // and showing activity that did not come from the actual signal.
-  useEffect(() => {
-    let active = true;
-    let lastPublishedAt = 0;
-    const frameInterval = 1000 / 60;
-    const freqData = new Uint8Array(32);
-    const timeData = new Uint8Array(64);
-
-    const updateVisualizer = (timestamp: number) => {
-      if (!active) return;
-      if (timestamp - lastPublishedAt >= frameInterval) {
-        lastPublishedAt = timestamp;
-        const analyser = analyserRef.current;
-        if (isPlaying && analyser && audioCtxRef.current?.state === 'running') {
-          analyser.getByteFrequencyData(freqData);
-          analyser.getByteTimeDomainData(timeData);
-          const nextWaveform = Array.from({ length: 19 }, (_, i) => {
-            const sample = timeData[Math.round(i * (timeData.length - 1) / 18)] ?? 128;
-            return 50 + (sample - 128) / 2.56;
-          });
-          const nextBars = Array.from({ length: 19 }, (_, i) => {
-            const val = freqData[i] ?? 0;
-            return Math.min(100, Math.max(4, Math.round((val / 255) * 100)));
-          });
-          setWaveform(nextWaveform);
-          setBars(nextBars);
-          setPeaks((previousPeaks) =>
-            nextBars.map((bar, index) => Math.max(bar, (previousPeaks[index] ?? 0) - 1.5))
-          );
-        } else {
-          // No analyser means no trustworthy audio data. Keep the scene idle/decaying
-          // instead of fabricating a spectrum while audio is playing.
-          setBars((previousBars) => {
-            const nextBars = previousBars.map((bar) => Math.max(2, bar * 0.85));
-            return nextBars.every((bar, index) => bar === previousBars[index]) ? previousBars : nextBars;
-          });
-          setPeaks((previousPeaks) => {
-            const nextPeaks = previousPeaks.map((peak) => Math.max(2, peak - 2));
-            return nextPeaks.every((peak, index) => peak === previousPeaks[index]) ? previousPeaks : nextPeaks;
-          });
-          if (!isPlaying) {
-            setWaveform((previousWaveform) =>
-              previousWaveform.every((sample) => sample === 50) ? previousWaveform : Array(19).fill(50)
-            );
-          }
-        }
-      }
-      rafRef.current = requestAnimationFrame(updateVisualizer);
-    };
-
-    rafRef.current = requestAnimationFrame(updateVisualizer);
-    return () => {
-      active = false;
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, [isPlaying]);
 
   const play = useCallback(async () => {
     initWebAudio();
@@ -1435,31 +1494,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               </div>
 
               {/* Click the LED analyzer to cycle its classic display modes. */}
-              <button
-                type="button"
-                className={`wa-visualizer wa-visualizer--mode-${mainVisualizerMode}${activeSkin ? ' wa-visualizer--skin' : ''}`}
-                style={activeSkin ? ({
-                  '--wa-skin-viz-low': activeSkin.visualizerColors[2] ?? '#ef3110',
-                  '--wa-skin-viz-mid': activeSkin.visualizerColors[10] ?? '#bdde29',
-                  '--wa-skin-viz-high': activeSkin.visualizerColors[17] ?? '#189408',
-                  '--wa-skin-viz-peak': activeSkin.visualizerColors[18] ?? '#ffffff',
-                } as CSSProperties) : undefined}
-                onClick={() => setMainVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}
-                aria-label={`Visualizer mode: ${mainVisualizerModeNames[mainVisualizerMode]}. Click to switch mode`}
-                title={`${mainVisualizerModeNames[mainVisualizerMode]} — click to change`}
-                aria-live="off"
-              >
-                {mainVisualizerMode === 1 ? (
-                  <svg className="wa-visualizer-wave" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
-                    <polyline points={waveform.map((sample, index) => `${(index / 18) * 100},${50 - sample}`).join(' ')} />
-                  </svg>
-                ) : bars.map((barHeight, idx) => (
-                  <div key={idx} className={`wa-vis-col ${mainVisualizerMode === 2 ? 'wa-vis-col--peak' : ''}`}>
-                    <div className="wa-vis-bar" style={{ height: `${mainVisualizerMode === 2 ? Math.max(3, peaks[idx]) : barHeight}%` }} />
-                    {mainVisualizerMode === 0 && <div className="wa-vis-peak" style={{ bottom: `${peaks[idx]}%` }} />}
-                  </div>
-                ))}
-              </button>
+              <WinampMainVisualizer
+                mode={mainVisualizerMode}
+                modeName={mainVisualizerModeNames[mainVisualizerMode]}
+                visualizerColors={activeSkin?.visualizerColors}
+                onCycle={() => setMainVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}
+              />
 
               {/* Right Column: Track Marquee & Technical Info */}
               <div className="wa-display__right">
@@ -2150,11 +2190,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
         {videoMode === 'visualizer' ? (
-          <div className={`wa-video__visualizer wa-video__visualizer--${fourthVisualizerMode.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} role="img" aria-label={fourthVisualizerMode}>
-            <div className="wa-video__visualizer-label">{fourthVisualizerMode.toUpperCase()}{fourthVisualizerPresets[fourthVisualizerMode] ? ' · ' + fourthVisualizerPresets[fourthVisualizerMode]![fourthVisualizerPresetIndex % fourthVisualizerPresets[fourthVisualizerMode]!.length].toUpperCase() : ''}</div>
-            {renderFourthVisualizer(fourthVisualizerMode, bars, peaks, waveform, fourthVisualizerPresetIndex)}
-            <button type="button" className="wa-video__mode" title={`Next visualization: ${fourthVisualizerModes[(fourthVisualizerModes.indexOf(fourthVisualizerMode) + 1) % fourthVisualizerModes.length]}`} onClick={() => setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length])}>MODE</button>
-          </div>
+          <WinampFourthVisualizer
+            mode={fourthVisualizerMode}
+            presetIndex={fourthVisualizerPresetIndex}
+            onCycle={() => setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length])}
+          />
         ) : (
           <div className="wa-video__screen">
             <input ref={videoInputRef} type="file" accept="video/*" hidden onChange={(event) => {
