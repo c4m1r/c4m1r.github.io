@@ -9562,3 +9562,18 @@
     transition: none;
   }
 }
+
+
+/* Imported .wsz palette: apply the skin's VISCOLOR.TXT values to the Main analyzer. */
+.wa-shell .wa-visualizer--skin .wa-vis-bar {
+  background: linear-gradient(to top, var(--wa-skin-viz-low), var(--wa-skin-viz-mid) 58%, var(--wa-skin-viz-high));
+  box-shadow: none;
+}
+.wa-shell .wa-visualizer--skin .wa-vis-peak {
+  background: var(--wa-skin-viz-peak);
+  box-shadow: none;
+}
+.wa-shell .wa-visualizer--skin .wa-visualizer-wave polyline {
+  stroke: var(--wa-skin-viz-peak);
+  filter: none;
+}
