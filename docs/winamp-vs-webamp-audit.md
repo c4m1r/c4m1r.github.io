@@ -16,7 +16,7 @@
 
 1. Частичная реализация формата .wsz: основные Playlist/visualizer metadata уже подключены; импорт теперь пропускает отсутствующие необязательные sprites, но `region.txt`, полный skin atlas и некоторые palette details ещё требуют реализации.
 2. Нет настоящего MilkDrop/Butterchurn и совместимости с MilkDrop preset-файлами.
-3. Локальные MP3 читают ID3v2.2/v2.3/v2.4 и ID3v1; добавлены FLAC Vorbis comments, Ogg Vorbis/OpusTags и WAV INFO для title/artist/album/track. MP4/M4A atoms и расширенные поля пока не поддержаны.
+3. Локальные MP3 читают ID3v2.2/v2.3/v2.4 и ID3v1; FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms читаются для title/artist/album/track. Расширенные поля и редкие нестандартные варианты контейнеров ещё не поддержаны.
 4. M3U поддерживает только абсолютные HTTP(S)-URL; относительные и локальные пути пропускаются, поэтому экспорт локальной библиотеки не является переносимым плейлистом.
 5. Анимационный цикл теперь ограничен 60 FPS и изолирован во внешнем frame store; parent Winamp не получает 60-FPS state updates.
 6. HTML-экспорт Playlist добавлен после аудита. Media Session API также подключён; оба требуют browser acceptance.
@@ -252,6 +252,6 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 - [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
 - [x] Подключён Media Session API к существующему controller: track metadata, playback/position state, play/pause/stop/next/previous и seek handlers; handlers/metadata очищаются при закрытии плеера.
 
-**Оставшиеся ограничения:** применение `region.txt` window shapes, расширение metadata на MP4/M4A и расширенные tag fields, portable local M3U workflow, дополнительные Playlist commands, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция browser performance profiling 60 FPS on high-DPI.
+**Оставшиеся ограничения:** применение `region.txt` window shapes, расширение metadata на расширенные tag fields и редкие контейнерные варианты, portable local M3U workflow, дополнительные Playlist commands, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция browser performance profiling 60 FPS on high-DPI.
 
 Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
