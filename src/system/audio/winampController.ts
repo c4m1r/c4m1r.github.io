@@ -31,6 +31,7 @@ class WinampControllerService {
   private repeat = false;
   private autoAdvance = true;
   private shuffle = false;
+  private trackEndedHandler: (() => void) | null = null;
   private subscribers = new Set<WinampSubscriber>();
   private initialized = false;
   private audioCtx: AudioContext | null = null;
@@ -83,7 +84,8 @@ class WinampControllerService {
         audio.currentTime = 0;
         void this.play();
       } else if (this.autoAdvance) {
-        this.advance(true);
+        if (this.trackEndedHandler) this.trackEndedHandler();
+        else this.advance(true);
       } else {
         this.isPlaying = false;
         this.currentTime = audio.duration || this.currentTime;
@@ -367,6 +369,10 @@ class WinampControllerService {
 
   public isRepeat(): boolean {
     return this.repeat;
+  }
+
+  public setTrackEndedHandler(handler: (() => void) | null): void {
+    this.trackEndedHandler = handler;
   }
 
   public setAutoAdvance(val: boolean): void {

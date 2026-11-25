@@ -291,3 +291,12 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 
 - The fourth-window Video toolbar now exposes Previous and Next controls outside fullscreen as well as the existing fullscreen transport. Previous moves back through the selected local queue and restarts the first item; Next is disabled at the queue end. The current video queue remains independent from the audio playlist; no implicit audio/video sync is claimed.
 - Keyboard/touch/browser acceptance and narrow-toolbar layout verification remain deferred to the owner-approved browser-QA pass.
+
+
+## 15. Mixed audio/video playlist and import hardening — 2026-11-25
+
+- The fourth-window media selector exposes one derived list containing audio entries followed by the current video queue. Selecting an audio entry switches to visualizer mode and starts the existing Winamp controller; selecting a video pauses the audio controller and starts the existing HTMLVideoElement. Previous/Next and automatic end-of-track advancement traverse the combined list.
+- Audio and video remain separate media elements and decoders. Playback is mutually exclusive; video is never connected to the Web Audio graph and no second AudioContext or audible output is created.
+- Legacy `.milk` import supports a restricted scalar-only subset: numeric/boolean base parameters are applied to a cloned bundled Butterchurn preset. EEL equations, custom waves/shapes and shader sections are rejected with an explicit explanation. This is not full MilkDrop 1/2 compatibility.
+- `.wampack` restore validates the archive before storage and writes all imported records in one IndexedDB transaction. If subsequent playlist publication fails, the newly inserted records are deleted and temporary Blob URLs are revoked.
+- Source-level implementation only; CI and browser acceptance remain required.

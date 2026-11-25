@@ -192,7 +192,13 @@ export async function importWinampLocalAudioAssets(
   const transaction = database.transaction(STORE_NAME, 'readwrite');
   const completed = transactionComplete(transaction);
   const store = transaction.objectStore(STORE_NAME);
-  records.forEach((record) => store.add(record));
-  await completed;
+  try {
+    records.forEach((record) => store.add(record));
+    await completed;
+  } catch (error) {
+    try { transaction.abort(); } catch { /* The transaction may already have aborted or completed. */ }
+    await completed.catch(() => undefined);
+    throw error;
+  }
   return assets.map((asset, index) => ({ path: asset.path, record: records[index] }));
 }

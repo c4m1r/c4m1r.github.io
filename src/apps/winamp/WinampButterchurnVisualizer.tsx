@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { winampController } from '../../system/audio/winampController';
+import { convertSimpleMilkPreset } from '../../system/audio/winampMilkPreset';
 type ButterchurnPreset = Record<string, unknown>;
 
 interface ButterchurnVisualizer {
@@ -235,11 +236,15 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       return;
     }
     try {
-      const parsed: unknown = JSON.parse(await file.text());
+      const isMilkFile = /\\.milk$/i.test(file.name);
+      const rawText = await file.text();
+      const parsed: unknown = isMilkFile
+        ? convertSimpleMilkPreset(rawText, runtime.presets[runtime.presetNames[0]])
+        : JSON.parse(rawText);
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error('Preset must be a Butterchurn JSON object');
+        throw new Error('Preset must be a Butterchurn JSON object or a supported scalar-only MilkDrop .milk file');
       }
-      const baseName = file.name.replace(/\\.json$/i, '').trim().slice(0, 80) || 'Imported preset';
+      const baseName = file.name.replace(/\\.(json|milk)$/i, '').trim().slice(0, 80) || 'Imported preset';
       let name = baseName;
       let suffix = 2;
       while (runtime.presets[name]) name = `${baseName} (${suffix++})`;
@@ -249,7 +254,9 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       runtime.presetNames.push(name);
       presetIndexRef.current = runtime.presetNames.length - 1;
       setPresetName(name);
-      setStatus('');
+      setStatus(isMilkFile
+        ? '.MILK IMPORTED: scalar parameters only; EEL equations, custom waves/shapes and shaders are not converted'
+        : '');
     } catch (error) {
       console.error('Butterchurn preset import failed:', error);
       setStatus(error instanceof Error ? error.message : 'UNABLE TO IMPORT PRESET JSON');
@@ -273,9 +280,9 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     <div className="wa-butterchurn">
       {presetName && <div className="wa-butterchurn__preset" title={presetName}>{presetName}</div>}
       <canvas ref={canvasRef} aria-label="Genuine MilkDrop visualization" />
-      <input ref={presetFileRef} type="file" accept=".json,application/json" hidden onChange={(event) => { void importPresetFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
+      <input ref={presetFileRef} type="file" accept=".json,.milk,application/json,text/plain" hidden onChange={(event) => { void importPresetFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
       <div className="wa-butterchurn__tools">
-        <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import a Butterchurn preset JSON file">LOAD PRESET</button>
+        <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import Butterchurn JSON or a scalar-only legacy MilkDrop .milk preset">LOAD PRESET</button>
         <button type="button" className="wa-butterchurn__import" onClick={advancePreset} title="Advance through bundled and imported presets">NEXT PRESET</button>
       </div>
       {status && <div className="wa-butterchurn__status" role="status" aria-live="polite">{status}</div>}

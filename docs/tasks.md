@@ -809,3 +809,11 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 ### Winamp — video queue usability follow-up (2026-11-25)
 - [x] Expose Previous / Next directly in the existing Video toolbar, not only in fullscreen. Previous steps backward or restarts the first item; Next is disabled at the end of the queue. Accessible names, titles, focus outline and disabled styling are included.
 - [ ] Browser acceptance for pointer/touch operation and narrow-toolbar fit remains deferred with the agreed browser-QA pass.
+
+
+### 2026-11-25 — Mixed media queue and restore rollback
+
+- [x] Fourth-window selector combines the current audio playlist and video queue. Previous/Next and automatic end-of-track navigation traverse the combined list while dispatching to the correct media element.
+- [x] Audio and video playback are mutually exclusive. Video remains outside the Web Audio graph; the existing audio controller and analyser remain unchanged.
+- [x] `.wampack` restore uses one IndexedDB write transaction and rolls back imported records plus temporary Blob URLs if playlist publication fails after storage commit.
+- [x] Added safe scalar-only `.milk` import to Butterchurn. EEL expressions, custom waves/shapes and shaders remain explicitly unsupported; full MilkDrop conversion is still open.

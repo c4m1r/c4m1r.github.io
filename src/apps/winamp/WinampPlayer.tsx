@@ -673,6 +673,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const importLocalLibraryArchive = async (file?: File) => {
     if (!file) return;
+    const importedRecordIds: string[] = [];
+    const createdObjectUrls: string[] = [];
     try {
       setM3uStatus('Validating library archive…');
       const archive = await readWinampArchive(file);
@@ -681,6 +683,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}), durationLabel: track.durationLabel,
       }] as const));
       const importedAssets = await importWinampLocalAudioAssets(archive.assets, metadataByPath);
+      importedRecordIds.push(...importedAssets.map(({ record }) => record.id));
       const recordsByPath = new Map<string, (typeof importedAssets)[number]['record']>(importedAssets.map(({ path, record }) => [path, record] as const));
       const objectUrlsByPath = new Map<string, string>();
       const usedEntryIds = new Set(winampController.getPlaylist().map((track) => track.id));
@@ -696,6 +699,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           src = objectUrlsByPath.get(track.assetPath);
           if (!src) {
             src = URL.createObjectURL(record.blob);
+            createdObjectUrls.push(src);
             objectUrlsByPath.set(track.assetPath, src);
           }
         }
@@ -716,7 +720,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       if (additions.length) winampController.addTracks(additions);
       setM3uStatus(`Restored ${importedAssets.length} audio files and added ${additions.length} playlist entries${skippedEntries ? `; skipped ${skippedEntries} entries without portable media` : ''}`);
     } catch (error) {
-      setM3uStatus(error instanceof Error ? error.message : 'Unable to import local library backup');
+      // IndexedDB insertion is atomic. Roll back this import if publication
+      // into the in-memory playlist fails after the storage transaction commits.
+      const rollbackErrors: string[] = [];
+      if (importedRecordIds.length) {
+        try { await deleteWinampLocalAudioFiles(importedRecordIds); }
+        catch { rollbackErrors.push('IndexedDB rollback failed; imported files may remain in the local library'); }
+      }
+      createdObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+      const message = error instanceof Error ? error.message : 'Unable to import local library backup';
+      setM3uStatus([message, ...rollbackErrors].join(' · '));
     }
   };
   const exportHtmlPlaylist = () => {
@@ -1155,6 +1168,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const playlist = useMemo(() => winampController.getPlaylist(), [playlistRevision]);
   const track = playlist[trackIndex] ?? playlist[0] ?? PROJECT_PLAYLIST[0];
+  const unifiedMediaItems = useMemo(() => [
+    ...playlist.map((item, audioIndex) => ({ kind: 'audio' as const, key: `audio:${item.id}`, label: `♫ ${item.artist} — ${item.title}`, audioIndex })),
+    ...videoQueue.map((item, videoIndex) => ({ kind: 'video' as const, key: `video:${videoIndex}:${item.name}`, label: `▣ ${item.name}`, videoIndex, url: item.url, name: item.name })),
+  ], [playlist, videoQueue]);
+  const activeUnifiedMediaIndex = videoMode === 'video' && videoQueue.length
+    ? playlist.length + videoQueueIndex
+    : Math.max(0, playlist.findIndex((item) => item.id === track.id));
 
   useEffect(() => {
     if (!followPlaylistPlayback || !showPl) return;
@@ -1179,16 +1199,25 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, []);
 
   const play = useCallback(async () => {
+    if (videoElementRef.current && !videoElementRef.current.paused) {
+      videoElementRef.current.pause();
+      setVideoIsPlaying(false);
+      setVideoMode('visualizer');
+    }
     initWebAudio();
     await winampController.play();
   }, [initWebAudio]);
 
   const pause = useCallback(() => {
     winampController.pause();
+    videoElementRef.current?.pause();
+    setVideoIsPlaying(false);
   }, []);
 
   const stop = useCallback(() => {
     winampController.pause();
+    videoElementRef.current?.pause();
+    setVideoIsPlaying(false);
     winampController.seek(0);
     setCurrentTime(0);
   }, []);
@@ -1361,6 +1390,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [videoMode, pause, play]);
 
   const switchVideoMode = useCallback((mode: 'video' | 'visualizer') => {
+    if (mode === 'video' && videoMode !== 'video') winampController.pause();
     if (mode === 'visualizer' && videoMode === 'video') {
       videoElementRef.current?.pause();
       setVideoIsPlaying(false);
@@ -1381,6 +1411,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const goToVideoQueueIndex = useCallback((index: number) => {
     const item = videoQueue[index];
     if (!item || index === videoQueueIndex) return;
+    winampController.pause();
     setVideoQueueIndex(index);
     setVideoUrl(item.url);
     setVideoFileName(item.name);
@@ -1389,22 +1420,45 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setVideoAutoplayPending(true);
   }, [videoQueue, videoQueueIndex]);
 
-  const previousFullscreenItem = useCallback(() => {
-    if (videoMode === 'video' && videoQueue.length) {
-      if (videoQueueIndex > 0) goToVideoQueueIndex(videoQueueIndex - 1);
-      else if (videoElementRef.current) videoElementRef.current.currentTime = 0;
+  const selectUnifiedMediaItem = useCallback((index: number) => {
+    const item = unifiedMediaItems[index];
+    if (!item) return;
+    if (item.kind === 'audio') {
+      videoElementRef.current?.pause();
+      setVideoIsPlaying(false);
+      setVideoAutoplayPending(false);
+      setVideoMode('visualizer');
+      winampController.setTrack(item.audioIndex);
+      initWebAudio();
+      void winampController.play();
       return;
     }
-    previous();
-  }, [videoMode, videoQueue.length, videoQueueIndex, goToVideoQueueIndex, previous]);
+    winampController.pause();
+    setVideoMode('video');
+    setVideoQueueIndex(item.videoIndex);
+    setVideoUrl(item.url);
+    setVideoFileName(item.name);
+    setVideoStatus('');
+    setVideoIsPlaying(false);
+    setVideoAutoplayPending(true);
+  }, [unifiedMediaItems, initWebAudio]);
 
-  const nextFullscreenItem = useCallback(() => {
-    if (videoMode === 'video' && videoQueue.length) {
-      goToVideoQueueIndex(videoQueueIndex + 1);
-      return;
-    }
-    next();
-  }, [videoMode, videoQueue.length, videoQueueIndex, goToVideoQueueIndex, next]);
+  const navigateUnifiedMediaQueue = useCallback((direction: -1 | 1) => {
+    if (unifiedMediaItems.length < 2) return;
+    const currentIndex = videoMode === 'video' && videoQueue.length
+      ? playlist.length + videoQueueIndex
+      : Math.max(0, playlist.findIndex((item) => item.id === winampController.getState().track.id));
+    const nextIndex = (currentIndex + direction + unifiedMediaItems.length) % unifiedMediaItems.length;
+    selectUnifiedMediaItem(nextIndex);
+  }, [unifiedMediaItems, videoMode, videoQueue.length, videoQueueIndex, playlist, selectUnifiedMediaItem]);
+
+  useEffect(() => {
+    winampController.setTrackEndedHandler(() => navigateUnifiedMediaQueue(1));
+    return () => winampController.setTrackEndedHandler(null);
+  }, [navigateUnifiedMediaQueue]);
+
+  const previousFullscreenItem = useCallback(() => navigateUnifiedMediaQueue(-1), [navigateUnifiedMediaQueue]);
+  const nextFullscreenItem = useCallback(() => navigateUnifiedMediaQueue(1), [navigateUnifiedMediaQueue]);
 
   const handleVideoStagePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
@@ -2475,18 +2529,18 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             if (choices.length) setFourthVisualizerMode(choices[Math.floor(Math.random() * choices.length)]);
           }}>RND</button>}
           {videoMode === 'visualizer' && <button type="button" className={`wa-video__auto${visualizerAutoCycle ? ' is-active' : ''}`} aria-pressed={visualizerAutoCycle} title={visualizerAutoCycle ? 'Turn automatic mode cycling off' : 'Automatically change mode every 15 seconds'} onClick={() => setVisualizerAutoCycle((value) => !value)}>AUTO</button>}
-          {videoMode === 'video' && videoQueue.length > 0 && <>
-            <button type="button" className="wa-video__queue-step" title={videoQueueIndex === 0 ? 'Restart current video' : 'Previous video'} aria-label={videoQueueIndex === 0 ? 'Restart current video' : 'Previous video'} onClick={() => videoQueueIndex > 0 ? goToVideoQueueIndex(videoQueueIndex - 1) : (videoElementRef.current && (videoElementRef.current.currentTime = 0))}>◀|</button>
-            <button type="button" className="wa-video__queue-step" title="Next video" aria-label="Next video" disabled={videoQueueIndex >= videoQueue.length - 1} onClick={() => goToVideoQueueIndex(videoQueueIndex + 1)}>|▶</button>
+          {unifiedMediaItems.length > 1 && <>
+            <button type="button" className="wa-video__queue-step" title="Previous item in unified media playlist" aria-label="Previous media item" onClick={() => navigateUnifiedMediaQueue(-1)}>◀|</button>
+            <button type="button" className="wa-video__queue-step" title="Next item in unified media playlist" aria-label="Next media item" onClick={() => navigateUnifiedMediaQueue(1)}>|▶</button>
           </>}
-          {videoMode === 'video' && videoQueue.length > 1 && <select
+          {unifiedMediaItems.length > 0 && <select
             className="wa-video__queue-select"
-            aria-label="Video queue"
-            title="Choose a video from the current queue"
-            value={videoQueueIndex}
-            onChange={(event) => goToVideoQueueIndex(Number(event.target.value))}
+            aria-label="Unified audio and video playlist"
+            title="Choose audio or video from the unified media playlist"
+            value={activeUnifiedMediaIndex}
+            onChange={(event) => selectUnifiedMediaItem(Number(event.target.value))}
           >
-            {videoQueue.map((item, index) => <option key={item.url} value={index}>{index + 1}. {item.name}</option>)}
+            {unifiedMediaItems.map((item, index) => <option key={item.key} value={index}>{index + 1}. {item.label}</option>)}
           </select>}
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
@@ -2538,7 +2592,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 });
               }}
               onEnded={() => {
-                if (videoQueueIndex < videoQueue.length - 1) goToVideoQueueIndex(videoQueueIndex + 1);
+                if (unifiedMediaItems.length > 1) navigateUnifiedMediaQueue(1);
                 else setVideoIsPlaying(false);
               }}
               onError={() => {
@@ -2546,7 +2600,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 setVideoIsPlaying(false);
                 setVideoStatus('Unable to play this video. The format or codec may not be supported by this browser.');
               }}
-              onPlay={() => { setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }}
+              onPlay={() => { winampController.pause(); setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }}
               onPause={() => { setVideoIsPlaying(false); if (isVideoFullscreen) revealFullscreenControls(); }}
             /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
             <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
