@@ -155,6 +155,94 @@ function parseWavInfo(bytes: Uint8Array): EmbeddedAudioMetadata {
   return metadata;
 }
 
+function readUint32BE(bytes: Uint8Array, offset: number): number {
+  return ((bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3]) >>> 0;
+}
+
+function parseMp4Metadata(bytes: Uint8Array): EmbeddedAudioMetadata {
+  const decoder = new TextDecoder('utf-8');
+  const parseItem = (start: number, end: number, itemType: string): EmbeddedAudioMetadata => {
+    let cursor = start;
+    while (cursor + 8 <= end) {
+      let size = readUint32BE(bytes, cursor);
+      const type = String.fromCharCode(...bytes.subarray(cursor + 4, cursor + 8));
+      let headerSize = 8;
+      if (size === 1) {
+        if (cursor + 16 > end) break;
+        const high = readUint32BE(bytes, cursor + 8);
+        const low = readUint32BE(bytes, cursor + 12);
+        size = high * 0x100000000 + low;
+        headerSize = 16;
+      } else if (size === 0) size = end - cursor;
+      if (size < headerSize || cursor + size > end) break;
+      if (type === 'data') {
+        const dataStart = cursor + headerSize + 8;
+        const dataEnd = cursor + size;
+        if (itemType === 'trkn' && dataEnd - dataStart >= 4) {
+          const trackNumber = (bytes[dataStart + 2] << 8) | bytes[dataStart + 3];
+          return trackNumber > 0 ? { trackNumber: String(trackNumber) } : {};
+        }
+        const value = decoder.decode(bytes.subarray(dataStart, dataEnd)).replaceAll(String.fromCharCode(0), '').trim();
+        if (!value) return {};
+        if (itemType === '©nam') return { title: value };
+        if (itemType === '©ART' || itemType === 'aART') return { artist: value };
+        if (itemType === '©alb') return { album: value };
+        return {};
+      }
+      cursor += size;
+    }
+    return {};
+  };
+
+  const parseChildren = (start: number, end: number, depth: number): EmbeddedAudioMetadata => {
+    if (depth > 6) return {};
+    let cursor = start;
+    const result: EmbeddedAudioMetadata = {};
+    while (cursor + 8 <= end) {
+      let size = readUint32BE(bytes, cursor);
+      const type = String.fromCharCode(...bytes.subarray(cursor + 4, cursor + 8));
+      let headerSize = 8;
+      if (size === 1) {
+        if (cursor + 16 > end) break;
+        size = readUint32BE(bytes, cursor + 8) * 0x100000000 + readUint32BE(bytes, cursor + 12);
+        headerSize = 16;
+      } else if (size === 0) size = end - cursor;
+      if (size < headerSize || cursor + size > end) break;
+      const atomEnd = cursor + size;
+      let contentStart = cursor + headerSize;
+      if (type === 'meta') contentStart += 4; // FullBox version/flags.
+      if (type === 'ilst') {
+        const items = parseChildren(contentStart, atomEnd, depth + 1);
+        Object.assign(result, items);
+      } else if (type === 'moov' || type === 'udta' || type === 'meta') {
+        const nested = parseChildren(contentStart, atomEnd, depth + 1);
+        Object.assign(result, nested);
+      } else if (depth > 0 && (type === '©nam' || type === '©ART' || type === '©alb' || type === 'aART' || type === 'trkn')) {
+        const item = parseItem(contentStart, atomEnd, type);
+        Object.assign(result, item);
+      }
+      cursor = atomEnd;
+    }
+    return result;
+  };
+
+  for (let offset = 4; offset + 8 <= bytes.length; offset += 1) {
+    if (String.fromCharCode(...bytes.subarray(offset, offset + 4)) !== 'moov') continue;
+    const atomStart = offset - 4;
+    let size = readUint32BE(bytes, atomStart);
+    let headerSize = 8;
+    if (size === 1) {
+      if (atomStart + 16 > bytes.length) continue;
+      size = readUint32BE(bytes, atomStart + 8) * 0x100000000 + readUint32BE(bytes, atomStart + 12);
+      headerSize = 16;
+    }
+    if (size < headerSize || atomStart + size > bytes.length) continue;
+    const parsed = parseChildren(atomStart + headerSize, atomStart + size, 0);
+    if (Object.keys(parsed).length) return parsed;
+  }
+  return {};
+}
+
 function decodeId3v1(bytes: Uint8Array): EmbeddedAudioMetadata {
   if (bytes.length < 128) return {};
   const start = bytes.length - 128;
@@ -237,7 +325,15 @@ export async function readEmbeddedAudioMetadata(file: Blob): Promise<EmbeddedAud
     const containerMetadata = parseFlacMetadata(containerBytes);
     const oggMetadata = Object.keys(containerMetadata).length ? {} : parseOggMetadata(containerBytes);
     const wavMetadata = Object.keys(containerMetadata).length || Object.keys(oggMetadata).length ? {} : parseWavInfo(containerBytes);
-    metadata = { ...containerMetadata, ...oggMetadata, ...wavMetadata, ...metadata };
+    let mp4Metadata: EmbeddedAudioMetadata = {};
+    if (!Object.keys(containerMetadata).length && !Object.keys(oggMetadata).length && !Object.keys(wavMetadata).length) {
+      mp4Metadata = parseMp4Metadata(containerBytes);
+      if (!Object.keys(mp4Metadata).length && file.size > containerBytes.length) {
+        const tail = new Uint8Array(await file.slice(Math.max(0, file.size - 16 * 1024 * 1024)).arrayBuffer());
+        mp4Metadata = parseMp4Metadata(tail);
+      }
+    }
+    metadata = { ...containerMetadata, ...oggMetadata, ...wavMetadata, ...mp4Metadata, ...metadata };
   }
 
   if (!metadata.title || !metadata.artist || !metadata.album || !metadata.trackNumber) {
