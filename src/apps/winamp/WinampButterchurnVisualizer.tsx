@@ -71,6 +71,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     const handleWebGLContextLost = (event: Event) => {
       event.preventDefault();
       stopRenderer();
+      cleanup();
       if (!disposed) setStatus('WEBGL CONTEXT LOST — REOPEN MILKDROP TO RETRY');
     };
 
