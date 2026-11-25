@@ -738,3 +738,31 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [ ] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes.
 - [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS high-DPI performance profiling, reduced motion and all playback/window regressions.
 - Audit and parity notes: `docs/winamp-vs-webamp-audit.md`.
+
+### Winamp — portable local-library backup and genuine MilkDrop implementation notes (2026-11-25)
+
+#### Portable local-library archive contract
+- [ ] Implement a self-contained `.wampack` ZIP archive; do not serialize object URLs or machine-specific absolute paths.
+- [ ] Archive layout:
+  - `manifest.json`: schema version, export timestamp, ordered playlist entries, stable archive-relative asset paths, title/artist/album/track number/duration and original filename/MIME type/size.
+  - `audio/000001.ext`, `audio/000002.ext`, …: original audio bytes, stored without transcoding or quality loss.
+  - Optional `settings/eq-presets.json`: user-created EQ presets only; do not silently export unrelated browser settings.
+- [ ] Export source bytes from IndexedDB records, not from `blob:` URLs. Preserve playlist order and duplicate appearances in the manifest while storing each local asset once.
+- [ ] Import must validate archive signature, central-directory bounds, entry count, uncompressed size, path traversal, duplicate paths, manifest schema/version, MIME/extension and per-file CRC before writing anything to IndexedDB.
+- [ ] Set conservative import limits and report oversized archives before allocation; do not trust manifest-provided filenames as filesystem paths.
+- [ ] Import transaction semantics: validate the entire archive first, then save records; if a write fails, roll back newly inserted records and do not append partial playlist entries.
+- [ ] Rebuild fresh object URLs from restored Blobs; revoke them on removal/unmount using the existing lifecycle. Never persist object URLs.
+- [ ] M3U remains a separate interoperable format for HTTP(S) URLs. Local files are portable only through the archive contract; do not claim relative M3U portability until a folder-root mapping flow exists.
+- [ ] UI: add compact BACKUP OUT / BACKUP IN actions to the existing Playlist MISC menu (not another window); show archive size, track count, skipped/invalid entries and success/failure status.
+- [ ] Add round-trip fixtures for empty library, mixed remote/local playlist, duplicate local tracks, Unicode filenames/tags, malformed ZIP, traversal paths, CRC mismatch, truncated archive and oversized manifest.
+
+#### Butterchurn integration — hard audio-graph acceptance
+- [ ] Pin compatible `butterchurn` and `butterchurn-presets` versions and update package manifest + lockfile together; no CDN or runtime network fetch.
+- [ ] Load renderer and preset bundle only after selecting the separate `MilkDrop (Butterchurn)` mode. Existing `MilkDrop` remains the procedural project mode.
+- [ ] Mount one canvas inside the existing fourth 275×275 Video / Visualization scene; reuse it in fullscreen. No new player/window.
+- [ ] Use the controller's existing AudioContext and post-EQ signal. Do not create another HTMLAudioElement or AudioContext, and do not route a second audible copy to destination.
+- [ ] Before wiring, verify Butterchurn's `connectAudio` contract against the actual package source: if it internally connects the supplied node to its own output, pass a dedicated silent analysis tap/branch in the existing graph and ensure the branch cannot double the audible signal.
+- [ ] Add a controller API for a shared post-EQ tap only if required; own and disconnect only the tap nodes created for Butterchurn, never disconnect the shared source/EQ/output chain.
+- [ ] Handle WebGL2 unavailable/context lost, lazy-import failure, resize, mode switch, fullscreen exit and component unmount without breaking playback or existing modes.
+- [ ] Keep preset data local; support preset cycling and transition; avoid eagerly loading the full preset bundle on initial Winamp render.
+- [ ] Profile GPU/CPU and memory at 60 FPS on high-DPI displays. If Butterchurn cannot sustain the target, throttle only that renderer without changing the 60 FPS publication rate of existing visualizers.
