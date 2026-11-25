@@ -241,27 +241,47 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
   }
   const referenced = new Set<string>();
   const assetMetadata = new Map<string, { name: string; type: string; lastModified: number; size: number }>();
+  if (typeof manifest.exportedAt !== 'string' || !Number.isFinite(Date.parse(manifest.exportedAt))) {
+    throw new Error('Archive contains an invalid export timestamp');
+  }
   for (const track of manifest.tracks) {
-    if (!track || typeof track.id !== 'string' || typeof track.title !== 'string' || typeof track.artist !== 'string' ||
-      typeof track.durationLabel !== 'string' || (track.src !== undefined && typeof track.src !== 'string') ||
-      (track.assetPath !== undefined && (!safePath(track.assetPath) || !track.assetPath.startsWith('audio/')))) {
+    if (!track || typeof track.id !== 'string' || !track.id || track.id.length > 256 ||
+      typeof track.title !== 'string' || track.title.length > 1024 ||
+      typeof track.artist !== 'string' || track.artist.length > 1024 ||
+      typeof track.durationLabel !== 'string' || track.durationLabel.length > 32 ||
+      (track.album !== undefined && (typeof track.album !== 'string' || track.album.length > 1024)) ||
+      (track.trackNumber !== undefined && (typeof track.trackNumber !== 'string' || track.trackNumber.length > 32)) ||
+      (track.src !== undefined && typeof track.src !== 'string') ||
+      (track.assetPath !== undefined && (typeof track.assetPath !== 'string' ||
+        !/^audio\/[0-9]{6}\.[a-z0-9]{1,8}$/i.test(track.assetPath) || !safePath(track.assetPath)))) {
       throw new Error('Archive contains an invalid playlist entry');
     }
     if (track.src) {
-      const url = new URL(track.src);
+      let url: URL;
+      try { url = new URL(track.src); } catch { throw new Error('Archive contains an invalid remote URL'); }
       if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('Archive contains an unsupported remote URL');
     }
     if (track.assetPath) {
-      if (!files.has(track.assetPath)) throw new Error('Archive references a missing audio asset');
+      const assetBytes = files.get(track.assetPath);
+      if (!assetBytes) throw new Error('Archive references a missing audio asset');
       referenced.add(track.assetPath);
-      if (!assetMetadata.has(track.assetPath)) {
-        if (typeof track.assetName !== 'string' || !track.assetName || track.assetName.length > 255 ||
-          typeof track.assetType !== 'string' || track.assetType.length > 128 ||
-          !Number.isFinite(track.assetLastModified) || !Number.isFinite(track.assetSize) || track.assetSize !== files.get(track.assetPath)!.byteLength) {
-          throw new Error('Archive contains invalid original audio-file metadata');
-        }
-        assetMetadata.set(track.assetPath, { name: track.assetName, type: track.assetType, lastModified: track.assetLastModified!, size: track.assetSize! });
+      const metadata = {
+        name: track.assetName ?? '',
+        type: track.assetType ?? '',
+        lastModified: track.assetLastModified ?? -1,
+        size: track.assetSize ?? -1,
+      };
+      if (!safeAssetName(metadata.name) || !safeMimeType(metadata.type) ||
+        !Number.isSafeInteger(metadata.lastModified) || metadata.lastModified < 0 ||
+        !Number.isSafeInteger(metadata.size) || metadata.size !== assetBytes.byteLength) {
+        throw new Error('Archive contains invalid original audio-file metadata');
       }
+      const existing = assetMetadata.get(track.assetPath);
+      if (existing && (existing.name !== metadata.name || existing.type !== metadata.type ||
+        existing.lastModified !== metadata.lastModified || existing.size !== metadata.size)) {
+        throw new Error('Playlist references disagree about shared audio asset metadata');
+      }
+      assetMetadata.set(track.assetPath, metadata);
     }
   }
   if ([...files.keys()].some((path) => path !== 'manifest.json' && !referenced.has(path))) throw new Error('Archive contains unreferenced payload files');
