@@ -524,6 +524,16 @@ class WinampControllerService {
     return this.audioElement;
   }
 
+  /**
+   * Returns the shared, post-EQ/post-balance node for visualizers.
+   * Callers may attach an analysis branch without creating another
+   * MediaElementAudioSourceNode or changing the audible output path.
+   */
+  public getVisualizerAudioNode(): AudioNode | null {
+    this.getWebAudio();
+    return this.pannerNode;
+  }
+
   public getWebAudio(): {
     ctx: AudioContext | null;
     analyser: AnalyserNode | null;
