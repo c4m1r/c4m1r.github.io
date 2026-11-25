@@ -290,7 +290,17 @@ export async function parseWinampSkinArchive(file: Blob, fileName = 'custom.wsz'
     const isSupportedConfig = /^(pledit|viscolor|region)\.txt$/i.test(baseName);
     if (!isSupportedAsset && !isSupportedConfig) continue;
 
-    const data = await extractZipEntry(bytes, entry);
+    let data: Uint8Array;
+    try {
+      data = await extractZipEntry(bytes, entry);
+    } catch (error) {
+      // A .wsz archive may contain optional sheets from another Winamp module.
+      // Keep a valid Main sheet usable when an unrelated optional asset is damaged.
+      if (baseName === 'main.bmp' || baseName === 'main.png') {
+        // Main is validated below; if no valid Main alternative remains, import fails.
+      }
+      continue;
+    }
     const type = baseName.endsWith('.png') ? 'image/png'
       : baseName.endsWith('.bmp') ? 'image/bmp'
         : baseName.endsWith('.cur') ? 'image/x-icon'
