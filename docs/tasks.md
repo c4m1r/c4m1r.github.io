@@ -712,7 +712,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [ ] Verify hidden-window lifecycle / performance in browser. **Deferred by owner** to the later browser-QA pass.
 - [x] Preserve local video stage, object-URL cleanup and existing window geometry in the implementation pass.
 - [ ] Browser acceptance: visual distinction, mobile fit, drag/attach, playback/EQ/playlist and video regressions. **Deferred by owner** to the later browser-QA pass.
-- Design contract and progress: `docs/winamp-visualization-modes.md`. First-pass modes, grouped picker, named presets and reduced-motion CSS are committed; browser acceptance is pending.
+- Design contract and progress: `docs/winamp-visualization-modes.md`. All 14 modes, grouped picker, named presets, Butterchurn integration and reduced-motion CSS are implemented; browser acceptance is deferred by owner.
 ## Windows Vista skin — started 2026-11-25
 - Before: the Vista profile was a draft that rendered the generic webos hybrid (XP-blue taskbar, Lucide icons, no wallpaper, unstyled login) because `os-vista` had no stylesheet set and `vista` shared the Windows 7 asset object.
 - Now: Vista is its own skin on the Windows 7 base. The shell carries `os-win7 os-vista` (`osClassNames.ts`, `osSkins.ts`); `osStyleSheets.ts` has an `os-vista` set (the Windows 7 files plus `vista.css`); `themeAssets.ts` has `vistaThemeAssets` (Windows 7 icons and sounds, Vista wallpaper and orb); `themeStyles.ts` has a `vista` entry.
