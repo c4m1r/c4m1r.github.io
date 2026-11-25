@@ -52,6 +52,7 @@ export function parseWinampSkinRegions(source: string): WinampSkinRegions {
   for (const [sourceName, targetName] of sectionMap) {
     const section = sections.get(sourceName);
     if (!section?.numPoints || !section.pointList) continue;
+    const sectionHeight = targetName === 'windowshade' || targetName === 'equalizerws' ? WINDOW_SHADE_HEIGHT : REGION_HEIGHT;
     const counts = section.numPoints.split(/[\s,]+/).filter(Boolean).map(Number);
     const coordinates = section.pointList.split(/[\s,]+/).filter(Boolean).map(Number);
     if (!counts.length || counts.length > MAX_POLYGONS || counts.some((count) => !Number.isInteger(count) || count < 3 || count > MAX_POINTS_PER_POLYGON)) continue;
