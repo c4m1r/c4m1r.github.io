@@ -832,10 +832,10 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 
 - [ ] Full legacy `.milk` conversion: integrate a maintained/compatible EEL2 + MilkDrop preset parser and HLSL-to-GLSL conversion path only after dependency, license, security, bundle-size and Butterchurn schema review. Current importer deliberately supports scalar-only files; do not silently strip EEL or shader content.
 - [x] Persist the edited mixed audio/video queue order across reloads and fourth-window close/reopen using stable media keys and guarded localStorage access. Toolbar Move Up/Down and the in-window drag-reorder list are available.
-- [ ] Extend `.wampack` restore tests with IndexedDB failure/quota injection and verify transaction abort plus post-commit rollback; optional DEFLATE import remains unimplemented (writer currently uses STORE).
+- [x] Extend `.wampack` restore tests with asynchronous quota failure, synchronous object-store failure, atomic transaction abort and post-commit rollback of IndexedDB records plus temporary Blob URLs. Optional DEFLATE import remains unimplemented (writer currently uses STORE).
 - [ ] Browser acceptance on desktop and mobile: mixed audio/video selection, reorder, shuffle, repeat, auto-advance, Media Session keys, keyboard shortcuts, autoplay restrictions, fullscreen, touch gestures, narrow toolbar, codec errors, and close/reopen resource release.
 - [ ] Profile Butterchurn CPU/GPU/memory on high-DPI displays and verify WebGL context cleanup and renderer reinitialization after repeated mode changes.
-- [ ] Verify the newest GitHub Actions run and GitHub Pages deployment for the final commit; do not equate a successful build job with a successful deploy.
+- [x] GitHub Actions passed TypeScript, Winamp archive tests, ESLint, production build, artifact verification and GitHub Pages deployment for commit `e53db050`. The subsequent source hardening commits are listed below and are checked independently.
 
 
 ### 2026-11-25 — Persistent mixed queue order
@@ -854,6 +854,19 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Add a pure reorder-by-key helper and regression tests for arbitrary drop positions, invalid indices and non-mutating behavior.
 - [x] Harden Butterchurn teardown against async preset-import races: mark runtime disposed before releasing it; after file reads and preset loads, ignore results if the visualizer has already been unmounted or replaced.
 - [x] On renderer exceptions, stop RAF and release the audio analysis branch, preset references, WebGL context and canvas backing store rather than leaving a failed renderer resident.
+- [x] Ignore rejected asynchronous preset switches/advances after runtime teardown, so late failures cannot update a closed visualizer.
+- [x] Limit local preset imports before reading/parsing: 2 MB for legacy `.milk`, 8 MB for Butterchurn JSON.
+- [x] Extract `.wampack` rollback into a reusable helper and test record deletion plus revocation of all temporary Blob URLs after a post-commit failure.
 - [ ] Full legacy .milk conversion remains open. Research found milkdrop-toolchain 0.1.0 (Unlicense, TypeScript, no runtime dependencies) with EEL2 parsing/interpreter/JIT and HLSL analysis/GLSL emission plus 510 carried-over tests. It is a promising parser/compiler candidate, but it does not itself provide a Butterchurn preset adapter or renderer VM; do not claim full import or integrate it until an adapter is implemented and tested against real presets.
 - [ ] Mobile drag acceptance, real-browser repeated open/close and WebGL memory profiling remain open.
-- [ ] Latest CI for afc44c70 must complete before treating the lifecycle hardening as verified. The preceding drag-reorder commit 2c379061 passed typecheck, Winamp tests, lint, build, artifact verification and GitHub Pages deploy.
+- [x] GitHub Actions passed TypeScript, Winamp archive tests (including quota/abort and post-commit rollback tests), ESLint, production build, artifact verification and GitHub Pages deployment for `e53db050`.
+
+
+### 2026-11-26 — Winamp restore rollback and preset-import hardening
+
+- [x] Verify atomic IndexedDB import rollback for both asynchronous quota failure and synchronous object-store failure; the failed transaction never commits partial records.
+- [x] Verify post-commit rollback removes imported local records and revokes every temporary Blob URL when playlist publication fails.
+- [x] Guard late Butterchurn preset-switch/advance rejections after teardown and enforce 2 MB `.milk` / 8 MB Butterchurn JSON import limits before reading files.
+- [x] CI and GitHub Pages deployment passed for `e53db050` (TypeScript, Winamp archive tests, ESLint, production build and artifact verification).
+- [ ] Full EEL2/custom-wave/custom-shape/MilkDrop 2 shader conversion is still not complete. `milkdrop-toolchain` provides parser/compiler primitives but not a Butterchurn runtime adapter; keep the current scalar-only importer explicit until a tested adapter exists.
+- [ ] Real browser acceptance and GPU/CPU/memory profiling remain owner-deferred; source changes and CI do not substitute for desktop/mobile browser testing.

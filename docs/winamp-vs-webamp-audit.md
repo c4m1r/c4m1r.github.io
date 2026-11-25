@@ -333,3 +333,12 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - A render exception now triggers full best-effort teardown: RAF cancellation, ResizeObserver/listener removal, audio analysis branch disconnect, preset reference release, WebGL context loss and canvas backing-store release.
 - milkdrop-toolchain 0.1.0 was reviewed as a candidate parser/compiler: TypeScript, Unlicense, no runtime dependencies; it includes EEL2 parsing/interpreter/JIT and HLSL analysis/GLSL emission, with 510 carried-over tests. It does not include a Butterchurn adapter or renderer VM, so it is not a drop-in .milk importer. Full import remains open until a compatible adapter is implemented and validated against real-world presets.
 - Remaining: mobile touch drag acceptance, browser lifecycle/memory profiling, full .milk adapter, and confirmation of CI/deploy for the lifecycle commit.
+
+
+## 20. Restore rollback and preset-import safety — 2026-11-26
+
+- `.wampack` restore now delegates post-commit rollback to `rollbackWinampLocalAudioImport`. It attempts to delete every imported IndexedDB record and independently revokes every temporary Blob URL, returning explicit cleanup warnings if either operation fails.
+- Regression tests cover asynchronous quota failure, synchronous object-store failure, all-or-nothing transaction abort, successful commit, and post-commit deletion plus Blob URL revocation.
+- Butterchurn local preset imports are size-limited before file reads (2 MB for `.milk`, 8 MB for JSON). Async preset-switch and preset-advance failures are ignored when their runtime has been disposed or replaced.
+- GitHub Actions typecheck, Winamp archive tests, ESLint, production build, artifact verification and GitHub Pages deployment passed for `e53db050`.
+- Remaining: full EEL2/custom wave/custom shape/MilkDrop 2 shader conversion and owner-deferred real browser acceptance, touch interaction and WebGL performance/memory profiling. `milkdrop-toolchain` is not a drop-in Butterchurn adapter.
