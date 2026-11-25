@@ -797,6 +797,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [visualizerAutoCycle, showVideo, videoShade, videoMode]);
   const [videoUrl, setVideoUrl] = useState('');
   const [videoFileName, setVideoFileName] = useState('');
+  const [videoQueue, setVideoQueue] = useState<Array<{ url: string; name: string }>>([]);
+  const [videoQueueIndex, setVideoQueueIndex] = useState(0);
+  const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
+  const videoObjectUrlsRef = useRef<string[]>([]);
   const videoWindowRef = useRef<HTMLDivElement>(null);
   const videoElementRef = useRef<HTMLVideoElement>(null);
   const fullscreenHideTimerRef = useRef<number | null>(null);
@@ -825,9 +829,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
     setShowVideo(visible);
   };
-  const videoUrlRef = useRef('');
   const videoInputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => () => { if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current); }, []);
+  useEffect(() => () => {
+    videoObjectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    videoObjectUrlsRef.current = [];
+  }, []);
   // Build the Classic windows as one vertical stack using the same responsive
   // video size as the stylesheet. This prevents a gap above Main on very narrow
   // screens where the square visualization must shrink below 275px.
@@ -1267,6 +1273,32 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setFourthVisualizerPresetIndex(0);
   }, [videoMode]);
 
+  const goToVideoQueueIndex = useCallback((index: number) => {
+    const item = videoQueue[index];
+    if (!item || index === videoQueueIndex) return;
+    setVideoQueueIndex(index);
+    setVideoUrl(item.url);
+    setVideoFileName(item.name);
+    setVideoIsPlaying(false);
+    setVideoAutoplayPending(true);
+  }, [videoQueue, videoQueueIndex]);
+
+  const previousFullscreenItem = useCallback(() => {
+    if (videoMode === 'video' && videoQueue.length) {
+      goToVideoQueueIndex(videoQueueIndex - 1);
+      return;
+    }
+    previous();
+  }, [videoMode, videoQueue.length, videoQueueIndex, goToVideoQueueIndex, previous]);
+
+  const nextFullscreenItem = useCallback(() => {
+    if (videoMode === 'video' && videoQueue.length) {
+      goToVideoQueueIndex(videoQueueIndex + 1);
+      return;
+    }
+    next();
+  }, [videoMode, videoQueue.length, videoQueueIndex, goToVideoQueueIndex, next]);
+
   const handleVideoStagePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     if (!target.closest('.wa-video__visualizer, .wa-video__screen')) return;
@@ -1321,13 +1353,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         case 'ArrowUp':
           event.preventDefault();
           event.stopImmediatePropagation();
-          previous();
+          previousFullscreenItem();
           revealFullscreenControls();
           break;
         case 'ArrowDown':
           event.preventDefault();
           event.stopImmediatePropagation();
-          next();
+          nextFullscreenItem();
           revealFullscreenControls();
           break;
         case ' ':
@@ -2341,19 +2373,43 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           />
         ) : (
           <div className="wa-video__screen">
-            <input ref={videoInputRef} type="file" accept="video/*" hidden onChange={(event) => {
-              const file = event.currentTarget.files?.[0];
-              if (file) {
-                const nextUrl = URL.createObjectURL(file);
-                if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current);
-                videoUrlRef.current = nextUrl;
-                setVideoUrl(nextUrl);
-                setVideoFileName(file.name);
+            <input ref={videoInputRef} type="file" accept="video/*" multiple hidden onChange={(event) => {
+              const files = Array.from(event.currentTarget.files ?? []);
+              if (files.length) {
+                const previousUrls = videoObjectUrlsRef.current;
+                const nextQueue = files.map((file) => ({ url: URL.createObjectURL(file), name: file.name }));
+                videoObjectUrlsRef.current = nextQueue.map((item) => item.url);
+                window.setTimeout(() => previousUrls.forEach((url) => URL.revokeObjectURL(url)), 0);
+                setVideoQueue(nextQueue);
+                setVideoQueueIndex(0);
+                setVideoUrl(nextQueue[0].url);
+                setVideoFileName(nextQueue.length > 1 ? `${nextQueue[0].name} (+${nextQueue.length - 1})` : nextQueue[0].name);
+                setVideoAutoplayPending(false);
                 setVideoIsPlaying(false);
               }
               event.currentTarget.value = '';
             }} />
-            {videoUrl ? <video ref={videoElementRef} src={videoUrl} controls={!isVideoFullscreen} playsInline onPlay={() => { setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }} onPause={() => { setVideoIsPlaying(false); if (isVideoFullscreen) revealFullscreenControls(); }} /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
+            {videoUrl ? <video
+              ref={videoElementRef}
+              src={videoUrl}
+              controls={!isVideoFullscreen}
+              playsInline
+              onCanPlay={() => {
+                if (!videoAutoplayPending) return;
+                setVideoAutoplayPending(false);
+                void videoElementRef.current?.play().catch(() => undefined);
+              }}
+              onEnded={() => {
+                if (videoQueueIndex < videoQueue.length - 1) goToVideoQueueIndex(videoQueueIndex + 1);
+                else setVideoIsPlaying(false);
+              }}
+              onError={() => {
+                setVideoAutoplayPending(false);
+                setVideoIsPlaying(false);
+              }}
+              onPlay={() => { setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }}
+              onPause={() => { setVideoIsPlaying(false); if (isVideoFullscreen) revealFullscreenControls(); }}
+            /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
             <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
           </div>
         )}
@@ -2379,9 +2435,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           onPointerDown={(event) => event.stopPropagation()}
         >
           <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}>−5s</button>
-          <button type="button" title="Предыдущий трек" aria-label="Предыдущий трек" onClick={() => { previous(); revealFullscreenControls(); }}>|◀</button>
+          <button type="button" title="Предыдущий трек" aria-label="Предыдущий трек" onClick={() => { previousFullscreenItem(); revealFullscreenControls(); }}>|◀</button>
           <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}>{videoMode === 'video' ? (videoIsPlaying ? 'Ⅱ' : '▶') : (isPlaying ? 'Ⅱ' : '▶')}</button>
-          <button type="button" title="Следующий трек" aria-label="Следующий трек" onClick={() => { next(); revealFullscreenControls(); }}>▶|</button>
+          <button type="button" title="Следующий трек" aria-label="Следующий трек" onClick={() => { nextFullscreenItem(); revealFullscreenControls(); }}>▶|</button>
           <button type="button" title="Вперёд на 5 секунд" aria-label="Вперёд на 5 секунд" onClick={() => { seekFullscreenMedia(5); revealFullscreenControls(); }}>+5s</button>
           <button type="button" title="Переключить режим" aria-label="Переключить режим" onClick={() => { cycleFullscreenMode(); revealFullscreenControls(); }}>MODE</button>
           <button type="button" title="Выйти из полноэкранного режима" aria-label="Выйти из полноэкранного режима" onClick={exitVideoFullscreen}>✕</button>
