@@ -326,7 +326,8 @@ export async function readEmbeddedAudioMetadata(file: Blob): Promise<EmbeddedAud
     const isFlac = signature === 'fLaC';
     const isOgg = signature === 'OggS';
     const isWav = signature === 'RIFF';
-    const isMp4 = mp4Marker === 'ftyp' || /audio\\/(mp4|x-m4a)|video\\/mp4/i.test(file.type);
+    const mediaType = file.type.toLowerCase();
+    const isMp4 = mp4Marker === 'ftyp' || mediaType.includes('mp4') || mediaType.includes('m4a');
     let containerMetadata: EmbeddedAudioMetadata = {};
     if (isFlac || isOgg || isWav || isMp4) {
       const containerBytes = new Uint8Array(await file.slice(0, Math.min(file.size, 16 * 1024 * 1024)).arrayBuffer());
