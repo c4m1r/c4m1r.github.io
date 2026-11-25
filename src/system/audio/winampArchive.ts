@@ -15,6 +15,10 @@ export interface WinampArchiveTrack {
   durationLabel: string;
   src?: string;
   assetPath?: string;
+  assetName?: string;
+  assetType?: string;
+  assetLastModified?: number;
+  assetSize?: number;
 }
 export interface WinampArchiveManifest {
   format: 'wampack';
@@ -78,7 +82,8 @@ export async function createWinampArchive(
         id: track.id, title: track.title, artist: track.artist, durationLabel: track.durationLabel,
         ...(track.album ? { album: track.album } : {}),
         ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}),
-        assetPath,
+        assetPath, assetName: record.name, assetType: record.type,
+        assetLastModified: record.lastModified, assetSize: record.size,
       });
       continue;
     }
@@ -188,6 +193,7 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
     throw new Error('Unsupported archive format or manifest version');
   }
   const referenced = new Set<string>();
+  const assetMetadata = new Map<string, { name: string; type: string; lastModified: number; size: number }>();
   for (const track of manifest.tracks) {
     if (!track || typeof track.id !== 'string' || typeof track.title !== 'string' || typeof track.artist !== 'string' ||
       typeof track.durationLabel !== 'string' || (track.src !== undefined && typeof track.src !== 'string') ||
@@ -201,12 +207,21 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
     if (track.assetPath) {
       if (!files.has(track.assetPath)) throw new Error('Archive references a missing audio asset');
       referenced.add(track.assetPath);
+      if (!assetMetadata.has(track.assetPath)) {
+        if (typeof track.assetName !== 'string' || !track.assetName || track.assetName.length > 255 ||
+          typeof track.assetType !== 'string' || track.assetType.length > 128 ||
+          !Number.isFinite(track.assetLastModified) || !Number.isFinite(track.assetSize) || track.assetSize !== files.get(track.assetPath)!.byteLength) {
+          throw new Error('Archive contains invalid original audio-file metadata');
+        }
+        assetMetadata.set(track.assetPath, { name: track.assetName, type: track.assetType, lastModified: track.assetLastModified!, size: track.assetSize! });
+      }
     }
   }
   if ([...files.keys()].some((path) => path !== 'manifest.json' && !referenced.has(path))) throw new Error('Archive contains unreferenced payload files');
   const assets = [...referenced].map((path) => ({
-    path, name: path.split('/').pop() ?? 'audio.bin', type: 'application/octet-stream', lastModified: Date.now(),
-    blob: new Blob([files.get(path)!], { type: 'application/octet-stream' }),
+    path, name: assetMetadata.get(path)!.name, type: assetMetadata.get(path)!.type,
+    lastModified: assetMetadata.get(path)!.lastModified,
+    blob: new Blob([files.get(path)!], { type: assetMetadata.get(path)!.type || 'application/octet-stream' }),
   }));
   return { manifest, assets };
 }
