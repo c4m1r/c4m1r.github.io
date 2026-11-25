@@ -11,9 +11,9 @@ const { convertMilkPreset, convertSimpleMilkPreset } = await import('data:text/j
 
 const basePreset = {
   baseVals: { zoom: 1, decay: 0.98, gammaadj: 2, wave_mode: 0, wave_a: 0.8, echo_zoom: 2, echo_alpha: 0, echo_orient: 0, wrap: 1, red_blue: 0 },
-  init_eqs_eel: '', frame_eqs_eel: '', pixel_eqs_eel: '',
-  shapes: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, sides: 4, x: 0.5, y: 0.5 }, init_eqs_eel: '', frame_eqs_eel: '' })),
-  waves: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, samples: 512, sep: 0, scaling: 1, smoothing: 0.5, r: 1, g: 1, b: 1, a: 1 }, init_eqs_eel: '', frame_eqs_eel: '', point_eqs_eel: '' })),
+  init_eqs_str: 'seed-init();', frame_eqs_str: 'seed-frame();', pixel_eqs_str: 'seed-pixel();',
+  shapes: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, sides: 4, x: 0.5, y: 0.5 }, init_eqs_str: 'seed-shape-init();', frame_eqs_str: 'seed-shape-frame();' })),
+  waves: Array.from({ length: 4 }, () => ({ baseVals: { enabled: 0, samples: 512, sep: 0, scaling: 1, smoothing: 0.5, r: 1, g: 1, b: 1, a: 1 }, init_eqs_str: 'seed-wave-init();', frame_eqs_str: 'seed-wave-frame();', point_eqs_str: 'seed-wave-point();' })),
 };
 
 test('converts MilkDrop scalar aliases without mutating Butterchurn base preset', () => {
