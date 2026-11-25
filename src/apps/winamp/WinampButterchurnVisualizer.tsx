@@ -20,6 +20,7 @@ interface ButterchurnRuntime {
   audioNode: AudioNode;
   presetNames: string[];
   presets: Record<string, ButterchurnPreset>;
+  disposed: boolean;
 }
 
 export default function WinampButterchurnVisualizer({ presetIndex }: WinampButterchurnVisualizerProps) {
@@ -88,7 +89,8 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         } catch (error) {
           stopRenderer();
           console.error('Butterchurn render stopped:', error);
-          if (!disposed) setStatus('MILKDROP RENDERER STOPPED');
+          cleanup();
+          if (!disposed) setStatus('MILKDROP RENDERER STOPPED — RESOURCES RELEASED');
         }
       };
       animationFrame = requestAnimationFrame(draw);
@@ -112,6 +114,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         } catch (error) {
           console.warn('Butterchurn audio branch cleanup failed:', error);
         }
+        active.disposed = true;
         active.presetNames.length = 0;
         active.presets = {};
       } else if (visualizer && connectedNode) {
@@ -181,7 +184,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         webglContext = canvas.getContext('webgl2');
         connectedNode = audioNode;
         visualizer.connectAudio(audioNode);
-        runtimeRef.current = { visualizer, audioNode, presetNames, presets };
+        runtimeRef.current = { visualizer, audioNode, presetNames, presets, disposed: false };
 
         const firstIndex = ((presetIndexRef.current % presetNames.length) + presetNames.length) % presetNames.length;
         setPresetName(presetNames[firstIndex]);
@@ -217,7 +220,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
 
   useEffect(() => {
     const runtime = runtimeRef.current;
-    if (!runtime || !runtime.presetNames.length) return;
+    if (!runtime || runtime.disposed || !runtime.presetNames.length) return;
     const index = ((presetIndex % runtime.presetNames.length) + runtime.presetNames.length) % runtime.presetNames.length;
     const name = runtime.presetNames[index];
     const preset = runtime.presets[name];
@@ -231,13 +234,14 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
   const importPresetFile = async (file?: File) => {
     if (!file) return;
     const runtime = runtimeRef.current;
-    if (!runtime) {
+    if (!runtime || runtime.disposed) {
       setStatus('WAIT FOR MILKDROP TO INITIALIZE');
       return;
     }
     try {
       const isMilkFile = /\.milk$/i.test(file.name);
       const rawText = await file.text();
+      if (runtime.disposed || runtimeRef.current !== runtime) return;
       const parsed: unknown = isMilkFile
         ? convertSimpleMilkPreset(rawText, runtime.presets[runtime.presetNames[0]])
         : JSON.parse(rawText);
@@ -250,6 +254,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       while (runtime.presets[name]) name = `${baseName} (${suffix++})`;
       const preset = parsed as ButterchurnPreset;
       await runtime.visualizer.loadPreset(preset, 2.5);
+      if (runtime.disposed || runtimeRef.current !== runtime) return;
       runtime.presets[name] = preset;
       runtime.presetNames.push(name);
       presetIndexRef.current = runtime.presetNames.length - 1;
@@ -258,6 +263,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         ? '.MILK IMPORTED: scalar parameters only; EEL equations, custom waves/shapes and shaders are not converted'
         : '');
     } catch (error) {
+      if (runtime.disposed || runtimeRef.current !== runtime) return;
       console.error('Butterchurn preset import failed:', error);
       setStatus(error instanceof Error ? error.message : 'UNABLE TO IMPORT PRESET JSON');
     }
@@ -265,7 +271,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
 
   const advancePreset = () => {
     const runtime = runtimeRef.current;
-    if (!runtime?.presetNames.length) return;
+    if (!runtime || runtime.disposed || !runtime.presetNames.length) return;
     const nextIndex = (presetIndexRef.current + 1) % runtime.presetNames.length;
     presetIndexRef.current = nextIndex;
     const name = runtime.presetNames[nextIndex];
