@@ -1639,7 +1639,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [previous, play, pause, stop, next, currentTime, duration, volume, showVideo, isVideoFullscreen, enterVideoFullscreen]);
+  }, [play, pause, stop, currentTime, duration, volume, showVideo, isVideoFullscreen, enterVideoFullscreen]);
 
   // Sync EQ slider changes to Web Audio filters
   const handleEqBandChange = (index: number, value: number) => {
