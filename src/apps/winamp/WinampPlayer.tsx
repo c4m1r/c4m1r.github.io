@@ -1061,7 +1061,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     } catch {
       // Position state is optional and may be rejected by older browser implementations.
     }
-  }, [trackIndex, isPlaying, currentTime, duration]);
+  }, [trackIndex, track.title, track.artist, track.album, isPlaying, currentTime, duration]);
 
   useEffect(() => () => {
     if (!('mediaSession' in navigator)) return;
