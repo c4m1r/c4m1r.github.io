@@ -19,11 +19,14 @@ const basePreset = {
 const convert = (text) => convertMilkPreset(text, basePreset, milkdropParser);
 
 test('converts MilkDrop scalar aliases without mutating or inheriting Butterchurn seed values', async () => {
-  const result = await convert('[preset00]\nfDecay=0.91\nfZoom=1.25\nnWaveMode=7\nfVideoEchoZoom=1.4\n');
+  const result = await convert('[preset00]\nfDecay=0.91\nfZoom=1.25\nnWaveMode=7\nfVideoEchoZoom=1.4\nfRating=4.5\nfWaveParam=0.7\nbMaximizeWaveColor=1\n');
   assert.equal(result.preset.baseVals.decay, 0.91);
   assert.equal(result.preset.baseVals.zoom, 1.25);
   assert.equal(result.preset.baseVals.wave_mode, 7);
-  assert.equal(result.preset.baseVals.echo_zoom, 1.4);\n  assert.equal(result.preset.baseVals.rating, 4.5);\n  assert.equal(result.preset.baseVals.wave_mystery, 0.7);\n  assert.equal(result.preset.baseVals.wave_brighten, 1);
+  assert.equal(result.preset.baseVals.echo_zoom, 1.4);
+  assert.equal(result.preset.baseVals.rating, 4.5);
+  assert.equal(result.preset.baseVals.wave_mystery, 0.7);
+  assert.equal(result.preset.baseVals.wave_brighten, 1);
   assert.equal(result.preset.baseVals.seed_only, undefined);
   assert.equal(basePreset.baseVals.zoom, 9);
   assert.equal(result.preset.init_eqs_str, '');
