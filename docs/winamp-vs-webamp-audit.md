@@ -38,7 +38,7 @@
 | .wsz skins | Собственный ZIP parser, atlas cropper; необязательные отсутствующие/битые sprites теперь пропускаются, Main sheet остаётся обязательным | Совместимость с классическими Winamp 2.x skins, включая их нестандартные элементы | Импорт устойчивее, но полный skin fidelity ещё не достигнут |
 | Playlist skin data | `pledit.txt` colors/font применяются к списку и menu panels | Playlist colors/fonts и skin artwork поддерживаются | Базовые colors/font подключены; custom regions ещё нет |
 | Visualizer colors | `viscolor.txt` palette применяется к Main analyzer | Skin-defined visualizer colors | Базовая palette подключена |
-| Skin regions | `region.txt` парсится, но форма окна не применяется | Поддержка custom window regions; есть отдельные исправления для Firefox/zoom | Нет нестандартных контуров окон |
+| Skin regions | `region.txt` валидируется и применяется SVG clipPath к Main/Equalizer normal + WindowShade | Поддержка custom window regions | Базовые четыре region sections подключены; browser QA и редкие malformed files ещё нужны |
 | Classic analyzer | Spectrum / Oscilloscope / Peak meter | Классические analyzer modes | Функциональный паритет по основным режимам |
 | WMP visualizers | Alchemy, Bars and Waves, Battery и legacy-набор | Не является основной функцией Webamp | Наше преимущество |
 | AVS / MilkDrop | Собственные процедурные SVG-варианты; не исполняют presets | AVS не является центральной частью Webamp; MilkDrop через Butterchurn | Нельзя считать наши сцены заменой настоящего MilkDrop |
@@ -82,18 +82,18 @@ Webamp исторически исправлял fallback для отсутст�
 
 ### P1 — парсер извлекает skin metadata, но renderer её игнорирует
 
-**Статус: частично исправлено в этом проходе.** Playlist list colors/font из `pledit.txt`, Playlist menu colors и Main analyzer palette из `viscolor.txt` теперь применяются. `region.txt` пока не подключён.
+**Статус: частично исправлено в этом проходе.** Playlist list colors/font из `pledit.txt`, Playlist menu colors и Main analyzer palette из `viscolor.txt` теперь применяются. `region.txt` теперь валидируется и применяется к Main/Equalizer normal + WindowShade через SVG clipPath.
 
 `parseWinampSkinArchive()` возвращает:
 - `playlistStyle` из `pledit.txt`;
 - `visualizerColors` из `viscolor.txt`;
 - `regionText` из `region.txt`.
 
-`applySkinFile()` теперь сохраняет `playlistStyle` и `visualizerColors`; renderer применяет Playlist list/menu colors/font и Main analyzer palette. `regionText` пока сохраняется в parsed archive, но не превращается в validated window region.
+`applySkinFile()` теперь сохраняет `playlistStyle` и `visualizerColors`; renderer применяет Playlist list/menu colors/font и Main analyzer palette. `regionText` теперь парсится в ограниченные polygons; Main/Equalizer normal и WindowShade получают SVG clipPath, только если секция прошла валидацию.
 
-**Оставшееся последствие:** нестандартная форма окна по `region.txt` пока игнорируется; остальные перечисленные playlist/visualizer metadata уже подключены.
+**Оставшееся последствие:** требуется browser QA для разных размеров/масштабов и некорректных region sections; остальные перечисленные playlist/visualizer metadata уже подключены.
 
-**Следующий шаг:** реализовать `region.txt` через отдельный валидатор координат/контуров и browser tests; не применять произвольный текст напрямую как CSS.
+**Следующий шаг:** проверить `region.txt` на реальных skin corpus и убедиться, что clip paths не обрезают интерактивные кнопки; некорректные sections должны игнорироваться.
 
 ### P1 — M3U не переносит локальные файлы
 
@@ -239,11 +239,12 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 - [x] Защищён fullscreen double-click handler от повторного запроса fullscreen, если сцена уже развёрнута.
 - [x] Подключены `pledit.txt` list colors/font + menu colors к Playlist и `viscolor.txt` palette к Main analyzer для импортированного .wsz.
 - [x] Импорт .wsz больше не падает из-за отсутствующих optional sprite sheets или отдельных atlas sprites; Main sheet остаётся обязательным.
+- [x] Добавлен валидируемый `region.txt` parser и SVG clipPath для Main/Equalizer normal и WindowShade.
 - [x] Добавлен локальный metadata reader: ID3v2.2/v2.3/v2.4 + ID3v1, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. локальные tags сохраняются в IndexedDB.
 - [x] Добавлен автономный HTML Playlist export для HTTP(S) tracks; локальные object URLs не экспортируются как неработающие ссылки.
 - [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
 - [x] Подключён Media Session API к существующему controller: track metadata, playback/position state, play/pause/stop/next/previous и seek handlers; handlers/metadata очищаются при закрытии плеера.
 
-**Оставшиеся ограничения:** `region.txt` window shapes, portable local M3U/IndexedDB export, дополнительные Playlist commands, browser QA для Media Session, реальные metadata fixtures, настоящая Butterchurn/MilkDrop интеграция и 60-FPS browser performance profiling.
+**Оставшиеся ограничения:** browser QA для `region.txt` clip paths, portable local M3U/IndexedDB export, дополнительные Playlist commands, browser QA для Media Session, реальные metadata fixtures, настоящая Butterchurn/MilkDrop интеграция и 60-FPS browser performance profiling.
 
 Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
