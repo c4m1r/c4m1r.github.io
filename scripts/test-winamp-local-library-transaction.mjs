@@ -12,6 +12,7 @@ const errors = (compiled.diagnostics ?? []).filter((item) => item.category === t
 assert.equal(errors.length, 0, errors.map((item) => ts.flattenDiagnosticMessageText(item.messageText, '\\n')).join('\\n'));
 
 let expectedWrites = 0;
+let expectedDeletes = 0;
 let failAt = Number.POSITIVE_INFINITY;
 let failureMode = 'async';
 let committed = [];
@@ -26,6 +27,7 @@ globalThis.indexedDB = {
       createObjectStore() { return { createIndex() {} }; },
       transaction() {
         const staged = [];
+        const stagedDeletes = [];
         let finished = false;
         const tx = {
           error: null,
@@ -34,6 +36,18 @@ globalThis.indexedDB = {
           onabort: null,
           objectStore() {
             return {
+              delete(id) {
+                stagedDeletes.push(id);
+                if (stagedDeletes.length === expectedDeletes) {
+                  queueMicrotask(() => {
+                    if (finished) return;
+                    finished = true;
+                    committed = committed.filter((record) => !stagedDeletes.includes(record.id));
+                    completeEvents += 1;
+                    tx.oncomplete?.();
+                  });
+                }
+              },
               add(record) {
                 const nextWrite = staged.length + 1;
                 if (nextWrite === failAt && failureMode === 'sync') {
@@ -141,4 +155,29 @@ test('commits all imported assets together only after transaction completion', a
   assert.equal(completeEvents, 1);
   assert.equal(abortEvents, 0);
   assert.deepEqual(imported.map(({ path }) => path), assets.map(({ path }) => path));
+});
+
+test('rolls back committed local records and revokes every temporary object URL', async () => {
+  expectedWrites = 2;
+  expectedDeletes = 2;
+  failAt = Number.POSITIVE_INFINITY;
+  failureMode = 'async';
+  committed = [];
+  abortEvents = 0;
+  abortCalls = 0;
+  completeEvents = 0;
+  const imported = await importWinampLocalAudioAssets(assets, metadata);
+  assert.equal(committed.length, 2);
+
+  const revoked = [];
+  const errors = await rollbackWinampLocalAudioImport(
+    imported.map(({ record }) => record.id),
+    ['blob:temporary-one', 'blob:temporary-two'],
+    (url) => revoked.push(url),
+  );
+
+  assert.deepEqual(errors, []);
+  assert.equal(committed.length, 0, 'committed records must be deleted after playlist publication fails');
+  assert.deepEqual(revoked, ['blob:temporary-one', 'blob:temporary-two']);
+  assert.equal(completeEvents, 2, 'the insert and rollback transactions must both complete');
 });
