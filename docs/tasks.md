@@ -730,7 +730,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add HTML Playlist export for HTTP(S) tracks; do not emit ephemeral `blob:` URLs as portable links.
 - [ ] Add ID3 parser fixtures and expand metadata support to FLAC/Ogg Vorbis comments, MP4/M4A atoms and WAV INFO.
 - [ ] Implement a portable local-library export/import contract (M3U cannot reference transient object URLs).
-- [ ] Apply validated `region.txt` window shapes and remaining Playlist menu palette fields.
+- [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
+- [ ] Apply validated `region.txt` window shapes.
 - [ ] Isolate the 60 FPS visualizer render state from the large Winamp parent component.
 - [ ] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes.
 - [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS performance, reduced motion and all playback/window regressions.
