@@ -160,6 +160,14 @@ Webamp заявляет pixel-for-pixel skin rendering для Winamp 2.9. Наш
 - AVS/MilkDrop-inspired должны быть узнаваемыми самостоятельными сценами, но не называться совместимыми с настоящими presets;
 - fullscreen должен использовать то же существующее четвёртое окно и не создавать вторую audio/video сессию.
 
+### Настоящий MilkDrop — отдельный режим, не замена нашим сценам
+
+Добавить отдельный пункт `MilkDrop (Butterchurn)`, не переименовывая и не удаляя текущий авторский `MilkDrop` SVG mode. Наши AVS/MilkDrop-inspired сцены остаются доступными и не требуют WebGL.
+
+Butterchurn — WebGL2-реализация MilkDrop с отдельным пакетом presets. Upstream README документирует создание renderer на существующем AudioContext, подключение audio node, загрузку preset и resize. Основной пакет опубликован как MIT `butterchurn@2.6.7`, пакет presets — MIT `butterchurn-presets@2.4.7`. Для проекта использовать lazy/dynamic import только при выборе нового режима, проверять WebGL2 и оставлять текущие сцены как fallback. Canvas остаётся внутри существующего четвёртого окна; fullscreen использует тот же canvas и не создаёт новое окно.
+
+**Audio graph acceptance до включения:** использовать текущий controller AudioContext и сигнал после EQ, не создавать новый AudioContext/HTMLAudioElement. Нужно проверить, можно ли подать существующий node в Butterchurn без дублирования audible output; дополнительный analyser node допустим только как tap/branch в том же графе, а не отдельный playback pipeline. Presets должны быть локальными, циклически переключаемыми, с плавным blend; никаких CDN/API.
+
 ## 5. Рекомендуемый порядок реализации
 
 | Приоритет | Работа | Почему |
