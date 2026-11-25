@@ -1,6 +1,6 @@
 # Winamp Visualization Modes — design and implementation contract
 
-Status: implementation in progress. In-window renderers, grouped family picker, random action, distinct named AVS/MilkDrop scenes and optional auto-cycle are committed; lifecycle/performance work and browser acceptance remain pending.
+Status: implementation in progress. In-window renderers, grouped family picker, random action, distinct named AVS/MilkDrop scenes and optional auto-cycle are committed. The shared 60 FPS loop now stops while the document is backgrounded, resumes on return, and remains a single subscription across both visualizer surfaces. Fourth-window SVG gradient IDs are instance-scoped. Browser acceptance and genuine MilkDrop integration remain pending.
 
 ## Scope — existing fourth window only
 
@@ -8,12 +8,13 @@ There is exactly one expanded visualization surface: the already implemented squ
 
 The existing fourth window already contains a visualizer stage and a local-video stage. Add selectable visualization modes inside that existing stage. Keep the titlebar, toolbar, video picker, local video playback, window drag/attach behavior and object-URL cleanup intact.
 
-## Implementation snapshot (2026-11-24)
+## Implementation snapshot (2026-11-25)
 
 - The Main LCD now has its own independent three-mode state; the fourth window has a separate 13-mode state.
 - The existing fourth-window `MODE` control cycles through Spectrum, Oscilloscope, Peak Meter, Alchemy, Bars and Waves, Battery, Ambience, Particle, Plenoptic, Spikes, Musical Colors, AVS and MilkDrop.
 - Each added family uses an original SVG/CSS procedural renderer driven by the shared analyser arrays. WMP Alchemy layers frequency-shaped ribbons, orbital rings and a waveform core; Ambience blends several audio-shaped color fields; Particle uses a frequency-reactive orbital dot field; Plenoptic uses a perspective tunnel, frequency spokes and depth layers. AVS and MilkDrop named presets now have different scene geometry, not only different CSS motion. These remain original interpretations, not byte-exact reproductions of Microsoft / Nullsoft visualizers, original plugin engines, or compatible preset implementations.
 - The fourth-window geometry and video stage were not changed. Added CSS scene animation respects `prefers-reduced-motion`. Browser screenshots, visual tuning and regression checks are still outstanding.
+- The shared analyser RAF loop is suspended on `visibilitychange` when the tab is hidden and resumed once when it becomes visible. The controller and visibility listeners are shared across Main/Fourth subscriptions and are released when the final subscriber unmounts. SVG gradient IDs are generated from the fourth visualizer's React instance ID, avoiding duplicate document-level fragment references.
 
 ## Main LCD versus fourth-window mode state
 
