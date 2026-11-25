@@ -796,3 +796,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [ ] Consider optional DEFLATE support only if needed; current .wampack writer emits STORE entries and the importer intentionally accepts STORE only.
 
 Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
+
+### Winamp — Playlist feature completion (2026-11-25)
+- [x] Add Reverse playlist to the existing Classic Playlist MISC menu; preserve the currently playing track by identity rather than by its old numeric index.
+- [x] Add Crop to selection to retain only selected Playlist entries; if the playing track is excluded, switch the existing controller to the first retained entry without creating another audio graph.
+- [x] Add an optional compact Playlist mini visualizer, disabled by default and controlled from LIST OPT; it subscribes to the shared 60 FPS frame store and does not rerender the player/window manager.
+- [x] Add local Butterchurn preset JSON import to the genuine MilkDrop mode; imported presets are added to the in-memory preset list and can be cycled with PSET. The imported format is Butterchurn preset JSON, not raw legacy .milk text.
+- [ ] Browser acceptance for playlist crop/reverse, imported JSON preset loading, mini visualizer layout and audio/lifecycle behavior. Deferred by owner to the later browser-QA pass.
