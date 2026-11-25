@@ -25,9 +25,16 @@ declare module 'milkdrop-eel-parser' {
 
 declare module 'hlslparser-js' {
   export function convertHLSLShader(source: string, entryName: string, shaderType: 'fs' | 'vs'): Promise<string>;
+  const parser: { convertHLSLShader: typeof convertHLSLShader };
+  export default parser;
 }
 
 declare module 'milkdrop-preset-utils' {
   export function prepareShader(source: string): string;
   export function processUnOptimizedShader(source: string): string;
+  const utilities: {
+    prepareShader: typeof prepareShader;
+    processUnOptimizedShader: typeof processUnOptimizedShader;
+  };
+  export default utilities;
 }
