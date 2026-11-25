@@ -36,10 +36,10 @@ test('preserves EEL2 init, frame and per-pixel source for Butterchurn WASM', () 
 });
 
 test('converts legacy zero-based custom wave fields and all three EEL2 equation stages', () => {
-  const result = convertMilkPreset('[preset00]\nwave_0_enabled=1\nwave_0_samples=256\nwave_0_init_1=q1=0;\nwave_0_per_frame1=x=0.5;\nwave_0_per_point1=y=sample;\n', basePreset);
+  const result = convertMilkPreset('[preset00]\nwave_0_enabled=1\nwave_0_samples=256\nwavecode_0_bDrawThick=1\nwave_0_init_1=q1=0;\nwave_0_per_frame1=x=0.5;\nwave_0_per_point1=y=sample;\n', basePreset);
   const wave = result.preset.waves[0];
   assert.equal(wave.baseVals.enabled, 1);
-  assert.equal(wave.baseVals.samples, 256);
+  assert.equal(wave.baseVals.samples, 256);\n  assert.equal(wave.baseVals.thick, 1);
   assert.equal(wave.init_eqs_eel, 'q1=0;');
   assert.equal(wave.frame_eqs_eel, 'x=0.5;');
   assert.equal(wave.point_eqs_eel, 'y=sample;');
@@ -47,10 +47,10 @@ test('converts legacy zero-based custom wave fields and all three EEL2 equation 
 });
 
 test('converts one-based custom shape fields and init/frame equations', () => {
-  const result = convertMilkPreset('[preset00]\nshape_1_enabled=1\nshape_1_sides=8\nshape_1_init_1=q1=0;\nshape_1_per_frame1=x=0.4;\n', basePreset);
+  const result = convertMilkPreset('[preset00]\nshape_1_enabled=1\nshape_1_sides=8\nshapecode_0_bAdditive=1\nshape_1_init_1=q1=0;\nshape_1_per_frame1=x=0.4;\n', basePreset);
   const shape = result.preset.shapes[0];
   assert.equal(shape.baseVals.enabled, 1);
-  assert.equal(shape.baseVals.sides, 8);
+  assert.equal(shape.baseVals.sides, 8);\n  assert.equal(shape.baseVals.additive, 1);
   assert.equal(shape.init_eqs_eel, 'q1=0;');
   assert.equal(shape.frame_eqs_eel, 'x=0.4;');
   assert.equal(result.converted.customShapes, 1);
