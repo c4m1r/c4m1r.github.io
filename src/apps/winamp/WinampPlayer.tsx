@@ -19,6 +19,7 @@ import {
   getWinampLocalAudioRecords,
   importWinampLocalAudioAssets,
   updateWinampLocalAudioMetadata,
+  rollbackWinampLocalAudioImport,
 } from '../../system/audio/winampLocalLibrary';
 import './winamp.css';
 
@@ -723,12 +724,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     } catch (error) {
       // IndexedDB insertion is atomic. Roll back this import if publication
       // into the in-memory playlist fails after the storage transaction commits.
-      const rollbackErrors: string[] = [];
-      if (importedRecordIds.length) {
-        try { await deleteWinampLocalAudioFiles(importedRecordIds); }
-        catch { rollbackErrors.push('IndexedDB rollback failed; imported files may remain in the local library'); }
-      }
-      createdObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+      const rollbackErrors = await rollbackWinampLocalAudioImport(importedRecordIds, createdObjectUrls);
       const message = error instanceof Error ? error.message : 'Unable to import local library backup';
       setM3uStatus([message, ...rollbackErrors].join(' · '));
     }

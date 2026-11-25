@@ -153,6 +153,29 @@ export async function deleteWinampLocalAudioFiles(ids: string[]): Promise<void> 
   await completed;
 }
 
+export async function rollbackWinampLocalAudioImport(
+  ids: string[],
+  objectUrls: string[],
+  revokeObjectUrl: (url: string) => void = (url) => URL.revokeObjectURL(url),
+): Promise<string[]> {
+  const errors: string[] = [];
+  if (ids.length) {
+    try {
+      await deleteWinampLocalAudioFiles(ids);
+    } catch {
+      errors.push('IndexedDB rollback failed; imported files may remain in the local library');
+    }
+  }
+  objectUrls.forEach((url) => {
+    try {
+      revokeObjectUrl(url);
+    } catch {
+      errors.push('Temporary media URL cleanup failed');
+    }
+  });
+  return errors;
+}
+
 export async function getWinampLocalAudioRecords(): Promise<WinampLocalAudioRecord[]> {
   const database = await openDatabase();
   const transaction = database.transaction(STORE_NAME, 'readonly');
