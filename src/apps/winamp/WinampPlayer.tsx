@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import { PROJECT_PLAYLIST, MediaTrack } from '../mediaplayer/playlist';
 import { winampController, type WinampEqualizerPreset } from '../../system/audio/winampController';
+import WinampButterchurnVisualizer from './WinampButterchurnVisualizer';
 import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
 import { createM3uPlaylist, parseM3uPlaylist } from '../../system/audio/winampM3u';
 import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
@@ -62,11 +63,12 @@ type FourthVisualizerMode =
   | 'Spectrum' | 'Oscilloscope' | 'Peak meter'
   | 'Alchemy' | 'Bars and Waves' | 'Battery'
   | 'Ambience' | 'Particle' | 'Plenoptic' | 'Spikes' | 'Musical Colors'
-  | 'AVS' | 'MilkDrop';
+  | 'AVS' | 'MilkDrop' | 'MilkDrop (Butterchurn)';
 
 const fourthVisualizerPresets: Partial<Record<FourthVisualizerMode, readonly string[]>> = {
   AVS: ['Scope', 'Feedback Tunnel', 'Rotating Geometry', 'Kaleidoscope'],
   MilkDrop: ['Geiss Flow', 'Fractal Flame', 'Waveform Tunnel', 'Psychedelic Swirl'],
+  'MilkDrop (Butterchurn)': ['Preset 1', 'Preset 2', 'Preset 3', 'Preset 4'],
 };
 
 function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peaks: number[], waveform: number[], presetIndex = 0, idPrefix = 'wa-fourth-viz') {
@@ -333,6 +335,19 @@ function WinampMainVisualizer({
   );
 }
 
+function WinampFourthProceduralVisualizer({
+  mode,
+  presetIndex,
+  instanceId,
+}: {
+  mode: Exclude<FourthVisualizerMode, 'MilkDrop (Butterchurn)'>;
+  presetIndex: number;
+  instanceId: string;
+}) {
+  const { bars, peaks, waveform } = useSyncExternalStore(subscribeWinampVisualizerFrame, getWinampVisualizerFrame, getWinampVisualizerFrame);
+  return <>{renderFourthVisualizer(mode, bars, peaks, waveform, presetIndex, instanceId)}</>;
+}
+
 function WinampFourthVisualizer({
   mode,
   presetIndex,
@@ -342,13 +357,15 @@ function WinampFourthVisualizer({
   presetIndex: number;
   onCycle: () => void;
 }) {
-  const { bars, peaks, waveform } = useSyncExternalStore(subscribeWinampVisualizerFrame, getWinampVisualizerFrame, getWinampVisualizerFrame);
   const instanceId = `wa-fourth-viz-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const presets = fourthVisualizerPresets[mode];
+  const isButterchurn = mode === 'MilkDrop (Butterchurn)';
   return (
     <div className={`wa-video__visualizer wa-video__visualizer--${mode.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} role="img" aria-label={mode}>
-      <div className="wa-video__visualizer-label">{mode.toUpperCase()}{presets ? ' · ' + presets[presetIndex % presets.length].toUpperCase() : ''}</div>
-      {renderFourthVisualizer(mode, bars, peaks, waveform, presetIndex, instanceId)}
+      <div className="wa-video__visualizer-label">{isButterchurn ? 'MILKDROP · BUTTERCHURN' : mode.toUpperCase()}{presets && !isButterchurn ? ' · ' + presets[presetIndex % presets.length].toUpperCase() : ''}</div>
+      {isButterchurn
+        ? <WinampButterchurnVisualizer presetIndex={presetIndex} />
+        : <WinampFourthProceduralVisualizer mode={mode} presetIndex={presetIndex} instanceId={instanceId} />}
       <button type="button" className="wa-video__mode" title="Next visualization mode" onClick={onCycle}>MODE</button>
     </div>
   );
@@ -801,6 +818,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     { label: 'WMP Legacy', modes: ['Ambience', 'Particle', 'Plenoptic', 'Spikes', 'Musical Colors'] },
     { label: 'Winamp AVS-inspired', modes: ['AVS'] },
     { label: 'Winamp MilkDrop-inspired', modes: ['MilkDrop'] },
+    { label: 'Winamp MilkDrop · Butterchurn', modes: ['MilkDrop (Butterchurn)'] },
   ] as const;
   const fourthVisualizerModes = fourthVisualizerGroups.flatMap((group) => group.modes) as FourthVisualizerMode[];
   const [fourthVisualizerMode, setFourthVisualizerMode] = useState<FourthVisualizerMode>('Spectrum');
