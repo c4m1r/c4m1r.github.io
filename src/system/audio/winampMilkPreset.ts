@@ -26,7 +26,7 @@ const MAIN_FIELD_ALIASES: Record<string, string> = {
   badditivewaves: 'additivewave', bwavedots: 'wave_dots', bwavethick: 'wave_thick',
   bmodwavealphabyvolume: 'modwavealphabyvolume', fmodwavealphastart: 'modwavealphastart',
   fmodwavealphaend: 'modwavealphaend', fwavealpha: 'wave_a', fwavescale: 'wave_scale',
-  fwavesmoothing: 'wave_smoothing', fwaver: 'wave_r', fwaveg: 'wave_g', fwaveb: 'wave_b',
+  fwavesmoothing: 'wave_smoothing', fwavemystery: 'wave_mystery', fwaver: 'wave_r', fwaveg: 'wave_g', fwaveb: 'wave_b',
   fwavex: 'wave_x', fwavey: 'wave_y', bwavebrighten: 'wave_brighten',
   bmotionvectorson: 'bmotionvectorson', nmotionvectorsx: 'mv_x', nmotionvectorsy: 'mv_y',
   fmvdx: 'mv_dx', fmvdy: 'mv_dy', fmvl: 'mv_l', fmvr: 'mv_r', fmvg: 'mv_g',
@@ -36,7 +36,7 @@ const MAIN_FIELD_ALIASES: Record<string, string> = {
   btexwrap: 'wrap', bbrighten: 'brighten', bdarken: 'darken', bdarkencenter: 'darken_center',
   bsolarize: 'solarize', binvert: 'invert', bshader: 'fshader', bredbluestereo: 'red_blue',
   fvideoechozoom: 'echo_zoom', fvideoechoalpha: 'echo_alpha',
-  nvideoechoorientation: 'echo_orient', bvideoecho: 'echo_alpha',
+  nvideoechoorientation: 'echo_orient',
   fouterbordersize: 'ob_size', fouterborderr: 'ob_r', fouterborderg: 'ob_g',
   fouterborderb: 'ob_b', fouterbordera: 'ob_a', finnerbordersize: 'ib_size',
   finnerborderr: 'ib_r', finnerborderg: 'ib_g', finnerborderb: 'ib_b', finnerbordera: 'ib_a',
@@ -196,8 +196,16 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
 
   const frameEquations = programs.init.size + programs.frame.size;
   const pixelEquations = programs.pixel.size;
-  const customWaves = new Set([...programs.waveInit.keys(), ...programs.waveFrame.keys(), ...programs.wavePoint.keys()]).size;
-  const customShapes = new Set([...programs.shapeInit.keys(), ...programs.shapeFrame.keys()]).size;
+  const customWaveSlots = new Set([
+    ...programs.waveInit.keys(), ...programs.waveFrame.keys(), ...programs.wavePoint.keys(),
+    ...preset.waves.map((wave, index) => Number(wave.baseVals.enabled) !== 0 ? index : -1).filter((index) => index >= 0),
+  ]);
+  const customShapeSlots = new Set([
+    ...programs.shapeInit.keys(), ...programs.shapeFrame.keys(),
+    ...preset.shapes.map((shape, index) => Number(shape.baseVals.enabled) !== 0 ? index : -1).filter((index) => index >= 0),
+  ]);
+  const customWaves = customWaveSlots.size;
+  const customShapes = customShapeSlots.size;
   if (!frameEquations && !pixelEquations && !customWaves && !customShapes) {
     warnings.add('This preset contains no EEL equations or custom wave/shape programs; only mapped scalar parameters were imported.');
   }

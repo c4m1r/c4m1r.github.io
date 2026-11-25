@@ -74,3 +74,10 @@ test('rejects missing preset section, oversized files and incomplete Butterchurn
   assert.throws(() => convertMilkPreset('x'.repeat(2 * 1024 * 1024 + 1), basePreset), /2 MB/i);
   assert.throws(() => convertMilkPreset('[preset00]\nzoom=1\n', { baseVals: {} }), /incomplete/i);
 });
+
+test('counts enabled custom wave/shape slots even when they contain no EEL blocks', () => {
+  const result = convertMilkPreset('[preset00]\\nwave_0_enabled=1\\nshape_1_enabled=1\\n', basePreset);
+  assert.equal(result.converted.customWaves, 1);
+  assert.equal(result.converted.customShapes, 1);
+  assert.equal(result.warnings.length, 0);
+});
