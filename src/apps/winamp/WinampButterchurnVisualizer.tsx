@@ -33,6 +33,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     let resizeObserver: ResizeObserver | null = null;
     let visualizer: ButterchurnVisualizer | null = null;
     let connectedNode: AudioNode | null = null;
+    let webglContext: WebGL2RenderingContext | null = null;
 
     const resize = () => {
       if (!visualizer || !canvas) return;
@@ -64,19 +65,18 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         } catch (error) {
           console.warn('Butterchurn audio branch cleanup failed:', error);
         }
-        try {
-          active.visualizer.loseGLContext?.();
-        } catch (error) {
-          console.warn('Butterchurn WebGL cleanup failed:', error);
-        }
         active.presetNames.length = 0;
         active.presets = {};
-      } else if (visualizer) {
-        if (connectedNode) {
-          try { visualizer.disconnectAudio(connectedNode); } catch { /* best-effort teardown */ }
-        }
-        try { visualizer.loseGLContext?.(); } catch { /* best-effort teardown */ }
+      } else if (visualizer && connectedNode) {
+        try { visualizer.disconnectAudio(connectedNode); } catch { /* best-effort teardown */ }
       }
+      try {
+        const context = webglContext ?? canvas.getContext('webgl2');
+        context?.getExtension('WEBGL_lose_context')?.loseContext();
+      } catch (error) {
+        console.warn('Butterchurn WebGL context release failed:', error);
+      }
+      webglContext = null;
       visualizer = null;
       connectedNode = null;
       canvas.width = 0;
@@ -85,9 +85,9 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
 
     const start = async () => {
       try {
-        // Butterchurn renders WebGL to an internal canvas and copies it to this
-        // visible 2D canvas. Probe a separate canvas so we do not lock this one
-        // to a WebGL context before Butterchurn requests its 2D output context.
+        // Stable Butterchurn 2.6.7 creates its WebGL2 context directly on the
+        // supplied canvas. Probe a temporary canvas first so an unsupported
+        // browser fails before the live visualization surface is initialized.
         const probe = document.createElement('canvas');
         const probeContext = probe.getContext('webgl2');
         if (!probeContext) {
@@ -128,6 +128,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
           meshWidth: 48,
           meshHeight: 36,
         });
+        webglContext = canvas.getContext('webgl2');
         connectedNode = audioNode;
         visualizer.connectAudio(audioNode);
         runtimeRef.current = { visualizer, audioNode, presetNames, presets };
