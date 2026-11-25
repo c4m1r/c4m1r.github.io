@@ -56,8 +56,36 @@ function programSource(entries: Map<number, string>): string {
     .map((value) => value.endsWith(';') ? value : value + ';').join('\n');
 }
 
-function setNumericField(target: Record<string, unknown>, key: string, value: string): boolean {
-  const resolved = Object.keys(target).find((candidate) => candidate.toLowerCase() === key.toLowerCase());
+const MAIN_FIELD_KEYS = new Set([
+  'decay', 'gammaadj', 'echo_zoom', 'echo_alpha', 'echo_orient', 'red_blue', 'brighten',
+  'darken', 'wrap', 'darken_center', 'solarize', 'invert', 'bmotionvectorson', 'fshader',
+  'b1n', 'b2n', 'b3n', 'b1x', 'b2x', 'b3x', 'b1ed', 'wave_mode', 'additivewave',
+  'wave_dots', 'wave_thick', 'wave_a', 'wave_scale', 'wave_smoothing', 'wave_mystery',
+  'modwavealphabyvolume', 'modwavealphastart', 'modwavealphaend', 'wave_r', 'wave_g',
+  'wave_b', 'wave_x', 'wave_y', 'wave_brighten', 'mv_x', 'mv_y', 'mv_dx', 'mv_dy',
+  'mv_l', 'mv_r', 'mv_g', 'mv_b', 'mv_a', 'warpanimspeed', 'warpscale', 'zoomexp',
+  'zoom', 'rot', 'cx', 'cy', 'dx', 'dy', 'warp', 'sx', 'sy', 'ob_size', 'ob_r',
+  'ob_g', 'ob_b', 'ob_a', 'ib_size', 'ib_r', 'ib_g', 'ib_b', 'ib_a', 'rating',
+]);
+const WAVE_FIELD_KEYS = new Set([
+  'enabled', 'samples', 'sep', 'scaling', 'smoothing', 'r', 'g', 'b', 'a',
+  'spectrum', 'usedots', 'thick', 'additive',
+]);
+const SHAPE_FIELD_KEYS = new Set([
+  'enabled', 'sides', 'additive', 'thickoutline', 'textured', 'num_inst',
+  'tex_zoom', 'tex_ang', 'x', 'y', 'rad', 'ang', 'r', 'g', 'b', 'a',
+  'r2', 'g2', 'b2', 'a2', 'border_r', 'border_g', 'border_b', 'border_a',
+]);
+
+function setNumericField(
+  target: Record<string, unknown>,
+  key: string,
+  value: string,
+  allowedKeys: ReadonlySet<string>,
+): boolean {
+  const normalized = key.toLowerCase();
+  const resolved = Object.keys(target).find((candidate) => candidate.toLowerCase() === normalized)
+    ?? (allowedKeys.has(normalized) ? normalized : undefined);
   const numeric = parseNumeric(value);
   if (!resolved || numeric === null) return false;
   target[resolved] = numeric;
@@ -160,7 +188,7 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
       const slot = resolveSlotIndex(Number(wave[1]), preset.waves.length);
       const target = slot === null ? undefined : preset.waves[slot]?.baseVals;
       const suffix = WAVE_FIELD_ALIASES[wave[2].toLowerCase()] ?? wave[2];
-      if (!target || !setNumericField(target, suffix, value)) warnings.add('Unsupported custom wave field: ' + key);
+      if (!target || !setNumericField(target, suffix, value, WAVE_FIELD_KEYS)) warnings.add('Unsupported custom wave field: ' + key);
       continue;
     }
     const shape = key.match(/^(?:shape|shapecode)_(\d+)_(.+)$/i);
@@ -168,13 +196,13 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
       const slot = resolveSlotIndex(Number(shape[1]), preset.shapes.length);
       const target = slot === null ? undefined : preset.shapes[slot]?.baseVals;
       const suffix = SHAPE_FIELD_ALIASES[shape[2].toLowerCase()] ?? shape[2];
-      if (!target || !setNumericField(target, suffix, value)) warnings.add('Unsupported custom shape field: ' + key);
+      if (!target || !setNumericField(target, suffix, value, SHAPE_FIELD_KEYS)) warnings.add('Unsupported custom shape field: ' + key);
       continue;
     }
 
     const alias = MAIN_FIELD_ALIASES[key.toLowerCase()];
-    if (alias && setNumericField(preset.baseVals, alias, value)) continue;
-    if (setNumericField(preset.baseVals, key, value)) continue;
+    if (alias && setNumericField(preset.baseVals, alias, value, MAIN_FIELD_KEYS)) continue;
+    if (setNumericField(preset.baseVals, key, value, MAIN_FIELD_KEYS)) continue;
     if (!metadata.test(key)) warnings.add('Unmapped MilkDrop field: ' + key);
   }
 
