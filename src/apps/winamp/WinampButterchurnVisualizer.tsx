@@ -35,8 +35,8 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       if (!visualizer || !canvas) return;
       const bounds = canvas.getBoundingClientRect();
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-      const width = Math.max(1, Math.round(bounds.width * pixelRatio));
-      const height = Math.max(1, Math.round(bounds.height * pixelRatio));
+      const width = Math.max(1, Math.round(bounds.width));
+      const height = Math.max(1, Math.round(bounds.height));
       try {
         visualizer.setRendererSize(width, height, { pixelRatio, textureRatio: 1 });
       } catch (error) {
@@ -86,10 +86,12 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         // visible 2D canvas. Probe a separate canvas so we do not lock this one
         // to a WebGL context before Butterchurn requests its 2D output context.
         const probe = document.createElement('canvas');
-        if (!probe.getContext('webgl2')) {
+        const probeContext = probe.getContext('webgl2');
+        if (!probeContext) {
           if (!disposed) setStatus('WEBGL 2 IS NOT AVAILABLE');
           return;
         }
+        probeContext.getExtension('WEBGL_lose_context')?.loseContext();
 
         const { ctx } = winampController.getWebAudio();
         const audioNode = winampController.getVisualizerAudioNode();
@@ -112,8 +114,8 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
 
         const bounds = canvas.getBoundingClientRect();
         const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-        const width = Math.max(1, Math.round(bounds.width * pixelRatio));
-        const height = Math.max(1, Math.round(bounds.height * pixelRatio));
+        const width = Math.max(1, Math.round(bounds.width));
+        const height = Math.max(1, Math.round(bounds.height));
 
         visualizer = engine.createVisualizer(ctx, canvas, {
           width,
