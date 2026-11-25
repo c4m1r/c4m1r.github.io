@@ -141,7 +141,7 @@ function parseWavInfo(bytes: Uint8Array): EmbeddedAudioMetadata {
         const valueStart = infoOffset + 8;
         const valueEnd = Math.min(end, valueStart + infoLength);
         if (valueEnd > valueStart) {
-          const value = new TextDecoder('windows-1252').decode(bytes.subarray(valueStart, valueEnd)).replaceAll(String.fromCharCode(0), '').trim();
+          const value = new TextDecoder('windows-1252').decode(bytes.subarray(valueStart, valueEnd)).split(String.fromCharCode(0)).join('').trim();
           if (infoId === 'INAM' && value) metadata.title = value;
           else if (infoId === 'IART' && value) metadata.artist = value;
           else if ((infoId === 'IPRD' || infoId === 'IALB') && value) metadata.album = value;
@@ -182,7 +182,7 @@ function parseMp4Metadata(bytes: Uint8Array): EmbeddedAudioMetadata {
           const trackNumber = (bytes[dataStart + 2] << 8) | bytes[dataStart + 3];
           return trackNumber > 0 ? { trackNumber: String(trackNumber) } : {};
         }
-        const value = decoder.decode(bytes.subarray(dataStart, dataEnd)).replaceAll(String.fromCharCode(0), '').trim();
+        const value = decoder.decode(bytes.subarray(dataStart, dataEnd)).split(String.fromCharCode(0)).join('').trim();
         if (!value) return {};
         if (itemType === '©nam') return { title: value };
         if (itemType === '©ART' || itemType === 'aART') return { artist: value };
@@ -249,7 +249,7 @@ function decodeId3v1(bytes: Uint8Array): EmbeddedAudioMetadata {
   if (String.fromCharCode(...bytes.subarray(start, start + 3)) !== 'TAG') return {};
   const decode = (from: number, length: number) =>
     new TextDecoder('windows-1252').decode(bytes.subarray(start + from, start + from + length))
-      .replaceAll(String.fromCharCode(0), '').trim();
+      .split(String.fromCharCode(0)).join('').trim();
   const title = decode(3, 30);
   const artist = decode(33, 30);
   const album = decode(63, 30);
