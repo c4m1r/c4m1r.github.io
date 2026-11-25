@@ -154,7 +154,7 @@ class WinampControllerService {
     this.notify();
   }
 
-  public updateTrackMetadata(id: string, metadata: Partial<Pick<MediaTrack, 'title' | 'artist' | 'durationLabel'>>): void {
+  public updateTrackMetadata(id: string, metadata: Partial<Pick<MediaTrack, 'title' | 'artist' | 'durationLabel' | 'album' | 'trackNumber'>>): void {
     const index = this.playlist.findIndex((track) => track.id === id);
     if (index < 0) return;
     const current = this.playlist[index];
@@ -165,6 +165,8 @@ class WinampControllerService {
             ...(typeof metadata.title === 'string' ? { title: metadata.title } : {}),
             ...(typeof metadata.artist === 'string' ? { artist: metadata.artist } : {}),
             ...(typeof metadata.durationLabel === 'string' ? { durationLabel: metadata.durationLabel } : {}),
+            ...(typeof metadata.album === 'string' ? { album: metadata.album } : {}),
+            ...(typeof metadata.trackNumber === 'string' ? { trackNumber: metadata.trackNumber } : {}),
           }
         : track
     );
