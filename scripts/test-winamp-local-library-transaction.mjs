@@ -100,7 +100,7 @@ globalThis.indexedDB = {
   },
 };
 
-const { importWinampLocalAudioAssets } = await import(
+const { importWinampLocalAudioAssets, rollbackWinampLocalAudioImport } = await import(
   'data:text/javascript;base64,' + Buffer.from(compiled.outputText).toString('base64')
 );
 const assets = [
