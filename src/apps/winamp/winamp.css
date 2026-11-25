@@ -9577,3 +9577,13 @@
   stroke: var(--wa-skin-viz-peak);
   filter: none;
 }
+
+
+/* REGION.TXT clip-path definitions for imported classic Winamp skins. */
+.wa-shell .wa-skin-region-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
