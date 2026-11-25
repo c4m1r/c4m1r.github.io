@@ -116,6 +116,7 @@ test('runs the upstream HLSL parser against a minimal real MilkDrop shader', asy
   assert.match(result.preset.warp, /shader_body\s*\{/);
   assert.equal(result.converted.shaderStages, 1);
   assert.equal(result.warnings.some((warning) => /warp shader could not be translated/i.test(warning)), false);
+  assert.equal(result.warnings.some((warning) => /only mapped scalar parameters/i.test(warning)), false);
 });
 
 test('warns when only scalar parameters can be converted and keeps the async compatibility helper', async () => {
