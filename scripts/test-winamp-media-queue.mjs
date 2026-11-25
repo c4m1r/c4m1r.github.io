@@ -11,7 +11,7 @@ const compiled = ts.transpileModule(source, {
 const errors = (compiled.diagnostics ?? []).filter((item) => item.category === ts.DiagnosticCategory.Error);
 assert.equal(errors.length, 0, errors.map((item) => ts.flattenDiagnosticMessageText(item.messageText, '\\n')).join('\\n'));
 const api = await import('data:text/javascript;base64,' + Buffer.from(compiled.outputText).toString('base64'));
-const { normalizeWinampMediaOrder, moveWinampMediaOrder, readWinampMediaOrder, writeWinampMediaOrder } = api;
+const { normalizeWinampMediaOrder, moveWinampMediaOrder, moveWinampMediaKey, readWinampMediaOrder, writeWinampMediaOrder } = api;
 
 test('normalizes persisted order, drops stale/duplicate keys and appends new media', () => {
   assert.deepEqual(normalizeWinampMediaOrder(['video:x', 'audio:b', 'audio:b', 'removed'], ['audio:a', 'audio:b', 'video:x']), ['video:x', 'audio:b', 'audio:a']);
@@ -39,4 +39,13 @@ test('handles unavailable or throwing browser storage', () => {
   const storage = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('quota'); } };
   assert.deepEqual(readWinampMediaOrder(['audio:a'], storage), ['audio:a']);
   assert.equal(writeWinampMediaOrder(['audio:a'], storage), false);
+});
+
+test('moves a mixed audio/video queue item directly to a drop target', () => {
+  const keys = ['audio:a', 'video:x', 'audio:b', 'video:y'];
+  assert.deepEqual(moveWinampMediaKey(keys, 0, 3), ['video:x', 'audio:b', 'video:y', 'audio:a']);
+  assert.deepEqual(moveWinampMediaKey(keys, 3, 1), ['audio:a', 'video:y', 'video:x', 'audio:b']);
+  assert.deepEqual(keys, ['audio:a', 'video:x', 'audio:b', 'video:y']);
+  assert.equal(moveWinampMediaKey(keys, -1, 2), keys);
+  assert.equal(moveWinampMediaKey(keys, 0, 9), keys);
 });

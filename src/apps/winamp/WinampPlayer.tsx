@@ -8,7 +8,7 @@ import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
 import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
 import { parseWinampSkinRegions, type WinampSkinRegions, type WinampSkinRegionSection } from '../../system/audio/winampSkinRegions';
 import { readEmbeddedAudioMetadata } from '../../system/audio/winampMetadata';
-import { readWinampMediaOrder, writeWinampMediaOrder, moveWinampMediaOrder } from '../../system/audio/winampMediaQueue';
+import { readWinampMediaOrder, writeWinampMediaOrder, moveWinampMediaOrder, moveWinampMediaKey } from '../../system/audio/winampMediaQueue';
 import { createWinampArchive, readWinampArchive } from '../../system/audio/winampArchive';
 import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
 import {
@@ -875,6 +875,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoQueue, setVideoQueue] = useState<Array<{ url: string; name: string }>>([]);
   const [unifiedMediaOrder, setUnifiedMediaOrder] = useState<string[]>([]);
   const [unifiedMediaOrderLoaded, setUnifiedMediaOrderLoaded] = useState(false);
+  const [draggedUnifiedMediaKey, setDraggedUnifiedMediaKey] = useState<string | null>(null);
   const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
   const [videoStatus, setVideoStatus] = useState('');
   const videoObjectUrlsRef = useRef<string[]>([]);
@@ -1458,6 +1459,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     const keys = unifiedMediaItems.map((item) => item.key);
     setUnifiedMediaOrder(moveWinampMediaOrder(keys, activeUnifiedMediaIndex, direction));
   }, [activeUnifiedMediaIndex, unifiedMediaItems]);
+
+  const reorderUnifiedMediaItem = useCallback((sourceKey: string, targetKey: string) => {
+    if (!sourceKey || sourceKey === targetKey) return;
+    const keys = unifiedMediaItems.map((item) => item.key);
+    const from = keys.indexOf(sourceKey);
+    const to = keys.indexOf(targetKey);
+    if (from < 0 || to < 0) return;
+    setUnifiedMediaOrder(moveWinampMediaKey(keys, from, to));
+    setDraggedUnifiedMediaKey(null);
+  }, [unifiedMediaItems]);
 
   useEffect(() => {
     unifiedNavigationRef.current = navigateUnifiedMediaQueue;
@@ -2556,6 +2567,49 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           </>}
           <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
         </div>
+        {unifiedMediaItems.length > 0 && (
+          <details className="wa-video__queue-editor">
+            <summary>QUEUE · {unifiedMediaItems.length} ITEMS · DRAG TO REORDER</summary>
+            <div className="wa-video__queue-list" role="list" aria-label="Mixed audio and video queue">
+              {unifiedMediaItems.map((item, index) => {
+                const isActive = index === activeUnifiedMediaIndex;
+                return (
+                  <button
+                    type="button"
+                    role="listitem"
+                    key={item.key}
+                    draggable
+                    className={`wa-video__queue-row${isActive ? ' is-active' : ''}${draggedUnifiedMediaKey === item.key ? ' is-dragging' : ''}`}
+                    aria-current={isActive ? 'true' : undefined}
+                    title={`Drag to reorder. Select to play: ${item.label}`}
+                    onClick={() => selectUnifiedMediaItem(index)}
+                    onDragStart={(event) => {
+                      setDraggedUnifiedMediaKey(item.key);
+                      event.dataTransfer.effectAllowed = 'move';
+                      event.dataTransfer.setData('text/plain', item.key);
+                    }}
+                    onDragOver={(event) => {
+                      if (draggedUnifiedMediaKey) {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'move';
+                      }
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      const sourceKey = draggedUnifiedMediaKey || event.dataTransfer.getData('text/plain');
+                      reorderUnifiedMediaItem(sourceKey, item.key);
+                    }}
+                    onDragEnd={() => setDraggedUnifiedMediaKey(null)}
+                  >
+                    <span className="wa-video__queue-row-index">{index + 1}.</span>
+                    <span className="wa-video__queue-row-label">{item.label}</span>
+                    <span className="wa-video__queue-row-kind">{item.kind === 'audio' ? 'AUDIO' : 'VIDEO'}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </details>
+        )}
         {videoMode === 'visualizer' ? (
           <WinampFourthVisualizer
             mode={fourthVisualizerMode}
