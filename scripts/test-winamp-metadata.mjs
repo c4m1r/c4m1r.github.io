@@ -44,6 +44,41 @@ test('reads ID3v2.3 title, artist, album and track number', async () => {
   });
 });
 
+test('reads ID3v2.2 title, artist, album and track number', async () => {
+  const frame = (id, value) => {
+    const payload = bytes(Uint8Array.of(3), encoder.encode(value));
+    const size = payload.length;
+    return bytes(ascii(id), Uint8Array.of((size >> 16) & 255, (size >> 8) & 255, size & 255), payload);
+  };
+  const tag = bytes(frame('TT2', 'Заголовок 2.2'), frame('TP1', 'Исполнитель'), frame('TAL', 'Альбом'), frame('TRK', '08/14'));
+  const synchsafe = (value) => Uint8Array.of((value >> 21) & 127, (value >> 14) & 127, (value >> 7) & 127, value & 127);
+  const file = new Blob([bytes(ascii('ID3'), Uint8Array.of(2, 0, 0), synchsafe(tag.length), tag)]);
+  assert.deepEqual(await readEmbeddedAudioMetadata(file), {
+    title: 'Заголовок 2.2', artist: 'Исполнитель', album: 'Альбом', trackNumber: '08/14',
+  });
+});
+
+test('reads ID3v2.4 synchsafe frame lengths and UTF-16 text frames', async () => {
+  const synchsafe = (value) => Uint8Array.of((value >> 21) & 127, (value >> 14) & 127, (value >> 7) & 127, value & 127);
+  const utf16 = (value) => {
+    const encoded = new TextEncoder().encode(value);
+    const output = new Uint8Array(2 + encoded.length * 2);
+    output.set([0xff, 0xfe]);
+    for (let index = 0; index < encoded.length; index += 1) {
+      output[2 + index * 2] = encoded[index];
+      output[3 + index * 2] = 0;
+    }
+    return output;
+  };
+  const frame = (id, payload) => bytes(ascii(id), synchsafe(payload.length), Uint8Array.of(0, 0), payload);
+  const tag = bytes(
+    frame('TIT2', bytes(Uint8Array.of(1), utf16('Музыка 2.4'))),
+    frame('TPE1', bytes(Uint8Array.of(3), encoder.encode('Artist 2.4'))),
+  );
+  const file = new Blob([bytes(ascii('ID3'), Uint8Array.of(4, 0, 0), synchsafe(tag.length), tag)]);
+  assert.deepEqual(await readEmbeddedAudioMetadata(file), { title: 'Музыка 2.4', artist: 'Artist 2.4' });
+});
+
 test('reads legacy ID3v1 metadata', async () => {
   const field = (value) => {
     const raw = encoder.encode(value);
