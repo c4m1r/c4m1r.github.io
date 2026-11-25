@@ -52,14 +52,21 @@ function crc32(bytes: Uint8Array): number {
 }
 function u16(view: DataView, offset: number, value: number): void { view.setUint16(offset, value, true); }
 function u32(view: DataView, offset: number, value: number): void { view.setUint32(offset, value, true); }
+function hasControlCharacters(value: string): boolean {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    if (code < 32 || code === 127) return true;
+  }
+  return false;
+}
 function safePath(path: string): boolean {
   return path.length > 0 && path.length <= 240 && !path.startsWith('/') &&
-    !/[\\\u0000-\u001f\u007f]/.test(path) &&
+    !path.includes('\\') && !hasControlCharacters(path) &&
     path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
 }
 function safeAssetName(name: string): boolean {
   return name.length > 0 && name.length <= 255 && name !== '.' && name !== '..' &&
-    !/[\/\\\u0000-\u001f\u007f]/.test(name);
+    !name.includes('/') && !name.includes('\\') && !hasControlCharacters(name);
 }
 function safeMimeType(type: string): boolean {
   return type === '' || /^[a-z0-9][a-z0-9!#$&^_.+-]*\/[a-z0-9][a-z0-9!#$&^_.+-]*$/i.test(type);
