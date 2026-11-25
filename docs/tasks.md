@@ -694,7 +694,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Reveal fullscreen controls on mouse movement or a single touch; auto-hide after 3 seconds when the pointer is outside the panel.
 - [x] Add fullscreen keyboard controls: Left / Right seek, Up / Down previous / next track, Space play / pause, M mode switch, Escape exit. Add F to open the fourth stage fullscreen while a Winamp window is active.
 - [x] Prefer the browser Fullscreen API and retain a viewport-fixed fallback; preserve the existing local video element and object URL.
-- [ ] Browser QA: verify touch/pointer dragging, re-docking, mobile viewport layout and video playback.
+- [ ] Browser QA: verify touch/pointer dragging, re-docking, mobile viewport layout and video playback. **Deferred by owner** to the later browser-QA pass.
 - [ ] Future integration: optionally support video entries from playlists and explicit audio/video synchronization; current video source is independent of the audio playlist.
 
 
@@ -706,10 +706,10 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Implement WMP legacy renderers: Ambience, Particle, Plenoptic, Spikes, Musical Colors; Plenoptic now has a perspective tunnel, depth layers and frequency spokes.
 - [x] Implement original AVS-inspired and MilkDrop-inspired procedural scenes; no plugin binary/preset compatibility is claimed.
 - [x] Add random mode action (random within a multi-mode family; across all modes for singleton families).
-- [x] Add four named AVS-inspired and four MilkDrop-inspired variants with compact PSET control. Distinct scene geometry is now selected per preset; Ambience has layered audio-shaped color fields and Particle has a frequency-reactive orbital field.
+- [x] Add four named AVS-inspired and four procedural MilkDrop-inspired variants with compact PSET control; add separate genuine MilkDrop (Butterchurn) mode with a local preset pack, preset cycling and transitions. Distinct procedural scene geometry is selected per preset; Ambience has layered audio-shaped color fields and Particle has a frequency-reactive orbital field.
 - [x] Respect prefers-reduced-motion for the added CSS scene animation.
 - [x] Add optional AUTO mode cycling every 15 seconds (off by default; pauses when the fourth window is hidden/shaded, Video is active or the tab is backgrounded).
-- [ ] Verify hidden-window lifecycle / performance in browser.
+- [ ] Verify hidden-window lifecycle / performance in browser. **Deferred by owner** to the later browser-QA pass.
 - [x] Preserve local video stage, object-URL cleanup and existing window geometry in the implementation pass.
 - [ ] Browser acceptance: visual distinction, mobile fit, drag/attach, playback/EQ/playlist and video regressions. **Deferred by owner** to the later browser-QA pass.
 - Design contract and progress: `docs/winamp-visualization-modes.md`. First-pass modes, grouped picker, named presets and reduced-motion CSS are committed; browser acceptance is pending.
@@ -735,7 +735,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add multi-file local video queue navigation to the existing fourth window; fullscreen previous / next and end-of-file advance the selected video queue, while visualization mode retains Winamp audio playlist navigation.
 - [x] Add direct selection of any item in the current video queue inside the existing fourth-window toolbar; report unsupported codecs and browser-blocked playback in an accessible status overlay, and restart the first queued video on Previous.
 - [x] Defer revocation of replaced video object URLs until the replacement source emits `loadstart`; retain both active and pending URLs for unmount cleanup.
-- [ ] Browser acceptance for mixed video formats, queue replacement during playback, previous/next boundaries, end-of-file advance, and object-URL cleanup.
+- [ ] Browser acceptance for mixed video formats, queue replacement during playback, previous/next boundaries, end-of-file advance, and object-URL cleanup. **Deferred by owner** to the later browser-QA pass.
 - [x] Implement a portable local-library export/import contract through the versioned `.wampack` archive (M3U cannot reference transient object URLs).
 - [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
 - [x] Parse and apply validated `region.txt` masks to Main/Equalizer normal and WindowShade via SVG clipPath.
@@ -743,8 +743,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Pause the shared visualizer RAF loop while the document is backgrounded; resume one loop on visibility return and keep one controller/visibility subscription across both visualizer surfaces.
 - [x] Scope fourth-window SVG gradient IDs to the mounted visualizer instance to prevent cross-instance resource collisions.
 - [x] Treat closing the fourth Video / Visualization module as a full unload: detach and reset the media element, revoke active and pending local video object URLs, clear the local queue and filename, stop auto-cycle, and unmount the visualizer subtree; reopening starts idle without retaining media resources.
-- [x] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes. Browser acceptance and performance profiling remain open.
-- [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS high-DPI performance profiling, reduced motion and all playback/window regressions.
+- [x] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes. **Source implementation complete; browser acceptance and performance profiling deferred by owner.**
+- [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS high-DPI performance profiling, reduced motion and all playback/window regressions. **Deferred by owner** to the later browser-QA pass.
 - Audit and parity notes: `docs/winamp-vs-webamp-audit.md`.
 
 ### Winamp — portable local-library backup and genuine MilkDrop implementation notes (2026-11-25)
