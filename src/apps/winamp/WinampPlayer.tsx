@@ -77,7 +77,7 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
   const safeBars = Array.from({ length: 19 }, (_, index) => Math.max(0, Math.min(100, bars[index] ?? 0)));
   const averageLevel = safeBars.reduce((sum, value) => sum + value, 0) / safeBars.length;
   const alchemyLayers = [0, 1, 2].map((layer) => {
-    const points = safeBars.map((value, index) => {
+    const points = safeBars.map((_, index) => {
       const angle = (index / safeBars.length) * Math.PI * 2 - Math.PI / 2 + layer * 0.11;
       const sample = safeBars[(index + layer * 3) % safeBars.length];
       const radius = 13 + sample * (0.25 + layer * 0.035) + Math.sin(index * 1.7 + layer) * 4;
