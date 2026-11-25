@@ -1,31 +1,101 @@
 /**
- * Safe, dependency-free importer for the scalar subset of legacy MilkDrop .milk presets.
- * It never evaluates EEL or shader source; only known baseVals are copied.
+ * MilkDrop .milk -> Butterchurn WASM adapter.
+ * EEL2 source is preserved and handed to Butterchurn's WASM compiler.
+ * MilkDrop 2 HLSL shaders are reported as unsupported by Butterchurn.
  */
 export type MilkPresetObject = Record<string, unknown>;
-const UNSUPPORTED_CODE_KEY = /^(per_frame|per_pixel|wavecode|shapecode|wave_\d+_|shape_\d+_|warp_shader|comp_shader|shader_)/i;
+export type MilkPresetConversion = {
+  preset: MilkPresetObject;
+  warnings: string[];
+  converted: { frameEquations: number; pixelEquations: number; customWaves: number; customShapes: number };
+};
 
-export function convertSimpleMilkPreset(text: string, basePreset: MilkPresetObject): MilkPresetObject {
+const EQUATION_KEYS = new Map([
+  ['init', /^per_frame_init_(\d+)$/i],
+  ['frame', /^per_frame_(\d+)$/i],
+  ['pixel', /^per_pixel_(\d+)$/i],
+  ['waveInit', /^wave_(\d+)_init_(\d+)$/i],
+  ['waveFrame', /^wave_(\d+)_per_frame(\d+)$/i],
+  ['wavePoint', /^wave_(\d+)_per_point(\d+)$/i],
+  ['shapeInit', /^shape_(\d+)_init_(\d+)$/i],
+  ['shapeFrame', /^shape_(\d+)_per_frame(\d+)$/i],
+]);
+
+const MAIN_FIELD_ALIASES: Record<string, string> = {
+  fdecay: 'decay', fgammaadj: 'gammaadj', nwavemode: 'wave_mode',
+  badditivewaves: 'additivewave', bwavedots: 'wave_dots', bwavethick: 'wave_thick',
+  bmodwavealphabyvolume: 'modwavealphabyvolume', fmodwavealphastart: 'modwavealphastart',
+  fmodwavealphaend: 'modwavealphaend', fwavealpha: 'wave_a', fwavescale: 'wave_scale',
+  fwavesmoothing: 'wave_smoothing', fwaver: 'wave_r', fwaveg: 'wave_g', fwaveb: 'wave_b',
+  fwavex: 'wave_x', fwavey: 'wave_y', bwavebrighten: 'wave_brighten',
+  bmotionvectorson: 'bmotionvectorson', nmotionvectorsx: 'mv_x', nmotionvectorsy: 'mv_y',
+  fmvdx: 'mv_dx', fmvdy: 'mv_dy', fmvl: 'mv_l', fmvr: 'mv_r', fmvg: 'mv_g',
+  fmvb: 'mv_b', fmva: 'mv_a', fwarpanimspeed: 'warpanimspeed', fwarpscale: 'warpscale',
+  fzoomexponent: 'zoomexp', fzoom: 'zoom', frot: 'rot', fcenterx: 'cx', fcentery: 'cy',
+  fx: 'dx', fy: 'dy', fwarp: 'warp', fstretchx: 'sx', fstretchy: 'sy',
+  btexwrap: 'wrap', bbrighten: 'brighten', bdarken: 'darken', bdarkencenter: 'darken_center',
+  bsolarize: 'solarize', binvert: 'invert', bshader: 'fshader', bredbluestereo: 'red_blue',
+  fvideoechozoom: 'echo_zoom', fvideoechoalpha: 'echo_alpha',
+  nvideoechoorientation: 'echo_orient', bvideoecho: 'echo_alpha',
+  fouterbordersize: 'ob_size', fouterborderr: 'ob_r', fouterborderg: 'ob_g',
+  fouterborderb: 'ob_b', fouterbordera: 'ob_a', finnerbordersize: 'ib_size',
+  finnerborderr: 'ib_r', finnerborderg: 'ib_g', finnerborderb: 'ib_b', finnerbordera: 'ib_a',
+};
+
+function parseNumeric(value: string): number | null {
+  const normalized = value.trim();
+  if (/^(true|false)$/i.test(normalized)) return normalized.toLowerCase() === 'true' ? 1 : 0;
+  if (!/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(normalized)) return null;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function programSource(entries: Map<number, string>): string {
+  return [...entries.entries()].sort(([a], [b]) => a - b)
+    .map(([, value]) => value.trim()).filter(Boolean)
+    .map((value) => value.endsWith(';') ? value : value + ';').join('\n');
+}
+
+function setNumericField(target: Record<string, unknown>, key: string, value: string): boolean {
+  const resolved = Object.keys(target).find((candidate) => candidate.toLowerCase() === key.toLowerCase());
+  const numeric = parseNumeric(value);
+  if (!resolved || numeric === null) return false;
+  target[resolved] = numeric;
+  return true;
+}
+
+function cloneObject<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+export function convertMilkPreset(text: string, basePreset: MilkPresetObject): MilkPresetConversion {
   if (text.length > 2 * 1024 * 1024) throw new Error('MilkDrop preset exceeds the 2 MB import limit');
   const source = text.replace(/^\uFEFF/, '');
-  if (/^\s*\[(?:wave|shape|warp|comp)[^\]]*\]\s*$/im.test(source)) {
-    throw new Error('This .milk preset uses custom waves, shapes or shader sections; the safe scalar importer cannot convert them.');
-  }
   const section = source.match(/^\s*\[preset00\]\s*$/im);
   if (!section || section.index === undefined) throw new Error('Unsupported .milk file: [preset00] section was not found');
   const remainder = source.slice(section.index + section[0].length);
   const nextSection = remainder.search(/^\s*\[[^\]]+\]\s*$/m);
   const body = nextSection >= 0 ? remainder.slice(0, nextSection) : remainder;
-  const baseValues = basePreset && typeof basePreset === 'object'
-    ? (basePreset as { baseVals?: Record<string, unknown> }).baseVals
-    : undefined;
-  if (!baseValues || typeof baseValues !== 'object' || Array.isArray(baseValues)) {
-    throw new Error('Butterchurn base preset is not available for safe .milk conversion');
+
+  const preset = cloneObject(basePreset) as MilkPresetObject & {
+    baseVals: Record<string, unknown>;
+    shapes: Array<{ baseVals: Record<string, unknown>; [key: string]: unknown }>;
+    waves: Array<{ baseVals: Record<string, unknown>; [key: string]: unknown }>;
+  };
+  if (!preset.baseVals || typeof preset.baseVals !== 'object' || !Array.isArray(preset.shapes) || !Array.isArray(preset.waves)) {
+    throw new Error('Butterchurn base preset is incomplete (baseVals/shapes/waves are required)');
   }
-  const preset = JSON.parse(JSON.stringify(basePreset)) as MilkPresetObject;
-  const target = (preset as { baseVals: Record<string, unknown> }).baseVals;
-  const supportedKeys = new Map(Object.keys(target).map((key) => [key.toLowerCase(), key]));
-  let applied = 0;
+
+  const programs = {
+    init: new Map<number, string>(), frame: new Map<number, string>(), pixel: new Map<number, string>(),
+    waveInit: new Map<number, Map<number, string>>(), waveFrame: new Map<number, Map<number, string>>(),
+    wavePoint: new Map<number, Map<number, string>>(), shapeInit: new Map<number, Map<number, string>>(),
+    shapeFrame: new Map<number, Map<number, string>>(),
+  };
+  const warnings = new Set<string>();
+  const metadata = /^(rating|author|title|description|presetname|presetauthor|presetdescription|version|milkdrop_preset_version)$/i;
+  const shader = /^(warp|comp)(?:_shader|_\d+|$)/i;
+
   for (const rawLine of body.split(/\r?\n/)) {
     const line = rawLine.trim();
     if (!line || line.startsWith(';') || line.startsWith('#')) continue;
@@ -34,21 +104,82 @@ export function convertSimpleMilkPreset(text: string, basePreset: MilkPresetObje
     const key = line.slice(0, separator).trim();
     const value = line.slice(separator + 1).trim();
     if (!value) continue;
-    if (UNSUPPORTED_CODE_KEY.test(key)) {
-      throw new Error('This .milk preset contains EEL equations or shader code. Only scalar-only presets are supported by the safe importer.');
+    if (shader.test(key)) {
+      warnings.add('Custom MilkDrop 2 warp/composite shaders are not executed by Butterchurn; Butterchurn feedback rendering will be used.');
+      continue;
     }
-    const targetKey = supportedKeys.get(key.toLowerCase());
-    if (!targetKey) continue;
-    let parsedValue: number;
-    if (/^(true|false)$/i.test(value)) parsedValue = value.toLowerCase() === 'true' ? 1 : 0;
-    else {
-      if (!/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(value)) continue;
-      parsedValue = Number(value);
+
+    let matched = false;
+    for (const [kind, pattern] of EQUATION_KEYS) {
+      const match = key.match(pattern);
+      if (!match) continue;
+      matched = true;
+      const isSlotProgram = kind.startsWith('wave') || kind.startsWith('shape');
+      if (isSlotProgram) {
+        const slot = Number(match[1]);
+        const order = Number(match[2]);
+        const group = programs[kind as 'waveInit' | 'waveFrame' | 'wavePoint' | 'shapeInit' | 'shapeFrame'];
+        const entries = group.get(slot) ?? new Map<number, string>();
+        entries.set(order, value);
+        group.set(slot, entries);
+      } else {
+        programs[kind as 'init' | 'frame' | 'pixel'].set(Number(match[1]), value);
+      }
+      break;
     }
-    if (!Number.isFinite(parsedValue)) continue;
-    target[targetKey] = parsedValue;
-    applied += 1;
+    if (matched) continue;
+
+    const wave = key.match(/^wave_(\d+)_(.+)$/i);
+    if (wave) {
+      const target = preset.waves[Number(wave[1])]?.baseVals;
+      if (!target || !setNumericField(target, wave[2], value)) warnings.add('Unsupported custom wave field: ' + key);
+      continue;
+    }
+    const shape = key.match(/^shape_(\d+)_(.+)$/i);
+    if (shape) {
+      const target = preset.shapes[Number(shape[1])]?.baseVals;
+      if (!target || !setNumericField(target, shape[2], value)) warnings.add('Unsupported custom shape field: ' + key);
+      continue;
+    }
+
+    const alias = MAIN_FIELD_ALIASES[key.toLowerCase()];
+    if (alias && setNumericField(preset.baseVals, alias, value)) continue;
+    if (setNumericField(preset.baseVals, key, value)) continue;
+    if (!metadata.test(key)) warnings.add('Unmapped MilkDrop field: ' + key);
   }
-  if (!applied) throw new Error('No compatible scalar parameters were found in this .milk preset');
-  return preset;
+
+  preset.init_eqs_eel = programSource(programs.init);
+  preset.frame_eqs_eel = programSource(programs.frame);
+  preset.pixel_eqs_eel = programSource(programs.pixel);
+  preset.shapes.forEach((shape, index) => {
+    const init = programs.shapeInit.get(index);
+    const frame = programs.shapeFrame.get(index);
+    if (init || frame) {
+      shape.init_eqs_eel = programSource(init ?? new Map());
+      shape.frame_eqs_eel = programSource(frame ?? new Map());
+    }
+  });
+  preset.waves.forEach((wave, index) => {
+    const init = programs.waveInit.get(index);
+    const frame = programs.waveFrame.get(index);
+    const point = programs.wavePoint.get(index);
+    if (init || frame || point) {
+      wave.init_eqs_eel = programSource(init ?? new Map());
+      wave.frame_eqs_eel = programSource(frame ?? new Map());
+      wave.point_eqs_eel = programSource(point ?? new Map());
+    }
+  });
+
+  const frameEquations = programs.init.size + programs.frame.size;
+  const pixelEquations = programs.pixel.size;
+  const customWaves = new Set([...programs.waveInit.keys(), ...programs.waveFrame.keys(), ...programs.wavePoint.keys()]).size;
+  const customShapes = new Set([...programs.shapeInit.keys(), ...programs.shapeFrame.keys()]).size;
+  if (!frameEquations && !pixelEquations && !customWaves && !customShapes) {
+    warnings.add('This preset contains no EEL equations or custom wave/shape programs; only mapped scalar parameters were imported.');
+  }
+  return { preset, warnings: [...warnings], converted: { frameEquations, pixelEquations, customWaves, customShapes } };
+}
+
+export function convertSimpleMilkPreset(text: string, basePreset: MilkPresetObject): MilkPresetObject {
+  return convertMilkPreset(text, basePreset).preset;
 }
