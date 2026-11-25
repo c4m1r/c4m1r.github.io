@@ -36,6 +36,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Winamp archive tests
+        run: npm run test:winamp-archive
+
       - name: Lint
         run: npm run lint
 
