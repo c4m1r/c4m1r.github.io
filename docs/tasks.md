@@ -734,6 +734,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add M3U import/export regression tests for BOM/Unicode, fractional durations, strict `MM:SS` export validation (malformed/overflow/unknown values become `-1`), relative and blob URL rejection, HLS rejection, metadata line-break sanitization and round-trip.
 - [x] Add multi-file local video queue navigation to the existing fourth window; fullscreen previous / next and end-of-file advance the selected video queue, while visualization mode retains Winamp audio playlist navigation.
 - [x] Add direct selection of any item in the current video queue inside the existing fourth-window toolbar; report unsupported codecs and browser-blocked playback in an accessible status overlay, and restart the first queued video on Previous.
+- [x] Defer revocation of replaced video object URLs until the replacement source emits `loadstart`; retain both active and pending URLs for unmount cleanup.
 - [ ] Browser acceptance for mixed video formats, queue replacement during playback, previous/next boundaries, end-of-file advance, and object-URL cleanup.
 - [x] Implement a portable local-library export/import contract through the versioned `.wampack` archive (M3U cannot reference transient object URLs).
 - [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
