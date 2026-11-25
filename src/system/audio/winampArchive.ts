@@ -168,7 +168,10 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
   const searchStart = Math.max(0, bytes.length - 65557);
   let endOffset = -1;
   for (let i = bytes.length - 22; i >= searchStart; i -= 1) {
-    if (view.getUint32(i, true) === 0x06054b50) { endOffset = i; break; }
+    if (view.getUint32(i, true) === 0x06054b50) {
+      const commentLength = view.getUint16(i + 20, true);
+      if (i + 22 + commentLength === bytes.length) { endOffset = i; break; }
+    }
   }
   if (endOffset < 0) throw new Error('Invalid ZIP archive: end record not found');
   const diskNumber = view.getUint16(endOffset + 4, true);
@@ -177,13 +180,16 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
   const count = view.getUint16(endOffset + 10, true);
   const centralSize = view.getUint32(endOffset + 12, true);
   const centralOffset = view.getUint32(endOffset + 16, true);
+  const centralEnd = centralOffset + centralSize;
   if (diskNumber !== 0 || centralDisk !== 0 || diskCount !== count || !count || count > MAX_ENTRIES ||
-    centralOffset + centralSize !== endOffset) throw new Error('Invalid or multi-disk ZIP directory');
+    centralEnd !== endOffset || centralEnd > bytes.length) throw new Error('Invalid or multi-disk ZIP directory');
   const files = new Map<string, Uint8Array>();
+  const localRanges: Array<{ start: number; end: number }> = [];
+  const localOffsets = new Set<number>();
   let cursor = centralOffset;
   let expandedTotal = 0;
   for (let index = 0; index < count; index += 1) {
-    if (cursor + 46 > bytes.length || view.getUint32(cursor, true) !== 0x02014b50) throw new Error('Malformed ZIP central directory');
+    if (cursor + 46 > centralEnd || view.getUint32(cursor, true) !== 0x02014b50) throw new Error('Malformed ZIP central directory');
     const flags = view.getUint16(cursor + 8, true);
     const method = view.getUint16(cursor + 10, true);
     const crc = view.getUint32(cursor + 16, true);
@@ -192,30 +198,51 @@ export async function readWinampArchive(file: Blob): Promise<ImportedWinampArchi
     const nameLength = view.getUint16(cursor + 28, true);
     const extraLength = view.getUint16(cursor + 30, true);
     const commentLength = view.getUint16(cursor + 32, true);
+    const diskStart = view.getUint16(cursor + 34, true);
     const localOffset = view.getUint32(cursor + 42, true);
+    const recordEnd = cursor + 46 + nameLength + extraLength + commentLength;
+    if (recordEnd > centralEnd) throw new Error('Malformed ZIP central directory entry bounds');
     const name = decoder.decode(bytes.subarray(cursor + 46, cursor + 46 + nameLength));
-    cursor += 46 + nameLength + extraLength + commentLength;
-    if (!safePath(name) || files.has(name) || (flags & 1) || method !== 0 || compressedSize !== size) throw new Error('Unsupported, encrypted or unsafe ZIP entry');
+    cursor = recordEnd;
+    if (!safePath(name) || files.has(name) || (flags & ~0x0800) !== 0 || method !== 0 ||
+      compressedSize !== size || diskStart !== 0 || size === 0xffffffff || compressedSize === 0xffffffff ||
+      localOffsets.has(localOffset)) throw new Error('Unsupported, encrypted or unsafe ZIP entry');
     expandedTotal += size;
-    if (expandedTotal > MAX_TOTAL_BYTES || localOffset + 30 > bytes.length || view.getUint32(localOffset, true) !== 0x04034b50) throw new Error('Archive exceeds limits or has an invalid local entry');
+    if (expandedTotal > MAX_TOTAL_BYTES || localOffset + 30 > centralOffset ||
+      view.getUint32(localOffset, true) !== 0x04034b50) throw new Error('Archive exceeds limits or has an invalid local entry');
     const localFlags = view.getUint16(localOffset + 6, true);
     const localMethod = view.getUint16(localOffset + 8, true);
+    const localCrc = view.getUint32(localOffset + 14, true);
+    const localCompressedSize = view.getUint32(localOffset + 18, true);
+    const localSize = view.getUint32(localOffset + 22, true);
     const localNameLength = view.getUint16(localOffset + 26, true);
     const localExtraLength = view.getUint16(localOffset + 28, true);
+    const localHeaderEnd = localOffset + 30 + localNameLength + localExtraLength;
+    if (localHeaderEnd > centralOffset) throw new Error('ZIP local header exceeds the data area');
     const localName = decoder.decode(bytes.subarray(localOffset + 30, localOffset + 30 + localNameLength));
-    if (localFlags !== flags || localMethod !== method || localName !== name) throw new Error('ZIP local and central entry headers do not match');
-    const dataStart = localOffset + 30 + localNameLength + localExtraLength;
+    if (localFlags !== flags || localMethod !== method || localName !== name ||
+      localCrc !== crc || localCompressedSize !== compressedSize || localSize !== size) {
+      throw new Error('ZIP local and central entry headers do not match');
+    }
+    const dataStart = localHeaderEnd;
     const dataEnd = dataStart + size;
     if (dataEnd > centralOffset) throw new Error('ZIP entry overlaps the central directory');
+    localOffsets.add(localOffset);
+    localRanges.push({ start: localOffset, end: dataEnd });
     const data = bytes.slice(dataStart, dataEnd);
-    if (crc32(data) !== crc) throw new Error(`CRC check failed for ${name}`);
+    if (crc32(data) !== crc) throw new Error('CRC check failed for ' + name);
     files.set(name, data);
+  }
+  if (cursor !== centralEnd) throw new Error('ZIP central directory size does not match its entries');
+  localRanges.sort((a, b) => a.start - b.start);
+  for (let index = 1; index < localRanges.length; index += 1) {
+    if (localRanges[index].start < localRanges[index - 1].end) throw new Error('ZIP local entries overlap');
   }
   const manifestBytes = files.get('manifest.json');
   if (!manifestBytes || manifestBytes.byteLength > MAX_MANIFEST_BYTES) throw new Error('Archive manifest is missing or too large');
   let manifest: WinampArchiveManifest;
   try { manifest = JSON.parse(decoder.decode(manifestBytes)) as WinampArchiveManifest; } catch { throw new Error('Archive manifest is not valid JSON'); }
-  if (manifest.format !== 'wampack' || manifest.version !== ARCHIVE_VERSION || !Array.isArray(manifest.tracks) || manifest.tracks.length > 10000) {
+  if (manifest.format !== 'wampack' || manifest.version !== ARCHIVE_VERSION || !Array.isArray(manifest.tracks) || manifest.tracks.length > MAX_TRACKS) {
     throw new Error('Unsupported archive format or manifest version');
   }
   const referenced = new Set<string>();
