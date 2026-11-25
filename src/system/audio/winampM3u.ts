@@ -8,7 +8,7 @@ export interface ParsedM3uPlaylist {
 function formatDuration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return '—';
   const total = Math.floor(seconds);
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 
 function makeTrackId(src: string, index: number, prefix: string): string {
