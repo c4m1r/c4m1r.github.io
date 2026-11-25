@@ -601,8 +601,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       link.download = 'winamp-library.wampack';
       link.click();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-      const localCount = new Set(winampController.getPlaylist().filter((track) => records.some((record) => record.id === track.id)).map((track) => track.id)).size;
-      setM3uStatus(`Backup created: ${localCount} local tracks, ${(archive.size / (1024 * 1024)).toFixed(1)} MB`);
+      const localAssetIds = winampController.getPlaylist()
+        .map((track) => track.localAssetId ?? track.id)
+        .filter((id) => records.some((record) => record.id === id));
+      const localCount = new Set(localAssetIds).size;
+      const entryCount = winampController.getPlaylist().length;
+      setM3uStatus(`Backup created: ${localCount} local files, ${entryCount} playlist entries, ${(archive.size / (1024 * 1024)).toFixed(1)} MB`);
     } catch (error) {
       setM3uStatus(error instanceof Error ? error.message : 'Unable to create local library backup');
     }
@@ -619,17 +623,39 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       }] as const));
       const importedAssets = await importWinampLocalAudioAssets(archive.assets, metadataByPath);
       const recordsByPath = new Map<string, (typeof importedAssets)[number]['record']>(importedAssets.map(({ path, record }) => [path, record] as const));
-      const additions: MediaTrack[] = archive.manifest.tracks.flatMap((track) => {
+      const objectUrlsByPath = new Map<string, string>();
+      const usedEntryIds = new Set(winampController.getPlaylist().map((track) => track.id));
+      let skippedEntries = 0;
+      const additions: MediaTrack[] = [];
+      archive.manifest.tracks.forEach((track) => {
+        let src = track.src;
+        let localAssetId: string | undefined;
         if (track.assetPath) {
           const record = recordsByPath.get(track.assetPath);
-          if (!record) return [];
-          return [{ id: record.id, title: track.title, artist: track.artist, ...(track.album ? { album: track.album } : {}), ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}), durationLabel: track.durationLabel, src: URL.createObjectURL(record.blob) }];
+          if (!record) { skippedEntries += 1; return; }
+          localAssetId = record.id;
+          src = objectUrlsByPath.get(track.assetPath);
+          if (!src) {
+            src = URL.createObjectURL(record.blob);
+            objectUrlsByPath.set(track.assetPath, src);
+          }
         }
-        if (track.src) return [{ id: createWinampLocalAudioId(), title: track.title, artist: track.artist, ...(track.album ? { album: track.album } : {}), ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}), durationLabel: track.durationLabel, src: track.src }];
-        return [];
+        if (!src) { skippedEntries += 1; return; }
+        const id = track.id && !usedEntryIds.has(track.id) ? track.id : createWinampLocalAudioId();
+        usedEntryIds.add(id);
+        additions.push({
+          id,
+          ...(localAssetId ? { localAssetId } : {}),
+          title: track.title,
+          artist: track.artist,
+          ...(track.album ? { album: track.album } : {}),
+          ...(track.trackNumber ? { trackNumber: track.trackNumber } : {}),
+          durationLabel: track.durationLabel,
+          src,
+        });
       });
       if (additions.length) winampController.addTracks(additions);
-      setM3uStatus(`Restored ${importedAssets.length} audio files and added ${additions.length} playlist entries`);
+      setM3uStatus(`Restored ${importedAssets.length} audio files and added ${additions.length} playlist entries${skippedEntries ? `; skipped ${skippedEntries} entries without portable media` : ''}`);
     } catch (error) {
       setM3uStatus(error instanceof Error ? error.message : 'Unable to import local library backup');
     }
@@ -2132,10 +2158,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <div className="wa-pl__actions">
                   <button type="button" className="wa-btn-pl" onClick={() => playlistInputRef.current?.click()} title="Add local audio (L)" aria-keyshortcuts="L">ADD</button>
                   <button type="button" className="wa-btn-pl" disabled={!playlistSelection.length || playlist.length <= playlistSelection.length} onClick={() => {
-                    const removedIds = playlistSelection.map((index) => playlist[index]?.id).filter((id): id is string => Boolean(id));
+                    const removedAssetIds = playlistSelection
+                      .map((index) => playlist[index]?.localAssetId ?? playlist[index]?.id)
+                      .filter((id): id is string => Boolean(id) && id.startsWith('local-'));
                     winampController.removeTracks(playlistSelection);
-                    const remainingIds = new Set(winampController.getPlaylist().map((track) => track.id));
-                    const fullyRemovedIds = removedIds.filter((id) => !remainingIds.has(id));
+                    const remainingAssetIds = new Set(winampController.getPlaylist().map((track) => track.localAssetId ?? track.id));
+                    const fullyRemovedIds = [...new Set(removedAssetIds)].filter((id) => !remainingAssetIds.has(id));
                     void deleteWinampLocalAudioFiles(fullyRemovedIds).catch((error) => setLocalLibraryStatus(error instanceof Error ? error.message : 'Unable to remove saved local audio'));
                     setPlaylistSelection([]);
                   }}>REM</button>
