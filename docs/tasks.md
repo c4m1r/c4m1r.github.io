@@ -720,3 +720,18 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Done (desktop only): 30 px glass taskbar from the sprite, orb overlapping the top edge with hover/open glow, labelled glass task buttons, plain tray clock, wallpaper, 48 px Windows 7 icons.
 - References: `eat/screens/oc/vista/01-window-chrome-styles.png` (Aero, Standard, Basic window styles) and `02-explorer-about-windows.png` (Explorer, About Windows, Sidebar gadgets, taskbar).
 - To do, in order: (1) Aero window chrome (glass frame, red close button, rounded corners, title glow) and the Basic/Standard fallbacks; (2) Vista Start menu (white left pane with programs, blue-glass right pane with Documents, Pictures, Music, Computer, Control Panel; search box; power buttons); (3) boot screen, logon and welcome screens with their own `src/themes/vista` flow (the draft still uses the generic WebOS login); (4) Explorer (address breadcrumbs with round Back/Forward, search box, Organize/Views toolbar, Favorite Links pane, folder tree, details pane with the computer name); (5) Sidebar with gadgets (clock, calendar, CPU meter, notes) replacing the Widgets desktop icon; (6) desktop labels and defaults (Computer, Documents, Recycle Bin, Control Panel); (7) taskbar tuning (quick-launch icons, thumbnail previews, language indicator in the tray, darker glass).
+
+
+### Winamp — Webamp parity follow-up (2026-11-25)
+- [x] Raise analyser publication to 60 FPS for high-resolution/high-refresh displays; keep the existing shared Web Audio analyser and avoid synthetic fake signal.
+- [x] Make `.wsz` sprite extraction tolerant of missing/corrupt optional sheets and out-of-bounds optional sprites; require the Main sheet.
+- [x] Apply imported `pledit.txt` Playlist colors/font and `viscolor.txt` Main analyzer palette.
+- [x] Read local MP3 ID3v2.2/v2.3/v2.4 and ID3v1 title/artist/album/track number; persist tags with the IndexedDB library.
+- [x] Add HTML Playlist export for HTTP(S) tracks; do not emit ephemeral `blob:` URLs as portable links.
+- [ ] Add ID3 parser fixtures and expand metadata support to FLAC/Ogg Vorbis comments, MP4/M4A atoms and WAV INFO.
+- [ ] Implement a portable local-library export/import contract (M3U cannot reference transient object URLs).
+- [ ] Apply validated `region.txt` window shapes and remaining Playlist menu palette fields.
+- [ ] Isolate the 60 FPS visualizer render state from the large Winamp parent component.
+- [ ] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes.
+- [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS performance, reduced motion and all playback/window regressions.
+- Audit and parity notes: `docs/winamp-vs-webamp-audit.md`.
