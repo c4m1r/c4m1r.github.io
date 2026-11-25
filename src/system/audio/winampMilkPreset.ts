@@ -93,7 +93,7 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
     shapeFrame: new Map<number, Map<number, string>>(),
   };
   const warnings = new Set<string>();
-  const metadata = /^(rating|author|title|description|presetname|presetauthor|presetdescription|version|milkdrop_preset_version)$/i;
+  const metadata = /^(rating|frating|author|szauthor|title|szpresetname|description|szdescription|presetname|presetauthor|presetdescription|version|milkdrop_preset_version|psversion|psversion_comp|psversion_warp)$/i;
   const shader = /^(warp|comp)(?:_shader|_\d+|$)/i;
 
   for (const rawLine of body.split(/\r?\n/)) {
@@ -116,7 +116,7 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
       matched = true;
       const isSlotProgram = kind.startsWith('wave') || kind.startsWith('shape');
       if (isSlotProgram) {
-        const slot = Number(match[1]);
+        const slot = Number(match[1]) - 1;
         const order = Number(match[2]);
         const group = programs[kind as 'waveInit' | 'waveFrame' | 'wavePoint' | 'shapeInit' | 'shapeFrame'];
         const entries = group.get(slot) ?? new Map<number, string>();
@@ -131,13 +131,13 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
 
     const wave = key.match(/^wave_(\d+)_(.+)$/i);
     if (wave) {
-      const target = preset.waves[Number(wave[1])]?.baseVals;
+      const target = preset.waves[Number(wave[1]) - 1]?.baseVals;
       if (!target || !setNumericField(target, wave[2], value)) warnings.add('Unsupported custom wave field: ' + key);
       continue;
     }
     const shape = key.match(/^shape_(\d+)_(.+)$/i);
     if (shape) {
-      const target = preset.shapes[Number(shape[1])]?.baseVals;
+      const target = preset.shapes[Number(shape[1]) - 1]?.baseVals;
       if (!target || !setNumericField(target, shape[2], value)) warnings.add('Unsupported custom shape field: ' + key);
       continue;
     }
