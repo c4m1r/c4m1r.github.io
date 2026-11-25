@@ -109,7 +109,7 @@ Webamp исторически исправлял fallback для отсутст�
 
 ### P1 — неполное ID3/metadata extraction
 
-**Статус: частично исправлено, базовые common tags поддерживаются.** Добавлен локальный parser ID3v2.2/v2.3/v2.4 + ID3v1 для MP3, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. Читаются title/artist/album/track number; MP3 metadata сохраняются в IndexedDB и восстанавливаются вместе с библиотекой. Отсутствующие/битые теги используют filename fallback; duration читается browser audio metadata event.
+**Статус: частично исправлено, базовые common tags поддерживаются.** Добавлен локальный parser ID3v2.2/v2.3/v2.4 + ID3v1 для MP3, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. Читаются title/artist/album/track number; локальные metadata сохраняются в IndexedDB и восстанавливаются вместе с библиотекой. Отсутствующие/битые теги используют filename fallback; duration читается browser audio metadata event.
 
 Осталось: тестовые fixtures на реальные файлы, редкие ID3/container variants, extended tags и browser QA на большом наборе аудиоформатов.
 
@@ -239,7 +239,7 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 - [x] Защищён fullscreen double-click handler от повторного запроса fullscreen, если сцена уже развёрнута.
 - [x] Подключены `pledit.txt` list colors/font + menu colors к Playlist и `viscolor.txt` palette к Main analyzer для импортированного .wsz.
 - [x] Импорт .wsz больше не падает из-за отсутствующих optional sprite sheets или отдельных atlas sprites; Main sheet остаётся обязательным.
-- [x] Добавлен локальный metadata reader: ID3v2.2/v2.3/v2.4 + ID3v1, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. MP3 tags сохраняются в IndexedDB.
+- [x] Добавлен локальный metadata reader: ID3v2.2/v2.3/v2.4 + ID3v1, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. локальные tags сохраняются в IndexedDB.
 - [x] Добавлен автономный HTML Playlist export для HTTP(S) tracks; локальные object URLs не экспортируются как неработающие ссылки.
 - [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
 - [x] Подключён Media Session API к существующему controller: track metadata, playback/position state, play/pause/stop/next/previous и seek handlers; handlers/metadata очищаются при закрытии плеера.
