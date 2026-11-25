@@ -831,7 +831,7 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 ### Winamp — remaining integration and acceptance work (2026-11-25)
 
 - [ ] Full legacy `.milk` conversion: integrate a maintained/compatible EEL2 + MilkDrop preset parser and HLSL-to-GLSL conversion path only after dependency, license, security, bundle-size and Butterchurn schema review. Current importer deliberately supports scalar-only files; do not silently strip EEL or shader content.
-- [x] Persist the edited mixed audio/video queue order across reloads and fourth-window close/reopen using stable media keys and guarded localStorage access. Toolbar Move Up/Down remains the current reorder affordance; drag-and-drop remains open.
+- [x] Persist the edited mixed audio/video queue order across reloads and fourth-window close/reopen using stable media keys and guarded localStorage access. Toolbar Move Up/Down and the in-window drag-reorder list are available.
 - [ ] Extend `.wampack` restore tests with IndexedDB failure/quota injection and verify transaction abort plus post-commit rollback; optional DEFLATE import remains unimplemented (writer currently uses STORE).
 - [ ] Browser acceptance on desktop and mobile: mixed audio/video selection, reorder, shuffle, repeat, auto-advance, Media Session keys, keyboard shortcuts, autoplay restrictions, fullscreen, touch gestures, narrow toolbar, codec errors, and close/reopen resource release.
 - [ ] Profile Butterchurn CPU/GPU/memory on high-DPI displays and verify WebGL context cleanup and renderer reinitialization after repeated mode changes.
@@ -843,5 +843,17 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - [x] Save and restore the mixed audio/video queue order in versioned localStorage state. Normalize against current media keys, discard stale/duplicate entries, append newly added media, and recover safely from malformed or unavailable storage.
 - [x] Add regression tests for normalization, reorder direction, immutable updates, storage round-trip, malformed JSON and storage exceptions.
 - [x] GitHub Actions passed Typecheck, Winamp archive test suite (including the new media queue tests), ESLint, production Build, output verification and GitHub Pages deployment for commit `d9fa6879`.
-- [ ] Drag-and-drop queue editing and browser acceptance remain open.
+- [x] Add a collapsible mixed-media queue editor inside the existing fourth window with HTML drag-and-drop, active-item indication and click-to-play; no new window or audio graph is created.
+- [ ] Verify pointer/touch drag behavior on real mobile browsers; Move Up/Down controls remain available as a non-drag fallback.
 - [ ] Full EEL2 and MilkDrop 2 shader conversion remains open. The upstream MIT `milkdrop-preset-converter` is a browser-targeted converter, but its package pulls an old Babel 6 / Webpack 3 dependency tree and legacy parser/shader dependencies. Do not add it blindly; first isolate and audit a maintained or vendored converter path and verify Butterchurn output compatibility.
+
+
+### 2026-11-26 — Mixed queue drag editing and Butterchurn lifecycle hardening
+
+- [x] Add a collapsible queue editor inside the existing fourth Video / Visualization window. Audio and video entries render together; drag-and-drop reorders the mixed list, selecting a row plays it, and the active entry is highlighted. Existing toolbar selector and Move Up/Down controls remain as fallbacks.
+- [x] Add a pure reorder-by-key helper and regression tests for arbitrary drop positions, invalid indices and non-mutating behavior.
+- [x] Harden Butterchurn teardown against async preset-import races: mark runtime disposed before releasing it; after file reads and preset loads, ignore results if the visualizer has already been unmounted or replaced.
+- [x] On renderer exceptions, stop RAF and release the audio analysis branch, preset references, WebGL context and canvas backing store rather than leaving a failed renderer resident.
+- [ ] Full legacy .milk conversion remains open. Research found milkdrop-toolchain 0.1.0 (Unlicense, TypeScript, no runtime dependencies) with EEL2 parsing/interpreter/JIT and HLSL analysis/GLSL emission plus 510 carried-over tests. It is a promising parser/compiler candidate, but it does not itself provide a Butterchurn preset adapter or renderer VM; do not claim full import or integrate it until an adapter is implemented and tested against real presets.
+- [ ] Mobile drag acceptance, real-browser repeated open/close and WebGL memory profiling remain open.
+- [ ] Latest CI for afc44c70 must complete before treating the lifecycle hardening as verified. The preceding drag-reorder commit 2c379061 passed typecheck, Winamp tests, lint, build, artifact verification and GitHub Pages deploy.

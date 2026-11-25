@@ -324,3 +324,12 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 - Automated tests cover reorder direction, non-mutating moves, normalization, storage round-trip and storage exceptions. CI passed Typecheck, archive/media queue tests, ESLint, production build, output verification and GitHub Pages deployment for `d9fa6879`.
 - Drag-and-drop editing and browser acceptance are still open.
 - Converter research found an MIT browser-targeted `milkdrop-preset-converter` with EEL and HLSL conversion, but its package uses an old Babel 6/Webpack 3 toolchain and legacy parser/shader dependencies. It has not been added to production. Full EEL2 and MilkDrop 2 conversion remains open pending dependency and output compatibility review.
+
+
+## 19. Queue editor and Butterchurn lifecycle hardening — 2026-11-26
+
+- The fourth window now has a collapsible mixed audio/video queue list. HTML drag-and-drop reorders by stable media key; selecting a row activates it, and the active item is visibly identified. Existing compact toolbar controls remain available. This is still source-level behavior until desktop/mobile browser acceptance is completed.
+- Butterchurn runtime teardown now has an explicit disposed state. Async local preset file reads and loadPreset completions check that the runtime is still current before mutating it, preventing stale work from touching a destroyed renderer after close/reopen.
+- A render exception now triggers full best-effort teardown: RAF cancellation, ResizeObserver/listener removal, audio analysis branch disconnect, preset reference release, WebGL context loss and canvas backing-store release.
+- milkdrop-toolchain 0.1.0 was reviewed as a candidate parser/compiler: TypeScript, Unlicense, no runtime dependencies; it includes EEL2 parsing/interpreter/JIT and HLSL analysis/GLSL emission, with 510 carried-over tests. It does not include a Butterchurn adapter or renderer VM, so it is not a drop-in .milk importer. Full import remains open until a compatible adapter is implemented and validated against real-world presets.
+- Remaining: mobile touch drag acceptance, browser lifecycle/memory profiling, full .milk adapter, and confirmation of CI/deploy for the lifecycle commit.
