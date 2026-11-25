@@ -19,7 +19,9 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
   const presetIndexRef = useRef(presetIndex);
   const [status, setStatus] = useState('LOADING MILKDROP ENGINE…');
 
-  presetIndexRef.current = presetIndex;
+  useEffect(() => {
+    presetIndexRef.current = presetIndex;
+  }, [presetIndex]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
