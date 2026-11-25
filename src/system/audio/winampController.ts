@@ -174,6 +174,31 @@ class WinampControllerService {
     }
   }
 
+  public reversePlaylist(): void {
+    if (this.playlist.length < 2) return;
+    const currentTrackId = this.getTrack().id;
+    this.playlist = [...this.playlist].reverse();
+    const currentIndex = this.playlist.findIndex((track) => track.id === currentTrackId);
+    if (currentIndex >= 0) this.trackIndex = currentIndex;
+    this.notifyPlaylistChanged();
+    this.notify();
+  }
+
+  public cropPlaylist(indices: number[]): void {
+    const selected = new Set(indices.filter((index) => Number.isInteger(index) && index >= 0 && index < this.playlist.length));
+    if (!selected.size || selected.size >= this.playlist.length) return;
+    const currentTrackId = this.getTrack().id;
+    const nextPlaylist = this.playlist.filter((_, index) => selected.has(index));
+    if (!nextPlaylist.length) return;
+    this.playlist = nextPlaylist;
+    const currentIndex = this.playlist.findIndex((track) => track.id === currentTrackId);
+    const currentWasKept = currentIndex >= 0;
+    this.trackIndex = currentWasKept ? currentIndex : 0;
+    this.notifyPlaylistChanged();
+    if (!currentWasKept && this.audioElement) this.updateAudioSrc(this.isPlaying);
+    else this.notify();
+  }
+
   public moveTrack(fromIndex: number, toIndex: number): void {
     if (
       !Number.isInteger(fromIndex) ||
