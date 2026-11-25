@@ -248,3 +248,26 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 **Оставшиеся ограничения:** browser QA для `region.txt` clip paths, portable local M3U/IndexedDB export, дополнительные Playlist commands, browser QA для Media Session, реальные metadata fixtures, настоящая Butterchurn/MilkDrop интеграция и 60-FPS browser performance profiling.
 
 Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
+
+## 10. Следующая реализационная итерация — portable local-library backup
+
+Обычный M3U не может безопасно переносить локальные треки, потому что сохранённый `blob:` URL существует только в текущем контексте браузера. Поэтому локальная библиотека будет экспортироваться отдельным ZIP-архивом `.wampack`, а M3U останется стандартным форматом для сетевых URL.
+
+Контракт архива:
+- `manifest.json` содержит версию схемы, порядок плейлиста, метаданные и archive-relative asset IDs.
+- `audio/` содержит исходные байты файлов без перекодирования.
+- object URLs не сохраняются; при импорте они создаются заново из Blob.
+- ZIP проверяется до записи в IndexedDB: границы central directory, количество и общий размер entries, CRC, traversal paths, manifest schema/version.
+- Импорт сначала валидирует весь архив, затем сохраняет файлы и добавляет playlist entries только после успешной записи.
+- Повторяющиеся позиции одного локального трека в плейлисте сохраняются через ссылки manifest на один asset.
+- UI размещается в существующем Playlist MISC меню; новых окон не добавляется.
+
+Это пока спецификация, не готовая функция. До реализации нельзя показывать BACKUP IN/OUT как рабочие кнопки или обещать совместимость с произвольными ZIP.
+
+## 11. Butterchurn: безопасная интеграция
+
+Butterchurn остаётся отдельным режимом `MilkDrop (Butterchurn)`; текущий процедурный `MilkDrop` и AVS-inspired режимы сохраняются. Интеграция должна быть lazy-loaded, локальной и ограниченной существующим четвёртым окном.
+
+Критическая часть — не сам Canvas, а аудиограф: контроллер уже пропускает сигнал через EQ → preamp → balance → analyser → destination. Нельзя повторно подключать аудиосигнал к destination и получать удвоенную громкость/фазовое наложение. Перед кодом требуется проверить точный `connectAudio` контракт установленной версии Butterchurn. Если библиотеке нужен собственный анализатор, допустима отдельная silent tap-ветка внутри того же AudioContext; основной audible path остаётся единственным и неизменным.
+
+Проверки до статуса Verified: WebGL2 fallback/context loss, resize/fullscreen reuse, disconnect собственных tap nodes, отсутствие второго AudioContext/HTMLAudioElement, локальные presets, lazy bundle и 60-FPS профиль на high-DPI. Подробные acceptance пункты находятся в `docs/tasks.md`.
