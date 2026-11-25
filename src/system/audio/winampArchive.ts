@@ -75,7 +75,7 @@ function assetExtension(name: string): string {
   return name.match(/\.([a-z0-9]{1,8})$/i)?.[1]?.toLowerCase() ?? 'bin';
 }
 function localAssetPath(index: number, name: string): string {
-  return \`audio/\${String(index + 1).padStart(6, '0')}.\${assetExtension(name)}\`;
+  return 'audio/' + String(index + 1).padStart(6, '0') + '.' + assetExtension(name);
 }
 
 export async function createWinampArchive(
