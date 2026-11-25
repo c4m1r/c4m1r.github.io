@@ -348,8 +348,8 @@ export async function convertMilkPreset(
   ]);
   const customWaves = customWaveSlots.size;
   const customShapes = customShapeSlots.size;
-  if (!frameEquations && !pixelEquations && !customWaves && !customShapes) {
-    warnings.add('This preset contains no EEL equations or custom wave/shape programs; only mapped scalar parameters were imported.');
+  if (!frameEquations && !pixelEquations && !customWaves && !customShapes && !shaderStages) {
+    warnings.add('This preset contains no EEL equations, custom wave/shape programs or HLSL shaders; only mapped scalar parameters were imported.');
   }
   return { preset, warnings: [...warnings], converted: { frameEquations, pixelEquations, customWaves, customShapes, shaderStages } };
 }
