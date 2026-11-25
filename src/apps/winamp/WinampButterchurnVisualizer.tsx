@@ -226,6 +226,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     const preset = runtime.presets[name];
     setPresetName(name);
     void Promise.resolve(runtime.visualizer.loadPreset(preset, 2.5)).catch((error: unknown) => {
+      if (runtime.disposed || runtimeRef.current !== runtime) return;
       console.error('Butterchurn preset switch failed:', error);
       setStatus('PRESET COULD NOT BE LOADED');
     });
@@ -277,6 +278,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     const name = runtime.presetNames[nextIndex];
     setPresetName(name);
     void Promise.resolve(runtime.visualizer.loadPreset(runtime.presets[name], 2.5)).catch((error: unknown) => {
+      if (runtime.disposed || runtimeRef.current !== runtime) return;
       console.error('Butterchurn preset advance failed:', error);
       setStatus('PRESET COULD NOT BE LOADED');
     });
