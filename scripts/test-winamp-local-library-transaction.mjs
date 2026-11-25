@@ -13,7 +13,12 @@ assert.equal(errors.length, 0, errors.map((item) => ts.flattenDiagnosticMessageT
 
 let expectedWrites = 0;
 let failAt = Number.POSITIVE_INFINITY;
+let failureMode = 'async';
 let committed = [];
+let abortEvents = 0;
+let abortCalls = 0;
+let completeEvents = 0;
+
 globalThis.indexedDB = {
   open() {
     const database = {
@@ -21,19 +26,36 @@ globalThis.indexedDB = {
       createObjectStore() { return { createIndex() {} }; },
       transaction() {
         const staged = [];
+        let finished = false;
         const tx = {
-          error: new Error('QuotaExceededError'),
+          error: null,
           oncomplete: null,
           onerror: null,
           onabort: null,
           objectStore() {
             return {
               add(record) {
-                if (staged.length + 1 === failAt) throw new Error('QuotaExceededError');
+                const nextWrite = staged.length + 1;
+                if (nextWrite === failAt && failureMode === 'sync') {
+                  throw new Error('Synchronous quota failure');
+                }
                 staged.push(record);
-                if (staged.length === expectedWrites) {
+                if (nextWrite === failAt && failureMode === 'async') {
                   queueMicrotask(() => {
+                    if (finished) return;
+                    finished = true;
+                    tx.error = new Error('QuotaExceededError');
+                    staged.length = 0;
+                    tx.onerror?.();
+                    tx.onabort?.();
+                    abortEvents += 1;
+                  });
+                } else if (staged.length === expectedWrites && failAt > expectedWrites) {
+                  queueMicrotask(() => {
+                    if (finished) return;
+                    finished = true;
                     committed.push(...staged);
+                    completeEvents += 1;
                     tx.oncomplete?.();
                   });
                 }
@@ -41,8 +63,14 @@ globalThis.indexedDB = {
             };
           },
           abort() {
+            abortCalls += 1;
+            if (finished) throw new Error('Transaction is already finished');
+            finished = true;
             staged.length = 0;
-            queueMicrotask(() => tx.onabort?.());
+            queueMicrotask(() => {
+              abortEvents += 1;
+              tx.onabort?.();
+            });
           },
         };
         return tx;
@@ -67,20 +95,50 @@ const assets = [
 ];
 const metadata = new Map();
 
-test('aborts the whole IndexedDB import when a later asset write fails', async () => {
+test('aborts the entire IndexedDB import after an asynchronous quota failure', async () => {
   expectedWrites = 2;
   failAt = 2;
+  failureMode = 'async';
   committed = [];
+  abortEvents = 0;
+  abortCalls = 0;
+  completeEvents = 0;
+
   await assert.rejects(() => importWinampLocalAudioAssets(assets, metadata), /QuotaExceededError/);
   assert.equal(committed.length, 0, 'no partially imported records may be committed');
+  assert.equal(abortEvents, 1, 'the IndexedDB transaction must emit abort');
+  assert.equal(completeEvents, 0, 'the failed transaction must never complete');
 });
 
-test('commits all imported assets together after the transaction completes', async () => {
+test('aborts the entire IndexedDB import after a synchronous object-store failure', async () => {
+  expectedWrites = 2;
+  failAt = 2;
+  failureMode = 'sync';
+  committed = [];
+  abortEvents = 0;
+  abortCalls = 0;
+  completeEvents = 0;
+
+  await assert.rejects(() => importWinampLocalAudioAssets(assets, metadata), /Synchronous quota failure/);
+  assert.equal(committed.length, 0);
+  assert.equal(abortEvents, 1);
+  assert.equal(completeEvents, 0);
+  assert.equal(abortCalls, 1);
+});
+
+test('commits all imported assets together only after transaction completion', async () => {
   expectedWrites = 2;
   failAt = Number.POSITIVE_INFINITY;
+  failureMode = 'async';
   committed = [];
+  abortEvents = 0;
+  abortCalls = 0;
+  completeEvents = 0;
+
   const imported = await importWinampLocalAudioAssets(assets, metadata);
   assert.equal(imported.length, 2);
   assert.equal(committed.length, 2);
+  assert.equal(completeEvents, 1);
+  assert.equal(abortEvents, 0);
   assert.deepEqual(imported.map(({ path }) => path), assets.map(({ path }) => path));
 });
