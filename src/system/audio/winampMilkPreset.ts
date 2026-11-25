@@ -281,11 +281,11 @@ export async function convertMilkPreset(
   const pixelEquations = programs.pixel.size;
   const customWaveSlots = new Set([
     ...programs.waveInit.keys(), ...programs.waveFrame.keys(), ...programs.wavePoint.keys(),
-    ...preset.waves.map((wave, index) => Number(wave.baseVals.enabled) !== 0 ? index : -1).filter((index) => index >= 0),
+    ...preset.waves.map((wave, index) => Number(wave.baseVals.enabled) > 0 ? index : -1).filter((index) => index >= 0),
   ]);
   const customShapeSlots = new Set([
     ...programs.shapeInit.keys(), ...programs.shapeFrame.keys(),
-    ...preset.shapes.map((shape, index) => Number(shape.baseVals.enabled) !== 0 ? index : -1).filter((index) => index >= 0),
+    ...preset.shapes.map((shape, index) => Number(shape.baseVals.enabled) > 0 ? index : -1).filter((index) => index >= 0),
   ]);
   const customWaves = customWaveSlots.size;
   const customShapes = customShapeSlots.size;
