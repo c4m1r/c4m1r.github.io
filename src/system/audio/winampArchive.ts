@@ -5,6 +5,7 @@ const ARCHIVE_VERSION = 1;
 const MAX_ENTRIES = 1002;
 const MAX_TOTAL_BYTES = 512 * 1024 * 1024;
 const MAX_MANIFEST_BYTES = 4 * 1024 * 1024;
+const MAX_TRACKS = 10000;
 
 export interface WinampArchiveTrack {
   id: string;
@@ -32,7 +33,7 @@ export interface ImportedWinampArchive {
 }
 
 const encoder = new TextEncoder();
-const decoder = new TextDecoder();
+const decoder = new TextDecoder('utf-8', { fatal: true });
 
 const CRC_TABLE = (() => {
   const table = new Uint32Array(256);
@@ -52,8 +53,22 @@ function crc32(bytes: Uint8Array): number {
 function u16(view: DataView, offset: number, value: number): void { view.setUint16(offset, value, true); }
 function u32(view: DataView, offset: number, value: number): void { view.setUint32(offset, value, true); }
 function safePath(path: string): boolean {
+  return path.length > 0 && path.length <= 240 && !path.startsWith('/') && !path.includes('\\') &&
+    !/[\\u0000-\\u001f\\u007f]/.test(path) &&
+    path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
+}
+function safeAssetName(name: string): boolean {
+  return name.length > 0 && name.length <= 255 && name !== '.' && name !== '..' &&
+    !/[\\\\/\\u0000-\\u001f\\u007f]/.test(name);
+}
+function safeMimeType(type: string): boolean {
+  return type === '' || /^[a-z0-9][a-z0-9!#function safePath(path: string): boolean {
   return path.length > 0 && !path.startsWith('/') && !path.includes('\\') &&
     path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
+}^_.+-]*\\/[a-z0-9][a-z0-9!#function safePath(path: string): boolean {
+  return path.length > 0 && !path.startsWith('/') && !path.includes('\\') &&
+    path.split('/').every((part) => part !== '..' && part !== '.' && part.length > 0);
+}^_.+-]*$/i.test(type);
 }
 function localAssetPath(index: number, name: string): string {
   const extension = name.match(/\.([a-z0-9]{1,8})$/i)?.[1]?.toLowerCase() ?? 'bin';
@@ -64,16 +79,25 @@ export async function createWinampArchive(
   playlist: MediaTrack[],
   localRecords: WinampLocalAudioRecord[],
 ): Promise<Blob> {
+  if (playlist.length > MAX_TRACKS) throw new Error('Playlist contains too many entries for a portable backup');
   const byId = new Map(localRecords.map((record) => [record.id, record]));
   const used = new Map<string, string>();
   const entries: Array<{ name: string; bytes: Uint8Array }> = [];
   const tracks: WinampArchiveTrack[] = [];
   let assetIndex = 0;
+  let payloadBytes = 0;
   for (const track of playlist) {
     const record = byId.get(track.id);
     if (record) {
       let assetPath = used.get(record.id);
       if (!assetPath) {
+        if (!safeAssetName(record.name) || !safeMimeType(record.type) ||
+          !Number.isSafeInteger(record.lastModified) || record.lastModified < 0 ||
+          !Number.isSafeInteger(record.size) || record.size < 0 || record.blob.size !== record.size) {
+          throw new Error('Local library contains invalid file metadata');
+        }
+        payloadBytes += record.blob.size;
+        if (payloadBytes > MAX_TOTAL_BYTES) throw new Error('Archive exceeds the 512 MB safety limit');
         assetPath = localAssetPath(assetIndex++, record.name);
         used.set(record.id, assetPath);
         entries.push({ name: assetPath, bytes: new Uint8Array(await record.blob.arrayBuffer()) });
@@ -99,7 +123,9 @@ export async function createWinampArchive(
   const manifest: WinampArchiveManifest = {
     format: 'wampack', version: ARCHIVE_VERSION, exportedAt: new Date().toISOString(), tracks,
   };
-  entries.unshift({ name: 'manifest.json', bytes: encoder.encode(JSON.stringify(manifest, null, 2)) });
+  const manifestBytes = encoder.encode(JSON.stringify(manifest, null, 2));
+  if (manifestBytes.byteLength > MAX_MANIFEST_BYTES) throw new Error('Playlist manifest exceeds the 4 MB safety limit');
+  entries.unshift({ name: 'manifest.json', bytes: manifestBytes });
   if (entries.length > MAX_ENTRIES) throw new Error('Library contains too many archive entries');
   const total = entries.reduce((sum, entry) => sum + entry.bytes.byteLength, 0);
   if (total > MAX_TOTAL_BYTES) throw new Error('Archive exceeds the 512 MB safety limit');
