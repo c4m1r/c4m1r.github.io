@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { winampController } from '../../system/audio/winampController';
-import { convertSimpleMilkPreset } from '../../system/audio/winampMilkPreset';
+import { convertMilkPreset } from '../../system/audio/winampMilkPreset';
 type ButterchurnPreset = Record<string, unknown>;
 
 interface ButterchurnVisualizer {
@@ -249,11 +249,18 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       }
       const rawText = await file.text();
       if (runtime.disposed || runtimeRef.current !== runtime) return;
+      let importWarnings: string[] = [];
+      let importSummary = '';
       const parsed: unknown = isMilkFile
-        ? convertSimpleMilkPreset(rawText, runtime.presets[runtime.presetNames[0]])
+        ? (() => {
+            const conversion = convertMilkPreset(rawText, runtime.presets[runtime.presetNames[0]]);
+            importWarnings = conversion.warnings;
+            importSummary = `EEL2: ${conversion.converted.frameEquations} frame/init, ${conversion.converted.pixelEquations} pixel, ${conversion.converted.customWaves} waves, ${conversion.converted.customShapes} shapes`;
+            return conversion.preset;
+          })()
         : JSON.parse(rawText);
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error('Preset must be a Butterchurn JSON object or a supported scalar-only MilkDrop .milk file');
+        throw new Error('Preset must be a Butterchurn JSON object or a compatible MilkDrop .milk file');
       }
       const baseName = file.name.replace(/\.(json|milk)$/i, '').trim().slice(0, 80) || 'Imported preset';
       let name = baseName;
@@ -267,7 +274,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       presetIndexRef.current = runtime.presetNames.length - 1;
       setPresetName(name);
       setStatus(isMilkFile
-        ? '.MILK IMPORTED: scalar parameters only; EEL equations, custom waves/shapes and shaders are not converted'
+        ? [importSummary, ...importWarnings].join(' · ')
         : '');
     } catch (error) {
       if (runtime.disposed || runtimeRef.current !== runtime) return;
