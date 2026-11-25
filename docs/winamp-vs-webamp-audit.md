@@ -18,7 +18,7 @@
 2. Нет настоящего MilkDrop/Butterchurn и совместимости с MilkDrop preset-файлами.
 3. Локальные MP3 теперь читают базовые ID3v2.2/v2.3/v2.4 и ID3v1 поля title/artist/album/track; другие контейнеры и расширенные поля metadata пока не поддержаны.
 4. M3U поддерживает только абсолютные HTTP(S)-URL; относительные и локальные пути пропускаются, поэтому экспорт локальной библиотеки не является переносимым плейлистом.
-5. Анимационный цикл теперь ограничен 60 FPS (вместо 30/каждого display frame), но состояние визуализатора всё ещё живёт в крупном родительском компоненте и требует изоляции для дальнейшей оптимизации.
+5. Анимационный цикл теперь ограничен 60 FPS и изолирован во внешнем frame store; parent Winamp не получает 60-FPS state updates.
 6. HTML-экспорт Playlist добавлен после аудита. Media Session API также подключён; оба требуют browser acceptance.
 7. Классический внешний вид пока является собственной реконструкцией, а не пиксельно-точным skin renderer: есть расхождение геометрии окна 269/275 px и большой набор последовательно добавленных CSS override-блоков.
 
@@ -55,7 +55,7 @@
 
 ### P0 — визуализатор обновляет весь компонент на каждом кадре
 
-**Статус: частично исправлено в этом проходе.** Частота публикации ограничена 30 FPS, вложенные setters удалены, synthetic random signal убран. Полная изоляция renderer от родительского компонента остаётся отдельной оптимизацией.
+**Статус: исправлено в текущем проходе.** Частота публикации установлена на 60 FPS; кадры идут через внешний frame store и `useSyncExternalStore`, поэтому обновляются только две visualizer surface, а не весь Winamp parent / Playlist / window manager. Используется тот же analyser после EQ и тот же AudioContext. Synthetic random signal удалён.
 
 В `WinampPlayer.tsx` цикл `requestAnimationFrame` вызывает `setWaveform`, `setBars` и `setPeaks` при каждом кадре. Эти состояния находятся в родительском `WinampPlayer`, поэтому обновление затрагивает не только сцену визуализатора, но и JSX всего плеера: Main, EQ, Playlist и Video.
 
@@ -173,7 +173,7 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 | Приоритет | Работа | Почему |
 |---|---|---|
 | P0 | Исправить duration=180 fallback и сброс duration на смене трека | Точность позиции и seek |
-| P0 | Сохранить 60 FPS и изолировать visualizer rendering от родителя | Плавность high-DPI и производительность |
+| P0 | Browser profile 60 FPS visualizer on high-DPI displays | Подтвердить реальную плавность и CPU/GPU cost |
 | P1 | Расширить .wsz fallback и применить region.txt / остальные palette fields | Полнота skin compatibility |
 | P1 | Подключить pledit.txt и viscolor.txt к UI | Фактическое применение skin metadata |
 | P1 | Расширить metadata parser на FLAC/Ogg/MP4/WAV | Качество локальной библиотеки |
@@ -252,6 +252,6 @@ Butterchurn — WebGL2-реализация MilkDrop с отдельным па�
 - [x] Удалены фиксированные ложные значения 128 kbps / 44 kHz / stereo из Main display: пока metadata не читается, интерфейс показывает неизвестное значение, а не выдуманные характеристики.
 - [x] Подключён Media Session API к существующему controller: track metadata, playback/position state, play/pause/stop/next/previous и seek handlers; handlers/metadata очищаются при закрытии плеера.
 
-**Оставшиеся ограничения:** применение `region.txt` window shapes, расширение metadata на FLAC/Ogg/MP4/WAV, portable local M3U workflow, дополнительные Playlist commands, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция и изоляция visualizer rendering от родительского компонента.
+**Оставшиеся ограничения:** применение `region.txt` window shapes, расширение metadata на FLAC/Ogg/MP4/WAV, portable local M3U workflow, дополнительные Playlist commands, browser QA для Media Session, настоящая Butterchurn/MilkDrop интеграция browser performance profiling 60 FPS on high-DPI.
 
 Эти изменения проверены по исходному коду на уровне patch construction; успешный typecheck/build/CI и browser behavior должны быть подтверждены отдельными результатами ниже. Не считать визуальный проход Verified без реального браузера.
