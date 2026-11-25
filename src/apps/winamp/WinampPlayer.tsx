@@ -5,6 +5,7 @@ import { createWinampEqf, parseWinampEqf } from '../../system/audio/winampEqf';
 import { createM3uPlaylist, parseM3uPlaylist } from '../../system/audio/winampM3u';
 import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
 import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
+import { readEmbeddedAudioMetadata } from '../../system/audio/winampMetadata';
 import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
 import {
   createWinampLocalAudioId,
@@ -452,10 +453,12 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     let additions: MediaTrack[] = [];
     try {
       const saved = await saveWinampLocalAudioFiles(audioFiles);
-      additions = saved.map(({ blob, id, title, artist, durationLabel }) => ({
+      additions = saved.map(({ blob, id, title, artist, album, trackNumber, durationLabel }) => ({
         id,
         title,
         artist,
+        ...(album ? { album } : {}),
+        ...(trackNumber ? { trackNumber } : {}),
         durationLabel,
         src: URL.createObjectURL(blob),
       }));
@@ -475,7 +478,18 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
     if (!additions.length) return;
     winampController.addTracks(additions);
-    additions.forEach((track) => {
+    additions.forEach((track, index) => {
+      const sourceFile = audioFiles[index];
+      if (sourceFile) {
+        void readEmbeddedAudioMetadata(sourceFile).then((metadata) => {
+          const hasTags = Boolean(metadata.title || metadata.artist || metadata.album || metadata.trackNumber);
+          if (!hasTags) return;
+          winampController.updateTrackMetadata(track.id, metadata);
+          if (track.id.startsWith('local-')) {
+            void updateWinampLocalAudioMetadata(track.id, metadata).catch(() => undefined);
+          }
+        }).catch(() => undefined);
+      }
       const metadataAudio = new Audio();
       metadataAudio.preload = 'metadata';
       metadataAudio.addEventListener('loadedmetadata', () => {
