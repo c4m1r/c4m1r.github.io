@@ -190,6 +190,15 @@ let visualizerFrame = EMPTY_VISUALIZER_FRAME;
 const visualizerFrameSubscribers = new Set<() => void>();
 let visualizerFrameRaf: number | null = null;
 let visualizerFrameLastAt = 0;
+let visualizerAudioContext: AudioContext | null = null;
+let visualizerAnalyser: AnalyserNode | null = null;
+let unsubscribeVisualizerController: (() => void) | null = null;
+
+function refreshWinampVisualizerAudioGraph(): void {
+  const graph = winampController.getWebAudio();
+  visualizerAudioContext = graph.ctx;
+  visualizerAnalyser = graph.analyser;
+}
 
 function getWinampVisualizerFrame(): WinampVisualizerFrame {
   return visualizerFrame;
@@ -198,6 +207,9 @@ function getWinampVisualizerFrame(): WinampVisualizerFrame {
 function subscribeWinampVisualizerFrame(listener: () => void): () => void {
   visualizerFrameSubscribers.add(listener);
   if (visualizerFrameRaf === null && typeof window !== 'undefined') {
+    unsubscribeVisualizerController = winampController.subscribe((state) => {
+      if (state.isPlaying) refreshWinampVisualizerAudioGraph();
+    });
     const frequencyData = new Uint8Array(32);
     const timeData = new Uint8Array(64);
     const tick = (timestamp: number) => {
@@ -207,7 +219,8 @@ function subscribeWinampVisualizerFrame(listener: () => void): () => void {
       }
       if (timestamp - visualizerFrameLastAt >= 1000 / 60) {
         visualizerFrameLastAt = timestamp;
-        const { ctx, analyser } = winampController.getWebAudio();
+        const ctx = visualizerAudioContext;
+        const analyser = visualizerAnalyser;
         const isPlayingNow = winampController.getState().isPlaying;
         let bars: number[];
         let waveform: number[];
@@ -238,6 +251,10 @@ function subscribeWinampVisualizerFrame(listener: () => void): () => void {
       visualizerFrameRaf = null;
       visualizerFrameLastAt = 0;
       visualizerFrame = EMPTY_VISUALIZER_FRAME;
+      unsubscribeVisualizerController?.();
+      unsubscribeVisualizerController = null;
+      visualizerAudioContext = null;
+      visualizerAnalyser = null;
     }
   };
 }
@@ -978,7 +995,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   // visualizer surfaces subscribe to a small external frame store, so 60 FPS
   // updates never re-render the large Winamp window manager / playlist tree.
   const initWebAudio = useCallback(() => {
-    winampController.getWebAudio();
+    refreshWinampVisualizerAudioGraph();
   }, []);
 
   const play = useCallback(async () => {
