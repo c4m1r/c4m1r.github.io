@@ -165,3 +165,14 @@ This register is based on current main source and the supplied reference image, 
 - Main LCD retains its own three compact modes (Spectrum / Oscilloscope / Peak Meter); the fourth-window mode selection must be independent.
 - Corrected the mode catalog to use canonical WMP names: Alchemy, Bars and Waves, Battery; legacy Ambience, Particle, Plenoptic, Spikes and Musical Colors. Added Winamp AVS- and MilkDrop-inspired families without claiming original plugin or preset compatibility.
 - Updated the task list and `docs/winamp-visualization-modes.md`. No visualization implementation code was changed in this correction.
+
+## Progress log — 2026-11-25 (media stage, portable library and regression coverage)
+
+- The existing fourth Video / Visualization stage can be promoted to fullscreen by double-click or double-tap. Its original window dimensions and four-window layout remain unchanged outside fullscreen.
+- Fullscreen transport uses a translucent bottom panel with ±5-second seek, previous / next, play / pause, MODE and exit. Mouse movement or touch reveals it; it auto-hides after 3 seconds outside the panel. Escape exits fullscreen; F enters fullscreen while the Winamp OS window is active. Keyboard arrows and Space are scoped to fullscreen.
+- Video selection accepts multiple local files as a temporary in-session queue. Previous / next and end-of-file advance within that queue in Video mode; Visualization mode continues to navigate the Winamp audio playlist. Object URLs are revoked on queue replacement and player unmount.
+- Added .wampack backup / restore using original IndexedDB Blobs, ordered playlist entries, de-duplicated payload assets, bounded ZIP validation and CRC checks. M3U remains an HTTP(S)-URL interchange format; it is not treated as a portable local-file backup.
+- Corrected restored filename extension fallback and preservation of zero-valued original lastModified timestamps. Added filename/archive-extension consistency validation.
+- Expanded metadata and archive regression fixtures. CI run 45582582909 passed TypeScript, all 27 Winamp archive/metadata/skin tests, ESLint, production build and artifact upload. The subsequent code changes for video mode cleanup and documentation require their own latest CI confirmation.
+- Remaining: browser QA on mouse/touch devices, native-size screenshot comparison against the supplied Winamp reference, .wsz acceptance against real third-party skins, IndexedDB rollback test, and optional genuine MilkDrop integration through Butterchurn. No browser screenshot or mobile-device acceptance is claimed here.
+
