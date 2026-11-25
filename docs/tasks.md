@@ -740,6 +740,8 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Apply `pledit.txt` menu foreground/background colors to Playlist menus.
 - [x] Parse and apply validated `region.txt` masks to Main/Equalizer normal and WindowShade via SVG clipPath.
 - [x] Isolate the 60 FPS visualizer render state in a shared external frame store; only the two visualizer surfaces subscribe.
+- [x] Pause the shared visualizer RAF loop while the document is backgrounded; resume one loop on visibility return and keep one controller/visibility subscription across both visualizer surfaces.
+- [x] Scope fourth-window SVG gradient IDs to the mounted visualizer instance to prevent cross-instance resource collisions.
 - [ ] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes.
 - [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS high-DPI performance profiling, reduced motion and all playback/window regressions.
 - Audit and parity notes: `docs/winamp-vs-webamp-audit.md`.
