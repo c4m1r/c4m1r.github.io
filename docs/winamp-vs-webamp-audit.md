@@ -17,7 +17,7 @@
 1. Частичная реализация формата .wsz: необязательные sprites теперь безопасно пропускаются, `pledit.txt`, `viscolor.txt` и четыре `region.txt` sections подключены. До полного Webamp parity ещё не хватает части sprite/cursor mappings и corpus/browser compatibility tests.
 2. Нет настоящего MilkDrop/Butterchurn и совместимости с MilkDrop preset-файлами.
 3. Локальные MP3 читают ID3v2.2/v2.3/v2.4 и ID3v1; FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms читаются для title/artist/album/track. Расширенные поля и редкие нестандартные варианты контейнеров ещё не поддержаны.
-4. M3U поддерживает только абсолютные HTTP(S)-URL; относительные и локальные пути пропускаются, поэтому экспорт локальной библиотеки не является переносимым плейлистом.
+4. M3U поддерживает `#EXTM3U` / `#EXTINF`, BOM и Unicode metadata, дробные длительности и round-trip для HTTP(S)-URL. Относительные, `file:` и временные `blob:` ссылки пропускаются; HLS `#EXT-X-*` манифесты отклоняются. Метаданные экспортируемых записей очищаются от переводов строк. Локальные файлы переносятся через `.wampack`, а не M3U.
 5. Анимационный цикл теперь ограничен 60 FPS и изолирован во внешнем frame store; parent Winamp не получает 60-FPS state updates.
 6. HTML-экспорт Playlist добавлен после аудита. Media Session API также подключён; оба требуют browser acceptance.
 7. Классический внешний вид пока является собственной реконструкцией, а не пиксельно-точным skin renderer: есть расхождение геометрии окна 269/275 px и большой набор последовательно добавленных CSS override-блоков.
@@ -32,7 +32,7 @@
 | Форматы аудио | Браузерные форматы; локальные файлы, сохранённые в IndexedDB | Форматы, поддерживаемые браузером; файлы и URL | Нужны тесты по браузерам и метаданным |
 | Локальная библиотека | Сохранение локальных файлов и восстановление object URL после перезагрузки | В документации описана загрузка файлов/URL; наша IndexedDB-библиотека — дополнительное преимущество | Наша версия функционально богаче в persistence |
 | Playlist | Добавление, удаление, выбор, сортировка drag-and-drop, длительности, M3U import/export | Классические команды Playlist, drag/drop, дополнительные команды и HTML export | У нас есть основа; не хватает ряда классических команд |
-| M3U | Только абсолютные HTTP(S)-URL; локальные/relative entries пропускаются | Поддержка playlist workflow в рамках Webamp | Наша текущая M3U реализация ограничена и не переносит локальную библиотеку |
+| M3U | `#EXTM3U` / `#EXTINF`, HTTP(S)-URL, Unicode/BOM и duration round-trip; относительные, `file:` и `blob:` entries пропускаются, HLS отклоняется | Поддержка playlist workflow в рамках Webamp | M3U используется для сетевых ссылок; локальные файлы переносятся через `.wampack` |
 | ID3 / metadata | Локальные MP3 (ID3v2.2/v2.3/v2.4 + ID3v1), FLAC (Vorbis comments), Ogg Vorbis/OpusTags, WAV INFO, MP4/M4A ilst: title/artist/album/track | Читает ID3 и другую metadata при загрузке | Базовые common tags покрыты; нужны fixtures и редкие контейнерные варианты |
 | Equalizer | 10 полос, preamp, balance, ON, EQF import/export, 7 встроенных presets и пользовательские presets | Классический 10-band EQ, встроенные Winamp presets, EQF | База есть; набор заводских presets и skin-defined поведение слабее |
 | .wsz skins | Собственный ZIP parser, atlas cropper; необязательные отсутствующие/битые sprites теперь пропускаются, Main sheet остаётся обязательным | Совместимость с классическими Winamp 2.x skins, включая их нестандартные элементы | Импорт устойчивее, но полный skin fidelity ещё не достигнут |
