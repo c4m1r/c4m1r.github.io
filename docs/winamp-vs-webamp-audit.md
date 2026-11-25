@@ -48,7 +48,7 @@
 | Window management | Main/EQ/Playlist/Video, attach/detach, group drag, magnetic snap, Playlist resize, shade | Main/EQ/Playlist и MilkDrop, drag, shade, resize Playlist/MilkDrop | Наша компоновка функционально шире, но требует browser QA |
 | Media Session | Подключены metadata/playbackState, play/pause/stop/next/previous/seek handlers и position state | Опциональная интеграция с Media Session API | Базовый паритет; browser/OS acceptance ещё нужен |
 | HTML Playlist export | Экспорт HTML для web-address tracks; локальные object URLs исключаются | Есть генерация HTML-файла | Базовая функция добавлена; локальные файлы требуют bundle/manifest |
-| Mini visualizer в Playlist | Не реализован | Есть в определённой компоновке окон | Опциональное улучшение |
+| Mini visualizer в Playlist | Не реализован | Есть в определённой компоновке окон | Опциональное улучшение, не блокирует основные сценарии плеера |
 | Accessibility | Часть кнопок имеет title/aria-label/aria-pressed; единая keyboard/focus acceptance ещё не проведена | В актуальном changelog улучшены Tab navigation, button names и aria-pressed | Нужно довести доступность системно |
 
 ## 3. Подтверждённые слабости исходного кода
@@ -63,9 +63,7 @@
 
 **Статус: исправлено в этом проходе.** Контроллер отдаёт фактическое значение duration (включая 0), подписчик UI сбрасывает устаревшую длительность при загрузке следующего трека.
 
-В `winampController.getState()` возвращается `duration: this.duration || 180`. При загрузке нового трека контроллер сбрасывает duration в 0, но UI не получает 0 как реальное состояние и может временно отображать/использовать длительность предыдущего трека или фиктивные три минуты.
-
-**Исправление:** отдавать фактическую длительность, включая 0/unknown; подписчик UI должен сбрасывать duration в 0 при смене трека и ждать `loadedmetadata`. Seek и progress UI должны безопасно обрабатывать неизвестную длительность.
+Историческая проблема заключалась в подстановке фиктивных 180 секунд вместо неизвестной длительности. Исправление уже находится в текущем коде: controller отдаёт фактическое значение, включая 0, UI сбрасывает устаревшее значение при смене трека и ожидает `loadedmetadata`. Seek/progress должны оставаться безопасными при неизвестной длительности. Повторно этот пункт не считается открытой задачей.
 
 ### P1 — импорт .wsz чрезмерно строгий к необязательным ресурсам
 
@@ -93,7 +91,7 @@ Webamp исторически исправлял fallback для отсутст�
 
 **Оставшееся последствие:** требуется browser QA для разных размеров/масштабов и некорректных region sections; остальные перечисленные playlist/visualizer metadata уже подключены.
 
-**Следующий шаг:** проверить `region.txt` на реальных skin corpus и убедиться, что clip paths не обрезают интерактивные кнопки; некорректные sections должны игнорироваться.
+**Отложено:** проверка `region.txt` на реальном skin corpus и интерактивных областях относится к browser QA; некорректные sections уже проходят валидацию и игнорируются.
 
 ### M3U и переносимость локальной библиотеки
 
@@ -111,24 +109,24 @@ Webamp исторически исправлял fallback для отсутст�
 
 **Статус: частично исправлено, базовые common tags поддерживаются.** Добавлен локальный parser ID3v2.2/v2.3/v2.4 + ID3v1 для MP3, FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms. Читаются title/artist/album/track number; локальные metadata сохраняются в IndexedDB и восстанавливаются вместе с библиотекой. Отсутствующие/битые теги используют filename fallback; duration читается browser audio metadata event.
 
-Осталось: тестовые fixtures на реальные файлы, редкие ID3/container variants, extended tags и browser QA на большом наборе аудиоформатов.
+Осталось: редкие ID3/container variants и extended tags. Основные common-tag fixtures добавлены и проходят CI; проверка на реальных файлах и browser QA перенесены на отдельный этап.
 
 ### P2 — Media Session API
 
 **Статус: базовая реализация добавлена после аудита.** Подключены metadata, playbackState, position state и обработчики play/pause/stop/previous/next/seekbackward/seekforward/seekto. Обработчики очищаются при размонтировании плеера. Требуется browser/OS acceptance на macOS, iOS и поддерживаемых desktop browsers; нельзя считать аппаратные media keys проверенными только по наличию API.
 
-### P2 — дополнительные команды Playlist
+### P2 — дополнительные команды Playlist (вне обязательного текущего scope)
 
 **HTML export добавлен.** Формируется автономный HTML-файл со ссылками на HTTP(S)-треки, заголовком, исполнителем и длительностью. Локальные object URLs намеренно исключаются, поскольку они не переживают закрытие вкладки и не являются переносимыми путями.
 
-В дальнейшем стоит сопоставить команды Remove/Crop/Reverse/Select/Sort и контекстные меню с классическим Webamp; portable backup IndexedDB-backed local audio уже реализован через `.wampack`, его browser acceptance остаётся открытым.
+Дополнительные команды Remove/Crop/Reverse/Select/Sort и расширенные контекстные меню не входят в обязательный текущий parity scope; базовые добавление/удаление/выбор/перемещение и M3U/.wampack import-export реализованы. Их можно добавить отдельным функциональным расширением без блокировки текущего плеера.
 
-### P2 — CSS и геометрия Classic renderer требуют консолидации
+### P2 — CSS и геометрия Classic renderer: безопасная консолидация после visual baseline
 
-В `winamp.css` много исторических override-блоков, включая повторные корректировки тех же элементов. В финальных правилах Main/Equalizer заданы шириной 269 px, в то время как atlas и некоторые фоновые sprite размеры рассчитаны на 275 px. Это может быть намеренной компенсацией рамок, но сейчас контракт не выражен единообразно.
+В `winamp.css` остаются исторические override-блоки и повторные корректировки. Их безопасная консолидация требует визуального baseline: в Classic renderer есть различие между outer width, content width и sprite width. Без браузерного сравнения удалять старые правила вслепую нельзя; этот cleanup отложен вместе с visual QA.
 
-**Исправление:**
-- сначала снять реальные размеры элементов в браузере и сверить с atlas;
+**Отложено до browser QA:**
+- снять реальные размеры элементов в браузере и сверить с atlas;
 - определить единый outer width / content width / sprite width;
 - объединить каскадные override в один финальный Classic layout section;
 - не удалять старые правила вслепую до visual regression screenshots.
