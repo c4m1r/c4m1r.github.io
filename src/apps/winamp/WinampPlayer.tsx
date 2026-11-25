@@ -802,6 +802,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const [videoAutoplayPending, setVideoAutoplayPending] = useState(false);
   const [videoStatus, setVideoStatus] = useState('');
   const videoObjectUrlsRef = useRef<string[]>([]);
+  const pendingVideoObjectUrlsRef = useRef<string[]>([]);
   const videoWindowRef = useRef<HTMLDivElement>(null);
   const videoElementRef = useRef<HTMLVideoElement>(null);
   const fullscreenHideTimerRef = useRef<number | null>(null);
@@ -837,8 +838,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   };
   const videoInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => () => {
-    videoObjectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    [...videoObjectUrlsRef.current, ...pendingVideoObjectUrlsRef.current]
+      .forEach((url) => URL.revokeObjectURL(url));
     videoObjectUrlsRef.current = [];
+    pendingVideoObjectUrlsRef.current = [];
   }, []);
   // Build the Classic windows as one vertical stack using the same responsive
   // video size as the stylesheet. This prevents a gap above Main on very narrow
@@ -2405,7 +2408,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 const previousUrls = videoObjectUrlsRef.current;
                 const nextQueue = files.map((file) => ({ url: URL.createObjectURL(file), name: file.name }));
                 videoObjectUrlsRef.current = nextQueue.map((item) => item.url);
-                window.setTimeout(() => previousUrls.forEach((url) => URL.revokeObjectURL(url)), 0);
+                // Keep the currently attached source alive until the browser starts
+                // loading its replacement; a zero-delay timer can revoke it too early.
+                pendingVideoObjectUrlsRef.current.push(...previousUrls);
                 videoElementRef.current?.pause();
                 setVideoQueue(nextQueue);
                 setVideoQueueIndex(0);
@@ -2421,6 +2426,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             {videoUrl ? <video
               ref={videoElementRef}
               src={videoUrl}
+              onLoadStart={() => {
+                const pendingUrls = pendingVideoObjectUrlsRef.current;
+                pendingVideoObjectUrlsRef.current = [];
+                pendingUrls.forEach((url) => URL.revokeObjectURL(url));
+              }}
               controls={!isVideoFullscreen}
               playsInline
               onCanPlay={() => {
