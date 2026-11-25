@@ -38,6 +38,123 @@ function removeUnsynchronization(bytes: Uint8Array): Uint8Array {
   return output.subarray(0, length);
 }
 
+function readUint32LE(bytes: Uint8Array, offset: number): number {
+  return (bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24)) >>> 0;
+}
+
+function parseVorbisComments(bytes: Uint8Array, offset = 0): EmbeddedAudioMetadata {
+  if (offset + 8 > bytes.length) return {};
+  let cursor = offset;
+  const vendorLength = readUint32LE(bytes, cursor);
+  cursor += 4 + vendorLength;
+  if (cursor + 4 > bytes.length) return {};
+  const commentCount = Math.min(readUint32LE(bytes, cursor), 10000);
+  cursor += 4;
+  const metadata: EmbeddedAudioMetadata = {};
+  const decoder = new TextDecoder('utf-8');
+  for (let index = 0; index < commentCount && cursor + 4 <= bytes.length; index += 1) {
+    const length = readUint32LE(bytes, cursor);
+    cursor += 4;
+    if (!length || cursor + length > bytes.length) break;
+    const comment = decoder.decode(bytes.subarray(cursor, cursor + length));
+    cursor += length;
+    const separator = comment.indexOf('=');
+    if (separator < 1) continue;
+    const key = comment.slice(0, separator).toUpperCase();
+    const value = comment.slice(separator + 1).trim();
+    if (!value) continue;
+    if (key === 'TITLE' && !metadata.title) metadata.title = value;
+    else if (key === 'ARTIST' && !metadata.artist) metadata.artist = value;
+    else if (key === 'ALBUM' && !metadata.album) metadata.album = value;
+    else if ((key === 'TRACKNUMBER' || key === 'TRACK') && !metadata.trackNumber) metadata.trackNumber = value;
+  }
+  return metadata;
+}
+
+function parseFlacMetadata(bytes: Uint8Array): EmbeddedAudioMetadata {
+  if (bytes.length < 8 || String.fromCharCode(...bytes.subarray(0, 4)) !== 'fLaC') return {};
+  let offset = 4;
+  while (offset + 4 <= bytes.length) {
+    const header = bytes[offset];
+    const blockType = header & 0x7f;
+    const isLast = (header & 0x80) !== 0;
+    const length = (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
+    const start = offset + 4;
+    const end = start + length;
+    if (end > bytes.length) break;
+    if (blockType === 4) return parseVorbisComments(bytes.subarray(start, end));
+    offset = end;
+    if (isLast) break;
+  }
+  return {};
+}
+
+function parseOggMetadata(bytes: Uint8Array): EmbeddedAudioMetadata {
+  let pageOffset = 0;
+  let packet: number[] = [];
+  while (pageOffset + 27 <= bytes.length) {
+    if (String.fromCharCode(...bytes.subarray(pageOffset, pageOffset + 4)) !== 'OggS') {
+      pageOffset += 1;
+      continue;
+    }
+    const segmentCount = bytes[pageOffset + 26];
+    const segmentStart = pageOffset + 27;
+    const payloadStart = segmentStart + segmentCount;
+    if (payloadStart > bytes.length) break;
+    let payloadOffset = payloadStart;
+    for (let segment = 0; segment < segmentCount; segment += 1) {
+      const segmentLength = bytes[segmentStart + segment];
+      if (payloadOffset + segmentLength > bytes.length) return {};
+      for (let byte = payloadOffset; byte < payloadOffset + segmentLength; byte += 1) packet.push(bytes[byte]);
+      payloadOffset += segmentLength;
+      if (segmentLength < 255) {
+        const packetBytes = Uint8Array.from(packet);
+        const vorbisPrefix = packetBytes.length >= 7 && packetBytes[0] === 3
+          && String.fromCharCode(...packetBytes.subarray(1, 7)) === 'vorbis';
+        const opusPrefix = packetBytes.length >= 8 && String.fromCharCode(...packetBytes.subarray(0, 8)) === 'OpusTags';
+        if (vorbisPrefix) return parseVorbisComments(packetBytes, 7);
+        if (opusPrefix) return parseVorbisComments(packetBytes, 8);
+        packet = [];
+      }
+    }
+    pageOffset = payloadOffset;
+  }
+  return {};
+}
+
+function parseWavInfo(bytes: Uint8Array): EmbeddedAudioMetadata {
+  if (bytes.length < 12 || String.fromCharCode(...bytes.subarray(0, 4)) !== 'RIFF'
+    || String.fromCharCode(...bytes.subarray(8, 12)) !== 'WAVE') return {};
+  let offset = 12;
+  const metadata: EmbeddedAudioMetadata = {};
+  while (offset + 8 <= bytes.length) {
+    const id = String.fromCharCode(...bytes.subarray(offset, offset + 4));
+    const length = readUint32LE(bytes, offset + 4);
+    const start = offset + 8;
+    const end = start + length;
+    if (end > bytes.length) break;
+    if (id === 'LIST' && length >= 4 && String.fromCharCode(...bytes.subarray(start, start + 4)) === 'INFO') {
+      let infoOffset = start + 4;
+      while (infoOffset + 8 <= end) {
+        const infoId = String.fromCharCode(...bytes.subarray(infoOffset, infoOffset + 4));
+        const infoLength = readUint32LE(bytes, infoOffset + 4);
+        const valueStart = infoOffset + 8;
+        const valueEnd = Math.min(end, valueStart + infoLength);
+        if (valueEnd > valueStart) {
+          const value = new TextDecoder('windows-1252').decode(bytes.subarray(valueStart, valueEnd)).replace(/\0/g, '').trim();
+          if (infoId === 'INAM' && value) metadata.title = value;
+          else if (infoId === 'IART' && value) metadata.artist = value;
+          else if ((infoId === 'IPRD' || infoId === 'IALB') && value) metadata.album = value;
+          else if (infoId === 'ITRK' && value) metadata.trackNumber = value;
+        }
+        infoOffset = valueStart + infoLength + (infoLength % 2);
+      }
+    }
+    offset = end + (length % 2);
+  }
+  return metadata;
+}
+
 function decodeId3v1(bytes: Uint8Array): EmbeddedAudioMetadata {
   if (bytes.length < 128) return {};
   const start = bytes.length - 128;
@@ -115,7 +232,15 @@ export async function readEmbeddedAudioMetadata(file: Blob): Promise<EmbeddedAud
     }
   }
 
-  if (!metadata.title || !metadata.artist || !metadata.album) {
+  if (!metadata.title || !metadata.artist || !metadata.album || !metadata.trackNumber) {
+    const containerBytes = new Uint8Array(await file.slice(0, Math.min(file.size, 16 * 1024 * 1024)).arrayBuffer());
+    const containerMetadata = parseFlacMetadata(containerBytes);
+    const oggMetadata = Object.keys(containerMetadata).length ? {} : parseOggMetadata(containerBytes);
+    const wavMetadata = Object.keys(containerMetadata).length || Object.keys(oggMetadata).length ? {} : parseWavInfo(containerBytes);
+    metadata = { ...containerMetadata, ...oggMetadata, ...wavMetadata, ...metadata };
+  }
+
+  if (!metadata.title || !metadata.artist || !metadata.album || !metadata.trackNumber) {
     const tail = new Uint8Array(await file.slice(Math.max(0, file.size - 128)).arrayBuffer());
     const legacy = decodeId3v1(tail);
     metadata = {
