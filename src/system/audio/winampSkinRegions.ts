@@ -9,6 +9,7 @@ export type WinampSkinRegions = Partial<Record<WinampSkinRegionSection, WinampSk
 
 const REGION_WIDTH = 275;
 const REGION_HEIGHT = 116;
+const WINDOW_SHADE_HEIGHT = 14;
 const MAX_POLYGONS = 32;
 const MAX_POINTS_PER_POLYGON = 256;
 
@@ -65,7 +66,7 @@ export function parseWinampSkinRegions(source: string): WinampSkinRegions {
       for (let point = 0; point < count; point += 1) {
         const x = coordinates[cursor++];
         const y = coordinates[cursor++];
-        if (x < 0 || x > REGION_WIDTH || y < 0 || y > REGION_HEIGHT) {
+        if (x < 0 || x > REGION_WIDTH || y < 0 || y > sectionHeight) {
           valid = false;
           break;
         }
