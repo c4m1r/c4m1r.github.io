@@ -66,10 +66,17 @@ async function convertMilkdropShader(
   converterOverride?: MilkdropShaderConverter,
 ): Promise<string> {
   if (converterOverride) return converterOverride(source, stage);
-  const [{ convertHLSLShader }, { prepareShader, processUnOptimizedShader }] = await Promise.all([
+  const [hlslModule, presetUtilsModule] = await Promise.all([
     import('hlslparser-js'),
     import('milkdrop-preset-utils'),
   ]);
+  const hlslParser = hlslModule.default ?? hlslModule;
+  const presetUtils = presetUtilsModule.default ?? presetUtilsModule;
+  const convertHLSLShader = hlslParser.convertHLSLShader;
+  const { prepareShader, processUnOptimizedShader } = presetUtils;
+  if (typeof convertHLSLShader !== 'function' || typeof prepareShader !== 'function' || typeof processUnOptimizedShader !== 'function') {
+    throw new Error('MilkDrop HLSL conversion modules expose an incompatible API');
+  }
   const entryName = 'milkdrop_shader_entry';
   const prepared = prepareShader(source).replace('float4 shader_body (', `float4 ${entryName} (`);
   const translated = await convertHLSLShader(prepared, entryName, 'fs');
