@@ -131,6 +131,10 @@ export function convertMilkPreset(text: string, basePreset: MilkPresetObject): M
   // Keep only the Butterchurn preset structure. Reusing a real preset as the
   // template would leak its visual parameters and equations into the import.
   preset.baseVals = {};
+  delete preset.warp;
+  delete preset.comp;
+  delete preset.warp_hlsl;
+  delete preset.comp_hlsl;
   preset.shapes.forEach((shape) => { shape.baseVals = {}; });
   preset.waves.forEach((wave) => { wave.baseVals = {}; });
 
