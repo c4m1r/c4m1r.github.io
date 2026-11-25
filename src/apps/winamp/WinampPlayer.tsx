@@ -444,9 +444,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   const exportHtmlPlaylist = () => {
     const tracks = winampController.getPlaylist();
-    const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
+    const htmlEntities: Record<string, string> = {
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-    })[character] ?? character);
+    };
+    const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => htmlEntities[character] ?? character);
     const rows: string[] = [];
     let skippedEntries = 0;
     tracks.forEach((track, index) => {
