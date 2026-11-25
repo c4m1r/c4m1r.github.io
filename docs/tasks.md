@@ -742,6 +742,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Isolate the 60 FPS visualizer render state in a shared external frame store; only the two visualizer surfaces subscribe.
 - [x] Pause the shared visualizer RAF loop while the document is backgrounded; resume one loop on visibility return and keep one controller/visibility subscription across both visualizer surfaces.
 - [x] Scope fourth-window SVG gradient IDs to the mounted visualizer instance to prevent cross-instance resource collisions.
+- [x] Treat closing the fourth Video / Visualization module as a full unload: detach and reset the media element, revoke active and pending local video object URLs, clear the local queue and filename, stop auto-cycle, and unmount the visualizer subtree; reopening starts idle without retaining media resources.
 - [ ] Integrate genuine MilkDrop via Butterchurn as an optional WebGL2 mode; keep all existing custom AVS/MilkDrop-inspired and WMP modes.
 - [ ] Browser acceptance: import real-world `.wsz` variants (including incomplete archives), metadata encodings, Playlist exports, 60 FPS high-DPI performance profiling, reduced motion and all playback/window regressions.
 - Audit and parity notes: `docs/winamp-vs-webamp-audit.md`.
