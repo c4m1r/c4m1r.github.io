@@ -283,5 +283,5 @@ ZIP writer создаёт UTF-8 STORE entries и CRC32 без дополните
 
 - Playlist MISC now exposes Reverse playlist and Crop to selection. The shared controller preserves the active track by stable ID when reversing and switches safely to the first retained entry when cropping removes the active track.
 - LIST OPT now includes an optional compact live mini visualizer, disabled by default. It consumes the existing external analyser frame store rather than adding a second audio graph or forcing parent-level 60 FPS renders.
-- Genuine MilkDrop (Butterchurn) now accepts local Butterchurn preset JSON files through LOAD PRESET. Imported presets are available immediately and participate in the existing PSET cycling. Raw legacy .milk text is not parsed by this importer.
+- Genuine MilkDrop (Butterchurn) now accepts local Butterchurn preset JSON files through LOAD PRESET. Imported presets are available immediately through NEXT PRESET and participate in the existing PSET cycling. Raw legacy .milk text is not parsed by this importer.
 - These are source-level implementations. Browser interaction, layout, real preset compatibility and audio lifecycle acceptance remain deferred; no manual/browser pass is claimed.
