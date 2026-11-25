@@ -2435,9 +2435,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           onPointerDown={(event) => event.stopPropagation()}
         >
           <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}>−5s</button>
-          <button type="button" title="Предыдущий трек" aria-label="Предыдущий трек" onClick={() => { previousFullscreenItem(); revealFullscreenControls(); }}>|◀</button>
+          <button type="button" title={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} aria-label={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} onClick={() => { previousFullscreenItem(); revealFullscreenControls(); }}>|◀</button>
           <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}>{videoMode === 'video' ? (videoIsPlaying ? 'Ⅱ' : '▶') : (isPlaying ? 'Ⅱ' : '▶')}</button>
-          <button type="button" title="Следующий трек" aria-label="Следующий трек" onClick={() => { nextFullscreenItem(); revealFullscreenControls(); }}>▶|</button>
+          <button type="button" title={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} aria-label={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} onClick={() => { nextFullscreenItem(); revealFullscreenControls(); }}>▶|</button>
           <button type="button" title="Вперёд на 5 секунд" aria-label="Вперёд на 5 секунд" onClick={() => { seekFullscreenMedia(5); revealFullscreenControls(); }}>+5s</button>
           <button type="button" title="Переключить режим" aria-label="Переключить режим" onClick={() => { cycleFullscreenMode(); revealFullscreenControls(); }}>MODE</button>
           <button type="button" title="Выйти из полноэкранного режима" aria-label="Выйти из полноэкранного режима" onClick={exitVideoFullscreen}>✕</button>
