@@ -14,7 +14,7 @@
 
 При этом **Webamp пока сильнее в точности Winamp 2.x и совместимости со скинами/визуализатором**. Главные отставания нашей версии:
 
-1. Частичная реализация формата .wsz: основные Playlist/visualizer metadata уже подключены; импорт теперь пропускает отсутствующие необязательные sprites, но `region.txt`, полный skin atlas и некоторые palette details ещё требуют реализации.
+1. Частичная реализация формата .wsz: необязательные sprites теперь безопасно пропускаются, `pledit.txt`, `viscolor.txt` и четыре `region.txt` sections подключены. До полного Webamp parity ещё не хватает части sprite/cursor mappings и corpus/browser compatibility tests.
 2. Нет настоящего MilkDrop/Butterchurn и совместимости с MilkDrop preset-файлами.
 3. Локальные MP3 читают ID3v2.2/v2.3/v2.4 и ID3v1; FLAC Vorbis comments, Ogg Vorbis/OpusTags, WAV INFO и MP4/M4A ilst atoms читаются для title/artist/album/track. Расширенные поля и редкие нестандартные варианты контейнеров ещё не поддержаны.
 4. M3U поддерживает только абсолютные HTTP(S)-URL; относительные и локальные пути пропускаются, поэтому экспорт локальной библиотеки не является переносимым плейлистом.
