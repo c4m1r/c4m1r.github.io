@@ -141,7 +141,7 @@ function parseWavInfo(bytes: Uint8Array): EmbeddedAudioMetadata {
         const valueStart = infoOffset + 8;
         const valueEnd = Math.min(end, valueStart + infoLength);
         if (valueEnd > valueStart) {
-          const value = new TextDecoder('windows-1252').decode(bytes.subarray(valueStart, valueEnd)).replace(/\0/g, '').trim();
+          const value = new TextDecoder('windows-1252').decode(bytes.subarray(valueStart, valueEnd)).replaceAll(String.fromCharCode(0), '').trim();
           if (infoId === 'INAM' && value) metadata.title = value;
           else if (infoId === 'IART' && value) metadata.artist = value;
           else if ((infoId === 'IPRD' || infoId === 'IALB') && value) metadata.album = value;
