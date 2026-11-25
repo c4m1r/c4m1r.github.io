@@ -1988,7 +1988,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection(playlist.map((_, index) => index))}>SEL</button>
                   <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--pl" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
                     <summary className="wa-btn-pl">MISC</summary>
-                    <div className="wa-classic-menu__panel wa-classic-menu__panel--pl">
+                    <div className="wa-classic-menu__panel wa-classic-menu__panel--pl" style={activeSkin ? { backgroundColor: activeSkin.playlistStyle.mbbg, color: activeSkin.playlistStyle.mbfg } : undefined}>
                       <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection([])}>Clear selection</button>
                       <button type="button" className="wa-btn-pl" onClick={() => setPlayerSettingsOpen(true)}>Player settings…</button>
                       <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()}>Import M3U</button>
@@ -2000,7 +2000,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </details>
                   <details name="wa-classic-menu" className="wa-classic-menu wa-classic-menu--list" onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.open = false; }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
                     <summary className="wa-btn-pl wa-btn-pl--opts">LIST OPT</summary>
-                    <div className="wa-classic-menu__panel wa-classic-menu__panel--list">
+                    <div className="wa-classic-menu__panel wa-classic-menu__panel--list" style={activeSkin ? { backgroundColor: activeSkin.playlistStyle.mbbg, color: activeSkin.playlistStyle.mbfg } : undefined}>
                       <div className="wa-classic-menu__info">PLAYLIST OPTIONS</div>
                       <button type="button" className="wa-btn-pl" aria-pressed={showPlaylistDurations} onClick={() => setShowPlaylistDurations((value) => !value)}>Track durations: {showPlaylistDurations ? 'ON' : 'OFF'}</button>
                       <button type="button" className="wa-btn-pl" aria-pressed={followPlaylistPlayback} onClick={() => setFollowPlaylistPlayback((value) => !value)}>Playback follow: {followPlaylistPlayback ? 'ON' : 'OFF'}</button>
