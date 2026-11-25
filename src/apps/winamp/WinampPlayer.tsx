@@ -2334,8 +2334,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </details>
                 </div>
                 <div className="wa-pl__status">
-                  <span>{formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}</span>
-                  {showPlaylistMiniVisualizer && <WinampPlaylistMiniVisualizer />}
+                  {showPlaylistMiniVisualizer
+                    ? <WinampPlaylistMiniVisualizer />
+                    : <span>{formatTime(currentTime)} / {formatTime(totalPlaylistSeconds)}</span>}
                   {(m3uStatus || localLibraryStatus || skinStatus) && <span className="wa-pl__status-text" role="status" aria-live="polite" title={m3uStatus || localLibraryStatus || skinStatus}>•</span>}
                 </div>
               </div>
