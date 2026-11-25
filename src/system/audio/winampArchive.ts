@@ -81,7 +81,7 @@ export async function createWinampArchive(
   let assetIndex = 0;
   let payloadBytes = 0;
   for (const track of playlist) {
-    const record = byId.get(track.id);
+    const record = byId.get(track.localAssetId ?? track.id);
     if (record) {
       let assetPath = used.get(record.id);
       if (!assetPath) {
