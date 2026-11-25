@@ -34,6 +34,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     let visualizer: ButterchurnVisualizer | null = null;
     let connectedNode: AudioNode | null = null;
     let webglContext: WebGL2RenderingContext | null = null;
+    let webglAttempted = false;
 
     const resize = () => {
       if (!visualizer || !canvas) return;
@@ -70,11 +71,13 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       } else if (visualizer && connectedNode) {
         try { visualizer.disconnectAudio(connectedNode); } catch { /* best-effort teardown */ }
       }
-      try {
-        const context = webglContext ?? canvas.getContext('webgl2');
-        context?.getExtension('WEBGL_lose_context')?.loseContext();
-      } catch (error) {
-        console.warn('Butterchurn WebGL context release failed:', error);
+      if (webglContext || webglAttempted) {
+        try {
+          const context = webglContext ?? canvas.getContext('webgl2');
+          context?.getExtension('WEBGL_lose_context')?.loseContext();
+        } catch (error) {
+          console.warn('Butterchurn WebGL context release failed:', error);
+        }
       }
       webglContext = null;
       visualizer = null;
@@ -120,6 +123,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         const width = Math.max(1, Math.round(bounds.width));
         const height = Math.max(1, Math.round(bounds.height));
 
+        webglAttempted = true;
         visualizer = engine.createVisualizer(ctx, canvas, {
           width,
           height,
