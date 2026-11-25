@@ -2476,7 +2476,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           }}>RND</button>}
           {videoMode === 'visualizer' && <button type="button" className={`wa-video__auto${visualizerAutoCycle ? ' is-active' : ''}`} aria-pressed={visualizerAutoCycle} title={visualizerAutoCycle ? 'Turn automatic mode cycling off' : 'Automatically change mode every 15 seconds'} onClick={() => setVisualizerAutoCycle((value) => !value)}>AUTO</button>}
           {videoMode === 'video' && videoQueue.length > 0 && <>
-            <button type="button" className="wa-video__queue-step" title="Previous video (restart current at queue start)" aria-label="Previous video" disabled={videoQueueIndex === 0} onClick={() => goToVideoQueueIndex(videoQueueIndex - 1)}>◀|</button>
+            <button type="button" className="wa-video__queue-step" title={videoQueueIndex === 0 ? 'Restart current video' : 'Previous video'} aria-label={videoQueueIndex === 0 ? 'Restart current video' : 'Previous video'} onClick={() => videoQueueIndex > 0 ? goToVideoQueueIndex(videoQueueIndex - 1) : (videoElementRef.current && (videoElementRef.current.currentTime = 0))}>◀|</button>
             <button type="button" className="wa-video__queue-step" title="Next video" aria-label="Next video" disabled={videoQueueIndex >= videoQueue.length - 1} onClick={() => goToVideoQueueIndex(videoQueueIndex + 1)}>|▶</button>
           </>}
           {videoMode === 'video' && videoQueue.length > 1 && <select
