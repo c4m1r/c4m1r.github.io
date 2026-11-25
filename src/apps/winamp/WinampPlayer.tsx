@@ -201,7 +201,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const playlistInputRef = useRef<HTMLInputElement | null>(null);
   const m3uInputRef = useRef<HTMLInputElement | null>(null);
   const skinInputRef = useRef<HTMLInputElement | null>(null);
-  const [skinVisuals, setSkinVisuals] = useState<{ name: string; mainUrl: string; titlebarUrl: string; sprites: Record<string, string> } | null>(null);
+  const [skinVisuals, setSkinVisuals] = useState<{
+    name: string;
+    mainUrl: string;
+    titlebarUrl: string;
+    sprites: Record<string, string>;
+    playlistStyle: { normal: string; current: string; normalbg: string; selectedbg: string; mbfg: string; mbbg: string; font: string };
+    visualizerColors: string[];
+  } | null>(null);
   const [skinStatus, setSkinStatus] = useState('');
   const [skinAppearance, setSkinAppearance] = useState<'dev-alpha' | 'webamp-classic' | 'wsz'>(() => {
     try {
@@ -225,7 +232,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     const spriteBlobs = await extractWinampSkinSprites(archive, ['equalizer', 'equalizerTitlebarActive', 'equalizerTitlebarInactive', 'equalizerPreset', 'equalizerPresetPressed', 'equalizerOff', 'equalizerOffPressed', 'equalizerOn', 'equalizerAuto', 'equalizerAutoPressed', 'equalizerAutoOn', 'equalizerClose', 'equalizerClosePressed', 'equalizerToggle', 'equalizerVisualizerBackground', 'equalizerSliderThumb', 'equalizerSliderThumbPressed', 'equalizerPreampBand', 'equalizerBand0', 'equalizerBand1', 'equalizerBand2', 'equalizerBand3', 'equalizerBand4', 'equalizerBand5', 'equalizerBand6', 'equalizerBand7', 'equalizerBand8', 'equalizerBand9', 'main', 'titlebarActive', 'previousPressed', 'play', 'playPressed', 'pause', 'pausePressed', 'stop', 'stopPressed', 'next', 'nextPressed', 'eject', 'ejectPressed', 'positionTrack', 'positionThumb', 'positionThumbPressed', 'volumeTrack', 'volumeThumb', 'volumeThumbPressed', 'balanceTrack', 'balanceThumb', 'balanceThumbPressed', 'playIndicator', 'pauseIndicator', 'stopIndicator', 'repeat', 'repeatPressed', 'repeatActive', 'shuffle', 'shufflePressed', 'shuffleActive', 'equalizerToggleOff', 'equalizerToggleOn', 'playlistToggleOff', 'playlistToggleOn']);
     const numericSpriteBlobs = await extractWinampSkinSprites(archive, ['digit0', 'digit1', 'digit2', 'digit3', 'digit4', 'digit5', 'digit6', 'digit7', 'digit8', 'digit9', 'timeMinus']).catch(() => new Map());
     const sprites = Object.fromEntries([...spriteBlobs, ...numericSpriteBlobs].map(([id, blob]) => [id, URL.createObjectURL(blob)]));
-    const nextVisuals = { name: fileName, mainUrl: sprites.main, titlebarUrl: sprites.titlebarActive, sprites };
+    const nextVisuals = {
+      name: fileName,
+      mainUrl: sprites.main,
+      titlebarUrl: sprites.titlebarActive,
+      sprites,
+      playlistStyle: archive.playlistStyle,
+      visualizerColors: archive.visualizerColors,
+    };
     setSkinVisuals(nextVisuals);
     if (persist) {
       try {
@@ -1305,7 +1319,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               {/* Click the LED analyzer to cycle its classic display modes. */}
               <button
                 type="button"
-                className={`wa-visualizer wa-visualizer--mode-${mainVisualizerMode}`}
+                className={`wa-visualizer wa-visualizer--mode-${mainVisualizerMode}${activeSkin ? ' wa-visualizer--skin' : ''}`}
+                style={activeSkin ? ({
+                  '--wa-skin-viz-low': activeSkin.visualizerColors[2] ?? '#ef3110',
+                  '--wa-skin-viz-mid': activeSkin.visualizerColors[10] ?? '#bdde29',
+                  '--wa-skin-viz-high': activeSkin.visualizerColors[17] ?? '#189408',
+                  '--wa-skin-viz-peak': activeSkin.visualizerColors[18] ?? '#ffffff',
+                } as CSSProperties) : undefined}
                 onClick={() => setMainVisualizerMode((mode) => ((mode + 1) % 3) as 0 | 1 | 2)}
                 aria-label={`Visualizer mode: ${mainVisualizerModeNames[mainVisualizerMode]}. Click to switch mode`}
                 title={`${mainVisualizerModeNames[mainVisualizerMode]} — click to change`}
@@ -1331,15 +1351,14 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                   </div>
                 </div>
                 <div className="wa-tech-info">
-                  <div className="wa-bitrate">
-                    <span className="wa-digit-val">128</span> <span className="wa-unit">kbps</span>
+                  <div className="wa-bitrate" title="Bitrate metadata is not available for this track">
+                    <span className="wa-digit-val">—</span> <span className="wa-unit">kbps</span>
                   </div>
-                  <div className="wa-samplerate">
-                    <span className="wa-digit-val">44</span> <span className="wa-unit">kHz</span>
+                  <div className="wa-samplerate" title="Sample-rate metadata is not available for this track">
+                    <span className="wa-digit-val">—</span> <span className="wa-unit">kHz</span>
                   </div>
-                  <div className="wa-audio-channels">
-                    <span className="wa-chan">mono</span>
-                    <span className="wa-chan is-active">stereo</span>
+                  <div className="wa-audio-channels" title="Channel metadata is not available for this track">
+                    <span className="wa-chan">—</span>
                   </div>
                 </div>
               </div>
@@ -1764,6 +1783,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               <div
                 className="wa-pl__list"
                 role="listbox"
+                style={activeSkin ? {
+                  backgroundColor: activeSkin.playlistStyle.normalbg,
+                  color: activeSkin.playlistStyle.normal,
+                  fontFamily: activeSkin.playlistStyle.font,
+                } : undefined}
                 onDragOver={(event) => {
                   if (event.dataTransfer.types.includes('Files')) {
                     event.preventDefault();
@@ -1785,6 +1809,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                       role="option"
                       aria-selected={isCurrent}
                       className={`wa-pl__item ${isCurrent ? 'is-current is-selected' : ''} ${playlistSelection.includes(index) ? 'is-selected' : ''}`}
+                      style={activeSkin ? {
+                        color: isCurrent ? activeSkin.playlistStyle.current : activeSkin.playlistStyle.normal,
+                        backgroundColor: playlistSelection.includes(index) || isCurrent
+                          ? activeSkin.playlistStyle.selectedbg
+                          : activeSkin.playlistStyle.normalbg,
+                        fontFamily: activeSkin.playlistStyle.font,
+                      } : undefined}
                       draggable
                       onDragStart={() => setDraggedPlaylistIndex(index)}
                       onDragOver={(event) => event.preventDefault()}
