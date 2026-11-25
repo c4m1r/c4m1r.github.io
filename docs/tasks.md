@@ -711,7 +711,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add optional AUTO mode cycling every 15 seconds (off by default; pauses when the fourth window is hidden/shaded, Video is active or the tab is backgrounded).
 - [ ] Verify hidden-window lifecycle / performance in browser.
 - [x] Preserve local video stage, object-URL cleanup and existing window geometry in the implementation pass.
-- [ ] Browser acceptance: visual distinction, mobile fit, drag/attach, playback/EQ/playlist and video regressions.
+- [ ] Browser acceptance: visual distinction, mobile fit, drag/attach, playback/EQ/playlist and video regressions. **Deferred by owner** to the later browser-QA pass.
 - Design contract and progress: `docs/winamp-visualization-modes.md`. First-pass modes, grouped picker, named presets and reduced-motion CSS are committed; browser acceptance is pending.
 ## Windows Vista skin — started 2026-11-25
 - Before: the Vista profile was a draft that rendered the generic webos hybrid (XP-blue taskbar, Lucide icons, no wallpaper, unstyled login) because `os-vista` had no stylesheet set and `vista` shared the Windows 7 asset object.
@@ -781,7 +781,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Handle WebGL2 unavailable, lazy-import failure, resize, mode switch, fullscreen exit and component unmount without breaking playback or existing modes. The stable renderer's WebGL2 context is explicitly released with `WEBGL_lose_context`.
 - [x] Pause the Butterchurn render RAF while the browser tab is hidden; resume one loop on visibility return and stop on WebGL context loss.
 - [x] Keep preset data local; support preset cycling and transition; avoid eagerly loading the full preset bundle on initial Winamp render. PSET cycles through the locally bundled preset list.
-- [ ] Profile GPU/CPU and memory at 60 FPS on high-DPI displays. If Butterchurn cannot sustain the target, throttle only that renderer without changing the 60 FPS publication rate of existing visualizers.
+- [ ] Profile GPU/CPU and memory at 60 FPS on high-DPI displays. If Butterchurn cannot sustain the target, throttle only that renderer without changing the 60 FPS publication rate of existing visualizers. **Deferred by owner:** move browser profiling to the later QA pass; do not treat this as an implementation blocker.
 ### Winamp — .wampack portable local-library archive (2026-11-25)
 - [x] Add a versioned ZIP-based .wampack manifest with ordered playlist metadata and archive-relative audio asset references.
 - [x] Export local audio bytes from IndexedDB records, not ephemeral blob URLs; repeated references to the same local track reuse one archive asset.
@@ -790,9 +790,9 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - [x] Add bounded archive reader: entry-count/expanded-size limits, manifest limit, path traversal rejection, duplicate-path rejection, encrypted/unsupported compression rejection, CRC validation and missing/unreferenced asset checks.
 - [x] Validate the entire archive before IndexedDB writes; insert imported audio assets in one IndexedDB read-write transaction.
 - [x] Recreate object URLs from restored Blobs and expose Backup / Restore actions in the existing Playlist MISC menu.
-- [ ] Browser round-trip QA with real audio files, large archives, duplicate playlist references and malformed ZIP fixtures (not yet run).
+- [ ] Browser round-trip QA with real audio files, large archives, duplicate playlist references and malformed ZIP fixtures. **Deferred by owner** to the later browser-QA pass.
 - [x] Automated regression tests cover CRC, central-directory parsing, manifest validation, duplicate paths, unreferenced payloads, unsupported compression, filename/extension disagreement and truncation (27 Winamp tests passed in CI).
-- [ ] Add a browser/fake-IDB test for IndexedDB transaction rollback.
+- [ ] Add a browser/fake-IDB test for IndexedDB transaction rollback. **Deferred by owner** to the later test pass.
 - [ ] Consider optional DEFLATE support only if needed; current .wampack writer emits STORE entries and the importer intentionally accepts STORE only.
 
 Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winampLocalLibrary.ts, src/apps/winamp/WinampPlayer.tsx.
