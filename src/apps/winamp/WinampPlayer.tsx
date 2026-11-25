@@ -2298,6 +2298,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                     <summary className="wa-btn-pl">MISC</summary>
                     <div className="wa-classic-menu__panel wa-classic-menu__panel--pl" style={activeSkin ? { backgroundColor: activeSkin.playlistStyle.mbbg, color: activeSkin.playlistStyle.mbfg } : undefined}>
                       <button type="button" className="wa-btn-pl" onClick={() => setPlaylistSelection([])}>Clear selection</button>
+                      <button type="button" className="wa-btn-pl" disabled={playlist.length < 2} onClick={() => { winampController.reversePlaylist(); setPlaylistSelection([]); }}>Reverse playlist</button>
+                      <button type="button" className="wa-btn-pl" disabled={!playlistSelection.length || playlistSelection.length >= playlist.length} onClick={() => { const selectedCount = playlistSelection.length; winampController.cropPlaylist(playlistSelection); setPlaylistSelection(Array.from({ length: selectedCount }, (_, index) => index)); }}>Crop to selection</button>
                       <button type="button" className="wa-btn-pl" onClick={() => setPlayerSettingsOpen(true)}>Player settings…</button>
                       <button type="button" className="wa-btn-pl" onClick={() => m3uInputRef.current?.click()}>Import M3U</button>
                       <button type="button" className="wa-btn-pl" onClick={exportM3uFile}>Export M3U</button>
