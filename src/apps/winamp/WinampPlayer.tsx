@@ -8,6 +8,7 @@ import { extractWinampSkinSprites } from '../../system/audio/winampSkinAtlas';
 import { parseWinampSkinArchive } from '../../system/audio/winampSkin';
 import { parseWinampSkinRegions, type WinampSkinRegions, type WinampSkinRegionSection } from '../../system/audio/winampSkinRegions';
 import { readEmbeddedAudioMetadata } from '../../system/audio/winampMetadata';
+import { readEmbeddedAudioArtwork } from '../../system/audio/winampArtwork';
 import { readWinampMediaOrder, writeWinampMediaOrder, moveWinampMediaOrder, moveWinampMediaKey } from '../../system/audio/winampMediaQueue';
 import { createWinampArchive, readWinampArchive } from '../../system/audio/winampArchive';
 import { clearActiveWinampSkin, getActiveWinampSkin, saveActiveWinampSkin } from '../../system/audio/winampSkinLibrary';
@@ -868,7 +869,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   type PlayerWindowKey = 'main' | 'equalizer' | 'playlist' | 'video';
   const [activeWindow, setActiveWindow] = useState<PlayerWindowKey>('main');
   const [detachedWindows, setDetachedWindows] = useState<PlayerWindowKey[]>([]);
-  const [videoMode, setVideoMode] = useState<'visualizer' | 'video'>('visualizer');
+  const [videoMode, setVideoMode] = useState<'visualizer' | 'video'>('video');
   const [showVideo, setShowVideo] = useState(true);
   const [videoShade, setVideoShade] = useState(false);
   useEffect(() => {
@@ -937,7 +938,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     if (visible) {
       // Reopen in a lightweight idle state; media and visualizer resources are
       // initialized only when the user selects Video or a visualization mode.
-      setVideoMode('visualizer');
+      setVideoMode('video');
       setFourthVisualizerPresetIndex(0);
     }
     setShowVideo(visible);
@@ -1211,6 +1212,33 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     document.querySelector<HTMLElement>('.wa-playlist .wa-pl__item.is-current')?.scrollIntoView({ block: 'nearest' });
   }, [trackIndex, followPlaylistPlayback, showPl]);
   const albumArt = useMemo(() => generateAlbumArt(track), [track]);
+  const [cover, setCover] = useState<{ source: string; url: string } | null>(null);
+  useEffect(() => {
+    if (!showVideo || videoShade || videoMode !== 'video' || videoUrl || !track.src) return;
+    const abort = new AbortController();
+    let objectUrl = '';
+    const load = async () => {
+      try {
+        // Request only the metadata region. Local blob URLs and same-origin
+        // music are supported; external streams without CORS fail quietly.
+        const response = await fetch(track.src, { signal: abort.signal, headers: { Range: 'bytes=0-16777215' } });
+        if (!response.ok) return;
+        const audio = await response.blob();
+        if (abort.signal.aborted) return;
+        const artwork = await readEmbeddedAudioArtwork(audio);
+        if (!artwork || abort.signal.aborted) return;
+        objectUrl = URL.createObjectURL(artwork);
+        setCover({ source: track.src, url: objectUrl });
+      } catch { /* Missing artwork is not a playback error. */ }
+    };
+    void load();
+    return () => {
+      abort.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      setCover(null);
+    };
+  }, [showVideo, videoShade, videoMode, videoUrl, track.src]);
+  const coverUrl = cover?.source === track.src ? cover.url : '';
 
   // Total playlist duration calculation
   const totalPlaylistSeconds = useMemo(() => {
@@ -1233,7 +1261,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       videoElementRef.current?.pause();
       setVideoIsPlaying(false);
       setVideoAutoplayPending(false);
-      setVideoMode('visualizer');
+      setVideoUrl('');
+      setVideoFileName('');
     }
     initWebAudio();
     await winampController.play();
@@ -1405,7 +1434,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   }, [videoMode, pause, play]);
 
   const switchVideoMode = useCallback((mode: 'video' | 'visualizer') => {
-    if (mode === 'video' && videoMode !== 'video') winampController.pause();
+    if (mode === 'video' && videoMode !== 'video') {
+      setVideoUrl('');
+      setVideoFileName('');
+    }
     if (mode === 'visualizer' && videoMode === 'video') {
       videoElementRef.current?.pause();
       setVideoIsPlaying(false);
@@ -1437,7 +1469,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       videoElementRef.current?.pause();
       setVideoIsPlaying(false);
       setVideoAutoplayPending(false);
-      setVideoMode('visualizer');
+      setVideoUrl('');
+      setVideoFileName('');
       winampController.setTrack(item.audioIndex);
       initWebAudio();
       void winampController.play();
@@ -2697,7 +2730,15 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               }}
               onPlay={() => { winampController.pause(); setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }}
               onPause={() => { setVideoIsPlaying(false); if (isVideoFullscreen) revealFullscreenControls(); }}
-            /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
+            /> : <div className="wa-video__album-art">
+              {coverUrl ? <div className="wa-video__cover-stack" key={coverUrl}>
+                <img className="wa-video__cover" src={coverUrl} alt={track.album || track.title} onError={() => setCover(null)} />
+                <img className="wa-video__cover-reflection" src={coverUrl} alt="" aria-hidden="true" />
+              </div> : <div className="wa-video__cover-placeholder" style={{ background: albumArt.bg }} aria-label="No embedded album artwork">
+                <span style={{ color: albumArt.accent }}>♫</span>
+              </div>}
+              <div className="wa-video__album-caption"><strong>{track.title}</strong><span>{track.artist}</span></div>
+            </div>}
           </div>
         )}
         {!isVideoFullscreen && <div
