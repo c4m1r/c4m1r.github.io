@@ -397,3 +397,67 @@
 }
 .os-vista .login-screen__user-avatar { color: #cfe8f4; text-shadow: 0 1px 3px rgba(0, 40, 70, 0.8); display: flex; align-items: center; justify-content: center; }
 .os-vista .login-screen__shutdown-btn svg { width: 18px; height: 18px; }
+
+/* ---- Vista Welcome screen: logon backdrop, user tile and the spinning ring ---- */
+.vista-welcome {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('../../../themes/vista/assets/wallpaper-aero.jpg') center / cover no-repeat, #1b6c8f;
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  animation: vista-welcome-in 0.5s ease-out;
+}
+.vista-welcome::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(10, 60, 90, 0.05), rgba(5, 30, 50, 0.55) 100%);
+}
+.vista-welcome__center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.vista-welcome__avatar {
+  width: 128px;
+  height: 128px;
+  padding: 15px;
+  display: grid;
+  place-items: center;
+  background: url('../../../themes/vista/assets/user-frame.png') center / 100% 100% no-repeat;
+  font-size: 54px;
+  color: #cfe8f4;
+  text-shadow: 0 1px 4px rgba(0, 40, 70, 0.8);
+}
+.vista-welcome__avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+.vista-welcome__name {
+  font-size: 22px;
+  font-weight: 300;
+  text-shadow: 0 1px 6px rgba(0, 25, 50, 0.85);
+}
+.vista-welcome__message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  font-size: 26px;
+  font-weight: 300;
+  text-shadow: 0 1px 8px rgba(0, 25, 50, 0.85);
+}
+.vista-welcome__ring {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.28);
+  border-top-color: #fff;
+  animation: vista-welcome-spin 0.9s linear infinite;
+}
+@keyframes vista-welcome-spin { to { transform: rotate(360deg); } }
+@keyframes vista-welcome-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .vista-welcome__ring { animation-duration: 3s; } }

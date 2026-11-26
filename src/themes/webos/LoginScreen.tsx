@@ -48,7 +48,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
       setErrorMessage('');
       setIsLoggingIn(true);
       setSessionAccount('C4m1r');
-      setTimeout(onLogin, 1500);
+      setTimeout(onLogin, theme === 'vista' ? 0 : 1500);
     } else {
       triggerError();
     }
@@ -321,7 +321,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
     );
   }
 
-  if (isLoggingIn) {
+  // Vista goes straight to its own Welcome screen instead of the generic blue loading page.
+  if (isLoggingIn && theme !== 'vista') {
     return (
       <div className={`min-h-screen w-full bg-[#5a7edc] flex items-center justify-center overflow-hidden relative os-shell os-${osClassName}`}>
         <div className="text-center text-white flex flex-col items-center gap-6">
@@ -349,7 +350,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               onClick={() => {
                 setSessionAccount('User');
                 setIsLoggingIn(true);
-                setTimeout(onLogin, 1500);
+                setTimeout(onLogin, theme === 'vista' ? 0 : 1500);
               }}
               className="flex flex-col items-center gap-2 cursor-pointer focus:outline-none"
             >

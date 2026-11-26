@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { BootScreen } from './BootScreen';
 import { LoginScreen } from './LoginScreen';
 import { WelcomeScreen } from './WelcomeScreen';
+import { VistaWelcomeScreen } from '../vista/WelcomeScreen';
 import { DesktopShell } from '../../shells/desktop/DesktopShell';
 import { SystemTransitionScreen } from './SystemTransitionScreen';
 import { useApp } from '../../contexts/useApp';
@@ -66,13 +67,14 @@ export function WebOS() {
   if (state === 'login') {
     return (
       <LoginScreen
-        // Only the webos theme keeps the XP-style welcome; the other skins go straight to a preloaded desktop.
-        onLogin={() => setState(theme === 'webos' ? 'welcome' : 'loading')}
+        // The webos theme keeps the XP-style welcome and Vista has its own; the other skins go straight to a preloaded desktop.
+        onLogin={() => setState(theme === 'webos' || theme === 'vista' ? 'welcome' : 'loading')}
       />
     );
   }
 
   if (state === 'welcome') {
+    if (theme === 'vista') return <VistaWelcomeScreen onComplete={() => setState('desktop')} />;
     return <WelcomeScreen onComplete={() => setState('desktop')} />;
   }
 
