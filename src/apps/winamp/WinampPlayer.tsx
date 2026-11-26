@@ -969,16 +969,18 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const getClassicWindowPositions = () => {
     const viewportWidth = typeof window === 'undefined' ? 375 : window.innerWidth;
     const viewportHeight = typeof window === 'undefined' ? 800 : window.innerHeight;
-    const videoSize = Math.min(275, Math.max(0, viewportWidth - 8));
+    const videoSize = Math.min(269, Math.max(0, viewportWidth - 8));
     const stackHeight = videoSize + 116 + 104 + 232;
-    const x = Math.max(4, Math.round((viewportWidth - 275) / 2));
-    const stackTop = Math.max(8, Math.round((viewportHeight - stackHeight) / 2));
-    const mainTop = stackTop + videoSize;
+    const x = Math.max(4, Math.round((viewportWidth - 269) / 2));
+    const sideBySide = stackHeight + 38 > viewportHeight && viewportWidth >= 554;
+    const stackTop = Math.max(4, Math.round((viewportHeight - (sideBySide ? 452 : stackHeight) - 30) / 2));
+    const mainTop = stackTop + (sideBySide ? 0 : videoSize);
+    const stackX = sideBySide ? Math.max(4, Math.round((viewportWidth - 538) / 2)) : x;
     return {
-      main: { x, y: mainTop },
-      equalizer: { x, y: mainTop + 116 },
-      playlist: { x, y: mainTop + 220 },
-      video: { x, y: stackTop },
+      main: { x: stackX, y: mainTop },
+      equalizer: { x: stackX, y: mainTop + 116 },
+      playlist: { x: stackX, y: mainTop + 220 },
+      video: { x: stackX + (sideBySide ? 269 : 0), y: stackTop },
     };
   };
   const [windowPositions, setWindowPositions] = useState<Record<PlayerWindowKey, { x: number; y: number }>>(() => (
@@ -997,16 +999,18 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const playlistResizeRef = useRef<{ pointerId: number; pointerX: number; pointerY: number; width: number; height: number } | null>(null);
   const dragRef = useRef<{
     anchorKey: PlayerWindowKey;
+    pointerId: number;
     members: Array<{ key: PlayerWindowKey; originX: number; originY: number; width: number; height: number }>;
     pointerX: number;
     pointerY: number;
   } | null>(null);
   const startWindowDrag = (event: React.PointerEvent, key: PlayerWindowKey) => {
-    if ((event.target as HTMLElement).closest('button')) return;
+    if (event.button !== 0 || !event.isPrimary || (event.target as Element).closest('button, input, select, a, summary')) return;
+    if (key === 'video' && isVideoFullscreen) return;
     event.preventDefault();
     const keys: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : []), ...(showVideo ? ['video' as const] : [])];
     const rects = Object.fromEntries(keys.map((windowKey) => {
-      const node = document.querySelector<HTMLElement>(`.wa-${windowKey}`);
+      const node = event.currentTarget.closest('.wa-shell')?.querySelector<HTMLElement>(`.wa-${windowKey}`);
       const position = windowPositions[windowKey];
       return [windowKey, {
         left: position.x, top: position.y,
@@ -1017,7 +1021,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       }];
     })) as Record<PlayerWindowKey, { left: number; top: number; right: number; bottom: number; width: number; height: number }>;
     const connected = new Set<PlayerWindowKey>([key]);
-    const canJoin = (candidate: PlayerWindowKey) => !detachedWindows.includes(candidate) && !detachedWindows.includes(key);
+    const canJoin = (candidate: PlayerWindowKey) => !event.shiftKey && !detachedWindows.includes(candidate) && !detachedWindows.includes(key) && !(candidate === 'video' && isVideoFullscreen);
     let changed = true;
     while (changed) {
       changed = false;
@@ -1041,6 +1045,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     setActiveWindow(key);
     dragRef.current = {
       anchorKey: key,
+      pointerId: event.pointerId,
       pointerX: event.clientX,
       pointerY: event.clientY,
       members: [...connected].map((member) => ({
@@ -1053,7 +1058,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   useEffect(() => {
     const move = (event: PointerEvent) => {
       const drag = dragRef.current;
-      if (!drag) return;
+      if (!drag || drag.pointerId !== event.pointerId) return;
       const deltaX = event.clientX - drag.pointerX;
       const deltaY = event.clientY - drag.pointerY;
       const minX = Math.max(...drag.members.map((member) => -member.originX));
@@ -1079,9 +1084,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         return next;
       });
     };
-    const stop = () => {
+    const stop = (event: PointerEvent) => {
       const drag = dragRef.current;
-      if (!drag) return;
+      if (!drag || drag.pointerId !== event.pointerId) return;
+      if (event.type === 'pointercancel' || event.shiftKey) { dragRef.current = null; return; }
       const moving = new Set(drag.members.map((member) => member.key));
       if (!detachedWindows.includes(drag.anchorKey)) {
         const anchorNode = document.querySelector<HTMLElement>(`.wa-${drag.anchorKey}`);
@@ -1155,10 +1161,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       if (!resize || event.pointerId !== resize.pointerId) return;
       const left = windowPositions.playlist.x;
       const top = windowPositions.playlist.y;
-      const maxWidth = Math.max(275, Math.min(550, window.innerWidth - left - 8));
+      const maxWidth = Math.max(269, Math.min(550, window.innerWidth - left - 8));
       const maxHeight = Math.max(232, Math.min(464, window.innerHeight - top - 8));
       setPlaylistSize({
-        width: Math.max(275, Math.min(maxWidth, resize.width + event.clientX - resize.pointerX)),
+        width: Math.max(269, Math.min(maxWidth, resize.width + event.clientX - resize.pointerX)),
         height: Math.max(232, Math.min(maxHeight, resize.height + event.clientY - resize.pointerY)),
       });
     };
@@ -1177,7 +1183,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
 
   useEffect(() => {
     const clampSize = () => {
-      const maxWidth = Math.max(275, Math.min(550, window.innerWidth - windowPositions.playlist.x - 8));
+      const maxWidth = Math.max(269, Math.min(550, window.innerWidth - windowPositions.playlist.x - 8));
       const maxHeight = Math.max(232, Math.min(464, window.innerHeight - windowPositions.playlist.y - 8));
       setPlaylistSize((current) => ({
         width: Math.min(current.width, maxWidth),
@@ -1808,6 +1814,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 const nextAppearance = event.currentTarget.value as 'dev-alpha' | 'webamp-classic' | 'wsz';
                 setSkinAppearance(nextAppearance);
                 if (nextAppearance === 'webamp-classic') {
+                  setVideoWidth(null);
+                  setPlaylistSize({ width: 269, height: 232 });
                   setWindowPositions(getClassicWindowPositions());
                 }
               }}>
@@ -1826,6 +1834,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               </select>
             </label>
             <p>Palette applies to the fourth window's built-in visualizations. MilkDrop preset colors remain unchanged.</p>
+            <button type="button" onClick={() => {
+              setVideoWidth(null);
+              setPlaylistSize({ width: 269, height: 232 });
+              setDetachedWindows([]);
+              setWindowPositions(getClassicWindowPositions());
+            }}>Reset window layout</button>
+            <p>Drag a title bar to move connected windows. Hold Shift to move one window independently.</p>
             <p>Appearance only: Dev Alpha, Webamp Classic and imported .wsz skins share the existing player controls and state.</p>
           </div>
         )}
@@ -2724,7 +2739,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             const drag = videoResizeRef.current;
             if (!drag || drag.pointerId !== event.pointerId) return;
             const right = drag.left + drag.width;
-            const minWidth = Math.min(275, drag.width);
+            const minWidth = Math.min(269, drag.width);
             const maxWidth = Math.max(minWidth, Math.min(window.innerWidth - 8, right - 4));
             const width = Math.max(minWidth, Math.min(maxWidth, drag.width + drag.x - event.clientX));
             setVideoWidth(width);
