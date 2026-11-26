@@ -754,7 +754,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
           <button
             onClick={handleBack}
             disabled={historyIndex === 0}
-            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 disabled:opacity-40 text-black border-0 bg-transparent"
+            className="fx-btn-back flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 disabled:opacity-40 text-black border-0 bg-transparent"
           >
             {isClassicWindows ? <ChevronLeft size={16} /> : <img src={backIcon} alt="" className="w-5 h-5 object-contain" />}
             <span>{isRu ? 'Назад' : 'Back'}</span>
@@ -762,7 +762,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
           <button
             onClick={handleForward}
             disabled={historyIndex >= history.length - 1}
-            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 disabled:opacity-40 text-black border-0 bg-transparent"
+            className="fx-btn-forward flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 disabled:opacity-40 text-black border-0 bg-transparent"
           >
             {isClassicWindows ? <ChevronRight size={16} /> : <img src={forwardIcon} alt="" className="w-5 h-5 object-contain" />}
             <span>{isRu ? 'Вперед' : 'Forward'}</span>
@@ -839,6 +839,12 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
 
         {/* Address Bar */}
         <div className="fx-address flex items-center p-1 bg-[#ece9d8] gap-2">
+          {theme === 'vista' && (
+            <div className="vx-nav" aria-label={isRu ? 'Навигация' : 'Navigation'}>
+              <button type="button" className="vx-round" onClick={handleBack} disabled={historyIndex === 0} aria-label={isRu ? 'Назад' : 'Back'}><ChevronLeft size={16} /></button>
+              <button type="button" className="vx-round" onClick={handleForward} disabled={historyIndex >= history.length - 1} aria-label={isRu ? 'Вперёд' : 'Forward'}><ChevronRight size={16} /></button>
+            </div>
+          )}
           <span className="text-gray-600 font-semibold">{isRu ? 'Адрес' : 'Address'}</span>
           <div className="flex-1 bg-white border border-[#7f9db9] flex items-center px-1 h-5 shadow-inner">
             <img src={getAddressIcon()} className="w-4 h-4 mr-1.5 object-contain" alt="" />
@@ -860,6 +866,17 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             <img src={goIcon} alt="" className="w-3.5 h-3.5 object-contain" />
             <span>{isRu ? 'Переход' : 'Go'}</span>
           </button>
+          {theme === 'vista' && (
+            <label className="vx-search">
+              <input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={isRu ? 'Поиск' : 'Search'}
+                aria-label={isRu ? 'Поиск в текущей папке' : 'Search this folder'}
+              />
+              <Search size={13} aria-hidden="true" />
+            </label>
+          )}
         </div>
       </div>
       {searchOpen && (
@@ -1003,7 +1020,23 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
 
         {!isWindowsXp && showSidebar && (
           <aside className="w-52 max-w-[42%] shrink-0 overflow-auto border-r border-black/10 p-2 text-xs" aria-label={isRu ? 'Дерево папок' : 'Folder tree'}>
-            <div className="mb-2 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide opacity-60">{isRu ? 'Папки' : 'Folders'}</div>
+            {theme === 'vista' && (
+              <nav className="vx-favorites" aria-label={isRu ? 'Избранные ссылки' : 'Favorite Links'}>
+                <div className="vx-heading">{isRu ? 'Избранные ссылки' : 'Favorite Links'}</div>
+                {[
+                  { label: isRu ? 'Документы' : 'Documents', target: 'C:\\Documents and Settings\\C4m1r\\My Documents' },
+                  { label: isRu ? 'Изображения' : 'Pictures', target: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures' },
+                  { label: isRu ? 'Музыка' : 'Music', target: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music' },
+                  { label: isRu ? 'Компьютер' : 'Computer', target: 'My Computer' },
+                ].map((link) => (
+                  <button key={link.label} type="button" onClick={() => navigateToPath(link.target)}>
+                    <img src={link.target === 'My Computer' ? computerIcon : folderIcon} alt="" />
+                    <span>{link.label}</span>
+                  </button>
+                ))}
+              </nav>
+            )}
+            <div className={`mb-2 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide opacity-60${theme === 'vista' ? ' vx-heading' : ''}`}>{isRu ? 'Папки' : 'Folders'}</div>
             {renderFolderTree(initialFileSystem['My Computer'], 'My Computer', 0)}
           </aside>
         )}

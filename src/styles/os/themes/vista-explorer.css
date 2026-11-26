@@ -1,0 +1,35 @@
+/* Windows Vista Explorer: address bar with round Back/Forward and a Search box on top, a light command bar under it,
+   Favorite Links above the folder tree. Reference: eat/screens/oc/vista/02-explorer-about-windows.png. */
+.file-explorer--vista { font-family: "Segoe UI", Tahoma, sans-serif; font-size: 12px; background: #fff; }
+.file-explorer--vista > div:first-child { display: flex; flex-direction: column; border-bottom: 1px solid #a9b8c8; }
+.file-explorer--vista .fx-menubar { display: none; }
+.file-explorer--vista .fx-address { order: 1; gap: 6px; padding: 5px 6px; background: linear-gradient(to bottom, #e9f0f7, #d4e1ee); border: 0; }
+.file-explorer--vista .fx-address > span { display: none; }
+.file-explorer--vista .fx-address > div:not(.vx-nav) { height: 24px !important; border: 1px solid #8ea4bb; border-radius: 2px; background: #fff; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); }
+.file-explorer--vista .fx-address > button { display: none; }
+.file-explorer--vista .vx-nav { display: flex; gap: 3px; margin-right: 2px; }
+.file-explorer--vista .vx-round {
+  display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border-radius: 50%;
+  border: 1px solid #5e7f9e; color: #fff;
+  background: radial-gradient(circle at 50% 20%, #9fd0f0, #3d82b8 55%, #1f5f94);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.file-explorer--vista .vx-round:disabled { opacity: 0.45; filter: grayscale(0.6); }
+.file-explorer--vista .vx-search {
+  position: relative; display: flex; align-items: center; width: 170px; height: 24px;
+  border: 1px solid #8ea4bb; border-radius: 2px; background: #fff; color: #6c8196;
+}
+.file-explorer--vista .vx-search input { width: 100%; padding: 0 22px 0 6px; border: 0; outline: 0; background: transparent; font: inherit; color: #222; }
+.file-explorer--vista .vx-search svg { position: absolute; right: 6px; }
+.file-explorer--vista .fx-toolbar { order: 2; padding: 3px 6px; gap: 2px; background: linear-gradient(to bottom, #fbfdff 0%, #eef3f9 48%, #dfe8f2 52%, #e8eff7 100%); border-top: 1px solid #fff; border-bottom: 0; }
+.file-explorer--vista .fx-toolbar > button { border-radius: 3px; border: 1px solid transparent; background: transparent; color: #1e395b; }
+.file-explorer--vista .fx-toolbar > button:hover { border-color: #9fb5cc; background: linear-gradient(#fff, #e3edf8); }
+.file-explorer--vista .fx-btn-back, .file-explorer--vista .fx-btn-forward { display: none; }
+.file-explorer--vista .fx-toolbar > div { margin-left: 0; }
+.file-explorer--vista aside { background: #f3f6fa; border-right: 1px solid #c9d4e0 !important; }
+.file-explorer--vista .vx-heading { padding: 6px 8px 3px; font-size: 12px; font-weight: 400; letter-spacing: 0; text-transform: none; color: #2a4c78; opacity: 1; }
+.file-explorer--vista .vx-favorites { display: flex; flex-direction: column; margin-bottom: 8px; }
+.file-explorer--vista .vx-favorites button { display: flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid transparent; border-radius: 3px; background: transparent; color: #0b3d91; text-align: left; cursor: pointer; }
+.file-explorer--vista .vx-favorites button:hover { border-color: #b6cfe8; background: linear-gradient(#f6fbff, #e1eefb); }
+.file-explorer--vista .vx-favorites img { width: 16px; height: 16px; object-fit: contain; }
+.file-explorer--vista .fx-status { background: linear-gradient(#f4f7fb, #e5ecf5); border-top: 1px solid #c4d0de; color: #333; }
