@@ -16,7 +16,7 @@ import { ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
 import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
-import { Folder, HardDrive, Trash2, PanelsTopLeft } from 'lucide-react';
+import { Folder, HardDrive, Trash2 } from 'lucide-react';
 import { getItemsFromPath, FileSystemItem, loadProjectMarkdown } from '../../utils/FileSystem';
 import { resolveFileIcon } from '../../themes/iconResolver';
 import { getFileAssociation } from '../../themes/fileAssociations';
@@ -840,12 +840,6 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             label: language === 'ru' ? 'Программы' : 'Programs',
             type: 'system' as const,
           },
-          ...(!themeKey.startsWith('win') ? [{
-            id: 'widget-gallery',
-            icon: <PanelsTopLeft size={48} strokeWidth={1.8} />,
-            label: widgetEntryLabels[language] ?? widgetEntryLabels.en,
-            type: 'system' as const,
-          }] : []),
         ]),
     ...desktopItems.map(item => ({
       id: item.id,
@@ -1112,6 +1106,9 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         case 'network-neighborhood':
           openExplorerWindow('Network Neighborhood');
           recordRecentApp('network-neighborhood');
+          break;
+        case 'widget-gallery':
+          setShowAppleWidgetGallery(true);
           break;
         case 'games-folder':
           openExplorerWindow('C:\\Users\\C4m1r\\Desktop\\Игры');

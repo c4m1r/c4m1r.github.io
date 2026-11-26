@@ -425,7 +425,11 @@ if (cDrive?.children && c4m1rProfile && legacyProfiles?.children) {
             name: 'Программы',
             type: 'folder',
             icon: folderIcon,
-            children: programShortcuts,
+            children: {
+                ...programShortcuts,
+                // The widget gallery lives here on every OS rather than as a desktop icon.
+                'Виджеты': { id: 'desktop-widgets-shortcut', name: 'Виджеты', type: 'file', appId: 'widget-gallery' },
+            },
         };
     }
 }

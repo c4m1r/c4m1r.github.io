@@ -39,9 +39,6 @@ const IMAGE_RE = /\.(png|jpe?g|gif|webp|svg|ico|cur|bmp)(\?|$)/i;
 const ASSET_WAIT_MS = 10000;
 
 const readyByTheme = new Map<string, Promise<void>>();
-/** Keeps preloaded elements referenced so the browser keeps them. */
-const keepAlive: HTMLElement[] = [];
-
 function collectMediaUrls(value: unknown, out: Set<string>): void {
   if (typeof value === 'string') {
     if (AUDIO_RE.test(value) || IMAGE_RE.test(value)) out.add(value);
@@ -50,25 +47,28 @@ function collectMediaUrls(value: unknown, out: Set<string>): void {
   }
 }
 
+/**
+ * Warms the HTTP cache only. The old version created an Image or Audio element per asset and kept
+ * them alive, which made the browser decode every icon and buffer every sound (roughly +70 MB per tab).
+ * A plain fetch downloads the bytes without decoding or holding them, and the elements that actually
+ * need an asset decode it on demand from the cache.
+ */
 function loadMedia(url: string): Promise<void> {
-  return new Promise((resolve) => {
-    if (AUDIO_RE.test(url)) {
-      const audio = new Audio();
-      audio.preload = 'auto';
-      audio.addEventListener('canplaythrough', () => resolve(), { once: true });
-      audio.addEventListener('error', () => resolve(), { once: true });
-      keepAlive.push(audio);
-      audio.src = url;
-      audio.load();
-    } else {
-      const img = new Image();
-      img.decoding = 'async';
-      img.onload = () => resolve();
-      img.onerror = () => resolve();
-      keepAlive.push(img);
-      img.src = url;
-    }
-  });
+  return fetch(url, { cache: 'force-cache' })
+    .then((response) => response.blob())
+    .then(() => undefined)
+    .catch(() => undefined);
+}
+
+/** Downloads at most this many assets at once, so the logon screen stays responsive. */
+const PRELOAD_CONCURRENCY = 6;
+
+async function loadAll(urls: string[]): Promise<void> {
+  let next = 0;
+  const worker = async () => {
+    while (next < urls.length) await loadMedia(urls[next++]);
+  };
+  await Promise.all(Array.from({ length: Math.min(PRELOAD_CONCURRENCY, urls.length) }, worker));
 }
 
 /**
@@ -81,7 +81,7 @@ export function preloadThemeAssets(theme: string): Promise<void> {
   if (cached) return cached;
   const urls = new Set<string>();
   collectMediaUrls(getThemeAssets(theme), urls);
-  const all = Promise.all([...urls].map(loadMedia)).then(() => undefined);
+  const all = loadAll([...urls]);
   const timeout = new Promise<void>((resolve) => setTimeout(resolve, ASSET_WAIT_MS));
   const ready = Promise.race([all, timeout]);
   readyByTheme.set(theme, ready);

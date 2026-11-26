@@ -48,3 +48,9 @@ Active task registry: `docs/tasks.md`. Completed records: `docs/history.md`.
 - GRUB flow: click "Launch GRUB", press ArrowDown, click "Windows ▸", then the profile row by a prefix regex (`^Windows 2000`, `^Windows 98`). Click OK when it appears.
 - Measure with `getBoundingClientRect` and `getComputedStyle` rather than guessing from screenshots.
 - A classic-skin rule can be overridden by `.os-classic .taskbar` or `.taskbar-98`. Raise specificity or scope to the theme class before concluding a rule does nothing.
+
+## Memory budget (2026-11-26)
+- Symptom: a tab weighed ~135 MB right after choosing an OS (was 60-70 MB). Measured in headless Chrome as renderer RSS: 418 MB at logon and 538 MB on the XP desktop; 219 and 231 MB after the fix (absolute numbers are inflated by software rendering, compare them only with each other).
+- Cause 1 (the big one): `src/themes/winxp/assets/user.gif` was 1080x1080 with 76 frames (3 MB) and is drawn at 48-80 px, so the browser decoded huge frames. It is now 160x160 (350 KB, same file name).
+- Cause 2: `preloadThemeAssets` (bootPreload.ts) created and kept an `Image` or `Audio` per theme asset, decoding every icon and buffering every sound. It now only warms the HTTP cache with `fetch` (6 at a time) and keeps nothing.
+- Rule: never ship a source image far larger than its display size, and never keep preload elements alive. Measure with `scratchpad/mem.cjs` (renderer RSS via `ps`, request list per stage).

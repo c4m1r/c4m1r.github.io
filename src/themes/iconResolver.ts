@@ -8,6 +8,7 @@ type IconThemeAssets = ThemeAssets & { userAvatar?: string };
 
 const APP_ASSET_KEYS: Readonly<Record<string, keyof IconThemeAssets>> = {
   about: 'userAvatar',
+  'widget-gallery': 'controlPanelIcon',
   'internet-explorer': 'internetExplorerIcon',
   outlook: 'mailIcon',
   'windows-media-player': 'mediaPlayerIcon',
