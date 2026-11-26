@@ -59,6 +59,16 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   // The Recycle Bin is a shell object: its address bar reads "Recycle Bin", not the internal path.
   const addressTextFor = (value: string) => (value === 'C:\\$Recycle.Bin' ? (isRu ? 'Корзина' : 'Recycle Bin') : value);
   const [addressInput, setAddressInput] = useState(addressTextFor(currentPath));
+  // Vista shows the path as clickable breadcrumbs until the user clicks the bar to type a path.
+  const [addressEditing, setAddressEditing] = useState(false);
+  const breadcrumbsFor = (value: string) => {
+    if (value === 'My Computer') return [{ label: vistaText(language, 'computer'), target: 'My Computer' }];
+    const parts = addressTextFor(value).split('\\').filter(Boolean);
+    return [{ label: vistaText(language, 'computer'), target: 'My Computer' }, ...parts.map((part, index) => ({
+      label: part,
+      target: parts.slice(0, index + 1).join('\\') + (index === 0 && /^[A-Z]:$/i.test(part) ? '\\' : ''),
+    }))];
+  };
   const isMyPictures = isPicturesFolderPath(path);
   const [viewMode, setViewMode] = useState<ExplorerViewMode>(
     isMyPictures ? 'thumbnails' : 'icons'
@@ -846,17 +856,46 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
               <button type="button" className="vx-round" onClick={handleForward} disabled={historyIndex >= history.length - 1} aria-label={vistaText(language, 'forward')}><ChevronRight size={16} /></button>
             </div>
           )}
-          <span className="text-gray-600 font-semibold">{isRu ? 'Адрес' : 'Address'}</span>
+          {theme !== 'vista' && <span className="text-gray-600 font-semibold">{isRu ? 'Адрес' : 'Address'}</span>}
+          {theme === 'vista' && !addressEditing ? (
+            <div
+              className="vx-crumbs flex-1"
+              onClick={() => setAddressEditing(true)}
+              role="textbox"
+              tabIndex={0}
+              aria-label={vistaText(language, 'address')}
+              onKeyDown={(event) => { if (event.key === 'Enter') setAddressEditing(true); }}
+            >
+              <img src={getAddressIcon()} alt="" />
+              {breadcrumbsFor(path).map((crumb, index, all) => (
+                <span key={crumb.target} className="vx-crumb">
+                  {index > 0 && <ChevronRight size={12} aria-hidden="true" />}
+                  <button
+                    type="button"
+                    onClick={(event) => { event.stopPropagation(); navigateToPath(crumb.target); }}
+                    aria-current={index === all.length - 1 ? 'page' : undefined}
+                  >{crumb.label}</button>
+                </span>
+              ))}
+            </div>
+          ) : (
           <div className="flex-1 bg-white border border-[#7f9db9] flex items-center px-1 h-5 shadow-inner">
             <img src={getAddressIcon()} className="w-4 h-4 mr-1.5 object-contain" alt="" />
             <input
               type="text"
+              autoFocus={theme === 'vista'}
               value={addressInput}
               onChange={(event) => setAddressInput(event.target.value)}
-              onKeyDown={handleAddressSubmit}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape' && theme === 'vista') { setAddressEditing(false); setAddressInput(addressTextFor(path)); return; }
+                handleAddressSubmit(event);
+                if (event.key === 'Enter' && theme === 'vista') setAddressEditing(false);
+              }}
+              onBlur={() => { if (theme === 'vista') setAddressEditing(false); }}
               className="w-full outline-none text-xs text-black bg-transparent border-0"
             />
           </div>
+          )}
           <button
             className="flex items-center gap-1 px-2 py-0.5 bg-[#ece9d8] border border-gray-400 rounded hover:bg-white text-black cursor-pointer"
             onClick={() => {
@@ -1436,6 +1475,25 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
           )}
         </div>
       </div>
+
+      {/* Vista details pane: name and type of the selection; for the computer root, the machine and workgroup. */}
+      {theme === 'vista' && (() => {
+        const selected = selectedItem ? items.find((item) => item.name === selectedItem) : undefined;
+        const title = selected ? selected.name : (path === 'My Computer' ? vistaText(language, 'computer') : addressTextFor(path).split('\\').filter(Boolean).pop() ?? path);
+        const kind = selected
+          ? (selected.type === 'folder' ? (isRu ? 'Папка с файлами' : 'File Folder') : selected.type === 'drive' ? (isRu ? 'Локальный диск' : 'Local Disk') : (isRu ? 'Файл' : 'File'))
+          : (path === 'My Computer' ? (isRu ? 'Системная папка' : 'System Folder') : (isRu ? 'Папка с файлами' : 'File Folder'));
+        return (
+          <div className="vx-details" aria-live="polite">
+            <img src={selected ? resolveFileIcon(selected, theme) : getAddressIcon()} alt="" />
+            <div>
+              <strong>{title}</strong>
+              <span>{kind}</span>
+              {!selected && path === 'My Computer' && <span>{isRu ? 'Рабочая группа: WORKGROUP' : 'Workgroup: WORKGROUP'}</span>}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Status Bar */}
       {isClassicWindows ? (
