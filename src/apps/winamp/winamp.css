@@ -9852,3 +9852,58 @@
 .wa-shell .wa-video[data-viz-palette="original"] .wa-video__visualizer > svg .wa-viz-wave--secondary { stroke: #ff55d9; }
 .wa-shell .wa-video[data-viz-palette="original"] .wa-video__visualizer > svg .wa-viz-wave--soft { stroke: #a8ffcf; }
 .wa-shell .wa-video[data-viz-palette="original"] .wa-video__visualizer-label { color: #78c8ff; }
+
+/* Classic faceplate: one outer width and legible native-resolution labels. */
+.wa-shell--webamp-classic .wa-video:not(.wa-video--fullscreen) {
+  width: 269px;
+  min-width: 0;
+  max-width: calc(100vw - 8px);
+  height: min(269px, calc(100vw - 8px));
+  min-height: 0;
+}
+.wa-shell--webamp-classic .wa-window--shaded {
+  height: 16px !important;
+  min-height: 16px !important;
+  max-height: 16px !important;
+}
+.wa-shell--webamp-classic .wa-main button,
+.wa-shell--webamp-classic .wa-playlist button,
+.wa-shell--webamp-classic .wa-playlist summary {
+  -webkit-font-smoothing: auto;
+  text-rendering: auto;
+  text-shadow: none !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-btn-toggle:not(.wa-btn-toggle--skinned) {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+.wa-shell--webamp-classic .wa-main .wa-tech-info,
+.wa-shell--webamp-classic .wa-main .wa-slider-label {
+  text-shadow: none !important;
+  letter-spacing: 0 !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic {
+  grid-template-columns: minmax(0, 1fr) 50px !important;
+  grid-template-rows: 17px !important;
+  padding-right: 12px !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-btn-pl,
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__actions > .wa-classic-menu > summary {
+  height: 16px !important;
+  min-height: 16px !important;
+  max-height: 16px !important;
+  font: 700 8px/14px Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0 !important;
+  padding: 0 !important;
+}
+.wa-shell--webamp-classic .wa-playlist .wa-pl__footer--classic > .wa-pl__status {
+  width: 50px !important;
+  font: 8px/14px Arial, Helvetica, sans-serif !important;
+  height: 16px !important;
+  text-shadow: none !important;
+}
+.wa-shell .wa-titlebar { cursor: grab; touch-action: none; }
+.wa-shell .wa-titlebar:active { cursor: grabbing; }
+.wa-shell .wa-titlebar button { cursor: pointer; }
