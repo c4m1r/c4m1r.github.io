@@ -76,6 +76,7 @@ import { WebosDesktopWidgets } from '../../system/widgets/components/WebosDeskto
 import { DEFAULT_WIDGETS_VISIBILITY, WEBOS_DEFAULT_WIDGETS_VISIBILITY, WIDGETS_STORAGE_KEY, getStoredWidgetsVisibility, saveStoredWidgetsVisibility, type DesktopWidgetsVisibility } from '../../system/widgets/types';
 import { AppleLockScreen } from './components/AppleLockScreen';
 import { AppleWidgetGallery } from './components/AppleWidgetGallery';
+import { VistaSidebar } from './components/VistaSidebar';
 import { IosAssistiveTouch } from './components/IosAssistiveTouch';
 import { AppleDesktopViewOptions } from './components/AppleDesktopViewOptions';
 import { IosHomeScreen } from './components/IosHomeScreen';
@@ -165,6 +166,16 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [showAppleLockScreen, setShowAppleLockScreen] = useState(false);
   const [showAppleWidgetGallery, setShowAppleWidgetGallery] = useState(false);
+  // Vista shows the Sidebar by default; the older widget set is the alternative skin picked in the gadget gallery.
+  const [vistaSidebarSkin, setVistaSidebarSkin] = useState<boolean>(() => {
+    try { return localStorage.getItem('vista-sidebar-skin') !== 'alternative'; } catch { return true; }
+  });
+  const toggleVistaSidebarSkin = useCallback(() => {
+    setVistaSidebarSkin((current) => {
+      try { localStorage.setItem('vista-sidebar-skin', current ? 'alternative' : 'sidebar'); } catch { /* keep the session choice */ }
+      return !current;
+    });
+  }, []);
   const [macDockMagnificationEnabled, setMacDockMagnificationEnabled] = useState(() => {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem('macos-dock-magnification-enabled') !== 'false';
@@ -1661,6 +1672,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         open={showAppleWidgetGallery}
         visibility={appleWidgetVisibility}
         webosVisibility={webosWidgetVisibility}
+        vistaSidebarSkin={vistaSidebarSkin}
+        onToggleVistaSkin={toggleVistaSidebarSkin}
         classicWinampOpen={windows.some((managedWindow) => managedWindow.id === 'app:winamp')}
         onToggleClassicWinamp={() => {
           if (windows.some((managedWindow) => managedWindow.id === 'app:winamp')) closeWindow('app:winamp');
@@ -1892,7 +1905,17 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         themeKey={themeKey}
       />
 
-      {themeKey !== 'webos' && Object.values(appleWidgetVisibility).some(Boolean) && (
+      {themeKey === 'vista' && vistaSidebarSkin && (
+        <VistaSidebar
+          time={time}
+          language={language}
+          onOpenGallery={() => setShowAppleWidgetGallery(true)}
+          onOpenNews={() => launchApp('news')}
+          onOpenCalendar={() => launchApp('calendar')}
+        />
+      )}
+
+      {themeKey !== 'webos' && !(themeKey === 'vista' && vistaSidebarSkin) && Object.values(appleWidgetVisibility).some(Boolean) && (
         <AppleDesktopWidgets
           time={time}
           language={language}

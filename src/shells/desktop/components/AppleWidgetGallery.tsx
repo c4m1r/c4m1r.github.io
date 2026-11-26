@@ -14,6 +14,9 @@ interface AppleWidgetGalleryProps {
   themeKey: string;
   classicWinampOpen: boolean;
   onToggleClassicWinamp: () => void;
+  /** Windows Vista only: true while the Sidebar skin is active, false for the alternative widget skin. */
+  vistaSidebarSkin?: boolean;
+  onToggleVistaSkin?: () => void;
 }
 
 const widgets: Array<{
@@ -36,7 +39,7 @@ const widgets: Array<{
   { key: 'gallery', title: 'Art Gallery', titleRu: 'Галерея', description: 'Curated artwork frame', descriptionRu: 'Рамка избранных иллюстраций', icon: Image },
 ];
 
-export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey, webosVisibility, classicWinampOpen, onToggleClassicWinamp }: AppleWidgetGalleryProps) {
+export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPresetChange, themeKey, webosVisibility, classicWinampOpen, onToggleClassicWinamp, vistaSidebarSkin, onToggleVistaSkin }: AppleWidgetGalleryProps) {
   const { language } = useApp();
   const locale = ({
     en: { title: 'Desktop Widgets', done: 'Done', nightMode: 'Night mode', lightMode: 'Light mode', on: 'On', off: 'Off', size: 'View / size', compact: 'Compact', standard: 'Standard', wide: 'Wide', clockCalendar: 'Clock & calendar', combinedDescription: 'Combined time and calendar widget', widgets: [['Clock', 'Current time and date'], ['Calendar', 'Current month calendar'], ['Battery', 'Device battery status'], ['Weather', 'Current weather forecast'], ['Winamp Now Playing', 'Compact music player'], ['Quotes', 'Quotes and sayings'], ['Market Rates', 'Currency and market rates'], ['System Monitor', 'CPU, memory and disk usage'], ['News RSS', 'RSS news headlines'], ['Art Gallery', 'Selected artwork']] },
@@ -140,6 +143,18 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
           </div>
         </header>
         <div className="apple-widget-gallery__list">
+          {themeKey === 'vista' && onToggleVistaSkin && (
+            <div className={`apple-widget-gallery__item ${vistaSidebarSkin ? 'is-enabled' : ''}`}>
+              <button type="button" className="apple-widget-gallery__toggle" onClick={onToggleVistaSkin} aria-pressed={Boolean(vistaSidebarSkin)}>
+                <span className="apple-widget-gallery__glyph"><Cpu size={19} strokeWidth={1.8} aria-hidden="true" /></span>
+                <span>
+                  <strong>{language === 'ru' ? 'Боковая панель Windows Vista' : 'Windows Vista Sidebar'}</strong>
+                  <small>{language === 'ru' ? 'Выкл. — альтернативный скин виджетов ниже' : 'Off switches to the alternative widget skin below'}</small>
+                </span>
+                <i>{vistaSidebarSkin ? locale.on : locale.off}</i>
+              </button>
+            </div>
+          )}
           <div className={`apple-widget-gallery__item ${classicWinampOpen ? 'is-enabled' : ''}`}>
             <button type="button" className="apple-widget-gallery__toggle" onClick={onToggleClassicWinamp} aria-pressed={classicWinampOpen}>
               <span className="apple-widget-gallery__glyph"><Music size={19} strokeWidth={1.8} aria-hidden="true" /></span>
@@ -147,7 +162,7 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
               <i>{classicWinampOpen ? locale.on : locale.off}</i>
             </button>
           </div>
-          {widgets.filter((widget) => {
+          {!(themeKey === 'vista' && vistaSidebarSkin) && widgets.filter((widget) => {
             if (themeKey === 'webos') return widget.key !== 'battery' && widget.key !== 'calendar';
             if (visibility.clock && visibility.calendar && widget.key === 'calendar') return false;
             return true;

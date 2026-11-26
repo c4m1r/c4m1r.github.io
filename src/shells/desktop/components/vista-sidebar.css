@@ -1,0 +1,54 @@
+/* Windows Vista Sidebar. Placed above the taskbar on the right edge, below application windows. */
+.vista-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 30px;
+  width: 166px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px 8px;
+  background: linear-gradient(to bottom, rgba(20, 70, 90, 0.5), rgba(8, 40, 58, 0.55));
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px) saturate(1.2);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  overflow: hidden;
+}
+.vista-sidebar__bar { height: 22px; display: flex; justify-content: flex-end; align-items: center; }
+.vista-sidebar__plus {
+  width: 24px; height: 16px; padding: 0; line-height: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 4px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05));
+  color: #fff; font-size: 14px; cursor: pointer;
+}
+.vista-sidebar__plus:hover { background: linear-gradient(to bottom, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15)); }
+.vista-sidebar__gadgets { display: flex; flex-direction: column; gap: 10px; align-items: center; overflow: hidden; }
+.vista-gadget__clock { width: 128px; height: 128px; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45)); }
+.vista-gadget { width: 148px; border: 0; padding: 0; color: #fff; text-align: left; cursor: default; }
+.vista-gadget--calendar {
+  position: relative; padding: 14px 6px 6px; border-radius: 3px; background: #f7f6f1; color: #222;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45); cursor: pointer;
+}
+.vista-gadget__rings {
+  position: absolute; top: -3px; left: 8px; right: 8px; height: 8px;
+  background: repeating-linear-gradient(to right, #7b7b7b 0 3px, transparent 3px 9px);
+}
+.vista-gadget__month { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 600; text-align: center; text-transform: capitalize; }
+.vista-gadget__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px 0; font-size: 9.5px; text-align: center; }
+.vista-gadget__grid b { color: #888; font-weight: 600; }
+.vista-gadget__grid i { font-style: normal; padding: 1px 0; border-radius: 2px; }
+.vista-gadget__grid i.is-today { background: #e8742a; color: #fff; font-weight: 700; }
+.vista-gadget--cpu { display: flex; justify-content: space-between; gap: 4px; }
+.vista-gadget__gauge { width: 72px; height: 72px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5)); }
+.vista-gadget--feed {
+  display: flex; align-items: center; gap: 8px; padding: 12px 10px;
+  border-radius: 4px; background: linear-gradient(to bottom, rgba(10, 20, 30, 0.85), rgba(0, 0, 0, 0.6));
+  border: 1px solid rgba(255, 255, 255, 0.25); font-size: 12px; cursor: pointer;
+}
+.vista-gadget__rss {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 5px;
+  background: linear-gradient(#ffa63d, #e8620c); font-size: 9px; font-weight: 700;
+}
