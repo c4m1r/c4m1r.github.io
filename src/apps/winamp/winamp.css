@@ -9831,3 +9831,24 @@
   box-sizing: border-box;
   transform: none;
 }
+
+/* Palette selection is scoped to built-in visualization artwork, not the
+   player chrome, video decoding surface or imported MilkDrop shader output. */
+.wa-video:not([data-viz-palette="original"]) .wa-video__visualizer:not(.wa-video__visualizer--milkdrop-butterchurn) > :is(svg, .wa-video__bars, .wa-viz-battery, .wa-viz-colors) {
+  filter: grayscale(1) sepia(1) saturate(3) hue-rotate(calc(65deg + var(--wa-viz-hue, 0deg)));
+}
+.wa-video[data-viz-palette="mono"] .wa-video__visualizer:not(.wa-video__visualizer--milkdrop-butterchurn) > :is(svg, .wa-video__bars, .wa-viz-battery, .wa-viz-colors) {
+  filter: grayscale(1);
+}
+.wa-shell .wa-video[data-viz-palette="original"] .wa-video__bars span {
+  background: linear-gradient(to top, #087cce, #17d6bd 58%, #e6e75a);
+  box-shadow: 0 0 5px #159bd0;
+}
+.wa-shell .wa-video[data-viz-palette="original"] .wa-video__bars--peaks span {
+  background: linear-gradient(180deg, #fff 0%, #ff5b28 16%, #ffb52e 18%, #29e9ff 100%);
+  box-shadow: 0 0 5px #ff9b2e;
+}
+.wa-shell .wa-video[data-viz-palette="original"] .wa-video__visualizer > svg .wa-viz-wave { stroke: #51f5ff; }
+.wa-shell .wa-video[data-viz-palette="original"] .wa-video__visualizer > svg .wa-viz-wave--secondary { stroke: #ff55d9; }
+.wa-shell .wa-video[data-viz-palette="original"] .wa-video__visualizer > svg .wa-viz-wave--soft { stroke: #a8ffcf; }
+.wa-shell .wa-video[data-viz-palette="original"] .wa-video__visualizer-label { color: #78c8ff; }
