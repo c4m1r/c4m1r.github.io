@@ -773,7 +773,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
   const getIconElement = (iconType: 'folder' | 'computer' | 'recycle' | 'documents') => {
     // Win98, 2000 and 7 have a dedicated My Documents picture; XP keeps its folder.
-    if (iconType === 'documents' && ['win-98', 'win2000', 'win7'].includes(themeKey)) {
+    if (iconType === 'documents' && ['win-98', 'win2000', 'win7', 'vista'].includes(themeKey)) {
       const documentsPath = themeAssets.placesIcons?.myDocuments ?? themeAssets.folderIcon;
       if (documentsPath) {
         return <img src={documentsPath} alt="" className={desktopIconImageClass} onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
@@ -827,7 +827,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
             };
             return themeKey === 'win2000' ? [documents, computer] : [computer, documents];
           })(),
-          ...(['win-xp', 'win-98', 'win2000', 'win7'].includes(themeKey) ? [{
+          ...(['win-xp', 'win-98', 'win2000', 'win7', 'vista'].includes(themeKey) ? [{
             id: 'recycle-bin',
             icon: getIconElement('recycle'),
             label: getOsSystemLabel('recycleBin', language === 'ru' ? 'Корзина' : 'Recycle Bin', themeKey, language),
@@ -908,6 +908,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     iconRefs,
     onCloseStartMenu: closeStartMenu,
     classicLayout: themeKey === 'win-98' || themeKey === 'win2000',
+    flowRecycleBin: themeKey === 'vista',
   });
 
   const handleOpenFile = useCallback(async (item: FileSystemItem, parentPath: string) => {
@@ -1030,7 +1031,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       ? { 'My Documents': 'Мои документы', 'My Pictures': 'Мои рисунки', 'My Music': 'Моя музыка', '$Recycle.Bin': 'Корзина' }
       : { '$Recycle.Bin': 'Recycle Bin' };
     const title = normalizedPath === 'My Computer'
-      ? (themeKey === 'win7' ? (language === 'ru' ? 'Компьютер' : 'Computer') : t.myComputer)
+      ? (themeKey === 'win7' || themeKey === 'vista' ? (language === 'ru' ? 'Компьютер' : 'Computer') : t.myComputer)
       : localizedFolderNames[pathName] ?? pathName;
 
     openWindow({
@@ -1337,7 +1338,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
         window.dispatchEvent(new CustomEvent('desktop:open-widget-gallery'));
         return;
       case 'recycle-bin':
-        if (['win-xp', 'win-98', 'win2000', 'win7'].includes(themeKey)) {
+        if (['win-xp', 'win-98', 'win2000', 'win7', 'vista'].includes(themeKey)) {
           openExplorerWindow('C:\\$Recycle.Bin');
           return;
         }

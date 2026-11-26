@@ -509,6 +509,9 @@ export const osSkinRules: Record<ThemeId, OsSkinRules> = {
     appNames: {},
     systemLabels: {
       startButton: { en: 'Start', ru: 'Пуск' },
+      myComputer: { en: 'Computer', ru: 'Компьютер' },
+      documents: { en: 'Documents', ru: 'Документы' },
+      recycleBin: { en: 'Recycle Bin', ru: 'Корзина' },
     },
   },
 

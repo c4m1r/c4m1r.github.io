@@ -11,6 +11,8 @@ export interface UseDesktopIconGridStateOptions {
   onCloseStartMenu?: () => void;
   /** Windows 95/98/2000: one column from the top-left, 75 px grid, Recycle Bin flows with the other icons. */
   classicLayout?: boolean;
+  /** Vista keeps the Recycle Bin in the icon column; the Sidebar covers the bottom-right corner. */
+  flowRecycleBin?: boolean;
 }
 
 export interface UseDesktopIconGridStateReturn {
@@ -29,7 +31,7 @@ export interface UseDesktopIconGridStateReturn {
 export function useDesktopIconGridState(
   options: UseDesktopIconGridStateOptions
 ): UseDesktopIconGridStateReturn {
-  const { initialDesktopIcons, viewport, desktopRef, iconRefs, onCloseStartMenu, classicLayout = false } = options;
+  const { initialDesktopIcons, viewport, desktopRef, iconRefs, onCloseStartMenu, classicLayout = false, flowRecycleBin = false } = options;
 
   const [iconPositions, setIconPositions] = useState<Record<string, { x: number; y: number }>>({});
   const [draggingIcon, setDraggingIcon] = useState<string | null>(null);
@@ -45,7 +47,7 @@ export function useDesktopIconGridState(
   const iconSpacingX = classicLayout ? 75 : 110;
   const baseOffsetX = classicLayout ? 4 : 40;
   const baseOffsetY = classicLayout ? 4 : 40;
-  const pinRecycleBin = !classicLayout;
+  const pinRecycleBin = !classicLayout && !flowRecycleBin;
   const availableHeight = Math.max(
     iconSpacingY,
     viewport.height - taskbarHeight - baseOffsetY * 2
