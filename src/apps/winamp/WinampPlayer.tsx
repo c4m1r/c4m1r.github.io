@@ -1000,6 +1000,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const dragRef = useRef<{
     anchorKey: PlayerWindowKey;
     pointerId: number;
+    single: boolean;
+    targets: Array<{ x: number; y: number; width: number; height: number }>;
     members: Array<{ key: PlayerWindowKey; originX: number; originY: number; width: number; height: number }>;
     pointerX: number;
     pointerY: number;
@@ -1046,6 +1048,11 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     dragRef.current = {
       anchorKey: key,
       pointerId: event.pointerId,
+      single: event.shiftKey || detachedWindows.includes(key),
+      targets: keys.filter((candidate) => !connected.has(candidate) && canJoin(candidate)).map((candidate) => ({
+        x: rects[candidate].left, y: rects[candidate].top,
+        width: rects[candidate].width, height: rects[candidate].height,
+      })),
       pointerX: event.clientX,
       pointerY: event.clientY,
       members: [...connected].map((member) => ({
@@ -1074,8 +1081,38 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       const anchorMaxY = window.innerHeight - anchor.height - 30 - anchor.originY;
       const clampDelta = (value: number, min: number, max: number) =>
         min <= max ? Math.max(min, Math.min(max, value)) : Math.max(max, Math.min(min, value));
-      const dx = clampDelta(deltaX, minX <= maxX ? minX : anchorMinX, minX <= maxX ? maxX : anchorMaxX);
-      const dy = clampDelta(deltaY, minY <= maxY ? minY : anchorMinY, minY <= maxY ? maxY : anchorMaxY);
+      const loX = minX <= maxX ? minX : anchorMinX;
+      const hiX = minX <= maxX ? maxX : anchorMaxX;
+      const loY = minY <= maxY ? minY : anchorMinY;
+      const hiY = minY <= maxY ? maxY : anchorMaxY;
+      let dx = clampDelta(deltaX, loX, hiX);
+      let dy = clampDelta(deltaY, loY, hiY);
+      if (!drag.single && !event.shiftKey) {
+        let snapX = 0, snapY = 0, bestX = 11, bestY = 11;
+        for (const member of drag.members) {
+          const left = member.originX + dx, top = member.originY + dy;
+          const right = left + member.width, bottom = top + member.height;
+          for (const target of drag.targets) {
+            const tr = target.x + target.width, tb = target.y + target.height;
+            const overlapX = Math.min(right, tr) - Math.max(left, target.x);
+            const overlapY = Math.min(bottom, tb) - Math.max(top, target.y);
+            const verticalGap = Math.min(Math.abs(top - tb), Math.abs(bottom - target.y));
+            const horizontalGap = Math.min(Math.abs(left - tr), Math.abs(right - target.x));
+            const xs = [
+              ...(overlapY >= 20 ? [tr - left, target.x - right] : []),
+              ...(verticalGap <= 10 ? [target.x - left, tr - right] : []),
+            ];
+            const ys = [
+              ...(overlapX >= 20 ? [tb - top, target.y - bottom] : []),
+              ...(horizontalGap <= 10 ? [target.y - top, tb - bottom] : []),
+            ];
+            for (const gap of xs) if (Math.abs(gap) < bestX) { bestX = Math.abs(gap); snapX = gap; }
+            for (const gap of ys) if (Math.abs(gap) < bestY) { bestY = Math.abs(gap); snapY = gap; }
+          }
+        }
+        dx = clampDelta(dx + snapX, loX, hiX);
+        dy = clampDelta(dy + snapY, loY, hiY);
+      }
       setWindowPositions((current) => {
         const next = { ...current };
         drag.members.forEach((member) => {
@@ -1087,48 +1124,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     const stop = (event: PointerEvent) => {
       const drag = dragRef.current;
       if (!drag || drag.pointerId !== event.pointerId) return;
-      if (event.type === 'pointercancel' || event.shiftKey) { dragRef.current = null; return; }
-      const moving = new Set(drag.members.map((member) => member.key));
-      if (!detachedWindows.includes(drag.anchorKey)) {
-        const anchorNode = document.querySelector<HTMLElement>(`.wa-${drag.anchorKey}`);
-        const anchorRect = anchorNode?.getBoundingClientRect();
-        if (anchorRect) {
-          let snapX = 0;
-          let snapY = 0;
-          let bestX = 13;
-          let bestY = 13;
-          const candidates: PlayerWindowKey[] = ['main', ...(showEq ? ['equalizer' as const] : []), ...(showPl ? ['playlist' as const] : []), ...(showVideo ? ['video' as const] : [])];
-          for (const candidate of candidates) {
-            if (moving.has(candidate) || detachedWindows.includes(candidate)) continue;
-            const node = document.querySelector<HTMLElement>(`.wa-${candidate}`);
-            const rect = node?.getBoundingClientRect();
-            if (!rect) continue;
-            const overlapX = Math.min(anchorRect.right, rect.right) - Math.max(anchorRect.left, rect.left);
-            const overlapY = Math.min(anchorRect.bottom, rect.bottom) - Math.max(anchorRect.top, rect.top);
-            if (overlapX >= 32) {
-              const topGap = rect.bottom - anchorRect.top;
-              const bottomGap = rect.top - anchorRect.bottom;
-              if (Math.abs(topGap) <= bestY) { bestY = Math.abs(topGap); snapY = topGap; }
-              if (Math.abs(bottomGap) <= bestY) { bestY = Math.abs(bottomGap); snapY = bottomGap; }
-            }
-            if (overlapY >= 24) {
-              const leftGap = rect.right - anchorRect.left;
-              const rightGap = rect.left - anchorRect.right;
-              if (Math.abs(leftGap) <= bestX) { bestX = Math.abs(leftGap); snapX = leftGap; }
-              if (Math.abs(rightGap) <= bestX) { bestX = Math.abs(rightGap); snapX = rightGap; }
-            }
-          }
-          if (bestX <= 12 || bestY <= 12) {
-            setWindowPositions((current) => {
-              const updated = { ...current };
-              drag.members.forEach((member) => {
-                updated[member.key] = { x: current[member.key].x + (bestX <= 12 ? snapX : 0), y: current[member.key].y + (bestY <= 12 ? snapY : 0) };
-              });
-              return updated;
-            });
-          }
-        }
-      }
       dragRef.current = null;
     };
     window.addEventListener('pointermove', move);
@@ -1139,7 +1134,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
       window.removeEventListener('pointerup', stop);
       window.removeEventListener('pointercancel', stop);
     };
-  }, [detachedWindows, showEq, showPl, showVideo]);
+  }, []);
 
 
   const startPlaylistResize = (event: React.PointerEvent<HTMLDivElement>) => {
