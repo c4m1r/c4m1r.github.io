@@ -77,6 +77,7 @@ import { DEFAULT_WIDGETS_VISIBILITY, WEBOS_DEFAULT_WIDGETS_VISIBILITY, WIDGETS_S
 import { AppleLockScreen } from './components/AppleLockScreen';
 import { AppleWidgetGallery } from './components/AppleWidgetGallery';
 import { VistaSidebar } from './components/VistaSidebar';
+import { vistaText } from '../../i18n/vistaStrings';
 import { IosAssistiveTouch } from './components/IosAssistiveTouch';
 import { AppleDesktopViewOptions } from './components/AppleDesktopViewOptions';
 import { IosHomeScreen } from './components/IosHomeScreen';
@@ -2068,6 +2069,26 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 ].map((item) => (
                   <button key={item.id} type="button" className="flex items-center justify-center bg-transparent border-0 p-0" style={{ width: 22, height: 22 }} title={item.label} aria-label={item.label} onClick={item.run}>
                     <img src={item.icon} alt="" width={16} height={16} style={{ imageRendering: 'pixelated' }} />
+                  </button>
+                ))}
+              </div>
+              <div className="taskbar-divider" aria-hidden />
+            </>
+          )}
+
+          {/* Windows Vista quick launch: Show Desktop, Internet Explorer, Windows Media Player, Windows Mail. */}
+          {themeKey === 'vista' && (
+            <>
+              <div className="taskbar-divider" aria-hidden />
+              <div className="taskbar-quick-launch flex items-center flex-shrink-0" style={{ gap: 3, padding: '0 4px' }}>
+                {[
+                  { id: 'show-desktop', label: vistaText(language, 'showDesktop'), icon: win2000ShowDesktopIcon, run: () => windows.forEach((w) => { if (!w.minimized) handleMinimizeWindow(w.id); }) },
+                  { id: 'internet-explorer', label: 'Internet Explorer', icon: themeAssets.internetExplorerIcon, run: () => launchApp('internet-explorer') },
+                  { id: 'windows-media-player', label: 'Windows Media Player', icon: themeAssets.mediaPlayerIcon, run: () => launchApp('windows-media-player') },
+                  { id: 'outlook', label: vistaText(language, 'windowsMail'), icon: themeAssets.mailIcon, run: () => launchApp('outlook') },
+                ].filter((item) => Boolean(item.icon)).map((item) => (
+                  <button key={item.id} type="button" className="vista-quick-launch__button" title={item.label} aria-label={item.label} onClick={item.run}>
+                    <img src={item.icon} alt="" width={16} height={16} />
                   </button>
                 ))}
               </div>

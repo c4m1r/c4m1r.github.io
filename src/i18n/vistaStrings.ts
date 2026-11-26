@@ -60,6 +60,10 @@ const VISTA_STRINGS = {
     en: 'Connect To', ru: 'Подключение', fr: 'Se connecter à', es: 'Conectar a', zh: '连接到',
     ja: '接続先', ko: '연결 대상', be: 'Падключэнне', kk: 'Қосылу',
   },
+  showDesktop: {
+    en: 'Show Desktop', ru: 'Свернуть все окна', fr: 'Afficher le Bureau', es: 'Mostrar escritorio', zh: '显示桌面',
+    ja: 'デスクトップを表示', ko: '바탕 화면 보기', be: 'Паказаць працоўны стол', kk: 'Жұмыс үстелін көрсету',
+  },
   address: {
     en: 'Address', ru: 'Адрес', fr: 'Adresse', es: 'Dirección', zh: '地址',
     ja: 'アドレス', ko: '주소', be: 'Адрас', kk: 'Мекенжай',
