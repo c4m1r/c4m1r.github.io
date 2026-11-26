@@ -4,6 +4,7 @@ import { getSessionAccount } from '../../domain/auth/session';
 import { preloadThemeAssets } from '../bootPreload';
 import userAvatar from '../winxp/assets/user.gif';
 import { OS_SOUNDS } from '../../assets/os-sounds';
+import { vistaText } from '../../i18n/vistaStrings';
 
 interface VistaWelcomeScreenProps {
   onComplete: () => void;
@@ -60,7 +61,7 @@ export function VistaWelcomeScreen({ onComplete }: VistaWelcomeScreenProps) {
         <div className="vista-welcome__name">{account}</div>
         <div className="vista-welcome__message">
           <span className="vista-welcome__ring" aria-hidden="true" />
-          <span>{language === 'ru' ? 'Добро пожаловать' : 'Welcome'}</span>
+          <span>{vistaText(language, 'welcome')}</span>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { appRegistry } from '../../appRegistry';
 import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
 import type { Language } from '../../../../i18n/translations';
+import { vistaText } from '../../../../i18n/vistaStrings';
 
 /**
  * The fixed lists of the Windows 7 Start menu: the default program list, All Programs, and the
@@ -166,8 +167,8 @@ export function buildWin7StartMenuLists({ isRu, language, vista = false, account
 
   // Windows Vista: two pinned entries with a second line, then the rest; the places column starts with the user.
   const pinnedLabels: Record<string, [string, string]> = {
-    'internet-explorer': [isRu ? 'Интернет' : 'Internet', 'Internet Explorer'],
-    outlook: [isRu ? 'Электронная почта' : 'E-mail', isRu ? 'Почта Windows' : 'Windows Mail'],
+    'internet-explorer': [vistaText(language, 'internet'), 'Internet Explorer'],
+    outlook: [vistaText(language, 'email'), vistaText(language, 'windowsMail')],
   };
   const vistaPrograms = programs.map((entry) => {
     const pinned = pinnedLabels[entry.id];
@@ -180,10 +181,10 @@ export function buildWin7StartMenuLists({ isRu, language, vista = false, account
     placeById('pictures'),
     placeById('music'),
     placeById('games'),
-    { id: 'recent', label: isRu ? 'Недавние документы' : 'Recent Items', disabled: true },
+    { id: 'recent', label: vistaText(language, 'recentItems'), disabled: true },
     placeById('computer'),
-    { id: 'network', label: isRu ? 'Сеть' : 'Network', appId: 'network-neighborhood', icon: assets.computerIcon },
-    { id: 'connect-to', label: isRu ? 'Подключение' : 'Connect To', disabled: true },
+    { id: 'network', label: vistaText(language, 'network'), appId: 'network-neighborhood', icon: assets.computerIcon },
+    { id: 'connect-to', label: vistaText(language, 'connectTo'), disabled: true },
     placeById('control-panel'),
     placeById('default-programs'),
     placeById('help'),

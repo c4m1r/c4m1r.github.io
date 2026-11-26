@@ -895,3 +895,5 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 
 - Vista editions (GRUB, E): Starter, Home Basic, Home Premium, Business, Enterprise, Ultimate in `osEditions.ts` (Build 6002: Service Pack 2). Starter and Home Basic add `vista-basic` to the shell and load `vista-basic.css` (opaque Vista Basic frames and taskbar, no glass), as in `eat/screens/oc/vista/01-window-chrome-styles.png`. Extra reference saved: `eat/screens/oc/vista/03-start-menu-welcome-center.png` (Start menu, Welcome Center, Sidebar). 2026-11-26.
 - Note: another session edits the Vista start menu, logon, orb (40 px) and Welcome sound in the same working tree; commit by file, not `git add -A`.
+
+- i18n for Vista UI strings: `src/i18n/vistaStrings.ts` holds all 23 Vista-only strings (Sidebar, Welcome, Start menu entries, Explorer navigation and favorites, widget gallery toggle) in all nine languages (en, ru, fr, es, zh, ja, ko, be, kk). Use `vistaText(language, key)`; do not add new `isRu ? … : …` pairs for Vista. Edition names/descriptions still follow the existing `labelRu`/`descriptionRu` pattern, and a full pass on those is open. 2026-11-27.

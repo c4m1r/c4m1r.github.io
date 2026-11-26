@@ -38,6 +38,7 @@ import win2000WebFoldersIcon from '../../themes/win2000/icons/network/web-folder
 import win98DialupIcon from '../../themes/win98/icons/network/directory-dial-up-networking/32x32-0.png';
 import win98SchedTasksIcon from '../../themes/win98/icons/apps/sched-tasks/32x32-0.png';
 import win98WebFoldersIcon from '../../themes/win98/icons/network/directory-net-web/32x32-0.png';
+import { vistaText } from '../../i18n/vistaStrings';
 
 const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки|(?:^|[\\/])pictures$/i.test(value);
 
@@ -840,9 +841,9 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
         {/* Address Bar */}
         <div className="fx-address flex items-center p-1 bg-[#ece9d8] gap-2">
           {theme === 'vista' && (
-            <div className="vx-nav" aria-label={isRu ? 'Навигация' : 'Navigation'}>
-              <button type="button" className="vx-round" onClick={handleBack} disabled={historyIndex === 0} aria-label={isRu ? 'Назад' : 'Back'}><ChevronLeft size={16} /></button>
-              <button type="button" className="vx-round" onClick={handleForward} disabled={historyIndex >= history.length - 1} aria-label={isRu ? 'Вперёд' : 'Forward'}><ChevronRight size={16} /></button>
+            <div className="vx-nav" aria-label={vistaText(language, 'navigation')}>
+              <button type="button" className="vx-round" onClick={handleBack} disabled={historyIndex === 0} aria-label={vistaText(language, 'back')}><ChevronLeft size={16} /></button>
+              <button type="button" className="vx-round" onClick={handleForward} disabled={historyIndex >= history.length - 1} aria-label={vistaText(language, 'forward')}><ChevronRight size={16} /></button>
             </div>
           )}
           <span className="text-gray-600 font-semibold">{isRu ? 'Адрес' : 'Address'}</span>
@@ -871,8 +872,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
               <input
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={isRu ? 'Поиск' : 'Search'}
-                aria-label={isRu ? 'Поиск в текущей папке' : 'Search this folder'}
+                placeholder={vistaText(language, 'search')}
+                aria-label={vistaText(language, 'searchFolder')}
               />
               <Search size={13} aria-hidden="true" />
             </label>
@@ -1021,13 +1022,13 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
         {!isWindowsXp && showSidebar && (
           <aside className="w-52 max-w-[42%] shrink-0 overflow-auto border-r border-black/10 p-2 text-xs" aria-label={isRu ? 'Дерево папок' : 'Folder tree'}>
             {theme === 'vista' && (
-              <nav className="vx-favorites" aria-label={isRu ? 'Избранные ссылки' : 'Favorite Links'}>
-                <div className="vx-heading">{isRu ? 'Избранные ссылки' : 'Favorite Links'}</div>
+              <nav className="vx-favorites" aria-label={vistaText(language, 'favoriteLinks')}>
+                <div className="vx-heading">{vistaText(language, 'favoriteLinks')}</div>
                 {[
-                  { label: isRu ? 'Документы' : 'Documents', target: 'C:\\Documents and Settings\\C4m1r\\My Documents' },
-                  { label: isRu ? 'Изображения' : 'Pictures', target: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures' },
-                  { label: isRu ? 'Музыка' : 'Music', target: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music' },
-                  { label: isRu ? 'Компьютер' : 'Computer', target: 'My Computer' },
+                  { label: vistaText(language, 'documents'), target: 'C:\\Documents and Settings\\C4m1r\\My Documents' },
+                  { label: vistaText(language, 'pictures'), target: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Pictures' },
+                  { label: vistaText(language, 'music'), target: 'C:\\Documents and Settings\\C4m1r\\My Documents\\My Music' },
+                  { label: vistaText(language, 'computer'), target: 'My Computer' },
                 ].map((link) => (
                   <button key={link.label} type="button" onClick={() => navigateToPath(link.target)}>
                     <img src={link.target === 'My Computer' ? computerIcon : folderIcon} alt="" />

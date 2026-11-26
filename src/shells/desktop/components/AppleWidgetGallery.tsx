@@ -3,6 +3,7 @@ import { Battery, Calendar, TrendingUp, Clock, CloudSun, Cpu, Image, MessageCirc
 import { useApp } from '../../../contexts/useApp';
 import { type AppleWidgetVisibility } from './AppleDesktopWidgets';
 import { type DesktopWidgetsVisibility } from '../../../system/widgets/types';
+import { vistaText } from '../../../i18n/vistaStrings';
 
 interface AppleWidgetGalleryProps {
   open: boolean;
@@ -148,8 +149,8 @@ export function AppleWidgetGallery({ open, visibility, onClose, onToggle, onPres
               <button type="button" className="apple-widget-gallery__toggle" onClick={onToggleVistaSkin} aria-pressed={Boolean(vistaSidebarSkin)}>
                 <span className="apple-widget-gallery__glyph"><Cpu size={19} strokeWidth={1.8} aria-hidden="true" /></span>
                 <span>
-                  <strong>{language === 'ru' ? 'Боковая панель Windows Vista' : 'Windows Vista Sidebar'}</strong>
-                  <small>{language === 'ru' ? 'Выкл. — альтернативный скин виджетов ниже' : 'Off switches to the alternative widget skin below'}</small>
+                  <strong>{vistaText(language, 'sidebarToggle')}</strong>
+                  <small>{vistaText(language, 'sidebarToggleHint')}</small>
                 </span>
                 <i>{vistaSidebarSkin ? locale.on : locale.off}</i>
               </button>

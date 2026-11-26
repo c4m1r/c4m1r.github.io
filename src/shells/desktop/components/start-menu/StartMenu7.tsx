@@ -7,6 +7,7 @@ import { startMenuFolderNodes, startMenuProgramsPath, type StartMenuNode } from 
 import { buildWin7StartMenuLists, type Win7MenuEntry } from './startMenuWin7Lists';
 import { useFlyoutChain } from './startMenuFlyout';
 import { FlyoutPanel } from './StartMenuFlyoutPanel';
+import { vistaText } from '../../../../i18n/vistaStrings';
 
 export interface StartMenu7Props {
   onClose: () => void;
@@ -145,7 +146,7 @@ export function StartMenu7({
             <input
               value={query}
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder={isVista ? (isRu ? 'Начать поиск' : 'Start Search') : (isRu ? 'Найти программы и файлы' : 'Search programs and files')}
+              placeholder={isVista ? vistaText(language, 'startSearch') : (isRu ? 'Найти программы и файлы' : 'Search programs and files')}
               aria-label={isRu ? 'Поиск программ и файлов' : 'Search programs and files'}
             />
             <Search size={15} aria-hidden="true" />

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import './vista-sidebar.css';
+import { vistaText } from '../../../i18n/vistaStrings';
 
 interface VistaSidebarProps {
   time: Date;
@@ -123,11 +124,10 @@ function CpuGadget() {
  * The older widget set stays available as the alternative skin from the gadget gallery.
  */
 export function VistaSidebar({ time, language, onOpenGallery, onOpenNews, onOpenCalendar }: VistaSidebarProps) {
-  const isRu = language.startsWith('ru');
   return (
-    <aside className="vista-sidebar" aria-label="Windows Sidebar" onContextMenu={(event) => event.stopPropagation()}>
+    <aside className="vista-sidebar" aria-label={vistaText(language, 'sidebar')} onContextMenu={(event) => event.stopPropagation()}>
       <div className="vista-sidebar__bar">
-        <button type="button" className="vista-sidebar__plus" onClick={onOpenGallery} aria-label={isRu ? 'Добавить гаджеты' : 'Add gadgets'}>+</button>
+        <button type="button" className="vista-sidebar__plus" onClick={onOpenGallery} aria-label={vistaText(language, 'addGadgets')}>+</button>
       </div>
       <div className="vista-sidebar__gadgets">
         <AnalogClock time={time} />
@@ -135,7 +135,7 @@ export function VistaSidebar({ time, language, onOpenGallery, onOpenNews, onOpen
         <CpuGadget />
         <button type="button" className="vista-gadget vista-gadget--feed" onClick={onOpenNews}>
           <span className="vista-gadget__rss" aria-hidden="true">RSS</span>
-          <span>{isRu ? 'Заголовки новостей' : 'View headlines'}</span>
+          <span>{vistaText(language, 'headlines')}</span>
         </button>
       </div>
     </aside>
