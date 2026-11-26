@@ -14,6 +14,8 @@ export interface StartMenu7Props {
   onOpenPath?: (path: string) => void;
   onSystemCommand?: (command: 'logoff' | 'shutdown') => void;
   onHover?: () => void;
+  /** Windows Vista variant: pinned two-line entries and the Vista places column. */
+  variant?: 'win7' | 'vista';
 }
 
 
@@ -27,13 +29,18 @@ export function StartMenu7({
   onOpenPath,
   onSystemCommand,
   onHover,
+  variant = 'win7',
 }: StartMenu7Props) {
   const { language } = useApp();
   const isRu = language === 'ru';
   const assets = THEME_ASSETS.win7;
   const [query, setQuery] = useState('');
   const [showAllPrograms, setShowAllPrograms] = useState(false);
-  const { programs, allPrograms, places } = useMemo(() => buildWin7StartMenuLists({ isRu, language }), [isRu, language]);
+  const isVista = variant === 'vista';
+  const { programs, allPrograms, places, separatorAfter: separatorIds } = useMemo(
+    () => buildWin7StartMenuLists({ isRu, language, vista: isVista, account: getSessionAccount() }),
+    [isRu, language, isVista],
+  );
 
 
   const renderProgramRow = (entry: Win7MenuEntry, depth: number) => (
@@ -55,7 +62,14 @@ export function StartMenu7({
       <span className="win7-start-menu__program-icon">
         {entry.icon ? <img src={entry.icon} alt="" /> : null}
       </span>
-      <span className="flex-1">{entry.label}</span>
+      {entry.subtitle ? (
+        <span className="flex-1 win7-start-menu__program-text">
+          <strong>{entry.label}</strong>
+          <small>{entry.subtitle}</small>
+        </span>
+      ) : (
+        <span className="flex-1">{entry.label}</span>
+      )}
       {entry.submenu ? <ChevronRight size={12} aria-hidden="true" /> : null}
     </button>
   );
@@ -83,7 +97,7 @@ export function StartMenu7({
 
   // Default Windows 7 right column: libraries, Games, Computer, then the system
   // entries. Separators follow the default grouping (libraries | Games | system).
-  const separatorAfter = new Set(['music', 'games', 'devices-printers']);
+  const separatorAfter = new Set(separatorIds);
 
   const activate = (entry: Win7MenuEntry) => {
     if (entry.disabled) return;
@@ -93,7 +107,7 @@ export function StartMenu7({
   };
 
   return (
-    <section className="win7-start-menu start-menu-modern os-panel" aria-label={isRu ? 'Меню Пуск' : 'Start menu'}>
+    <section className={`win7-start-menu start-menu-modern os-panel${isVista ? ' vista-start-menu' : ''}`} aria-label={isRu ? 'Меню Пуск' : 'Start menu'}>
       <div className="win7-start-menu__glass" aria-hidden="true" />
 
       <div className="win7-start-menu__main">
@@ -131,7 +145,7 @@ export function StartMenu7({
             <input
               value={query}
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder={isRu ? 'Найти программы и файлы' : 'Search programs and files'}
+              placeholder={isVista ? (isRu ? 'Начать поиск' : 'Start Search') : (isRu ? 'Найти программы и файлы' : 'Search programs and files')}
               aria-label={isRu ? 'Поиск программ и файлов' : 'Search programs and files'}
             />
             <Search size={15} aria-hidden="true" />

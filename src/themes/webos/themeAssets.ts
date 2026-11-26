@@ -298,6 +298,17 @@ const vistaThemeAssets: ThemeAssets = {
   ...win7ThemeAssets,
   wallpaper: vistaWallpaper,
   startButtonIcon: vistaStartOrb,
+  // Vista's own sounds: the short logon chime plays on the desktop, the startup theme on the Welcome screen.
+  startupSound: OS_SOUNDS.vista.logon,
+  shutdownSound: OS_SOUNDS.vista.shutdown,
+  logoffSound: OS_SOUNDS.vista.logoff,
+  uiSounds: {
+    ...WIN7_ASSETS.uiSounds,
+    menuOpen: OS_SOUNDS.vista['nav-start'],
+    minimize: OS_SOUNDS.vista.minimize,
+    restore: OS_SOUNDS.vista.restore,
+    error: OS_SOUNDS.vista.error,
+  },
 };
 
 export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {

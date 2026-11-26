@@ -10,6 +10,8 @@ import type { Language } from '../../../../i18n/translations';
 export type Win7MenuEntry = {
   id: string;
   label: string;
+  /** Second line under the label (the Vista pinned entries: Internet / Internet Explorer). */
+  subtitle?: string;
   submenu?: Win7MenuEntry[];
   appId?: string;
   path?: string;
@@ -21,7 +23,7 @@ const DOCUMENTS_PATH = 'C:\\Users\\C4m1r\\My Documents';
 const PICTURES_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Pictures';
 const MUSIC_PATH = 'C:\\Users\\C4m1r\\My Documents\\My Music';
 
-export function buildWin7StartMenuLists({ isRu, language }: { isRu: boolean; language: Language }) {
+export function buildWin7StartMenuLists({ isRu, language, vista = false, account = 'User' }: { isRu: boolean; language: Language; vista?: boolean; account?: string }) {
   const assets = THEME_ASSETS.win7;
 
   const programs: Win7MenuEntry[] = [
@@ -160,5 +162,31 @@ export function buildWin7StartMenuLists({ isRu, language }: { isRu: boolean; lan
     },
   ];
 
-  return { programs, allPrograms, places };
+  if (!vista) return { programs, allPrograms, places, separatorAfter: ['music', 'games', 'devices-printers'] };
+
+  // Windows Vista: two pinned entries with a second line, then the rest; the places column starts with the user.
+  const pinnedLabels: Record<string, [string, string]> = {
+    'internet-explorer': [isRu ? 'Интернет' : 'Internet', 'Internet Explorer'],
+    outlook: [isRu ? 'Электронная почта' : 'E-mail', isRu ? 'Почта Windows' : 'Windows Mail'],
+  };
+  const vistaPrograms = programs.map((entry) => {
+    const pinned = pinnedLabels[entry.id];
+    return pinned ? { ...entry, label: pinned[0], subtitle: pinned[1] } : entry;
+  });
+  const placeById = (id: string) => places.find((entry) => entry.id === id) as Win7MenuEntry;
+  const vistaPlaces: Win7MenuEntry[] = [
+    { id: 'user', label: account, path: 'C:\\Users\\C4m1r', icon: assets.placesIcons.myDocuments ?? assets.folderIcon },
+    placeById('documents'),
+    placeById('pictures'),
+    placeById('music'),
+    placeById('games'),
+    { id: 'recent', label: isRu ? 'Недавние документы' : 'Recent Items', disabled: true },
+    placeById('computer'),
+    { id: 'network', label: isRu ? 'Сеть' : 'Network', appId: 'network-neighborhood', icon: assets.computerIcon },
+    { id: 'connect-to', label: isRu ? 'Подключение' : 'Connect To', disabled: true },
+    placeById('control-panel'),
+    placeById('default-programs'),
+    placeById('help'),
+  ];
+  return { programs: vistaPrograms, allPrograms, places: vistaPlaces, separatorAfter: ['user', 'games', 'recent', 'connect-to'] };
 }

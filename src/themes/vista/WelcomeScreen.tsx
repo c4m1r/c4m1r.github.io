@@ -3,13 +3,14 @@ import { useApp } from '../../contexts/useApp';
 import { getSessionAccount } from '../../domain/auth/session';
 import { preloadThemeAssets } from '../bootPreload';
 import userAvatar from '../winxp/assets/user.gif';
+import { OS_SOUNDS } from '../../assets/os-sounds';
 
 interface VistaWelcomeScreenProps {
   onComplete: () => void;
 }
 
 /** Shortest time the "Welcome" screen stays up, even when the media is already cached. */
-const MIN_WELCOME_MS = 2400;
+const MIN_WELCOME_MS = 4200;
 
 /**
  * Windows Vista "Welcome" screen: the logon backdrop, the signed-in user's tile and a spinning ring.
@@ -20,6 +21,16 @@ export function VistaWelcomeScreen({ onComplete }: VistaWelcomeScreenProps) {
   const account = getSessionAccount();
   const [minElapsed, setMinElapsed] = useState(false);
   const [ready, setReady] = useState(false);
+
+  // The Vista startup theme plays here, at the real logon, and nowhere else.
+  useEffect(() => {
+    const audio = new Audio(OS_SOUNDS.vista.startup);
+    audio.volume = 0.5;
+    void audio.play().catch(() => undefined);
+    return () => {
+      audio.pause();
+    };
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setMinElapsed(true), MIN_WELCOME_MS);

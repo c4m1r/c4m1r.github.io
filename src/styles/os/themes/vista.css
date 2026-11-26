@@ -31,29 +31,29 @@
 }
 
 .os-vista .start-button {
-  width: 54px !important;
-  height: 54px !important;
-  min-width: 54px !important;
-  max-width: 54px !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
   margin: 0 8px 0 2px !important;
-  top: -12px;
+  top: -7px;
   border: 0 !important;
   border-radius: 0 !important;
-  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat !important;
+  background: url('../../../themes/vista/assets/start-orb.png') center / 40px 40px no-repeat !important;
   box-shadow: none !important;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
   transition: filter 0.15s ease-out !important;
 }
 
 .os-vista .start-button:hover {
-  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat !important;
+  background: url('../../../themes/vista/assets/start-orb.png') center / 40px 40px no-repeat !important;
   box-shadow: none !important;
   filter: brightness(1.22) saturate(1.15) drop-shadow(0 0 6px rgba(120, 220, 255, 0.8));
 }
 
 .os-vista .start-button:active,
 .os-vista .start-button.start-button--open {
-  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat !important;
+  background: url('../../../themes/vista/assets/start-orb.png') center / 40px 40px no-repeat !important;
   box-shadow: none !important;
   filter: brightness(1.08) saturate(1.2) drop-shadow(0 0 7px rgba(120, 220, 255, 0.95));
 }
@@ -278,10 +278,10 @@
 .os-vista .taskbar .start-button.start-button-vista:hover,
 .os-vista .taskbar .start-button.start-button-vista:active,
 .os-vista .taskbar .start-button.start-button-vista.start-button--open {
-  width: 54px !important;
-  height: 54px !important;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50% !important;
-  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat transparent !important;
+  background: url('../../../themes/vista/assets/start-orb.png') center / 40px 40px no-repeat transparent !important;
   box-shadow: none !important;
 }
 .os-vista .taskbar .start-button.start-button-vista > img { display: none !important; }
@@ -325,7 +325,7 @@
   justify-content: center;
   padding: 0 24px 56px;
 }
-.os-vista .login-screen__header { margin-bottom: 36px; }
+.os-vista .login-screen__header { display: none; }
 .os-vista .login-screen__title {
   margin: 0;
   font-size: 22px;
@@ -350,9 +350,9 @@
   --tw-ring-shadow: 0 0 #0000 !important;
 }
 .os-vista .login-screen__user-avatar {
-  width: 96px !important;
-  height: 96px !important;
-  padding: 11px;
+  width: 128px !important;
+  height: 128px !important;
+  padding: 15px;
   border: 0 !important;
   border-radius: 0 !important;
   background: url('../../../themes/vista/assets/user-frame.png') center / 100% 100% no-repeat !important;
@@ -391,8 +391,8 @@
   bottom: 22px;
   width: 300px;
   height: 36px;
-  background: url('../../../themes/vista/assets/logon-logo.png') left center / contain no-repeat;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+  background: url('../../../themes/vista/assets/logon-logo-white.png') left center / contain no-repeat;
+  filter: drop-shadow(0 1px 4px rgba(0, 30, 50, 0.6));
   z-index: 1;
 }
 .os-vista .login-screen__user-avatar { color: #cfe8f4; text-shadow: 0 1px 3px rgba(0, 40, 70, 0.8); display: flex; align-items: center; justify-content: center; }
@@ -461,3 +461,40 @@
 @keyframes vista-welcome-spin { to { transform: rotate(360deg); } }
 @keyframes vista-welcome-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .vista-welcome__ring { animation-duration: 3s; } }
+
+/* Password entry on the Vista logon: glass field with a round arrow, as in the native dialog. */
+.os-vista .login-screen__user-card form input {
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 3px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #1a1a1a !important;
+  font-family: var(--os-font);
+}
+.os-vista .login-screen__user-card form button[type='submit'] {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  background: radial-gradient(circle at 50% 30%, #7fe0a0, #1f9a4a 70%, #0c6a2c) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+}
+.os-vista .login-screen__user-card span.text-blue-100 { color: rgba(255, 255, 255, 0.85) !important; }
+
+/* Vista Start menu proportions (reference 03-start-menu-welcome-center.png): compact rows, two-line pinned entries, dark glass right column. */
+.os-vista .vista-start-menu { width: 400px; min-width: 400px !important; height: 468px; min-height: 468px !important; }
+.os-vista .vista-start-menu .win7-start-menu__main { grid-template-columns: 238px 1fr; padding: 6px 6px 0; }
+.os-vista .vista-start-menu .win7-start-menu__program { min-height: 30px; font-size: 12px; }
+.os-vista .vista-start-menu .win7-start-menu__program-icon { width: 24px; height: 24px; flex-basis: 24px; }
+.os-vista .vista-start-menu .win7-start-menu__program-icon img { max-width: 24px; max-height: 24px; }
+.os-vista .vista-start-menu .win7-start-menu__program-text { display: flex; flex-direction: column; line-height: 1.15; }
+.os-vista .vista-start-menu .win7-start-menu__program-text strong { font-weight: 600; }
+.os-vista .vista-start-menu .win7-start-menu__program-text small { font-size: 11px; color: #555; }
+.os-vista .vista-start-menu .win7-start-menu__program:nth-child(2) { margin-bottom: 4px; border-bottom: 1px solid #e1e1e1; border-radius: 3px 3px 0 0; }
+.os-vista .vista-start-menu .win7-start-menu__program:has(small) { min-height: 40px; }
+.os-vista .vista-start-menu .win7-start-menu__right { padding-top: 44px; }
+.os-vista .vista-start-menu .win7-start-menu__places { margin-top: 0; }
+.os-vista .vista-start-menu .win7-start-menu__place { min-height: 24px; padding: 3px 7px; font-size: 12px; }
+.os-vista .vista-start-menu .win7-start-menu__place img { display: none; }
+.os-vista .vista-start-menu .win7-start-menu__place:first-child { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.os-vista .vista-start-menu .win7-start-menu__all-programs { justify-content: flex-start; padding-left: 12px; font-weight: 700; }
+.os-vista .vista-start-menu .win7-start-menu__search input { border-radius: 10px; }
