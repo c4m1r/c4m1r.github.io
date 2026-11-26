@@ -61,6 +61,17 @@ function generateAlbumArt(track: MediaTrack): { bg: string; accent: string; icon
 }
 
 
+const visualizationPalettes = [
+  { id: 'green', label: 'Green (default)', hue: '0deg' },
+  { id: 'blue', label: 'Blue', hue: '100deg' },
+  { id: 'amber', label: 'Amber', hue: '-85deg' },
+  { id: 'red', label: 'Red', hue: '-130deg' },
+  { id: 'purple', label: 'Purple', hue: '165deg' },
+  { id: 'mono', label: 'Monochrome', hue: '0deg' },
+  { id: 'original', label: 'Original multicolor', hue: '0deg' },
+] as const;
+type VisualizationPalette = typeof visualizationPalettes[number]['id'];
+
 type FourthVisualizerMode =
   | 'Spectrum' | 'Oscilloscope' | 'Peak meter'
   | 'Alchemy' | 'Bars and Waves' | 'Battery'
@@ -433,6 +444,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
     }
   });
   const [playerSettingsOpen, setPlayerSettingsOpen] = useState(false);
+  const [visualizationPalette, setVisualizationPalette] = useState<VisualizationPalette>(() => {
+    try {
+      const saved = window.localStorage.getItem('winamp:visualization-palette:v1');
+      return visualizationPalettes.find((palette) => palette.id === saved)?.id ?? 'green';
+    } catch { return 'green'; }
+  });
+  useEffect(() => {
+    try { window.localStorage.setItem('winamp:visualization-palette:v1', visualizationPalette); }
+    catch { /* Keep the palette for the current session. */ }
+  }, [visualizationPalette]);
   const [m3uStatus, setM3uStatus] = useState('');
   const [localLibraryStatus, setLocalLibraryStatus] = useState('');
 
@@ -1795,6 +1816,16 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
                 <option value="wsz" disabled={!skinVisuals}>Imported .wsz skin{skinVisuals ? ` — ${skinVisuals.name}` : ' (not loaded)'}</option>
               </select>
             </label>
+            <label className="wa-player-settings__row">
+              <span>Visualization palette</span>
+              <select value={visualizationPalette} onChange={(event) => {
+                const next = visualizationPalettes.find((palette) => palette.id === event.currentTarget.value);
+                if (next) setVisualizationPalette(next.id);
+              }}>
+                {visualizationPalettes.map((palette) => <option key={palette.id} value={palette.id}>{palette.label}</option>)}
+              </select>
+            </label>
+            <p>Palette applies to the fourth window's built-in visualizations. MilkDrop preset colors remain unchanged.</p>
             <p>Appearance only: Dev Alpha, Webamp Classic and imported .wsz skins share the existing player controls and state.</p>
           </div>
         )}
@@ -2508,7 +2539,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         ref={videoWindowRef}
         tabIndex={isVideoFullscreen ? -1 : undefined}
         className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'} ${videoShade ? 'wa-window--shaded' : ''} ${isVideoFullscreen ? 'wa-video--fullscreen' : ''}`}
-        style={isVideoFullscreen ? undefined : { left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80, ...(videoWidth !== null ? { width: videoWidth, minWidth: 0, maxWidth: 'calc(100vw - 8px)' } : {}) }}
+        data-viz-palette={visualizationPalette}
+        style={{ '--wa-viz-hue': visualizationPalettes.find((palette) => palette.id === visualizationPalette)?.hue ?? '0deg', ...(isVideoFullscreen ? {} : { left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80, ...(videoWidth !== null ? { width: videoWidth, minWidth: 0, maxWidth: 'calc(100vw - 8px)' } : {}) }) } as CSSProperties}
         onPointerDown={() => setActiveWindow('video')}
         onPointerUp={handleVideoStagePointerUp}
         onDoubleClick={(event) => {
