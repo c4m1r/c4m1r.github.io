@@ -936,18 +936,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         setIsVideoFullscreen(false);
       }
     }
-    if (!detachedWindows.includes('video')) {
-      const offset = visible ? 275 : -275;
-      setWindowPositions((current) => ({
-        ...current,
-        main: { ...current.main, y: current.main.y + offset },
-        equalizer: { ...current.equalizer, y: current.equalizer.y + offset },
-        playlist: { ...current.playlist, y: current.playlist.y + offset },
-        video: visible
-          ? { x: current.main.x, y: current.main.y }
-          : current.video,
-      }));
-    }
+    // Visibility changes must never move any window, including the reopened one.
     if (visible) {
       // Reopen in a lightweight idle state; media and visualizer resources are
       // initialized only when the user selects Video or a visualization mode.
@@ -2733,12 +2722,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           onPointerMove={(event) => {
             const drag = videoResizeRef.current;
             if (!drag || drag.pointerId !== event.pointerId) return;
-            const right = drag.left + drag.width;
             const minWidth = Math.min(269, drag.width);
-            const maxWidth = Math.max(minWidth, Math.min(window.innerWidth - 8, right - 4));
-            const width = Math.max(minWidth, Math.min(maxWidth, drag.width + drag.x - event.clientX));
+            const maxWidth = Math.max(minWidth, window.innerWidth - drag.left - 4);
+            const width = Math.max(minWidth, Math.min(maxWidth, Math.round(drag.width + event.clientX - drag.x)));
             setVideoWidth(width);
-            setWindowPositions((current) => ({ ...current, video: { ...current.video, x: right - width } }));
           }}
           onLostPointerCapture={() => { videoResizeRef.current = null; }}
           onPointerUp={() => { videoResizeRef.current = null; }}
@@ -2765,13 +2752,13 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           }}
           onPointerDown={(event) => event.stopPropagation()}
         >
-          <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}>−5s</button>
-          <button type="button" title={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} aria-label={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} onClick={() => { previousFullscreenItem(); revealFullscreenControls(); }}>|◀</button>
-          <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}>{videoMode === 'video' ? (videoIsPlaying ? 'Ⅱ' : '▶') : (isPlaying ? 'Ⅱ' : '▶')}</button>
-          <button type="button" title={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} aria-label={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} onClick={() => { nextFullscreenItem(); revealFullscreenControls(); }}>▶|</button>
-          <button type="button" title="Вперёд на 5 секунд" aria-label="Вперёд на 5 секунд" onClick={() => { seekFullscreenMedia(5); revealFullscreenControls(); }}>+5s</button>
-          <button type="button" title="Переключить режим" aria-label="Переключить режим" onClick={() => { cycleFullscreenMode(); revealFullscreenControls(); }}>MODE</button>
-          <button type="button" title="Выйти из полноэкранного режима" aria-label="Выйти из полноэкранного режима" onClick={exitVideoFullscreen}>✕</button>
+          <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 2 12l9 7V5Zm10 0-9 7 9 7V5Z" fill="currentColor"/></svg></button>
+          <button type="button" title={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} aria-label={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} onClick={() => { previousFullscreenItem(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h3v14H4zm16 0L8 12l12 7V5Z" fill="currentColor"/></svg></button>
+          <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true">{(videoMode === 'video' ? videoIsPlaying : isPlaying) ? <path d="M6 5h4v14H6zm8 0h4v14h-4z" fill="currentColor"/> : <path d="M7 4v16l14-8L7 4Z" fill="currentColor"/>}</svg></button>
+          <button type="button" title={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} aria-label={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} onClick={() => { nextFullscreenItem(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5h3v14h-3zM4 5l12 7-12 7V5Z" fill="currentColor"/></svg></button>
+          <button type="button" title="Вперёд на 5 секунд" aria-label="Вперёд на 5 секунд" onClick={() => { seekFullscreenMedia(5); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 9 7-9 7V5Zm10 0 9 7-9 7V5Z" fill="currentColor"/></svg></button>
+          <button type="button" title="Переключить режим" aria-label="Переключить режим" onClick={() => { cycleFullscreenMode(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h3l3-6 4 12 3-6h5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+          <button type="button" title="Выйти из полноэкранного режима" aria-label="Выйти из полноэкранного режима" onClick={exitVideoFullscreen}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h5V4m11 5h-5V4M4 15h5v5m11-5h-5v5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
         </div>}
         </>}
       </div>}
