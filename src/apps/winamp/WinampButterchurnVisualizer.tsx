@@ -29,6 +29,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
   const runtimeRef = useRef<ButterchurnRuntime | null>(null);
   const presetIndexRef = useRef(presetIndex);
   const [status, setStatus] = useState('LOADING MILKDROP ENGINE…');
+  const [ready, setReady] = useState(false);
   const [presetName, setPresetName] = useState('');
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     let connectedNode: AudioNode | null = null;
     let webglContext: WebGL2RenderingContext | null = null;
     let webglAttempted = false;
+    let initializationStage = 'WebGL probe';
     let usingWindowResizeListener = false;
 
     const resize = () => {
@@ -106,6 +108,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       canvas.removeEventListener('webglcontextlost', handleWebGLContextLost);
+      if (!disposed) setReady(false);
       const active = runtimeRef.current;
       runtimeRef.current = null;
       if (active) {
@@ -148,6 +151,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         }
         probeContext.getExtension('WEBGL_lose_context')?.loseContext();
 
+        initializationStage = 'audio graph';
         const { ctx } = winampController.getWebAudio();
         const audioNode = winampController.getVisualizerAudioNode();
         if (!ctx || !audioNode) {
@@ -155,6 +159,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
           return;
         }
 
+        initializationStage = 'module import';
         const [engineModule, presetModule] = await Promise.all([
           import('butterchurn'),
           import('butterchurn-presets'),
@@ -163,7 +168,8 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
 
         const engine = engineModule.default;
         const presetPack = presetModule.default;
-        const presets = presetPack.getPresets();
+        initializationStage = 'preset pack';
+        const presets = { ...presetPack.getPresets() };
         const presetNames = Object.keys(presets).sort((a, b) => a.localeCompare(b));
         if (!presetNames.length) throw new Error('The local preset pack is empty.');
 
@@ -172,6 +178,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         const width = Math.max(1, Math.round(bounds.width));
         const height = Math.max(1, Math.round(bounds.height));
 
+        initializationStage = 'renderer creation';
         webglAttempted = true;
         visualizer = engine.createVisualizer(ctx, canvas, {
           width,
@@ -183,12 +190,31 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         });
         webglContext = canvas.getContext('webgl2');
         connectedNode = audioNode;
+        initializationStage = 'audio connection';
         visualizer.connectAudio(audioNode);
         runtimeRef.current = { visualizer, audioNode, presetNames, presets, disposed: false };
 
         const firstIndex = ((presetIndexRef.current % presetNames.length) + presetNames.length) % presetNames.length;
-        setPresetName(presetNames[firstIndex]);
-        await visualizer.loadPreset(presets[presetNames[firstIndex]], 2.5);
+        initializationStage = 'initial preset';
+        let loaded = false;
+        let lastError: unknown;
+        for (let offset = 0; offset < Math.min(presetNames.length, 8); offset++) {
+          const index = (firstIndex + offset) % presetNames.length;
+          const name = presetNames[index];
+          try {
+            await visualizer.loadPreset(presets[name], 0);
+            if (disposed) return;
+            presetIndexRef.current = index;
+            setPresetName(name);
+            loaded = true;
+            break;
+          } catch (error) {
+            if (disposed) return;
+            lastError = error;
+            console.warn('MilkDrop initial preset rejected:', name, error);
+          }
+        }
+        if (!loaded) throw lastError ?? new Error('No initial preset accepted');
         if (disposed) return;
 
         if (typeof ResizeObserver !== 'undefined') {
@@ -202,10 +228,11 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
         canvas.addEventListener('webglcontextlost', handleWebGLContextLost);
         document.addEventListener('visibilitychange', handleVisibilityChange);
         setStatus('');
+        setReady(true);
         startRenderer();
       } catch (error) {
         console.error('Unable to initialize Butterchurn:', error);
-        if (!disposed) setStatus('MILKDROP COULD NOT BE INITIALIZED');
+        if (!disposed) setStatus('MILKDROP: ' + initializationStage + ' failed. ' + (error instanceof Error ? error.message : String(error)));
         cleanup();
       }
     };
@@ -225,7 +252,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     const name = runtime.presetNames[index];
     const preset = runtime.presets[name];
     setPresetName(name);
-    void Promise.resolve(runtime.visualizer.loadPreset(preset, 2.5)).catch((error: unknown) => {
+    void Promise.resolve().then(() => runtime.disposed ? undefined : runtime.visualizer.loadPreset(preset, 2.5)).then(() => { if (!runtime.disposed && runtimeRef.current === runtime) setStatus(''); }).catch((error: unknown) => {
       if (runtime.disposed || runtimeRef.current !== runtime) return;
       console.error('Butterchurn preset switch failed:', error);
       setStatus('PRESET COULD NOT BE LOADED');
@@ -291,7 +318,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
     presetIndexRef.current = nextIndex;
     const name = runtime.presetNames[nextIndex];
     setPresetName(name);
-    void Promise.resolve(runtime.visualizer.loadPreset(runtime.presets[name], 2.5)).catch((error: unknown) => {
+    void Promise.resolve().then(() => runtime.disposed ? undefined : runtime.visualizer.loadPreset(runtime.presets[name], 2.5)).then(() => { if (!runtime.disposed && runtimeRef.current === runtime) setStatus(''); }).catch((error: unknown) => {
       if (runtime.disposed || runtimeRef.current !== runtime) return;
       console.error('Butterchurn preset advance failed:', error);
       setStatus('PRESET COULD NOT BE LOADED');
@@ -304,7 +331,7 @@ export default function WinampButterchurnVisualizer({ presetIndex }: WinampButte
       <canvas ref={canvasRef} aria-label="Genuine MilkDrop visualization" />
       <input ref={presetFileRef} type="file" accept=".json,.milk,application/json,text/plain" hidden onChange={(event) => { void importPresetFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} />
       <div className="wa-butterchurn__tools">
-        <button type="button" className="wa-butterchurn__import" onClick={() => presetFileRef.current?.click()} title="Import Butterchurn JSON or MilkDrop .milk preset (EEL2 and supported HLSL shaders)">LOAD PRESET</button>
+        <button type="button" className="wa-butterchurn__import" disabled={!ready} onClick={() => presetFileRef.current?.click()} title="Import Butterchurn JSON or MilkDrop .milk preset (EEL2 and supported HLSL shaders)">LOAD PRESET</button>
         <button type="button" className="wa-butterchurn__import" onClick={advancePreset} title="Advance through bundled and imported presets">NEXT PRESET</button>
       </div>
       {status && <div className="wa-butterchurn__status" role="status" aria-live="polite">{status}</div>}
