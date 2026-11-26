@@ -181,7 +181,7 @@ function renderFourthVisualizer(mode: FourthVisualizerMode, bars: number[], peak
     <defs><radialGradient id={gradientId("milkdrop")}><stop stopColor="#fff" /><stop offset=".35" stopColor="#4be8ff" /><stop offset="1" stopColor="#18216c" stopOpacity="0" /></radialGradient></defs>
     {presetIndex % 4 === 0 && <g><circle className="wa-milkdrop-pulse" cx="50" cy="50" r={15+averageLevel*.3} fill={`url(#${gradientId("milkdrop")})`} opacity=".8"/><polyline className="wa-viz-wave" points={radialPoints}/><polyline className="wa-viz-wave wa-viz-wave--secondary" points={wavePoints}/></g>}
     {presetIndex % 4 === 1 && <g>{[0,1,2,3,4].map((flame)=><path key={flame} d={waveform.map((v,i)=>{const x=8+i/Math.max(1,waveform.length-1)*84;const y=50+(v-50)*(.22+flame*.055)+Math.sin(i*.18+flame)*((safeBars[flame*3]||0)*.08+2);return `${i?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke={`hsl(${flame*47+175} 100% 68%)`} strokeWidth={1.5-flame*.18} opacity={.85-flame*.1}/>)}</g>}
-    {presetIndex % 4 === 2 && <g>{[0,1,2,3,4,5].map((depth)=><polygon key={depth} points={safeBars.map((v,i)=>{const a=i/safeBars.length*Math.PI*2;const r=(12+v*.22)*(1-depth*.105);return `${50+Math.cos(a+depth*.08)*r},${50+Math.sin(a+depth*.08)*r}`;}).join(' ')} fill="none" stroke={`hsl(${185+depth*26} 95% 68%)`} strokeWidth=".8" opacity={.9-depth*.12}/>)}<circle className="wa-milkdrop-pulse" cx="50" cy="50" r={5+averageLevel*.08} fill="url(#wa-milkdrop)"/></g>}
+    {presetIndex % 4 === 2 && <g>{[0,1,2,3,4,5].map((depth)=><polygon key={depth} points={safeBars.map((v,i)=>{const a=i/safeBars.length*Math.PI*2;const r=(12+v*.22)*(1-depth*.105);return `${50+Math.cos(a+depth*.08)*r},${50+Math.sin(a+depth*.08)*r}`;}).join(' ')} fill="none" stroke={`hsl(${185+depth*26} 95% 68%)`} strokeWidth=".8" opacity={.9-depth*.12}/>)}<circle className="wa-milkdrop-pulse" cx="50" cy="50" r={5+averageLevel*.08} fill={`url(#${gradientId("milkdrop")})`}/></g>}
     {presetIndex % 4 === 3 && <g><polygon points={radialPoints} fill="rgba(255,70,210,.08)" stroke="#ff69d4" strokeWidth="1.1"/>{[0,1,2,3].map((echo)=><polyline key={echo} points={waveform.map((v,i)=>{const x=50+(i/Math.max(1,waveform.length-1)-.5)*(72-echo*10);const y=50+(v-50)*(.28+echo*.045);return `${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')} fill="none" stroke={`hsl(${185+echo*39} 100% 68%)`} strokeWidth=".85" opacity={.8-echo*.14}/>)}</g>}
   </svg>;
 }
@@ -970,6 +970,8 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           video: { x: 24, y: 0 },
         }
   ));
+  const [videoWidth, setVideoWidth] = useState<number | null>(null);
+  const videoResizeRef = useRef<{ pointerId: number; x: number; width: number; left: number } | null>(null);
   const [playlistSize, setPlaylistSize] = useState({ width: 269, height: 232 });
   const playlistResizeRef = useRef<{ pointerId: number; pointerX: number; pointerY: number; width: number; height: number } | null>(null);
   const dragRef = useRef<{
@@ -2506,7 +2508,7 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
         ref={videoWindowRef}
         tabIndex={isVideoFullscreen ? -1 : undefined}
         className={`wa-window wa-video ${videoMode === 'video' ? 'wa-video--video' : 'wa-video--visualizer'} ${videoShade ? 'wa-window--shaded' : ''} ${isVideoFullscreen ? 'wa-video--fullscreen' : ''}`}
-        style={isVideoFullscreen ? undefined : { left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80 }}
+        style={isVideoFullscreen ? undefined : { left: windowPositions.video.x, top: windowPositions.video.y, zIndex: activeWindow === 'video' ? 90 : 80, ...(videoWidth !== null ? { width: videoWidth, minWidth: 0, maxWidth: 'calc(100vw - 8px)' } : {}) }}
         onPointerDown={() => setActiveWindow('video')}
         onPointerUp={handleVideoStagePointerUp}
         onDoubleClick={(event) => {
@@ -2673,6 +2675,33 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
             <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
           </div>
         )}
+        {!isVideoFullscreen && <div
+          className="wa-video__resize-handle"
+          role="separator"
+          aria-label="Resize visualization width"
+          title="Drag horizontally to resize visualization"
+          onPointerDown={(event) => {
+            if (event.button !== 0 || !videoWindowRef.current) return;
+            event.preventDefault();
+            event.stopPropagation();
+            setActiveWindow('video');
+            videoResizeRef.current = { pointerId: event.pointerId, x: event.clientX, width: videoWindowRef.current.offsetWidth, left: windowPositions.video.x };
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }}
+          onPointerMove={(event) => {
+            const drag = videoResizeRef.current;
+            if (!drag || drag.pointerId !== event.pointerId) return;
+            const right = drag.left + drag.width;
+            const minWidth = Math.min(275, drag.width);
+            const maxWidth = Math.max(minWidth, Math.min(window.innerWidth - 8, right - 4));
+            const width = Math.max(minWidth, Math.min(maxWidth, drag.width + drag.x - event.clientX));
+            setVideoWidth(width);
+            setWindowPositions((current) => ({ ...current, video: { ...current.video, x: right - width } }));
+          }}
+          onLostPointerCapture={() => { videoResizeRef.current = null; }}
+          onPointerUp={() => { videoResizeRef.current = null; }}
+          onPointerCancel={() => { videoResizeRef.current = null; }}
+        />}
         {isVideoFullscreen && <div
           role="toolbar"
           aria-label="Fullscreen media controls"
