@@ -1196,7 +1196,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                               handleNavigate(item);
                             }}
                           >
-                            <div className="w-16 h-16 flex items-center justify-center mb-1">
+                            <div className="w-8 h-8 flex items-center justify-center mb-1">
                               <img
                                 src={resolveFileIcon(item, theme)}
                                 alt={item.name}

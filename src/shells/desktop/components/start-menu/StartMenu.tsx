@@ -26,7 +26,7 @@ export function StartMenu({ onClose, onLaunchApp, onOpenPath, onSystemCommand, o
     );
   }
 
-  if (theme === 'win7') {
+  if (theme === 'win7' || theme === 'vista') {
     return (
       <StartMenu7
         onClose={onClose}

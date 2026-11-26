@@ -223,3 +223,65 @@
   color: #000 !important;
   text-shadow: 0 0 6px #fff, 0 0 6px #fff !important;
 }
+
+/* ---- Vista Start menu: taller dark-glass right pane, bottom-anchored above the 30px taskbar ---- */
+.os-vista .win7-start-menu {
+  bottom: 30px;
+  left: 0;
+  width: 410px;
+  min-width: 410px !important;
+  height: 500px;
+  min-height: 500px !important;
+  border-radius: 8px 8px 0 0 !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.04) 100px, transparent 170px),
+    rgba(14, 62, 78, 0.82) !important;
+}
+.os-vista .win7-start-menu__left { border-radius: 4px 0 0 4px; }
+.os-vista .win7-start-menu__user-frame {
+  top: -26px;
+  right: 14px;
+  width: 58px;
+  height: 58px;
+}
+.os-vista .win7-start-menu__user-frame img { width: 50px; height: 50px; }
+.os-vista .win7-start-menu__username { display: none; }
+.os-vista .win7-start-menu__places { margin-top: 38px; }
+.os-vista .win7-start-menu__program { min-height: 36px; }
+.os-vista .win7-start-menu__footer { justify-content: flex-start; padding-left: 20px; background: rgba(0, 0, 0, 0.12); }
+.os-vista .win7-start-menu__shutdown {
+  min-width: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 0;
+  border-radius: 5px 0 0 5px;
+  background: radial-gradient(circle at 50% 40%, #f08a50, #c8381a 60%, #8a1a08) !important;
+  border-color: #5a1208;
+  position: relative;
+}
+.os-vista .win7-start-menu__shutdown::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+.os-vista .win7-start-menu__shutdown-arrow {
+  height: 28px;
+  background: linear-gradient(#5aa0c8, #2c6f98 50%, #1c5578) !important;
+}
+
+/* Orb in every state: keep the sprite, drop the Windows 7 open/active plate (higher specificity). */
+.os-vista .taskbar .start-button.start-button-vista,
+.os-vista .taskbar .start-button.start-button-vista:hover,
+.os-vista .taskbar .start-button.start-button-vista:active,
+.os-vista .taskbar .start-button.start-button-vista.start-button--open {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 50% !important;
+  background: url('../../../themes/vista/assets/start-orb.png') center / 54px 54px no-repeat transparent !important;
+  box-shadow: none !important;
+}
+.os-vista .taskbar .start-button.start-button-vista > img { display: none !important; }

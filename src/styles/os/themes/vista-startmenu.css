@@ -1,0 +1,319 @@
+/* Dedicated Windows 7 Start menu. */
+.win7-start-menu {
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  bottom: 40px;
+  width: 430px;
+  min-width: 430px !important;
+  height: 520px;
+  min-height: 520px !important;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  border: 1px solid rgba(0, 0, 0, .62) !important;
+  border-radius: 7px 7px 0 0 !important;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.20), rgba(255,255,255,.04) 90px, transparent 150px),
+    rgba(17, 50, 78, .78) !important;
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.55),
+    inset 0 0 0 1px rgba(255,255,255,.22) !important;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  animation: win7-start-open 120ms ease-out;
+}
+
+.win7-start-menu__glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, rgba(255,255,255,.13), transparent 22%, rgba(0,0,0,.06));
+}
+
+.win7-start-menu__main {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 258px 1fr;
+  min-height: 0;
+  flex: 1;
+  padding: 7px 7px 0;
+}
+
+.win7-start-menu__left {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  border: 1px solid rgba(0,0,0,.26);
+  border-radius: 5px 0 0 5px;
+  background: rgba(255,255,255,.98);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+  overflow: hidden;
+}
+
+.win7-start-menu__programs {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.win7-start-menu__program {
+  width: 100%;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: #222;
+  text-align: left;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+  cursor: default;
+}
+
+.win7-start-menu__program:hover,
+.win7-start-menu__program:focus-visible {
+  outline: none;
+  border-color: #b8d6eb;
+  background: linear-gradient(#f9fcff, #e5f3fb);
+}
+
+.win7-start-menu__program-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+}
+
+.win7-start-menu__program-icon img {
+  max-width: 30px;
+  max-height: 30px;
+  object-fit: contain;
+}
+
+.win7-start-menu__empty {
+  padding: 18px 12px;
+  color: #777;
+  font-size: 12px;
+  text-align: center;
+}
+
+.win7-start-menu__all-programs {
+  height: 28px;
+  margin: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 0;
+  border-top: 1px solid #e1e1e1;
+  background: transparent;
+  color: #222;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-start-menu__all-programs:hover {
+  color: #075d9a;
+}
+
+.win7-start-menu__search {
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 5px 6px 6px;
+  border-top: 1px solid #d8d8d8;
+  background: #f3f3f3;
+}
+
+.win7-start-menu__search input {
+  width: 100%;
+  height: 24px;
+  padding: 2px 25px 2px 6px;
+  border: 1px solid #7f9db9;
+  border-radius: 2px;
+  background: #fff;
+  color: #222;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.08);
+}
+
+.win7-start-menu__search input:focus {
+  outline: 1px solid rgba(51,142,218,.42);
+  outline-offset: -2px;
+}
+
+.win7-start-menu__search svg {
+  position: absolute;
+  right: 11px;
+  color: #57758c;
+  pointer-events: none;
+}
+
+.win7-start-menu__right {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  padding: 57px 7px 6px 9px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.8);
+}
+
+.win7-start-menu__user-frame {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 3px;
+  border: 2px solid rgba(255,255,255,.5);
+  border-radius: 7px;
+  background: rgba(255,255,255,.12);
+  box-shadow: 0 3px 8px rgba(0,0,0,.45), inset 0 0 6px rgba(255,255,255,.24);
+}
+
+.win7-start-menu__user-frame img {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.win7-start-menu__username {
+  position: absolute;
+  top: 24px;
+  left: 14px;
+  right: 96px;
+  height: 24px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.win7-start-menu__places {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* Clears the user picture in the top-right corner, which is absolutely positioned above. */
+  margin-top: 92px;
+}
+
+.win7-start-menu__place {
+  position: relative;
+  width: 100%;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 7px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.75);
+  text-align: left;
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-start-menu__place img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.win7-start-menu__place:not(.is-disabled):hover,
+.win7-start-menu__place:not(.is-disabled):focus-visible {
+  outline: none;
+  border-color: rgba(255,255,255,.26);
+  background: linear-gradient(to bottom, rgba(255,255,255,.16), rgba(255,255,255,.05));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.win7-start-menu__place.has-separator {
+  margin-top: 5px;
+}
+
+.win7-start-menu__place.has-separator::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  top: -4px;
+  height: 1px;
+  background: rgba(255,255,255,.16);
+}
+
+.win7-start-menu__place.is-disabled {
+  opacity: .72;
+}
+
+.win7-start-menu__footer {
+  position: relative;
+  z-index: 1;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 7px 10px;
+  background: rgba(0,0,0,.05);
+}
+
+.win7-start-menu__shutdown,
+.win7-start-menu__shutdown-arrow {
+  height: 27px;
+  border: 1px solid #1b3f5d;
+  background: linear-gradient(#477da4, #2d638b 48%, #245475 52%, #1b4565);
+  color: #fff;
+  text-shadow: 0 1px 1px #15344c;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.24);
+  font: 12px "Segoe UI", Tahoma, sans-serif;
+}
+
+.win7-start-menu__shutdown {
+  min-width: 105px;
+  padding: 0 12px;
+  border-radius: 3px 0 0 3px;
+}
+
+.win7-start-menu__shutdown-arrow {
+  width: 25px;
+  padding: 0;
+  margin-left: -1px;
+  border-radius: 0 3px 3px 0;
+}
+
+.win7-start-menu__shutdown:hover,
+.win7-start-menu__shutdown-arrow:hover {
+  background: linear-gradient(#5c98c2, #3979a4 48%, #2b6b95 52%, #245c82);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.32), 0 0 6px rgba(99,190,255,.35);
+}
+
+@keyframes win7-start-open {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-height: 620px) {
+  .win7-start-menu {
+    height: min(520px, calc(100vh - 42px));
+    min-height: 420px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .win7-start-menu {
+    animation: none;
+  }
+}
+
