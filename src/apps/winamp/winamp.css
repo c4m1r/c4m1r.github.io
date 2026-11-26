@@ -9907,3 +9907,79 @@
 .wa-shell .wa-titlebar { cursor: grab; touch-action: none; }
 .wa-shell .wa-titlebar:active { cursor: grabbing; }
 .wa-shell .wa-titlebar button { cursor: pointer; }
+
+/* Classic: shared outer bevel, fixed 269px faceplate and pixel calibration. */
+.wa-shell--webamp-classic :is(.wa-main, .wa-equalizer, .wa-playlist, .wa-video:not(.wa-video--fullscreen)) {
+  box-sizing: border-box;
+  border: 1px solid;
+  border-color: #77796e #090a08 #050605 #77796e;
+  box-shadow: inset 1px 1px 0 rgba(229,232,213,.2), inset -1px -1px 0 #090a07;
+  background: linear-gradient(90deg, #77796e 0, #55574d 1px, transparent 3px, transparent calc(100% - 3px), #11120f calc(100% - 1px), #24251f 100%), linear-gradient(180deg, #77796e 0, #36372f 2px, #22231e 100%);
+}
+.wa-shell--webamp-classic :is(.wa-main, .wa-equalizer, .wa-playlist, .wa-video:not(.wa-video--fullscreen)) > .wa-titlebar {
+  background: linear-gradient(90deg, rgba(220,222,205,.2), transparent 7px, transparent calc(100% - 7px), rgba(0,0,0,.42)), linear-gradient(180deg, #77796e 0%, #5b5d52 17%, #414239 54%, #292b24 100%);
+  box-shadow: inset 0 1px rgba(255,255,255,.3), inset 0 -1px rgba(0,0,0,.6);
+}
+.wa-shell--webamp-classic .wa-video:not(.wa-video--fullscreen) {
+  width: min(269px, calc(100vw - 8px));
+  max-width: calc(100vw - 8px);
+  margin: 0;
+}
+.wa-shell--webamp-classic .wa-equalizer .wa-eq__sliders-container {
+  left: -34px !important;
+  /* Preserve column spacing; shift the complete scale, divider and faders together. */
+  width: calc(100% + 22px) !important;
+}
+.wa-shell .wa-video__resize-handle {
+  left: auto;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background: repeating-linear-gradient(135deg, transparent 0 3px, #80918a 3px 4px);
+  cursor: ew-resize;
+}
+.wa-shell .wa-video__fullscreen-controls {
+  gap: 3px;
+  padding: 5px 7px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  background: rgba(12,16,24,.30);
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  bottom: max(12px, env(safe-area-inset-bottom));
+}
+.wa-shell .wa-video__fullscreen-controls button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 5px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: rgba(255,255,255,.92);
+}
+.wa-shell .wa-video__fullscreen-controls button svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+.wa-shell .wa-video__fullscreen-controls button:hover,
+.wa-shell .wa-video__fullscreen-controls button:focus-visible {
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.3);
+}
+@media (pointer: coarse) {
+  .wa-shell .wa-video__fullscreen-controls button {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+  }
+}
