@@ -13,7 +13,7 @@ export interface OsEdition {
   buildNumber?: string;
 }
 
-export type EditionProfileId = 'win-98' | 'win2000' | 'win-xp' | 'win7' | 'win8' | 'win81';
+export type EditionProfileId = 'win-98' | 'win2000' | 'win-xp' | 'vista' | 'win7' | 'win8' | 'win81';
 
 export const EDITION_STORAGE_KEY = 'webos-grub-editions-v1';
 
@@ -103,6 +103,51 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
       descriptionRu: '64-битная редакция на базе серверного ядра Windows Server 2003 SP1 для работы с 64-битными вычислениями и ОЗУ до 128 ГБ.',
       wallpaper: winxpBliss,
       buildNumber: 'Build 3790.srv03_sp2_rtm',
+    },
+  ],
+  vista: [
+    {
+      id: 'starter',
+      label: 'Starter',
+      labelRu: 'Начальная',
+      descriptionRu: 'Урезанная редакция Windows Vista для развивающихся рынков: без Aero, не более трёх одновременно запущенных программ и 1 ГБ памяти. Оформление Windows Vista Basic.',
+      backgroundColor: '#1b6c8f',
+      buildNumber: 'Build 6002: Service Pack 2',
+    },
+    {
+      id: 'home-basic',
+      label: 'Home Basic',
+      labelRu: 'Домашняя базовая',
+      descriptionRu: 'Базовая домашняя редакция без Aero Glass и Media Center. Окна рисуются в упрощённом стиле Windows Vista Basic.',
+      buildNumber: 'Build 6002: Service Pack 2',
+    },
+    {
+      id: 'home-premium',
+      label: 'Home Premium',
+      labelRu: 'Домашняя расширенная',
+      descriptionRu: 'Домашняя редакция с интерфейсом Aero Glass, Windows Media Center, Windows Photo Gallery и записью DVD.',
+      buildNumber: 'Build 6002: Service Pack 2',
+    },
+    {
+      id: 'business',
+      label: 'Business',
+      labelRu: 'Business',
+      descriptionRu: 'Редакция для малого бизнеса: Aero Glass, домен Active Directory, удалённый рабочий стол и теневые копии файлов.',
+      buildNumber: 'Build 6002: Service Pack 2',
+    },
+    {
+      id: 'enterprise',
+      label: 'Enterprise',
+      labelRu: 'Корпоративная',
+      descriptionRu: 'Корпоративная редакция с BitLocker, многоязычным интерфейсом и подсистемой для UNIX-приложений. Продавалась только по корпоративным лицензиям.',
+      buildNumber: 'Build 6002: Service Pack 2',
+    },
+    {
+      id: 'ultimate',
+      label: 'Ultimate',
+      labelRu: 'Максимальная',
+      descriptionRu: 'Максимальная редакция Windows Vista: всё из Home Premium и Enterprise плюс Ultimate Extras.',
+      buildNumber: 'Build 6002: Service Pack 2',
     },
   ],
   win7: [

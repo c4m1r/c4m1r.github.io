@@ -1,0 +1,26 @@
+/* Windows Vista Basic: Starter and Home Basic have no Aero Glass, so frames are opaque (class `vista-basic` on the shell). */
+.os-vista.vista-basic .os-window {
+  background: linear-gradient(to bottom, #8fb7d9 0%, #5f8fba 45%, #4a7aa6 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #1f3f5e !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.35) !important;
+}
+.os-vista.vista-basic .os-window--inactive {
+  background: linear-gradient(to bottom, #c9d6e2, #aebccb) !important;
+}
+.os-vista.vista-basic .os-titlebar {
+  color: #fff !important;
+  text-shadow: 0 1px 2px rgba(0, 30, 60, 0.8) !important;
+}
+.os-vista.vista-basic .os-window--inactive .os-titlebar { color: #3b4a5a !important; text-shadow: none !important; }
+.os-vista.vista-basic .taskbar {
+  background: linear-gradient(to bottom, #5a7fa6 0%, #35567d 48%, #20405f 52%, #2c4f74 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.os-vista.vista-basic .win7-start-menu {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: #2b5276 !important;
+}

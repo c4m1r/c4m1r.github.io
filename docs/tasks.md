@@ -892,3 +892,6 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 
 - Widgets/Gadgets entry: the desktop "Widgets" icon is removed on every skin; a "Виджеты" shortcut (appId `widget-gallery`) lives in the desktop Программы folder (`FileSystem.ts`), and `launchApp('widget-gallery')` opens the gallery. 2026-11-26.
 - Memory: see "Memory budget" in `docs/reference-cache.md` (avatar GIF 1080px -> 160px, preload by fetch only). 2026-11-26.
+
+- Vista editions (GRUB, E): Starter, Home Basic, Home Premium, Business, Enterprise, Ultimate in `osEditions.ts` (Build 6002: Service Pack 2). Starter and Home Basic add `vista-basic` to the shell and load `vista-basic.css` (opaque Vista Basic frames and taskbar, no glass), as in `eat/screens/oc/vista/01-window-chrome-styles.png`. Extra reference saved: `eat/screens/oc/vista/03-start-menu-welcome-center.png` (Start menu, Welcome Center, Sidebar). 2026-11-26.
+- Note: another session edits the Vista start menu, logon, orb (40 px) and Welcome sound in the same working tree; commit by file, not `git add -A`.

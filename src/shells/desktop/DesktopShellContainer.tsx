@@ -63,7 +63,7 @@ import {
   getOsAppTitle,
   getOsSystemLabel,
 } from '../os/osSkins';
-import { getActiveEdition } from '../os/osEditions';
+import { getActiveEdition, getSelectedEditionId } from '../os/osEditions';
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
 import { AppleSystemBar } from './components/AppleSystemBar';
 import { AppleDock } from './components/AppleDock';
@@ -1417,7 +1417,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       ref={desktopRef}
       {...osAttributes}
       data-color-scheme={themeKey === 'webos' ? desktopColorScheme : undefined}
-      className={`${themeStyles.body.join(' ')} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
+      className={`${themeStyles.body.join(' ')} ${themeKey === 'vista' && ['starter', 'home-basic'].includes(getSelectedEditionId('vista')) ? 'vista-basic' : ''} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
       style={{
         backgroundImage: customWallpaper
           ? `url(${customWallpaper})`
