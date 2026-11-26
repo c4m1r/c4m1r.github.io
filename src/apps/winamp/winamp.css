@@ -9782,3 +9782,52 @@
   white-space: nowrap;
 }
 .wa-shell .wa-video__queue-row-kind { flex: 0 0 auto; color: #829b9d; font-size: 8px; }
+
+/* Fourth window: green default analyzer, left-edge resize and centered fullscreen. */
+.wa-shell .wa-video__bars span {
+  background: linear-gradient(to top, #086b28, #24d65b 58%, #c4ff78);
+  box-shadow: 0 0 5px #24b64b;
+  max-width: none;
+}
+.wa-shell .wa-video__bars--peaks span {
+  background: linear-gradient(180deg, #eaffcd 0%, #9aef52 16%, #2ebc51 18%, #08732d 100%);
+  box-shadow: 0 0 5px #38c75d;
+}
+.wa-shell .wa-video__visualizer-label { color: #8ee9a1; }
+.wa-shell .wa-video__visualizer > svg .wa-viz-wave { stroke: #56ef79; }
+.wa-shell .wa-video__visualizer > svg .wa-viz-wave--secondary { stroke: #b5ef70; }
+.wa-shell .wa-video__visualizer > svg .wa-viz-wave--soft { stroke: #a8ffcf; }
+.wa-shell .wa-video__resize-handle {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  z-index: 6;
+  cursor: ew-resize;
+  touch-action: none;
+  background: repeating-linear-gradient(45deg, transparent 0 3px, #80918a 3px 4px);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+.wa-shell .wa-video--fullscreen .wa-video__visualizer > svg {
+  inset: 0;
+  margin: auto;
+  width: min(88vmin, 100%);
+  height: min(88vmin, 100%);
+}
+.wa-shell .wa-video--fullscreen .wa-video__visualizer--oscilloscope > svg,
+.wa-shell .wa-video--fullscreen .wa-video__visualizer--bars-and-waves > svg {
+  width: 90%;
+  height: 76%;
+}
+.wa-shell .wa-video--fullscreen .wa-video__bars,
+.wa-shell .wa-video--fullscreen .wa-viz-battery,
+.wa-shell .wa-video--fullscreen .wa-viz-colors {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 82%;
+  height: 70%;
+  box-sizing: border-box;
+  transform: none;
+}
