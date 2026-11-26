@@ -376,11 +376,9 @@ function WinampFourthProceduralVisualizer({
 function WinampFourthVisualizer({
   mode,
   presetIndex,
-  onCycle,
 }: {
   mode: FourthVisualizerMode;
   presetIndex: number;
-  onCycle: () => void;
 }) {
   const instanceId = `wa-fourth-viz-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const presets = fourthVisualizerPresets[mode];
@@ -391,7 +389,6 @@ function WinampFourthVisualizer({
       {isButterchurn
         ? <WinampButterchurnVisualizer presetIndex={presetIndex} />
         : <WinampFourthProceduralVisualizer mode={mode} presetIndex={presetIndex} instanceId={instanceId} />}
-      <button type="button" className="wa-video__mode" title="Next visualization mode" onClick={onCycle}>MODE</button>
     </div>
   );
 }
@@ -1420,11 +1417,18 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
   const cycleFullscreenMode = useCallback(() => {
     if (videoMode === 'video') {
       switchVideoMode('visualizer');
+      setFourthVisualizerMode('Spectrum');
+      setFourthVisualizerPresetIndex(0);
       return;
     }
-    setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length]);
-    setFourthVisualizerPresetIndex(0);
-  }, [videoMode, switchVideoMode]);
+    const index = fourthVisualizerModes.indexOf(fourthVisualizerMode);
+    if (index === fourthVisualizerModes.length - 1) {
+      switchVideoMode('video');
+    } else {
+      setFourthVisualizerMode(fourthVisualizerModes[index + 1]);
+      setFourthVisualizerPresetIndex(0);
+    }
+  }, [videoMode, switchVideoMode, fourthVisualizerMode, fourthVisualizerModes]);
 
   const selectUnifiedMediaItem = useCallback((index: number) => {
     const item = unifiedMediaItems[index];
@@ -1818,6 +1822,10 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               </select>
             </label>
             <p>Palette applies to the fourth window's built-in visualizations. MilkDrop preset colors remain unchanged.</p>
+            <label className="wa-player-settings__row">
+              <span>Auto-cycle visualizations</span>
+              <input type="checkbox" checked={visualizerAutoCycle} onChange={(event) => setVisualizerAutoCycle(event.currentTarget.checked)} />
+            </label>
             <button type="button" onClick={() => {
               setVideoWidth(null);
               setPlaylistSize({ width: 269, height: 232 });
@@ -2559,46 +2567,34 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           </div>
         </div>
         {!videoShade && <>
-        <div className="wa-video__toolbar">
-          <button type="button" className={videoMode === 'visualizer' ? 'is-active' : ''} onClick={() => switchVideoMode('visualizer')}>VISUALIZATION</button>
-          <button type="button" className={videoMode === 'video' ? 'is-active' : ''} onClick={() => switchVideoMode('video')}>VIDEO</button>
-          {videoMode === 'visualizer' && <select className="wa-video__mode-select" aria-label="Visualization family and mode" value={fourthVisualizerMode} onChange={(event) => setFourthVisualizerMode(event.target.value as FourthVisualizerMode)}>
+        {!isVideoFullscreen && <div className="wa-video__toolbar">
+          <label className="wa-video__mode-picker">
+          <span>MODE</span>
+          <select className="wa-video__mode-select" aria-label="Video or visualization mode" value={videoMode === 'video' ? 'video' : fourthVisualizerMode} onChange={(event) => {
+            const mode = event.currentTarget.value;
+            if (mode === 'video') switchVideoMode('video');
+            else {
+              switchVideoMode('visualizer');
+              setFourthVisualizerMode(mode as FourthVisualizerMode);
+              setFourthVisualizerPresetIndex(0);
+            }
+          }}>
+            <option value="video">Video</option>
             {fourthVisualizerGroups.map((group) => <optgroup key={group.label} label={group.label}>
               {group.modes.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
             </optgroup>)}
-          </select>}
-          {videoMode === 'visualizer' && fourthVisualizerPresets[fourthVisualizerMode] && <button type="button" className="wa-video__preset" title="Next named preset" onClick={() => setFourthVisualizerPresetIndex((index) => fourthVisualizerMode === 'MilkDrop (Butterchurn)' ? index + 1 : (index + 1) % fourthVisualizerPresets[fourthVisualizerMode]!.length)}>PSET</button>}
-          {videoMode === 'visualizer' && <button type="button" className="wa-video__random" title="Random mode in current family" onClick={() => {
-            const group = fourthVisualizerGroups.find((item) => (item.modes as readonly string[]).includes(fourthVisualizerMode));
-            const groupModes = group?.modes as readonly FourthVisualizerMode[] | undefined;
-            const choices = groupModes && groupModes.length > 1
-              ? groupModes.filter((mode) => mode !== fourthVisualizerMode)
-              : fourthVisualizerModes.filter((mode) => mode !== fourthVisualizerMode);
-            if (choices.length) setFourthVisualizerMode(choices[Math.floor(Math.random() * choices.length)]);
-          }}>RND</button>}
-          {videoMode === 'visualizer' && <button type="button" className={`wa-video__auto${visualizerAutoCycle ? ' is-active' : ''}`} aria-pressed={visualizerAutoCycle} title={visualizerAutoCycle ? 'Turn automatic mode cycling off' : 'Automatically change mode every 15 seconds'} onClick={() => setVisualizerAutoCycle((value) => !value)}>AUTO</button>}
-          {unifiedMediaItems.length > 1 && <>
-            <button type="button" className="wa-video__queue-step" title="Previous item in unified media playlist" aria-label="Previous media item" onClick={() => navigateUnifiedMediaQueue(-1)}>◀|</button>
-            <button type="button" className="wa-video__queue-step" title="Next item in unified media playlist" aria-label="Next media item" onClick={() => navigateUnifiedMediaQueue(1)}>|▶</button>
-          </>}
-          {unifiedMediaItems.length > 0 && <>
-            <select
-              className="wa-video__queue-select"
-              aria-label="Unified audio and video playlist"
-              title="Choose audio or video from the unified media playlist"
-              value={activeUnifiedMediaIndex}
-              onChange={(event) => selectUnifiedMediaItem(Number(event.target.value))}
-            >
-              {unifiedMediaItems.map((item, index) => <option key={item.key} value={index}>{index + 1}. {item.label}</option>)}
-            </select>
-            <button type="button" className="wa-video__queue-step" title="Move selected item up in the mixed playlist" aria-label="Move selected media item up" disabled={activeUnifiedMediaIndex <= 0} onClick={() => moveUnifiedMediaItem(-1)}>↑</button>
-            <button type="button" className="wa-video__queue-step" title="Move selected item down in the mixed playlist" aria-label="Move selected media item down" disabled={activeUnifiedMediaIndex < 0 || activeUnifiedMediaIndex >= unifiedMediaItems.length - 1} onClick={() => moveUnifiedMediaItem(1)}>↓</button>
-          </>}
-          <span className="wa-video__filename">{videoFileName || 'No video loaded'}</span>
-        </div>
-        {unifiedMediaItems.length > 0 && (
+          </select>
+        </label>
+          {videoMode === 'visualizer' && fourthVisualizerPresets[fourthVisualizerMode] && fourthVisualizerMode !== 'MilkDrop (Butterchurn)' && <button type="button" className="wa-video__preset" title="Next named preset" onClick={() => setFourthVisualizerPresetIndex((index) => (index + 1) % fourthVisualizerPresets[fourthVisualizerMode]!.length)}>PSET</button>}
+          {videoMode === 'video' && <button type="button" className="wa-video__toolbar-open" onClick={() => videoInputRef.current?.click()}>OPEN</button>}
+        </div>}
+        {!isVideoFullscreen && unifiedMediaItems.length > 0 && (
           <details className="wa-video__queue-editor">
-            <summary>QUEUE · {unifiedMediaItems.length} ITEMS · DRAG TO REORDER</summary>
+            <summary>QUEUE · {unifiedMediaItems.length} ITEMS</summary>
+            <div className="wa-video__queue-actions">
+              <button type="button" title="Move current item up" aria-label="Move current item up" disabled={activeUnifiedMediaIndex <= 0} onClick={() => moveUnifiedMediaItem(-1)}>↑</button>
+              <button type="button" title="Move current item down" aria-label="Move current item down" disabled={activeUnifiedMediaIndex < 0 || activeUnifiedMediaIndex >= unifiedMediaItems.length - 1} onClick={() => moveUnifiedMediaItem(1)}>↓</button>
+            </div>
             <div className="wa-video__queue-list" role="list" aria-label="Mixed audio and video queue">
               {unifiedMediaItems.map((item, index) => {
                 const isActive = index === activeUnifiedMediaIndex;
@@ -2643,7 +2639,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           <WinampFourthVisualizer
             mode={fourthVisualizerMode}
             presetIndex={fourthVisualizerPresetIndex}
-            onCycle={() => setFourthVisualizerMode((mode) => fourthVisualizerModes[(fourthVisualizerModes.indexOf(mode) + 1) % fourthVisualizerModes.length])}
           />
         ) : (
           <div className="wa-video__screen">
@@ -2703,7 +2698,6 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
               onPlay={() => { winampController.pause(); setVideoIsPlaying(true); if (isVideoFullscreen) revealFullscreenControls(); }}
               onPause={() => { setVideoIsPlaying(false); if (isVideoFullscreen) revealFullscreenControls(); }}
             /> : <div className="wa-video__empty">OPEN A VIDEO FILE</div>}
-            <button type="button" className="wa-video__open" onClick={() => videoInputRef.current?.click()}>OPEN VIDEO</button>
           </div>
         )}
         {!isVideoFullscreen && <div
@@ -2732,8 +2726,9 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           onPointerCancel={() => { videoResizeRef.current = null; }}
         />}
         {isVideoFullscreen && <div
-          role="toolbar"
-          aria-label="Fullscreen media controls"
+          role="region"
+          aria-label="Fullscreen media controls and queue"
+          aria-hidden={!showFullscreenControls}
           className={`wa-video__fullscreen-controls${showFullscreenControls ? ' is-visible' : ''}`}
           onPointerEnter={() => {
             fullscreenPanelHoverRef.current = true;
@@ -2752,13 +2747,84 @@ export function WinampPlayer({ onClose }: WinampPlayerProps) {
           }}
           onPointerDown={(event) => event.stopPropagation()}
         >
-          <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 2 12l9 7V5Zm10 0-9 7 9 7V5Z" fill="currentColor"/></svg></button>
+          {showFullscreenControls && <>
+          <div className="wa-video__fullscreen-transport" role="toolbar" aria-label="Playback controls">
           <button type="button" title={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} aria-label={videoMode === 'video' ? 'Предыдущее видео' : 'Предыдущий трек'} onClick={() => { previousFullscreenItem(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h3v14H4zm16 0L8 12l12 7V5Z" fill="currentColor"/></svg></button>
+          <button type="button" title="Назад на 5 секунд" aria-label="Назад на 5 секунд" onClick={() => { seekFullscreenMedia(-5); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 2 12l9 7V5Zm10 0-9 7 9 7V5Z" fill="currentColor"/></svg></button>
           <button type="button" title="Пауза или продолжить" aria-label="Пауза или продолжить" onClick={() => { toggleFullscreenPlayback(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true">{(videoMode === 'video' ? videoIsPlaying : isPlaying) ? <path d="M6 5h4v14H6zm8 0h4v14h-4z" fill="currentColor"/> : <path d="M7 4v16l14-8L7 4Z" fill="currentColor"/>}</svg></button>
-          <button type="button" title={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} aria-label={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} onClick={() => { nextFullscreenItem(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5h3v14h-3zM4 5l12 7-12 7V5Z" fill="currentColor"/></svg></button>
           <button type="button" title="Вперёд на 5 секунд" aria-label="Вперёд на 5 секунд" onClick={() => { seekFullscreenMedia(5); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 9 7-9 7V5Zm10 0 9 7-9 7V5Z" fill="currentColor"/></svg></button>
-          <button type="button" title="Переключить режим" aria-label="Переключить режим" onClick={() => { cycleFullscreenMode(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h3l3-6 4 12 3-6h5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+          <button type="button" title={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} aria-label={videoMode === 'video' ? 'Следующее видео' : 'Следующий трек'} onClick={() => { nextFullscreenItem(); revealFullscreenControls(); }}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5h3v14h-3zM4 5l12 7-12 7V5Z" fill="currentColor"/></svg></button>
           <button type="button" title="Выйти из полноэкранного режима" aria-label="Выйти из полноэкранного режима" onClick={exitVideoFullscreen}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h5V4m11 5h-5V4M4 15h5v5m11-5h-5v5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+          </div>
+          <div className="wa-video__fullscreen-options">
+            <label className="wa-video__mode-picker">
+          <span>MODE</span>
+          <select className="wa-video__mode-select" aria-label="Video or visualization mode" value={videoMode === 'video' ? 'video' : fourthVisualizerMode} onChange={(event) => {
+            const mode = event.currentTarget.value;
+            if (mode === 'video') switchVideoMode('video');
+            else {
+              switchVideoMode('visualizer');
+              setFourthVisualizerMode(mode as FourthVisualizerMode);
+              setFourthVisualizerPresetIndex(0);
+            }
+          }}>
+            <option value="video">Video</option>
+            {fourthVisualizerGroups.map((group) => <optgroup key={group.label} label={group.label}>
+              {group.modes.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
+            </optgroup>)}
+          </select>
+        </label>
+            {videoMode === 'video' && <button type="button" className="wa-video__toolbar-open" onClick={() => videoInputRef.current?.click()} aria-label="Open video file" title="Open video file">OPEN</button>}
+            {videoMode === 'visualizer' && fourthVisualizerPresets[fourthVisualizerMode] && fourthVisualizerMode !== 'MilkDrop (Butterchurn)' && <button type="button" title="Next named preset" onClick={() => setFourthVisualizerPresetIndex((index) => (index + 1) % fourthVisualizerPresets[fourthVisualizerMode]!.length)}>PSET</button>}
+          </div>
+          {unifiedMediaItems.length > 0 && (
+          <details className="wa-video__queue-editor wa-video__queue-editor--fullscreen">
+            <summary>QUEUE · {unifiedMediaItems.length} ITEMS</summary>
+            <div className="wa-video__queue-actions">
+              <button type="button" title="Move current item up" aria-label="Move current item up" disabled={activeUnifiedMediaIndex <= 0} onClick={() => moveUnifiedMediaItem(-1)}>↑</button>
+              <button type="button" title="Move current item down" aria-label="Move current item down" disabled={activeUnifiedMediaIndex < 0 || activeUnifiedMediaIndex >= unifiedMediaItems.length - 1} onClick={() => moveUnifiedMediaItem(1)}>↓</button>
+            </div>
+            <div className="wa-video__queue-list" role="list" aria-label="Mixed audio and video queue">
+              {unifiedMediaItems.map((item, index) => {
+                const isActive = index === activeUnifiedMediaIndex;
+                return (
+                  <button
+                    type="button"
+                    role="listitem"
+                    key={item.key}
+                    draggable
+                    className={`wa-video__queue-row${isActive ? ' is-active' : ''}${draggedUnifiedMediaKey === item.key ? ' is-dragging' : ''}`}
+                    aria-current={isActive ? 'true' : undefined}
+                    title={`Drag to reorder. Select to play: ${item.label}`}
+                    onClick={() => selectUnifiedMediaItem(index)}
+                    onDragStart={(event) => {
+                      setDraggedUnifiedMediaKey(item.key);
+                      event.dataTransfer.effectAllowed = 'move';
+                      event.dataTransfer.setData('text/plain', item.key);
+                    }}
+                    onDragOver={(event) => {
+                      if (draggedUnifiedMediaKey) {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'move';
+                      }
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      const sourceKey = draggedUnifiedMediaKey || event.dataTransfer.getData('text/plain');
+                      reorderUnifiedMediaItem(sourceKey, item.key);
+                    }}
+                    onDragEnd={() => setDraggedUnifiedMediaKey(null)}
+                  >
+                    <span className="wa-video__queue-row-index">{index + 1}.</span>
+                    <span className="wa-video__queue-row-label">{item.label}</span>
+                    <span className="wa-video__queue-row-kind">{item.kind === 'audio' ? 'AUDIO' : 'VIDEO'}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </details>
+        )}
+          </>}
         </div>}
         </>}
       </div>}
