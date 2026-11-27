@@ -4,6 +4,7 @@ import { getSessionAccount } from '../../../../domain/auth/session';
 import { buildClassicStartMenu, type ClassicMenuItem } from './startMenuClassicLists';
 import { getActiveEdition } from '../../../os/osEditions';
 import { THEME_ASSETS } from '../../../../themes/webos/themeAssets';
+import { isWin95Shell } from '../../../../themes/win95';
 
 export interface StartMenu98Props {
   onClose: () => void;
@@ -24,10 +25,12 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
   const account = getSessionAccount();
   const isRu = language === 'ru';
   const isWin2000 = theme === 'win2000';
+  // Windows 95 runs on the Windows 98 theme; the banner and the list follow the GRUB profile.
+  const isWin95 = isWin95Shell(theme);
   const [openChain, setOpenChain] = useState<string[]>([]);
   const activeEdition = getActiveEdition(theme);
 
-  const menuItems = buildClassicStartMenu({ isWin2000, isRu, account });
+  const menuItems = buildClassicStartMenu({ isWin2000, isWin95, isRu, account });
   // Windows 2000 chrome is native pixel art (banner, separator, submenu arrow); Windows 98 draws its own.
   const chrome = isWin2000 ? THEME_ASSETS.win2000 : undefined;
 
@@ -167,7 +170,9 @@ export function StartMenu98({ onClose, onLaunchApp, onOpenPath, onSystemCommand,
             paddingBottom: 4,
           }}
         >
-          {activeEdition?.id === 'second-edition' ? (
+          {isWin95 ? (
+            <><b className="text-[#c0c0c0]">Windows</b><span className="font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>95</span></>
+          ) : activeEdition?.id === 'second-edition' ? (
             <><b className="text-[#c0c0c0]">Windows</b><span className="font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>98</span><span className="font-bold text-xs ml-1 text-yellow-300">SE</span></>
           ) : (
             <><b className="text-[#c0c0c0]">Windows</b><span className="font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>98</span></>

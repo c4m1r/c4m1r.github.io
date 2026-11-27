@@ -10,6 +10,12 @@ import minesweeperIcon from './assets/icons/minesweeper.png';
 import internetExplorerIcon from './assets/icons/internet-explorer.png';
 import taskManagerIcon from './assets/icons/task-manager.png';
 import controlPanelIcon from './assets/icons/control-panel.png';
+import documents16 from './assets/icons/16/documents.png';
+import controlPanel16 from './assets/icons/16/control-panel.png';
+import run16 from './assets/icons/16/run.png';
+import notepad16 from './assets/icons/16/notepad.png';
+import minesweeper16 from './assets/icons/16/minesweeper.png';
+import internetExplorer16 from './assets/icons/16/internet-explorer.png';
 
 /**
  * Windows 95 shell icons, from the Windows 95 reference set in eat/wins95Portfolio-main
@@ -53,3 +59,19 @@ export function win95ThemeAssets<T extends object>(base: T): T {
   };
   return merged as T;
 }
+
+/**
+ * Windows 95 Start menu art: 32 px for the top rows and 16 px for the submenu rows.
+ * The classic menu uses these only when the Windows 95 profile is active.
+ */
+export const WIN95_START_ICONS = {
+  documents32: documentsIcon,
+  controlPanel32: controlPanelIcon,
+  run32: runIcon,
+  documents16: documents16,
+  controlPanel16: controlPanel16,
+  run16: run16,
+  notepad16: notepad16,
+  minesweeper16: minesweeper16,
+  internetExplorer16: internetExplorer16,
+} as const;

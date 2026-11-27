@@ -45,6 +45,7 @@ import win2000Find32Icon from '../../../../themes/win2000/icons/start-menu/find-
 import win2000Help32Icon from '../../../../themes/win2000/icons/start-menu/help-32.png';
 import win2000Run32Icon from '../../../../themes/win2000/icons/start-menu/run-32.png';
 import win2000Shutdown32Icon from '../../../../themes/win2000/icons/start-menu/shutdown-32.png';
+import { WIN95_START_ICONS } from '../../../../themes/win95';
 
 /**
  * The classic Start menu list (Windows 98 and 2000). Icons follow the skin, and the list is built
@@ -60,19 +61,19 @@ const classicIcon = (src: string, size: 16 | 32 = 16) => (
   <img src={src} alt="" width={size} height={size} style={{ imageRendering: 'pixelated' }} />
 );
 
-export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000: boolean; isRu: boolean; account: string }): ClassicMenuItem[] {
+export function buildClassicStartMenu({ isWin2000, isWin95 = false, isRu, account }: { isWin2000: boolean; isWin95?: boolean; isRu: boolean; account: string }): ClassicMenuItem[] {
   // Windows 2000 gets its own shell icons for the roles the native ICO set covers;
   // the rest fall back to the Windows 98 artwork until they are identified.
   const programsIcon = isWin2000 ? win2000ProgramsIcon : programsClassicIcon;
   const accessoriesIcon = isWin2000 ? win2000AccessoriesIcon : accessoriesClassicIcon;
-  const documentsIcon = isWin2000 ? win2000DocumentsIcon : documentsClassicIcon;
-  const settingsIcon = isWin2000 ? win2000SettingsIcon : settingsClassicIcon;
+  const documentsIcon = isWin2000 ? win2000DocumentsIcon : isWin95 ? WIN95_START_ICONS.documents16 : documentsClassicIcon;
+  const settingsIcon = isWin2000 ? win2000SettingsIcon : isWin95 ? WIN95_START_ICONS.controlPanel16 : settingsClassicIcon;
   const findIcon = isWin2000 ? win2000FindIcon : findClassicIcon;
   const helpIcon = isWin2000 ? win2000HelpIcon : helpClassicIcon;
-  const runIcon = isWin2000 ? win2000RunIcon : run32Icon;
+  const runIcon = isWin2000 ? win2000RunIcon : isWin95 ? WIN95_START_ICONS.run16 : run32Icon;
   const shutDownIcon = isWin2000 ? win2000ShutDownIcon : shutDownClassicIcon;
-  const ieIcon = isWin2000 ? win2000IeIcon : ieClassicIcon;
-  const notepadIcon = isWin2000 ? win2000NotepadIcon : notepadClassicIcon;
+  const ieIcon = isWin2000 ? win2000IeIcon : isWin95 ? WIN95_START_ICONS.internetExplorer16 : ieClassicIcon;
+  const notepadIcon = isWin2000 ? win2000NotepadIcon : isWin95 ? WIN95_START_ICONS.notepad16 : notepadClassicIcon;
   const paintIcon = isWin2000 ? win2000PaintIcon : paintClassicIcon;
   const mediaPlayerIcon = isWin2000 ? win2000MediaPlayerIcon : mediaPlayerClassicIcon;
   // Top-level rows use 32 px shell art: the native Windows 2000 bitmaps on 2000, the Windows 98 art on 98.
@@ -85,7 +86,13 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
     [run32Icon]: win2000Run32Icon,
     [shutDown32Icon]: win2000Shutdown32Icon,
   };
-  const topIcon = (_src16: string, src32: string) => classicIcon(isWin2000 ? (win2000Top[src32] ?? src32) : src32, 32);
+  // Windows 95 top-level rows use the Windows 95 art for the roles it has, and keep the Windows 98 art elsewhere.
+  const win95Top: Record<string, string> = {
+    [documents32Icon]: WIN95_START_ICONS.documents32,
+    [settings32Icon]: WIN95_START_ICONS.controlPanel32,
+    [run32Icon]: WIN95_START_ICONS.run32,
+  };
+  const topIcon = (_src16: string, src32: string) => classicIcon(isWin2000 ? (win2000Top[src32] ?? src32) : isWin95 ? (win95Top[src32] ?? src32) : src32, 32);
 
 
   // Entries the user placed in Start Menu\Programs (including the StartUp folder) come from the file system.
@@ -163,7 +170,7 @@ export function buildClassicStartMenu({ isWin2000, isRu, account }: { isWin2000:
     { label: '', icon: null, separator: true },
     // Windows 98 offers Suspend (goes to the sign-in screen); Windows 2000
     // ends with Shut Down alone, as in the reference screenshot.
-    ...(isWin2000 ? [] : [{ label: isRu ? 'Приостановить' : 'Suspend', icon: topIcon(logOffIcon, suspend32Icon), action: 'logoff' as const }]),
+    ...(isWin2000 || isWin95 ? [] : [{ label: isRu ? 'Приостановить' : 'Suspend', icon: topIcon(logOffIcon, suspend32Icon), action: 'logoff' as const }]),
     { label: isRu ? 'Завершение работы...' : 'Shut Down...', icon: topIcon(shutDownIcon, shutDown32Icon), action: 'shutdown' },
   ];
 

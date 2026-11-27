@@ -19,6 +19,7 @@ import appleImageIcon from '../../themes/apple/assets/sf-icons/image.svg';
 import appleDriveIcon from '../../themes/apple/assets/sf-icons/hard-drive.svg';
 import win98ComputerIcon from '../../themes/win98/icons/devices/computer-explorer/16x16-0.png';
 import { isWin95Shell, WIN95_ICON_ASSETS } from '../../themes/win95';
+import { classicEditText } from '../../i18n/classicEditStrings';
 import win2000ComputerIcon from '../../themes/win98/icons/devices/computer-explorer-2k/32x32-0.png';
 import win98FolderIcon from '../../themes/win98/icons/folders/directory-closed/32x32-0.png';
 import win98DriveIcon from '../../themes/win98/icons/devices/hard-disk-drive/32x32-0.png';
@@ -792,17 +793,28 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             <span>{isRu ? 'Вверх' : 'Up'}</span>
           </button>
           <div className="w-px h-6 bg-gray-400 mx-1" />
-          <button onClick={() => { setSearchOpen(value => !value); setSearchQuery(''); }} aria-pressed={searchOpen} className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent">
+          {!isWin95Shell(theme) && <button onClick={() => { setSearchOpen(value => !value); setSearchQuery(''); }} aria-pressed={searchOpen} className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent">
             {isClassicWindows ? <img src={win98SearchIcon} alt="" className="w-4 h-4 object-contain" /> : <img src={searchIconXp} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Поиск' : 'Search'}</span>
-          </button>
-          <button
+          </button>}
+          {!isWin95Shell(theme) && <button
             className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:bg-white/60 text-black ${showSidebar ? 'bg-white/60 border-gray-400' : 'bg-transparent'}`}
             onClick={() => setShowSidebar(!showSidebar)}
           >
             {isClassicWindows ? <span aria-hidden="true">▣</span> : <img src={foldersToggleIcon} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Папки' : 'Folders'}</span>
-          </button>
+          </button>}
+          {isWin95Shell(theme) && (
+            <>
+              <div className="w-px h-6 bg-gray-400 mx-1" />
+              {(['cut', 'copy', 'paste', 'undo', 'delete', 'properties'] as const).map((key) => { const label = classicEditText(language, key); return (
+                <button key={label} type="button" disabled className="flex items-center gap-1 px-2 py-1 text-black border-0 bg-transparent disabled:opacity-40">
+                  <span aria-hidden="true" className="fx-glyph" />
+                  <span>{label}</span>
+                </button>
+              ); })}
+            </>
+          )}
           {theme === 'win2000' && (
             <>
               <button type="button" className="flex items-center gap-1 px-2 py-1 text-black border-0 bg-transparent">
