@@ -120,7 +120,26 @@ html .win7:not(.os-win10):not(.os-win11) .is-busy {
   cursor: url('../../../themes/cursors/aero/wait.ani'), wait;
 }
 
-/* Windows 10 and 11: the 100% DPI default set (flat Windows 8/10 cursors). Windows 8 gets this set once its skin has a root class. */
+/* Windows 8: the same Aero set as Windows 7 (the user confirmed the scheme). Its root has no win7 class, so it is matched by theme. */
+html [data-os-theme="win8"],
+html [data-os-theme="win8"] * {
+  cursor: url('../../../themes/cursors/aero/arrow.cur'), default;
+}
+html [data-os-theme="win8"] a[href],
+html [data-os-theme="win8"] button:not(:disabled),
+html [data-os-theme="win8"] [role="button"],
+html [data-os-theme="win8"] [role="link"],
+html [data-os-theme="win8"] [class*="cursor-pointer"],
+html [data-os-theme="win8"] label[for],
+html [data-os-theme="win8"] summary {
+  cursor: url('../../../themes/cursors/aero/hand.cur'), pointer;
+}
+html [data-os-theme="win8"] [aria-busy="true"],
+html [data-os-theme="win8"] .is-busy {
+  cursor: url('../../../themes/cursors/aero/wait.ani'), wait;
+}
+
+/* Windows 10 and 11: the 100% DPI default set (flat Windows 8/10 cursors). */
 html .os-win10,
 html .os-win11,
 html .os-win10 *,

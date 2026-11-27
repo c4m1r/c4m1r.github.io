@@ -3,6 +3,7 @@ import win7Home from '../../content/pictures/wallpapers/windows/win7-home.jpg';
 import winxpBliss from '../../content/pictures/wallpapers/windows/winxp-bliss.jpg';
 import win7Ultimate from '../../themes/win7/assets/images/desktop-wallpaper.jpg';
 import type { Language } from '../../i18n/translations';
+import { getActiveBootProfileId } from '../../themes/bootProfile';
 
 export interface OsEditionTranslation {
   label: string;
@@ -487,6 +488,8 @@ export function setSelectedEditionId(profileOrThemeId: string, editionId: string
 }
 
 export function getActiveEdition(profileOrThemeId: string): OsEdition | undefined {
+  // Windows Server 2003 runs on the Windows XP theme but has no XP editions: it must not inherit Home's wallpaper or label.
+  if (profileOrThemeId === 'win-xp' && getActiveBootProfileId() === 'server2003') return undefined;
   const editions = getEditionsForProfile(profileOrThemeId);
   if (!editions.length) return undefined;
   const selectedId = getSelectedEditionId(profileOrThemeId);

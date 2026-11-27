@@ -135,7 +135,7 @@ Licences ignored on purpose: the code is rewritten, and the OS resources are the
 
 ## Server editions (2026-11-27)
 
-- Server 2003: `eat/screens/oc/server2003/01-desktop-start-menu.jpg` shows the Windows XP shell (Luna taskbar, XP Start menu, grey-blue Server wallpaper with a "Windows Server 2003 Demonstration" watermark). Decision: the 2003 skin stays XP. The watermarked copy is not used. Updated 2026-11-28: the clean wallpaper (800×600) is stored as `src/assets/reference/windows-misc/server2003-wallpapers/server2003-clean.png`; it is not wired yet, because the server2003 profile still uses the Windows XP theme assets.
+- Server 2003: `eat/screens/oc/server2003/01-desktop-start-menu.jpg` shows the Windows XP shell (Luna taskbar, XP Start menu, grey-blue Server wallpaper with a "Windows Server 2003 Demonstration" watermark). Decision: the 2003 skin stays XP. The watermarked copy is not used. Updated 2026-11-28: the clean wallpaper (800×600) is stored as `src/assets/reference/windows-misc/server2003-wallpapers/server2003-clean.png`; it is wired (2026-11-28) through `src/themes/server2003` when the server2003 boot profile is active.
 - Server 2008, 2012, 2016, 2019: no reference or resource in `eat/`. A web search (GitHub topics and the Windows wallpaper wiki) found no clean source that can be downloaded from the sandbox. These editions keep their closest client skin.
 
 ## WinRetro media (2026-11-28)

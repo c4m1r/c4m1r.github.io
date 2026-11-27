@@ -40,6 +40,7 @@ import {
 } from './desktopConstants';
 import { type DesktopIcon, type DesktopShellProps } from './desktopTypes';
 import { isWin95Shell, win95ThemeAssets } from '../../themes/win95';
+import { isServer2003Shell, server2003ThemeAssets } from '../../themes/server2003';
 
 // Default Windows 7 taskbar pins: Internet Explorer, Windows Explorer, Media Player.
 const WIN7_PINNED_TASKBAR_APPS = [
@@ -465,7 +466,12 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const baseThemeAssets = (THEME_ASSETS as Record<string, typeof THEME_ASSETS.webos>)[themeKey] ?? THEME_ASSETS.webos;
   // Windows 95 runs on the Windows 98 theme; its own icons replace the matching roles.
   const win95Shell = isWin95Shell(themeKey);
-  const themeAssets = win95Shell ? win95ThemeAssets(baseThemeAssets) : baseThemeAssets;
+  // Windows Server 2003 runs on the XP theme; only its desktop wallpaper changes.
+  const themeAssets = win95Shell
+    ? win95ThemeAssets(baseThemeAssets)
+    : isServer2003Shell(themeKey)
+    ? server2003ThemeAssets(baseThemeAssets)
+    : baseThemeAssets;
   const fallbackAssets = THEME_ASSETS.webos;
   const resolveAssetPath = (primary?: string, secondary?: string) => primary ?? secondary ?? '';
   const volumeIconSrc = resolveAssetPath(themeAssets.volumeIcon, fallbackAssets.volumeIcon);
@@ -1472,7 +1478,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           ? `url(${customWallpaper})`
           : activeEdition?.wallpaper
           ? `url(${activeEdition.wallpaper})`
-          : (isXpFamily || themeKey === 'vista' || themeKey === 'win10' || themeKey === 'win11') && themeAssets.wallpaper
+          : (isXpFamily || themeKey === 'vista' || themeKey === 'win8' || themeKey === 'win10' || themeKey === 'win11') && themeAssets.wallpaper
           ? `url(${themeAssets.wallpaper})`
           : undefined,
         backgroundColor: customWallpaper

@@ -65,6 +65,7 @@ import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import { WIN10_ICON_ASSETS } from '../win10/assets';
 import win10Wallpaper from '../win10/assets/wallpaper.jpg';
 import win11Wallpaper from '../win11/assets/wallpaper.jpg';
+import win8Wallpaper from '../win8/assets/wallpaper.jpg';
 import { WIN11_ICON_ASSETS } from '../win11/assets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
 import win2000SideBar from '../win2000/assets/sideBar.png';
@@ -320,8 +321,11 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   'win-xp': xpThemeAssets,
   win7: win7ThemeAssets,
   vista: vistaThemeAssets,
-  // Draft Windows versions reuse the Windows 7 asset set until their own sets exist.
-  win8: win7ThemeAssets,
+  // Windows 8 keeps the Windows 7 base (Aero cursors and sounds) with its own default wallpaper (daisy). Icons still come from Windows 7.
+  win8: {
+    ...win7ThemeAssets,
+    wallpaper: win8Wallpaper,
+  },
   // Windows 10 keeps the Windows 7 base and swaps in its own system icons (eat/ reference set).
   win10: {
     ...win7ThemeAssets,
