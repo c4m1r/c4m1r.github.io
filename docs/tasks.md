@@ -351,6 +351,7 @@ Reference source: `eat/screens/oc/<os>/` (win98 and win2000 screenshots, Interne
 - Logon ("Welcome to Windows") window: compare with a reference capture (none in `eat/screens/oc/win98/` yet).
 
 ### Windows 2000
+- Cursor status (2026-11-28): Windows 95 uses the xfce-look set (`src/themes/cursors/win95-xfce`, 4 roles wired); Windows 98 uses `eat/98.portfolio-main` (checked byte-for-byte against the attached darix555 set for arrow, pointer, I-beam and hourglass); Vista and 7 use the Aero set (`src/themes/cursors/aero`); Windows 10 and 11 use the 100% DPI set (`dpi100`). Windows 2000 and XP still resolve to the 95/98 files (`win2000` folder): no separate 2000 scheme exists in any source checked. Temporary copies of all sets are in `eat/temp/cursors` (git-ignored).
 - Cursors: no Windows 2000 `.cur` set in the repo. Needs the 2000 scheme before it can be canonical; the 98 set must not be reused.
 - Start menu top-level icons: 32 px shell art is approximate (98 lineage). Needs a 2000 Start-menu reference capture.
 - Logon window: teal background, position and the "Log on to" row behind Options >> / << Options are done (2026-11-23; OK, Cancel, Shut Down... and Options >> fit the 420 px window at 640x480). Remaining 2000 logon details need a reference.
