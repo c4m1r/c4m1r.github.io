@@ -62,6 +62,7 @@ import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
+import { WIN10_ICON_ASSETS } from '../win10/assets';
 import { WIN11_ICON_ASSETS } from '../win11/assets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
 import win2000SideBar from '../win2000/assets/sideBar.png';
@@ -319,7 +320,16 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   vista: vistaThemeAssets,
   // Draft Windows versions reuse the Windows 7 asset set until their own sets exist.
   win8: win7ThemeAssets,
-  win10: win7ThemeAssets,
+  // Windows 10 keeps the Windows 7 base and swaps in its own system icons (eat/ reference set).
+  win10: {
+    ...win7ThemeAssets,
+    folderIcon: WIN10_ICON_ASSETS.folderIcon,
+    computerIcon: WIN10_ICON_ASSETS.computerIcon,
+    driveIcon: WIN10_ICON_ASSETS.driveIcon,
+    recycleIcon: WIN10_ICON_ASSETS.recycleIcon,
+    recycleFullIcon: WIN10_ICON_ASSETS.recycleFullIcon,
+    placesIcons: { ...win7ThemeAssets.placesIcons, ...WIN10_ICON_ASSETS.placesIcons },
+  },
   // Windows 11 keeps the Windows 7 base for sounds and start menu art, with its own system icons on top.
   win11: {
     ...win7ThemeAssets,

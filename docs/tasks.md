@@ -897,3 +897,11 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - Note: another session edits the Vista start menu, logon, orb (40 px) and Welcome sound in the same working tree; commit by file, not `git add -A`.
 
 - i18n for Vista UI strings: `src/i18n/vistaStrings.ts` holds all 23 Vista-only strings (Sidebar, Welcome, Start menu entries, Explorer navigation and favorites, widget gallery toggle) in all nine languages (en, ru, fr, es, zh, ja, ko, be, kk). Use `vistaText(language, key)`; do not add new `isRu ? … : …` pairs for Vista. Edition names/descriptions still follow the existing `labelRu`/`descriptionRu` pattern, and a full pass on those is open. 2026-11-27.
+
+- eat/ resource integration (2026-11-27):
+  - [x] Windows 11 icon set (from GitHub, not from eat/): 16 icons in `src/themes/win11/assets/icons/`.
+  - [x] Windows 10 icon set from `eat/windows10-portfolio-main`: 10 icons in `src/themes/win10/assets/icons/`, registered as `WIN10_ICON_ASSETS` and in the `win10` theme assets. Not visible yet: Windows 10 is still a `(draft)` in GRUB.
+  - [ ] Windows 7 icon set (`eat/windows7-ui-portfolio-main/public/win7`, 528 `.ico`) is not integrated.
+  - [ ] Windows 2000 icon set (`eat/windows2000-main/src/assets/ICON`, 430 `.ico`) is not integrated.
+  - [ ] Windows 95 sounds (`eat/wins95Portfolio-main`, 4 sounds not yet in `src`) are not integrated.
+  - [ ] Decide whether Windows 10 and Windows 11 leave the `(draft)` state. Until then their icons are assets only.
