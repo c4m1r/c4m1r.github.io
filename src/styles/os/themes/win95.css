@@ -1,0 +1,23 @@
+/*
+ * Windows 95 overrides on the Windows 98 classic base. Scoped to .os-win95 (set on the
+ * desktop only when the GRUB profile is Windows 95), so Windows 98 keeps its own look.
+ */
+
+/* Windows 95 shipped with a plain teal desktop, not a wallpaper. */
+.os-win95.os-desktop {
+  background-color: #008080 !important;
+  background-image: none !important;
+}
+
+/* Windows 95 title bars: plain navy when active and plain grey when inactive, no gradient. */
+.os-win95 .os-titlebar,
+.os-win95 .os-window:not(.os-window--inactive) .os-titlebar {
+  background: #000080 !important;
+  background-image: none !important;
+}
+
+.os-win95 .os-window--inactive .os-titlebar {
+  background: #808080 !important;
+  background-image: none !important;
+  color: #c0c0c0 !important;
+}

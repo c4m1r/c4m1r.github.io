@@ -39,6 +39,7 @@ import {
   WINDOWS_IMAGE_ICON_THEMES,
 } from './desktopConstants';
 import { type DesktopIcon, type DesktopShellProps } from './desktopTypes';
+import { isWin95Shell, win95ThemeAssets } from '../../themes/win95';
 
 // Default Windows 7 taskbar pins: Internet Explorer, Windows Explorer, Media Player.
 const WIN7_PINNED_TASKBAR_APPS = [
@@ -460,7 +461,10 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     syncColorScheme();
     return subscribeSystemSettings(syncColorScheme);
   }, [themeKey]);
-  const themeAssets = (THEME_ASSETS as Record<string, typeof THEME_ASSETS.webos>)[themeKey] ?? THEME_ASSETS.webos;
+  const baseThemeAssets = (THEME_ASSETS as Record<string, typeof THEME_ASSETS.webos>)[themeKey] ?? THEME_ASSETS.webos;
+  // Windows 95 runs on the Windows 98 theme; its own icons replace the matching roles.
+  const win95Shell = isWin95Shell(themeKey);
+  const themeAssets = win95Shell ? win95ThemeAssets(baseThemeAssets) : baseThemeAssets;
   const fallbackAssets = THEME_ASSETS.webos;
   const resolveAssetPath = (primary?: string, secondary?: string) => primary ?? secondary ?? '';
   const volumeIconSrc = resolveAssetPath(themeAssets.volumeIcon, fallbackAssets.volumeIcon);
@@ -1430,7 +1434,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       ref={desktopRef}
       {...osAttributes}
       data-color-scheme={themeKey === 'webos' ? desktopColorScheme : undefined}
-      className={`${themeStyles.body.join(' ')} ${themeKey === 'vista' && ['starter', 'home-basic'].includes(getSelectedEditionId('vista')) ? 'vista-basic' : ''} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} os-desktop`}
+      className={`${themeStyles.body.join(' ')} ${themeKey === 'vista' && ['starter', 'home-basic'].includes(getSelectedEditionId('vista')) ? 'vista-basic' : ''} min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden os-shell os-${osClassName} ${win95Shell ? 'os-win95' : ''} os-desktop`}
       style={{
         backgroundImage: customWallpaper
           ? `url(${customWallpaper})`

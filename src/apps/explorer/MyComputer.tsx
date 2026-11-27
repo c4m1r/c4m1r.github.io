@@ -18,6 +18,7 @@ import appleDocumentIcon from '../../themes/apple/assets/sf-icons/document.svg';
 import appleImageIcon from '../../themes/apple/assets/sf-icons/image.svg';
 import appleDriveIcon from '../../themes/apple/assets/sf-icons/hard-drive.svg';
 import win98ComputerIcon from '../../themes/win98/icons/devices/computer-explorer/16x16-0.png';
+import { isWin95Shell, WIN95_ICON_ASSETS } from '../../themes/win95';
 import win2000ComputerIcon from '../../themes/win98/icons/devices/computer-explorer-2k/32x32-0.png';
 import win98FolderIcon from '../../themes/win98/icons/folders/directory-closed/32x32-0.png';
 import win98DriveIcon from '../../themes/win98/icons/devices/hard-disk-drive/32x32-0.png';
@@ -390,6 +391,10 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   const menuItemHoverClass = theme === 'win-98' ? 'hover:bg-[#000080]' : theme === 'win2000' ? 'hover:bg-[#0a246a]' : 'hover:bg-[#316ac5]';
 
   const getExplorerItemIcon = (item: FileSystemItem): string => {
+    if (isWin95Shell(theme)) {
+      if (item.type === 'drive') return win98DriveIcon;
+      if (item.type === 'folder') return WIN95_ICON_ASSETS.folderIcon;
+    }
     if (theme === 'win-98' || theme === 'win2000') {
       if (item.type === 'drive') return win98DriveIcon;
       if (item.type === 'folder') return win98FolderIcon;
@@ -398,6 +403,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   };
 
   const getAddressIcon = () => {
+    if (isWin95Shell(theme)) return path === 'My Computer' ? WIN95_ICON_ASSETS.computerIcon : WIN95_ICON_ASSETS.folderIcon;
     if (theme === 'win-98') return path === 'My Computer' ? win98ComputerIcon : win98FolderIcon;
     if (theme === 'win2000') return path === 'My Computer' ? win2000ComputerIcon : win98FolderIcon;
     return path === 'My Computer' ? computerIcon : folderIcon;

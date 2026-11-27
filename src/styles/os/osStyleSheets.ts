@@ -16,6 +16,7 @@ const css = {
   win2000Chrome: () => import('./themes/win2000-chrome.css'),
   win10: () => import('./themes/win10.css'),
   win11: () => import('./themes/win11.css'),
+  win95: () => import('./themes/win95.css'),
   xpShared: () => import('./themes/xp-shared.css'),
   xp98: () => import('./themes/xp-98.css'),
   xpWinxp: () => import('./themes/xp-winxp.css'),
@@ -68,7 +69,7 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
   'os-winxp': WINXP_SET,
   // Halloween is a child of Windows XP: the whole XP set, then its own file last.
   'os-spooky': [...WINXP_SET, css.halloween],
-  'os-classic': [css.xp98, css.classic, css.win2000Chrome, css.macos, css.buildWatermark, css.calendar],
+  'os-classic': [css.xp98, css.classic, css.win2000Chrome, css.win95, css.macos, css.buildWatermark, css.calendar],
   'os-win7': [
     css.win7,
     css.macos,
