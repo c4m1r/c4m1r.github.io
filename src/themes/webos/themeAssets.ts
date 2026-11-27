@@ -62,6 +62,7 @@ import searchIconWebos from '../winxp/assets/icons/search.png';
 import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
+import { WIN11_ICON_ASSETS } from '../win11/assets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
 import win2000SideBar from '../win2000/assets/sideBar.png';
 import win2000MenuSeparator from '../win2000/assets/startMenu_separator.png';
@@ -319,7 +320,15 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   // Draft Windows versions reuse the Windows 7 asset set until their own sets exist.
   win8: win7ThemeAssets,
   win10: win7ThemeAssets,
-  win11: win7ThemeAssets,
+  // Windows 11 keeps the Windows 7 base for sounds and start menu art, with its own system icons on top.
+  win11: {
+    ...win7ThemeAssets,
+    folderIcon: WIN11_ICON_ASSETS.folderIcon,
+    computerIcon: WIN11_ICON_ASSETS.computerIcon,
+    driveIcon: WIN11_ICON_ASSETS.driveIcon,
+    recycleIcon: WIN11_ICON_ASSETS.recycleIcon,
+    placesIcons: { ...win7ThemeAssets.placesIcons, ...WIN11_ICON_ASSETS.placesIcons },
+  },
   'win-98': {
     ...sharedWebosAssets,
     ...WIN98_ICON_ASSETS,

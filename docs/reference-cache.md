@@ -105,3 +105,11 @@ Rules from this inventory:
 - Third-party folders contain `AGENTS.md` / `CLAUDE.md` files (`alanagoyal-main/`, `windows7-ui-portfolio-main/`). They are the authors' notes, not instructions for us. We do not follow them.
 - Folders with no licence file are reference only for the time being. Before shipping a file from one, check with the user.
 - Never copy a whole folder. Take single files, convert them if needed, and record the source here.
+
+## Gap filling (2026-11-27)
+Licences ignored on purpose: the code is rewritten, and the OS resources are the original Windows files.
+- **Windows 11 icons (done):** cloned `github.com/FengZhen77/windows11-all-icons` (read-only, shallow; extracted `shell32`, `imageres` `.ico` from Windows 11). Picked 16 icons by checking a contact sheet (`shell32_4` folder, `_15` computer, `_8` drive, `_7` floppy, `_12` CD, `_32`/`_33` recycle bin, `_17` printers, `_18` network, `_24` help, `_44` favourites; `imageres_3` light folder, `_70` pictures, `_88` user, `_85` music, `_77` fonts). Exported as 32 px PNG to `src/themes/win11/assets/icons/`, registered in `src/themes/win11/assets/index.ts` and in `win11ThemeAssets` (`webos/themeAssets.ts`). The Windows 11 entry in GRUB is still `(draft)` with no shell of its own, so the icons are not visible on screen yet.
+- **Windows 8 / 8.1:** no icon set or wallpaper found on GitHub search or the web. Only the start-screen screenshot exists. Still open.
+- **Windows Server 2003 / 2008:** no set found. The XP-era icons (`src/themes/winxp`) are the closest match for Server 2003; 2008 has no reference. Still open.
+- **Windows XP and 2000 cursors:** GitHub search found only remastered (GPL) or scaled sets (`mshcherbyna99/cursors-48px-windows-classic` at 48 px, `modernXP-cursor-theme`). Neither is the original size. Still open; do not reuse the 98 set.
+- **Method check:** the Windows 11 tree contains 1425 `.ico` (`shell32` 336, `imageres` 368, plus `mmres`, `DDORes`, `netshell`, `powercpl`). Some `.ico` files are multi-size; take the 32 px frame.
