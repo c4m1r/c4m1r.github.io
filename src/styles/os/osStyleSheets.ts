@@ -13,6 +13,7 @@ type StyleLoader = () => Promise<unknown>;
 
 const css = {
   classic: () => import('./themes/classic.css'),
+  win2000Chrome: () => import('./themes/win2000-chrome.css'),
   xpShared: () => import('./themes/xp-shared.css'),
   xp98: () => import('./themes/xp-98.css'),
   xpWinxp: () => import('./themes/xp-winxp.css'),
@@ -65,7 +66,7 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
   'os-winxp': WINXP_SET,
   // Halloween is a child of Windows XP: the whole XP set, then its own file last.
   'os-spooky': [...WINXP_SET, css.halloween],
-  'os-classic': [css.xp98, css.classic, css.macos, css.buildWatermark, css.calendar],
+  'os-classic': [css.xp98, css.classic, css.win2000Chrome, css.macos, css.buildWatermark, css.calendar],
   'os-win7': [
     css.win7,
     css.macos,

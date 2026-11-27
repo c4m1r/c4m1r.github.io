@@ -1,0 +1,65 @@
+/*
+ * Windows 2000 window controls: native 16x14 glyphs (eat/windows2000-main sprites/window),
+ * replacing the Windows 98 bevelled buttons. Scoped to .os-win2000 so Windows 98 keeps its own look.
+ */
+
+.os-classic.os-win2000 .xp-titlebar__button,
+.os-win2000 .xp-titlebar__button {
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 16px 14px !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+  min-width: 16px !important;
+  min-height: 14px !important;
+}
+
+.os-classic.os-win2000 .xp-titlebar__button:active,
+.os-win2000 .xp-titlebar__button:active {
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+.os-classic.os-win2000 .xp-titlebar__button::before,
+.os-win2000 .xp-titlebar__button::before {
+  content: none !important;
+  display: none !important;
+}
+
+.os-classic.os-win2000 .xp-titlebar__button--minimize,
+.os-win2000 .xp-titlebar__button--minimize {
+  background-image: url('../../../themes/win2000/assets/window/minimize.png') !important;
+}
+.os-classic.os-win2000 .xp-titlebar__button--minimize:hover,
+.os-win2000 .xp-titlebar__button--minimize:hover {
+  background-image: url('../../../themes/win2000/assets/window/minimize_hover.png') !important;
+}
+
+.os-classic.os-win2000 .xp-titlebar__button--maximize,
+.os-win2000 .xp-titlebar__button--maximize {
+  background-image: url('../../../themes/win2000/assets/window/maximize.png') !important;
+}
+.os-classic.os-win2000 .xp-titlebar__button--maximize:hover,
+.os-win2000 .xp-titlebar__button--maximize:hover {
+  background-image: url('../../../themes/win2000/assets/window/maximize_hover.png') !important;
+}
+
+.os-classic.os-win2000 .xp-titlebar__button--restore,
+.os-win2000 .xp-titlebar__button--restore {
+  background-image: url('../../../themes/win2000/assets/window/unmaximize.png') !important;
+}
+.os-classic.os-win2000 .xp-titlebar__button--restore:hover,
+.os-win2000 .xp-titlebar__button--restore:hover {
+  background-image: url('../../../themes/win2000/assets/window/unmaximize_hover.png') !important;
+}
+
+.os-classic.os-win2000 .xp-titlebar__button--close,
+.os-win2000 .xp-titlebar__button--close {
+  background-image: url('../../../themes/win2000/assets/window/close.png') !important;
+}
+.os-classic.os-win2000 .xp-titlebar__button--close:hover,
+.os-win2000 .xp-titlebar__button--close:hover {
+  background-image: url('../../../themes/win2000/assets/window/close_hover.png') !important;
+}
