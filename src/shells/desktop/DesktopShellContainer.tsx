@@ -41,6 +41,7 @@ import {
 import { type DesktopIcon, type DesktopShellProps } from './desktopTypes';
 import { isWin95Shell, win95ThemeAssets } from '../../themes/win95';
 import { isServer2003Shell, server2003ThemeAssets } from '../../themes/server2003';
+import { isWindows81Edition, win81ThemeAssets } from '../../themes/win81';
 
 // Default Windows 7 taskbar pins: Internet Explorer, Windows Explorer, Media Player.
 const WIN7_PINNED_TASKBAR_APPS = [
@@ -467,10 +468,14 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   // Windows 95 runs on the Windows 98 theme; its own icons replace the matching roles.
   const win95Shell = isWin95Shell(themeKey);
   // Windows Server 2003 runs on the XP theme; only its desktop wallpaper changes.
+  // A Windows 8.1 edition of the Windows 8 profile uses the 8.1 icons; missing roles keep the Windows 8 set.
+  const win81Shell = themeKey === 'win8' && isWindows81Edition(getActiveEdition('win8'));
   const themeAssets = win95Shell
     ? win95ThemeAssets(baseThemeAssets)
     : isServer2003Shell(themeKey)
     ? server2003ThemeAssets(baseThemeAssets)
+    : win81Shell
+    ? win81ThemeAssets(baseThemeAssets)
     : baseThemeAssets;
   const fallbackAssets = THEME_ASSETS.webos;
   const resolveAssetPath = (primary?: string, secondary?: string) => primary ?? secondary ?? '';

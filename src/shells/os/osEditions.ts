@@ -22,7 +22,7 @@ export interface OsEdition {
   buildNumber?: string;
 }
 
-export type EditionProfileId = 'win-98' | 'win2000' | 'win-xp' | 'vista' | 'win7' | 'win8' | 'win81' | 'ubuntu';
+export type EditionProfileId = 'win-98' | 'win2000' | 'win-xp' | 'vista' | 'win7' | 'win8' | 'ubuntu';
 
 export const EDITION_STORAGE_KEY = 'webos-grub-editions-v1';
 
@@ -399,38 +399,36 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
       descriptionRu: 'OEM-вариация для недорогих устройств с требованиями Microsoft к поиску Bing по умолчанию.',
       buildNumber: 'Build 9200',
     },
-  ],
-  win81: [
     {
-      id: 'core',
+      id: 'v81-core',
       label: '8.1',
       labelRu: 'Windows 8.1',
       descriptionRu: 'Базовая редакция Windows 8.1 - развитие Windows 8 с доработанным интерфейсом и возвратом кнопки Пуск.',
       buildNumber: 'Build 9600',
     },
     {
-      id: 'pro',
+      id: 'v81-pro',
       label: '8.1 Pro',
       labelRu: 'Windows 8.1 Профессиональная',
       descriptionRu: 'Профессиональная редакция Windows 8.1 с доменом, BitLocker, Hyper-V и удаленным рабочим столом.',
       buildNumber: 'Build 9600',
     },
     {
-      id: 'enterprise',
+      id: 'v81-enterprise',
       label: '8.1 Enterprise',
       labelRu: 'Windows 8.1 Корпоративная',
       descriptionRu: 'Корпоративная редакция Windows 8.1 с расширенными средствами управления и сетевыми функциями.',
       buildNumber: 'Build 9600',
     },
     {
-      id: 'rt',
+      id: 'v81-rt',
       label: 'RT 8.1',
       labelRu: 'Windows RT 8.1',
       descriptionRu: 'Обновленная ARM-редакция для устройств семейства Windows RT.',
       buildNumber: 'Build 9600 (ARM)',
     },
     {
-      id: 'with-bing',
+      id: 'v81-with-bing',
       label: '8.1 with Bing',
       labelRu: 'Windows 8.1 with Bing',
       descriptionRu: 'OEM-вариация Windows 8.1 для недорогих устройств с Bing как поиском по умолчанию.',

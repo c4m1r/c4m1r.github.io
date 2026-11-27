@@ -30,6 +30,7 @@ These items cannot be closed from the sources checked so far. Each one needs fil
 - **Ubuntu GNOME edition (decided 2026-11-28).** The GNOME edition is the default Ubuntu look and keeps the browser cursor. Still needed for a full GNOME shell: the Adwaita or Yaru shell look (top bar, dock, window frames), the full Yaru icon theme (we have 44 of its icons), the Yaru wallpapers and the GNOME sound theme.
 - **Windows 2000 cursor scheme.** Closed by the attached `classic-1` pack (the user states that 2000 and XP share it). Not yet checked against a screenshot with the cursor visible.
 - **Windows 8 skin.** Wired (2026-11-28): the daisy wallpaper and the Aero cursor set. Still needed: the Windows 8 system icons, to compare with the 8.1 flat icons. If they differ, Windows 8 and 8.1 become two editions of the Windows 8 profile, chosen with E in GRUB.
+- **Windows 8.1 icons.** Wired (2026-11-28) for 12 roles from the Flat Colors pack, in `src/themes/win81/assets/icons` (48 px). The pack's manifest is encrypted and its icons are numbered, so each role was matched by eye on a contact sheet. Roles it lacks fall back to Windows 8.
 - **Windows 11 wallpaper.** Closed: `img0` is wired. Windows 11 icons and the other 17 wallpapers are stored for reference.
 - **Windows Server 2003 wallpaper.** Wired (2026-11-28): the clean original shows when the server2003 boot profile is active.
 - **Windows 8/10 and 11 quick settings.** The donor has no Windows 11 quick settings; the Windows 11 panel reuses the Windows 10 layout.
