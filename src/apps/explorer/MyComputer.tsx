@@ -748,7 +748,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                   { key: 'Dial-Up Networking', label: isRu ? 'Удалённый доступ' : 'Dial-Up Networking', icon: win98DialupIcon, open: undefined },
                   { key: 'Scheduled Tasks', label: isRu ? 'Запланированные задания' : 'Scheduled Tasks', icon: win98SchedTasksIcon, open: undefined },
                   { key: 'Web Folders', label: isRu ? 'Веб-папки' : 'Web Folders', icon: win98WebFoldersIcon, open: undefined },
-                ];
+                ].filter((entry) => !(isWin95Shell(theme) && (entry.key === 'Scheduled Tasks' || entry.key === 'Web Folders')));
 
   return (
     <div data-os-theme={theme} className={`file-explorer flex flex-col h-full min-h-0 bg-white font-tahoma text-xs select-none file-explorer--${theme}`}>
