@@ -137,3 +137,9 @@ Licences ignored on purpose: the code is rewritten, and the OS resources are the
 
 - Server 2003: `eat/screens/oc/server2003/01-desktop-start-menu.jpg` shows the Windows XP shell (Luna taskbar, XP Start menu, grey-blue Server wallpaper with a "Windows Server 2003 Demonstration" watermark). Decision: the 2003 skin stays XP. The wallpaper is not used because the only copy carries the watermark.
 - Server 2008, 2012, 2016, 2019: no reference or resource in `eat/`. A web search (GitHub topics and the Windows wallpaper wiki) found no clean source that can be downloaded from the sandbox. These editions keep their closest client skin.
+
+## WinRetro media (2026-11-28)
+
+- `src/assets/reference/winretro/`: 1497 files from `erfg12/WinRetro_Themes`, not imported by the app. Per pack: 40 WAV (23 new XP, Vista and 9x system sounds), 61 wallpapers (JPG/PNG), 1407 ICO from the `System Icons` folders. The bytes already in the project or `eat/` were skipped. BMP wallpapers and `.scr` screen savers were not copied (see the folder README).
+- `McNultyyy/Windows-95-Cursor-Icons`: the 56 Windows 95 cursors are in `src/themes/cursors/win95-xfce/all/`.
+- `1j01/retrores`: its ANI/GIF cursors are Git LFS pointers; the anonymous clone cannot fetch them, so they are not in the repo.
