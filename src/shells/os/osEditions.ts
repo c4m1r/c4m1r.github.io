@@ -21,7 +21,7 @@ export interface OsEdition {
   buildNumber?: string;
 }
 
-export type EditionProfileId = 'win-98' | 'win2000' | 'win-xp' | 'vista' | 'win7' | 'win8' | 'win81';
+export type EditionProfileId = 'win-98' | 'win2000' | 'win-xp' | 'vista' | 'win7' | 'win8' | 'win81' | 'ubuntu';
 
 export const EDITION_STORAGE_KEY = 'webos-grub-editions-v1';
 
@@ -92,6 +92,32 @@ const VISTA_EDITION_TRANSLATIONS: Record<string, Partial<Record<Language, OsEdit
     ko: { label: '얼티밋', description: 'Windows Vista의 최상위 에디션입니다. 홈 프리미엄과 엔터프라이즈의 모든 기능에 Ultimate Extras가 추가됩니다.' },
     be: { label: 'Максімальная', description: 'Максімальная рэдакцыя Windows Vista: усё з Home Premium і Enterprise плюс Ultimate Extras.' },
     kk: { label: 'Ультимейт', description: 'Windows Vista-ның ең толық редакциясы: Home Premium және Enterprise-дің барлық мүмкіндіктері және Ultimate Extras.' },
+  },
+};
+
+// Ubuntu desktop editions in all nine interface languages (en, ru, fr, es, zh, ja, ko, be, kk).
+const UBUNTU_EDITION_TRANSLATIONS: Record<string, Partial<Record<Language, OsEditionTranslation>>> = {
+  gnome: {
+    en: { label: 'GNOME', description: 'The default Ubuntu desktop on the GNOME shell: the top bar, the dock and the Yaru look.' },
+    ru: { label: 'GNOME', description: 'Стандартный рабочий стол Ubuntu на оболочке GNOME: верхняя панель, док и оформление Yaru.' },
+    fr: { label: 'GNOME', description: 'Bureau Ubuntu par défaut, basé sur l’interface GNOME : barre supérieure, dock et apparence Yaru.' },
+    es: { label: 'GNOME', description: 'Escritorio predeterminado de Ubuntu sobre la interfaz GNOME: barra superior, dock y aspecto Yaru.' },
+    zh: { label: 'GNOME', description: '基于 GNOME 桌面环境的默认 Ubuntu 桌面：顶部栏、程序坞和 Yaru 外观。' },
+    ja: { label: 'GNOME', description: 'GNOME シェルを使う標準の Ubuntu デスクトップです。上部バー、ドック、Yaru の外観を備えます。' },
+    ko: { label: 'GNOME', description: 'GNOME 셸을 사용하는 기본 Ubuntu 데스크톱입니다. 상단 막대, 독, Yaru 모양을 갖추고 있습니다.' },
+    be: { label: 'GNOME', description: 'Стандартны рабочы стол Ubuntu на абалонцы GNOME: верхняя панэль, док і афармленне Yaru.' },
+    kk: { label: 'GNOME', description: 'GNOME қабығындағы әдепкі Ubuntu жұмыс үстелі: жоғарғы жолақ, док және Yaru безендіруі.' },
+  },
+  xfce: {
+    en: { label: 'Xfce', description: 'Ubuntu with the Xfce desktop environment. The cursors use the Xfce set; the panel and window frames still show the shared Ubuntu look.' },
+    ru: { label: 'Xfce', description: 'Ubuntu с рабочим столом Xfce. Курсоры взяты из набора Xfce; панель и рамки окон пока в общем оформлении Ubuntu.' },
+    fr: { label: 'Xfce', description: 'Ubuntu avec l’environnement de bureau Xfce. Les curseurs viennent du jeu Xfce ; le panneau et les cadres de fenêtres gardent l’apparence Ubuntu commune.' },
+    es: { label: 'Xfce', description: 'Ubuntu con el entorno de escritorio Xfce. Los cursores usan el conjunto de Xfce; el panel y los marcos de ventana mantienen el aspecto común de Ubuntu.' },
+    zh: { label: 'Xfce', description: '使用 Xfce 桌面环境的 Ubuntu。光标使用 Xfce 光标集；面板和窗口边框仍为 Ubuntu 通用外观。' },
+    ja: { label: 'Xfce', description: 'Xfce デスクトップ環境を使う Ubuntu です。カーソルは Xfce のセットを使い、パネルとウィンドウ枠は共通の Ubuntu の外観のままです。' },
+    ko: { label: 'Xfce', description: 'Xfce 데스크톱 환경을 사용하는 Ubuntu입니다. 커서는 Xfce 세트를 사용하며, 패널과 창 테두리는 공통 Ubuntu 모양을 유지합니다.' },
+    be: { label: 'Xfce', description: 'Ubuntu з асяроддзем працоўнага стала Xfce. Курсоры — з набору Xfce; панэль і рамкі вокнаў пакуль у агульным афармленні Ubuntu.' },
+    kk: { label: 'Xfce', description: 'Xfce жұмыс үстелі ортасы бар Ubuntu. Курсорлар Xfce жинағынан алынған; панель мен терезе жиектері әлі ортақ Ubuntu безендіруінде.' },
   },
 };
 
@@ -408,6 +434,22 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
       labelRu: 'Windows 8.1 with Bing',
       descriptionRu: 'OEM-вариация Windows 8.1 для недорогих устройств с Bing как поиском по умолчанию.',
       buildNumber: 'Build 9600',
+    },
+  ],
+  ubuntu: [
+    {
+      id: 'gnome',
+      label: 'GNOME',
+      translations: UBUNTU_EDITION_TRANSLATIONS['gnome'],
+      labelRu: 'GNOME',
+      descriptionRu: 'Стандартный рабочий стол Ubuntu на оболочке GNOME: верхняя панель, док и оформление Yaru.',
+    },
+    {
+      id: 'xfce',
+      label: 'Xfce',
+      translations: UBUNTU_EDITION_TRANSLATIONS['xfce'],
+      labelRu: 'Xfce',
+      descriptionRu: 'Ubuntu с рабочим столом Xfce. Курсоры взяты из набора Xfce; панель и рамки окон пока в общем оформлении Ubuntu.',
     },
   ],
 };

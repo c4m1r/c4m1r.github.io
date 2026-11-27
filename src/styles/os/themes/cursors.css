@@ -65,6 +65,31 @@ html .os-win95 .is-busy {
   cursor: url('../../../themes/cursors/win95-xfce/wait.png') 16 17, wait;
 }
 
+/* Ubuntu, Xfce edition: the same xfce-look set as Windows 95 (src/themes/cursors/win95-xfce). The GNOME edition keeps the browser default.
+   The declarations are !important because ubuntu.css sets pointer !important on its own buttons (.os-button, .start-button, taskbar). */
+html [data-os-theme="ubuntu"][data-os-edition="xfce"],
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] * {
+  cursor: url('../../../themes/cursors/win95-xfce/arrow.png') 0 0, default !important;
+}
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] a[href],
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] button:not(:disabled),
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] [role="button"],
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] [role="link"],
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] [class*="cursor-pointer"],
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] label[for],
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] summary {
+  cursor: url('../../../themes/cursors/win95-xfce/hand.png') 5 0, pointer !important;
+}
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] textarea,
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] [contenteditable="true"] {
+  cursor: url('../../../themes/cursors/win95-xfce/ibeam.png') 15 16, text !important;
+}
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] [aria-busy="true"],
+html [data-os-theme="ubuntu"][data-os-edition="xfce"] .is-busy {
+  cursor: url('../../../themes/cursors/win95-xfce/wait.png') 16 17, wait !important;
+}
+
 /* Windows Vista and 7: the first Aero set. It has no I-beam, so text fields keep the browser default. */
 html .os-vista,
 html .win7:not(.os-win10):not(.os-win11),

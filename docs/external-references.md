@@ -26,10 +26,10 @@ unless it is an original OS asset that is already stored in the theme sets.
 
 These items cannot be closed from the sources checked so far. Each one needs files from the user or a decision.
 
-- **Ubuntu XFCE mode.** Needs an XFCE look: the panel, the window manager (Xfwm) frames and the Greybird or Xfce icon theme, and Xfce wallpapers. The X11 Xcursor set from xfce-look (`all/`) covers the cursors only. Open question: should XFCE and GNOME be two editions of the Ubuntu profile (the same mechanism as the Vista editions)?
-- **Ubuntu GNOME mode.** Needs the Adwaita or Yaru GNOME shell look (top bar, dock, window frames), the full Yaru icon theme (we have 44 of its icons), the Yaru wallpapers and the GNOME sound theme. Nothing in `eat/` covers the shell itself.
+- **Ubuntu Xfce edition (decided 2026-11-28: GNOME and Xfce are two editions of the Ubuntu profile, chosen with E in GRUB).** Done: the Xfce edition uses the xfce-look cursor set (`win95-xfce`, 4 roles). Still needed: the Xfce panel, the Xfwm window frames, the Greybird or Xfce icon theme and Xfce wallpapers. The X11 Xcursor set covers cursors only.
+- **Ubuntu GNOME edition (decided 2026-11-28).** The GNOME edition is the default Ubuntu look and keeps the browser cursor. Still needed for a full GNOME shell: the Adwaita or Yaru shell look (top bar, dock, window frames), the full Yaru icon theme (we have 44 of its icons), the Yaru wallpapers and the GNOME sound theme.
 - **Windows 2000 cursor scheme.** Closed by the attached `classic-1` pack (the user states that 2000 and XP share it). Not yet checked against a screenshot with the cursor visible.
-- **Windows 8 skin.** Wallpaper (`win8-daisy.jpg`) and the Aero cursor set are now available. Still needed: the Windows 8 icons (the 8.1 flat icons are a different design), and a skin root class for Windows 8 (none exists yet).
+- **Windows 8 skin.** Wallpaper (`win8-daisy.jpg`) and the Aero cursor set are available. Still needed: the Windows 8 system icons, to compare with the 8.1 flat icons. If they differ, Windows 8 and 8.1 become two editions of the Windows 8 profile, chosen with E in GRUB (as Vista's editions are). Also needed: a skin root class for Windows 8 (none exists yet).
 - **Windows 11 wallpaper.** Closed: `img0` is wired. Windows 11 icons and the other 17 wallpapers are stored for reference.
 - **Windows Server 2003 wallpaper.** Closed: the clean original is stored. Wiring it needs a server2003 wallpaper override, since the profile uses the Windows XP theme.
 - **Windows 8/10 and 11 quick settings.** The donor has no Windows 11 quick settings; the Windows 11 panel reuses the Windows 10 layout.

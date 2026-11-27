@@ -5,6 +5,8 @@ import { getActiveEdition } from '../../os/osEditions';
 
 export interface DesktopOsAttributes {
   'data-os-theme': string;
+  /** Id of the active edition (e.g. Ubuntu `gnome` or `xfce`), so CSS can style one edition of a skin. */
+  'data-os-edition'?: string;
   'data-os-class': string;
   'data-os-version'?: string;
   'data-design-era'?: string;
@@ -32,6 +34,7 @@ export function getDesktopOsAttributes(themeId: ThemeId): DesktopOsAttributes {
 
   return {
     'data-os-theme': themeId,
+    'data-os-edition': activeEdition?.id,
     'data-os-class': skinRules.osClassName,
     'data-os-version': versionRules?.version,
     'data-design-era': versionRules?.designEra,

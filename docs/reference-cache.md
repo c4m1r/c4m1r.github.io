@@ -144,4 +144,5 @@ Licences ignored on purpose: the code is rewritten, and the OS resources are the
 - `McNultyyy/Windows-95-Cursor-Icons`: the 56 Windows 95 cursors are in `src/themes/cursors/win95-xfce/all/`.
 - `1j01/retrores`: its ANI/GIF cursors are Git LFS pointers; the anonymous clone cannot fetch them, so they are not in the repo.
 - `src/assets/reference/windows-misc/` (2026-11-28, 35 MB, not imported; see its README): 18 Windows 11 wallpapers, the Windows 8 default wallpaper, the clean Server 2003 wallpaper, and 84 Windows 8.1 Flat Colors icons with the `.iconpackage` manifest. Only the Windows 11 `img0` is wired.
+- Ubuntu editions (2026-11-28): GNOME and Xfce, defined in `src/shells/os/osEditions.ts` (nine languages). The Xfce cursor set is the xfce-look set in `src/themes/cursors/win95-xfce`, already in the repo.
 - Windows 2000 / XP cursors (`eat/temp/cursors/classic-1-xp2000`, temporary, git-ignored): the same pack as `src/themes/cursors/win2000`.
