@@ -41,10 +41,10 @@ html .winxp .is-busy {
   cursor: url('../../../themes/cursors/win2000/wait.cur'), wait;
 }
 
-/* Windows 95: the 95/98 set without the replaced "working in background" CD cursor (Cursor_17). */
+/* Windows 95: the xfce-look Windows 95 set (src/themes/cursors/win95-xfce, converted from X11 Xcursor; hotspots kept in the rules). */
 html .os-win95,
 html .os-win95 * {
-  cursor: url('../../../themes/cursors/win95/arrow.cur'), default;
+  cursor: url('../../../themes/cursors/win95-xfce/arrow.png') 0 0, default;
 }
 html .os-win95 a[href],
 html .os-win95 button:not(:disabled),
@@ -53,16 +53,16 @@ html .os-win95 [role="link"],
 html .os-win95 [class*="cursor-pointer"],
 html .os-win95 label[for],
 html .os-win95 summary {
-  cursor: url('../../../themes/cursors/win95/hand.cur'), pointer;
+  cursor: url('../../../themes/cursors/win95-xfce/hand.png') 5 0, pointer;
 }
 html .os-win95 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
 html .os-win95 textarea,
 html .os-win95 [contenteditable="true"] {
-  cursor: url('../../../themes/cursors/win95/ibeam.cur'), text;
+  cursor: url('../../../themes/cursors/win95-xfce/ibeam.png') 15 16, text;
 }
 html .os-win95 [aria-busy="true"],
 html .os-win95 .is-busy {
-  cursor: url('../../../themes/cursors/win95/wait.cur'), wait;
+  cursor: url('../../../themes/cursors/win95-xfce/wait.png') 16 17, wait;
 }
 
 /* Windows Vista and 7: the first Aero set. It has no I-beam, so text fields keep the browser default. */
