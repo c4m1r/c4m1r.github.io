@@ -63,6 +63,7 @@ import printersIconWebos from '../winxp/assets/icons/printers-and-faxes.png';
 import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import { WIN10_ICON_ASSETS } from '../win10/assets';
+import win10Wallpaper from '../win10/assets/wallpaper.jpg';
 import { WIN11_ICON_ASSETS } from '../win11/assets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
 import win2000SideBar from '../win2000/assets/sideBar.png';
@@ -323,6 +324,7 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
   // Windows 10 keeps the Windows 7 base and swaps in its own system icons (eat/ reference set).
   win10: {
     ...win7ThemeAssets,
+    wallpaper: win10Wallpaper,
     folderIcon: WIN10_ICON_ASSETS.folderIcon,
     computerIcon: WIN10_ICON_ASSETS.computerIcon,
     driveIcon: WIN10_ICON_ASSETS.driveIcon,

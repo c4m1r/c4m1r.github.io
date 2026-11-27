@@ -1,0 +1,159 @@
+/*
+ * Windows 10 overrides on top of the Windows 7 base (see 'os-win10' in osStyleSheets.ts).
+ * Flat dark taskbar and Start button with the four-square logo, flat white window frames with
+ * Windows 10 caption buttons (red close on hover).
+ */
+
+/* Taskbar: solid dark bar, no glass or gloss. */
+.os-win10 .taskbar {
+  height: 40px !important;
+  background: #1f1f1f !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Start button: square, four-square Windows logo, no orb. */
+.os-win10 .taskbar .start-button.os-button {
+  width: 48px !important;
+  height: 40px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='18' height='18'%3E%3Cpath fill='%23ffffff' d='M3 3h8.5v8.5H3zM12.5 3H21v8.5h-8.5zM3 12.5h8.5V21H3zM12.5 12.5H21V21h-8.5z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 18px 18px !important;
+  transition: background-color 0.1s ease !important;
+}
+
+.os-win10 .taskbar .start-button.os-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+
+.os-win10 .taskbar .start-button.os-button:active,
+.os-win10 .taskbar .start-button.os-button.start-button--open {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: none !important;
+}
+
+/* Taskbar buttons: flat, with a white underline for the active window. */
+.os-win10 .taskbar-button {
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.os-win10 .taskbar-button:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.os-win10 .taskbar-button.is-active {
+  background: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 -3px 0 #ffffff !important;
+}
+
+/* Start menu: dark panel, light text. */
+.os-win10 .win7-start-menu {
+  background: rgba(32, 32, 32, 0.98) !important;
+  color: #ffffff !important;
+  border: 1px solid #3a3a3a !important;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: none !important;
+}
+
+/* Window frames: flat white title bar with a thin border. */
+.os-win10 .os-titlebar {
+  background: #ffffff !important;
+  color: #000000 !important;
+  background-image: none !important;
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  padding: 0 0 0 10px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.os-win10 .os-window--inactive .os-titlebar {
+  background: #ffffff !important;
+  color: #7a7a7a !important;
+}
+
+.os-win10 .os-window {
+  box-shadow: 0 0 0 1px #8a8a8a !important;
+  border-radius: 0 !important;
+}
+
+/* Caption buttons: 46 px wide, thin black glyphs, red close on hover. */
+.os-win10 .xp-titlebar__button {
+  width: 46px !important;
+  height: 31px !important;
+  min-width: 46px !important;
+  min-height: 31px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 10px 10px !important;
+}
+
+.os-win10 .xp-titlebar__button:hover {
+  background-color: #e5e5e5 !important;
+}
+
+.os-win10 .xp-titlebar__button::before {
+  content: none !important;
+  display: none !important;
+}
+
+.os-win10 .xp-titlebar__button--minimize {
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M0 5.5h10' stroke='%23000' stroke-width='1' fill='none'/%3E%3C/svg%3E") !important;
+}
+
+.os-win10 .xp-titlebar__button--maximize {
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Crect x='0.5' y='0.5' width='9' height='9' fill='none' stroke='%23000'/%3E%3C/svg%3E") !important;
+}
+
+.os-win10 .xp-titlebar__button--restore {
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Crect x='2.5' y='0.5' width='7' height='7' fill='none' stroke='%23000'/%3E%3Cpath d='M0.5 2.5v7h7' stroke='%23000' fill='none'/%3E%3C/svg%3E") !important;
+}
+
+.os-win10 .xp-titlebar__button--close {
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M0 0L10 10M10 0L0 10' stroke='%23000' stroke-width='1' fill='none'/%3E%3C/svg%3E") !important;
+}
+
+.os-win10 .xp-titlebar__button--close:hover {
+  background-color: #e81123 !important;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M0 0L10 10M10 0L0 10' stroke='%23ffffff' stroke-width='1' fill='none'/%3E%3C/svg%3E") !important;
+}
+
+/* The Windows 7 Start button carries the orange orb image; Windows 10 draws its own logo. */
+.os-win10 .taskbar .start-button img {
+  display: none !important;
+}
+
+/* Start menu left column: dark, with light program names (Windows 10 shows a dark menu). */
+.os-win10 .win7-start-menu__left {
+  background: #202020 !important;
+  background-image: none !important;
+}
+
+.os-win10 .win7-start-menu__program,
+.os-win10 .win7-start-menu__left button,
+.os-win10 .win7-start-menu__left span {
+  color: #ffffff !important;
+}
+
+.os-win10 .win7-start-menu__program:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
