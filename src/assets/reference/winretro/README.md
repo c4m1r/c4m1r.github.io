@@ -11,3 +11,7 @@ Kept as reference for the detailed OS skins. Nothing here is imported by the app
 - Skipped on purpose: BMP wallpapers (uncompressed copies of the JPG ones), `.scr` screen savers (Windows executables), and files that are byte-identical to the project or to `eat/`.
 - Names are lower-cased and hyphenated; a duplicate name gets a short hash suffix.
 - Licence: the repo has no licence file, so the source is recorded here and the files are kept as-is.
+
+## eat-audio
+
+`src/assets/reference/eat-audio/` holds the audio from `eat/` that the project does not have (19 files, 8.8 MB): the Windows 98, Windows 7 and Windows 95 startup and chime clips, the macOS and iOS sounds, and a few songs and memes. Names are `<donor folder>__<file>`. Byte-identical copies already in the project were skipped.
