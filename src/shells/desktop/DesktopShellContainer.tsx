@@ -478,7 +478,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
   const usesThemeImageIcons = isThemeInFamily(themeKey, WINDOWS_IMAGE_ICON_THEMES);
   // Native size per generation: Windows 98/2000 desktops used 32 px icons,
   // Windows 7 used 48 px. XP and WebOS keep their current sizing.
-  const desktopIconImageClass = themeKey === 'win7' || themeKey === 'vista' || themeKey === 'win10'
+  const desktopIconImageClass = themeKey === 'win7' || themeKey === 'vista' || themeKey === 'win10' || themeKey === 'win11'
     ? 'w-12 h-12'
     : themeKey === 'win-98' || themeKey === 'win2000'
       ? 'w-8 h-8'
@@ -774,7 +774,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
   const getIconElement = (iconType: 'folder' | 'computer' | 'recycle' | 'documents') => {
     // Win98, 2000 and 7 have a dedicated My Documents picture; XP keeps its folder.
-    if (iconType === 'documents' && ['win-98', 'win2000', 'win7', 'vista', 'win10'].includes(themeKey)) {
+    if (iconType === 'documents' && ['win-98', 'win2000', 'win7', 'vista', 'win10', 'win11'].includes(themeKey)) {
       const documentsPath = themeAssets.placesIcons?.myDocuments ?? themeAssets.folderIcon;
       if (documentsPath) {
         return <img src={documentsPath} alt="" className={desktopIconImageClass} onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
@@ -1032,7 +1032,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
       ? { 'My Documents': 'Мои документы', 'My Pictures': 'Мои рисунки', 'My Music': 'Моя музыка', '$Recycle.Bin': 'Корзина' }
       : { '$Recycle.Bin': 'Recycle Bin' };
     const title = normalizedPath === 'My Computer'
-      ? (themeKey === 'win7' || themeKey === 'vista' || themeKey === 'win10' ? (language === 'ru' ? 'Компьютер' : 'Computer') : t.myComputer)
+      ? (themeKey === 'win7' || themeKey === 'vista' || themeKey === 'win10' || themeKey === 'win11' ? (language === 'ru' ? 'Компьютер' : 'Computer') : t.myComputer)
       : localizedFolderNames[pathName] ?? pathName;
 
     openWindow({
@@ -1436,7 +1436,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           ? `url(${customWallpaper})`
           : activeEdition?.wallpaper
           ? `url(${activeEdition.wallpaper})`
-          : (isXpFamily || themeKey === 'vista' || themeKey === 'win10') && themeAssets.wallpaper
+          : (isXpFamily || themeKey === 'vista' || themeKey === 'win10' || themeKey === 'win11') && themeAssets.wallpaper
           ? `url(${themeAssets.wallpaper})`
           : undefined,
         backgroundColor: customWallpaper

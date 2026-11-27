@@ -7,7 +7,7 @@ export const OS_CLASS_MAP: Record<ThemeId, string> = {
   win2000: 'classic os-win2000',
   win7: 'win7',
   win10: 'win7 os-win10',
-  win11: 'win7',
+  win11: 'win7 os-win11',
   vista: 'win7 os-vista',
   win8: 'win7',
   ubuntu: 'ubuntu',

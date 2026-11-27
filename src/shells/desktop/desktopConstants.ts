@@ -10,7 +10,7 @@ export const DESKTOP_DRAG_Z_INDEX = 1000;
 export const XP_FAMILY_THEMES: readonly ThemeId[] = ['win-xp', 'webos'];
 
 // Themes whose desktop icons come from their own theme image registry.
-export const WINDOWS_IMAGE_ICON_THEMES: readonly ThemeId[] = ['win-xp', 'webos', 'win-98', 'win2000', 'win7', 'vista', 'win10'];
+export const WINDOWS_IMAGE_ICON_THEMES: readonly ThemeId[] = ['win-xp', 'webos', 'win-98', 'win2000', 'win7', 'vista', 'win10', 'win11'];
 
 // Canonical OS class mapping is owned by shells/os.
 export { OS_CLASS_MAP };

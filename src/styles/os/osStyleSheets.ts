@@ -15,6 +15,7 @@ const css = {
   classic: () => import('./themes/classic.css'),
   win2000Chrome: () => import('./themes/win2000-chrome.css'),
   win10: () => import('./themes/win10.css'),
+  win11: () => import('./themes/win11.css'),
   xpShared: () => import('./themes/xp-shared.css'),
   xp98: () => import('./themes/xp-98.css'),
   xpWinxp: () => import('./themes/xp-winxp.css'),
@@ -97,7 +98,7 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
   'os-arch': [css.arch, css.macos, css.calendar],
   'os-macos': [css.macos, css.appleDock, css.appleLauncher, css.appleApps],
   'os-ios': [css.ios, css.appleDock, css.appleLauncher, css.appleApps, css.calendar],
-  // Windows 10: the Windows 7 base with the Windows 10 overrides on top.
+  // Windows 10 and 11: the Windows 7 base with the Start menu layout and their own overrides on top.
   'os-win10': [
     css.win7,
     css.macos,
@@ -110,7 +111,18 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
     css.vistaStartMenu,
     css.win10,
   ],
-  'os-win11': [css.calendar, css.macos],
+  'os-win11': [
+    css.win7,
+    css.macos,
+    css.winxpWin7Fidelity,
+    css.windowsNativeApp,
+    css.windowsShellFidelity,
+    css.bootSessionFidelity,
+    css.buildWatermark,
+    css.calendar,
+    css.vistaStartMenu,
+    css.win11,
+  ],
   'os-webos': [css.xpWebos, css.webos, css.calendar],
 };
 
@@ -121,12 +133,12 @@ const CLASS_PRIORITY = [
   'os-classic',
   'os-vista',
   'os-win10',
+  'os-win11',
   'os-win7',
   'os-ubuntu',
   'os-arch',
   'os-macos',
   'os-ios',
-  'os-win11',
   'os-webos',
 ];
 
