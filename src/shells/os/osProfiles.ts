@@ -2,15 +2,14 @@ import { type BootMenuGroup, type OsBootProfile, type OsProfileId } from './osTy
 
 /**
  * Boot menu entries. `order` sorts entries inside their group. Windows entries follow the
- * release-based sequence of the Windows family; server editions are drafts that reuse the
- * closest client skin until their own skin exists.
+ * release-based sequence of the Windows family; server editions reuse the closest
+ * client skin until their own skin exists.
  */
 function windows(
   id: OsProfileId,
   label: string,
   theme: NonNullable<OsBootProfile['theme']>,
   order: number,
-  draft = false,
 ): OsBootProfile {
   return {
     id,
@@ -21,7 +20,6 @@ function windows(
     order,
     enabled: true,
     group: 'windows',
-    ...(draft ? { draft: true } : {}),
   };
 }
 
@@ -35,20 +33,20 @@ export const osBootProfiles: OsBootProfile[] = [
     enabled: true,
     defaultSelected: true,
   },
-  windows('win95' as OsProfileId, 'Windows 95', 'win-98', 100, true),
+  windows('win95' as OsProfileId, 'Windows 95', 'win-98', 100),
   windows('win-98' as OsProfileId, 'Windows 98', 'win-98', 101),
   windows('win2000' as OsProfileId, 'Windows 2000', 'win2000', 102),
-  windows('server2003' as OsProfileId, 'Windows Server 2003', 'win-xp', 103, true),
+  windows('server2003' as OsProfileId, 'Windows Server 2003', 'win-xp', 103),
   windows('win-xp' as OsProfileId, 'Windows XP', 'win-xp', 104),
-  windows('vista' as OsProfileId, 'Windows Vista', 'vista', 105, true),
-  windows('server2008' as OsProfileId, 'Windows Server 2008', 'vista', 106, true),
+  windows('vista' as OsProfileId, 'Windows Vista', 'vista', 105),
+  windows('server2008' as OsProfileId, 'Windows Server 2008', 'vista', 106),
   windows('win7' as OsProfileId, 'Windows 7', 'win7', 107),
-  windows('win8' as OsProfileId, 'Windows 8', 'win8', 108, true),
-  windows('server2012' as OsProfileId, 'Windows Server 2012', 'win8', 109, true),
-  windows('win10' as OsProfileId, 'Windows 10', 'win10', 110, true),
-  windows('server2016' as OsProfileId, 'Windows Server 2016', 'win10', 111, true),
-  windows('server2019' as OsProfileId, 'Windows Server 2019', 'win10', 112, true),
-  windows('win11' as OsProfileId, 'Windows 11', 'win11', 113, true),
+  windows('win8' as OsProfileId, 'Windows 8', 'win8', 108),
+  windows('server2012' as OsProfileId, 'Windows Server 2012', 'win8', 109),
+  windows('win10' as OsProfileId, 'Windows 10', 'win10', 110),
+  windows('server2016' as OsProfileId, 'Windows Server 2016', 'win10', 111),
+  windows('server2019' as OsProfileId, 'Windows Server 2019', 'win10', 112),
+  windows('win11' as OsProfileId, 'Windows 11', 'win11', 113),
   {
     id: 'ubuntu' as OsProfileId,
     label: 'Ubuntu',

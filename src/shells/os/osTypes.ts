@@ -42,8 +42,6 @@ export interface OsBootProfile {
   order: number;
   enabled: boolean;
   defaultSelected?: boolean;
-  /** Placeholder entry: shown in the boot menu with a draft marker until its skin is complete. */
-  draft?: boolean;
   /** Submenu the entry is listed under in the boot menu. */
   group?: BootMenuGroup;
 }

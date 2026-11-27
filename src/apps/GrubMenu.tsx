@@ -107,8 +107,6 @@ export function GrubMenu() {
       else if (profile.id === 'terminal') base = t.terminal || profile.label;
       else if (profile.id === 'webos') base = t.webos || profile.label;
 
-      if (profile.draft) base = `${base} (${t.draftMarker ?? 'draft'})`;
-
       const editions = getEditionsForProfile(String(profile.id));
       if (editions.length === 0) return base;
 
@@ -116,7 +114,7 @@ export function GrubMenu() {
       const selectedEdition = editions.find((edition) => edition.id === selectedEditionId);
       return `${base}${selectedEdition ? ` ${selectedEdition.label}` : ''} *`;
     },
-    [selectedEditions, t.blogSite, t.terminal, t.webos, t.draftMarker]
+    [selectedEditions, t.blogSite, t.terminal, t.webos]
   );
 
   const handleBoot = useCallback(
