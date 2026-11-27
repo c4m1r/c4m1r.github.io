@@ -1,0 +1,450 @@
+{
+ "X_cursor": {
+  "file": "X_cursor.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "arrow": {
+  "file": "arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "based_arrow_down": {
+  "file": "based_arrow_down.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "based_arrow_up": {
+  "file": "based_arrow_up.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "bd_double_arrow": {
+  "file": "bd_double_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "bottom_left_corner": {
+  "file": "bottom_left_corner.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "bottom_right_corner": {
+  "file": "bottom_right_corner.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "bottom_side": {
+  "file": "bottom_side.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "center_ptr": {
+  "file": "center_ptr.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 6,
+  "frames": 1
+ },
+ "circle": {
+  "file": "circle.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "copy": {
+  "file": "copy.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "cross": {
+  "file": "cross.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "cross_reverse": {
+  "file": "cross_reverse.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "crossed_circle": {
+  "file": "crossed_circle.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "crosshair": {
+  "file": "crosshair.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "dot": {
+  "file": "dot.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "dotbox": {
+  "file": "dotbox.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "double_arrow": {
+  "file": "double_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "draft_large": {
+  "file": "draft_large.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "draft_small": {
+  "file": "draft_small.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "drapedbox": {
+  "file": "drapedbox.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "fd_double_arrow": {
+  "file": "fd_double_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "fleur": {
+  "file": "fleur.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "grab": {
+  "file": "grab.png",
+  "w": 32,
+  "h": 32,
+  "hx": 5,
+  "hy": 0,
+  "frames": 1
+ },
+ "h_double_arrow": {
+  "file": "h_double_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "hand": {
+  "file": "hand.png",
+  "w": 32,
+  "h": 32,
+  "hx": 5,
+  "hy": 0,
+  "frames": 1
+ },
+ "hand1": {
+  "file": "hand1.png",
+  "w": 32,
+  "h": 32,
+  "hx": 5,
+  "hy": 0,
+  "frames": 1
+ },
+ "hand2": {
+  "file": "hand2.png",
+  "w": 32,
+  "h": 32,
+  "hx": 5,
+  "hy": 0,
+  "frames": 1
+ },
+ "left_ptr": {
+  "file": "left_ptr.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "left_ptr_watch": {
+  "file": "left_ptr_watch.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "left_side": {
+  "file": "left_side.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "ll_angle": {
+  "file": "ll_angle.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "lr_angle": {
+  "file": "lr_angle.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "move": {
+  "file": "move.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "pencil": {
+  "file": "pencil.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "pirate": {
+  "file": "pirate.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "plus": {
+  "file": "plus.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "question_arrow": {
+  "file": "question_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 5,
+  "hy": 7,
+  "frames": 1
+ },
+ "right_ptr": {
+  "file": "right_ptr.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "right_side": {
+  "file": "right_side.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "sb_down_arrow": {
+  "file": "sb_down_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "sb_h_double_arrow": {
+  "file": "sb_h_double_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "sb_left_arrow": {
+  "file": "sb_left_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "sb_right_arrow": {
+  "file": "sb_right_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "sb_up_arrow": {
+  "file": "sb_up_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "sb_v_double_arrow": {
+  "file": "sb_v_double_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "tcross": {
+  "file": "tcross.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ },
+ "top_left_arrow": {
+  "file": "top_left_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 0,
+  "hy": 0,
+  "frames": 1
+ },
+ "top_left_corner": {
+  "file": "top_left_corner.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "top_right_corner": {
+  "file": "top_right_corner.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "top_side": {
+  "file": "top_side.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "ul_angle": {
+  "file": "ul_angle.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "ur_angle": {
+  "file": "ur_angle.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 16,
+  "frames": 1
+ },
+ "v_double_arrow": {
+  "file": "v_double_arrow.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 17,
+  "frames": 1
+ },
+ "watch": {
+  "file": "watch.png",
+  "w": 32,
+  "h": 32,
+  "hx": 16,
+  "hy": 17,
+  "frames": 1
+ },
+ "xterm": {
+  "file": "xterm.png",
+  "w": 32,
+  "h": 32,
+  "hx": 15,
+  "hy": 16,
+  "frames": 1
+ }
+}

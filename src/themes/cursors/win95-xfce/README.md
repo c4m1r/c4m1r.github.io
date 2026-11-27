@@ -22,3 +22,5 @@ Roles (file -> X cursor name, hotspot x,y):
 
 Only arrow, hand, ibeam and wait are wired in `cursors.css` so far; the other roles wait for their selectors.
 The repo has no licence file; the source credit is kept here.
+
+All 56 cursors of the repo (`all/`, one PNG per X11 name with `meta.json` giving the hotspot and size; the 15 roles above are copies of some of them).
