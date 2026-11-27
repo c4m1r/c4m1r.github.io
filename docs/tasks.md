@@ -901,8 +901,8 @@ Implementation files: src/system/audio/winampArchive.ts, src/system/audio/winamp
 - eat/ resource integration (2026-11-27):
   - [x] Windows 11 icon set (from GitHub, not from eat/): 16 icons in `src/themes/win11/assets/icons/`.
   - [x] Windows 10 icon set from `eat/windows10-portfolio-main`: 10 icons in `src/themes/win10/assets/icons/`, registered as `WIN10_ICON_ASSETS` and in the `win10` theme assets. Not visible yet: Windows 10 is still a `(draft)` in GRUB.
-  - [ ] Windows 7 icon set (`eat/windows7-ui-portfolio-main/public/win7`, 528 `.ico`) is not integrated.
-  - [ ] Windows 2000 icon set (`eat/windows2000-main/src/assets/ICON`, 430 `.ico`) is not integrated.
-  - [ ] Windows 95 sounds (`eat/wins95Portfolio-main`, 4 sounds not yet in `src`) are not integrated.
+  - [ ] Windows 7 icon set (`eat/windows7-ui-portfolio-main/public/win7`, 528 `.ico`): check against `src/themes/win7` (may already be PNG) before wiring.
+  - [x] Windows 2000: the ICON set was already in use as PNG (`src/themes/win2000/icons`). Native window control glyphs and title-bar gradients were added (`win2000-chrome.css`). The Start menu matches the reference.
+  - [ ] Windows 95: the eat/ MP3s are music and meme tracks, not system sounds (not used). Windows 95 has no own skin yet (it renders through the Windows 98 theme), so its Win95-style icons wait for that skin.
   - [x] Draft marker removed from every Windows entry in the GRUB menu (2026-11-27); the `draft` flag is gone from `osTypes.ts`, `osProfiles.ts`, `GrubMenu.tsx` and the translations.
   - [ ] Windows 10 / 11 / Server entries boot into the generic WebOS desktop (`theme-webos`, `os-win7`), not a Windows 10/11 shell, and do not show the eat/ Windows 10 icons on screen. A real Windows 10 and 11 skin (shell, taskbar, start menu, icon wiring) is still needed.
