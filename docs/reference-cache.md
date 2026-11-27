@@ -132,3 +132,8 @@ Licences ignored on purpose: the code is rewritten, and the OS resources are the
 - Source: `kenMaina-windows10-portfolio-main/src/components/actionCenter/actionCenter.js` and `.scss` (dark quick-action tiles, Wi-Fi / Sound / Airplane / Settings). Used for the tile set and layout; the Settings tile is not built because no Settings target exists for it. The donor's `calendarOverlay.js` (clock with a calendar) is not used: the shell's existing modern clock flyout already covers it.
 - The donor has no Windows 11 quick settings. The Windows 11 panel reuses the Windows 10 layout with a light, rounded style, drawn in `win11.css`. Its wording stays "Action Center" (Windows 11 calls it quick settings).
 - Tile labels and states (`wifi`, `sound`, `airplaneMode`, `on`, `off`, `actionCenter`) are in nine languages in `TRAY_LABELS`.
+
+## Server editions (2026-11-27)
+
+- Server 2003: `eat/screens/oc/server2003/01-desktop-start-menu.jpg` shows the Windows XP shell (Luna taskbar, XP Start menu, grey-blue Server wallpaper with a "Windows Server 2003 Demonstration" watermark). Decision: the 2003 skin stays XP. The wallpaper is not used because the only copy carries the watermark.
+- Server 2008, 2012, 2016, 2019: no reference or resource in `eat/`. A web search (GitHub topics and the Windows wallpaper wiki) found no clean source that can be downloaded from the sandbox. These editions keep their closest client skin.
