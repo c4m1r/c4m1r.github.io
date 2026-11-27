@@ -42,6 +42,8 @@ import { type DesktopIcon, type DesktopShellProps } from './desktopTypes';
 import { isWin95Shell, win95ThemeAssets } from '../../themes/win95';
 import { isServer2003Shell, server2003ThemeAssets } from '../../themes/server2003';
 import { isWindows81Edition, win81ThemeAssets } from '../../themes/win81';
+import { Win81PowerMenu } from './components/Win81PowerMenu';
+import { win8Text } from '../../i18n/win8Strings';
 
 // Default Windows 7 taskbar pins: Internet Explorer, Windows Explorer, Media Player.
 const WIN7_PINNED_TASKBAR_APPS = [
@@ -127,6 +129,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
 
   const [viewport, setViewport] = useState(getViewportSize);
   const [showStartMenu, setShowStartMenu] = useState(false);
+  const [powerMenu, setPowerMenu] = useState<{ x: number; y: number } | null>(null);
   const [time, setTime] = useState(new Date());
   const [errorWindow, setErrorWindow] = useState<{ id: string; message: string } | null>(null);
   const [showRunDialog, setShowRunDialog] = useState(false);
@@ -818,6 +821,35 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  // Windows 8 and 8.1: a lone Win key press opens or closes the Start screen. On 8.1, Win+X opens the power-user menu.
+  useEffect(() => {
+    if (themeKey !== 'win8') return;
+    let winAlone = false;
+    const handleDown = (event: KeyboardEvent) => {
+      if (event.key === 'Meta') {
+        winAlone = true;
+        return;
+      }
+      winAlone = false;
+      if (win81Shell && event.metaKey && event.key.toLowerCase() === 'x') {
+        event.preventDefault();
+        setPowerMenu({ x: 0, y: window.innerHeight - 40 });
+      }
+    };
+    const handleUp = (event: KeyboardEvent) => {
+      if (event.key !== 'Meta' || !winAlone) return;
+      winAlone = false;
+      if (showStartMenu) closeStartMenu();
+      else openStartMenu();
+    };
+    window.addEventListener('keydown', handleDown);
+    window.addEventListener('keyup', handleUp);
+    return () => {
+      window.removeEventListener('keydown', handleDown);
+      window.removeEventListener('keyup', handleUp);
+    };
+  }, [themeKey, win81Shell, showStartMenu, openStartMenu, closeStartMenu]);
 
   const getIconElement = (iconType: 'folder' | 'computer' | 'recycle' | 'documents') => {
     // Win98, 2000 and 7 have a dedicated My Documents picture; XP keeps its folder.
@@ -2063,8 +2095,15 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 .forEach((window) => handleCloseWindow(window.id));
             }}
           />
-          {/* Start Button */}
+          {/* Start Button: plain Windows 8 has none (its corner and the Win key open the Start screen); Windows 8.1 has it back. */}
+          {(themeKey !== 'win8' || win81Shell) && (
           <button
+            onContextMenu={(e) => {
+              if (!win81Shell) return;
+              e.preventDefault();
+              e.stopPropagation();
+              setPowerMenu({ x: e.clientX, y: window.innerHeight - 40 });
+            }}
             onClick={(e) => {
               e.stopPropagation();
               if (theme === 'win-xp') {
@@ -2103,6 +2142,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               </>
             )}
           </button>
+          )}
 
           {/* Windows 2000 quick launch: Show Desktop, Internet Explorer, Outlook Express. */}
           {themeKey === 'win2000' && (
@@ -2257,6 +2297,35 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           onHover={handleMenuHoverSound}
         />
       </div>
+
+      {themeKey === 'win8' && !win81Shell && (
+        <button
+          type="button"
+          className="win8-hot-corner"
+          aria-label={win8Text(language, 'start')}
+          title={win8Text(language, 'start')}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (showStartMenu) closeStartMenu();
+            else openStartMenu();
+          }}
+        />
+      )}
+
+      {powerMenu && (
+        <Win81PowerMenu
+          x={powerMenu.x}
+          y={powerMenu.y}
+          onClose={() => setPowerMenu(null)}
+          onAction={(action) => {
+            setPowerMenu(null);
+            if (action === 'control-panel') launchApp('control-panel');
+            else if (action === 'task-manager') setShowTaskManager(true);
+            else if (action === 'run') setShowRunDialog(true);
+            else handleSystemCommand(action);
+          }}
+        />
+      )}
 
       <DesktopContextMenuSurface
         contextMenu={contextMenu}

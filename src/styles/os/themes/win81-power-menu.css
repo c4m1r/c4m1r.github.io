@@ -1,0 +1,38 @@
+/* Windows 8.1 power-user menu (right click on the Start button, or Win+X). Plain text list, opens above the taskbar. */
+.win81-power-menu {
+  position: fixed;
+  z-index: 100001;
+  min-width: 230px;
+  padding: 4px 0;
+  background: #1f1f1f;
+  border: 1px solid #5a5a5a;
+  color: #ffffff;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  transform: translateY(-100%);
+}
+
+.win81-power-menu__item {
+  display: block;
+  width: 100%;
+  padding: 6px 16px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.win81-power-menu__item:hover,
+.win81-power-menu__item:focus-visible {
+  background: #3a3a3a;
+  outline: none;
+}
+
+.win81-power-menu__separator {
+  height: 1px;
+  margin: 4px 0;
+  background: #4a4a4a;
+}

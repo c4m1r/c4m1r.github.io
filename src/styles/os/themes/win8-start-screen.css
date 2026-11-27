@@ -193,3 +193,17 @@
 .win8-start__toggle:hover {
   background: rgba(255, 255, 255, 0.12);
 }
+
+/* Windows 8: no Start button. The bottom-left corner is the way to the Start screen (a click there opens it). */
+.win8-hot-corner {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100000;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
