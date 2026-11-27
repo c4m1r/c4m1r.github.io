@@ -1,0 +1,134 @@
+/* Cursor schemes per OS. Files live in src/themes/cursors/<scheme>/ (role names). Each scheme sets the default arrow,
+   links and buttons (hand), text fields (I-beam) and busy elements (hourglass). Roles without a file fall back to the
+   browser default. Roots are prefixed with `html` so these rules beat the Windows 98 rules in classic.css, which also
+   match the Windows 95 root (it carries theme-98). */
+
+/* Windows 2000 and XP: the classic-1 set (Windows XP scheme extracted from user32.dll). */
+html .os-win2000,
+html .winxp,
+html .os-win2000 *,
+html .winxp * {
+  cursor: url('../../../themes/cursors/win2000/arrow.cur'), default;
+}
+html .os-win2000 a[href],
+html .os-win2000 button:not(:disabled),
+html .os-win2000 [role="button"],
+html .os-win2000 [role="link"],
+html .os-win2000 [class*="cursor-pointer"],
+html .os-win2000 label[for],
+html .os-win2000 summary,
+html .winxp a[href],
+html .winxp button:not(:disabled),
+html .winxp [role="button"],
+html .winxp [role="link"],
+html .winxp [class*="cursor-pointer"],
+html .winxp label[for],
+html .winxp summary {
+  cursor: url('../../../themes/cursors/win2000/hand.cur'), pointer;
+}
+html .os-win2000 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+html .os-win2000 textarea,
+html .os-win2000 [contenteditable="true"],
+html .winxp input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+html .winxp textarea,
+html .winxp [contenteditable="true"] {
+  cursor: url('../../../themes/cursors/win2000/ibeam.cur'), text;
+}
+html .os-win2000 [aria-busy="true"],
+html .os-win2000 .is-busy,
+html .winxp [aria-busy="true"],
+html .winxp .is-busy {
+  cursor: url('../../../themes/cursors/win2000/wait.cur'), wait;
+}
+
+/* Windows 95: the 95/98 set without the replaced "working in background" CD cursor (Cursor_17). */
+html .os-win95,
+html .os-win95 * {
+  cursor: url('../../../themes/cursors/win95/arrow.cur'), default;
+}
+html .os-win95 a[href],
+html .os-win95 button:not(:disabled),
+html .os-win95 [role="button"],
+html .os-win95 [role="link"],
+html .os-win95 [class*="cursor-pointer"],
+html .os-win95 label[for],
+html .os-win95 summary {
+  cursor: url('../../../themes/cursors/win95/hand.cur'), pointer;
+}
+html .os-win95 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+html .os-win95 textarea,
+html .os-win95 [contenteditable="true"] {
+  cursor: url('../../../themes/cursors/win95/ibeam.cur'), text;
+}
+html .os-win95 [aria-busy="true"],
+html .os-win95 .is-busy {
+  cursor: url('../../../themes/cursors/win95/wait.cur'), wait;
+}
+
+/* Windows Vista and 7: the first Aero set. It has no I-beam, so text fields keep the browser default. */
+html .os-vista,
+html .win7:not(.os-win10):not(.os-win11),
+html .os-vista *,
+html .win7:not(.os-win10):not(.os-win11) * {
+  cursor: url('../../../themes/cursors/aero/arrow.cur'), default;
+}
+html .os-vista a[href],
+html .os-vista button:not(:disabled),
+html .os-vista [role="button"],
+html .os-vista [role="link"],
+html .os-vista [class*="cursor-pointer"],
+html .os-vista label[for],
+html .os-vista summary,
+html .win7:not(.os-win10):not(.os-win11) a[href],
+html .win7:not(.os-win10):not(.os-win11) button:not(:disabled),
+html .win7:not(.os-win10):not(.os-win11) [role="button"],
+html .win7:not(.os-win10):not(.os-win11) [role="link"],
+html .win7:not(.os-win10):not(.os-win11) [class*="cursor-pointer"],
+html .win7:not(.os-win10):not(.os-win11) label[for],
+html .win7:not(.os-win10):not(.os-win11) summary {
+  cursor: url('../../../themes/cursors/aero/hand.cur'), pointer;
+}
+html .os-vista [aria-busy="true"],
+html .os-vista .is-busy,
+html .win7:not(.os-win10):not(.os-win11) [aria-busy="true"],
+html .win7:not(.os-win10):not(.os-win11) .is-busy {
+  cursor: url('../../../themes/cursors/aero/wait.ani'), wait;
+}
+
+/* Windows 10 and 11: the 100% DPI default set (flat Windows 8/10 cursors). Windows 8 gets this set once its skin has a root class. */
+html .os-win10,
+html .os-win11,
+html .os-win10 *,
+html .os-win11 * {
+  cursor: url('../../../themes/cursors/dpi100/arrow.cur'), default;
+}
+html .os-win10 a[href],
+html .os-win10 button:not(:disabled),
+html .os-win10 [role="button"],
+html .os-win10 [role="link"],
+html .os-win10 [class*="cursor-pointer"],
+html .os-win10 label[for],
+html .os-win10 summary,
+html .os-win11 a[href],
+html .os-win11 button:not(:disabled),
+html .os-win11 [role="button"],
+html .os-win11 [role="link"],
+html .os-win11 [class*="cursor-pointer"],
+html .os-win11 label[for],
+html .os-win11 summary {
+  cursor: url('../../../themes/cursors/dpi100/hand.cur'), pointer;
+}
+html .os-win10 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+html .os-win10 textarea,
+html .os-win10 [contenteditable="true"],
+html .os-win11 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="range"]),
+html .os-win11 textarea,
+html .os-win11 [contenteditable="true"] {
+  cursor: url('../../../themes/cursors/dpi100/ibeam.cur'), text;
+}
+html .os-win10 [aria-busy="true"],
+html .os-win10 .is-busy,
+html .os-win11 [aria-busy="true"],
+html .os-win11 .is-busy {
+  cursor: url('../../../themes/cursors/dpi100/wait.cur'), wait;
+}

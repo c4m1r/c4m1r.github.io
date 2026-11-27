@@ -5,6 +5,7 @@ import { AppProvider } from './contexts/AppContext';
 import './shells/os/osRuntimeCorrections';
 import './index.css';
 import './themes/index.css';
+import './styles/os/themes/cursors.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
