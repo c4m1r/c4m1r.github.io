@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode, type RefObject } from 'react';
+import { Plane, Volume2, VolumeX, Wifi, WifiOff } from 'lucide-react';
 import { type Language } from '../../../i18n/translations';
 import { type ThemeId } from '../../../contexts/appContextTypes';
 import { useApp } from '../../../contexts/useApp';
@@ -44,19 +45,57 @@ interface TrayLabels {
   today: string;
   previousMonth: string;
   nextMonth: string;
+  actionCenter: string;
+  wifi: string;
+  sound: string;
+  airplaneMode: string;
+  on: string;
+  off: string;
 }
 
 const TRAY_LABELS: Partial<Record<Language, TrayLabels>> & Pick<Record<Language, TrayLabels>, 'en' | 'ru'> = {
-  en: { fullscreen: 'Fullscreen', exitFullscreen: 'Exit Fullscreen', volume: 'Volume', notifications: 'Notifications', noNotifications: 'No new notifications', systemActions: 'System Actions', showHidden: 'Show hidden icons', hideHidden: 'Hide hidden icons', dateTime: 'Date and Time', today: 'Today', previousMonth: 'Previous month', nextMonth: 'Next month' },
-  ru: { fullscreen: 'Полноэкранный режим', exitFullscreen: 'Выйти из полноэкранного режима', volume: 'Громкость', notifications: 'Уведомления', noNotifications: 'Нет новых уведомлений', systemActions: 'Системные действия', showHidden: 'Показать скрытые значки', hideHidden: 'Скрыть значки', dateTime: 'Дата и время', today: 'Сегодня', previousMonth: 'Предыдущий месяц', nextMonth: 'Следующий месяц' },
-  fr: { fullscreen: 'Plein écran', exitFullscreen: 'Quitter le plein écran', volume: 'Volume', notifications: 'Notifications', noNotifications: 'Aucune nouvelle notification', systemActions: 'Actions système', showHidden: 'Afficher les icônes masquées', hideHidden: 'Masquer les icônes', dateTime: 'Date et heure', today: 'Aujourd’hui', previousMonth: 'Mois précédent', nextMonth: 'Mois suivant' },
-  es: { fullscreen: 'Pantalla completa', exitFullscreen: 'Salir de pantalla completa', volume: 'Volumen', notifications: 'Notificaciones', noNotifications: 'No hay notificaciones nuevas', systemActions: 'Acciones del sistema', showHidden: 'Mostrar iconos ocultos', hideHidden: 'Ocultar iconos', dateTime: 'Fecha y hora', today: 'Hoy', previousMonth: 'Mes anterior', nextMonth: 'Mes siguiente' },
-  zh: { fullscreen: '全屏', exitFullscreen: '退出全屏', volume: '音量', notifications: '通知', noNotifications: '没有新通知', systemActions: '系统操作', showHidden: '显示隐藏的图标', hideHidden: '隐藏图标', dateTime: '日期和时间', today: '今天', previousMonth: '上个月', nextMonth: '下个月' },
-  ja: { fullscreen: '全画面表示', exitFullscreen: '全画面表示を終了', volume: '音量', notifications: '通知', noNotifications: '新しい通知はありません', systemActions: 'システム操作', showHidden: '隠れているインジケーターを表示', hideHidden: 'インジケーターを隠す', dateTime: '日付と時刻', today: '今日', previousMonth: '前の月', nextMonth: '次の月' },
-  ko: { fullscreen: '전체 화면', exitFullscreen: '전체 화면 종료', volume: '볼륨', notifications: '알림', noNotifications: '새 알림 없음', systemActions: '시스템 작업', showHidden: '숨겨진 아이콘 표시', hideHidden: '아이콘 숨기기', dateTime: '날짜 및 시간', today: '오늘', previousMonth: '이전 달', nextMonth: '다음 달' },
-  be: { fullscreen: 'На ўвесь экран', exitFullscreen: 'Выйсці з поўнага экрана', volume: 'Гучнасць', notifications: 'Апавяшчэнні', noNotifications: 'Новых апавяшчэнняў няма', systemActions: 'Сістэмныя дзеянні', showHidden: 'Паказаць схаваныя значкі', hideHidden: 'Схаваць значкі', dateTime: 'Дата і час', today: 'Сёння', previousMonth: 'Папярэдні месяц', nextMonth: 'Наступны месяц' },
-  kk: { fullscreen: 'Толық экран', exitFullscreen: 'Толық экраннан шығу', volume: 'Дыбыс деңгейі', notifications: 'Хабарландырулар', noNotifications: 'Жаңа хабарландыру жоқ', systemActions: 'Жүйелік әрекеттер', showHidden: 'Жасырын белгілерді көрсету', hideHidden: 'Белгілерді жасыру', dateTime: 'Күн мен уақыт', today: 'Бүгін', previousMonth: 'Алдыңғы ай', nextMonth: 'Келесі ай' },
+  en: { fullscreen: 'Fullscreen', exitFullscreen: 'Exit Fullscreen', volume: 'Volume', notifications: 'Notifications', noNotifications: 'No new notifications', systemActions: 'System Actions', showHidden: 'Show hidden icons', hideHidden: 'Hide hidden icons', dateTime: 'Date and Time', today: 'Today', previousMonth: 'Previous month', nextMonth: 'Next month' , actionCenter: 'Action Center', wifi: 'Wi-Fi', sound: 'Sound', airplaneMode: 'Airplane mode', on: 'On', off: 'Off'},
+  ru: { fullscreen: 'Полноэкранный режим', exitFullscreen: 'Выйти из полноэкранного режима', volume: 'Громкость', notifications: 'Уведомления', noNotifications: 'Нет новых уведомлений', systemActions: 'Системные действия', showHidden: 'Показать скрытые значки', hideHidden: 'Скрыть значки', dateTime: 'Дата и время', today: 'Сегодня', previousMonth: 'Предыдущий месяц', nextMonth: 'Следующий месяц' , actionCenter: 'Центр уведомлений', wifi: 'Wi-Fi', sound: 'Звук', airplaneMode: 'Режим «в самолёте»', on: 'Вкл.', off: 'Выкл.'},
+  fr: { fullscreen: 'Plein écran', exitFullscreen: 'Quitter le plein écran', volume: 'Volume', notifications: 'Notifications', noNotifications: 'Aucune nouvelle notification', systemActions: 'Actions système', showHidden: 'Afficher les icônes masquées', hideHidden: 'Masquer les icônes', dateTime: 'Date et heure', today: 'Aujourd’hui', previousMonth: 'Mois précédent', nextMonth: 'Mois suivant' , actionCenter: 'Centre de maintenance', wifi: 'Wi-Fi', sound: 'Son', airplaneMode: 'Mode Avion', on: 'Activé', off: 'Désactivé'},
+  es: { fullscreen: 'Pantalla completa', exitFullscreen: 'Salir de pantalla completa', volume: 'Volumen', notifications: 'Notificaciones', noNotifications: 'No hay notificaciones nuevas', systemActions: 'Acciones del sistema', showHidden: 'Mostrar iconos ocultos', hideHidden: 'Ocultar iconos', dateTime: 'Fecha y hora', today: 'Hoy', previousMonth: 'Mes anterior', nextMonth: 'Mes siguiente' , actionCenter: 'Centro de actividades', wifi: 'Wi-Fi', sound: 'Sonido', airplaneMode: 'Modo avión', on: 'Activado', off: 'Desactivado'},
+  zh: { fullscreen: '全屏', exitFullscreen: '退出全屏', volume: '音量', notifications: '通知', noNotifications: '没有新通知', systemActions: '系统操作', showHidden: '显示隐藏的图标', hideHidden: '隐藏图标', dateTime: '日期和时间', today: '今天', previousMonth: '上个月', nextMonth: '下个月' , actionCenter: '操作中心', wifi: 'WLAN', sound: '声音', airplaneMode: '飞行模式', on: '开', off: '关'},
+  ja: { fullscreen: '全画面表示', exitFullscreen: '全画面表示を終了', volume: '音量', notifications: '通知', noNotifications: '新しい通知はありません', systemActions: 'システム操作', showHidden: '隠れているインジケーターを表示', hideHidden: 'インジケーターを隠す', dateTime: '日付と時刻', today: '今日', previousMonth: '前の月', nextMonth: '次の月' , actionCenter: 'アクション センター', wifi: 'Wi-Fi', sound: 'サウンド', airplaneMode: '機内モード', on: 'オン', off: 'オフ'},
+  ko: { fullscreen: '전체 화면', exitFullscreen: '전체 화면 종료', volume: '볼륨', notifications: '알림', noNotifications: '새 알림 없음', systemActions: '시스템 작업', showHidden: '숨겨진 아이콘 표시', hideHidden: '아이콘 숨기기', dateTime: '날짜 및 시간', today: '오늘', previousMonth: '이전 달', nextMonth: '다음 달' , actionCenter: '작업 센터', wifi: 'Wi-Fi', sound: '사운드', airplaneMode: '비행기 모드', on: '켜짐', off: '꺼짐'},
+  be: { fullscreen: 'На ўвесь экран', exitFullscreen: 'Выйсці з поўнага экрана', volume: 'Гучнасць', notifications: 'Апавяшчэнні', noNotifications: 'Новых апавяшчэнняў няма', systemActions: 'Сістэмныя дзеянні', showHidden: 'Паказаць схаваныя значкі', hideHidden: 'Схаваць значкі', dateTime: 'Дата і час', today: 'Сёння', previousMonth: 'Папярэдні месяц', nextMonth: 'Наступны месяц' , actionCenter: 'Цэнтр апавяшчэнняў', wifi: 'Wi-Fi', sound: 'Гук', airplaneMode: 'Рэжым «у самалёце»', on: 'Уключана', off: 'Выключана'},
+  kk: { fullscreen: 'Толық экран', exitFullscreen: 'Толық экраннан шығу', volume: 'Дыбыс деңгейі', notifications: 'Хабарландырулар', noNotifications: 'Жаңа хабарландыру жоқ', systemActions: 'Жүйелік әрекеттер', showHidden: 'Жасырын белгілерді көрсету', hideHidden: 'Белгілерді жасыру', dateTime: 'Күн мен уақыт', today: 'Бүгін', previousMonth: 'Алдыңғы ай', nextMonth: 'Келесі ай' , actionCenter: 'Әрекеттер орталығы', wifi: 'Wi-Fi', sound: 'Дыбыс', airplaneMode: 'Ұшақ режимі', on: 'Қосулы', off: 'Өшірулі'},
 };
+
+type QuickTileKey = 'wifi' | 'sound' | 'airplane';
+
+/**
+ * Windows 10 / 11 Action Center: quick-action tiles above the notification list. The tiles keep their state in the
+ * shell (they do not drive a network or audio stack); the notification list has no source yet, so it stays empty.
+ */
+function ModernActionCenter({ labels, tiles, onToggle }: { labels: TrayLabels; tiles: Record<QuickTileKey, boolean>; onToggle: (key: QuickTileKey) => void }) {
+  const definitions: Array<{ key: QuickTileKey; label: string; onIcon: ReactNode; offIcon: ReactNode }> = [
+    { key: 'wifi', label: labels.wifi, onIcon: <Wifi size={18} />, offIcon: <WifiOff size={18} /> },
+    { key: 'sound', label: labels.sound, onIcon: <Volume2 size={18} />, offIcon: <VolumeX size={18} /> },
+    { key: 'airplane', label: labels.airplaneMode, onIcon: <Plane size={18} />, offIcon: <Plane size={18} /> },
+  ];
+  return (
+    <div className="action-center-panel" role="dialog" aria-label={labels.actionCenter} onClick={(event) => event.stopPropagation()}>
+      <div className="action-center-panel__header">{labels.actionCenter}</div>
+      <div className="action-center-panel__tiles">
+        {definitions.map((tile) => {
+          const on = tiles[tile.key];
+          return (
+            <button key={tile.key} type="button" aria-pressed={on} className={`action-center-panel__tile ${on ? 'is-on' : ''}`} onClick={() => onToggle(tile.key)}>
+              <span className="action-center-panel__tile-icon" aria-hidden="true">{on ? tile.onIcon : tile.offIcon}</span>
+              <span className="action-center-panel__tile-label">{tile.label}</span>
+              <span className="action-center-panel__tile-state">{on ? labels.on : labels.off}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="action-center-panel__empty">{labels.noNotifications}</div>
+    </div>
+  );
+}
 
 function areSameDay(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -157,6 +196,8 @@ export function TaskbarSystemArea({
   const useExpandableTray = isXpFamily || isWin7;
   const [hiddenTrayExpanded, setHiddenTrayExpanded] = useState(false);
   const [showClockPanel, setShowClockPanel] = useState(false);
+  const [quickTiles, setQuickTiles] = useState<Record<QuickTileKey, boolean>>({ wifi: true, sound: true, airplane: false });
+  const isModernTray = theme === 'win10' || theme === 'win11';
   const labels = TRAY_LABELS[language] ?? TRAY_LABELS.ru ?? TRAY_LABELS.en;
 
   useEffect(() => { void ensureCalendarEvents(language); }, [language]);
@@ -221,7 +262,14 @@ export function TaskbarSystemArea({
       <button type="button" tabIndex={hiddenTabIndex} onClick={() => { setShowClockPanel(false); onNotificationToggle(); }} className="taskbar-tray-icon" title={labels.notifications} aria-label={labels.notifications}>
         {notificationIconSrc && <img src={notificationIconSrc} alt="" className="w-4 h-4" />}
       </button>
-      {showNotificationPanel && <div className="absolute right-0 bottom-full mb-2 w-48 rounded-lg border border-[#90aee6] bg-[#fefefe] px-4 py-3 shadow-[0_6px_16px_rgba(0,0,0,0.35)] text-[11px] text-[#1b1b1b] z-50">{labels.noNotifications}</div>}
+      {showNotificationPanel && isModernTray && (
+        <ModernActionCenter
+          labels={labels}
+          tiles={quickTiles}
+          onToggle={(key) => setQuickTiles((current) => ({ ...current, [key]: !current[key] }))}
+        />
+      )}
+      {showNotificationPanel && !isModernTray && <div className="absolute right-0 bottom-full mb-2 w-48 rounded-lg border border-[#90aee6] bg-[#fefefe] px-4 py-3 shadow-[0_6px_16px_rgba(0,0,0,0.35)] text-[11px] text-[#1b1b1b] z-50">{labels.noNotifications}</div>}
     </div>
   );
 

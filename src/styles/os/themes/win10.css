@@ -231,3 +231,70 @@
   height: 31px !important;
   min-height: 31px !important;
 }
+
+/* Action Center (tray notifications): dark panel of quick-action tiles above the taskbar. */
+.os-win10 .action-center-panel {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  z-index: 60;
+  width: 360px;
+  margin-bottom: 0;
+  padding: 0 0 0;
+  background: #1f1f1f;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.45);
+  font-family: var(--os-font);
+  font-size: 12px;
+}
+
+.os-win10 .action-center-panel__tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  padding: 1px;
+}
+
+.os-win10 .action-center-panel__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 74px;
+  padding: 10px 12px;
+  background: #393939;
+  border: 0;
+  color: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.os-win10 .action-center-panel__tile:hover {
+  background: #4a4a4a;
+}
+
+.os-win10 .action-center-panel__tile.is-on {
+  background: #0078d7;
+}
+
+.os-win10 .action-center-panel__tile.is-on:hover {
+  background: #1a88e0;
+}
+
+.os-win10 .action-center-panel__tile-state {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.os-win10 .action-center-panel__header {
+  padding: 14px 14px 8px;
+  font-size: 14px;
+}
+
+.os-win10 .action-center-panel__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  opacity: 0.8;
+}

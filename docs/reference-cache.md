@@ -126,3 +126,9 @@ Licences ignored on purpose: the code is rewritten, and the OS resources are the
 - **Organize menu.** No donor in `eat/` has a Vista or Windows 7 Organize menu to copy: `windows7-ui-portfolio-main` has only the Windows 7 command-bar buttons. The item list (Cut, Copy, Paste, Undo, Redo, Select all, Delete, Rename, Layout, Folder and search options, Properties, Close) and its group order are our reconstruction of the Explorer command bar. Only the labels were checked, not pixels. Status: visual match only, actions disabled.
 - **Taskbar window previews.** No donor in `eat/` implements hover previews: the Windows 7 donor's `TaskbarButton.tsx` only toggles minimise. A web search for Vista's live thumbnails found descriptions, not measurements; the TechTarget article linked from the Vista Feature Focus page redirected to an unrelated page, so it was not used. The preview's size (208 px wide, 400 ms delay) is our estimate. The thumbnail is a schematic, not a live capture.
 - **Vista edition names.** Nine-language names and descriptions were written for the six Vista editions. The Russian text is the existing `labelRu`/`descriptionRu` text, unchanged.
+
+## Windows 10 / 11 tray notifications (2026-11-27)
+
+- Source: `kenMaina-windows10-portfolio-main/src/components/actionCenter/actionCenter.js` and `.scss` (dark quick-action tiles, Wi-Fi / Sound / Airplane / Settings). Used for the tile set and layout; the Settings tile is not built because no Settings target exists for it. The donor's `calendarOverlay.js` (clock with a calendar) is not used: the shell's existing modern clock flyout already covers it.
+- The donor has no Windows 11 quick settings. The Windows 11 panel reuses the Windows 10 layout with a light, rounded style, drawn in `win11.css`. Its wording stays "Action Center" (Windows 11 calls it quick settings).
+- Tile labels and states (`wifi`, `sound`, `airplaneMode`, `on`, `off`, `actionCenter`) are in nine languages in `TRAY_LABELS`.
