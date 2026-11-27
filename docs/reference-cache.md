@@ -120,3 +120,9 @@ Licences ignored on purpose: the code is rewritten, and the OS resources are the
 - **Windows Server 2003 / 2008:** no set found. The XP-era icons (`src/themes/winxp`) are the closest match for Server 2003; 2008 has no reference. Still open.
 - **Windows XP and 2000 cursors:** GitHub search found only remastered (GPL) or scaled sets (`mshcherbyna99/cursors-48px-windows-classic` at 48 px, `modernXP-cursor-theme`). Neither is the original size. Still open; do not reuse the 98 set.
 - **Method check:** the Windows 11 tree contains 1425 `.ico` (`shell32` 336, `imageres` 368, plus `mmres`, `DDORes`, `netshell`, `powercpl`). Some `.ico` files are multi-size; take the 32 px frame.
+
+## Vista leftovers (2026-11-27)
+
+- **Organize menu.** No donor in `eat/` has a Vista or Windows 7 Organize menu to copy: `windows7-ui-portfolio-main` has only the Windows 7 command-bar buttons. The item list (Cut, Copy, Paste, Undo, Redo, Select all, Delete, Rename, Layout, Folder and search options, Properties, Close) and its group order are our reconstruction of the Explorer command bar. Only the labels were checked, not pixels. Status: visual match only, actions disabled.
+- **Taskbar window previews.** No donor in `eat/` implements hover previews: the Windows 7 donor's `TaskbarButton.tsx` only toggles minimise. A web search for Vista's live thumbnails found descriptions, not measurements; the TechTarget article linked from the Vista Feature Focus page redirected to an unrelated page, so it was not used. The preview's size (208 px wide, 400 ms delay) is our estimate. The thumbnail is a schematic, not a live capture.
+- **Vista edition names.** Nine-language names and descriptions were written for the six Vista editions. The Russian text is the existing `labelRu`/`descriptionRu` text, unchanged.

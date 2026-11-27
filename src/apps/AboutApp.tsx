@@ -1,7 +1,7 @@
 import { MarkdownViewer, MarkdownCategory } from './MarkdownViewer';
 import { useState } from 'react';
 import { useApp } from '../contexts/useApp';
-import { getActiveEdition } from '../shells/os/osEditions';
+import { getActiveEdition, editionDescription } from '../shells/os/osEditions';
 
 const aboutCategories: MarkdownCategory[] = [
   {
@@ -173,7 +173,7 @@ export function AboutApp() {
                   Copyright © 1981-2009 Microsoft Corporation. {isRu ? 'Все права защищены.' : 'All rights reserved.'}
                 </p>
                 <p className="italic text-gray-500 dark:text-gray-400">
-                  {activeEdition?.descriptionRu ?? 'Операционная система семейства Microsoft Windows.'}
+                  {activeEdition ? editionDescription(activeEdition, language) : 'Операционная система семейства Microsoft Windows.'}
                 </p>
 
                 <div className="pt-2 border-t border-gray-200 dark:border-gray-700">

@@ -12,6 +12,8 @@ import { THEME_ASSETS } from '../../themes/webos/themeAssets';
 import win7DvdIcon from '../../themes/win7/icons/devices/dvd-drive.png';
 import { getFileSystemItemFromPath, getItemsFromPath, type FileSystemItem } from '../../utils/FileSystem';
 import { resolveFileIcon } from '../../themes/iconResolver';
+import { classicEditText } from '../../i18n/classicEditStrings';
+import { ORGANIZE_MENU } from './organizeMenu';
 import type { MyComputerProps } from './MyComputer';
 
 const PATHS = {
@@ -24,6 +26,7 @@ const PATHS = {
 } as const;
 
 type Win7ViewMode = 'icons' | 'details' | 'thumbnails';
+
 
 const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки|(?:^|[\\/])pictures$/i.test(value);
 
@@ -60,6 +63,7 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<Win7ViewMode>(isPicturesFolderPath(currentPath) ? 'thumbnails' : 'icons');
   const [addressEditing, setAddressEditing] = useState(false);
+  const [organizeOpen, setOrganizeOpen] = useState(false);
   // Windows 7 reports an empty optical drive with a prompt instead of opening it.
   const [discPromptOpen, setDiscPromptOpen] = useState(false);
   const [addressInput, setAddressInput] = useState(currentPath);
@@ -269,7 +273,32 @@ export function Windows7Explorer({ currentPath = 'My Computer', onOpenItem, onOp
       </div>
 
       <div className="win7-explorer__commandbar">
-        <button type="button">{isRu ? 'Упорядочить' : 'Organize'} <ChevronDown size={10} /></button>
+        <div
+          className="win7-explorer__organize"
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOrganizeOpen(false);
+          }}
+        >
+          <button type="button" aria-haspopup="menu" aria-expanded={organizeOpen} onClick={() => setOrganizeOpen((open) => !open)}>
+            {classicEditText(language, 'organize')} <ChevronDown size={10} />
+          </button>
+          {organizeOpen && (
+            <div className="win7-explorer__menu" role="menu">
+              {ORGANIZE_MENU.map((entry, index) =>
+                entry === 'separator' ? (
+                  <div key={`sep-${index}`} className="win7-explorer__menu-separator" role="separator" />
+                ) : (
+                  // Editing, layout and window commands need a file system and window hooks this explorer does not have yet,
+                  // so the entries show the Windows 7 / Vista list and stay disabled.
+                  <button key={entry} type="button" role="menuitem" disabled>
+                    {classicEditText(language, entry)}
+                    {entry === 'layout' ? <ChevronRight size={10} aria-hidden="true" /> : null}
+                  </button>
+                ),
+              )}
+            </div>
+          )}
+        </div>
         <span className="win7-explorer__commandbar-separator" />
         <button type="button" disabled={!selectedFileSystemItem} onClick={() => selectedFileSystemItem && handleOpen(selectedFileSystemItem)}>
           {isRu ? 'Открыть' : 'Open'}

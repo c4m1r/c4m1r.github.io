@@ -66,6 +66,7 @@ import {
 } from '../os/osSkins';
 import { getActiveEdition, getSelectedEditionId } from '../os/osEditions';
 import { TaskbarSystemArea } from './components/TaskbarSystemArea';
+import { VistaTaskbarPreview } from './components/VistaTaskbarPreview';
 import { AppleSystemBar } from './components/AppleSystemBar';
 import { AppleDock } from './components/AppleDock';
 import { AppleControlCenter } from './components/AppleControlCenter';
@@ -628,6 +629,37 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
     playRestoreSound,
   });
   const focusedWindow = windows.find((window) => window.focused && !window.minimized) ?? null;
+  // Vista live taskbar previews: shown after a short hover over a task button, hidden shortly after the pointer leaves.
+  const [taskbarPreview, setTaskbarPreview] = useState<{ id: string; x: number; y: number } | null>(null);
+  const taskbarPreviewTimerRef = useRef<number | undefined>(undefined);
+  const cancelTaskbarPreviewTimer = () => {
+    if (taskbarPreviewTimerRef.current !== undefined) {
+      window.clearTimeout(taskbarPreviewTimerRef.current);
+      taskbarPreviewTimerRef.current = undefined;
+    }
+  };
+  const scheduleTaskbarPreview = (id: string, button: HTMLElement) => {
+    cancelTaskbarPreviewTimer();
+    const rect = button.getBoundingClientRect();
+    taskbarPreviewTimerRef.current = window.setTimeout(() => {
+      taskbarPreviewTimerRef.current = undefined;
+      setTaskbarPreview({ id, x: rect.left + rect.width / 2, y: rect.top });
+    }, 400);
+  };
+  const hideTaskbarPreview = () => {
+    cancelTaskbarPreviewTimer();
+    taskbarPreviewTimerRef.current = window.setTimeout(() => {
+      taskbarPreviewTimerRef.current = undefined;
+      setTaskbarPreview(null);
+    }, 180);
+  };
+  useEffect(() => () => {
+    if (taskbarPreviewTimerRef.current !== undefined) window.clearTimeout(taskbarPreviewTimerRef.current);
+  }, []);
+  // A preview whose window has gone (closed from elsewhere) is not drawn.
+  const previewWindow = themeKey === 'vista' && taskbarPreview
+    ? windows.find((managed) => managed.id === taskbarPreview.id) ?? null
+    : null;
   const macPinnedDockAppIds = new Set(
     MACOS_DOCK_ITEMS.map((item) => item.appId).filter((appId): appId is string => Boolean(appId))
   );
@@ -2128,6 +2160,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 onClick={() => handleTaskbarWindowClick(window)}
                 className={`taskbar-button flex-shrink-0 truncate max-w-[170px] select-none os-button ${window.focused ? 'is-active' : ''} ${window.minimized ? 'is-minimized' : ''}`}
                 title={window.title}
+                onMouseEnter={themeKey === 'vista' ? (event) => scheduleTaskbarPreview(window.id, event.currentTarget) : undefined}
+                onMouseLeave={themeKey === 'vista' ? hideTaskbarPreview : undefined}
               >
                 {window.icon && (
                   <img
@@ -2145,6 +2179,23 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           </div>
 
           <div className="taskbar-divider" aria-hidden />
+
+          {previewWindow && taskbarPreview && (
+            <VistaTaskbarPreview
+              title={previewWindow.title}
+              icon={previewWindow.icon}
+              anchorX={taskbarPreview.x}
+              anchorY={taskbarPreview.y}
+              language={language}
+              onClose={() => {
+                cancelTaskbarPreviewTimer();
+                setTaskbarPreview(null);
+                handleCloseWindow(previewWindow.id);
+              }}
+              onMouseEnter={cancelTaskbarPreviewTimer}
+              onMouseLeave={hideTaskbarPreview}
+            />
+          )}
 
           {/* Notification Tray / Clock */}
           <div ref={trayRef} className={`taskbar-tray ${themeStyles.systemTray.join(' ')}`}>

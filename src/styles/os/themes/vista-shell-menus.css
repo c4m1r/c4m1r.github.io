@@ -1,0 +1,135 @@
+/* Windows 7 / Vista Explorer "Organize" drop-down. Shared by both skins, since the Explorer component is shared. */
+.win7-explorer__commandbar {
+  overflow: visible;
+}
+
+.win7-explorer__organize {
+  position: relative;
+  display: inline-flex;
+}
+
+.win7-explorer__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  min-width: 232px;
+  padding: 3px 0;
+  background: #f4f6f9;
+  border: 1px solid #8e9bb0;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.28);
+}
+
+.win7-explorer__commandbar .win7-explorer__menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 3px 26px 3px 26px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #000000;
+  font-size: 12px;
+  line-height: 17px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.win7-explorer__commandbar .win7-explorer__menu button:disabled {
+  color: #8a8f99;
+  background: transparent;
+}
+
+.win7-explorer__menu-separator {
+  height: 1px;
+  margin: 3px 2px;
+  background: #d3d9e3;
+  border-bottom: 1px solid #ffffff;
+}
+
+/* Vista live-taskbar preview: a glass frame above the task button, with the window title and a close button.
+   It is portalled to the body, outside .os-vista, so these rules are not scoped to that class. */
+.vista-taskbar-preview {
+  position: fixed;
+  z-index: 100002;
+  width: 208px;
+  padding: 8px 9px 10px;
+  transform: translate(-50%, -100%);
+  background: linear-gradient(to bottom, rgba(120, 165, 205, 0.82) 0%, rgba(40, 78, 116, 0.86) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), inset 0 0 10px rgba(190, 230, 255, 0.45);
+  font-family: var(--os-font, "Segoe UI", Tahoma, Arial, sans-serif);
+  animation: vista-taskbar-preview-in 140ms ease-out;
+}
+
+@keyframes vista-taskbar-preview-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.vista-taskbar-preview__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  color: #ffffff;
+  font-size: 12px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+.vista-taskbar-preview__head img {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.vista-taskbar-preview__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vista-taskbar-preview__close {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #e8a48c 0%, #c4502f 100%);
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 14px;
+  text-shadow: none;
+  cursor: pointer;
+}
+
+.vista-taskbar-preview__close:hover {
+  background: linear-gradient(to bottom, #f2b8a4 0%, #d8643f 100%);
+}
+
+.vista-taskbar-preview__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 112px;
+  margin-top: 6px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.vista-taskbar-preview__glyph {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}

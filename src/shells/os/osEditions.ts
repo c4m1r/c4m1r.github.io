@@ -2,12 +2,20 @@ import win98Clouds from '../../content/pictures/wallpapers/windows/win98-clouds.
 import win7Home from '../../content/pictures/wallpapers/windows/win7-home.jpg';
 import winxpBliss from '../../content/pictures/wallpapers/windows/winxp-bliss.jpg';
 import win7Ultimate from '../../themes/win7/assets/images/desktop-wallpaper.jpg';
+import type { Language } from '../../i18n/translations';
+
+export interface OsEditionTranslation {
+  label: string;
+  description: string;
+}
 
 export interface OsEdition {
   id: string;
   label: string;
   labelRu: string;
   descriptionRu: string;
+  /** Full nine-language names and descriptions, where a skin has them. Other languages fall back as described in editionLabel. */
+  translations?: Partial<Record<Language, OsEditionTranslation>>;
   wallpaper?: string;
   backgroundColor?: string;
   buildNumber?: string;
@@ -16,6 +24,76 @@ export interface OsEdition {
 export type EditionProfileId = 'win-98' | 'win2000' | 'win-xp' | 'vista' | 'win7' | 'win8' | 'win81';
 
 export const EDITION_STORAGE_KEY = 'webos-grub-editions-v1';
+
+// Windows Vista editions in all nine interface languages (en, ru, fr, es, zh, ja, ko, be, kk).
+const VISTA_EDITION_TRANSLATIONS: Record<string, Partial<Record<Language, OsEditionTranslation>>> = {
+  starter: {
+    en: { label: 'Starter', description: 'A stripped-down Windows Vista edition for developing markets: no Aero, at most three programs at once and 1 GB of memory. Uses the Windows Vista Basic look.' },
+    ru: { label: 'Начальная', description: 'Урезанная редакция Windows Vista для развивающихся рынков: без Aero, не более трёх одновременно запущенных программ и 1 ГБ памяти. Оформление Windows Vista Basic.' },
+    fr: { label: 'Starter', description: 'Édition allégée de Windows Vista pour les marchés émergents : sans Aero, trois programmes au maximum et 1 Go de mémoire. Utilise l’apparence Windows Vista Basic.' },
+    es: { label: 'Starter', description: 'Edición reducida de Windows Vista para mercados emergentes: sin Aero, como máximo tres programas a la vez y 1 GB de memoria. Usa el aspecto de Windows Vista Basic.' },
+    zh: { label: '入门版', description: '面向新兴市场的精简版 Windows Vista：无 Aero，最多同时运行三个程序，内存 1 GB。使用 Windows Vista Basic 外观。' },
+    ja: { label: 'スターター', description: '新興市場向けに機能を絞った Windows Vista。Aero なし、同時に起動できるプログラムは 3 つまで、メモリは 1 GB。Windows Vista Basic の外観で動作します。' },
+    ko: { label: '스타터', description: '신흥 시장용으로 기능을 줄인 Windows Vista 에디션입니다. Aero 없음, 동시 실행 프로그램 최대 3개, 메모리 1GB. Windows Vista Basic 모양을 사용합니다.' },
+    be: { label: 'Пачатковая', description: 'Скарочаная рэдакцыя Windows Vista для краін, што развіваюцца: без Aero, не больш за тры адначасова запушчаныя праграмы і 1 ГБ памяці. Афармленне Windows Vista Basic.' },
+    kk: { label: 'Бастапқы', description: 'Дамушы нарықтарға арналған қысқартылған Windows Vista редакциясы: Aero жоқ, бір уақытта үштен көп бағдарлама жоқ және 1 ГБ жад. Windows Vista Basic безендіруі.' },
+  },
+  'home-basic': {
+    en: { label: 'Home Basic', description: 'A basic home edition without Aero Glass and Media Center. Windows are drawn in the simplified Windows Vista Basic style.' },
+    ru: { label: 'Домашняя базовая', description: 'Базовая домашняя редакция без Aero Glass и Media Center. Окна рисуются в упрощённом стиле Windows Vista Basic.' },
+    fr: { label: 'Familiale de base', description: 'Édition familiale de base sans Aero Glass ni Media Center. Les fenêtres sont dessinées dans le style simplifié Windows Vista Basic.' },
+    es: { label: 'Home Basic', description: 'Edición básica para el hogar sin Aero Glass ni Media Center. Las ventanas se dibujan con el estilo simplificado de Windows Vista Basic.' },
+    zh: { label: '家庭基础版', description: '不含 Aero Glass 和媒体中心的基础家庭版。窗口以简化的 Windows Vista Basic 样式绘制。' },
+    ja: { label: 'ホーム ベーシック', description: 'Aero Glass と Media Center を含まない基本の家庭向けエディションです。ウィンドウは簡略化された Windows Vista Basic のスタイルで描画されます。' },
+    ko: { label: '홈 베이직', description: 'Aero Glass와 Media Center가 없는 기본 가정용 에디션입니다. 창은 단순화된 Windows Vista Basic 스타일로 그려집니다.' },
+    be: { label: 'Хатняя базавая', description: 'Базавая хатняя рэдакцыя без Aero Glass і Media Center. Вокны малююцца ў спрошчаным стылі Windows Vista Basic.' },
+    kk: { label: 'Үйлік базалық', description: 'Aero Glass және Media Center жоқ базалық үйлік редакция. Терезелер жеңілдетілген Windows Vista Basic стилінде салынады.' },
+  },
+  'home-premium': {
+    en: { label: 'Home Premium', description: 'A home edition with the Aero Glass interface, Windows Media Center, Windows Photo Gallery and DVD burning.' },
+    ru: { label: 'Домашняя расширенная', description: 'Домашняя редакция с интерфейсом Aero Glass, Windows Media Center, Windows Photo Gallery и записью DVD.' },
+    fr: { label: 'Familiale Premium', description: 'Édition familiale avec l’interface Aero Glass, Windows Media Center, Windows Photo Gallery et la gravure de DVD.' },
+    es: { label: 'Home Premium', description: 'Edición para el hogar con la interfaz Aero Glass, Windows Media Center, Windows Photo Gallery y grabación de DVD.' },
+    zh: { label: '家庭高级版', description: '家庭版，包含 Aero Glass 界面、Windows 媒体中心、Windows 照片库和 DVD 刻录。' },
+    ja: { label: 'ホーム プレミアム', description: 'Aero Glass インターフェイス、Windows Media Center、Windows フォトギャラリー、DVD 書き込みを備えた家庭向けエディションです。' },
+    ko: { label: '홈 프리미엄', description: 'Aero Glass 인터페이스, Windows Media Center, Windows 사진 갤러리, DVD 굽기를 갖춘 가정용 에디션입니다.' },
+    be: { label: 'Хатняя пашыраная', description: 'Хатняя рэдакцыя з інтэрфейсам Aero Glass, Windows Media Center, Windows Photo Gallery і запісам DVD.' },
+    kk: { label: 'Үйлік премиум', description: 'Aero Glass интерфейсі, Windows Media Center, Windows Photo Gallery және DVD жазу бар үйлік редакция.' },
+  },
+  business: {
+    en: { label: 'Business', description: 'A small-business edition: Aero Glass, Active Directory domain join, Remote Desktop and shadow copies of files.' },
+    ru: { label: 'Business', description: 'Редакция для малого бизнеса: Aero Glass, домен Active Directory, удалённый рабочий стол и теневые копии файлов.' },
+    fr: { label: 'Professionnel', description: 'Édition pour les petites entreprises : Aero Glass, jonction au domaine Active Directory, Bureau à distance et copies fantômes des fichiers.' },
+    es: { label: 'Business', description: 'Edición para pequeñas empresas: Aero Glass, unión a dominios de Active Directory, Escritorio remoto y copias de seguridad de archivos.' },
+    zh: { label: '商业版', description: '小企业版：Aero Glass、加入 Active Directory 域、远程桌面和文件卷影副本。' },
+    ja: { label: 'Business', description: '小規模ビジネス向けエディション。Aero Glass、Active Directory ドメイン参加、リモート デスクトップ、ファイルのシャドウ コピーを備えます。' },
+    ko: { label: '비즈니스', description: '소규모 기업용 에디션입니다. Aero Glass, Active Directory 도메인 가입, 원격 데스크톱, 파일 섀도 복사본을 제공합니다.' },
+    be: { label: 'Business', description: 'Рэдакцыя для малога бізнесу: Aero Glass, домен Active Directory, аддалены працоўны стол і ценявыя копіі файлаў.' },
+    kk: { label: 'Business', description: 'Шағын бизнеске арналған редакция: Aero Glass, Active Directory домені, қашықтан жұмыс үстелі және файлдардың көлеңке көшірмелері.' },
+  },
+  enterprise: {
+    en: { label: 'Enterprise', description: 'An enterprise edition with BitLocker, a multilingual interface and a UNIX application subsystem. Sold only under enterprise licences.' },
+    ru: { label: 'Корпоративная', description: 'Корпоративная редакция с BitLocker, многоязычным интерфейсом и подсистемой для UNIX-приложений. Продавалась только по корпоративным лицензиям.' },
+    fr: { label: 'Entreprise', description: 'Édition entreprise avec BitLocker, interface multilingue et sous-système pour applications UNIX. Vendue uniquement sous licence entreprise.' },
+    es: { label: 'Enterprise', description: 'Edición empresarial con BitLocker, interfaz multilingüe y subsistema para aplicaciones UNIX. Se vendía solo con licencias empresariales.' },
+    zh: { label: '企业版', description: '企业版，包含 BitLocker、多语言界面和 UNIX 应用子系统。仅通过企业许可证销售。' },
+    ja: { label: 'Enterprise', description: 'BitLocker、多言語インターフェイス、UNIX アプリケーション サブシステムを備えた企業向けエディションです。企業向けライセンスでのみ販売されました。' },
+    ko: { label: '엔터프라이즈', description: 'BitLocker, 다국어 인터페이스, UNIX 응용 프로그램 하위 시스템을 갖춘 기업용 에디션입니다. 기업용 라이선스로만 판매되었습니다.' },
+    be: { label: 'Карпаратыўная', description: 'Карпаратыўная рэдакцыя з BitLocker, шматмоўным інтэрфейсам і падсістэмай для UNIX-праграм. Продаж толькі па карпаратыўных ліцэнзіях.' },
+    kk: { label: 'Корпоративтік', description: 'BitLocker, көптілді интерфейс және UNIX қолданбаларына арналған ішкі жүйесі бар корпоративтік редакция. Тек корпоративтік лицензиямен сатылды.' },
+  },
+  ultimate: {
+    en: { label: 'Ultimate', description: 'The top Windows Vista edition: everything in Home Premium and Enterprise plus the Ultimate Extras.' },
+    ru: { label: 'Максимальная', description: 'Максимальная редакция Windows Vista: всё из Home Premium и Enterprise плюс Ultimate Extras.' },
+    fr: { label: 'Intégrale', description: 'Édition la plus complète de Windows Vista : tout ce qui est dans Familiale Premium et Entreprise, plus les Ultimate Extras.' },
+    es: { label: 'Ultimate', description: 'La edición más completa de Windows Vista: todo lo de Home Premium y Enterprise, más los Ultimate Extras.' },
+    zh: { label: '旗舰版', description: 'Windows Vista 的最高版本：包含家庭高级版和企业版的全部功能，另加 Ultimate Extras。' },
+    ja: { label: 'Ultimate', description: 'Windows Vista の最上位エディション。Home Premium と Enterprise のすべての機能に加えて Ultimate Extras を備えます。' },
+    ko: { label: '얼티밋', description: 'Windows Vista의 최상위 에디션입니다. 홈 프리미엄과 엔터프라이즈의 모든 기능에 Ultimate Extras가 추가됩니다.' },
+    be: { label: 'Максімальная', description: 'Максімальная рэдакцыя Windows Vista: усё з Home Premium і Enterprise плюс Ultimate Extras.' },
+    kk: { label: 'Ультимейт', description: 'Windows Vista-ның ең толық редакциясы: Home Premium және Enterprise-дің барлық мүмкіндіктері және Ultimate Extras.' },
+  },
+};
 
 export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
   'win-98': [
@@ -109,6 +187,7 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
     {
       id: 'starter',
       label: 'Starter',
+      translations: VISTA_EDITION_TRANSLATIONS['starter'],
       labelRu: 'Начальная',
       descriptionRu: 'Урезанная редакция Windows Vista для развивающихся рынков: без Aero, не более трёх одновременно запущенных программ и 1 ГБ памяти. Оформление Windows Vista Basic.',
       backgroundColor: '#1b6c8f',
@@ -117,6 +196,7 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
     {
       id: 'home-basic',
       label: 'Home Basic',
+      translations: VISTA_EDITION_TRANSLATIONS['home-basic'],
       labelRu: 'Домашняя базовая',
       descriptionRu: 'Базовая домашняя редакция без Aero Glass и Media Center. Окна рисуются в упрощённом стиле Windows Vista Basic.',
       buildNumber: 'Build 6002: Service Pack 2',
@@ -124,6 +204,7 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
     {
       id: 'home-premium',
       label: 'Home Premium',
+      translations: VISTA_EDITION_TRANSLATIONS['home-premium'],
       labelRu: 'Домашняя расширенная',
       descriptionRu: 'Домашняя редакция с интерфейсом Aero Glass, Windows Media Center, Windows Photo Gallery и записью DVD.',
       buildNumber: 'Build 6002: Service Pack 2',
@@ -131,6 +212,7 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
     {
       id: 'business',
       label: 'Business',
+      translations: VISTA_EDITION_TRANSLATIONS['business'],
       labelRu: 'Business',
       descriptionRu: 'Редакция для малого бизнеса: Aero Glass, домен Active Directory, удалённый рабочий стол и теневые копии файлов.',
       buildNumber: 'Build 6002: Service Pack 2',
@@ -138,6 +220,7 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
     {
       id: 'enterprise',
       label: 'Enterprise',
+      translations: VISTA_EDITION_TRANSLATIONS['enterprise'],
       labelRu: 'Корпоративная',
       descriptionRu: 'Корпоративная редакция с BitLocker, многоязычным интерфейсом и подсистемой для UNIX-приложений. Продавалась только по корпоративным лицензиям.',
       buildNumber: 'Build 6002: Service Pack 2',
@@ -145,6 +228,7 @@ export const OS_EDITIONS: Record<EditionProfileId, OsEdition[]> = {
     {
       id: 'ultimate',
       label: 'Ultimate',
+      translations: VISTA_EDITION_TRANSLATIONS['ultimate'],
       labelRu: 'Максимальная',
       descriptionRu: 'Максимальная редакция Windows Vista: всё из Home Premium и Enterprise плюс Ultimate Extras.',
       buildNumber: 'Build 6002: Service Pack 2',
@@ -365,4 +449,18 @@ export function getActiveEdition(profileOrThemeId: string): OsEdition | undefine
   if (!editions.length) return undefined;
   const selectedId = getSelectedEditionId(profileOrThemeId);
   return editions.find((ed) => ed.id === selectedId) ?? editions[0];
+}
+
+/**
+ * Edition name in the given interface language. Russian falls back to labelRu, other languages to the English label.
+ */
+export function editionLabel(edition: OsEdition, language: Language | string): string {
+  return edition.translations?.[language as Language]?.label ?? (language === 'ru' ? edition.labelRu : edition.label);
+}
+
+/**
+ * Edition description in the given interface language. Editions without a translation keep the Russian text they always had.
+ */
+export function editionDescription(edition: OsEdition, language: Language | string): string {
+  return edition.translations?.[language as Language]?.description ?? edition.descriptionRu;
 }

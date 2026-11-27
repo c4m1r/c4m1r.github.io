@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useApp } from '../contexts/useApp';
 import { translations } from '../i18n/translations';
 import { enabledOsBootProfiles } from '../shells/os/osProfiles';
-import { getEditionsForProfile, setSelectedEditionId, EDITION_STORAGE_KEY } from '../shells/os/osEditions';
+import { getEditionsForProfile, setSelectedEditionId, EDITION_STORAGE_KEY, editionLabel } from '../shells/os/osEditions';
 import {
   isWindowsBuildTextEnabled,
   setWindowsBuildTextEnabled,
@@ -294,7 +294,7 @@ export function GrubMenu() {
                   setEditionProfileId(null);
                 }}
               >
-                {isRu ? `${edition.labelRu} (${edition.label})` : edition.label}
+                {isRu ? `${editionLabel(edition, language)} (${edition.label})` : editionLabel(edition, language)}
               </button>
             ))}
           </div>

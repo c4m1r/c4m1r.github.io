@@ -9,7 +9,7 @@ import { getSystemSettingsSections } from '../system/settings/settingsSections';
 import { useSystemActions } from '../system/actions/useSystemActions';
 import { type SystemActionId } from '../system/actions/systemActionTypes';
 import { APPLE_SETTINGS_CATEGORY_ICONS } from '../shells/desktop/appleSettingsAssets';
-import { getEditionsForProfile, getActiveEdition, setSelectedEditionId } from '../shells/os/osEditions';
+import { getEditionsForProfile, getActiveEdition, setSelectedEditionId, editionLabel, editionDescription } from '../shells/os/osEditions';
 import { getSystemSettings, subscribeSystemSettings, updateSystemSettings } from '../system/settings/settingsStore';
 
 type CPView = 'categories' | 'wallpaper' | 'systemInfo' | 'accessibility' | 'network' | 'focus' | 'display';
@@ -1686,7 +1686,7 @@ export function ControlPanel() {
                       >
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <span className="font-semibold text-sm">
-                            {isRu ? ed.labelRu : ed.label}
+                            {editionLabel(ed, language)}
                           </span>
                           {ed.buildNumber && (
                             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gray-500/20 opacity-80">
@@ -1695,7 +1695,7 @@ export function ControlPanel() {
                           )}
                         </div>
                         <p className="text-[11px] opacity-75 leading-tight">
-                          {ed.descriptionRu}
+                          {editionDescription(ed, language)}
                         </p>
                       </button>
                     );

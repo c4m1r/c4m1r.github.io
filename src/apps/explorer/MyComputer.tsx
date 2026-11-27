@@ -41,6 +41,7 @@ import win98DialupIcon from '../../themes/win98/icons/network/directory-dial-up-
 import win98SchedTasksIcon from '../../themes/win98/icons/apps/sched-tasks/32x32-0.png';
 import win98WebFoldersIcon from '../../themes/win98/icons/network/directory-net-web/32x32-0.png';
 import { vistaText } from '../../i18n/vistaStrings';
+import { ORGANIZE_MENU } from './organizeMenu';
 
 const isPicturesFolderPath = (value: string) => /my pictures|мои рисунки|(?:^|[\\/])pictures$/i.test(value);
 
@@ -100,6 +101,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   // Classic Windows (98, 2000) and the Windows 10/11 drafts open a Views menu instead of cycling.
   const viewsMenu = usesViewsMenu(theme) ? viewMenuEntries(isRu, theme) : null;
   const [viewsMenuOpen, setViewsMenuOpen] = useState(false);
+  const [organizeOpen, setOrganizeOpen] = useState(false);
   const viewsMenuRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!viewsMenuOpen) return;
@@ -785,19 +787,51 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             {isClassicWindows ? <ChevronRight size={16} /> : <img src={forwardIcon} alt="" className="w-5 h-5 object-contain" />}
             <span>{isRu ? 'Вперед' : 'Forward'}</span>
           </button>
-          <button
+          {theme !== 'vista' && <button
             onClick={handleUp}
             className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 active:bg-gray-200 text-black border-0 bg-transparent"
           >
             {isClassicWindows ? <ChevronUp size={16} /> : <img src={upIcon} alt="" className="w-5 h-5 object-contain" />}
             <span>{isRu ? 'Вверх' : 'Up'}</span>
-          </button>
-          <div className="w-px h-6 bg-gray-400 mx-1" />
-          {!isWin95Shell(theme) && <button onClick={() => { setSearchOpen(value => !value); setSearchQuery(''); }} aria-pressed={searchOpen} className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent">
+          </button>}
+          {theme === 'vista' && (
+            <div
+              className="relative"
+              onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOrganizeOpen(false); }}
+            >
+              <button
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={organizeOpen}
+                onClick={() => setOrganizeOpen((open) => !open)}
+                className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent"
+              >
+                <span>{classicEditText(language, 'organize')}</span>
+                <ChevronDown size={10} aria-hidden="true" />
+              </button>
+              {organizeOpen && (
+                <div role="menu" className="absolute left-0 top-full z-50 min-w-[232px] py-0.5 bg-[#f4f6f9] border border-[#8e9bb0] shadow-[0_3px_8px_rgba(0,0,0,0.28)]">
+                  {ORGANIZE_MENU.map((entry, index) =>
+                    entry === 'separator' ? (
+                      <div key={`sep-${index}`} role="separator" className="mx-0.5 my-[3px] h-px bg-[#d3d9e3] border-b border-white" />
+                    ) : (
+                      // Editing, layout and window commands need hooks this explorer does not have yet: entries stay disabled.
+                      <button key={entry} type="button" role="menuitem" disabled className="flex w-full items-center justify-between gap-3 px-[26px] py-[3px] text-left text-xs text-black whitespace-nowrap bg-transparent border-0 disabled:text-[#8a8f99]">
+                        <span>{classicEditText(language, entry)}</span>
+                        {entry === 'layout' ? <ChevronRight size={10} aria-hidden="true" /> : null}
+                      </button>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {theme !== 'vista' && <div className="w-px h-6 bg-gray-400 mx-1" />}
+          {!isWin95Shell(theme) && theme !== 'vista' && <button onClick={() => { setSearchOpen(value => !value); setSearchQuery(''); }} aria-pressed={searchOpen} className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/60 text-black border-0 bg-transparent">
             {isClassicWindows ? <img src={win98SearchIcon} alt="" className="w-4 h-4 object-contain" /> : <img src={searchIconXp} alt="" className="w-4 h-4 object-contain" />}
             <span>{isRu ? 'Поиск' : 'Search'}</span>
           </button>}
-          {!isWin95Shell(theme) && <button
+          {!isWin95Shell(theme) && theme !== 'vista' && <button
             className={`flex items-center gap-1 px-2 py-1 rounded border border-transparent hover:bg-white/60 text-black ${showSidebar ? 'bg-white/60 border-gray-400' : 'bg-transparent'}`}
             onClick={() => setShowSidebar(!showSidebar)}
           >

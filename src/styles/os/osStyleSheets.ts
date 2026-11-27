@@ -36,6 +36,7 @@ const css = {
   vistaStartMenu: () => import('./themes/vista-startmenu.css'),
   vistaBasic: () => import('./themes/vista-basic.css'),
   vistaExplorer: () => import('./themes/vista-explorer.css'),
+  vistaShellMenus: () => import('./themes/vista-shell-menus.css'),
   ubuntu: () => import('./themes/ubuntu.css'),
   arch: () => import('./themes/arch.css'),
   halloween: () => import('./themes/halloween.css'),
@@ -79,6 +80,7 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
     css.bootSessionFidelity,
     css.buildWatermark,
     css.calendar,
+    css.vistaShellMenus,
   ],
   // Windows Vista: the Windows 7 set with the Vista overrides on top.
   'os-vista': [
@@ -94,6 +96,7 @@ const OS_STYLE_SETS: Record<string, StyleLoader[]> = {
     css.vista,
     css.vistaExplorer,
     css.vistaBasic,
+    css.vistaShellMenus,
   ],
   'os-ubuntu': [css.ubuntu, css.macos, css.calendar],
   'os-arch': [css.arch, css.macos, css.calendar],
