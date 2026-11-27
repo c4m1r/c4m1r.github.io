@@ -157,3 +157,77 @@
 .os-win10 .win7-start-menu__program:hover {
   background: rgba(255, 255, 255, 0.1) !important;
 }
+
+/* Start menu search box: dark field that matches the menu, not the Windows 7 white strip. */
+.os-win10 .win7-start-menu__search {
+  background: #202020 !important;
+  border-top: 1px solid #3a3a3a !important;
+}
+
+.os-win10 .win7-start-menu__search input {
+  background: #2b2b2b !important;
+  color: #ffffff !important;
+  border: 1px solid #3a3a3a !important;
+  box-shadow: none !important;
+}
+
+.os-win10 .win7-start-menu__search input::placeholder {
+  color: #9a9a9a !important;
+}
+
+.os-win10 .win7-start-menu__left {
+  border: 0 !important;
+}
+
+/* Explorer (Windows 10): white menu and toolbar, light navigation and details panes,
+   Windows 10 blue selection and link colour instead of the Windows XP palette. */
+.file-explorer--win10 {
+  font-family: 'Segoe UI', system-ui, sans-serif !important;
+  color: #000000;
+}
+
+.file-explorer--win10 .bg-\[\#ece9d8\] {
+  background-color: #ffffff !important;
+}
+
+.file-explorer--win10 .border-\[\#aca899\] {
+  border-color: #e5e5e5 !important;
+}
+
+.file-explorer--win10 .hover\:bg-\[\#316ac5\]:hover {
+  background-color: #cce8ff !important;
+}
+
+.file-explorer--win10 .bg-\[\#7ba2e7\],
+.file-explorer--win10 .bg-\[\#d6dff7\] {
+  background-color: #f5f5f5 !important;
+}
+
+.file-explorer--win10 .text-\[\#215dc6\] {
+  color: #0067c0 !important;
+}
+
+.file-explorer--win10 .text-\[\#003c74\] {
+  color: #000000 !important;
+}
+
+/* Title row: caption buttons share the 31 px title height and the title text is centred on it. */
+.os-win10 .os-titlebar {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.os-win10 .xp-titlebar__controls {
+  height: 31px !important;
+  align-items: stretch !important;
+  margin-left: auto !important;
+  gap: 0 !important;  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.os-win10 .xp-titlebar__controls .xp-titlebar__button {
+  height: 31px !important;
+  min-height: 31px !important;
+}
