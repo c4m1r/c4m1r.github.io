@@ -1,0 +1,195 @@
+/* Windows 8 Start screen: the full-screen tile dashboard that replaces the Start menu. Scoped to .win8-start. */
+.win8-start {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 48px 64px;
+  overflow-y: auto;
+  background: #1e0654;
+  color: #ffffff;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+.win8-start__header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.win8-start__title {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.win8-start__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.win8-start__search input {
+  width: 200px;
+  background: transparent;
+  border: 0;
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+}
+
+.win8-start__search input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.win8-start__user,
+.win8-start__power {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  background: transparent;
+  border: 0;
+  color: #ffffff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.win8-start__user img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+}
+
+.win8-start__user:hover,
+.win8-start__power:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.win8-start__tiles,
+.win8-start__apps {
+  display: grid;
+  gap: 8px;
+  margin-top: 56px;
+  align-content: start;
+}
+
+.win8-start__tiles {
+  grid-template-columns: repeat(auto-fill, 112px);
+  grid-auto-rows: 112px;
+}
+
+.win8-start__apps {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.win8-start__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  border: 0;
+  color: #ffffff;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.win8-start__tile--wide {
+  grid-column: span 2;
+}
+
+.win8-start__tile img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.win8-start__tile--wallpaper img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.win8-start__tile--wallpaper span {
+  position: relative;
+  margin-top: auto;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.win8-start__tile span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win8-start__tile:hover {
+  filter: brightness(1.12);
+}
+
+.win8-start__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 0;
+  color: #ffffff;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.win8-start__row:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.win8-start__row img {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.win8-start__row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win8-start__empty {
+  margin-top: 56px;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.win8-start__toggle {
+  position: fixed;
+  left: 48px;
+  bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: transparent;
+  border: 0;
+  color: #ffffff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.win8-start__toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}

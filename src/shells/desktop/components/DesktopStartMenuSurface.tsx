@@ -1,5 +1,6 @@
 import { useApp } from '../../../contexts/useApp';
 import { StartMenu } from './start-menu/StartMenu';
+import { StartScreen8 } from './start-menu/StartScreen8';
 import { AppleLauncherSurface } from './AppleLauncherSurface';
 import { getStartMenuSurface } from '../runtime/startMenuSurface';
 
@@ -31,6 +32,19 @@ export function DesktopStartMenuSurface({
       <AppleLauncherSurface
         onClose={onClose}
         onLaunchApp={onLaunchApp}
+      />
+    );
+  }
+
+  // Windows 8 has no Start menu: its Start button opens the tile dashboard, with the same entries and actions.
+  if (theme === 'win8') {
+    return (
+      <StartScreen8
+        onClose={onClose}
+        onLaunchApp={onLaunchApp}
+        onOpenPath={onOpenPath}
+        onSystemCommand={onSystemCommand}
+        onHover={onHover}
       />
     );
   }
