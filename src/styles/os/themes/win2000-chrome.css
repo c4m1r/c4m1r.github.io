@@ -63,3 +63,15 @@
 .os-win2000 .xp-titlebar__button--close:hover {
   background-image: url('../../../themes/win2000/assets/window/close_hover.png') !important;
 }
+
+/* Windows 2000 title bars: navy-to-light-blue gradient when active, grey gradient when inactive. */
+.os-classic.os-win2000 .os-titlebar,
+.os-win2000 .os-titlebar {
+  background: linear-gradient(90deg, #0a246a 0%, #a6caf0 100%) !important;
+}
+
+.os-classic.os-win2000 .os-window--inactive .os-titlebar,
+.os-win2000 .os-window--inactive .os-titlebar {
+  background: linear-gradient(90deg, #808080 0%, #c0c0c0 100%) !important;
+  color: #d4d0c8 !important;
+}
