@@ -31,3 +31,6 @@ artifacts
 
 # Python bytecode caches
 __pycache__/
+
+# Temporary copies of cursor sets (not for commit)
+/eat/temp/
