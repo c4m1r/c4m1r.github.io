@@ -14,7 +14,8 @@ unless it is an original OS asset that is already stored in the theme sets.
 | `erfg12/WinRetro_Themes` | No LICENSE file | Deskthemepacks (XP, Vista, 9x): system sounds, wallpapers, `System Icons` | 1497 files stored in `src/assets/reference/winretro` (not imported). Contains no cursors. |
 | `1j01/retrores` (Windows 98 cursors and icons catalog) | No LICENSE file | Windows 98 ANI/GIF cursors | Not usable here: the ANI/GIF files are Git LFS pointers, and the anonymous clone does not fetch LFS objects. Needs a read-write repository attachment to fetch them. |
 | `eat/portfolio-main 2/public/themes/Yaru` | Donor folder (no licence found) | 44 Yaru icons (apps, status, system, window) | Partial Ubuntu set. Not a full GNOME icon theme. |
-| Attached cursor packs (rw-designer.com, public domain per author) | Public domain (as stated by each author) | Windows 95/98, Windows 2000/XP, Windows 7/Vista, Windows 8/10 cursor sets | Windows 98 matches `eat/98.portfolio-main` for arrow, pointer, I-beam and hourglass. The Windows 2000/XP set is byte-identical to the 95/98 files for most roles, so it is not a separate 2000 scheme. The 95/98 set states that its hourglass was replaced by a CD, so it is not an original. |
+| Attached cursor packs (rw-designer.com, public domain per author) | Public domain (as stated by each author) | Windows 95/98, Windows 2000/XP, Windows 7/Vista, Windows 8/10 cursor sets | Windows 98 matches `eat/98.portfolio-main` for arrow, pointer, I-beam and hourglass. The user states that Windows 2000 and Windows XP share one standard cursor set; the attached `classic-1` pack is that set, and it matches the 95/98 files for most roles (byte-identical on re-check), so it is used as the 2000/XP scheme. The 95/98 set states that its hourglass was replaced by a CD, so it is not an original. The user states that Windows 8 uses the same Aero scheme as Windows 7: the attached Windows 8 pack matches `src/themes/cursors/aero` visually (alpha-masked compare, all 18 frames of each `.ani`). |
+| Attached by the user (2026-11-28): Windows 11 wallpaper pack, Windows 8 wallpaper, Windows Server 2003 wallpaper, Windows 8.1 Flat Colors pack | No licence supplied | Windows 11 `img0` (default "Bloom") and 17 other wallpapers; Windows 8 default `Img0_Windows_8.jpg`; clean Server 2003 wallpaper (800×600); 84 Windows 8.1 flat icons with `.iconpackage` | Stored in `src/assets/reference/windows-misc` (not imported, apart from Windows 11 `img0`, which is wired as the Windows 11 wallpaper). The Server 2003 wallpaper is the clean original, not the watermarked copy from the reference screenshot. |
 
 ## Gaps that a public source cannot close
 
@@ -27,10 +28,10 @@ These items cannot be closed from the sources checked so far. Each one needs fil
 
 - **Ubuntu XFCE mode.** Needs an XFCE look: the panel, the window manager (Xfwm) frames and the Greybird or Xfce icon theme, and Xfce wallpapers. The X11 Xcursor set from xfce-look (`all/`) covers the cursors only. Open question: should XFCE and GNOME be two editions of the Ubuntu profile (the same mechanism as the Vista editions)?
 - **Ubuntu GNOME mode.** Needs the Adwaita or Yaru GNOME shell look (top bar, dock, window frames), the full Yaru icon theme (we have 44 of its icons), the Yaru wallpapers and the GNOME sound theme. Nothing in `eat/` covers the shell itself.
-- **Windows 2000 cursor scheme.** No source has a separate 2000 set. Needs the user's original 2000 `.cur` files or a screenshot with the cursor visible.
-- **Windows 8 skin.** Needs its icons, wallpaper and cursor set. Only one start-screen screenshot exists (`eat/screens/oc/win8`).
-- **Windows 11 wallpaper.** None in `eat/`; the Windows 7 wallpaper is used.
-- **Windows Server 2003 wallpaper.** The only copy is inside the reference screenshot with a "Demonstration" watermark. A clean original is needed.
+- **Windows 2000 cursor scheme.** Closed by the attached `classic-1` pack (the user states that 2000 and XP share it). Not yet checked against a screenshot with the cursor visible.
+- **Windows 8 skin.** Wallpaper (`win8-daisy.jpg`) and the Aero cursor set are now available. Still needed: the Windows 8 icons (the 8.1 flat icons are a different design), and a skin root class for Windows 8 (none exists yet).
+- **Windows 11 wallpaper.** Closed: `img0` is wired. Windows 11 icons and the other 17 wallpapers are stored for reference.
+- **Windows Server 2003 wallpaper.** Closed: the clean original is stored. Wiring it needs a server2003 wallpaper override, since the profile uses the Windows XP theme.
 - **Windows 8/10 and 11 quick settings.** The donor has no Windows 11 quick settings; the Windows 11 panel reuses the Windows 10 layout.
 
 ## Next steps

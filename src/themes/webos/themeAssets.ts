@@ -64,6 +64,7 @@ import { WIN7_ASSETS } from '../win7/assets';
 import { WIN7_ICON_ASSETS } from '../win7/iconAssets';
 import { WIN10_ICON_ASSETS } from '../win10/assets';
 import win10Wallpaper from '../win10/assets/wallpaper.jpg';
+import win11Wallpaper from '../win11/assets/wallpaper.jpg';
 import { WIN11_ICON_ASSETS } from '../win11/assets';
 import { WIN2000_ICON_ASSETS } from '../win2000/iconAssets';
 import win2000SideBar from '../win2000/assets/sideBar.png';
@@ -332,9 +333,10 @@ export const THEME_ASSETS: Record<ThemeAssetId, ThemeAssets> = {
     recycleFullIcon: WIN10_ICON_ASSETS.recycleFullIcon,
     placesIcons: { ...win7ThemeAssets.placesIcons, ...WIN10_ICON_ASSETS.placesIcons },
   },
-  // Windows 11 keeps the Windows 7 base for sounds and start menu art, with its own system icons on top.
+  // Windows 11 keeps the Windows 7 base for sounds and start menu art, with its own wallpaper (default "Bloom", img0) and system icons on top.
   win11: {
     ...win7ThemeAssets,
+    wallpaper: win11Wallpaper,
     folderIcon: WIN11_ICON_ASSETS.folderIcon,
     computerIcon: WIN11_ICON_ASSETS.computerIcon,
     driveIcon: WIN11_ICON_ASSETS.driveIcon,
