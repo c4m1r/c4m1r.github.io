@@ -101,6 +101,8 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   });
   const isWindowsXp = theme === 'win-xp';
   const isClassicWindows = theme === 'win-98' || theme === 'win2000';
+  // The search row of the classic shells is a gray bar with a sunken field, like the Find dialog.
+  const isClassicSearchRow = isClassicWindows || isWin95Shell(theme);
   // Classic Windows (98, 2000) and the Windows 10/11 drafts open a Views menu instead of cycling.
   const viewsMenu = usesViewsMenu(theme) ? viewMenuEntries(isRu, theme) : null;
   const [viewsMenuOpen, setViewsMenuOpen] = useState(false);
@@ -959,7 +961,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             <input
               type="text"
               autoFocus={theme === 'vista'}
-              value={addressInput}
+              value={findMode ? startSearchText(language, 'searchResults') : addressInput}
               onChange={(event) => setAddressInput(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === 'Escape' && theme === 'vista') { setAddressEditing(false); setAddressInput(addressTextFor(path)); return; }
@@ -995,11 +997,11 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
         </div>
       </div>
       {searchOpen && (
-        <div className="flex items-center gap-2 px-2 py-1 border-b border-[#aca899] bg-white">
-          <Search size={14} aria-hidden="true" />
-          <input autoFocus value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') { setSearchQuery(''); setSearchOpen(false); } }} placeholder={initialSearchOpen ? startSearchText(language, 'findPlaceholder') : (isRu ? 'Найти в текущей папке…' : 'Search this folder…')} aria-label={isRu ? 'Поиск в текущей папке' : 'Search this folder'} className="min-w-0 flex-1 bg-transparent outline-none text-xs text-black" />
-          <span className="text-[10px] text-gray-500">{visibleItems.length}/{items.length}</span>
-          <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} className="border-0 bg-transparent text-xs">{isRu ? 'Закрыть' : 'Close'}</button>
+        <div className={isClassicSearchRow ? 'flex items-center gap-2 px-2 py-1 bg-[#c0c0c0] text-[11px] text-black border-b border-[#808080]' : 'flex items-center gap-2 px-2 py-1 border-b border-[#aca899] bg-white'}>
+          {isClassicSearchRow ? <span>{startSearchText(language, 'named')}</span> : <Search size={14} aria-hidden="true" />}
+          <input autoFocus value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') { setSearchQuery(''); setSearchOpen(false); } }} placeholder={initialSearchOpen ? startSearchText(language, 'findPlaceholder') : (isRu ? 'Найти в текущей папке…' : 'Search this folder…')} aria-label={isRu ? 'Поиск в текущей папке' : 'Search this folder'} className={isClassicSearchRow ? 'min-w-0 flex-1 h-5 px-1 bg-white text-[11px] text-black outline-none border-0 shadow-[inset_-1px_-1px_#dfdfdf,inset_1px_1px_#808080,inset_-2px_-2px_#c0c0c0,inset_2px_2px_#000]' : 'min-w-0 flex-1 bg-transparent outline-none text-xs text-black'} />
+          <span className={isClassicSearchRow ? 'text-[10px] text-[#404040]' : 'text-[10px] text-gray-500'}>{visibleItems.length}/{items.length}</span>
+          <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} className={isClassicSearchRow ? 'px-3 h-5 border-0 bg-[#c0c0c0] text-[11px] text-black shadow-[inset_-1px_-1px_#000,inset_1px_1px_#fff,inset_-2px_-2px_#808080,inset_2px_2px_#dfdfdf]' : 'border-0 bg-transparent text-xs'}>{isRu ? 'Закрыть' : 'Close'}</button>
         </div>
       )}
 
@@ -1587,7 +1589,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       ) : (
       <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
         <div className="flex gap-4">
-          <span>{!findMode && path === 'My Computer' && theme === 'win-xp' ? 3 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
+          <span>{!findMode && path === 'My Computer' && theme === 'win-xp' ? 3 : visibleItems.length} {isRu ? 'объект(ов)' : 'object(s)'}</span>
           {selectedItem && <span>{isRu ? 'Выбрано:' : 'Selected:'} {selectedItem}</span>}
         </div>
         {detailsForSelection && (

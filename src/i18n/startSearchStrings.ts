@@ -17,6 +17,14 @@ const START_SEARCH_STRINGS = {
     en: 'Search files and folders', ru: 'Найти файлы и папки', fr: 'Rechercher des fichiers et dossiers', es: 'Buscar archivos y carpetas', zh: '搜索文件和文件夹',
     ja: 'ファイルとフォルダーを検索', ko: '파일 및 폴더 검색', be: 'Пошук файлаў і папак', kk: 'Файлдар мен қалталарды іздеу',
   },
+  searchResults: {
+    en: 'Search Results', ru: 'Результаты поиска', fr: 'Résultats de la recherche', es: 'Resultados de la búsqueda', zh: '搜索结果',
+    ja: '検索結果', ko: '검색 결과', be: 'Вынікі пошуку', kk: 'Іздеу нәтижелері',
+  },
+  named: {
+    en: 'Named:', ru: 'Имя:', fr: 'Nom :', es: 'Nombre:', zh: '名称:',
+    ja: '名前:', ko: '이름:', be: 'Імя:', kk: 'Аты:',
+  },
   noResults: {
     en: 'No results', ru: 'Ничего не найдено', fr: 'Aucun résultat', es: 'Sin resultados', zh: '没有结果',
     ja: '結果がありません', ko: '결과 없음', be: 'Нічога не знойдзена', kk: 'Нәтиже табылмады',
