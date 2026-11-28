@@ -9,7 +9,7 @@ import { useFlyoutChain } from './startMenuFlyout';
 import { FlyoutPanel } from './StartMenuFlyoutPanel';
 import { vistaText } from '../../../../i18n/vistaStrings';
 import { startSearchText } from '../../../../i18n/startSearchStrings';
-import { searchStartFiles, type StartSearchHit } from './startMenuSearch';
+import { searchFileSystem, type StartSearchHit } from '../../../../utils/fileSearch';
 
 export interface StartMenu7Props {
   onClose: () => void;
@@ -107,7 +107,7 @@ export function StartMenu7({
   const isSearching = searchText.length > 0;
   const searchRoots = useMemo(() => [`C:\\Documents and Settings\\${getSessionAccount()}`, 'C:\\Program Files'], []);
   const fileHits: StartSearchHit[] = useMemo(
-    () => (isSearching ? searchStartFiles(query, searchRoots) : []),
+    () => (isSearching ? searchFileSystem(query, searchRoots) : []),
     [isSearching, query, searchRoots],
   );
   const filteredPrograms = isSearching

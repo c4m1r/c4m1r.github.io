@@ -13,6 +13,10 @@ const START_SEARCH_STRINGS = {
     en: 'Files', ru: 'Файлы', fr: 'Fichiers', es: 'Archivos', zh: '文件',
     ja: 'ファイル', ko: '파일', be: 'Файлы', kk: 'Файлдар',
   },
+  findPlaceholder: {
+    en: 'Search files and folders', ru: 'Найти файлы и папки', fr: 'Rechercher des fichiers et dossiers', es: 'Buscar archivos y carpetas', zh: '搜索文件和文件夹',
+    ja: 'ファイルとフォルダーを検索', ko: '파일 및 폴더 검색', be: 'Пошук файлаў і папак', kk: 'Файлдар мен қалталарды іздеу',
+  },
   noResults: {
     en: 'No results', ru: 'Ничего не найдено', fr: 'Aucun résultat', es: 'Sin resultados', zh: '没有结果',
     ja: '結果がありません', ko: '결과 없음', be: 'Нічога не знойдзена', kk: 'Нәтиже табылмады',

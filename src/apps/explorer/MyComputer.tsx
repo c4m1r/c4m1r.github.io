@@ -12,6 +12,9 @@ import forwardIcon from '../../themes/winxp/assets/toolbar/forward.png';
 import upIcon from '../../themes/winxp/assets/toolbar/folder.png';
 import goIcon from '../../themes/winxp/assets/toolbar/go.png';
 import { getItemsFromPath, getFileSystemItemFromPath, FileSystemItem, initialFileSystem } from '../../utils/FileSystem';
+import { searchFileSystem } from '../../utils/fileSearch';
+import { getSessionAccount } from '../../domain/auth/session';
+import { startSearchText } from '../../i18n/startSearchStrings';
 import { resolveFileIcon } from '../../themes/iconResolver';
 import appleFolderIcon from '../../themes/apple/assets/icons/folder-generic.png';
 import appleDocumentIcon from '../../themes/apple/assets/sf-icons/document.svg';
@@ -147,10 +150,19 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   }, [path]);
 
   const items = useMemo(() => getItemsFromPath(path), [path]);
+  // Find (opened from Start or the Find/Search item) searches the profile and Program Files, not only this folder.
+  // Its results keep their folder, so opening one goes to where it lives.
+  const findMode = initialSearchOpen && searchOpen && searchQuery.trim().length > 0;
+  const findHits = useMemo(
+    () => (findMode ? searchFileSystem(searchQuery, [`C:\\Documents and Settings\\${getSessionAccount()}`, 'C:\\Program Files']) : []),
+    [findMode, searchQuery],
+  );
+  const findParentOf = useMemo(() => new Map(findHits.map((hit) => [hit.item, hit.parentPath])), [findHits]);
   const visibleItems = useMemo(() => {
+    if (findMode) return findHits.map((hit) => hit.item);
     const needle = searchQuery.trim().toLocaleLowerCase();
     return needle ? items.filter(item => item.name.toLocaleLowerCase().includes(needle)) : items;
-  }, [items, searchQuery]);
+  }, [findMode, findHits, items, searchQuery]);
   const selectedFile = useMemo(
     () => items.find((item) => item.name === selectedItem) ?? null,
     [items, selectedItem]
@@ -275,6 +287,17 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
   );
 
   const handleNavigate = (item: FileSystemItem) => {
+    const hitFolder = findParentOf.get(item);
+    if (hitFolder !== undefined) {
+      if (item.type === 'folder') {
+        setSearchQuery('');
+        setSearchOpen(false);
+        navigateToPath(`${hitFolder}\\${item.name}`);
+      } else if (item.type === 'file' && onOpenItem) {
+        onOpenItem(item, hitFolder);
+      }
+      return;
+    }
     if (item.type === 'folder' || item.type === 'drive') {
       let newPath = path;
       if (item.name === 'Local Disk (C:)') newPath = 'C:';
@@ -974,7 +997,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       {searchOpen && (
         <div className="flex items-center gap-2 px-2 py-1 border-b border-[#aca899] bg-white">
           <Search size={14} aria-hidden="true" />
-          <input autoFocus value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') { setSearchQuery(''); setSearchOpen(false); } }} placeholder={isRu ? 'Найти в текущей папке…' : 'Search this folder…'} aria-label={isRu ? 'Поиск в текущей папке' : 'Search this folder'} className="min-w-0 flex-1 bg-transparent outline-none text-xs text-black" />
+          <input autoFocus value={searchQuery} onChange={event => setSearchQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Escape') { setSearchQuery(''); setSearchOpen(false); } }} placeholder={initialSearchOpen ? startSearchText(language, 'findPlaceholder') : (isRu ? 'Найти в текущей папке…' : 'Search this folder…')} aria-label={isRu ? 'Поиск в текущей папке' : 'Search this folder'} className="min-w-0 flex-1 bg-transparent outline-none text-xs text-black" />
           <span className="text-[10px] text-gray-500">{visibleItems.length}/{items.length}</span>
           <button type="button" onClick={() => { setSearchQuery(''); setSearchOpen(false); }} className="border-0 bg-transparent text-xs">{isRu ? 'Закрыть' : 'Close'}</button>
         </div>
@@ -1273,7 +1296,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                 ))}
             </div>
           ) : viewMode === 'icons' ? (
-            path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (
+            !findMode && path === 'My Computer' && (theme === 'win-98' || theme === 'win2000') ? (
               // Classic Windows (98 and 2000) list drives and system items in one flat grid.
               // Network Neighborhood is not under My Computer in either version.
               <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
@@ -1299,7 +1322,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
                   </div>
                 ))}
               </div>
-            ) : path === 'My Computer' ? (
+            ) : !findMode && path === 'My Computer' ? (
               <div className="space-y-6">
                 {visibleItems.filter((i) => i.type === 'folder' && i.name !== 'Network Neighborhood').length > 0 && (
                   <div>
@@ -1541,7 +1564,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
             <div>
               <strong>{title}</strong>
               <span>{kind}</span>
-              {!selected && path === 'My Computer' && <span>{isRu ? 'Рабочая группа: WORKGROUP' : 'Workgroup: WORKGROUP'}</span>}
+              {!selected && !findMode && path === 'My Computer' && <span>{isRu ? 'Рабочая группа: WORKGROUP' : 'Workgroup: WORKGROUP'}</span>}
             </div>
           </div>
         );
@@ -1553,7 +1576,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
           <span className="fx-status__cell flex-1 min-w-0">
             {selectedItem
               ? (isRu ? '1 объект выделен' : '1 object(s) selected')
-              : `${path === 'My Computer' ? (theme === 'win2000' ? 7 : 8) : visibleItems.length} ${isRu ? 'объект(ов)' : 'object(s)'}`}
+              : `${!findMode && path === 'My Computer' ? (theme === 'win2000' ? 7 : 8) : visibleItems.length} ${isRu ? 'объект(ов)' : 'object(s)'}`}
           </span>
           {detailsForSelection?.size && <span className="fx-status__cell">{detailsForSelection.size}</span>}
           <span className="fx-status__cell fx-status__cell--place">
@@ -1564,7 +1587,7 @@ export function MyComputer({ currentPath = 'C:\\', onOpenItem, onOpenSlideshow, 
       ) : (
       <div className="bg-[#ece9d8] border-t border-[#aca899] px-2 py-0.5 text-[11px] text-black flex gap-4 justify-between shadow-inner">
         <div className="flex gap-4">
-          <span>{path === 'My Computer' && theme === 'win-xp' ? 3 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
+          <span>{!findMode && path === 'My Computer' && theme === 'win-xp' ? 3 : visibleItems.length} {isRu ? 'объектов' : 'objects'}</span>
           {selectedItem && <span>{isRu ? 'Выбрано:' : 'Selected:'} {selectedItem}</span>}
         </div>
         {detailsForSelection && (

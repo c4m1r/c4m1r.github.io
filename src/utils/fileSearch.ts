@@ -1,13 +1,15 @@
-import { getFileIcon, getItemsFromPath, type FileSystemItem } from '../../../../utils/FileSystem';
+import { getFileIcon, getItemsFromPath, type FileSystemItem } from './FileSystem';
 
 /**
- * File search for the Start menu. It walks the given folders of the virtual file system and keeps the
+ * File search for Find and the Start menu. It walks the given folders of the virtual file system and keeps the
  * items whose name contains the query. Both the depth and the number of hits are capped, so a search
  * stays fast on the whole profile and Program Files.
  */
 
 export interface StartSearchHit {
   id: string;
+  /** The file-system item itself, so a view can show and open it. */
+  item: FileSystemItem;
   name: string;
   /** Full path of the item. */
   path: string;
@@ -28,6 +30,7 @@ function toHit(item: FileSystemItem, parentPath: string, path: string): StartSea
   const appId = kind === 'file' ? item.appId : undefined;
   return {
     id: path,
+    item,
     name: item.name,
     path,
     parentPath,
@@ -38,7 +41,7 @@ function toHit(item: FileSystemItem, parentPath: string, path: string): StartSea
 }
 
 /** Files and folders under `roots` whose name contains `query` (case-insensitive). */
-export function searchStartFiles(query: string, roots: string[]): StartSearchHit[] {
+export function searchFileSystem(query: string, roots: string[]): StartSearchHit[] {
   const needle = query.trim().toLocaleLowerCase();
   if (!needle) return [];
   const hits: StartSearchHit[] = [];
