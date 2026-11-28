@@ -8,6 +8,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Folder, ChevronDown, ChevronRight, X, ArrowRight } from 'lucide-react';
 import { useGallery } from '../../../domain/gallery/useGallery';
+import { WindowsWallpaperSection } from './WindowsWallpaperSection';
 
 interface GallerySectionUi {
   galleryTitle: string;
@@ -401,6 +402,8 @@ export function GalleryPageSection({
       </section>
 
       {/* Lightbox Modal */}
+      <WindowsWallpaperSection />
+
       {lightbox && pictures[lightbox.idx] && (
         <div
           className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex items-center justify-center animate-fade-in"

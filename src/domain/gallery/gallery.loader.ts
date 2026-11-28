@@ -1,5 +1,6 @@
 import { type GalleryItem } from './gallery.types';
 import { routes } from '../../shells/site/siteRoutes';
+import { wallpaperTitle, windowsWallpaperOs } from './windowsWallpapers';
 
 export interface ImageItem {
   id: string;
@@ -8,6 +9,8 @@ export interface ImageItem {
   thumbnail?: string;
   size?: string;
   date?: string;
+  /** Windows version label for Windows wallpapers (used as the tag and in the title). */
+  tags?: string[];
 }
 
 const pictureModules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,png,gif,webp}', {
@@ -53,13 +56,16 @@ export async function loadWallpapers(): Promise<ImageItem[]> {
       const url = (await wallpaperModules[path]()) as string;
       const relativePath = path.split('/src/content/pictures/wallpapers/')[1] || path;
       const filename = relativePath.split('/').pop() || '';
-      const name = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+      const fileBase = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+      const osLabel = windowsWallpaperOs(relativePath);
 
       wallpapers.push({
         id: relativePath,
-        name,
+        // Windows wallpapers read as "Windows XP: Ascent"; the rest keep their file name.
+        name: osLabel ? `${osLabel}: ${wallpaperTitle(fileBase)}` : fileBase,
         path: url,
         thumbnail: url,
+        tags: osLabel ? [osLabel] : undefined,
       });
     }
   } catch (error) {
@@ -105,6 +111,7 @@ export async function loadGalleryItems(): Promise<GalleryItem[]> {
     thumbnailPath: pic.thumbnail ?? pic.path,
     mediaType: 'wallpaper' as const,
     date: pic.date,
+    tags: pic.tags,
     route: {
       path: routes.galleryItem(`wallpaper__${pic.id}`),
       sitePath: routes.galleryItem(`wallpaper__${pic.id}`),
