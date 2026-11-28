@@ -1,17 +1,20 @@
 import { useApp } from '../../../contexts/useApp';
 import { useGallery } from '../../../domain/gallery/useGallery';
 import { WINDOWS_WALLPAPER_OS } from '../../../domain/gallery/windowsWallpapers';
-import { windowsWallpaperText } from '../../../i18n/windowsWallpaperStrings';
+import { windowsWallpaperTagText, windowsWallpaperText } from '../../../i18n/windowsWallpaperStrings';
 
 /**
  * Windows wallpapers grouped by Windows version (the tag set by the gallery loader), in release order.
- * Each image opens at full size in a new tab.
+ * Each card shows the title and the other tags as text. Each image opens at full size in a new tab.
  */
 export function WindowsWallpaperSection() {
   const { wallpapers, loading } = useGallery();
   const { language } = useApp();
 
   if (loading) return null;
+
+  // The gallery title is "<Windows version>: <title>"; the group heading already shows the version.
+  const cardTitle = (label: string, name: string) => (name.startsWith(`${label}: `) ? name.slice(label.length + 2) : name);
 
   const groups = Object.values(WINDOWS_WALLPAPER_OS)
     .map((label) => ({
@@ -52,7 +55,16 @@ export function WindowsWallpaperSection() {
                     loading="lazy"
                     className="w-full aspect-video object-cover"
                   />
-                  <span className="block p-2 text-sm truncate">{item.title}</span>
+                  <span className="block p-2 text-sm">
+                    <span className="block truncate">{cardTitle(group.label, item.title)}</span>
+                    {(item.tags ?? [])
+                      .filter((tag) => tag !== group.label)
+                      .map((tag) => (
+                        <span key={tag} className="block text-xs text-muted-foreground">
+                          {windowsWallpaperTagText(language, tag)}
+                        </span>
+                      ))}
+                  </span>
                 </a>
               </li>
             ))}

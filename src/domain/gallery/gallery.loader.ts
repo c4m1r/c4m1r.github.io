@@ -1,6 +1,6 @@
 import { type GalleryItem } from './gallery.types';
 import { routes } from '../../shells/site/siteRoutes';
-import { wallpaperTitle, windowsWallpaperOs } from './windowsWallpapers';
+import { resolveWindowsWallpaper } from './windowsWallpapers';
 
 export interface ImageItem {
   id: string;
@@ -20,6 +20,31 @@ const pictureModules = import.meta.glob('/src/content/pictures/**/*.{jpg,jpeg,pn
 });
 
 const wallpaperModules = import.meta.glob('/src/content/pictures/wallpapers/**/*.{jpg,jpeg,png,webp}', {
+  query: '?url',
+  import: 'default',
+  eager: false,
+});
+
+// Windows wallpapers that live outside the gallery folder: the reference packs and the theme backgrounds.
+// They are linked to their Windows version through the catalogue, not copied.
+const windowsPackModules = import.meta.glob([
+  '/src/assets/reference/winretro/winxp/wallpapers/*.{jpg,jpeg,png,webp}',
+  '/src/assets/reference/winretro/winvista/wallpapers/*.{jpg,jpeg,png,webp}',
+  '/src/assets/reference/winretro/win9x/wallpapers/*.{jpg,jpeg,png,webp}',
+  '/src/assets/reference/windows-misc/win11-wallpapers/*.{jpg,jpeg,png,webp}',
+  '/src/assets/reference/windows-misc/win8-wallpapers/*.{jpg,jpeg,png,webp}',
+  '/src/assets/reference/windows-misc/server2003-wallpapers/*.{jpg,jpeg,png,webp}',
+], {
+  query: '?url',
+  import: 'default',
+  eager: false,
+});
+
+const windowsThemeModules = import.meta.glob([
+  '/src/themes/vista/assets/wallpaper-aero.jpg',
+  '/src/themes/win7/assets/images/login-background.jpg',
+  '/src/themes/win10/assets/wallpaper.jpg',
+], {
   query: '?url',
   import: 'default',
   eager: false,
@@ -56,17 +81,31 @@ export async function loadWallpapers(): Promise<ImageItem[]> {
       const url = (await wallpaperModules[path]()) as string;
       const relativePath = path.split('/src/content/pictures/wallpapers/')[1] || path;
       const filename = relativePath.split('/').pop() || '';
-      const fileBase = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
-      const osLabel = windowsWallpaperOs(relativePath);
-
+      const srcRelative = path.replace('/src/', '');
+      const meta = resolveWindowsWallpaper(srcRelative);
       wallpapers.push({
         id: relativePath,
-        // Windows wallpapers read as "Windows XP: Ascent"; the rest keep their file name.
-        name: osLabel ? `${osLabel}: ${wallpaperTitle(fileBase)}` : fileBase,
+        name: meta ? `${meta.os}: ${meta.title}` : filename.replace(/\.(jpg|jpeg|png|webp)$/i, ''),
         path: url,
         thumbnail: url,
-        tags: osLabel ? [osLabel] : undefined,
+        tags: meta?.tags,
       });
+    }
+    // Windows packs and theme backgrounds: linked, not copied.
+    for (const modules of [windowsPackModules, windowsThemeModules]) {
+      for (const path in modules) {
+        const url = (await modules[path]()) as string;
+        const srcRelative = path.replace('/src/', '');
+        const meta = resolveWindowsWallpaper(srcRelative);
+        if (!meta) continue;
+        wallpapers.push({
+          id: `windows/${srcRelative}`,
+          name: `${meta.os}: ${meta.title}`,
+          path: url,
+          thumbnail: url,
+          tags: meta.tags,
+        });
+      }
     }
   } catch (error) {
     console.error('Failed to load wallpapers:', error);

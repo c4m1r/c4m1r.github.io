@@ -26,6 +26,29 @@ const WINDOWS_WALLPAPER_STRINGS = {
   },
 } as const;
 
+/** Names of the tags written under each wallpaper. The English tag is the key used in the catalogue. */
+const WINDOWS_WALLPAPER_TAG_NAMES: Record<string, Record<string, string>> = {
+  default: {
+    en: 'default', ru: 'по умолчанию', fr: 'par défaut', es: 'predeterminado', zh: '默认', ja: '標準', ko: '기본', be: 'стандартны', kk: 'әдепкі',
+  },
+  'theme background': {
+    en: 'theme background', ru: 'фон темы', fr: 'arrière-plan du thème', es: 'fondo del tema', zh: '主题背景', ja: 'テーマの背景', ko: '테마 배경', be: 'фон тэмы', kk: 'тақырып фоны',
+  },
+  logon: {
+    en: 'logon', ru: 'вход в систему', fr: 'ouverture de session', es: 'inicio de sesión', zh: '登录', ja: 'ログオン', ko: '로그온', be: 'уваход у сістэму', kk: 'жүйеге кіру',
+  },
+  'lock screen': {
+    en: 'lock screen', ru: 'экран блокировки', fr: 'écran de verrouillage', es: 'pantalla de bloqueo', zh: '锁屏', ja: 'ロック画面', ko: '잠금 화면', be: 'экран блакіроўкі', kk: 'құлып экраны',
+  },
+};
+
+export function windowsWallpaperTagText(language: Language | string, tag: string): string {
+  const entry = WINDOWS_WALLPAPER_TAG_NAMES[tag];
+  if (!entry) return tag;
+  const code = language.split('-')[0];
+  return entry[code] ?? entry.en;
+}
+
 export type WindowsWallpaperStringKey = keyof typeof WINDOWS_WALLPAPER_STRINGS;
 
 export function windowsWallpaperText(language: Language | string, key: WindowsWallpaperStringKey): string {
