@@ -1,0 +1,213 @@
+/*
+ * Windows 10 and Windows 11 Start menus (StartMenu10.tsx, StartMenu11.tsx).
+ * Shared rules use the `ms-` prefix; the variables below set each skin's colours.
+ */
+.ms-root {
+  position: fixed;
+  z-index: 99999;
+  display: flex;
+  box-sizing: border-box;
+  color: var(--ms-fg);
+  background: var(--ms-bg);
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.25;
+  animation: ms-open 150ms ease-out;
+}
+.ms-root *, .ms-root *::before, .ms-root *::after { box-sizing: border-box; }
+.ms-root button { font: inherit; color: inherit; margin: 0; appearance: none; -webkit-appearance: none; box-shadow: none; text-shadow: none; }
+.ms-root img { -webkit-user-drag: none; user-select: none; }
+.ms-list, .ms-tiles, .ms-body, .ms-results { scrollbar-width: thin; }
+
+@keyframes ms-open { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* Rows, headings and results (both skins) */
+.ms-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 38px;
+  padding: 0 12px 0 10px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  cursor: default;
+}
+.ms-row:hover, .ms-row:focus-visible { background: var(--ms-hover); outline: none; }
+.ms-row__icon { display: grid; place-items: center; flex: none; width: 24px; height: 24px; }
+.ms-row__icon img { max-width: 24px; max-height: 24px; object-fit: contain; }
+.ms-row__label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ms-row__text { display: flex; flex-direction: column; min-width: 0; }
+.ms-row__sub { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; color: var(--ms-muted); }
+.ms-row--file { min-height: 48px; }
+.ms-section { padding: 12px 12px 6px; font-size: 12px; color: var(--ms-muted); }
+.ms-letter { padding: 6px 12px 4px; font-size: 14px; font-weight: 600; opacity: .8; }
+.ms-empty { padding: 24px 16px; color: var(--ms-muted); }
+.ms-avatar { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+
+.ms-popup-anchor { position: relative; }
+.ms-popup {
+  position: absolute;
+  z-index: 5;
+  min-width: 168px;
+  padding: 4px 0;
+  background: var(--ms-popup);
+  border: 1px solid var(--ms-border);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+}
+.ms-popup button { display: block; width: 100%; height: 36px; padding: 0 14px; border: 0; background: transparent; text-align: left; cursor: default; }
+.ms-popup button:hover { background: var(--ms-hover); }
+
+/* ---------- Windows 10 ---------- */
+.win10-start {
+  --ms-bg: rgba(31, 31, 31, .97);
+  --ms-fg: #fff;
+  --ms-muted: #a8a8a8;
+  --ms-hover: rgba(255, 255, 255, .12);
+  --ms-accent: #0078d7;
+  --ms-border: #404040;
+  --ms-popup: #2b2b2b;
+  left: 0;
+  bottom: 40px;
+  width: 648px;
+  max-width: 100vw;
+  height: min(600px, calc(100vh - 40px));
+}
+.win10-start .ms-rail {
+  position: absolute;
+  z-index: 3;
+  top: 0; bottom: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 48px;
+  overflow: hidden;
+  transition: width 120ms ease-out;
+}
+.win10-start.is-expanded .ms-rail { width: 256px; background: #2b2b2b; box-shadow: 4px 0 12px rgba(0, 0, 0, .35); }
+.win10-start .ms-popup-anchor { display: block; }
+.win10-start .ms-popup { left: 100%; bottom: 0; }
+.ms-rail__btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: default;
+}
+.ms-rail__btn:hover { background: var(--ms-hover); }
+.ms-rail__btn span { display: none; white-space: nowrap; font-size: 14px; }
+.win10-start.is-expanded .ms-rail__btn span { display: inline; }
+.win10-start .ms-list { margin-left: 48px; width: 262px; flex: none; overflow-y: auto; padding-bottom: 8px; }
+.win10-start .ms-list .ms-row { min-height: 36px; }
+.win10-start .ms-tiles { width: 338px; flex: none; overflow-y: auto; padding: 0 15px 12px; }
+.win10-start .ms-tiles .ms-section { padding: 14px 0 8px; font-size: 14px; color: #dcdcdc; }
+.ms-tilegrid { display: grid; grid-template-columns: repeat(3, 98px); grid-auto-rows: 98px; gap: 4px; }
+.ms-tile {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  justify-items: center;
+  padding: 8px 8px 6px;
+  border: 2px solid transparent;
+  background: var(--ms-accent);
+  color: #fff;
+  text-align: left;
+  cursor: default;
+}
+.ms-tile img { width: 32px; height: 32px; object-fit: contain; }
+.ms-tile span { justify-self: start; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; }
+.ms-tile:hover { border-color: rgba(255, 255, 255, .6); }
+.ms-tile--wide { grid-column: span 2; }
+.ms-searchpane { flex: 1; min-width: 0; margin-left: 48px; display: flex; flex-direction: column; }
+.win10-start .ms-results { flex: 1; overflow-y: auto; padding: 8px 0; }
+.ms-searchbar { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px; background: #2b2b2b; border-top: 2px solid var(--ms-accent); }
+.ms-searchbar input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: #fff; font: inherit; font-size: 14px; }
+
+/* ---------- Windows 11 ---------- */
+.win11-start {
+  --ms-bg: rgba(243, 243, 243, .97);
+  --ms-fg: #1a1a1a;
+  --ms-muted: #5f5f5f;
+  --ms-hover: rgba(0, 0, 0, .06);
+  --ms-accent: #0067c0;
+  --ms-border: #d6d6d6;
+  --ms-popup: #f9f9f9;
+  left: 12px;
+  bottom: 60px;
+  width: 640px;
+  max-width: calc(100vw - 24px);
+  height: min(680px, calc(100vh - 72px));
+  flex-direction: column;
+  border: 1px solid var(--ms-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .24);
+  overflow: hidden;
+}
+.win11-start .ms-popup { right: 0; bottom: 100%; margin-bottom: 8px; border-radius: 6px; }
+.ms-search11 {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 10px;
+  height: 38px;
+  margin: 24px 32px 0;
+  padding: 0 14px;
+  border: 1px solid #e0e0e0;
+  border-bottom: 1px solid #8a8a8a;
+  border-radius: 19px;
+  background: #fff;
+  color: var(--ms-muted);
+}
+.ms-search11:focus-within { border-bottom: 2px solid var(--ms-accent); }
+.ms-search11 input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ms-fg); font: inherit; font-size: 14px; }
+.win11-start .ms-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 32px 8px; }
+.ms-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 24px 0 12px; }
+.ms-head strong { font-size: 14px; font-weight: 600; }
+.ms-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 4px;
+  background: #fbfbfb;
+  font-size: 12px;
+  cursor: default;
+}
+.ms-pill:hover { background: #f0f0f0; }
+.ms-pingrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px 0; }
+.ms-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 84px;
+  padding: 10px 4px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 12px;
+  cursor: default;
+}
+.ms-pin:hover { background: var(--ms-hover); }
+.ms-pin img { width: 32px; height: 32px; object-fit: contain; }
+.ms-pin span { display: -webkit-box; max-width: 100%; overflow: hidden; text-align: center; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.ms-reco { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+.win11-start .ms-row { border-radius: 4px; min-height: 40px; }
+.ms-row--reco { min-height: 52px !important; }
+.ms-row--reco .ms-row__icon, .win11-start .ms-row__icon { width: 32px; height: 32px; }
+.ms-row--reco .ms-row__icon img, .win11-start .ms-row__icon img { max-width: 28px; max-height: 28px; }
+.ms-foot { display: flex; align-items: center; justify-content: space-between; flex: none; height: 64px; padding: 0 32px 0 40px; border-top: 1px solid rgba(0, 0, 0, .06); background: rgba(0, 0, 0, .04); }
+.ms-user { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border: 0; border-radius: 4px; background: transparent; cursor: default; }
+.ms-user:hover, .ms-power:hover { background: var(--ms-hover); }
+.ms-user .ms-avatar { width: 28px; height: 28px; }
+.ms-power { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 4px; background: transparent; cursor: default; }
+.win11-start .ms-results { padding: 16px 0 8px; }

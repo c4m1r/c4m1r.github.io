@@ -2,6 +2,8 @@ import { useApp } from '../../../../contexts/useApp';
 import { StartMenu98 } from './StartMenu98';
 import { StartMenu7 } from './StartMenu7';
 import { StartMenuXP } from './StartMenuXP';
+import { StartMenu10 } from './StartMenu10';
+import { StartMenu11 } from './StartMenu11';
 
 export interface StartMenuProps {
   onClose: () => void;
@@ -26,7 +28,15 @@ export function StartMenu({ onClose, onLaunchApp, onOpenPath, onSystemCommand, o
     );
   }
 
-  if (theme === 'win7' || theme === 'vista' || theme === 'win10' || theme === 'win11') {
+  if (theme === 'win10') {
+    return <StartMenu10 onClose={onClose} onLaunchApp={onLaunchApp} onOpenPath={onOpenPath} onSystemCommand={onSystemCommand} onHover={onHover} />;
+  }
+
+  if (theme === 'win11') {
+    return <StartMenu11 onClose={onClose} onLaunchApp={onLaunchApp} onOpenPath={onOpenPath} onSystemCommand={onSystemCommand} onHover={onHover} />;
+  }
+
+  if (theme === 'win7' || theme === 'vista') {
     return (
       <StartMenu7
         variant={theme === 'vista' ? 'vista' : 'win7'}
