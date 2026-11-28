@@ -16,7 +16,8 @@ import { ContextMenuItem } from '../../apps/desktop/components';
 import { MyComputer } from '../../apps/explorer';
 import { Windows7Explorer } from '../../apps/explorer/Windows7Explorer';
 import { RunDialog } from './components/RunDialog';
-import { Folder, HardDrive, Trash2 } from 'lucide-react';
+import { Folder, HardDrive, Search, Trash2 } from 'lucide-react';
+import { modernStartText } from '../../i18n/modernStartStrings';
 import { getItemsFromPath, FileSystemItem, loadProjectMarkdown } from '../../utils/FileSystem';
 import { resolveFileIcon } from '../../themes/iconResolver';
 import { getFileAssociation } from '../../themes/fileAssociations';
@@ -2095,6 +2096,8 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
                 .forEach((window) => handleCloseWindow(window.id));
             }}
           />
+          {/* Windows 11 centres the start button and the app buttons: flexible spacers take the free space on both sides. */}
+          {themeKey === 'win11' && <div className="taskbar-spacer" aria-hidden />}
           {/* Start Button: plain Windows 8 has none (its corner and the Win key open the Start screen); Windows 8.1 has it back. */}
           {(themeKey !== 'win8' || win81Shell) && (
           <button
@@ -2142,6 +2145,23 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
               </>
             )}
           </button>
+          )}
+
+          {/* Windows 10 search box next to Start: it opens the Start menu, which takes the typed text. */}
+          {themeKey === 'win10' && (
+            <button
+              type="button"
+              className="taskbar-search"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (showStartMenu) closeStartMenu();
+                else openStartMenu();
+              }}
+              aria-label={modernStartText(language, 'typeToSearch')}
+            >
+              <Search size={16} aria-hidden="true" />
+              <span>{modernStartText(language, 'typeToSearch')}</span>
+            </button>
           )}
 
           {/* Windows 2000 quick launch: Show Desktop, Internet Explorer, Outlook Express. */}
@@ -2230,6 +2250,7 @@ export function DesktopShellContainer(props?: DesktopShellProps) {
           </div>
 
           <div className="taskbar-divider" aria-hidden />
+          {themeKey === 'win11' && <div className="taskbar-spacer" aria-hidden />}
 
           {previewWindow && taskbarPreview && (
             <VistaTaskbarPreview

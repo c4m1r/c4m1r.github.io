@@ -298,3 +298,25 @@
   min-height: 150px;
   opacity: 0.8;
 }
+
+/* Windows 10 search box on the taskbar, next to Start. */
+.os-win10 .taskbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  width: 240px;
+  height: 32px;
+  margin: 0 4px;
+  padding: 0 10px;
+  border: 0;
+  background: rgba(255, 255, 255, .08);
+  color: #d7d7d7;
+  font: 12px "Segoe UI", system-ui, sans-serif;
+  text-align: left;
+  cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.os-win10 .taskbar-search:hover { background: rgba(255, 255, 255, .14); }
+.os-win10 .taskbar-search span { overflow: hidden; text-overflow: ellipsis; }

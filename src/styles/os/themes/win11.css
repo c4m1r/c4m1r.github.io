@@ -313,3 +313,22 @@
   min-height: 120px;
   opacity: 0.7;
 }
+
+/* Centred taskbar: the start button and the app buttons sit in the middle; the spacers split the free space. */
+.os-win11 .taskbar-spacer {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.os-win11 .taskbar-windows {
+  flex: 0 1 auto !important;
+}
+/* The tray has a fixed width and a matching pad on the left, so the centre of the app group is the centre of the screen. */
+.os-win11 .taskbar__inner::before {
+  content: "";
+  flex: 0 0 248px; /* tray width (210) plus the 38 px inset on the right of the taskbar */
+}
+.os-win11 .taskbar-system-area {
+  flex: 0 0 210px;
+  width: 210px;
+  justify-content: flex-end;
+}

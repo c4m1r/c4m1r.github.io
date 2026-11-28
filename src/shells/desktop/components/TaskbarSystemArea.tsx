@@ -97,6 +97,11 @@ function ModernActionCenter({ labels, tiles, onToggle }: { labels: TrayLabels; t
   );
 }
 
+/** Systems whose clock shows the date under the time. */
+function hasDateInTray(theme: ThemeId): boolean {
+  return theme === 'win7' || theme === 'vista' || theme === 'win10' || theme === 'win11';
+}
+
 function areSameDay(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
@@ -313,13 +318,14 @@ export function TaskbarSystemArea({
 
       <div className="relative h-full">
         <button type="button" onClick={handleClockToggle} className={`taskbar-tray-time ${showClockPanel ? 'is-open' : ''}`} aria-label={labels.dateTime} aria-expanded={showClockPanel} title={labels.dateTime}>
-          {theme === 'win7' ? (
+          {/* Windows Vista, 7, 10 and 11 show the time over the date; Windows 95/98/2000/XP show the time alone. */}
+          {hasDateInTray(theme) ? (
             <span className="win7-tray-clock flex flex-col items-center leading-tight text-[11px] font-semibold" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>
-              <span>{time.toLocaleTimeString(language, { hour: 'numeric', minute: '2-digit' })}</span>
+              <span>{time.toLocaleTimeString(language, { hour: 'numeric', minute: '2-digit' }).replace(/[\u202f\u00a0]/g, ' ')}</span>
               <span>{time.toLocaleDateString(language, { month: 'numeric', day: 'numeric', year: 'numeric' })}</span>
             </span>
           ) : (
-            <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' }).replace(/[\u202f\u00a0]/g, ' ')}</span>
+            <span className="text-[11px] font-semibold tracking-wide" style={{ textShadow: '0 1px 0 rgba(0,0,0,0.4)' }}>{time.toLocaleTimeString(language, { hour: 'numeric', minute: '2-digit' }).replace(/[\u202f\u00a0]/g, ' ')}</span>
           )}
         </button>
         {showClockPanel && <ClockCalendarPopup language={language} time={time} labels={labels} theme={theme} onOpenCalendar={onOpenCalendar} />}
