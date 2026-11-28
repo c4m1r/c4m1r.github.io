@@ -8,6 +8,8 @@ import { buildWin7StartMenuLists, type Win7MenuEntry } from './startMenuWin7List
 import { useFlyoutChain } from './startMenuFlyout';
 import { FlyoutPanel } from './StartMenuFlyoutPanel';
 import { vistaText } from '../../../../i18n/vistaStrings';
+import { startSearchText } from '../../../../i18n/startSearchStrings';
+import { searchStartFiles, type StartSearchHit } from './startMenuSearch';
 
 export interface StartMenu7Props {
   onClose: () => void;
@@ -23,6 +25,14 @@ export interface StartMenu7Props {
 // The UI presents Windows 7 library names, while the shared virtual filesystem
 // still stores the user's content under its historical XP-era paths. Keeping the
 // adapter here preserves all existing files without duplicating or migrating data.
+
+/** Every launchable program or folder in a list of entries, with submenus flattened. */
+function flattenProgramLeaves(entries: Win7MenuEntry[]): Win7MenuEntry[] {
+  return entries.flatMap((entry) => {
+    if (entry.submenu) return flattenProgramLeaves(entry.submenu);
+    return entry.appId || entry.path ? [entry] : [];
+  });
+}
 
 export function StartMenu7({
   onClose,
@@ -92,9 +102,22 @@ export function StartMenu7({
   useEffect(() => {
     if (!showAllPrograms) resetFlyout();
   }, [showAllPrograms, resetFlyout]);
-  const filteredPrograms = (showAllPrograms ? [...allPrograms, ...userPrograms] : programs).filter((program) =>
-    program.label.toLocaleLowerCase(language).includes(query.trim().toLocaleLowerCase(language)),
+  // Search covers every program (not only the pinned list) and the files of the profile and Program Files.
+  const searchText = query.trim().toLocaleLowerCase(language);
+  const isSearching = searchText.length > 0;
+  const searchRoots = useMemo(() => [`C:\\Documents and Settings\\${getSessionAccount()}`, 'C:\\Program Files'], []);
+  const fileHits: StartSearchHit[] = useMemo(
+    () => (isSearching ? searchStartFiles(query, searchRoots) : []),
+    [isSearching, query, searchRoots],
   );
+  const filteredPrograms = isSearching
+    ? flattenProgramLeaves([...allPrograms, ...userPrograms]).filter((program) =>
+      program.label.toLocaleLowerCase(language).includes(searchText),
+    )
+    : (showAllPrograms ? [...allPrograms, ...userPrograms] : programs);
+  useEffect(() => {
+    if (isSearching) resetFlyout();
+  }, [isSearching, resetFlyout]);
 
   // Default Windows 7 right column: libraries, Games, Computer, then the system
   // entries. Separators follow the default grouping (libraries | Games | system).
@@ -107,6 +130,13 @@ export function StartMenu7({
     onClose();
   };
 
+  // A file with an application opens in it; any other file opens its folder in Explorer.
+  const openHit = (hit: StartSearchHit) => {
+    if (hit.appId) onLaunchApp?.(hit.appId);
+    else onOpenPath?.(hit.kind === 'folder' ? hit.path : hit.parentPath);
+    onClose();
+  };
+
   return (
     <section className={`win7-start-menu start-menu-modern os-panel${isVista ? ' vista-start-menu' : ''}`} aria-label={isRu ? 'Меню Пуск' : 'Start menu'}>
       <div className="win7-start-menu__glass" aria-hidden="true" />
@@ -114,7 +144,34 @@ export function StartMenu7({
       <div className="win7-start-menu__main">
         <div className="win7-start-menu__left">
           <div className="win7-start-menu__programs" role="menu">
+            {isSearching && filteredPrograms.length > 0 && (
+              <div className="px-3 pt-2 pb-1 text-[11px] font-semibold text-[#3c5a8a]">{startSearchText(language, 'programs')}</div>
+            )}
             {filteredPrograms.map((entry) => renderProgramRow(entry, 0))}
+            {isSearching && fileHits.length > 0 && (
+              <>
+                <div className="px-3 pt-2 pb-1 text-[11px] font-semibold text-[#3c5a8a]">{startSearchText(language, 'files')}</div>
+                {fileHits.map((hit) => (
+                  <button
+                    key={hit.id}
+                    type="button"
+                    className="win7-start-menu__program"
+                    role="menuitem"
+                    title={hit.path}
+                    onClick={() => openHit(hit)}
+                    onMouseEnter={onHover}
+                  >
+                    <span className="win7-start-menu__program-icon">
+                      {hit.icon ? <img src={hit.icon} alt="" /> : null}
+                    </span>
+                    <span className="flex-1 win7-start-menu__program-text">
+                      <strong className="block truncate">{hit.name}</strong>
+                      <small className="block truncate text-[11px] font-normal text-[#5a6a80]">{hit.parentPath}</small>
+                    </span>
+                  </button>
+                ))}
+              </>
+            )}
             {flyout.chain.map((level, index) => (
               <FlyoutPanel
                 key={index}
@@ -124,9 +181,9 @@ export function StartMenu7({
                 {level.items.map((entry) => renderProgramRow(entry as Win7MenuEntry, index + 1))}
               </FlyoutPanel>
             ))}
-            {filteredPrograms.length === 0 && (
+            {filteredPrograms.length === 0 && fileHits.length === 0 && (
               <div className="win7-start-menu__empty">
-                {isRu ? 'Программы не найдены' : 'No programs found'}
+                {isSearching ? startSearchText(language, 'noResults') : (isRu ? 'Программы не найдены' : 'No programs found')}
               </div>
             )}
           </div>
